@@ -15,17 +15,8 @@ function recalculateBearStatus(taskArray) {
 
 const rootReducer = (state = initialState, action) => {
     switch(action.type) {
-        case 'MAIN_TASK':
-						newTaskArray = [...state, action.payload];
-            return {
-                mainTaskArray: newTaskArray,
-                tagColorPicker: state.tagColorPicker,
-                bearStatus: recalculateBearStatus(newTaskArray),
-            }
-
         default:
             return state;
-
     }
 }
 
