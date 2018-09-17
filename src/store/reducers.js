@@ -1,14 +1,22 @@
+
 /**
  * Initial state of the application.
  * @type {{tasks: Array, tagColorConfig: *}}
  */
 const initialState = {
-    tasks: [], tagColorConfig: {
+    mainTaskArray : [],
+    tagColorPicker : {
         'Personal': 'blue',
         'Project Team': 'green',
         'Courses': 'purple'
-    }
+    },
+    bearStatus : 'neutral',
 };
+
+//function to update the bear's status
+function recalculateBearStatus(taskArray) {
+	return 'neutral';
+}
 
 /**
  * Reducer from a old tag-color config to a new one.
@@ -19,17 +27,17 @@ const initialState = {
  */
 const tagColorConfigReducer = (oldTagColorConfig, action) => {
     switch (action.type) {
-        case 'EDIT_COLOR_CONFIG':
-            let newConfig = {...oldTagColorConfig};
-            newConfig[action.tag] = action.color;
-            return newConfig;
-        case 'REMOVE_COLOR_CONFIG':
-            newConfig = {...oldTagColorConfig};
-            delete newConfig[action.tag];
-            return newConfig;
-        default:
-            return oldTagColorConfig;
-    }
+    case 'EDIT_COLOR_CONFIG':
+    let newConfig = {...oldTagColorConfig};
+    newConfig[action.tag] = action.color;
+    return newConfig;
+    case 'REMOVE_COLOR_CONFIG':
+    newConfig = {...oldTagColorConfig};
+    delete newConfig[action.tag];
+    return newConfig;
+    default:
+    return oldTagColorConfig;
+}
 };
 
 const rootReducer = (state = initialState, action) => {
