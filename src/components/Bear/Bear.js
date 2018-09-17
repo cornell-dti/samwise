@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { connect } from 'reac-redux'
-import { updateBearStatus } from '../store/actions.js'
+import { updateBearStatus } from '../../store/actions.js'
 
 const mapStateToProps = state => {
     return { bearStatus: state.bearStatus };
