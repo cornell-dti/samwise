@@ -21,4 +21,4 @@ class BearStatus extends Component {
 }
 
 const GetStoreBearStatus = connect(mapStateToProps, null)(BearStatus)
-export default BearStatus;
+export default GetStoreBearStatus;
