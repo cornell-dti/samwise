@@ -1,5 +1,6 @@
-import React, {Component} from 'react';
+import React, {Component, Fragment} from 'react';
 import {connect} from 'react-redux';
+import { List } from 'semantic-ui-react'
 import {editColorConfig, removeColorConfig} from './store/actions.js';
 import TagColorConfigItemEditor from './TagColorConfigItemEditor'
 
@@ -26,12 +27,19 @@ class UnconnectedTagColorConfigItem extends Component {
 
     render() {
         return (
-            <div>
-                <span>{this.props.tag}</span>
-                <span style={{backgroundColor: this.props.color}}>Color</span>
-                <button onClick={this.toggleEditor}>Toggle</button>
-                {this.state.showEditor && <TagColorConfigItemEditor/>}
-            </div>
+            <Fragment>
+                <List.Item>
+                    <List.Icon name='github' size='large' verticalAlign='middle' />
+                    <List.Content>
+                        <List.Header as='a' style={{backgroundColor: this.props.color}}>
+                            {this.props.tag}
+                            </List.Header>
+                        <List.Description as='a'>Color: {this.props.color}</List.Description>
+                        <button onClick={this.toggleEditor}>Toggle</button>
+                        {this.state.showEditor && <TagColorConfigItemEditor/>}
+                    </List.Content>
+                </List.Item>
+            </Fragment>
         );
     }
 
