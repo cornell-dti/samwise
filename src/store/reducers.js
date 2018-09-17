@@ -1,31 +1,31 @@
 const initialState = {
-    mainTaskArray = [],
-    tagColorPicker = {
-        tagColor1 = '#000000',
-        tagColor2 = '#ffffff',
-        tagColor3 = '#ff0000',
+    mainTaskArray : [],
+    tagColorPicker : {
+        tagColor1 : '#000000',
+        tagColor2 : '#ffffff',
+        tagColor3 : '#ff0000',
     },
-    bearStatus = 'neutral',
+    bearStatus : 'neutral',
+}
+
+//function to update the bear's status
+function recalculateBearStatus(taskArray) {
+	return 'neutral';
 }
 
 const rootReducer = (state = initialState, action) => {
     switch(action.type) {
         case 'MAIN_TASK':
+						newTaskArray = [...state, action.payload];
             return {
-                mainTaskArray: [...state,action.payload],
+                mainTaskArray: newTaskArray,
                 tagColorPicker: state.tagColorPicker,
-                bearStatus: state.bearStatus,
+                bearStatus: recalculateBearStatus(newTaskArray),
             }
 
-        case 'BEAR':
-            return {
-                bearStatus: action.payload,
-                mainTaskArray: state.mainTaskArray,
-                tagColorPicker: state.tagColorPicker,
-            }
-            default:
-                return state;
-            
+        default:
+            return state;
+
     }
 }
 

@@ -1,15 +1,9 @@
 import React, { Component } from 'react'
-import { connect } from 'reac-redux'
+import { connect } from 'react-redux'
 import { updateBearStatus } from '../../store/actions.js'
 
 const mapStateToProps = state => {
     return { bearStatus: state.bearStatus };
-};
-
-const mapDispatchToProps = dispatch => {
-    return {
-        updateBearStatus: () => dispatch(updateBearStatus());
-    };
 };
 
 class Bear extends Component {
