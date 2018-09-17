@@ -1,11 +1,13 @@
 import React, { Component } from 'react';
+import NewTaskComponent from './NewTaskComponent';
 import styles from './App.css';
 
 class App extends Component {
   render() {
     return (
       <div className= { styles.App }>
-        Project Samwise(?)
+        Samwise
+		<NewTaskComponent></NewTaskComponent>
       </div>
     );
   }
