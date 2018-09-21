@@ -1,21 +1,16 @@
-import React, { Component } from 'react';
-import { List } from 'semantic-ui-react'
+import React, {Component} from 'react';
 import styles from './App.css';
-import TagColorConfigItem from "./TagColorConfigItem";
+import TagColorConfigEditor from "./TagColorConfigEditor";
 
 class App extends Component {
-  render() {
-    return (
-      <div className= { styles.App }>
-          Project Samwise(?)
-          <List divided relaxed>
-              <TagColorConfigItem tag={'CS 2112'} color={'red'}/>
-              <TagColorConfigItem tag={'CS 2800'} color={'blue'}/>
-              <TagColorConfigItem tag={'CS 3110'} color={'yellow'}/>
-          </List>
-      </div>
-    );
-  }
+    render() {
+        return (
+            <div className={styles.App}>
+                Project Samwise(?)
+                <TagColorConfigEditor/>
+            </div>
+        );
+    }
 }
 
 export default App;

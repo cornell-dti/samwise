@@ -43,7 +43,10 @@ const rootReducer = (state = initialState, action) => {
     switch (action.type) {
         case 'EDIT_COLOR_CONFIG':
         case 'REMOVE_COLOR_CONFIG':
-            return tagColorConfigReducer(state.tagColorPicker, action);
+            return {
+                ...state,
+                tagColorPicker: tagColorConfigReducer(state.tagColorPicker, action)
+            };
         default:
             return state;
     }
