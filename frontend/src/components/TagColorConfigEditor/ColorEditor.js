@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import {connect} from 'react-redux';
-import {editColorConfig} from './store/actions.js';
+import {editColorConfig} from '../../store/actions.js';
 import {GithubPicker} from 'react-color';
 
 const mapDispatchToProps = dispatch => {

@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import styles from './App.css';
-import TagColorConfigEditor from "./TagColorConfigEditor";
+import TagColorConfigEditor from './components/TagColorConfigEditor/TagColorConfigEditor';
 
 class App extends Component {
     render() {

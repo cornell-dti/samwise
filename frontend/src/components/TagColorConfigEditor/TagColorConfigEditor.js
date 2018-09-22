@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
-import TagColorConfigItemList from "./TagColorConfigItemList";
-import TagColorConfigItemAdder from "./TagColorConfigItemAdder";
+import TagColorConfigItemList from './TagColorConfigItemList';
+import TagColorConfigItemAdder from './TagColorConfigItemAdder';
 
 export default class TagColorConfigEditor extends Component {
 

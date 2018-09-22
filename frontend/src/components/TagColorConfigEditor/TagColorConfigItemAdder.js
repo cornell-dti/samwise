@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import {connect} from 'react-redux';
-import {editColorConfig} from './store/actions';
+import {editColorConfig} from '../../store/actions';
 import styles from './TagColorConfigItemAdder.css';
 import {GithubPicker} from 'react-color';
 

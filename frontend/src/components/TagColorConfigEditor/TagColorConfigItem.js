@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import {connect} from 'react-redux';
 import {List} from 'semantic-ui-react'
-import {removeColorConfig} from './store/actions.js';
+import {removeColorConfig} from '../../store/actions.js';
 import ColorEditor from './ColorEditor'
 
 const mapDispatchToProps = dispatch => {
