@@ -12,17 +12,22 @@
 A web app for (planning stuff)
 ​
 ## Getting Started
-You will need **required IDE or platform, version number** to run the latest version of this app, which uses the following **SDKs, extensions, packages**:
+You will need the latest npm to run the latest version of this app. The app makes use of the following technologies:
 ​
- * **api name***
- * Android API 27
-   * Android SDK Platform 27, Revision 3
+ * React
+   * React version 16.4
+ * Redux
+   * Redux version 4.0.0
 
-_Last updated **mm/dd/yyyy**_.
+To start the app, run `npm install` first followed by `npm start`.
+
+_Last updated **9/22/2018**_.
 ​
 ## Dependencies & Libraries
- * **[Example Library](http://example.com)** - **Why we use this library**
- * [Guava](https://github.com/google/guava) - a Google Library containing lots of helpful classes for Java. Most notably, immutable data structures (like ImmutableList) and EventBus, which provides a way for classes that do not have references to each other to communicate.
+ * [React (16.4.2)](https://reactjs.org/) - a Facebook library for frontend. We use it for frontend UI.
+ * [Redux (4.0.0)](https://redux.js.org/) - a predictable state container for JavaScript apps. We used it for state management.
+ * [React-Redux (5.0.7)](https://github.com/reduxjs/react-redux) - a library for bindings between React and Redux. 
+ * [React Color (2.14.1)](https://casesandberg.github.io/react-color/) - a collection of React components for picking colors.
 ​
 ## External Documentation
 ​
