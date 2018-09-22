@@ -37,23 +37,24 @@ _Last updated **9/22/2018**_.
 
 <img src="./screenshots/placeholder1.png" width="250px" style="margin: 10px; border: 1px rgba(0,0,0,0.4) solid;">
 ​
+
 ## Contributors
 ​
 **Since 2016**
- * **Alice Zhou** - Product Manager
- * **Justin Tran** - Front-end Developer
- * **Kevin Li** - Designer
+* **Alice Zhou** - Product Manager
+* **Justin Tran** - Front-end Developer
+* **Kevin Li** - Designer
 
 **Since 2017**
- * **Gautam Mekkat** - Back-end Developer
- * **Matthew Epstein** - Product Manager
- * **Vivian Shiu** - Designer
+* **Gautam Mekkat** - Back-end Developer
+* **Matthew Epstein** - Product Manager
+* **Vivian Shiu** - Designer
 
 **Since 2018**
- * **Jessica Hong** - Back-end Developer
- * **Michael Xing** - Front-end Developer
- * **Michelle Park** - Designer
- * **Sam Zhou** - Front-end Developer
+* **Jessica Hong** - Back-end Developer
+* **Michael Xing** - Front-end Developer
+* **Michelle Park** - Designer
+* **Sam Zhou** - Front-end Developer
 ​
 
 We are a team within **Cornell Design & Tech Initiative**. For more information, see our website [here](https://cornelldti.org/).
