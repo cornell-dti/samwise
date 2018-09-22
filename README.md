@@ -21,8 +21,9 @@ You will need **required IDE or platform, version number** to run the latest ver
 _Last updated **mm/dd/yyyy**_.
 ​
 ## Dependencies & Libraries
- * **[Example Library](http://example.com)** - **Why we use this library**
- * [Guava](https://github.com/google/guava) - a Google Library containing lots of helpful classes for Java. Most notably, immutable data structures (like ImmutableList) and EventBus, which provides a way for classes that do not have references to each other to communicate.
+ * [React (16.4.2)](https://reactjs.org/) - a Facebook library for frontend. We use it for frontend UI.
+ * [Redux (4.0.0)](https://redux.js.org/) - a predictable state container for JavaScript apps. We used it for state management.
+ * [React-Redux (5.0.7)](https://github.com/reduxjs/react-redux) - a library for bindings between React and Redux. 
 ​
 ## External Documentation
 ​
