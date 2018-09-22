@@ -30,7 +30,7 @@ _Last updated **9/22/2018**_.
  * [React Color (2.14.1)](https://casesandberg.github.io/react-color/) - a collection of React components for picking colors.
 ​
 ## External Documentation
-​
+
 * [Backend API Documentation](https://apiary.io/) - this is an external Apiary documenting the endpoints for our application.
 ​
 ## Screenshots
