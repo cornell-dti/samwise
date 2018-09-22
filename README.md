@@ -24,6 +24,7 @@ _Last updated **mm/dd/yyyy**_.
  * [React (16.4.2)](https://reactjs.org/) - a Facebook library for frontend. We use it for frontend UI.
  * [Redux (4.0.0)](https://redux.js.org/) - a predictable state container for JavaScript apps. We used it for state management.
  * [React-Redux (5.0.7)](https://github.com/reduxjs/react-redux) - a library for bindings between React and Redux. 
+ * [React Color (2.14.1)](https://casesandberg.github.io/react-color/) - a collection of React components for picking colors.
 ​
 ## External Documentation
 ​
