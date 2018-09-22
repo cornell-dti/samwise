@@ -9,7 +9,7 @@
   - [Contributors](#contributors)
 ​
 ## About
-A web app for (planning stuff)
+A web application designed to help Cornell students plan their semesters.
 ​
 ## Getting Started
 You will need the latest npm to run the latest version of this app. The app makes use of the following technologies:
@@ -19,7 +19,7 @@ You will need the latest npm to run the latest version of this app. The app make
  * Redux
    * Redux version 4.0.0
 
-To start the app, run `npm install` first followed by `npm start`.
+To start the app, navigate to the frontend folder, then run `npm install` first followed by `npm start`.
 
 _Last updated **9/22/2018**_.
 ​
@@ -35,7 +35,7 @@ _Last updated **9/22/2018**_.
 ​
 ## Screenshots
 
-<img src="https://raw.githubusercontent.com/cornell-dti/samwise/master/screenshots/placeholder1.png" width="250px" style="margin: 10px; border: 1px rgba(0,0,0,0.4) solid;">
+<img src="./screenshots/placeholder1.png" width="250px" style="margin: 10px; border: 1px rgba(0,0,0,0.4) solid;">
 ​
 ## Contributors
 ​
