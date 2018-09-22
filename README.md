@@ -39,23 +39,23 @@ _Last updated **9/22/2018**_.
 ​
 ## Contributors
 ​
-**2019**
-	* **Alice Zhou** - Product Manager
-	* **Justin Tran** - Front-end Developer
-	* **Alexa Bren** - Designer
-	* **Kevin Li** - Designer
+**Since 2016**
+ * **Alice Zhou** - Product Manager
+ * **Justin Tran** - Front-end Developer
+ * **Kevin Li** - Designer
 
-**2020**
-	* **Gautam Mekkat** - Back-end Developer
-
-**2021**
- * **Matt Epstein ** - Product Manager
- * **Michael Xing** - Front-end Developer
- * **Sam Zhou** - Front-end Developer
- * **Jessica Hong** - Back-end Developer
- * **Michelle Park** - Designer
+**Since 2017**
+ * **Gautam Mekkat** - Back-end Developer
+ * **Matthew Epstein** - Product Manager
  * **Vivian Shiu** - Designer
+
+**Since 2018**
+ * **Jessica Hong** - Back-end Developer
+ * **Michael Xing** - Front-end Developer
+ * **Michelle Park** - Designer
+ * **Sam Zhou** - Front-end Developer
 ​
+
 We are a team within **Cornell Design & Tech Initiative**. For more information, see our website [here](https://cornelldti.org/).
 <img src="https://raw.githubusercontent.com/cornell-dti/design/master/Branding/Wordmark/Dark%20Text/Transparent/Wordmark-Dark%20Text-Transparent%403x.png">
 ​
