@@ -10,6 +10,7 @@ class NewTaskComponent extends Component {
 			buttonClickedCount: 0,
 		};
 		this.changeClass = React.createRef();
+		this.addTask = React.createRef();
 	}
 
 	/*handleChange = () => {
@@ -24,23 +25,29 @@ class NewTaskComponent extends Component {
 			});
 	}*/
 
-	handleClassChange = () => {
-		let optionArray = this.changeClass.current.options;
-		let newColor = optionArray[optionArray.selectedIndex].getAttribute("data-color");
+	handleClassChange = (e) => {
+		let newColor = e.target.getAttribute("data-color");
 		this.changeClass.current.style.backgroundColor = newColor;
-		//console.log();
+		this.changeClass.current.previousSibling.checked = false;
+		this.addTask.current.focus();
 	}
 
 	render() {
 		return (
 			<div className = {styles.NewTaskWrap} >
-				<input type="text" className={styles.NewTaskComponent} placeholder="What do you have to do?" />
+				<input type="text" className={styles.NewTaskComponent} placeholder="What do you have to do?" ref={this.addTask} />
 				<div className = {styles.NewTaskActive}>
-					<select className = {styles.NewTaskClassDropdown} onChange={this.handleClassChange} ref={this.changeClass}>
-						<option data-color="#FF0000">CS 2112</option>
-						<option data-color="#00FF00">MATH 2230</option>
-						<option data-color="#0000FF">PHYS 1116</option>
-					</select>
+
+					<div className = {styles.NewTaskClass}>
+						<input id="changeClassCheckbox" type="checkbox"/>
+						<label htmlFor="changeClassCheckbox" ref={this.changeClass}></label>
+						<ul>
+							<li style={{["--custom-color"]: "#0000FF"}}><input data-color="#0000FF" onChange={this.handleClassChange} type="radio" name="classSelectRadio" />MATH 2230</li>
+							<li style={{["--custom-color"]: "#FF0000"}}><input data-color="#FF0000" onChange={this.handleClassChange} type="radio" name="classSelectRadio" />PHYS 1116</li>
+							<li style={{["--custom-color"]: "#00FF00"}}><input data-color="#00FF00" onChange={this.handleClassChange} type="radio" name="classSelectRadio" />CS 2112</li>
+						</ul>
+					</div>
+				
 				</div>
 			</div>
 		);
