@@ -12,13 +12,16 @@
 A web app for (planning stuff)
 ​
 ## Getting Started
-You will need **required IDE or platform, version number** to run the latest version of this app, which uses the following **SDKs, extensions, packages**:
+You will need the latest npm to run the latest version of this app. The app makes use of the following technologies:
 ​
- * **api name***
- * Android API 27
-   * Android SDK Platform 27, Revision 3
+ * React
+   * React version 16.4
+ * Redux
+   * Redux version 4.0.0
 
-_Last updated **mm/dd/yyyy**_.
+To start the app, run `npm install` first followed by `npm start`.
+
+_Last updated **9/22/2018**_.
 ​
 ## Dependencies & Libraries
  * [React (16.4.2)](https://reactjs.org/) - a Facebook library for frontend. We use it for frontend UI.
