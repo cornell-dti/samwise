@@ -1,11 +1,11 @@
 # See https://help.github.com/ignore-files/ for more about ignoring files.
 
 
-package-lock.json
-/dist
+/frontend/package-lock.json
+/frontend/dist
 
 # dependencies
-/node_modules
+/frontend/node_modules
 
 # testing
 /coverage
@@ -20,11 +20,11 @@ package-lock.json
 .env.test.local
 .env.production.local
 
-/.vs
-/.vscode
-.vs
-/samwise\v15
-/.vs/slnx.sqlite
+/frontend/.vs
+/frontend/.vscode
+/frontend/.vs
+/frontend/samwise\v15
+/frontend/.vs/slnx.sqlite
 
 npm-debug.log*
 yarn-debug.log*
