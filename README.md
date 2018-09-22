@@ -26,7 +26,7 @@ _Last updated **9/22/2018**_.
 ## Dependencies & Libraries
  * [React (16.4.2)](https://reactjs.org/) - a Facebook library for frontend. We use it for frontend UI.
  * [Redux (4.0.0)](https://redux.js.org/) - a predictable state container for JavaScript apps. We used it for state management.
- * [React-Redux (5.0.7)](https://github.com/reduxjs/react-redux) - a library for bindings between React and Redux. 
+ * [React-Redux (5.0.7)](https://github.com/reduxjs/react-redux) - a library for bindings between React and Redux.
  * [React Color (2.14.1)](https://casesandberg.github.io/react-color/) - a collection of React components for picking colors.
 ​
 ## External Documentation
@@ -35,7 +35,7 @@ _Last updated **9/22/2018**_.
 ​
 ## Screenshots
 
-<img src="https://raw.githubusercontent.com/cornell-dti/samwise/master/Screenshots/placeholder1.png" width="250px" style="margin: 10px; border: 1px rgba(0,0,0,0.4) solid;">
+<img src="https://raw.githubusercontent.com/cornell-dti/samwise/master/screenshots/placeholder1.png" width="250px" style="margin: 10px; border: 1px rgba(0,0,0,0.4) solid;">
 ​
 ## Contributors
 ​
