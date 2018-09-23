@@ -14,3 +14,4 @@ export const editColorConfig = (tag, color) => ({type: 'EDIT_COLOR_CONFIG', tag:
  * @return {{type: string, tag: string}} the remove color action.
  */
 export const removeColorConfig = (tag) => ({type: 'REMOVE_COLOR_CONFIG', tag: tag});
+export const addTask = (d) => ({ type: 'ADD_NEW_TASK', data: d});
