@@ -1,6 +1,7 @@
 import React, {
 	Component
 } from 'react';
+import NewTaskClassPicker from './NewTaskClassPicker';
 import styles from './NewTask.css';
 
 class NewTaskComponent extends Component {
@@ -42,10 +43,15 @@ class NewTaskComponent extends Component {
 						<input id="changeClassCheckbox" type="checkbox"/>
 						<label htmlFor="changeClassCheckbox" ref={this.changeClass}></label>
 						<ul>
-							<li style={{["--custom-color"]: "#0000FF"}}><input data-color="#0000FF" onChange={this.handleClassChange} type="radio" name="classSelectRadio" />MATH 2230</li>
-							<li style={{["--custom-color"]: "#FF0000"}}><input data-color="#FF0000" onChange={this.handleClassChange} type="radio" name="classSelectRadio" />PHYS 1116</li>
-							<li style={{["--custom-color"]: "#00FF00"}}><input data-color="#00FF00" onChange={this.handleClassChange} type="radio" name="classSelectRadio" />CS 2112</li>
+							<NewTaskClassPicker classColor="#FFFF00" classTitle="CHIN 1109" changeCallback={this.handleClassChange}></NewTaskClassPicker>
+							<NewTaskClassPicker classColor="#0000FF" classTitle="MATH 2230" changeCallback={this.handleClassChange}></NewTaskClassPicker>
+							<NewTaskClassPicker classColor="#FF0000" classTitle="PHYS 1116" changeCallback={this.handleClassChange}></NewTaskClassPicker>
+							<NewTaskClassPicker classColor="#00FF00" classTitle="CS 2112" changeCallback={this.handleClassChange}></NewTaskClassPicker>
 						</ul>
+					</div>
+
+					<div className = {styles.NewTaskDate}>
+						<input type="date" min={new Date(new Date().getTime() - new Date().getTimezoneOffset() * 60000).toISOString().split("T")[0]} />
 					</div>
 				
 				</div>

@@ -146,3 +146,20 @@
 .NewTaskClass input[type="checkbox"]:checked+label+ul{
   display:block;
 }
+
+
+/*
+  Date Picker
+*/
+.NewTaskDate{
+  width:20px;
+  position:absolute;
+  right:0;
+  height:20px;
+}
+
+.NewTaskDate input[type="date"]{
+  -webkit-appearance:none;
+  -moz-appearance:none;
+  appearance: none;
+}
