@@ -3,18 +3,18 @@
  * @type {{tasks: Array, tagColorConfig: *}}
  */
 const initialState = {
-    mainTaskArray: [],
-    tagColorPicker: {
-        'Personal': 'blue',
-        'Project Team': 'green',
-        'Courses': 'purple'
-    },
-    bearStatus: 'neutral',
+  mainTaskArray: [],
+  tagColorPicker: {
+    Personal: 'blue',
+    'Project Team': 'green',
+    Courses: 'purple',
+  },
+  bearStatus: 'neutral',
 };
 
-//function to update the bear's status
+// function to update the bear's status
 function recalculateBearStatus(taskArray) {
-    return 'neutral';
+  return 'neutral';
 }
 
 /**
@@ -25,31 +25,31 @@ function recalculateBearStatus(taskArray) {
  * @return {*} the new tag-color config.
  */
 const tagColorConfigReducer = (oldTagColorConfig, action) => {
-    switch (action.type) {
-        case 'EDIT_COLOR_CONFIG':
-            let newConfig = {...oldTagColorConfig};
-            newConfig[action.tag] = action.color;
-            return newConfig;
-        case 'REMOVE_COLOR_CONFIG':
-            newConfig = {...oldTagColorConfig};
-            delete newConfig[action.tag];
-            return newConfig;
-        default:
-            return oldTagColorConfig;
-    }
+  let newConfig = { ...oldTagColorConfig };
+  switch (action.type) {
+    case 'EDIT_COLOR_CONFIG':
+      newConfig[action.tag] = action.color;
+      return newConfig;
+    case 'REMOVE_COLOR_CONFIG':
+      newConfig = { ...oldTagColorConfig };
+      delete newConfig[action.tag];
+      return newConfig;
+    default:
+      return oldTagColorConfig;
+  }
 };
 
 const rootReducer = (state = initialState, action) => {
-    switch (action.type) {
-        case 'EDIT_COLOR_CONFIG':
-        case 'REMOVE_COLOR_CONFIG':
-            return {
-                ...state,
-                tagColorPicker: tagColorConfigReducer(state.tagColorPicker, action)
-            };
-        default:
-            return state;
-    }
+  switch (action.type) {
+    case 'EDIT_COLOR_CONFIG':
+    case 'REMOVE_COLOR_CONFIG':
+      return {
+        ...state,
+        tagColorPicker: tagColorConfigReducer(state.tagColorPicker, action),
+      };
+    default:
+      return state;
+  }
 };
 
 export default rootReducer;

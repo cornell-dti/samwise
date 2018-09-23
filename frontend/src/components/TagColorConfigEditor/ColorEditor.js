@@ -1,27 +1,24 @@
-import React, {Component} from 'react';
-import {connect} from 'react-redux';
-import {editColorConfig} from '../../store/actions.js';
-import {GithubPicker} from 'react-color';
+import React, { Component } from 'react';
+import { connect } from 'react-redux';
+import { GithubPicker } from 'react-color';
+import { editColorConfig } from '../../store/actions';
 
-const mapDispatchToProps = dispatch => {
-    return {
-        editColorConfig: (tag, color) => dispatch(editColorConfig(tag, color))
-    };
-};
+const mapDispatchToProps = dispatch => ({
+  editColorConfig: (tag, color) => dispatch(editColorConfig(tag, color)),
+});
 
 class UnconnectedColorEditor extends Component {
+  handleStateComplete = (color) => {
+    const { tag } = this.props;
+    this.props.editColorConfig(tag, color.hex);
+  };
 
-    handleStateComplete = color => {
-        const tag = this.props.tag;
-        this.props.editColorConfig(tag, color.hex);
-    };
-
-    render() {
-        return (
-            <GithubPicker color={this.props.color} onChangeComplete={this.handleStateComplete} />
-        );
-    }
-
+  render() {
+    const { color } = this.props;
+    return (
+      <GithubPicker color={color} onChangeComplete={this.handleStateComplete} />
+    );
+  }
 }
 
 const ColorEditor = connect(null, mapDispatchToProps)(UnconnectedColorEditor);
