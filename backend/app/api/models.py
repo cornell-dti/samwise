@@ -5,9 +5,9 @@ from app import db
 class Base(db.Model):
     __abstract__ = True
 
-    time_created = db.Column(db.DateTime, default=db.func.current_timestamp(), nullable=False)
-    time_modified = db.Column(db.DateTime, default=db.func.current_timestamp(), onupdate=db.func.current_timestamp(),
-                              nullable=False)
+    time_created = db.Column(db.DateTime, server_default=db.func.current_timestamp(), nullable=False)
+    time_modified = db.Column(db.DateTime, server_default=db.func.current_timestamp(),
+                              onupdate=db.func.current_timestamp(), nullable=False)
 
 
 class User(Base):
@@ -27,6 +27,14 @@ class Tag(Base):
     color = db.Column(db.String, nullable=False)
     _order = db.Column(db.Integer, nullable=False)
     archived = db.Column(db.Boolean, nullable=False)
+
+    def __init__(self, user_id=None, tag_name=None, active=True, color=None, _order=None, archived=False):
+        self.user_id = user_id
+        self.tag_name = tag_name
+        self.active = active
+        self.color = color
+        self._order = _order
+        self.archived = archived
 
 
 class Task(Base):
