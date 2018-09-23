@@ -2,9 +2,11 @@
 
 package-lock.json
 /dist
+/frontend/dist
 
 # dependencies
 /node_modules
+/frontend/node_modules
 
 # testing
 /coverage
