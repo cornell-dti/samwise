@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import NewTaskClassPicker from './NewTaskClassPicker';
-import { addTask } from './store/actions.js';
+import { addTask } from '../../store/actions.js';
 import styles from './NewTask.css';
 
 const mapDispatchToProps = dispatch => {
