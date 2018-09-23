@@ -17,7 +17,7 @@
     "semantic-ui-react": "^0.82.5"
   },
   "scripts": {
-    "start": "webpack --mode development --watch",
+    "start": "webpack-dev-server --open",
     "build": "webpack --mode development",
     "test": "react-scripts test --env=jsdom",
     "eject": "react-scripts eject"
@@ -34,6 +34,7 @@
     "eslint-plugin-jsx-a11y": "^6.1.1",
     "eslint-plugin-react": "^7.11.1",
     "webpack": "^4.17.2",
-    "webpack-cli": "^3.1.0"
+    "webpack-cli": "^3.1.0",
+    "webpack-dev-server": "^3.1.8"
   }
 }
