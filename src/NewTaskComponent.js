@@ -13,28 +13,40 @@ const mapDispatchToProps = dispatch => {
 class UnconNewTaskComponent extends Component {
 	constructor(props) {
 		super(props);
-		this.state = {
-			name: "",
-			id: (10 * new Date()) + Math.floor(10 * Math.random()),
-			tag: null,
-			date: null,
-			complete: false,
-			subtaskArray: []
-		};
+		this.state = this.initialState();
 		this.changeClass = React.createRef();
 		this.addTask = React.createRef();
 	}
 
-	handleSave = () => {
-		this.props.addTask(this.state);
+	initialState() {
+		return {
+			name: "",
+			id: (10 * new Date()) + Math.floor(10 * Math.random()),
+			tag: null,
+			date: new Date(new Date().getTime() - new Date().getTimezoneOffset() * 60000).toISOString().split("T")[0],
+			complete: false,
+			subtaskArray: []
+		};
 	}
 
-	handleEnter = (e) => {
+	handleSave = (e) => {
+		e.preventDefault();
+
+		console.log(this.state);
+
+		this.props.addTask(this.state);
+		this.setState(this.initialState());
+		this.changeClass.current.style.backgroundColor = "";
+
+		console.log("Saved");
+	}
+
+	/*handleEnter = (e) => {
 		if(e.keyCode == 13){
 			//Enter was pressed
 			this.handleSave();
 		}
-	}
+	}*/
 
 	handleClassChange = (e) => {
 		let newColor = e.target.getAttribute("data-color");
@@ -47,45 +59,24 @@ class UnconNewTaskComponent extends Component {
 				return {
 					tag: newTag
 				};
-			},
-			() => {
-				console.log(this.state)
-		});
+			});
 	}
 
 
-	handTaskNameChange = (e) => {
-		let newName = e.target.value;
-		this.setState(
-			(prevState) => {
-				return {
-					name: newName
-				};
-			},
-			() => {
-				console.log(this.state)
-		});
+	handleTaskNameChange = (e) => {
+		this.setState({name: e.target.value});
 	}
 
 
 	handleDateChange = (e) => {
-		let newDate = new Date(e.target.value);
-		this.setState(
-			(prevState) => {
-				return {
-					date: newDate
-				};
-			},
-			() => {
-				console.log(this.state)
-		});
+		this.setState({date: e.target.value});
 	}
 
 
 	render() {
 		return (
-			<div className = {styles.NewTaskWrap} >
-				<input onChange={this.handTaskNameChange} onKeyDown={this.handleEnter} type="text" className={styles.NewTaskComponent} placeholder="What do you have to do?" ref={this.addTask} />
+			<form className = {styles.NewTaskWrap} onSubmit={this.handleSave} >
+				<input value={this.state.name} onChange={this.handleTaskNameChange} type="text" className={styles.NewTaskComponent} placeholder="What do you have to do?" ref={this.addTask} />
 				<div className = {styles.NewTaskActive}>
 
 					<div className = {styles.NewTaskClass}>
@@ -100,11 +91,11 @@ class UnconNewTaskComponent extends Component {
 					</div>
 
 					<div className = {styles.NewTaskDate}>
-						<input type="date" onChange = {this.handleDateChange} defaultValue={new Date(new Date().getTime() - new Date().getTimezoneOffset() * 60000).toISOString().split("T")[0]} min={new Date(new Date().getTime() - new Date().getTimezoneOffset() * 60000).toISOString().split("T")[0]} />
+						<input type="date" value={this.state.date} onChange = {this.handleDateChange} min={new Date(new Date().getTime() - new Date().getTimezoneOffset() * 60000).toISOString().split("T")[0]} />
 					</div>
 				
 				</div>
-			</div>
+			</form>
 		);
 	}
 }

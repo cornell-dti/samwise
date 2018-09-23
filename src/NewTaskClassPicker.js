@@ -11,7 +11,7 @@ class NewTaskClassPicker extends Component {
 	render() {
 		return (
 			<li style={{["--custom-color"]: this.props.classColor}}>
-        <input data-color={this.props.classColor} data-class-title={this.props.classTitle} onChange={this.props.changeCallback} type="radio" name="classSelectRadio" />{this.props.classTitle}
+        <input data-color={this.props.classColor} data-class-title={this.props.classTitle} onClick={this.props.changeCallback} type="checkbox" />{this.props.classTitle}
       </li>
 		);
 	}

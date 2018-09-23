@@ -124,7 +124,7 @@
   border-bottom:1px black solid;
 }
 
-.NewTaskClass li input[type="radio"]{
+.NewTaskClass li input[type="checkbox"]{
   position:absolute;
   width:100%;height:100%;
   margin:0;padding:0;
@@ -156,10 +156,4 @@
   position:absolute;
   right:0;
   height:20px;
-}
-
-.NewTaskDate input[type="date"]{
-  -webkit-appearance:none;
-  -moz-appearance:none;
-  appearance: none;
 }
