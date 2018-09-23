@@ -1,30 +1,23 @@
-import React, { Component } from 'react';
+import React from 'react';
 import { connect } from 'react-redux';
-import { List } from 'semantic-ui-react'
+import { List } from 'semantic-ui-react';
 import TagColorConfigItem from './TagColorConfigItem';
 
-const mapStateToProps = state => {
-  return {
-    tagColorConfig: state.tagColorPicker,
-    configKeys: Object.keys(state.tagColorPicker)
-  };
-};
+const mapStateToProps = state => ({
+  tagColorConfig: state.tagColorPicker,
+  configKeys: Object.keys(state.tagColorPicker),
+});
 
-class UnconnectedTagColorConfigItemList extends Component {
-
-  render() {
-    return (
-      <List divided relaxed>
-        {
-          this.props.configKeys.map(key => {
-            return <TagColorConfigItem key={key} tag={key} color={this.props.tagColorConfig[key]}/>;
-          })
-        }
-      </List>
-    );
-  }
-
+function TagColorConfigItemList() {
+  return (
+    <List divided relaxed>
+      {
+        this.props.configKeys.map(key => {
+          return <TagColorConfigItem key={key} tag={key} color={this.props.tagColorConfig[key]} />;
+        })
+      }
+    </List>
+  );
 }
 
-const TagColorConfigItemList = connect(mapStateToProps, null)(UnconnectedTagColorConfigItemList);
-export default TagColorConfigItemList;
+export default connect(mapStateToProps, null)(TagColorConfigItemList);
