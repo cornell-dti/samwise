@@ -1,14 +1,20 @@
-import React, { Component } from 'react';
+import React from 'react';
 import { connect } from 'react-redux';
 import { List } from 'semantic-ui-react';
-import { removeColorConfig } from '../../store/actions';
+import { removeColorConfig as removeColorConfigAction } from '../../store/actions';
 import ColorEditor from './ColorEditor';
 
 const mapDispatchToProps = dispatch => ({
-  removeColorConfig: tag => dispatch(removeColorConfig(tag)),
+  removeColorConfig: tag => dispatch(removeColorConfigAction(tag)),
 });
 
-class TagColorConfigItem extends Component {
+type Props = {
+  tag: string,
+  color: string,
+  removeColorConfig: (tag: string) => void
+}
+
+class TagColorConfigItem extends React.Component<Props> {
   constructor(props) {
     super(props);
     this.state = {
@@ -21,7 +27,8 @@ class TagColorConfigItem extends Component {
     if (!confirm('Do you want to remove this config?')) {
       return;
     }
-    this.props.removeColorConfig(this.props.tag);
+    const { tag, removeColorConfig } = this.props;
+    removeColorConfig(tag);
   };
 
   toggleEditor = () => {

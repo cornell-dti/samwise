@@ -1,14 +1,20 @@
-import React, { Component } from 'react';
+// @flow
+
+import React from 'react';
 import { connect } from 'react-redux';
 import { GithubPicker } from 'react-color';
-import { editColorConfig } from '../../store/actions';
+import { editColorConfig as editColorConfigAction } from '../../store/actions';
 import styles from './TagColorConfigItemAdder.css';
 
 const mapDispatchToProps = dispatch => ({
-  editColorConfig: (tag, color) => dispatch(editColorConfig(tag, color)),
+  editColorConfig: (tag, color) => dispatch(editColorConfigAction(tag, color)),
 });
 
-class TagColorConfigItemAdder extends Component {
+type Props = { editColorConfig: (tag: string, color: string) => void };
+
+type State = { tagInput: string, colorInput: string };
+
+class TagColorConfigItemAdder extends React.Component<Props, State> {
   constructor(props) {
     super(props);
     this.state = {
@@ -17,15 +23,14 @@ class TagColorConfigItemAdder extends Component {
     };
   }
 
-  changeTagName = event => this.setState({ ...this.state, tagInput: event.target.value });
+  changeTagName = event => this.setState(state => ({ ...state, tagInput: event.target.value }));
 
-  changeColor = (color) => {
-    this.setState({ ...this.state, colorInput: color.hex });
-  };
+  changeColor = color => this.setState(state => ({ ...state, colorInput: color.hex }));
 
   addItemColor = () => {
     const { tagInput, colorInput } = this.state;
-    this.props.editColorConfig(tagInput, colorInput);
+    const { editColorConfig } = this.props;
+    editColorConfig(tagInput, colorInput);
   };
 
   render() {

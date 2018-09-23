@@ -1,8 +1,28 @@
+// @flow
+
+import type { TagColorConfigAction } from './actions';
+
+/**
+ * The tag color picker maps a tag to a color.
+ */
+export type TagColorConfig = {
+  [tag: string]: string
+};
+
+/**
+ * The type of the entire redux state.
+ */
+type State = {
+  mainTaskArray: any,
+  tagColorPicker: TagColorConfig,
+  bearStatus: string
+};
+
 /**
  * Initial state of the application.
- * @type {{tasks: Array, tagColorConfig: *}}
+ * @type {{mainTaskArray: Array, tagColorConfig: *, bearStatus: string}}
  */
-const initialState = {
+const initialState: State = {
   mainTaskArray: [],
   tagColorPicker: {
     Personal: 'blue',
@@ -20,32 +40,33 @@ function recalculateBearStatus(taskArray) {
 /**
  * Reducer from a old tag-color config to a new one.
  *
- * @param oldTagColorConfig the old tag-color config.
+ * @param config the old tag-color config.
  * @param action the action related to tag-color config to perform.
  * @return {*} the new tag-color config.
  */
-const tagColorConfigReducer = (oldTagColorConfig, action) => {
-  let newConfig = { ...oldTagColorConfig };
+const tagColorConfigReducer = (
+  config: TagColorConfig, action: TagColorConfigAction,
+): TagColorConfig => {
+  const newConfig: TagColorConfig = { ...config };
   switch (action.type) {
     case 'EDIT_COLOR_CONFIG':
-      newConfig[action.tag] = action.color;
+      newConfig[action.tag] = action.color || 'red'; // default color
       return newConfig;
     case 'REMOVE_COLOR_CONFIG':
-      newConfig = { ...oldTagColorConfig };
       delete newConfig[action.tag];
       return newConfig;
     default:
-      return oldTagColorConfig;
+      return newConfig;
   }
 };
 
-const rootReducer = (state = initialState, action) => {
+const rootReducer = (state: State = initialState, action: any) => {
   switch (action.type) {
     case 'EDIT_COLOR_CONFIG':
     case 'REMOVE_COLOR_CONFIG':
       return {
         ...state,
-        tagColorPicker: tagColorConfigReducer(state.tagColorPicker, action),
+        tagColorPicker: tagColorConfigReducer(state.tagColorPicker, (action: TagColorConfigAction)),
       };
     case 'ADD_NEW_TASK':
       return { ...state, mainTaskArray: state.mainTaskArray.concat([action.data]) };
