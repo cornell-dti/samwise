@@ -8,16 +8,19 @@ const mapStateToProps = state => ({
   configKeys: Object.keys(state.tagColorPicker),
 });
 
-function TagColorConfigItemList() {
-  return (
-    <List divided relaxed>
-      {
-        this.props.configKeys.map(key => {
-          return <TagColorConfigItem key={key} tag={key} color={this.props.tagColorConfig[key]} />;
-        })
-      }
-    </List>
-  );
+class TagColorConfigItemList extends React.Component {
+  render() {
+    const { configKeys } = this.props;
+    return (
+      <List divided relaxed>
+        {
+          configKeys.map(key => (
+            <TagColorConfigItem key={key} tag={key} color={this.props.tagColorConfig[key]} />
+          ))
+        }
+      </List>
+    );
+  }
 }
 
 export default connect(mapStateToProps, null)(TagColorConfigItemList);
