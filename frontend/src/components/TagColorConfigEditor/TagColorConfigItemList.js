@@ -4,7 +4,6 @@ import {List} from 'semantic-ui-react'
 import TagColorConfigItem from './TagColorConfigItem';
 
 const mapStateToProps = state => {
-    console.log(state);
     return {
         tagColorConfig: state.tagColorPicker,
         configKeys: Object.keys(state.tagColorPicker)
