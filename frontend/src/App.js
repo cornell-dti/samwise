@@ -1,6 +1,8 @@
 import React, {Component} from 'react';
 import styles from './App.css';
 import TagColorConfigEditor from './components/TagColorConfigEditor/TagColorConfigEditor';
+import NewTaskComponent from './components/NewTask/NewTaskComponent';
+
 
 class App extends Component {
     render() {
@@ -8,6 +10,7 @@ class App extends Component {
             <div className={styles.App}>
                 Project Samwise(?)
                 <TagColorConfigEditor/>
+				<NewTaskComponent/>
             </div>
         );
     }

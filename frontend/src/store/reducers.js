@@ -47,6 +47,8 @@ const rootReducer = (state = initialState, action) => {
                 ...state,
                 tagColorPicker: tagColorConfigReducer(state.tagColorPicker, action)
             };
+		case 'ADD_NEW_TASK':
+			return {mainTaskArray: state.mainTaskArray.concat([action.data])};
         default:
             return state;
     }
