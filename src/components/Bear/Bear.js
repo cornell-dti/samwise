@@ -7,6 +7,7 @@ const mapStateToProps = state => {
          };
 };
 
+
 class Bear extends Component {
     
     render() {
