@@ -1,5 +1,5 @@
 const initialState = {
-    mainTaskArray : [],
+    mainTaskArray: [],
     tagColorPicker : {
         tagColor1 : '#000000',
         tagColor2 : '#ffffff',
@@ -9,31 +9,31 @@ const initialState = {
     bearStatus : 'neutral',
 }
 
-//function to update the bear's status
-function recalculateBearStatus(taskArray) {
-    const focusTaskArray = function makeFocusTaskArray = () => {
-        /* a function that parses mainTaskArray for tasks that are in focus
-         * and returns an array of those focus tasks. Will remove finished 
-         * entries only at end of day. */
-        //TODO
+function makeFocusTaskArray () {
+    /* a function that parses mainTaskArray for tasks that are in focus
+     * and returns an array of those focus tasks. Will remove finished 
+     * entries only at end of day.*/ 
+    //TODO
+    let array = initialState.mainTaskArray;
+    let focusArray = [];
+    //for each element, check if they are in focus. If yes, append to focusArray.
+    for(let i=0; i < mainTaskArray.length; i++) {
+        for(let j=0; j < mainTaskArray.length; j++) {
+            if (mainTaskArray[i][j].isInFocus) {
+                focusArray.append(mainTaskArray[i][j]);
+            }
+        }
     }
-    if (focusTaskArray.isComplete) {
-        return 'happy';
-    } else if (focusTaskArray.justFinishedTask) {
-        return 'has fish';
-    } else if (focusTaskArray.howComplete < .1) {
-        return 'hungry';
-    } else if (focusTaskArray.hasOverDueTask == 1) {
-        return 'hibernating';
-    } else if (focusTaskArray.isAllOverDue || focusTaskArray.hasOverDueTask >= 1) {
-        return 'leaving';
-    } else {
-        return 'neutral';
-    }
+    
+    return focusArray;
 }
 
+
 const rootReducer = (state = initialState, action) => {
-    switch(action.type) {
+    switch (action.type) {
+        case UPDATE_INFOCUS:
+            return { ...state, inFocusArray: makeFocusArray };
+            
         default:
             return state;
     }
