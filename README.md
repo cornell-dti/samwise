@@ -12,7 +12,7 @@
 A web application designed to help Cornell students plan their semesters.
 ​
 ## Getting Started
-You will need the latest npm to run the latest version of this app. The app makes use of the following technologies:
+You will need the latest npm (at least 5.6.0) to run the latest version of this app. The app makes use of the following technologies:
 ​
  * React
    * React version 16.4
@@ -21,7 +21,7 @@ You will need the latest npm to run the latest version of this app. The app make
 
 To start the app, navigate to the frontend folder, then run `npm install` first followed by `npm start`.
 
-_Last updated **9/22/2018**_.
+_Last updated **9/23/2018**_.
 ​
 ## Dependencies & Libraries
  * [React (16.4.2)](https://reactjs.org/) - a Facebook library for frontend. We use it for frontend UI.
@@ -43,7 +43,7 @@ _Last updated **9/22/2018**_.
 **Since 2016**
 * **Alice Zhou** - Product Manager
 * **Justin Tran** - Front-end Developer
-* **Kevin Li** - Designer
+* **Kevin Li** - Back-end Developer/ Designer (2018)
 
 **Since 2017**
 * **Gautam Mekkat** - Back-end Developer
