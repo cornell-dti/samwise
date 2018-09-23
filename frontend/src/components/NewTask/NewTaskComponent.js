@@ -10,6 +10,10 @@ const mapDispatchToProps = dispatch => {
   };
 };
 
+const mapStateToProps = state => {
+  return { tagColorPicker: state.tagColorPicker };
+};
+
 class UnconNewTaskComponent extends Component {
 	constructor(props) {
 		super(props);
@@ -17,6 +21,7 @@ class UnconNewTaskComponent extends Component {
 		this.changeClass = React.createRef();
 		this.addTask = React.createRef();
 	}
+
 
 	initialState() {
 		return {
@@ -71,8 +76,14 @@ class UnconNewTaskComponent extends Component {
 	handleDateChange = (e) => {
 		this.setState({date: e.target.value});
 	}
-
-
+//Object.keys(this.props.tagColorPicker)
+	
+/*
+<NewTaskClassPicker classColor="#FFFF00" classTitle="CHIN 1109" changeCallback={this.handleClassChange}></NewTaskClassPicker>
+							<NewTaskClassPicker classColor="#0000FF" classTitle="MATH 2230" changeCallback={this.handleClassChange}></NewTaskClassPicker>
+							<NewTaskClassPicker classColor="#FF0000" classTitle="PHYS 1116" changeCallback={this.handleClassChange}></NewTaskClassPicker>
+							<NewTaskClassPicker classColor="#00FF00" classTitle="CS 2112" changeCallback={this.handleClassChange}></NewTaskClassPicker>
+*/
 	render() {
 		return (
 			<form className = {styles.NewTaskWrap} onSubmit={this.handleSave} >
@@ -83,10 +94,9 @@ class UnconNewTaskComponent extends Component {
 						<input id="changeClassCheckbox" type="checkbox" />
 						<label htmlFor="changeClassCheckbox" ref={this.changeClass}></label>
 						<ul>
-							<NewTaskClassPicker classColor="#FFFF00" classTitle="CHIN 1109" changeCallback={this.handleClassChange}></NewTaskClassPicker>
-							<NewTaskClassPicker classColor="#0000FF" classTitle="MATH 2230" changeCallback={this.handleClassChange}></NewTaskClassPicker>
-							<NewTaskClassPicker classColor="#FF0000" classTitle="PHYS 1116" changeCallback={this.handleClassChange}></NewTaskClassPicker>
-							<NewTaskClassPicker classColor="#00FF00" classTitle="CS 2112" changeCallback={this.handleClassChange}></NewTaskClassPicker>
+							{Object.keys(this.props.tagColorPicker).map((cTitle) =>
+								<NewTaskClassPicker key={cTitle} classColor={this.props.tagColorPicker[cTitle]} classTitle={cTitle} changeCallback={this.handleClassChange}></NewTaskClassPicker>
+							)}
 						</ul>
 					</div>
 
@@ -100,5 +110,5 @@ class UnconNewTaskComponent extends Component {
 	}
 }
 
-const NewTaskComponent = connect(null, mapDispatchToProps)(UnconNewTaskComponent);
+const NewTaskComponent = connect(mapStateToProps, mapDispatchToProps)(UnconNewTaskComponent);
 export default NewTaskComponent;
