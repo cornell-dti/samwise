@@ -5,15 +5,15 @@ import { connect } from 'react-redux';
 import { GithubPicker } from 'react-color';
 import { editColorConfig as editColorConfigAction } from '../../store/actions';
 
-const mapDispatchToProps = dispatch => ({
+const mapDispatchToProps = (dispatch: *) => ({
   editColorConfig: (tag, color) => dispatch(editColorConfigAction(tag, color)),
 });
 
-type Props = {
+type Props = {|
   tag: string,
   color: string,
   editColorConfig: (tag: string, color: string) => void
-}
+|};
 
 class ColorEditor extends React.Component<Props> {
   handleStateComplete = (color) => {

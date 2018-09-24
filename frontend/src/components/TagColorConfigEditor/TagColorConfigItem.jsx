@@ -4,15 +4,15 @@ import { List } from 'semantic-ui-react';
 import { removeColorConfig as removeColorConfigAction } from '../../store/actions';
 import ColorEditor from './ColorEditor';
 
-const mapDispatchToProps = dispatch => ({
+const mapDispatchToProps = (dispatch: *) => ({
   removeColorConfig: tag => dispatch(removeColorConfigAction(tag)),
 });
 
-type Props = {
+type Props = {|
   tag: string,
   color: string,
   removeColorConfig: (tag: string) => void
-}
+|};
 
 class TagColorConfigItem extends React.Component<Props> {
   constructor(props) {

@@ -6,13 +6,13 @@ import { GithubPicker } from 'react-color';
 import { editColorConfig as editColorConfigAction } from '../../store/actions';
 import styles from './TagColorConfigItemAdder.css';
 
-const mapDispatchToProps = dispatch => ({
+const mapDispatchToProps = (dispatch: *) => ({
   editColorConfig: (tag, color) => dispatch(editColorConfigAction(tag, color)),
 });
 
-type Props = { editColorConfig: (tag: string, color: string) => void };
+type Props = {| editColorConfig: (tag: string, color: string) => void |};
 
-type State = { tagInput: string, colorInput: string };
+type State = {| tagInput: string, colorInput: string |};
 
 class TagColorConfigItemAdder extends React.Component<Props, State> {
   constructor(props) {
@@ -23,7 +23,10 @@ class TagColorConfigItemAdder extends React.Component<Props, State> {
     };
   }
 
-  changeTagName = event => this.setState(state => ({ ...state, tagInput: event.target.value }));
+  changeTagName = (event) => {
+    event.persist();
+    this.setState(state => ({ ...state, tagInput: event.target.value }));
+  };
 
   changeColor = color => this.setState(state => ({ ...state, colorInput: color.hex }));
 

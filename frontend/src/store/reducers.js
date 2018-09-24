@@ -1,22 +1,7 @@
 // @flow
 
-import type { TagColorConfigAction } from './actions';
-
-/**
- * The tag color picker maps a tag to a color.
- */
-export type TagColorConfig = {
-  [tag: string]: string
-};
-
-/**
- * The type of the entire redux state.
- */
-type State = {
-  mainTaskArray: any,
-  tagColorPicker: TagColorConfig,
-  bearStatus: string
-};
+import type { TagColorConfigAction } from './action-types';
+import type { State, TagColorConfig } from './store-types';
 
 /**
  * Initial state of the application.
@@ -44,23 +29,21 @@ function recalculateBearStatus(taskArray) {
  * @param action the action related to tag-color config to perform.
  * @return {*} the new tag-color config.
  */
-const tagColorConfigReducer = (
+function tagColorConfigReducer(
   config: TagColorConfig, action: TagColorConfigAction,
-): TagColorConfig => {
-  const newConfig: TagColorConfig = { ...config };
+): TagColorConfig {
   switch (action.type) {
     case 'EDIT_COLOR_CONFIG':
-      newConfig[action.tag] = action.color || 'red'; // default color
-      return newConfig;
+      return { ...config, [action.tag]: action.color };
     case 'REMOVE_COLOR_CONFIG':
-      delete newConfig[action.tag];
-      return newConfig;
+      const { [action.tag]: _, ...rest } = config;
+      return rest;
     default:
-      return newConfig;
+      return config;
   }
-};
+}
 
-const rootReducer = (state: State = initialState, action: any) => {
+function rootReducer(state: State = initialState, action: any): State {
   switch (action.type) {
     case 'EDIT_COLOR_CONFIG':
     case 'REMOVE_COLOR_CONFIG':
@@ -73,6 +56,6 @@ const rootReducer = (state: State = initialState, action: any) => {
     default:
       return state;
   }
-};
+}
 
 export default rootReducer;

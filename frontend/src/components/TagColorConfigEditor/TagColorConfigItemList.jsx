@@ -4,17 +4,14 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { List } from 'semantic-ui-react';
 import TagColorConfigItem from './TagColorConfigItem';
-import type { TagColorConfig } from '../../store/reducers';
+import type { State, TagColorConfig } from '../../store/store-types';
 
-const mapStateToProps = state => ({
+const mapStateToProps = (state: State) => ({
   tagColorConfig: state.tagColorPicker,
   configKeys: Object.keys(state.tagColorPicker),
 });
 
-type Props = {
-  tagColorConfig: TagColorConfig,
-  configKeys: Array<string>
-}
+type Props = {| tagColorConfig: TagColorConfig, configKeys: Array<string> |};
 
 function TagColorConfigItemList(props: Props) {
   const { configKeys, tagColorConfig } = props;

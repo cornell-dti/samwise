@@ -1,8 +1,6 @@
 // @flow
 
-export type Action = { type: string };
-
-export type TagColorConfigAction = Action & { tag: string, color?: string };
+import type { TagColorConfigEditAction, TagColorConfigRemoveAction, Action } from './action-types';
 
 /**
  * Edit color config is an action that can be used to add OR edit a color config in the store.
@@ -12,7 +10,7 @@ export type TagColorConfigAction = Action & { tag: string, color?: string };
  * (e.g. 'red' or '#000000')
  * @return {{type: string, tag: string, color: string}} the edit color action.
  */
-export const editColorConfig = (tag: string, color: string): TagColorConfigAction => ({
+export const editColorConfig = (tag: string, color: string): TagColorConfigEditAction => ({
   type: 'EDIT_COLOR_CONFIG', tag, color,
 });
 
@@ -22,8 +20,8 @@ export const editColorConfig = (tag: string, color: string): TagColorConfigActio
  * @param {string} tag tag of the config to remove, which is usually a class name (e.g. CS 2112)
  * @return {{type: string, tag: string}} the remove color action.
  */
-export const removeColorConfig = (tag: string): TagColorConfigAction => ({
+export const removeColorConfig = (tag: string): TagColorConfigRemoveAction => ({
   type: 'REMOVE_COLOR_CONFIG', tag,
 });
 
-export const addTask = (data: any) => ({ type: 'ADD_NEW_TASK', data });
+export const addTask = (data: any): Action => ({ type: 'ADD_NEW_TASK', data });
