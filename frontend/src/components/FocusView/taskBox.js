@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { List } from 'semantic-ui-react';
 import SubtaskBox from './subtaskBox';
+import { markTask } from '../../store/actions';
 
 const mapDispatchToProps = dispatch => {
 	return {

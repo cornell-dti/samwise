@@ -18,7 +18,7 @@ class unconnectedFocusView extends Component {
         </List>
     );
   }
-};
+}
 
 const FocusView = connect(mapStateToProps, null)(unconnectedFocusView);
 export default FocusView;

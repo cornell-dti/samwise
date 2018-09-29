@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { List, Checkbox } from 'semantic-ui-react';
+import { markSubtask } from '../../store/actions';
 
 //mapdispatch to props
 const mapDispatchToProps = dispatch => {
