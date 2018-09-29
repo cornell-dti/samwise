@@ -3,6 +3,7 @@ import { connect } from 'react-redux'
 import { List } from 'semantic-ui-react';
 import SubtaskBox from './subtaskBox';
 import { markTask } from '../../store/actions';
+import styles from './focusView.css';
 
 const mapDispatchToProps = dispatch => {
 	return {
@@ -21,10 +22,12 @@ class unconnectedTaskBox extends Component {
 			item => <List.Item><SubtaskBox mainTaskId = {this.props.id} {...item}/></List.Item>
 		);
 		return (
-			<div>
-				<input type="checkbox" onClick={this.markTaskAsComplete} />
-				<h3>{this.props.name}</h3>
-				<h5>{this.props.tag}</h5>
+			<div className = {styles.boxClass}>
+				<h5 className = {styles.tagLabel}>{this.props.tag}</h5>
+					<label className = {styles.taskNameLabel}>
+						<input className = {styles.taskCheckbox} type="checkbox" onClick={this.markTaskAsComplete} />
+						{this.props.name}
+					</label>
 				<List>
 				{ subtaskArray }
 				</List>

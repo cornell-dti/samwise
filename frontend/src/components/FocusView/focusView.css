@@ -1,0 +1,16 @@
+.boxClass {
+	width: 300px;
+}
+
+.tagLabel {
+	text-align: left;
+}
+
+.taskNameLabel {
+	display: block;
+	text-align: left;
+}
+
+.taskCheckbox {
+	position: relative
+}
