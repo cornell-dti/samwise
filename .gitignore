@@ -1,6 +1,5 @@
 # See https://help.github.com/ignore-files/ for more about ignoring files.
 
-
 **/package-lock.json
 **/dist
 
@@ -31,3 +30,6 @@ yarn-error.log*
 
 # IDEA
 **/.idea
+
+# flow-types
+**/flow-typed
