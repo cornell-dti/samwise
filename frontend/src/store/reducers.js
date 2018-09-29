@@ -22,46 +22,57 @@ function recalculateBearStatus(taskArray) {
   return 'neutral';
 }
 
+//marks a main task as read and marks all of its subtasks as read
 function markTask(prevMainTaskArray, taskID) {
-	let newMainTaskArray = [];
-	for (var i = 0; i < prevMainTaskArray.length; i++) {
-		if (prevMainTaskArray[i] === taskID) {
-			let newTaskObj = prevMainTaskArray[i];
-			newTaskObj.complete = true;
-			newMainTaskArray.push(newTaskObj);
-		}
-		else {
-			newMainTaskArray.push(prevMainTaskArray[i]);
-		}
-	}
-	return newMainTaskArray;
+  let newMainTaskArray = [];
+  for (var i = 0; i < prevMainTaskArray.length; i++) {
+    if (prevMainTaskArray[i] === taskID) {
+      let newTaskObj = prevMainTaskArray[i];
+      newTaskObj.complete = true;
+      let newSubtaskArray = [];
+      for (var j = 0; j < prevMainTaskArray[i].subtaskArray; j++) {
+        let newSubtaskObj = prevMainTaskArray[i].subtaskArray[j];
+        newSubtaskObj.complete = true;
+        newSubtaskArray.push(newSubtaskObj);
+      }
+      newTaskObj.subtaskArray = newSubtaskArray;
+      newMainTaskArray.push(newTaskObj);
+    }
+    else {
+      newMainTaskArray.push(prevMainTaskArray[i]);
+    }
+  }
+  return newMainTaskArray;
 }
+
+//marks a specific subtask as read based on the task id and the subtask id
 function markSubtask(prevMainTaskArray, taskID, subtaskID) {
-	let newMainTaskArray = [];
-	for (var i = 0; i < prevMainTaskArray.length; i++) {
-		if (prevMainTaskArray[i] === taskID) {
-			let newSubtaskArray = [];
-			let newTaskObj = prevMainTaskArray[i];
-			let oldSubtaskArray = prevMainTaskArray[i].subtaskArray;
-			for (var j = 0; j < oldSubtaskArray.length; j++) {
-				if (oldSubtaskArray[j].id === subtaskID) {
-					let newSubtaskObj = oldSubtaskArray[j];
-					newSubtaskObj.complete = true;
-					newSubtaskArray.push(newSubtaskObj);
-				}
-				else {
-					newSubtaskArray.push(oldSubtaskArray[j]);
-				}
-			}
-			newTaskObj.subtaskArray = newSubtaskArray;
-			newMainTaskArray.push(newTaskObj);
-		}
-		else {
-			newMainTaskArray.push(prevMainTaskArray[i]);
-		}
-	}
-	return newMainTaskArray;
+  let newMainTaskArray = [];
+  for (var i = 0; i < prevMainTaskArray.length; i++) {
+    if (prevMainTaskArray[i] === taskID) {
+      let newSubtaskArray = [];
+      let newTaskObj = prevMainTaskArray[i];
+      let oldSubtaskArray = prevMainTaskArray[i].subtaskArray;
+      for (var j = 0; j < oldSubtaskArray.length; j++) {
+        if (oldSubtaskArray[j].id === subtaskID) {
+          let newSubtaskObj = oldSubtaskArray[j];
+          newSubtaskObj.complete = true;
+          newSubtaskArray.push(newSubtaskObj);
+        }
+        else {
+          newSubtaskArray.push(oldSubtaskArray[j]);
+        }
+      }
+      newTaskObj.subtaskArray = newSubtaskArray;
+      newMainTaskArray.push(newTaskObj);
+    }
+    else {
+      newMainTaskArray.push(prevMainTaskArray[i]);
+    }
+  }
+  return newMainTaskArray;
 }
+
 /**
  * Reducer from a old tag-color config to a new one.
  *
@@ -92,11 +103,16 @@ const rootReducer = (state = initialState, action) => {
         tagColorPicker: tagColorConfigReducer(state.tagColorPicker, action)
       };
     case 'ADD_NEW_TASK':
-      return {...state, mainTaskArray: state.mainTaskArray.concat([action.data])};
+      return { ...state, mainTaskArray: [...state.mainTaskArray, action.data] };
     case 'MARK_TASK':
       return {
         ...state,
         mainTaskArray: markTask(state.mainTaskArray, action.id)
+      };
+    case 'MARK_SUBTASK':
+      return {
+        ...state,
+        mainTaskArray: markSubtask(state.mainTaskArray, action.id, action.subtask)
       };
     default:
       return state;

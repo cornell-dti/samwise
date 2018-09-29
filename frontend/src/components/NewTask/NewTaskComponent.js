@@ -6,7 +6,7 @@ import styles from './NewTask.css';
 
 const mapDispatchToProps = dispatch => {
   return {
-    addTask: () => dispatch(addTask())
+    addTask: data => dispatch(addTask(data))
   };
 };
 
@@ -77,7 +77,7 @@ class UnconNewTaskComponent extends Component {
 		this.setState({date: e.target.value});
 	}
 //Object.keys(this.props.tagColorPicker)
-	
+
 /*
 <NewTaskClassPicker classColor="#FFFF00" classTitle="CHIN 1109" changeCallback={this.handleClassChange}></NewTaskClassPicker>
 							<NewTaskClassPicker classColor="#0000FF" classTitle="MATH 2230" changeCallback={this.handleClassChange}></NewTaskClassPicker>
@@ -103,7 +103,7 @@ class UnconNewTaskComponent extends Component {
 					<div className = {styles.NewTaskDate}>
 						<input type="date" value={this.state.date} onChange = {this.handleDateChange} min={new Date(new Date().getTime() - new Date().getTimezoneOffset() * 60000).toISOString().split("T")[0]} />
 					</div>
-				
+
 				</div>
 			</form>
 		);
