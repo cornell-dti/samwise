@@ -26,9 +26,9 @@ function recalculateBearStatus(taskArray) {
 function markTask(prevMainTaskArray, taskID) {
   let newMainTaskArray = [];
   for (var i = 0; i < prevMainTaskArray.length; i++) {
-    if (prevMainTaskArray[i] === taskID) {
+    if (prevMainTaskArray[i].id === taskID) {
       let newTaskObj = prevMainTaskArray[i];
-      newTaskObj.complete = true;
+      newTaskObj.complete = !prevMainTaskArray[i].complete;
       let newSubtaskArray = [];
       for (var j = 0; j < prevMainTaskArray[i].subtaskArray; j++) {
         let newSubtaskObj = prevMainTaskArray[i].subtaskArray[j];
