@@ -3,16 +3,13 @@ import { connect } from 'react-redux';
 import NewTaskClassPicker from './NewTaskClassPicker';
 import { addTask } from '../../store/actions';
 import styles from './NewTask.css';
+import Calendar from 'react-calendar';
 
-const mapDispatchToProps = dispatch => {
-  return {
-    addTask: (e) => dispatch(addTask(e))
-  };
-};
+const mapDispatchToProps = dispatch => ({
+	addTask: e => dispatch(addTask(e)),
+});
 
-const mapStateToProps = state => {
-  return { tagColorPicker: state.tagColorPicker };
-};
+const mapStateToProps = state => ({ tagColorPicker: state.tagColorPicker });
 
 class UnconNewTaskComponent extends Component {
 	constructor(props) {
@@ -20,62 +17,50 @@ class UnconNewTaskComponent extends Component {
 		this.state = this.initialState();
 		this.changeClass = React.createRef();
 		this.addTask = React.createRef();
+		this.openClassChange = React.createRef();
+		this.openDateChange = React.createRef();
 	}
 
 
 	initialState() {
 		return {
-			name: "",
+			name: '',
 			id: (10 * new Date()) + Math.floor(10 * Math.random()),
 			tag: null,
-			date: new Date(new Date().getTime() - new Date().getTimezoneOffset() * 60000).toISOString().split("T")[0],
+			date: new Date(new Date().getTime() - new Date().getTimezoneOffset() * 60000).toISOString().split('T')[0],
 			complete: false,
-			subtaskArray: []
+			subtaskArray: [],
 		};
 	}
 
 	handleSave = (e) => {
 		e.preventDefault();
 
-		console.log(this.state);
-
 		this.props.addTask(this.state);
 		this.setState(this.initialState());
-		//this.changeClass.current.style.backgroundColor = "";
-
-		console.log("Saved");
 	}
 
-	/*handleEnter = (e) => {
-		if(e.keyCode == 13){
-			//Enter was pressed
-			this.handleSave();
-		}
-	}*/
-
 	handleClassChange = (e) => {
-		//let newColor = e.target.getAttribute("data-color");
-		//this.changeClass.current.style.backgroundColor = newColor;
 		this.changeClass.current.previousSibling.checked = false;
 		this.addTask.current.focus();
-		let newTag = e.target.getAttribute("data-class-title");
-		/*this.setState(
-			(prevState) => {
-				return {
-					tag: newTag
-				};
-			});*/
-	  	this.setState({tag:newTag});
+		const newTag = e.target.getAttribute('data-class-title');
+		this.setState({ tag: newTag });
 	}
 
 
 	handleTaskNameChange = (e) => {
-		this.setState({name: e.target.value});
+		this.setState({ name: e.target.value });
 	}
 
 
 	handleDateChange = (e) => {
-		this.setState({date: e.target.value});
+		this.openDateChange.current.click();
+		this.setState({ date: e });
+	}
+
+	forceClassChangeOpen = (e) => {
+		console.log("Fired event");
+		this.openClassChange.current.click();
 	}
 //Object.keys(this.props.tagColorPicker)
 
@@ -85,29 +70,37 @@ class UnconNewTaskComponent extends Component {
 							<NewTaskClassPicker classColor="#FF0000" classTitle="PHYS 1116" changeCallback={this.handleClassChange}></NewTaskClassPicker>
 							<NewTaskClassPicker classColor="#00FF00" classTitle="CS 2112" changeCallback={this.handleClassChange}></NewTaskClassPicker>
 */
+
+
 	render() {
 		return (
-			<form className = {styles.NewTaskWrap} onSubmit={this.handleSave} >
+			<form className={styles.NewTaskWrap} onSubmit={this.handleSave}>
 				<input value={this.state.name} onChange={this.handleTaskNameChange} type="text" className={styles.NewTaskComponent} placeholder="What do you have to do?" ref={this.addTask} />
-				<div className = {styles.NewTaskActive}>
+				<div className={styles.NewTaskActive}>
 
-					<div className = {styles.NewTaskClass}>
-						<input id="changeClassCheckbox" type="checkbox" />
-						<label htmlFor="changeClassCheckbox" style={{backgroundColor: this.props.tagColorPicker[this.state.tag]}} ref={this.changeClass}></label>
+					<div className={styles.NewTaskClass}>
+						<input id="changeClassCheckbox" type="checkbox" ref={this.openClassChange} />
+						<label htmlFor="changeClassCheckbox" style={{ backgroundColor: this.props.tagColorPicker[this.state.tag] }} ref={this.changeClass}>{this.state.tag}</label>
 						<ul>
-							{Object.keys(this.props.tagColorPicker).map((cTitle) =>
-								<NewTaskClassPicker key={cTitle} classColor={this.props.tagColorPicker[cTitle]} classTitle={cTitle} changeCallback={this.handleClassChange}></NewTaskClassPicker>
-							)}
+							{Object.keys(this.props.tagColorPicker).map(cTitle => <NewTaskClassPicker key={cTitle} classColor={this.props.tagColorPicker[cTitle]} classTitle={cTitle} changeCallback={this.handleClassChange} />)}
 						</ul>
 					</div>
 
-					<div className = {styles.NewTaskDate}>
-						<input type="date" value={this.state.date} onChange = {this.handleDateChange} min={new Date(new Date().getTime() - new Date().getTimezoneOffset() * 60000).toISOString().split("T")[0]} />
+					<div className={styles.NewTaskDate}>
+						<label htmlFor="changeDateCheckbox">📆</label>
+						<input id="changeDateCheckbox" type="checkbox" ref={this.openDateChange} />
+						<div className={styles.NewTaskDatePick}>
+						<Calendar
+							onChange={this.handleDateChange}
+							value={new Date()}
+							
+							/>
+							</div>
 					</div>
 
 				</div>
 			</form>
-		);
+		);//<input type="date" value={this.state.date} onChange={this.handleDateChange} min={new Date(new Date().getTime() - new Date().getTimezoneOffset() * 60000).toISOString().split('T')[0]} />
 	}
 }
 
