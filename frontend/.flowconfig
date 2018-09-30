@@ -1,0 +1,13 @@
+[ignore]
+
+[include]
+
+[libs]
+
+[lints]
+all=warn
+[options]
+esproposal.class_instance_fields=enable
+esproposal.class_static_fields=enable
+munge_underscores=true
+[strict]
