@@ -20,10 +20,9 @@ export const editColorConfig = (tag: string, color: string): TagColorConfigEditA
  * @param {string} tag tag of the config to remove, which is usually a class name (e.g. CS 2112)
  * @return {{type: string, tag: string}} the remove color action.
  */
+export const removeColorConfig = tag => ({ type: 'REMOVE_COLOR_CONFIG', tag });
 
-export const removeColorConfig = (tag) => ({type: 'REMOVE_COLOR_CONFIG', tag: tag});
+export const addTask = d => ({ type: 'ADD_NEW_TASK', data: d });
 
-export const addTask = (d) => ({ type: 'ADD_NEW_TASK', data: d});
-
-export const markTask = (taskID) => ({type: 'MARK_TASK', id: taskID});
-export const markSubtask = (taskID, subtaskID) => ({type: 'MARK_SUBTASK', id: taskID, subtask: subtaskID});
+export const markTask = taskID => ({ type: 'MARK_TASK', id: taskID });
+export const markSubtask = (taskID, subtaskID) => ({ type: 'MARK_SUBTASK', id: taskID, subtask: subtaskID });

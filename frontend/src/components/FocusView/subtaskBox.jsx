@@ -1,30 +1,31 @@
-import React, { Component } from 'react'
-import { connect } from 'react-redux'
-import { List, Checkbox } from 'semantic-ui-react';
+import React, { Component } from 'react';
+import { connect } from 'react-redux';
+import { List } from 'semantic-ui-react';
 import { markSubtask } from '../../store/actions';
 
-//mapdispatch to props
-const mapDispatchToProps = dispatch => {
-    return {
-			markSubtask: (mainTaskID, subtaskID) => dispatch(markSubtask(mainTaskID, subtaskID))
-		};
-};
+//  mapdispatch to props
+const mapDispatchToProps = dispatch => ({
+  markSubtask: (mainTaskID, subtaskID) => dispatch(markSubtask(mainTaskID, subtaskID)),
+});
 
 class unconnectedSubtaskBox extends Component {
+  markSubtaskAsComplete = (event) => {
+    event.stopPropagation();
+    const destructuredProps = this.props;
+    const { markSubtaskAsDone } = destructuredProps.markSubtask;
+    markSubtaskAsDone(destructuredProps.mainTaskID, destructuredProps.id);
+  }
 
-	//gets called twice for some reason when clicking the actual checkbox
-	markSubtaskAsComplete = event => {
-		event.stopPropagation();
-		this.props.markSubtask(this.props.mainTaskID, this.props.id);
-	}
-	render() {
-		return (
-			<List.Item>
-				<input type="checkbox" onClick={this.markSubtaskAsComplete} />{this.props.name}
-			</List.Item>
-		);
-	}
-};
+  render() {
+    const destructuredProps = this.props;
+    return (
+      <List.Item>
+        <input type="checkbox" onClick={this.markSubtaskAsComplete} />
+        {destructuredProps.name}
+      </List.Item>
+    );
+  }
+}
 
 const SubtaskBox = connect(null, mapDispatchToProps)(unconnectedSubtaskBox);
 export default SubtaskBox;

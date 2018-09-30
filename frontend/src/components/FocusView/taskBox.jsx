@@ -5,15 +5,13 @@ import SubtaskBox from './subtaskBox';
 import { markTask } from '../../store/actions';
 import styles from './focusView.css';
 
-const mapDispatchToProps = (dispatch) => {
-  return {
-    markTask: (taskID) => { dispatch(markTask(taskID)); },
-  };
-};
+const mapDispatchToProps = dispatch => ({
+  markTask: (taskID) => { dispatch(markTask(taskID)); },
+});
 
-const mapStateToProps = (state) => {
-  return { tagColorPicker: state.tagColorPicker };
-};
+const mapStateToProps = state => ({
+  tagColorPicker: state.tagColorPicker,
+});
 
 class unconnectedTaskBox extends Component {
   markTaskAsComplete = (event) => {
@@ -30,8 +28,7 @@ class unconnectedTaskBox extends Component {
     let boxColor;
     if (destructuredProps.tagColorPicker[boxTag]) {
       boxColor = destructuredProps.tagColorPicker[boxTag];
-    }
-    else {
+    } else {
       boxColor = 'white';
     }
     if (!subtaskArray) { subtaskArray = []; }
