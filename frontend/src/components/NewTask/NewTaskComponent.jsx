@@ -1,12 +1,12 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import NewTaskClassPicker from './NewTaskClassPicker';
-import { addTask } from '../../store/actions.js';
+import { addTask } from '../../store/actions';
 import styles from './NewTask.css';
 
 const mapDispatchToProps = dispatch => {
   return {
-    addTask: () => dispatch(addTask(this.state))
+    addTask: (e) => dispatch(addTask(e))
   };
 };
 
@@ -41,7 +41,7 @@ class UnconNewTaskComponent extends Component {
 
 		this.props.addTask(this.state);
 		this.setState(this.initialState());
-		this.changeClass.current.style.backgroundColor = "";
+		//this.changeClass.current.style.backgroundColor = "";
 
 		console.log("Saved");
 	}
@@ -54,17 +54,18 @@ class UnconNewTaskComponent extends Component {
 	}*/
 
 	handleClassChange = (e) => {
-		let newColor = e.target.getAttribute("data-color");
-		this.changeClass.current.style.backgroundColor = newColor;
+		//let newColor = e.target.getAttribute("data-color");
+		//this.changeClass.current.style.backgroundColor = newColor;
 		this.changeClass.current.previousSibling.checked = false;
 		this.addTask.current.focus();
 		let newTag = e.target.getAttribute("data-class-title");
-		this.setState(
+		/*this.setState(
 			(prevState) => {
 				return {
 					tag: newTag
 				};
-			});
+			});*/
+	  	this.setState({tag:newTag});
 	}
 
 
@@ -79,7 +80,7 @@ class UnconNewTaskComponent extends Component {
 //Object.keys(this.props.tagColorPicker)
 	
 /*
-<NewTaskClassPicker classColor="#FFFF00" classTitle="CHIN 1109" changeCallback={this.handleClassChange}></NewTaskClassPicker>
+  <NewTaskClassPicker classColor="#FFFF00" classTitle="CHIN 1109" changeCallback={this.handleClassChange}></NewTaskClassPicker>
 							<NewTaskClassPicker classColor="#0000FF" classTitle="MATH 2230" changeCallback={this.handleClassChange}></NewTaskClassPicker>
 							<NewTaskClassPicker classColor="#FF0000" classTitle="PHYS 1116" changeCallback={this.handleClassChange}></NewTaskClassPicker>
 							<NewTaskClassPicker classColor="#00FF00" classTitle="CS 2112" changeCallback={this.handleClassChange}></NewTaskClassPicker>
@@ -92,7 +93,7 @@ class UnconNewTaskComponent extends Component {
 
 					<div className = {styles.NewTaskClass}>
 						<input id="changeClassCheckbox" type="checkbox" />
-						<label htmlFor="changeClassCheckbox" ref={this.changeClass}></label>
+						<label htmlFor="changeClassCheckbox" style={{backgroundColor: this.props.tagColorPicker[this.state.tag]}} ref={this.changeClass}></label>
 						<ul>
 							{Object.keys(this.props.tagColorPicker).map((cTitle) =>
 								<NewTaskClassPicker key={cTitle} classColor={this.props.tagColorPicker[cTitle]} classTitle={cTitle} changeCallback={this.handleClassChange}></NewTaskClassPicker>
