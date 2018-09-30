@@ -6,7 +6,7 @@ import styles from './NewTask.css';
 
 const mapDispatchToProps = dispatch => {
   return {
-    addTask: () => dispatch(addTask())
+    addTask: () => dispatch(addTask(this.state))
   };
 };
 
