@@ -1,18 +1,18 @@
 // @flow
 
-import React from 'react';
+import * as React from 'react';
 import { connect } from 'react-redux';
 import { GithubPicker } from 'react-color';
 import { editColorConfig as editColorConfigAction } from '../../store/actions';
 
 const mapDispatchToProps = (dispatch: *) => ({
-  editColorConfig: (tag, color) => dispatch(editColorConfigAction(tag, color)),
+  editColorConfig: (tag: string, color: string) => dispatch(editColorConfigAction(tag, color)),
 });
 
 type Props = {|
   tag: string,
   color: string,
-  editColorConfig: (tag: string, color: string) => void
+  editColorConfig: (tag: string, color: string) => void,
 |};
 
 class ColorEditor extends React.Component<Props> {
@@ -24,9 +24,13 @@ class ColorEditor extends React.Component<Props> {
   render() {
     const { color } = this.props;
     return (
-      <GithubPicker color={color} onChangeComplete={this.handleStateComplete} />
+      <div>
+        <GithubPicker color={color} onChangeComplete={this.handleStateComplete} />
+      </div>
     );
   }
 }
 
-export default connect(null, mapDispatchToProps)(ColorEditor);
+const ConnectedColorEditor = connect(null, mapDispatchToProps)(ColorEditor);
+
+export default ConnectedColorEditor;

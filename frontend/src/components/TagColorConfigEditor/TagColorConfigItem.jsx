@@ -14,7 +14,9 @@ type Props = {|
   removeColorConfig: (tag: string) => void
 |};
 
-class TagColorConfigItem extends React.Component<Props> {
+type State = {| showEditor: boolean |};
+
+class TagColorConfigItem extends React.Component<Props, State> {
   constructor(props) {
     super(props);
     this.state = {
@@ -24,6 +26,7 @@ class TagColorConfigItem extends React.Component<Props> {
   }
 
   removeMe = () => {
+    // eslint-disable-next-line
     if (!confirm('Do you want to remove this config?')) {
       return;
     }
