@@ -18,6 +18,22 @@ const initialState: State = {
 };
 
 // function to update the bear's status
+
+function recalculateBearStatus(taskArray) {
+  if (focusTaskArray.isComplete) {
+      return 'happy';
+  } else if (focusTaskArray.justFinishedTask) {
+      return 'has fish';
+  } else if (focusTaskArray.howComplete < .1) {
+      return 'hungry';
+  } else if (focusTaskArray.hasOverDueTask == 1) {
+      return 'hibernating';
+  } else if (focusTaskArray.isAllOverDue || focusTaskArray.hasOverDueTask >= 1) {
+      return 'leaving';
+  } else {
+      return 'neutral';
+  }
+}
 // function recalculateBearStatus(taskArray) {
 //   return 'neutral';
 // }
