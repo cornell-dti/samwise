@@ -2,19 +2,10 @@
 
 import * as React from 'react';
 import BacklogTask from './BacklogTask';
+import styles from './BacklogDay.css';
+import type { OneDayTask } from './types';
 
-/**
- * The type for a simplified task with just enough information needed to render the backlog
- * day component.
- */
-type SimpleTask = {| name: string, color: string |};
-
-type Props = {|
-  date: Date,
-  tasks: Array<SimpleTask>
-|}
-
-export default function BacklogDay({ date, tasks }: Props) {
+export default function BacklogDay({ date, tasks }: OneDayTask) {
   let dayString: string;
   switch (date.getDay()) {
     case 0:
@@ -42,7 +33,7 @@ export default function BacklogDay({ date, tasks }: Props) {
       throw new Error('Impossible Case');
   }
   return (
-    <div>
+    <div className={styles.BacklogDay}>
       <div>{dayString}</div>
       <div>{date.getDate()}</div>
       <div>

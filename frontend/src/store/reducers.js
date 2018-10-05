@@ -1,5 +1,3 @@
-// @flow
-
 import type { TagColorConfigAction } from './action-types';
 import type { State, TagColorConfig } from './store-types';
 
@@ -10,7 +8,7 @@ import type { State, TagColorConfig } from './store-types';
 const initialState: State = {
   mainTaskArray: [],
   tagColorPicker: {
-    Personal: 'blue',
+    Personal: '#c4def6',
     'Project Team': 'green',
     Courses: 'purple',
   },
@@ -21,19 +19,20 @@ const initialState: State = {
 
 function recalculateBearStatus(taskArray) {
   if (focusTaskArray.isComplete) {
-      return 'happy';
+    return 'happy';
   } else if (focusTaskArray.justFinishedTask) {
-      return 'has fish';
+    return 'has fish';
   } else if (focusTaskArray.howComplete < .1) {
-      return 'hungry';
+    return 'hungry';
   } else if (focusTaskArray.hasOverDueTask == 1) {
-      return 'hibernating';
+    return 'hibernating';
   } else if (focusTaskArray.isAllOverDue || focusTaskArray.hasOverDueTask >= 1) {
-      return 'leaving';
+    return 'leaving';
   } else {
-      return 'neutral';
+    return 'neutral';
   }
 }
+
 // function recalculateBearStatus(taskArray) {
 //   return 'neutral';
 // }

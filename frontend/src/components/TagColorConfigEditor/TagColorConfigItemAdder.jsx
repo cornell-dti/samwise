@@ -44,6 +44,7 @@ class TagColorConfigItemAdder extends React.Component<Props, State> {
         <input type="text" value={tagInput} onChange={this.changeTagName} />
         <div>
           Chosen Color is
+          {' '}
           {colorInput}
         </div>
         <GithubPicker color={colorInput} onChangeComplete={this.changeColor} />
