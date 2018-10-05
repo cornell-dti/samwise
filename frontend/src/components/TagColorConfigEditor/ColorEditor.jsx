@@ -33,5 +33,4 @@ class ColorEditor extends React.Component<Props> {
 }
 
 const ConnectedColorEditor = connect(null, mapDispatchToProps)(ColorEditor);
-
 export default ConnectedColorEditor;

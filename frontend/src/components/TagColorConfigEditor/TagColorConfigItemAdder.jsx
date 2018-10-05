@@ -54,4 +54,5 @@ class TagColorConfigItemAdder extends React.Component<Props, State> {
   }
 }
 
-export default connect(null, mapDispatchToProps)(TagColorConfigItemAdder);
+const ConnectedTagColorConfigItemAdder = connect(null, mapDispatchToProps)(TagColorConfigItemAdder);
+export default ConnectedTagColorConfigItemAdder;

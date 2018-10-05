@@ -32,4 +32,6 @@ function Backlog({ days }: Props) {
   return <div className={styles.Backlog}>{days.map(renderDay)}</div>;
 }
 
-export default connect(mapStateToProps, null)(Backlog);
+const ConnectedBackLog = connect(mapStateToProps, null)(Backlog);
+
+export default ConnectedBackLog;
