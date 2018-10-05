@@ -1,10 +1,13 @@
+// @flow
+
 import React from 'react';
 import { connect } from 'react-redux';
 import { List } from 'semantic-ui-react';
+import type { Dispatch } from 'redux';
 import { removeColorConfig as removeColorConfigAction } from '../../store/actions';
 import ColorEditor from './ColorEditor';
 
-const mapDispatchToProps = (dispatch: *) => ({
+const mapDispatchToProps = (dispatch: Dispatch<any>) => ({
   removeColorConfig: tag => dispatch(removeColorConfigAction(tag)),
 });
 

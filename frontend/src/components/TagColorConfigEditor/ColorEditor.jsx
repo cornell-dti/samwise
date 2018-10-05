@@ -3,9 +3,10 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
 import { GithubPicker } from 'react-color';
+import type { Dispatch } from 'redux';
 import { editColorConfig as editColorConfigAction } from '../../store/actions';
 
-const mapDispatchToProps = (dispatch: *) => ({
+const mapDispatchToProps = (dispatch: Dispatch<any>) => ({
   editColorConfig: (tag: string, color: string) => dispatch(editColorConfigAction(tag, color)),
 });
 

@@ -2,11 +2,12 @@
 
 import React from 'react';
 import { connect } from 'react-redux';
+import type { Dispatch } from 'redux';
 import { GithubPicker } from 'react-color';
 import { editColorConfig as editColorConfigAction } from '../../store/actions';
 import styles from './TagColorConfigItemAdder.css';
 
-const mapDispatchToProps = (dispatch: *) => ({
+const mapDispatchToProps = (dispatch: Dispatch<any>) => ({
   editColorConfig: (tag, color) => dispatch(editColorConfigAction(tag, color)),
 });
 
