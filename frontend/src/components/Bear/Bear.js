@@ -3,10 +3,13 @@ import { connect } from 'react-redux'
 import { updateBearStatus } from '../../store/actions.js'
 
 const mapStateToProps = state => {
-    return { bearStatus: state.bearStatus };
+    return { bearStatus: state.bearStatus
+         };
 };
 
+
 class Bear extends Component {
+    
     render() {
         return (
             <div>

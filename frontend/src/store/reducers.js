@@ -18,8 +18,72 @@ const initialState: State = {
 };
 
 // function to update the bear's status
+
 function recalculateBearStatus(taskArray) {
-  return 'neutral';
+  if (focusTaskArray.isComplete) {
+      return 'happy';
+  } else if (focusTaskArray.justFinishedTask) {
+      return 'has fish';
+  } else if (focusTaskArray.howComplete < .1) {
+      return 'hungry';
+  } else if (focusTaskArray.hasOverDueTask == 1) {
+      return 'hibernating';
+  } else if (focusTaskArray.isAllOverDue || focusTaskArray.hasOverDueTask >= 1) {
+      return 'leaving';
+  } else {
+      return 'neutral';
+  }
+}
+// function recalculateBearStatus(taskArray) {
+//   return 'neutral';
+// }
+
+//  marks a main task as read and marks all of its subtasks as read
+function markTask(prevMainTaskArray, taskID) {
+  const newMainTaskArray = [];
+  for (let i = 0; i < prevMainTaskArray.length; i += 1) {
+    if (prevMainTaskArray[i].id === taskID) {
+      const newTaskObj = prevMainTaskArray[i];
+      newTaskObj.complete = !prevMainTaskArray[i].complete;
+      const newSubtaskArray = [];
+      for (let j = 0; j < prevMainTaskArray[i].subtaskArray; j += 1) {
+        const newSubtaskObj = prevMainTaskArray[i].subtaskArray[j];
+        newSubtaskObj.complete = true;
+        newSubtaskArray.push(newSubtaskObj);
+      }
+      newTaskObj.subtaskArray = newSubtaskArray;
+      newMainTaskArray.push(newTaskObj);
+    } else {
+      newMainTaskArray.push(prevMainTaskArray[i]);
+    }
+  }
+  return newMainTaskArray;
+}
+
+//  marks a specific subtask as read based on the task id and the subtask id
+function markSubtask(prevMainTaskArray, taskID, subtaskID) {
+  const newMainTaskArray = [];
+  for (let i = 0; i < prevMainTaskArray.length; i += 1) {
+    if (prevMainTaskArray[i] === taskID) {
+      const newSubtaskArray = [];
+      const newTaskObj = prevMainTaskArray[i];
+      const oldSubtaskArray = prevMainTaskArray[i].subtaskArray;
+      for (let j = 0; j < oldSubtaskArray.length; j += 1) {
+        if (oldSubtaskArray[j].id === subtaskID) {
+          const newSubtaskObj = oldSubtaskArray[j];
+          newSubtaskObj.complete = true;
+          newSubtaskArray.push(newSubtaskObj);
+        } else {
+          newSubtaskArray.push(oldSubtaskArray[j]);
+        }
+      }
+      newTaskObj.subtaskArray = newSubtaskArray;
+      newMainTaskArray.push(newTaskObj);
+    } else {
+      newMainTaskArray.push(prevMainTaskArray[i]);
+    }
+  }
+  return newMainTaskArray;
 }
 
 /**
@@ -47,19 +111,29 @@ function tagColorConfigReducer(
   }
 }
 
-function rootReducer(state: State = initialState, action: any): State {
+const rootReducer = (state = initialState, action) => {
   switch (action.type) {
     case 'EDIT_COLOR_CONFIG':
     case 'REMOVE_COLOR_CONFIG':
       return {
         ...state,
-        tagColorPicker: tagColorConfigReducer(state.tagColorPicker, (action: TagColorConfigAction)),
+        tagColorPicker: tagColorConfigReducer(state.tagColorPicker, action),
       };
     case 'ADD_NEW_TASK':
-      return { ...state, mainTaskArray: state.mainTaskArray.concat([action.data]) };
+      return { ...state, mainTaskArray: [...state.mainTaskArray, action.data] };
+    case 'MARK_TASK':
+      return {
+        ...state,
+        mainTaskArray: markTask(state.mainTaskArray, action.id),
+      };
+    case 'MARK_SUBTASK':
+      return {
+        ...state,
+        mainTaskArray: markSubtask(state.mainTaskArray, action.id, action.subtask),
+      };
     default:
       return state;
   }
-}
+};
 
 export default rootReducer;
