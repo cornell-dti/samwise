@@ -31,10 +31,10 @@ const mapStateToProps = (state: State): Props => {
   for (let d = new Date(); d <= aMonthLater; d.setDate(d.getDate() + 1)) {
     const date = new Date(d);
     const tasksOnThisDay = day2TaskMap.get(date.toLocaleDateString()) || [];
-    const tasks = tasksOnThisDay.map(({ name, tag, complete }) => ({
-      name,
-      color: state.tagColorPicker[tag],
-      completed: complete,
+    const tasks = tasksOnThisDay.map(({
+      name, id, complete, tag,
+    }: Task) => ({
+      name, id, complete, color: state.tagColorPicker[tag],
     }));
     days.push({ date, tasks });
   }

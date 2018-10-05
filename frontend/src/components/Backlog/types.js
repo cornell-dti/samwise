@@ -4,7 +4,7 @@
  * The type for a simplified task with just enough information needed to render the backlog
  * day component.
  */
-export type SimpleTask = {| name: string; color: string, completed: boolean |};
+export type SimpleTask = {| name: string; id: number; color: string, complete: boolean |};
 /**
  * All the tasks for one day.
  */
