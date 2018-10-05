@@ -25,19 +25,23 @@ function recalculateBearStatus(taskArray) {
 /**
  * Reducer from a old tag-color config to a new one.
  *
- * @param config the old tag-color config.
- * @param action the action related to tag-color config to perform.
- * @return {*} the new tag-color config.
+ * @param {TagColorConfig} config the old tag-color config.
+ * @param {TagColorConfigAction} action the action related to tag-color config to perform.
+ * @return {TagColorConfig} the new tag-color config.
  */
 function tagColorConfigReducer(
   config: TagColorConfig, action: TagColorConfigAction,
 ): TagColorConfig {
+  function removeTag(cfg: TagColorConfig): TagColorConfig {
+    const { [action.tag]: _, ...rest } = cfg;
+    return rest;
+  }
+
   switch (action.type) {
     case 'EDIT_COLOR_CONFIG':
       return { ...config, [action.tag]: action.color };
     case 'REMOVE_COLOR_CONFIG':
-      const { [action.tag]: _, ...rest } = config;
-      return rest;
+      return removeTag(config);
     default:
       return config;
   }
