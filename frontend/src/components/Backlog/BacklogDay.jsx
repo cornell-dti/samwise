@@ -37,7 +37,7 @@ export default function BacklogDay({ date, tasks }: OneDayTask) {
       <div>{dayString}</div>
       <div>{date.getDate()}</div>
       <div>
-        {tasks.map(t => <BacklogTask name={t.name} color={t.color} />)}
+        {tasks.map(t => <BacklogTask key={t.name} {...t} />)}
       </div>
     </div>
   );

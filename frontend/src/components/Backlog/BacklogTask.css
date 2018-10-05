@@ -1,6 +1,11 @@
-.BackLogTask {
+.BacklogTask {
+  display: flex;
   color: white;
   margin: 0.5em 0;
   padding: 0.5em;
   font-weight: 500;
+}
+
+.BacklogTaskText {
+  margin: 0 0.5em;
 }

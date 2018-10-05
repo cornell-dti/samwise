@@ -1,12 +1,20 @@
 // @flow
 
 import * as React from 'react';
+import { Checkbox } from 'semantic-ui-react';
 import styles from './BacklogTask.css';
+import type { SimpleTask } from './types';
 
-type Props = {| name: string, color: string |};
-
-export default function BacklogTask({ name, color }: Props) {
+export default function BacklogTask({ name, color, completed }: SimpleTask) {
   return (
-    <div className={styles.BackLogTask} style={{ backgroundColor: color }}>{name}</div>
+    <div className={styles.BacklogTask} style={{ backgroundColor: color }}>
+      <Checkbox checked={completed} />
+      <span
+        className={styles.BacklogTaskText}
+        style={completed ? { textDecoration: 'line-through' } : {}}
+      >
+        {name}
+      </span>
+    </div>
   );
 }

@@ -16,7 +16,7 @@ const mapStateToProps = (state: State): Props => {
   const day2TaskMap = (() => {
     const map: Map<string, Task[]> = new Map();
     state.mainTaskArray.forEach((task) => {
-      const dateString = task.date.toDateString();
+      const dateString = new Date(task.date).toLocaleDateString();
       const tasksArrOpt = map.get(dateString);
       if (tasksArrOpt == null) {
         map.set(dateString, [task]);
@@ -30,10 +30,11 @@ const mapStateToProps = (state: State): Props => {
   aMonthLater.setDate(aMonthLater.getDate() + 30);
   for (let d = new Date(); d <= aMonthLater; d.setDate(d.getDate() + 1)) {
     const date = new Date(d);
-    const tasksOnThisDay = day2TaskMap.get(date.toDateString()) || [];
-    const tasks = tasksOnThisDay.map(({ name, tag }) => ({
+    const tasksOnThisDay = day2TaskMap.get(date.toLocaleDateString()) || [];
+    const tasks = tasksOnThisDay.map(({ name, tag, complete }) => ({
       name,
       color: state.tagColorPicker[tag],
+      completed: complete,
     }));
     days.push({ date, tasks });
   }
