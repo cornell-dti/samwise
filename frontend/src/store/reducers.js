@@ -52,27 +52,10 @@ function markTask(mainTaskArray: Task[], taskID: number): Task[] {
   });
 }
 
-//  marks a specific subtask as read based on the task id and the subtask id
-function markSubtask(prevMainTaskArray, taskID, subtaskID) {
-  const newMainTaskArray = [];
-  for (let i = 0; i < prevMainTaskArray.length; i += 1) {
-    if (prevMainTaskArray[i] === taskID) {
-      const newSubtaskArray = [];
-      const newTaskObj = prevMainTaskArray[i];
-      const oldSubtaskArray = prevMainTaskArray[i].subtaskArray;
-      for (let j = 0; j < oldSubtaskArray.length; j += 1) {
-        if (oldSubtaskArray[j].id === subtaskID) {
-          const newSubtaskObj = oldSubtaskArray[j];
-          newSubtaskObj.complete = true;
-          newSubtaskArray.push(newSubtaskObj);
-        } else {
-          newSubtaskArray.push(oldSubtaskArray[j]);
-        }
-      }
-      newTaskObj.subtaskArray = newSubtaskArray;
-      newMainTaskArray.push(newTaskObj);
-    } else {
-      newMainTaskArray.push(prevMainTaskArray[i]);
+function markSubtask(mainTaskArray: Task[], taskID: number, subtaskID: number): Task[] {
+  return mainTaskArray.map((task: Task) => {
+    if (task.id !== taskID) {
+      return task;
     }
     return {
       ...task,
