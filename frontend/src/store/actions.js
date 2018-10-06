@@ -27,6 +27,6 @@ export const removeColorConfig = (tag: string): TagColorConfigRemoveAction => ({
 export const addTask = (d: any) => ({ type: 'ADD_NEW_TASK', data: d });
 
 export const markTask = (taskID: number) => ({ type: 'MARK_TASK', id: taskID });
-export const markSubtask = (taskID: any, subtaskID: any) => ({
-  type: 'MARK_SUBTASK', id: taskID, subtask: subtaskID,
+export const markSubtask = (taskID: number, subTaskID: number) => ({
+  type: 'MARK_SUBTASK', id: taskID, subtask: subTaskID,
 });
