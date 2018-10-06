@@ -16,20 +16,16 @@ type Props = {|
   editColorConfig: (tag: string, color: string) => void,
 |};
 
-class ColorEditor extends React.Component<Props> {
-  handleStateComplete = (color) => {
-    const { tag, editColorConfig } = this.props;
-    editColorConfig(tag, color.hex);
+function ColorEditor(props: Props) {
+  const { tag, color, editColorConfig } = props;
+  const handleStateComplete = (c) => {
+    editColorConfig(tag, c.hex);
   };
-
-  render() {
-    const { color } = this.props;
-    return (
-      <div>
-        <GithubPicker color={color} onChangeComplete={this.handleStateComplete} />
-      </div>
-    );
-  }
+  return (
+    <div>
+      <GithubPicker color={color} onChangeComplete={handleStateComplete} />
+    </div>
+  );
 }
 
 const ConnectedColorEditor = connect(null, mapDispatchToProps)(ColorEditor);

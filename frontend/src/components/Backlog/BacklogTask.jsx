@@ -5,27 +5,34 @@ import { connect } from 'react-redux';
 import type { Dispatch } from 'redux';
 import { Checkbox } from 'semantic-ui-react';
 import styles from './BacklogTask.css';
-import type { SimpleTask } from './types';
+import type { SimpleTask } from './backlog-types';
 import { markTask } from '../../store/actions';
+import BacklogSubTask from './BacklogSubTask';
 
 const mapDispatchToProps = (dispatch: Dispatch<any>) => ({
   changeCompletionStatus: (taskId: number) => dispatch(markTask(taskId)),
 });
 
-type Props = SimpleTask & {|changeCompletionStatus: (taskId: number) => void|};
+type Props = SimpleTask & {| changeCompletionStatus: (taskId: number) => void |};
 
-function BacklogTask({
-  name, id, color, complete, changeCompletionStatus,
-}: Props) {
+function BacklogTask(props: Props) {
+  const {
+    name, id, color, complete, subTasks, changeCompletionStatus,
+  } = props;
   return (
     <div className={styles.BacklogTask} style={{ backgroundColor: color }}>
-      <Checkbox checked={complete} onChange={() => changeCompletionStatus(id)} />
-      <span
-        className={styles.BacklogTaskText}
-        style={complete ? { textDecoration: 'line-through' } : {}}
-      >
-        {name}
-      </span>
+      <div className={styles.BacklogTaskMainWrapper}>
+        <Checkbox checked={complete} onChange={() => changeCompletionStatus(id)} />
+        <span
+          className={styles.BacklogTaskText}
+          style={complete ? { textDecoration: 'line-through' } : {}}
+        >
+          {name}
+        </span>
+      </div>
+      {
+        subTasks.map(subTask => (<BacklogSubTask key={id} mainTaskId={id} {...subTask} />))
+      }
     </div>
   );
 }

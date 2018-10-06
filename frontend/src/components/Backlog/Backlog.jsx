@@ -2,7 +2,7 @@
 
 import * as React from 'react';
 import { connect } from 'react-redux';
-import type { OneDayTask } from './types';
+import type { OneDayTask } from './backlog-types';
 import BacklogDay from './BacklogDay';
 import type { State, Task } from '../../store/store-types';
 import styles from './Backlog.css';
@@ -31,16 +31,26 @@ const mapStateToProps = (state: State): Props => {
   for (let d = new Date(); d <= aMonthLater; d.setDate(d.getDate() + 1)) {
     const date = new Date(d);
     const tasksOnThisDay = day2TaskMap.get(date.toLocaleDateString()) || [];
-    const tasks = tasksOnThisDay.map(({
-      name, id, complete, tag,
-    }: Task) => ({
-      name, id, complete, color: state.tagColorPicker[tag],
-    }));
+    const tasks = tasksOnThisDay.map((task: Task) => {
+      const {
+        name, id, complete, tag, subtaskArray,
+      } = task;
+      return {
+        name, id, complete, color: state.tagColorPicker[tag], subTasks: subtaskArray,
+      };
+    });
     days.push({ date, tasks });
   }
   return { days };
 };
 
+/**
+ * The component for displaying the entire back logs.
+ *
+ * @param {BacklogDay} days a collection of tasks organized according to deadline of the task.
+ * @return {*} the backlog component.
+ * @constructor
+ */
 function Backlog({ days }: Props) {
   const renderDay = (day: OneDayTask) => <BacklogDay key={day.date.toDateString()} {...day} />;
   return <div className={styles.Backlog}>{days.map(renderDay)}</div>;
