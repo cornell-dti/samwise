@@ -2,11 +2,12 @@
 
 import React from 'react';
 import { connect } from 'react-redux';
+import type { Dispatch } from 'redux';
 import { GithubPicker } from 'react-color';
 import { editColorConfig as editColorConfigAction } from '../../store/actions';
 import styles from './TagColorConfigItemAdder.css';
 
-const mapDispatchToProps = (dispatch: *) => ({
+const mapDispatchToProps = (dispatch: Dispatch<any>) => ({
   editColorConfig: (tag, color) => dispatch(editColorConfigAction(tag, color)),
 });
 
@@ -43,6 +44,7 @@ class TagColorConfigItemAdder extends React.Component<Props, State> {
         <input type="text" value={tagInput} onChange={this.changeTagName} />
         <div>
           Chosen Color is
+          {' '}
           {colorInput}
         </div>
         <GithubPicker color={colorInput} onChangeComplete={this.changeColor} />
@@ -52,4 +54,5 @@ class TagColorConfigItemAdder extends React.Component<Props, State> {
   }
 }
 
-export default connect(null, mapDispatchToProps)(TagColorConfigItemAdder);
+const ConnectedTagColorConfigItemAdder = connect(null, mapDispatchToProps)(TagColorConfigItemAdder);
+export default ConnectedTagColorConfigItemAdder;

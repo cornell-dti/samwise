@@ -11,10 +11,9 @@ const mapStateToProps = (state: State) => ({
   configKeys: Object.keys(state.tagColorPicker),
 });
 
-type Props = {| tagColorConfig: TagColorConfig, configKeys: Array<string> |};
+type Props = {| tagColorConfig: TagColorConfig, configKeys: string[] |};
 
-function TagColorConfigItemList(props: Props) {
-  const { configKeys, tagColorConfig } = props;
+function TagColorConfigItemList({ tagColorConfig, configKeys }: Props) {
   return (
     <List divided relaxed>
       {
@@ -26,4 +25,5 @@ function TagColorConfigItemList(props: Props) {
   );
 }
 
-export default connect(mapStateToProps, null)(TagColorConfigItemList);
+const ConnectedTagColorConfigItemList = connect(mapStateToProps, null)(TagColorConfigItemList);
+export default ConnectedTagColorConfigItemList;

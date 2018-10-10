@@ -1,0 +1,24 @@
+.BacklogTask {
+  color: white;
+  margin: 0.5em 0;
+  padding: 0.5em;
+  font-weight: 500;
+}
+
+.BacklogTaskMainWrapper {
+  display: flex;
+  font-size: 1.5em;
+  font-weight: 300;
+}
+
+.BacklogSubTask {
+  display: flex;
+  color: white;
+  margin: 0.5em 0 0.5em 1em;
+  padding: 0.5em;
+  font-weight: 500;
+}
+
+.BacklogTaskText {
+  margin: 0 0.5em;
+}
