@@ -13,7 +13,6 @@ const mapDispatchToProps = dispatch => ({
 const mapStateToProps = state => ({ tagColorPicker: state.tagColorPicker });
 
 class UnconNewTaskComponent extends Component {
-
   constructor(props) {
     super(props);
     this.state = this.initialState();
@@ -100,6 +99,7 @@ class UnconNewTaskComponent extends Component {
             </div>
           </div>
           <ToastContainer />
+
         </div>
       </form>
     );//<input type="date" value={this.state.date} onChange={this.handleDateChange} min={new Date(new Date().getTime() - new Date().getTimezoneOffset() * 60000).toISOString().split('T')[0]} />
