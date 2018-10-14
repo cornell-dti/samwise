@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import { Calendar } from 'react-calendar';
 import NewTaskClassPicker from './NewTaskClassPicker';
 import { addTask } from '../../store/actions';
 import styles from './NewTask.css';
-import Calendar from 'react-calendar';
 
 const mapDispatchToProps = dispatch => ({
   addTask: e => dispatch(addTask(e)),
@@ -85,7 +85,6 @@ class UnconNewTaskComponent extends Component {
               <Calendar
                 onChange={this.handleDateChange}
                 value={new Date()}
-                className={styles.NewTaskCal}
                 />
             </div>
           </div>

@@ -210,12 +210,17 @@ Date Picker
 
 
 
+.NewTaskCal{
+  border: 1px black solid;
+}
+
 .NewTaskCal button{
   background:white;
   border:none;
   padding:3px 0;
   cursor:pointer;
 }
-.NewTaskCal{
-  border: 1px black solid;
+
+.NewTaskCal button:hover{
+  background:lightgray;
 }
