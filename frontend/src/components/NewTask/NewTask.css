@@ -203,3 +203,19 @@ Date Picker
 	display:none;
 	left:0;
 }
+
+
+
+
+
+
+
+.NewTaskCal button{
+  background:white;
+  border:none;
+  padding:3px 0;
+  cursor:pointer;
+}
+.NewTaskCal{
+  border: 1px black solid;
+}
