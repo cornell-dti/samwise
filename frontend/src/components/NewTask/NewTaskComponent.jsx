@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Calendar } from 'react-calendar';
+//import 'react-calendar/dist/Calendar.css';
+//import './Calendar.css';
 import { ToastContainer, toast } from 'react-toastify';
 import NewTaskClassPicker from './NewTaskClassPicker';
 import { addTask } from '../../store/actions';
