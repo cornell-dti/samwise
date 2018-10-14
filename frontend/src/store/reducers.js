@@ -1,4 +1,4 @@
-import type { TagColorConfigAction } from './action-types';
+import type { EditTaskAction, TagColorConfigAction } from './action-types';
 import type { State, TagColorConfig, Task } from './store-types';
 
 /**
@@ -18,20 +18,23 @@ const initialState: State = {
 
 // function to update the bear's status
 
-function recalculateBearStatus(taskArray) {
+function recalculateBearStatus(focusTaskArray) {
   if (focusTaskArray.isComplete) {
     return 'happy';
-  } else if (focusTaskArray.justFinishedTask) {
-    return 'has fish';
-  } else if (focusTaskArray.howComplete < .1) {
-    return 'hungry';
-  } else if (focusTaskArray.hasOverDueTask == 1) {
-    return 'hibernating';
-  } else if (focusTaskArray.isAllOverDue || focusTaskArray.hasOverDueTask >= 1) {
-    return 'leaving';
-  } else {
-    return 'neutral';
   }
+  if (focusTaskArray.justFinishedTask) {
+    return 'has fish';
+  }
+  if (focusTaskArray.howComplete < 0.1) {
+    return 'hungry';
+  }
+  if (focusTaskArray.hasOverDueTask === 1) {
+    return 'hibernating';
+  }
+  if (focusTaskArray.isAllOverDue || focusTaskArray.hasOverDueTask >= 1) {
+    return 'leaving';
+  }
+  return 'neutral';
 }
 
 // function recalculateBearStatus(taskArray) {
@@ -111,6 +114,22 @@ function tagColorConfigReducer(
   }
 }
 
+/**
+ * Reducer from an old state with old task to a new state with one task edited.
+ *
+ * @param state the old state.
+ * @param action the reduce action to edit a task.
+ * @return {State} the new state.
+ */
+function editTask(state: State, action: EditTaskAction) {
+  const newTask: Task = action.task;
+  return {
+    ...state,
+    mainTaskArray: state.mainTaskArray
+      .map((task: Task) => (task.id === newTask.id ? newTask : task)),
+  };
+}
+
 const rootReducer = (state = initialState, action) => {
   switch (action.type) {
     case 'EDIT_COLOR_CONFIG':
@@ -121,6 +140,8 @@ const rootReducer = (state = initialState, action) => {
       };
     case 'ADD_NEW_TASK':
       return { ...state, mainTaskArray: [...state.mainTaskArray, action.data] };
+    case 'EDIT_NEW_TASK':
+      return editTask(state, action);
     case 'MARK_TASK':
       return {
         ...state,

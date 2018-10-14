@@ -1,11 +1,11 @@
 // @flow
 
+import type { SubTask } from '../../store/store-types';
+
 /**
  * The type for a simplified task with just enough information needed to render the backlog
  * day component.
  */
-import type { SubTask } from '../../store/store-types';
-
 export type SimpleTask = {|
   name: string;
   id: number;
