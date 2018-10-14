@@ -54,17 +54,24 @@ function markTask(mainTaskArray: Task[], taskID: number): Task[] {
 }
 
 function markSubtask(mainTaskArray: Task[], taskID: number, subtaskID: number): Task[] {
-  return mainTaskArray.map((task: Task) => {
+  const arr = mainTaskArray.map((task: Task) => {
     if (task.id !== taskID) {
       return task;
     }
     return {
       ...task,
-      subtaskArray: task.subtaskArray.map(subTask => ({
-        ...subTask, complete: !subTask.complete,
-      })),
+      subtaskArray: task.subtaskArray.map((subTask) => {
+        if (subTask.id !== subtaskID) {
+          return subTask;
+        }
+        return {
+          ...subTask,
+          complete: !subTask.complete,
+        };
+      }),
     };
   });
+  return arr;
 }
 
 function addSubtask(mainTaskArray: Task[], taskID: number, subtask): Task[] {
@@ -77,8 +84,6 @@ function addSubtask(mainTaskArray: Task[], taskID: number, subtask): Task[] {
       subtaskArray: [...task.subtaskArray, subtask],
     };
   });
-  // console.log(newTaskArray);
-  // return newTaskArray;
 }
 
 /**

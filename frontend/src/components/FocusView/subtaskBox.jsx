@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { List } from 'semantic-ui-react';
 import { markSubtask } from '../../store/actions';
 
 //  mapdispatch to props
@@ -10,19 +9,21 @@ const mapDispatchToProps = dispatch => ({
 
 class unconnectedSubtaskBox extends Component {
   markSubtaskAsComplete = (event) => {
+    console.log("please");
     event.stopPropagation();
     const destructuredProps = this.props;
-    const { markSubtaskAsDone } = destructuredProps.markSubtask;
-    markSubtaskAsDone(destructuredProps.mainTaskID, destructuredProps.id);
+    destructuredProps.markSubtask(destructuredProps.mainTaskID, destructuredProps.id);
   }
 
   render() {
     const destructuredProps = this.props;
     return (
-      <List.Item>
-        <input type="checkbox" onClick={this.markSubtaskAsComplete} />
-        {destructuredProps.name}
-      </List.Item>
+      <div>
+        <input checked={destructuredProps.complete} type="checkbox" onClick={this.markSubtaskAsComplete} />
+        <p style={destructuredProps.complete === false ? {} : { textDecoration: 'line-through' }}>
+          { destructuredProps.name }
+        </p>
+      </div>
     );
   }
 }

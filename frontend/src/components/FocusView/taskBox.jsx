@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { List } from 'semantic-ui-react';
 
 import SubtaskBox from './subtaskBox';
 import { markTask, addSubtask } from '../../store/actions';
@@ -59,7 +58,7 @@ class unconnectedTaskBox extends Component {
     const jsxSubtaskArray = destructuredProps.subtaskArray.map(
       item => (
         <li className={styles.subtaskItem} key={item.id}>
-          { item.name }
+          <SubtaskBox {...item} mainTaskID={destructuredProps.id} />
         </li>),
     );
     // console.log(jsxSubtaskArray);
