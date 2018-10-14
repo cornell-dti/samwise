@@ -7,7 +7,7 @@ import BacklogDay from './BacklogDay';
 import type { State, Task } from '../../store/store-types';
 import styles from './Backlog.css';
 
-type Props = {| days: OneDayTask[] |};
+type Props = {| +days: OneDayTask[] |};
 
 const mapStateToProps = (state: State): Props => {
   const days: OneDayTask[] = [];
@@ -32,12 +32,8 @@ const mapStateToProps = (state: State): Props => {
     const date = new Date(d);
     const tasksOnThisDay = day2TaskMap.get(date.toLocaleDateString()) || [];
     const tasks = tasksOnThisDay.map((task: Task) => {
-      const {
-        name, id, complete, tag, subtaskArray,
-      } = task;
-      return {
-        name, id, complete, color: state.tagColorPicker[tag], subTasks: subtaskArray,
-      };
+      const { tag } = task;
+      return { ...task, color: state.tagColorPicker[tag] };
     });
     days.push({ date, tasks });
   }

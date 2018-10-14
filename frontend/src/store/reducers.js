@@ -1,3 +1,5 @@
+// @flow
+
 import type { EditTaskAction, TagColorConfigAction } from './action-types';
 import type { State, TagColorConfig, Task } from './store-types';
 
@@ -17,7 +19,7 @@ const initialState: State = {
 };
 
 // function to update the bear's status
-
+// eslint-disable-next-line no-unused-vars
 function recalculateBearStatus(focusTaskArray) {
   if (focusTaskArray.isComplete) {
     return 'happy';
@@ -37,10 +39,6 @@ function recalculateBearStatus(focusTaskArray) {
   return 'neutral';
 }
 
-// function recalculateBearStatus(taskArray) {
-//   return 'neutral';
-// }
-
 function markTask(mainTaskArray: Task[], taskID: number): Task[] {
   return mainTaskArray.map((task: Task) => {
     if (task.id !== taskID) {
@@ -57,7 +55,7 @@ function markTask(mainTaskArray: Task[], taskID: number): Task[] {
 }
 
 function markSubtask(mainTaskArray: Task[], taskID: number, subtaskID: number): Task[] {
-  const arr = mainTaskArray.map((task: Task) => {
+  return mainTaskArray.map((task: Task) => {
     if (task.id !== taskID) {
       return task;
     }
@@ -74,7 +72,6 @@ function markSubtask(mainTaskArray: Task[], taskID: number, subtaskID: number): 
       }),
     };
   });
-  return arr;
 }
 
 function addSubtask(mainTaskArray: Task[], taskID: number, subtask): Task[] {
@@ -99,16 +96,14 @@ function addSubtask(mainTaskArray: Task[], taskID: number, subtask): Task[] {
 function tagColorConfigReducer(
   config: TagColorConfig, action: TagColorConfigAction,
 ): TagColorConfig {
-  function removeTag(cfg: TagColorConfig): TagColorConfig {
-    const { [action.tag]: _, ...rest } = cfg;
-    return rest;
-  }
-
   switch (action.type) {
     case 'EDIT_COLOR_CONFIG':
       return { ...config, [action.tag]: action.color };
     case 'REMOVE_COLOR_CONFIG':
-      return removeTag(config);
+      return ((c): TagColorConfig => {
+        const { [action.tag]: _, ...rest } = c;
+        return rest;
+      })(config);
     default:
       return config;
   }
@@ -122,7 +117,7 @@ function tagColorConfigReducer(
  * @return {State} the new state.
  */
 function editTask(state: State, action: EditTaskAction) {
-  const newTask: Task = action.task;
+  const newTask = action.task;
   return {
     ...state,
     mainTaskArray: state.mainTaskArray
@@ -130,7 +125,7 @@ function editTask(state: State, action: EditTaskAction) {
   };
 }
 
-const rootReducer = (state = initialState, action) => {
+const rootReducer = (state: State = initialState, action: any) => {
   switch (action.type) {
     case 'EDIT_COLOR_CONFIG':
     case 'REMOVE_COLOR_CONFIG':
