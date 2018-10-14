@@ -9,7 +9,6 @@ const mapDispatchToProps = dispatch => ({
 
 class unconnectedSubtaskBox extends Component {
   markSubtaskAsComplete = (event) => {
-    console.log("please");
     event.stopPropagation();
     const destructuredProps = this.props;
     destructuredProps.markSubtask(destructuredProps.mainTaskID, destructuredProps.id);
