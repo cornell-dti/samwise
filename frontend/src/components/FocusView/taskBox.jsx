@@ -1,12 +1,13 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { List } from 'semantic-ui-react';
+
 import SubtaskBox from './subtaskBox';
-import { markTask } from '../../store/actions';
+import { markTask, addSubtask } from '../../store/actions';
 import styles from './focusView.css';
 
 const mapDispatchToProps = dispatch => ({
   markTask: (taskID) => { dispatch(markTask(taskID)); },
+  addSubtask: (taskID, subtask) => { dispatch(addSubtask(taskID, subtask)); },
 });
 
 const mapStateToProps = state => ({
@@ -14,15 +15,38 @@ const mapStateToProps = state => ({
 });
 
 class unconnectedTaskBox extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      value: '',
+    };
+  }
+
   markTaskAsComplete = (event) => {
     const destructuredProps = this.props;
     event.stopPropagation();
     destructuredProps.markTask(destructuredProps.id);
   }
 
-  render() {
+  addNewSubtask = (event) => {
+    event.preventDefault();
     const destructuredProps = this.props;
-    let { subtaskArray } = destructuredProps.subtaskArray;
+    const destructuredState = this.state;
+    const subtaskObj = {
+      name: destructuredState.value,
+      id: (10 * new Date()) + Math.floor(10 * Math.random()),
+      complete: false,
+    };
+    destructuredProps.addSubtask(destructuredProps.id, subtaskObj);
+  }
+
+  handleSubtaskInputChange = (event) => {
+    this.setState({ value: event.target.value });
+  }
+
+  render() {
+    const destructuredState = this.state;
+    const destructuredProps = this.props;
     const boxTag = destructuredProps.tag;
 
     let boxColor;
@@ -31,10 +55,13 @@ class unconnectedTaskBox extends Component {
     } else {
       boxColor = 'white';
     }
-    if (!subtaskArray) { subtaskArray = []; }
-    subtaskArray = subtaskArray.map(
-      item => <List.Item><SubtaskBox mainTaskId={destructuredProps.id} {...item} /></List.Item>,
+    const jsxSubtaskArray = destructuredProps.subtaskArray.map(
+      item => (
+        <li className={styles.subtaskItem} key={item.id}>
+          <SubtaskBox {...item} mainTaskID={destructuredProps.id} />
+        </li>),
     );
+    // console.log(jsxSubtaskArray);
     return (
       <div className={styles.boxClass} style={{ backgroundColor: boxColor }}>
         <p className={styles.tagLabel}>{destructuredProps.tag}</p>
@@ -47,9 +74,14 @@ class unconnectedTaskBox extends Component {
             {destructuredProps.name}
           </p>
         </div>
-        <List>
-          { subtaskArray }
-        </List>
+        <ul>
+          { jsxSubtaskArray }
+        </ul>
+        <div className={styles.newSubtaskDiv}>
+          <form onSubmit={this.addNewSubtask}>
+            <input className={styles.newSubtask} type="text" placeholder="New subtask" value={destructuredState.value} onChange={this.handleSubtaskInputChange} />
+          </form>
+        </div>
       </div>
     );
   }

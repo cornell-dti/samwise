@@ -11,6 +11,7 @@ const initialState: State = {
     Personal: '#c4def6',
     'Project Team': 'green',
     Courses: 'purple',
+    None: 'gray',
   },
   bearStatus: 'neutral',
 };
@@ -53,15 +54,34 @@ function markTask(mainTaskArray: Task[], taskID: number): Task[] {
 }
 
 function markSubtask(mainTaskArray: Task[], taskID: number, subtaskID: number): Task[] {
+  const arr = mainTaskArray.map((task: Task) => {
+    if (task.id !== taskID) {
+      return task;
+    }
+    return {
+      ...task,
+      subtaskArray: task.subtaskArray.map((subTask) => {
+        if (subTask.id !== subtaskID) {
+          return subTask;
+        }
+        return {
+          ...subTask,
+          complete: !subTask.complete,
+        };
+      }),
+    };
+  });
+  return arr;
+}
+
+function addSubtask(mainTaskArray: Task[], taskID: number, subtask): Task[] {
   return mainTaskArray.map((task: Task) => {
     if (task.id !== taskID) {
       return task;
     }
     return {
       ...task,
-      subtaskArray: task.subtaskArray.map(subTask => ({
-        ...subTask, complete: !subTask.complete,
-      })),
+      subtaskArray: [...task.subtaskArray, subtask],
     };
   });
 }
@@ -110,6 +130,11 @@ const rootReducer = (state = initialState, action) => {
       return {
         ...state,
         mainTaskArray: markSubtask(state.mainTaskArray, action.id, action.subtask),
+      };
+    case 'ADD_SUBTASK':
+      return {
+        ...state,
+        mainTaskArray: addSubtask(state.mainTaskArray, action.id, action.data),
       };
     default:
       return state;
