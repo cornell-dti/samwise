@@ -30,3 +30,5 @@ export const markTask = (taskID: number) => ({ type: 'MARK_TASK', id: taskID });
 export const markSubtask = (taskID: number, subTaskID: number) => ({
   type: 'MARK_SUBTASK', id: taskID, subtask: subTaskID,
 });
+
+export const addSubtask = (taskID: number, subtask) => ({ type: 'ADD_SUBTASK', id: taskID, data: subtask });

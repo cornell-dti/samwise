@@ -11,6 +11,7 @@ const initialState: State = {
     Personal: '#c4def6',
     'Project Team': 'green',
     Courses: 'purple',
+    None: 'gray',
   },
   bearStatus: 'neutral',
 };
@@ -66,6 +67,20 @@ function markSubtask(mainTaskArray: Task[], taskID: number, subtaskID: number): 
   });
 }
 
+function addSubtask(mainTaskArray: Task[], taskID: number, subtask): Task[] {
+  return mainTaskArray.map((task: Task) => {
+    if (task.id !== taskID) {
+      return task;
+    }
+    return {
+      ...task,
+      subtaskArray: [...task.subtaskArray, subtask],
+    };
+  });
+  // console.log(newTaskArray);
+  // return newTaskArray;
+}
+
 /**
  * Reducer from a old tag-color config to a new one.
  *
@@ -110,6 +125,11 @@ const rootReducer = (state = initialState, action) => {
       return {
         ...state,
         mainTaskArray: markSubtask(state.mainTaskArray, action.id, action.subtask),
+      };
+    case 'ADD_SUBTASK':
+      return {
+        ...state,
+        mainTaskArray: addSubtask(state.mainTaskArray, action.id, action.data),
       };
     default:
       return state;
