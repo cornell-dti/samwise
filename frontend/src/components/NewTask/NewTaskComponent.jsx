@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Calendar } from 'react-calendar';
+import { ToastContainer, toast } from 'react-toastify';
 import NewTaskClassPicker from './NewTaskClassPicker';
 import { addTask } from '../../store/actions';
 import styles from './NewTask.css';
@@ -39,6 +40,15 @@ class UnconNewTaskComponent extends Component {
 
     this.props.addTask(this.state);
     this.setState(this.initialState());
+
+    toast('Task Added! :D', {
+      position: "top-right",
+      autoClose: 5000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true
+    });
   }
 
   handleClassChange = (e) => {
@@ -89,7 +99,7 @@ class UnconNewTaskComponent extends Component {
                 />
             </div>
           </div>
-
+          <ToastContainer />
         </div>
       </form>
     );//<input type="date" value={this.state.date} onChange={this.handleDateChange} min={new Date(new Date().getTime() - new Date().getTimezoneOffset() * 60000).toISOString().split('T')[0]} />
