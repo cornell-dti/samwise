@@ -38,12 +38,7 @@ function BacklogTask(props: Props) {
         >
           {name}
         </span>
-        <Modal trigger={<Icon name="edit" />}>
-          <Modal.Header>Task Editor</Modal.Header>
-          <Modal.Content>
-            <PopupTaskEditor {...task} />
-          </Modal.Content>
-        </Modal>
+        <PopupTaskEditor {...task} />
       </div>
       {subTasks}
     </div>

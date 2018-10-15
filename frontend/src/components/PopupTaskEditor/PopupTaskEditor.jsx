@@ -1,38 +1,32 @@
 // @flow
 
 import * as React from 'react';
-import {
-  Header, Input, Icon, Button,
-} from 'semantic-ui-react';
-import Calendar from 'react-calendar';
+import { Button, Icon, Modal } from 'semantic-ui-react';
 import type { Dispatch } from 'redux';
 import connect from 'react-redux/es/connect/connect';
-import type {
-  SubTask, Task, State as StoreState, TagColorConfig,
-} from '../../store/store-types';
+import type { SubTask, Task } from '../../store/store-types';
 import { editTask as editTaskAction } from '../../store/actions';
-import styles from './PopupTaskEditor.css';
 import PopupInternalSubTaskEditor from './PopupInternalSubTaskEditor';
-import NewTaskClassPicker from '../NewTask/NewTaskClassPicker';
 import PopupInternalMainTaskEditor from './PopupInternalMainTaskEditor';
 
-const mapStateToProps = ({ tagColorPicker }: StoreState) => ({ tagColorPicker });
-
 const mapDispatchToProps = (dispatch: Dispatch<any>) => ({
-  editTask: (task: Task) => dispatch(editTaskAction(task)),
+  editTask: (task: Task): void => dispatch(editTaskAction(task)),
 });
 
 type Props = {|
-  ...Task;
-  +editTask: (task: Task) => void;
+  ...Task; +editTask: (task: Task) => void;
 |};
-type State = {| ...Task; |};
+type State = {| ...Task; open: boolean |};
 
 class PopupTaskEditor extends React.Component<Props, State> {
   constructor(props: Props) {
     super(props);
     const { editTask, ...task } = props;
-    this.state = task;
+    this.state = { ...task, open: false };
+  }
+
+  openPopup() {
+    this.setState((state: State) => ({ ...state, open: true }));
   }
 
   editMainTask(task: Task) {
@@ -46,26 +40,31 @@ class PopupTaskEditor extends React.Component<Props, State> {
   submitChanges(event: any) {
     event.preventDefault();
     const { editTask } = this.props;
-    editTask(this.state);
+    const { open, ...task } = this.state;
+    editTask(task);
+    this.setState((state: State) => ({ ...state, open: false }));
   }
 
   render() {
-    const { subtaskArray } = this.state;
+    const { open, subtaskArray, ...task } = this.state;
     return (
-      <div>
-        <PopupInternalMainTaskEditor
-          {...this.state}
-          editTask={task => this.editMainTask(task)}
-        />
-        <PopupInternalSubTaskEditor
-          subtaskArray={subtaskArray}
-          editSubTasks={arr => this.editSubTasks(arr)}
-        />
-        <Button onClick={event => this.submitChanges(event)}>Submit</Button>
-      </div>
+      <Modal open={open} trigger={<Icon name="edit" onClick={() => this.openPopup()} />}>
+        <Modal.Header>Task Editor</Modal.Header>
+        <Modal.Content>
+          <PopupInternalMainTaskEditor
+            {...task}
+            editTask={t => this.editMainTask(t)}
+          />
+          <PopupInternalSubTaskEditor
+            subtaskArray={subtaskArray}
+            editSubTasks={arr => this.editSubTasks(arr)}
+          />
+          <Button onClick={event => this.submitChanges(event)}>Submit</Button>
+        </Modal.Content>
+      </Modal>
     );
   }
 }
 
-const ConnectedPopupTaskEditor = connect(mapStateToProps, mapDispatchToProps)(PopupTaskEditor);
+const ConnectedPopupTaskEditor = connect(null, mapDispatchToProps)(PopupTaskEditor);
 export default ConnectedPopupTaskEditor;
