@@ -1,4 +1,5 @@
 .PopupTaskEditorFlexibleContainer {
+  position: relative;
   display: flex;
   margin: 0.5em;
   align-content: center;
@@ -7,4 +8,12 @@
 
 .PopupTaskEditorFlexibleInput {
   flex: 1 1 auto;
+}
+
+.PopupTaskEditorCalendar {
+  position: absolute;
+  right: 0;
+  left: calc(100% - 350px);
+  top: 50px;
+  z-index: 4;
 }
