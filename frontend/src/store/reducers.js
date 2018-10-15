@@ -135,7 +135,7 @@ const rootReducer = (state: State = initialState, action: any) => {
       };
     case 'ADD_NEW_TASK':
       return { ...state, mainTaskArray: [...state.mainTaskArray, action.data] };
-    case 'EDIT_NEW_TASK':
+    case 'EDIT_TASK':
       return editTask(state, action);
     case 'MARK_TASK':
       return {
