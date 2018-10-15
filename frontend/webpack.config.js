@@ -19,6 +19,7 @@ module.exports = {
       },
       {
         test: /\.css$/,
+        exclude: /node_modules/,
         use: [
           {
             loader: 'style-loader',
@@ -27,6 +28,23 @@ module.exports = {
             loader: 'css-loader',
             options: {
               modules: true,
+              camelCase: true,
+              sourceMap: true,
+            },
+          },
+        ],
+      },
+      {
+        test: /\.css$/,
+        include: /node_modules/,
+        use: [
+          {
+            loader: 'style-loader',
+          },
+          {
+            loader: 'css-loader',
+            options: {
+              modules: false,
               camelCase: true,
               sourceMap: true,
             },

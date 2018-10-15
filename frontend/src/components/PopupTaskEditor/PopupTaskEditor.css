@@ -1,10 +1,10 @@
-.flexibleContainer {
+.PopupTaskEditorFlexibleContainer {
   display: flex;
   margin: 0.5em;
   align-content: center;
   align-items: center;
 }
 
-.flexibleInput {
+.PopupTaskEditorFlexibleInput {
   flex: 1 1 auto;
 }
