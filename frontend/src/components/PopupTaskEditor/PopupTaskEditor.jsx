@@ -2,45 +2,41 @@
 
 import * as React from 'react';
 import {
-  Header, Input, Icon, Button, Modal,
+  Header, Input, Icon, Button,
 } from 'semantic-ui-react';
 import Calendar from 'react-calendar';
 import type { Dispatch } from 'redux';
 import connect from 'react-redux/es/connect/connect';
-import type { SubTask, Task } from '../../store/store-types';
+import type {
+  SubTask, Task, State as StoreState, TagColorConfig,
+} from '../../store/store-types';
 import { editTask as editTaskAction } from '../../store/actions';
 import styles from './PopupTaskEditor.css';
 import PopupInternalSubTaskEditor from './PopupInternalSubTaskEditor';
+import NewTaskClassPicker from '../NewTask/NewTaskClassPicker';
+import PopupInternalMainTaskEditor from './PopupInternalMainTaskEditor';
+
+const mapStateToProps = ({ tagColorPicker }: StoreState) => ({ tagColorPicker });
 
 const mapDispatchToProps = (dispatch: Dispatch<any>) => ({
   editTask: (task: Task) => dispatch(editTaskAction(task)),
 });
 
-type Props = {| ...Task; +editTask: (task: Task) => void |};
-type State = {| ...Task; doesShowCalendarEditor: boolean |};
+type Props = {|
+  ...Task;
+  +editTask: (task: Task) => void;
+|};
+type State = {| ...Task; |};
 
 class PopupTaskEditor extends React.Component<Props, State> {
   constructor(props: Props) {
     super(props);
     const { editTask, ...task } = props;
-    this.state = { ...task, doesShowCalendarEditor: false };
+    this.state = task;
   }
 
-  editTaskName(event: any) {
-    event.preventDefault();
-    const name = event.target.value;
-    this.setState((state: State) => ({ ...state, name }));
-  }
-
-  toggleDateEditor() {
-    this.setState((state: State) => ({
-      ...state, doesShowCalendarEditor: !state.doesShowCalendarEditor,
-    }));
-  }
-
-  editTaskDate(dateString: string) {
-    const date = new Date(dateString);
-    this.setState((state: State) => ({ ...state, date, doesShowCalendarEditor: false }));
+  editMainTask(task: Task) {
+    this.setState((state: State) => ({ ...state, ...task }));
   }
 
   editSubTasks(subtaskArray: SubTask[]) {
@@ -50,50 +46,26 @@ class PopupTaskEditor extends React.Component<Props, State> {
   submitChanges(event: any) {
     event.preventDefault();
     const { editTask } = this.props;
-    const { doesShowCalendarEditor, ...task } = this.state;
-    editTask(task);
+    editTask(this.state);
   }
 
   render() {
-    const {
-      name, id, tag, date, subtaskArray, doesShowCalendarEditor,
-    } = this.state;
-    const calendarElementOpt = doesShowCalendarEditor && (
-      <Calendar
-        value={date}
-        className={styles.PopupTaskEditorCalendar}
-        onChange={e => this.editTaskDate(e)}
-      />
-    );
+    const { subtaskArray } = this.state;
     return (
-      <div id={id}>
-        <Header className={styles.PopupTaskEditorFlexibleContainer}>
-          <span style={{ marginRight: '0.5em' }}>Main Task: </span>
-          <Input
-            className={styles.PopupTaskEditorFlexibleInput}
-            placeholder="Main Task"
-            value={name}
-            onChange={event => this.editTaskName(event)}
-          />
-          <Icon name="tag" style={{ marginLeft: '0.5em' }} />
-          <Icon
-            name="calendar"
-            style={{ marginLeft: '0.5em' }}
-            onClick={() => this.toggleDateEditor()}
-          />
-          {calendarElementOpt}
-        </Header>
-        <Modal.Description>
-          <PopupInternalSubTaskEditor
-            subtaskArray={subtaskArray}
-            editSubTasks={arr => this.editSubTasks(arr)}
-          />
-        </Modal.Description>
+      <div>
+        <PopupInternalMainTaskEditor
+          {...this.state}
+          editTask={task => this.editMainTask(task)}
+        />
+        <PopupInternalSubTaskEditor
+          subtaskArray={subtaskArray}
+          editSubTasks={arr => this.editSubTasks(arr)}
+        />
         <Button onClick={event => this.submitChanges(event)}>Submit</Button>
       </div>
     );
   }
 }
 
-const ConnectedPopupTaskEditor = connect(null, mapDispatchToProps)(PopupTaskEditor);
+const ConnectedPopupTaskEditor = connect(mapStateToProps, mapDispatchToProps)(PopupTaskEditor);
 export default ConnectedPopupTaskEditor;

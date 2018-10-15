@@ -1,5 +1,7 @@
+// @flow
+
 import * as React from 'react';
-import { Form, Input } from 'semantic-ui-react';
+import { Form, Input, Modal } from 'semantic-ui-react';
 import type { SubTask } from '../../store/store-types';
 import styles from './PopupTaskEditor.css';
 
@@ -73,7 +75,7 @@ export default class PopupInternalSubTaskEditor extends React.Component<Props, S
       </div>
     ));
     return (
-      <div>
+      <Modal.Description>
         <div>Sub-tasks:</div>
         <div>
           {existingSubTasks}
@@ -89,7 +91,7 @@ export default class PopupInternalSubTaskEditor extends React.Component<Props, S
             />
           </Form>
         </div>
-      </div>
+      </Modal.Description>
     );
   }
 }
