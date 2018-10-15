@@ -3,7 +3,7 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
 import type { Dispatch } from 'redux';
-import { Checkbox, Icon, Modal } from 'semantic-ui-react';
+import { Checkbox } from 'semantic-ui-react';
 import styles from './BacklogTask.css';
 import type { ColoredTask } from './backlog-types';
 import { markTask } from '../../store/actions';
