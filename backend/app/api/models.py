@@ -49,6 +49,16 @@ class Task(Base):
     _order = db.Column(db.Integer, nullable=False)
     archived = db.Column(db.Boolean, nullable=False)
 
+    def __init__(self, content=None, start_date=None, end_date=None, tag_id=None, parent_task=None, _order=None,
+                 archived=False):
+        self.content = content
+        self.start_date = start_date
+        self.end_date = end_date
+        self.tag_id = tag_id
+        self.parent_task = parent_task
+        self._order = _order
+        self.archived = archived
+
 
 action_type_enum_elements = ('check', 'uncheck', 'add', 'delete')
 action_type_enum = db.Enum(*action_type_enum_elements, name='action_type')
