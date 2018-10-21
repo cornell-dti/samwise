@@ -29,7 +29,7 @@ class UnconNewTaskComponent extends Component {
       name: '',
       id: (10 * new Date()) + Math.floor(10 * Math.random()),
       tag: null,
-      date: new Date(new Date().getTime() - new Date().getTimezoneOffset() * 60000).toISOString().split('T')[0],
+      date: new Date(),//new Date(new Date().getTime() - new Date().getTimezoneOffset() * 60000).toISOString().split('T')[0],
       complete: false,
       subtaskArray: [],
     };
@@ -95,7 +95,7 @@ class UnconNewTaskComponent extends Component {
             <div className={styles.NewTaskDatePick}>
               <Calendar
                 onChange={this.handleDateChange}
-                value={new Date()}
+                value={this.state.date}
                 />
             </div>
           </div>
