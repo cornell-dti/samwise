@@ -47,10 +47,10 @@ function markTask(mainTaskArray: Task[], taskID: number): Task[] {
       ...task,
       complete: !task.complete,
       subtaskArray: task.subtaskArray.map(subTask => ({
-        ...subTask, complete: !task.complete,
-      })),
-    };
-  });
+      ...subTask, complete: !task.complete,
+    })),
+  };
+                           });
 }
 
 function markSubtask(mainTaskArray: Task[], taskID: number, subtaskID: number): Task[] {
@@ -61,17 +61,17 @@ function markSubtask(mainTaskArray: Task[], taskID: number, subtaskID: number): 
     return {
       ...task,
       subtaskArray: task.subtaskArray.map((subTask) => {
-        if (subTask.id !== subtaskID) {
-          return subTask;
-        }
-        return {
-          ...subTask,
-          complete: !subTask.complete,
-        };
-      }),
+      if (subTask.id !== subtaskID) {
+      return subTask;
+    }
+    return {
+      ...subTask,
+      complete: !subTask.complete,
     };
-  });
-  return arr;
+  }),
+        };
+});
+return arr;
 }
 
 function addSubtask(mainTaskArray: Task[], taskID: number, subtask): Task[] {
@@ -94,7 +94,7 @@ function addSubtask(mainTaskArray: Task[], taskID: number, subtask): Task[] {
  * @return {TagColorConfig} the new tag-color config.
  */
 function tagColorConfigReducer(
-  config: TagColorConfig, action: TagColorConfigAction,
+config: TagColorConfig, action: TagColorConfigAction,
 ): TagColorConfig {
   function removeTag(cfg: TagColorConfig): TagColorConfig {
     const { [action.tag]: _, ...rest } = cfg;
@@ -120,21 +120,34 @@ const rootReducer = (state = initialState, action) => {
         tagColorPicker: tagColorConfigReducer(state.tagColorPicker, action),
       };
     case 'ADD_NEW_TASK':
-      return { ...state, mainTaskArray: [...state.mainTaskArray, action.data] };
+      return {
+        ...state,
+        backupTaskArray: state.mainTaskArray,
+        mainTaskArray: [...state.mainTaskArray, action.data],
+      };
     case 'MARK_TASK':
       return {
         ...state,
+        backupTaskArray: state.mainTaskArray,
         mainTaskArray: markTask(state.mainTaskArray, action.id),
       };
     case 'MARK_SUBTASK':
       return {
         ...state,
+        backupTaskArray: state.mainTaskArray,
         mainTaskArray: markSubtask(state.mainTaskArray, action.id, action.subtask),
       };
     case 'ADD_SUBTASK':
       return {
         ...state,
+        backupTaskArray: state.mainTaskArray,
         mainTaskArray: addSubtask(state.mainTaskArray, action.id, action.data),
+      };
+    case 'UNDO_ACTION':
+      return {
+        ...state,
+        mainTaskArray: state.backupTaskArray,
+        backupTaskArray: null,
       };
     default:
       return state;
