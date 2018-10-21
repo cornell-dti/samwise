@@ -31,11 +31,15 @@ class UnconNewTaskComponent extends Component {
     return {
       name: '',
       id: (10 * new Date()) + Math.floor(10 * Math.random()),
+<<<<<<< HEAD
 //<<<<<<< HEAD
       tag: 'None',
 //=======
 //      tag: null,
 //>>>>>>> Properly Updating Calendar
+=======
+      tag: "None",
+>>>>>>> Calendar Min Date
       date: new Date(),//new Date(new Date().getTime() - new Date().getTimezoneOffset() * 60000).toISOString().split('T')[0],
       complete: false,
       subtaskArray: [],
@@ -111,9 +115,13 @@ class UnconNewTaskComponent extends Component {
                 onChange={this.handleDateChange}
                 value={this.state.date}
 //<<<<<<< HEAD
+//<<<<<<< HEAD
                 minDate={new Date()}
 //=======
 //>>>>>>> Properly Updating Calendar
+//=======
+//                minDate={new Date()}
+//>>>>>>> Calendar Min Date
                 />
             </div>
           </div>
