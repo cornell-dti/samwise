@@ -1,9 +1,8 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Calendar } from 'react-calendar';
-//import 'react-calendar/dist/Calendar.css';
-//import './Calendar.css';
 import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import NewTaskClassPicker from './NewTaskClassPicker';
 import { addTask } from '../../store/actions';
 import styles from './NewTask.css';
@@ -42,13 +41,13 @@ class UnconNewTaskComponent extends Component {
     this.props.addTask(this.state);
     this.setState(this.initialState());
 
-    toast('Task Added! :D', {
-      position: "top-right",
+    toast.success('Task Added! :D', {
+      position: "bottom-right",
       autoClose: 5000,
       hideProgressBar: false,
       closeOnClick: true,
       pauseOnHover: true,
-      draggable: true
+      draggable: true,
     });
   }
 
