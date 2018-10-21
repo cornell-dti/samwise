@@ -44,8 +44,13 @@ class UnconNewTaskComponent extends Component {
     this.props.addTask(this.state);
     this.setState(this.initialState());
 
+//<<<<<<< HEAD
     toast.success(<ToastUndo dispText='Task Added :D' changeCallback={this.handleUndo}/>, {
       position: 'bottom-right',
+//=======
+//    toast.success('Task Added! :D', {
+//      position: "bottom-right",
+//>>>>>>> Toast Styling
       autoClose: 5000,
       hideProgressBar: false,
       closeOnClick: true,
