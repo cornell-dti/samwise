@@ -6,14 +6,13 @@ import styles from './ClassPicker.css';
 const mapStateToProps = state => ({ tagColorPicker: state.tagColorPicker });
 
 class UnconClassPicker extends Component {
-  constructor(props, onTagChange) {
+  constructor(props) {
     super(props);
     this.state = this.initialState();
     this.changeClass = React.createRef();
     this.addTask = React.createRef();
     this.openClassChange = React.createRef();
     this.openDateChange = React.createRef();
-    this.onTagChange = onTagChange;
   }
 
 
@@ -28,9 +27,9 @@ class UnconClassPicker extends Component {
     };
   }
 
-  handleClassChange = (e) => 
+  handleClassChange = (e) => {
     const newTag = e.target.getAttribute('data-class-title');
-    this.onTagChange(newTag);
+    this.props.onTagChange(newTag);
   }
 
 

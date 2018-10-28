@@ -7,6 +7,7 @@ import NewTaskClassPicker from './NewTaskClassPicker';
 import { addTask, undoAction } from '../../store/actions';
 import styles from './NewTask.css';
 import ToastUndo from './ToastUndo';
+import ClassPicker from '../ClassPicker/ClassPicker';
 
 const mapDispatchToProps = dispatch => ({
   addTask: e => dispatch(addTask(e)),
@@ -61,8 +62,8 @@ class UnconNewTaskComponent extends Component {
   handleClassChange = (e) => {
     this.changeClass.current.previousSibling.checked = false;
     this.addTask.current.focus();
-    const newTag = e.target.getAttribute('data-class-title');
-    this.setState({ tag: newTag });
+    //const newTag = e.target.getAttribute('data-class-title');
+    this.setState({ tag: e });
   }
 
 
@@ -91,17 +92,7 @@ class UnconNewTaskComponent extends Component {
           <div className={styles.NewTaskClass}>
             <input id='changeClassCheckbox' type='checkbox' ref={this.openClassChange} />
             <label htmlFor='changeClassCheckbox' style={{ backgroundColor: this.props.tagColorPicker[this.state.tag] }} ref={this.changeClass}>{this.state.tag}</label>
-            <ul>
-              {Object.keys(this.props.tagColorPicker).map(
-                cTitle =>
-                  <NewTaskClassPicker
-                    key={cTitle}
-                    classColor={this.props.tagColorPicker[cTitle]}
-                    classTitle={cTitle}
-                    changeCallback={this.handleClassChange} 
-                  />
-              )}
-            </ul>
+            <ClassPicker onTagChange={this.handleClassChange} />
           </div>
 
           <div className={styles.NewTaskDate}>
@@ -119,7 +110,17 @@ class UnconNewTaskComponent extends Component {
 
         </div>
       </form>
-    );//<input type='date' value={this.state.date} onChange={this.handleDateChange} min={new Date(new Date().getTime() - new Date().getTimezoneOffset() * 60000).toISOString().split('T')[0]} />
+    );/*<ul>
+              {Object.keys(this.props.tagColorPicker).map(
+                cTitle =>
+                  <NewTaskClassPicker
+                    key={cTitle}
+                    classColor={this.props.tagColorPicker[cTitle]}
+                    classTitle={cTitle}
+                    changeCallback={this.handleClassChange} 
+                  />
+              )}
+            </ul>*/
   }
 }
 
