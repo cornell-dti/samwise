@@ -12,7 +12,7 @@ export default function App() {
       <TagColorConfigEditor />
       <NewTaskComponent />
       <FocusView />
-      <Backlog />
+      <Backlog displayOption="BIWEEKLY" />
     </div>
   );
 }
