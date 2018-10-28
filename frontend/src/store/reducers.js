@@ -120,6 +120,7 @@ function editTask(state: State, action: EditTaskAction) {
   const newTask = action.task;
   return {
     ...state,
+    backupTaskArray: state.mainTaskArray,
     mainTaskArray: state.mainTaskArray
       .map((task: Task) => (task.id === newTask.id ? newTask : task)),
   };
@@ -134,23 +135,36 @@ const rootReducer = (state: State = initialState, action: any) => {
         tagColorPicker: tagColorConfigReducer(state.tagColorPicker, action),
       };
     case 'ADD_NEW_TASK':
-      return { ...state, mainTaskArray: [...state.mainTaskArray, action.data] };
+      return {
+        ...state,
+        mainTaskArray: [...state.mainTaskArray, action.data],
+        backupTaskArray: state.mainTaskArray,
+      };
     case 'EDIT_TASK':
       return editTask(state, action);
     case 'MARK_TASK':
       return {
         ...state,
+        backupTaskArray: state.mainTaskArray,
         mainTaskArray: markTask(state.mainTaskArray, action.id),
       };
     case 'MARK_SUBTASK':
       return {
         ...state,
+        backupTaskArray: state.mainTaskArray,
         mainTaskArray: markSubtask(state.mainTaskArray, action.id, action.subtask),
       };
     case 'ADD_SUBTASK':
       return {
         ...state,
+        backupTaskArray: state.mainTaskArray,
         mainTaskArray: addSubtask(state.mainTaskArray, action.id, action.data),
+      };
+    case 'UNDO_ACTION':
+      return {
+        ...state,
+        mainTaskArray: state.backupTaskArray,
+        backupTaskArray: null,
       };
     default:
       return state;

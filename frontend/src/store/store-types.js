@@ -30,6 +30,7 @@ export type TagColorConfig = {
  */
 export type State = {
   +mainTaskArray: Task[],
+  +backupTaskArray: Task[],
   +tagColorPicker: TagColorConfig,
   +bearStatus: string
 };
