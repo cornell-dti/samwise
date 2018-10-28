@@ -8,7 +8,7 @@ import type {
   State as StoreState, TagColorConfig, Task,
 } from '../../store/store-types';
 import styles from './PopupTaskEditor.css';
-import NewTaskClassPicker from '../NewTask/NewTaskClassPicker';
+import ClassPicker from '../ClassPicker/ClassPicker';
 
 const mapStateToProps = ({ tagColorPicker }: StoreState): {| tagColorPicker: TagColorConfig |} => ({
   tagColorPicker,
@@ -57,8 +57,7 @@ class PopupInternalMainTaskEditor extends React.Component<Props, State> {
     }));
   }
 
-  editTaskTag(event: any) {
-    const tag = event.target.getAttribute('data-class-title');
+  editTaskTag(tag: string) {
     const { editTask } = this.props;
     this.setState((state: State) => {
       const newState = { ...state, tag, doesShowTagEditor: false };
@@ -90,23 +89,14 @@ class PopupInternalMainTaskEditor extends React.Component<Props, State> {
     } = this.state;
     const tagPickerElementOpt = doesShowTagEditor && (
       <div className={styles.PopupTaskEditorTagEditor}>
-        <ul>
-          {
-            Object.keys(tagColorPicker).map(oneTag => (
-              <NewTaskClassPicker
-                key={oneTag}
-                classColor={tagColorPicker[oneTag]}
-                classTitle={oneTag}
-                changeCallback={e => this.editTaskTag(e)}
-              />))
-          }
-        </ul>
+        <ClassPicker onTagChange={t => this.editTaskTag(t)} />
       </div>
     );
     const calendarElementOpt = doesShowCalendarEditor && (
       <Calendar
         value={date}
         className={styles.PopupTaskEditorCalendar}
+        minDate={new Date()}
         onChange={e => this.editTaskDate(e)}
       />
     );
