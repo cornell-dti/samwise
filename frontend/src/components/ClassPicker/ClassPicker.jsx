@@ -27,7 +27,6 @@ class UnconClassPicker extends Component {
     };
   }
 
-//<<<<<<< HEAD
   handleClassChange = (e) => {
     const newTag = e.target.getAttribute('data-class-title');
     this.props.onTagChange(newTag);
