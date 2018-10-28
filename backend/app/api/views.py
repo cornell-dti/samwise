@@ -48,7 +48,7 @@ def set_tag_focus(tag_id):
         return jsonify(status='error. key "focus" is required.')
     tag.active = focus
     db.session.commit()
-    return jsonfiy(tag=util.sqlalchemy_object_to_dict(tag))
+    return jsonify(tag=util.sqlalchemy_object_to_dict(tag))
 
 
 @api.route('/tags/new', methods=['POST'])
