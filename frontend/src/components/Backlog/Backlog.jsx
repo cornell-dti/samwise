@@ -46,14 +46,19 @@ function buildDaysInBacklog(
 ): OneDayTask[] {
   // Compute start date (the first date to display)
   const startDate = new Date();
-  if (displayOption !== 'FOUR_DAYS') {
-    // only four days view start at today. Otherwise it should start at Sunday.
-    startDate.setDate(startDate.getDate() - startDate.getDay());
+  let offset: number;
+  switch (displayOption) {
+    case 'BIWEEKLY':
+      startDate.setDate(startDate.getDate() - startDate.getDay());
+      break;
+    case 'MONTHLY':
+      startDate.setDate(1);
+      break;
+    default:
   }
 
   // Compute end date (the first date not to display)
   const endDisplayDate = new Date(startDate); // the first day not to display.
-  let offset: number;
   switch (displayOption) {
     case 'FOUR_DAYS':
       offset = 4;
