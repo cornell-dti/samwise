@@ -78,10 +78,9 @@ class UnconNewTaskComponent extends Component {
   }
 
   forceClassChangeOpen = (e) => {
-    console.log('Fired event');
     this.openClassChange.current.click();
   }
-
+  
 
   render() {
     return (
@@ -91,7 +90,7 @@ class UnconNewTaskComponent extends Component {
 
           <div className={styles.NewTaskClass}>
             <input id='changeClassCheckbox' type='checkbox' ref={this.openClassChange} />
-            <label htmlFor='changeClassCheckbox' style={{ backgroundColor: this.props.tagColorPicker[this.state.tag] }} ref={this.changeClass}>{this.state.tag}</label>
+            <label htmlFor='changeClassCheckbox' data-curr={this.state.tag}  style={{ backgroundColor: this.props.tagColorPicker[this.state.tag] }} ref={this.changeClass}>{this.state.tag}</label>
             <ClassPicker onTagChange={this.handleClassChange} />
           </div>
 
