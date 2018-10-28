@@ -14,9 +14,10 @@ const mapDispatchToProps = (dispatch: Dispatch<any>) => ({
   },
 });
 
-type Props = SubTask & {|
-  mainTaskId: number;
-  changeCompletionStatus: (taskId: number, subTaskId: number) => void;
+type Props = {|
+  ...SubTask;
+  +mainTaskId: number;
+  +changeCompletionStatus: (taskId: number, subTaskId: number) => void;
 |};
 
 function BacklogSubTask(props: Props) {

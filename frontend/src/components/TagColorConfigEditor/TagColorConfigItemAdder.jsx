@@ -16,7 +16,7 @@ type Props = {| editColorConfig: (tag: string, color: string) => void |};
 type State = {| tagInput: string, colorInput: string |};
 
 class TagColorConfigItemAdder extends React.Component<Props, State> {
-  constructor(props) {
+  constructor(props: Props) {
     super(props);
     this.state = {
       tagInput: 'Some Random Class',

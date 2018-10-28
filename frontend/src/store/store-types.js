@@ -1,21 +1,21 @@
 // @flow
 
 export type SubTask = {|
-  name: string; // Example: "SubTask 1 Name"
-  id: number; // Example: 32432
-  complete: boolean;
+  +name: string; // Example: "SubTask 1 Name"
+  +id: number; // Example: 32432
+  +complete: boolean;
 |};
 
 /**
  * The task in the store.
  */
 export type Task = {|
-  name: string; // Example: "Task 1 name"
-  id: number; // Example: 3213
-  tag: string; // Example: "CS 2112"
-  date: Date; // Example: new Date()
-  complete: boolean;
-  subtaskArray: SubTask[]; // not defined right now...
+  +name: string; // Example: "Task 1 name"
+  +id: number; // Example: 3213
+  +tag: string; // Example: "CS 2112"
+  +date: Date; // Example: new Date()
+  +complete: boolean;
+  +subtaskArray: SubTask[];
 |};
 
 /**
