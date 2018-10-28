@@ -31,15 +31,7 @@ class UnconNewTaskComponent extends Component {
     return {
       name: '',
       id: (10 * new Date()) + Math.floor(10 * Math.random()),
-<<<<<<< HEAD
-//<<<<<<< HEAD
       tag: 'None',
-//=======
-//      tag: null,
-//>>>>>>> Properly Updating Calendar
-=======
-      tag: "None",
->>>>>>> Calendar Min Date
       date: new Date(),//new Date(new Date().getTime() - new Date().getTimezoneOffset() * 60000).toISOString().split('T')[0],
       complete: false,
       subtaskArray: [],
@@ -52,13 +44,8 @@ class UnconNewTaskComponent extends Component {
     this.props.addTask(this.state);
     this.setState(this.initialState());
 
-//<<<<<<< HEAD
     toast.success(<ToastUndo dispText='Task Added :D' changeCallback={this.handleUndo}/>, {
       position: 'bottom-right',
-//=======
-//    toast.success('Task Added! :D', {
-//      position: "bottom-right",
-//>>>>>>> Toast Styling
       autoClose: 5000,
       hideProgressBar: false,
       closeOnClick: true,
