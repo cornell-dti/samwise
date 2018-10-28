@@ -3,7 +3,6 @@ import { connect } from 'react-redux';
 import { Calendar } from 'react-calendar';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import NewTaskClassPicker from './NewTaskClassPicker';
 import { addTask, undoAction } from '../../store/actions';
 import styles from './NewTask.css';
 import ToastUndo from './ToastUndo';
@@ -32,7 +31,7 @@ class UnconNewTaskComponent extends Component {
       name: '',
       id: (10 * new Date()) + Math.floor(10 * Math.random()),
       tag: 'None',
-      date: new Date(),//new Date(new Date().getTime() - new Date().getTimezoneOffset() * 60000).toISOString().split('T')[0],
+      date: new Date(),
       complete: false,
       subtaskArray: [],
     };
@@ -62,7 +61,6 @@ class UnconNewTaskComponent extends Component {
   handleClassChange = (e) => {
     this.changeClass.current.previousSibling.checked = false;
     this.addTask.current.focus();
-    //const newTag = e.target.getAttribute('data-class-title');
     this.setState({ tag: e });
   }
 
@@ -101,14 +99,7 @@ class UnconNewTaskComponent extends Component {
               <Calendar
                 onChange={this.handleDateChange}
                 value={this.state.date}
-//<<<<<<< HEAD
-//<<<<<<< HEAD
                 minDate={new Date()}
-//=======
-//>>>>>>> Properly Updating Calendar
-//=======
-//                minDate={new Date()}
-//>>>>>>> Calendar Min Date
                 />
             </div>
           </div>
@@ -116,17 +107,7 @@ class UnconNewTaskComponent extends Component {
 
         </div>
       </form>
-    );/*<ul>
-              {Object.keys(this.props.tagColorPicker).map(
-                cTitle =>
-                  <NewTaskClassPicker
-                    key={cTitle}
-                    classColor={this.props.tagColorPicker[cTitle]}
-                    classTitle={cTitle}
-                    changeCallback={this.handleClassChange} 
-                  />
-              )}
-            </ul>*/
+    );
   }
 }
 
