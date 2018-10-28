@@ -8,6 +8,7 @@ import type { State, TagColorConfig, Task } from './store-types';
  * @type {{mainTaskArray: Array, tagColorConfig: *, bearStatus: string}}
  */
 const initialState: State = {
+  backupTaskArray: [],
   mainTaskArray: [],
   tagColorPicker: {
     Personal: '#c4def6',
