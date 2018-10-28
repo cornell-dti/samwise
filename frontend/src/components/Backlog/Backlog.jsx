@@ -2,15 +2,15 @@
 
 import * as React from 'react';
 import { connect } from 'react-redux';
-import { Grid } from 'semantic-ui-react';
+import { Button, Grid } from 'semantic-ui-react';
 import type { BacklogDisplayOption, OneDayTask } from './backlog-types';
 import BacklogDay from './BacklogDay';
 import type { State, TagColorConfig, Task } from '../../store/store-types';
-// import styles from './Backlog.css';
+import styles from './Backlog.css';
 
 type Props = {| +date2TaskMap: Map<string, Task[]>; +colors: TagColorConfig; |};
 
-type ComponentState = {| +displayOption: BacklogDisplayOption |};
+type ComponentState = {| displayOption: BacklogDisplayOption |};
 
 /**
  * Compute a map from date to a list of tasks on that day for faster access.
@@ -94,34 +94,50 @@ class Backlog extends React.Component<Props, ComponentState> {
     this.state = { displayOption: 'FOUR_DAYS' };
   }
 
-  render() {
+  renderDay = (day: OneDayTask) => (
+    <Grid.Column key={day.date.toDateString()}>
+      <BacklogDay {...day} />
+    </Grid.Column>
+  );
+
+  renderRows() {
     const days = buildDaysInBacklog(this.props, this.state);
-    const renderDay = (day: OneDayTask) => (
-      <Grid.Column key={day.date.toDateString()}>
-        <BacklogDay {...day} />
-      </Grid.Column>
+    const rows = [];
+    let tempRow = [];
+    let rowId = 0;
+    const renderRow = (id: number, row: any) => (
+      <Grid.Row columns={7} key={id}>{row}</Grid.Row>
     );
-    const renderedDays = (() => {
-      const rows = [];
-      let tempRow = [];
-      let rowId = 0;
-      const renderRow = (id: number, row: any) => (
-        <Grid.Row columns={7} key={id}>{row}</Grid.Row>
-      );
-      for (let i = 0; i < days.length; i += 1) {
-        if (tempRow.length === 7) {
-          rows.push(renderRow(rowId, tempRow));
-          rowId += 1;
-          tempRow = [];
-        }
-        tempRow.push(renderDay(days[i]));
-      }
-      if (tempRow.length > 0) {
+    for (let i = 0; i < days.length; i += 1) {
+      if (tempRow.length === 7) {
         rows.push(renderRow(rowId, tempRow));
+        rowId += 1;
+        tempRow = [];
       }
-      return rows;
-    })();
-    return (<Grid>{renderedDays}</Grid>);
+      tempRow.push(this.renderDay(days[i]));
+    }
+    if (tempRow.length > 0) {
+      rows.push(renderRow(rowId, tempRow));
+    }
+    return rows;
+  }
+
+  render() {
+    return (
+      <div>
+        <div className={styles.BacklogControl}>
+          <span className={styles.BacklogControlPadding} />
+          <Button.Group>
+            <Button onClick={() => this.setState({ displayOption: 'FOUR_DAYS' })}>4D</Button>
+            <Button.Or />
+            <Button onClick={() => this.setState({ displayOption: 'BIWEEKLY' })}>2W</Button>
+            <Button.Or />
+            <Button onClick={() => this.setState({ displayOption: 'MONTHLY' })}>M</Button>
+          </Button.Group>
+        </div>
+        <Grid>{this.renderRows()}</Grid>
+      </div>
+    );
   }
 }
 
