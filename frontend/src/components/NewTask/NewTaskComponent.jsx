@@ -1,15 +1,16 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Calendar } from 'react-calendar';
-//import 'react-calendar/dist/Calendar.css';
-//import './Calendar.css';
 import { ToastContainer, toast } from 'react-toastify';
-import NewTaskClassPicker from './NewTaskClassPicker';
-import { addTask } from '../../store/actions';
+import 'react-toastify/dist/ReactToastify.css';
+import { addTask, undoAction } from '../../store/actions';
 import styles from './NewTask.css';
+import ToastUndo from './ToastUndo';
+import ClassPicker from '../ClassPicker/ClassPicker';
 
 const mapDispatchToProps = dispatch => ({
   addTask: e => dispatch(addTask(e)),
+  undoAction: () => dispatch(undoAction()),
 });
 
 const mapStateToProps = state => ({ tagColorPicker: state.tagColorPicker });
@@ -29,8 +30,8 @@ class UnconNewTaskComponent extends Component {
     return {
       name: '',
       id: (10 * new Date()) + Math.floor(10 * Math.random()),
-      tag: null,
-      date: new Date(new Date().getTime() - new Date().getTimezoneOffset() * 60000).toISOString().split('T')[0],
+      tag: 'None',
+      date: new Date(),
       complete: false,
       subtaskArray: [],
     };
@@ -42,21 +43,25 @@ class UnconNewTaskComponent extends Component {
     this.props.addTask(this.state);
     this.setState(this.initialState());
 
-    toast('Task Added! :D', {
-      position: "top-right",
+    toast.success(<ToastUndo dispText='Task Added :D' changeCallback={this.handleUndo}/>, {
+      position: 'bottom-right',
       autoClose: 5000,
       hideProgressBar: false,
       closeOnClick: true,
       pauseOnHover: true,
-      draggable: true
+      draggable: true,
     });
+  }
+  
+  handleUndo = () => {
+    console.log("UNDO CALLED");
+    this.props.undoAction();
   }
 
   handleClassChange = (e) => {
     this.changeClass.current.previousSibling.checked = false;
     this.addTask.current.focus();
-    const newTag = e.target.getAttribute('data-class-title');
-    this.setState({ tag: newTag });
+    this.setState({ tag: e });
   }
 
 
@@ -71,32 +76,30 @@ class UnconNewTaskComponent extends Component {
   }
 
   forceClassChangeOpen = (e) => {
-    console.log("Fired event");
     this.openClassChange.current.click();
   }
-
+  
 
   render() {
     return (
       <form className={styles.NewTaskWrap} onSubmit={this.handleSave}>
-        <input value={this.state.name} onChange={this.handleTaskNameChange} type="text" className={styles.NewTaskComponent} placeholder="What do you have to do?" ref={this.addTask} />
+        <input value={this.state.name} onChange={this.handleTaskNameChange} type='text' className={styles.NewTaskComponent} placeholder='What do you have to do?' ref={this.addTask} />
         <div className={styles.NewTaskActive}>
 
           <div className={styles.NewTaskClass}>
-            <input id="changeClassCheckbox" type="checkbox" ref={this.openClassChange} />
-            <label htmlFor="changeClassCheckbox" style={{ backgroundColor: this.props.tagColorPicker[this.state.tag] }} ref={this.changeClass}>{this.state.tag}</label>
-            <ul>
-              {Object.keys(this.props.tagColorPicker).map(cTitle => <NewTaskClassPicker key={cTitle} classColor={this.props.tagColorPicker[cTitle]} classTitle={cTitle} changeCallback={this.handleClassChange} />)}
-            </ul>
+            <input id='changeClassCheckbox' type='checkbox' ref={this.openClassChange} />
+            <label htmlFor='changeClassCheckbox' data-curr={this.state.tag}  style={{ backgroundColor: this.props.tagColorPicker[this.state.tag] }} ref={this.changeClass}>{this.state.tag}</label>
+            <ClassPicker onTagChange={this.handleClassChange} />
           </div>
 
           <div className={styles.NewTaskDate}>
-            <label htmlFor="changeDateCheckbox">📆</label>
-            <input id="changeDateCheckbox" type="checkbox" ref={this.openDateChange} />
+            <label htmlFor='changeDateCheckbox'>📆</label>
+            <input id='changeDateCheckbox' type='checkbox' ref={this.openDateChange} />
             <div className={styles.NewTaskDatePick}>
               <Calendar
                 onChange={this.handleDateChange}
-                value={new Date()}
+                value={this.state.date}
+                minDate={new Date()}
                 />
             </div>
           </div>
@@ -104,7 +107,7 @@ class UnconNewTaskComponent extends Component {
 
         </div>
       </form>
-    );//<input type="date" value={this.state.date} onChange={this.handleDateChange} min={new Date(new Date().getTime() - new Date().getTimezoneOffset() * 60000).toISOString().split('T')[0]} />
+    );
   }
 }
 
