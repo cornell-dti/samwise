@@ -25,7 +25,7 @@ class UnconNewTaskComponent extends Component {
     this.openDateChange = React.createRef();
   }
 
-
+  
   initialState() {
     return {
       name: '',
@@ -43,18 +43,17 @@ class UnconNewTaskComponent extends Component {
     this.props.addTask(this.state);
     this.setState(this.initialState());
 
-    toast.success(<ToastUndo dispText='Task Added :D' changeCallback={this.handleUndo}/>, {
+    toast.success(<ToastUndo dispText="Task Added :D" changeCallback={this.handleUndo} />, {
       position: 'bottom-right',
       autoClose: 5000,
-      hideProgressBar: false,
+      hideProgressBar: true,
       closeOnClick: true,
       pauseOnHover: true,
       draggable: true,
     });
   }
-  
+
   handleUndo = () => {
-    console.log("UNDO CALLED");
     this.props.undoAction();
   }
 
@@ -73,34 +72,51 @@ class UnconNewTaskComponent extends Component {
   handleDateChange = (e) => {
     this.openDateChange.current.click();
     this.setState({ date: e });
+    this.addTask.current.focus();
   }
 
-  forceClassChangeOpen = (e) => {
+  forceClassChangeOpen = () => {
     this.openClassChange.current.click();
   }
-  
+
 
   render() {
+    const { name, tag, date } = this.state;
+    const { tagColorPicker } = this.props;
     return (
       <form className={styles.NewTaskWrap} onSubmit={this.handleSave}>
-        <input value={this.state.name} onChange={this.handleTaskNameChange} type='text' className={styles.NewTaskComponent} placeholder='What do you have to do?' ref={this.addTask} />
+        <input
+          value={name}
+          onChange={this.handleTaskNameChange}
+          type="text"
+          className={styles.NewTaskComponent}
+          placeholder="What do you have to do?"
+          ref={this.addTask}
+        />
         <div className={styles.NewTaskActive}>
 
           <div className={styles.NewTaskClass}>
-            <input id='changeClassCheckbox' type='checkbox' ref={this.openClassChange} />
-            <label htmlFor='changeClassCheckbox' data-curr={this.state.tag}  style={{ backgroundColor: this.props.tagColorPicker[this.state.tag] }} ref={this.changeClass}>{this.state.tag}</label>
+            <input id="changeClassCheckbox" type="checkbox" ref={this.openClassChange} />
+            <label
+              htmlFor="changeClassCheckbox"
+              data-curr={tag}
+              style={{ backgroundColor: tagColorPicker[tag] }}
+              ref={this.changeClass}
+            >
+              {tag}
+            </label>
             <ClassPicker onTagChange={this.handleClassChange} />
           </div>
 
           <div className={styles.NewTaskDate}>
-            <label htmlFor='changeDateCheckbox'>📆</label>
-            <input id='changeDateCheckbox' type='checkbox' ref={this.openDateChange} />
+            <label htmlFor="changeDateCheckbox">📆</label>
+            <input id="changeDateCheckbox" type="checkbox" ref={this.openDateChange} />
             <div className={styles.NewTaskDatePick}>
               <Calendar
                 onChange={this.handleDateChange}
-                value={this.state.date}
+                value={date}
                 minDate={new Date()}
-                />
+              />
             </div>
           </div>
           <ToastContainer />

@@ -33,15 +33,27 @@
   position:absolute;
   bottom:100px;
   left:100px;
-  /*top:100px;
+  top:100px;
   left:50%;
-  transform:translateX(-50%);*/
+  height:initial;
+  transform:translateX(-50%);
+  
+  max-height:44px;
+}
+
+.NewTaskWrap::before{
+  content:'';
+  position:absolute;
+  display:block;
+  height:100%;
+  width:calc(100% + 20px);
+  top:0;
+  left:-10px;
+  background:white;
+  z-index:-1;
 }
 
 
-/*.NewTaskWrap:focus-within .NewTaskActive{
-display:block;
-}*/
 
 /*
 Wrapper for all options only visible when adding task
@@ -72,9 +84,7 @@ Class Picker
   width:22px;height:22px;
   position:absolute;
   left:-2px;
-
   margin:0;
-
   cursor:pointer;
 }
 
@@ -85,7 +95,6 @@ Class Picker
   border:1px black solid;
   padding: 0 30px 0 10px;
   display:inline-block;
-  /*pointer-events:none;*/
   cursor:pointer;
 
   white-space:nowrap;
