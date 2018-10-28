@@ -48,10 +48,10 @@ function markTask(mainTaskArray: Task[], taskID: number): Task[] {
       ...task,
       complete: !task.complete,
       subtaskArray: task.subtaskArray.map(subTask => ({
-      ...subTask, complete: !task.complete,
-    })),
-  };
-                           });
+        ...subTask, complete: !task.complete,
+      })),
+    };
+  });
 }
 
 function markSubtask(mainTaskArray: Task[], taskID: number, subtaskID: number): Task[] {
@@ -62,16 +62,16 @@ function markSubtask(mainTaskArray: Task[], taskID: number, subtaskID: number): 
     return {
       ...task,
       subtaskArray: task.subtaskArray.map((subTask) => {
-      if (subTask.id !== subtaskID) {
-      return subTask;
-    }
-    return {
-      ...subTask,
-      complete: !subTask.complete,
-    };
-  }),
+        if (subTask.id !== subtaskID) {
+          return subTask;
+        }
+        return {
+          ...subTask,
+          complete: !subTask.complete,
         };
-});
+      }),
+    };
+  });
 }
 
 function addSubtask(mainTaskArray: Task[], taskID: number, subtask): Task[] {
@@ -94,7 +94,7 @@ function addSubtask(mainTaskArray: Task[], taskID: number, subtask): Task[] {
  * @return {TagColorConfig} the new tag-color config.
  */
 function tagColorConfigReducer(
-config: TagColorConfig, action: TagColorConfigAction,
+  config: TagColorConfig, action: TagColorConfigAction,
 ): TagColorConfig {
   switch (action.type) {
     case 'EDIT_COLOR_CONFIG':
