@@ -2,10 +2,11 @@
 
 import * as React from 'react';
 import { connect } from 'react-redux';
+import { Grid } from 'semantic-ui-react';
 import type { BacklogDisplayOption, OneDayTask } from './backlog-types';
 import BacklogDay from './BacklogDay';
 import type { State, TagColorConfig, Task } from '../../store/store-types';
-import styles from './Backlog.css';
+// import styles from './Backlog.css';
 
 type Props = {| +date2TaskMap: Map<string, Task[]>; +colors: TagColorConfig; |};
 
@@ -87,7 +88,6 @@ const mapStateToProps = (state: State): Props => {
   return { date2TaskMap: buildDate2TaskMap(mainTaskArray), colors: tagColorPicker };
 };
 
-
 class Backlog extends React.Component<Props, ComponentState> {
   constructor(props) {
     super(props);
@@ -96,12 +96,32 @@ class Backlog extends React.Component<Props, ComponentState> {
 
   render() {
     const days = buildDaysInBacklog(this.props, this.state);
-    const renderDay = (day: OneDayTask) => <BacklogDay key={day.date.toDateString()} {...day} />;
-    return (
-      <div className={styles.Backlog}>
-        {days.map(renderDay)}
-      </div>
+    const renderDay = (day: OneDayTask) => (
+      <Grid.Column key={day.date.toDateString()}>
+        <BacklogDay {...day} />
+      </Grid.Column>
     );
+    const renderedDays = (() => {
+      const rows = [];
+      let tempRow = [];
+      let rowId = 0;
+      const renderRow = (id: number, row: any) => (
+        <Grid.Row columns={7} key={id}>{row}</Grid.Row>
+      );
+      for (let i = 0; i < days.length; i += 1) {
+        if (tempRow.length === 7) {
+          rows.push(renderRow(rowId, tempRow));
+          rowId += 1;
+          tempRow = [];
+        }
+        tempRow.push(renderDay(days[i]));
+      }
+      if (tempRow.length > 0) {
+        rows.push(renderRow(rowId, tempRow));
+      }
+      return rows;
+    })();
+    return (<Grid>{renderedDays}</Grid>);
   }
 }
 
