@@ -135,15 +135,11 @@ const rootReducer = (state: State = initialState, action: any) => {
         tagColorPicker: tagColorConfigReducer(state.tagColorPicker, action),
       };
     case 'ADD_NEW_TASK':
-<<<<<<< HEAD
-      return { ...state, mainTaskArray: [...state.mainTaskArray, action.data], backupTaskArray: state.mainTaskArray };
-=======
       return {
         ...state,
         mainTaskArray: [...state.mainTaskArray, action.data],
         backupTaskArray: state.mainTaskArray,
       };
->>>>>>> Merged Master
     case 'EDIT_TASK':
       return editTask(state, action);
     case 'MARK_TASK':
