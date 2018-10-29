@@ -44,17 +44,14 @@ class Backlog extends React.Component<Props, ComponentState> {
   }
 
   /**
-   * Returns an array of backlog days given the current props and the display option.
+   * Compute the start date and end date.
    *
-   * @return {OneDayTask[]} an array of backlog days information.
+   * @return {{startDate: Date, endDate: Date}} the start date and end date.
    */
-  buildDaysInBacklog = (): OneDayTask[] => {
-    const { date2TaskMap, colors } = this.props;
+  computeStartAndEndDay = (): {| +startDate: Date; endDate: Date |} => {
     const { displayOption } = this.state;
-
     // Compute start date (the first date to display)
     const startDate = new Date();
-    let offset: number;
     switch (displayOption) {
       case 'BIWEEKLY':
         startDate.setDate(startDate.getDate() - startDate.getDay());
@@ -64,9 +61,9 @@ class Backlog extends React.Component<Props, ComponentState> {
         break;
       default:
     }
-
     // Compute end date (the first date not to display)
-    const endDisplayDate = new Date(startDate); // the first day not to display.
+    const endDate = new Date(startDate); // the first day not to display.
+    let offset: number;
     switch (displayOption) {
       case 'FOUR_DAYS':
         offset = 4;
@@ -80,11 +77,22 @@ class Backlog extends React.Component<Props, ComponentState> {
       default:
         throw new Error('Impossible Case');
     }
-    endDisplayDate.setDate(endDisplayDate.getDate() + offset);
+    endDate.setDate(endDate.getDate() + offset);
+    return { startDate, endDate };
+  };
+
+  /**
+   * Returns an array of backlog days given the current props and the display option.
+   *
+   * @return {OneDayTask[]} an array of backlog days information.
+   */
+  buildDaysInBacklog = (): OneDayTask[] => {
+    const { date2TaskMap, colors } = this.props;
+    const { startDate, endDate } = this.computeStartAndEndDay();
 
     // Adding the days to array
     const days: OneDayTask[] = [];
-    for (let d = startDate; d < endDisplayDate; d.setDate(d.getDate() + 1)) {
+    for (let d = startDate; d < endDate; d.setDate(d.getDate() + 1)) {
       const date = new Date(d);
       const tasksOnThisDay = date2TaskMap.get(date.toLocaleDateString()) || [];
       const tasks = tasksOnThisDay.map((task: Task) => {
