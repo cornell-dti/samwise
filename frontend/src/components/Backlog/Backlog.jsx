@@ -32,62 +32,6 @@ function buildDate2TaskMap(allTasks: Task[]): Map<string, Task[]> {
   return map;
 }
 
-/**
- * Returns an array of backlog days given the current props and the display option.
- *
- * @param date2TaskMap the map from date to tasks.
- * @param colors all the color config.
- * @param displayOption decides how much days to display.
- * @return {OneDayTask[]} an array of backlog days information.
- */
-function buildDaysInBacklog(
-  { date2TaskMap, colors }: Props,
-  { displayOption }: ComponentState,
-): OneDayTask[] {
-  // Compute start date (the first date to display)
-  const startDate = new Date();
-  let offset: number;
-  switch (displayOption) {
-    case 'BIWEEKLY':
-      startDate.setDate(startDate.getDate() - startDate.getDay());
-      break;
-    case 'MONTHLY':
-      startDate.setDate(1);
-      break;
-    default:
-  }
-
-  // Compute end date (the first date not to display)
-  const endDisplayDate = new Date(startDate); // the first day not to display.
-  switch (displayOption) {
-    case 'FOUR_DAYS':
-      offset = 4;
-      break;
-    case 'BIWEEKLY':
-      offset = 14;
-      break;
-    case 'MONTHLY':
-      offset = new Date(startDate.getFullYear(), startDate.getMonth() + 1, 0).getDate();
-      break;
-    default:
-      throw new Error('Impossible Case');
-  }
-  endDisplayDate.setDate(endDisplayDate.getDate() + offset);
-
-  // Adding the days to array
-  const days: OneDayTask[] = [];
-  for (let d = startDate; d < endDisplayDate; d.setDate(d.getDate() + 1)) {
-    const date = new Date(d);
-    const tasksOnThisDay = date2TaskMap.get(date.toLocaleDateString()) || [];
-    const tasks = tasksOnThisDay.map((task: Task) => {
-      const { tag } = task;
-      return { ...task, color: colors[tag] };
-    });
-    days.push({ date, tasks });
-  }
-  return days;
-}
-
 const mapStateToProps = (state: State): Props => {
   const { mainTaskArray, tagColorPicker } = state;
   return { date2TaskMap: buildDate2TaskMap(mainTaskArray), colors: tagColorPicker };
@@ -99,14 +43,78 @@ class Backlog extends React.Component<Props, ComponentState> {
     this.state = { displayOption: 'FOUR_DAYS' };
   }
 
+  /**
+   * Returns an array of backlog days given the current props and the display option.
+   *
+   * @return {OneDayTask[]} an array of backlog days information.
+   */
+  buildDaysInBacklog = (): OneDayTask[] => {
+    const { date2TaskMap, colors } = this.props;
+    const { displayOption } = this.state;
+
+    // Compute start date (the first date to display)
+    const startDate = new Date();
+    let offset: number;
+    switch (displayOption) {
+      case 'BIWEEKLY':
+        startDate.setDate(startDate.getDate() - startDate.getDay());
+        break;
+      case 'MONTHLY':
+        startDate.setDate(1);
+        break;
+      default:
+    }
+
+    // Compute end date (the first date not to display)
+    const endDisplayDate = new Date(startDate); // the first day not to display.
+    switch (displayOption) {
+      case 'FOUR_DAYS':
+        offset = 4;
+        break;
+      case 'BIWEEKLY':
+        offset = 14;
+        break;
+      case 'MONTHLY':
+        offset = new Date(startDate.getFullYear(), startDate.getMonth() + 1, 0).getDate();
+        break;
+      default:
+        throw new Error('Impossible Case');
+    }
+    endDisplayDate.setDate(endDisplayDate.getDate() + offset);
+
+    // Adding the days to array
+    const days: OneDayTask[] = [];
+    for (let d = startDate; d < endDisplayDate; d.setDate(d.getDate() + 1)) {
+      const date = new Date(d);
+      const tasksOnThisDay = date2TaskMap.get(date.toLocaleDateString()) || [];
+      const tasks = tasksOnThisDay.map((task: Task) => {
+        const { tag } = task;
+        return { ...task, color: colors[tag] };
+      });
+      days.push({ date, tasks });
+    }
+    return days;
+  };
+
+  /**
+   * Render one day of task.
+   *
+   * @param day the day to render.
+   * @return {*} the rendered element.
+   */
   renderDay = (day: OneDayTask) => (
     <Grid.Column key={day.date.toDateString()}>
       <BacklogDay {...day} />
     </Grid.Column>
   );
 
+  /**
+   * Render all tasks in rows.
+   *
+   * @return {*} the rendered element.
+   */
   renderRows() {
-    const days = buildDaysInBacklog(this.props, this.state);
+    const days = this.buildDaysInBacklog();
     const rows = [];
     let tempRow = [];
     let rowId = 0;
