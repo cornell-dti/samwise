@@ -7,6 +7,7 @@
 
 .BacklogTaskMainWrapper {
   display: flex;
+  align-items: center;
   font-size: 1.5em;
   font-weight: 300;
 }
@@ -21,4 +22,10 @@
 
 .BacklogTaskText {
   flex: 1 1 auto;
+  font-size: 16px;
+  font-weight: normal;
+}
+
+.BacklogTaskCheckBox {
+  margin-right: 0.5em;
 }

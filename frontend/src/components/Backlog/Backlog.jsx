@@ -123,11 +123,12 @@ class Backlog extends React.Component<Props, ComponentState> {
    */
   renderRows() {
     const days = this.buildDaysInBacklog();
+    const columns = days.length === 4 ? 4 : 7;
     const rows = [];
     let tempRow = [];
     let rowId = 0;
     const renderRow = (id: number, row: any) => (
-      <Grid.Row columns={7} key={id}>{row}</Grid.Row>
+      <Grid.Row columns={columns} key={id}>{row}</Grid.Row>
     );
     for (let i = 0; i < days.length; i += 1) {
       if (tempRow.length === 7) {

@@ -31,7 +31,11 @@ function BacklogTask(props: Props) {
   return (
     <div className={styles.BacklogTask} style={{ backgroundColor: color }}>
       <div className={styles.BacklogTaskMainWrapper}>
-        <Checkbox checked={complete} onChange={() => changeCompletionStatus(id)} />
+        <Checkbox
+          className={styles.BacklogTaskCheckBox}
+          checked={complete}
+          onChange={() => changeCompletionStatus(id)}
+        />
         <span
           className={styles.BacklogTaskText}
           style={complete ? { textDecoration: 'line-through' } : {}}

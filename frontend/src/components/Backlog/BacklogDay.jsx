@@ -36,11 +36,11 @@ export default function BacklogDay({ date, tasks }: OneDayTask) {
   })();
   return (
     <div className={styles.BacklogDay}>
-      <div>{dayString}</div>
-      <div>{date.getDate()}</div>
-      <div>
-        {tasks.map(t => <BacklogTask key={t.id} {...t} />)}
+      <div className={styles.BacklogDayDateInfo}>
+        <div className={styles.BacklogDayDateInfoDay}>{dayString}</div>
+        <div className={styles.BacklogDayDateInfoDateNum}>{date.getDate()}</div>
       </div>
+      <div>{tasks.map(t => <BacklogTask key={t.id} {...t} />)}</div>
     </div>
   );
 }
