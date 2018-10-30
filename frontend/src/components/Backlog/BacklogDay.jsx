@@ -9,11 +9,12 @@ import type { OneDayTask } from './backlog-types';
  * The component that renders all tasks on a certain day.
  *
  * @param {Date} date the date in the backlog
- * @param an array of tasks on that day.
+ * @param {boolean} doesRenderSubTasks whether to render sub-tasks.
+ * @param {ColoredTask[]} an array of tasks on that day.
  * @return {*} the backlog day component.
  * @constructor
  */
-export default function BacklogDay({ date, tasks }: OneDayTask) {
+export default function BacklogDay({ date, doesRenderSubTasks, tasks }: OneDayTask) {
   const dayString = (() => {
     switch (date.getDay()) {
       case 0:
@@ -40,7 +41,13 @@ export default function BacklogDay({ date, tasks }: OneDayTask) {
         <div className={styles.BacklogDayDateInfoDay}>{dayString}</div>
         <div className={styles.BacklogDayDateInfoDateNum}>{date.getDate()}</div>
       </div>
-      <div>{tasks.map(t => <BacklogTask key={t.id} {...t} />)}</div>
+      <div>
+        {
+          tasks.map(t => (
+            <BacklogTask key={t.id} doesRenderSubTasks={doesRenderSubTasks} {...t} />
+          ))
+        }
+      </div>
     </div>
   );
 }

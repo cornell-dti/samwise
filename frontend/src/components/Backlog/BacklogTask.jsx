@@ -20,6 +20,7 @@ import type {
 
 type Props = {|
   ...ColoredTask;
+  +doesRenderSubTasks: boolean;
   +markTask: (taskId: number) => MarkTaskAction;
   +toggleTaskPin: (taskId: number) => ToggleTaskPinAction;
   +removeTask: (taskId: number) => RemoveTaskAction;
@@ -40,12 +41,12 @@ const mapDispatchToProps = (dispatch: Dispatch) => bindActionCreators({
  */
 function BacklogTask(props: Props) {
   const {
-    color, markTask, toggleTaskPin, removeTask, ...task
+    color, doesRenderSubTasks, markTask, toggleTaskPin, removeTask, ...task
   } = props;
   const {
     name, id, complete, inFocus, subtaskArray,
   } = task;
-  const subTasks = subtaskArray.map((subTask: SubTask) => (
+  const subTasks = doesRenderSubTasks && subtaskArray.map((subTask: SubTask) => (
     <BacklogSubTask key={subTask.id} mainTaskId={id} {...subTask} />
   ));
   return (

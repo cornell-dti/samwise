@@ -15,4 +15,4 @@ export type ColoredTask = {| ...Task; color: string; |};
 /**
  * All the tasks for one day.
  */
-export type OneDayTask = {| date: Date; tasks: ColoredTask[] |};
+export type OneDayTask = {| date: Date; doesRenderSubTasks: boolean; tasks: ColoredTask[] |};

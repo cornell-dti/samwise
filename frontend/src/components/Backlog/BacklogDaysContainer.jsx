@@ -6,7 +6,6 @@ import { Grid } from 'semantic-ui-react';
 import type { BacklogDisplayOption, OneDayTask } from './backlog-types';
 import BacklogDay from './BacklogDay';
 import type { State, TagColorConfig, Task } from '../../store/store-types';
-import styles from './Backlog.css';
 
 type Props = {|
   +date2TaskMap: Map<string, Task[]>;
@@ -91,6 +90,7 @@ function buildDaysInBacklog(
   date2TaskMap: Map<string, Task[]>, colors: TagColorConfig, displayOption: BacklogDisplayOption,
 ): OneDayTask[] {
   const { startDate, endDate } = computeStartAndEndDay(displayOption);
+  const doesRenderSubTasks = displayOption !== 'MONTHLY';
   // Adding the days to array
   const days: OneDayTask[] = [];
   for (let d = startDate; d < endDate; d.setDate(d.getDate() + 1)) {
@@ -100,7 +100,7 @@ function buildDaysInBacklog(
       const { tag } = task;
       return { ...task, color: colors[tag] };
     });
-    days.push({ date, tasks });
+    days.push({ date, tasks, doesRenderSubTasks });
   }
   return days;
 }
