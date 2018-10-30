@@ -49,8 +49,8 @@ function BacklogTask(props: Props) {
     <BacklogSubTask key={subTask.id} mainTaskId={id} {...subTask} />
   ));
   return (
-    <div className={styles.BacklogTask} style={{ backgroundColor: color }}>
-      <div className={styles.BacklogTaskMainWrapper}>
+    <div className={styles.BacklogTask}>
+      <div className={styles.BacklogTaskMainWrapper} style={{ backgroundColor: color }}>
         <Checkbox
           className={styles.BacklogTaskCheckBox}
           checked={complete}
@@ -62,12 +62,20 @@ function BacklogTask(props: Props) {
         >
           {name}
         </span>
-        <Icon name="delete calendar" onClick={() => removeTask(id)} />
+        <Icon
+          name="delete calendar"
+          className={styles.BacklogTaskIcon}
+          onClick={() => removeTask(id)}
+        />
         <Icon
           name={inFocus ? 'bookmark' : 'bookmark outline'}
+          className={styles.BacklogTaskIcon}
           onClick={() => toggleTaskPin(id)}
         />
-        <PopupTaskEditor trigger={opener => (<Icon name="edit" onClick={opener} />)} {...task} />
+        <PopupTaskEditor
+          trigger={o => (<Icon name="edit" className={styles.BacklogTaskIcon} onClick={o} />)}
+          {...task}
+        />
       </div>
       {subTasks}
     </div>
