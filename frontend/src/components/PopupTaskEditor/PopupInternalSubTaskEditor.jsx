@@ -48,7 +48,10 @@ export default class PopupInternalSubTaskEditor extends React.Component<Props, S
   handleSubmitForNewSubTask(event: any) {
     event.preventDefault();
     const createNewSubTask = (name: string) => ({
-      name, id: ((10 * new Date()) + Math.floor(1000 * Math.random())), complete: false,
+      name,
+      id: ((10 * new Date()) + Math.floor(1000 * Math.random())),
+      complete: false,
+      inFocus: false,
     });
     const { editSubTasks } = this.props;
     this.setState((state: State) => {

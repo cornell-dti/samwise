@@ -14,4 +14,12 @@ export type TagColorConfigAction = TagColorConfigEditAction | TagColorConfigRemo
 export type AddNewTaskAction = {| +type: 'ADD_NEW_TASK'; data: Task; |};
 export type EditTaskAction = {| +type: 'EDIT_TASK'; task: Task; |};
 
+export type MarkTaskAction = {| +type: 'MARK_TASK'; id: number; |};
+export type MarkSubTaskAction = {| +type: 'MARK_SUBTASK'; id: number; subtask: number |};
+
+export type ToggleTaskPinAction = {| +type: 'TOGGLE_TASK_PIN'; taskId: number; |};
+export type ToggleSubTaskPinAction = {|
+  +type: 'TOGGLE_SUBTASK_PIN'; taskId: number; subtaskId: number;
+|};
+
 export type Action = { +type: string; };

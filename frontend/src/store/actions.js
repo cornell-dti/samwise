@@ -1,10 +1,10 @@
 // @flow
 
 import type {
-  AddNewTaskAction,
-  EditTaskAction,
-  TagColorConfigEditAction,
-  TagColorConfigRemoveAction,
+  AddNewTaskAction, EditTaskAction,
+  MarkTaskAction, MarkSubTaskAction,
+  ToggleTaskPinAction, ToggleSubTaskPinAction,
+  TagColorConfigEditAction, TagColorConfigRemoveAction,
 } from './action-types';
 import type { Task } from './store-types';
 
@@ -19,7 +19,6 @@ import type { Task } from './store-types';
 export const editColorConfig = (tag: string, color: string): TagColorConfigEditAction => ({
   type: 'EDIT_COLOR_CONFIG', tag, color,
 });
-
 /**
  * Remove color config is an action that can be used to remove a color config from the store.
  *
@@ -30,13 +29,32 @@ export const removeColorConfig = (tag: string): TagColorConfigRemoveAction => ({
   type: 'REMOVE_COLOR_CONFIG', tag,
 });
 
+/**
+ * Add task is an action that can be used to add a new task.
+ *
+ * @param task the task to add.
+ * @return {AddNewTaskAction} the add task action.
+ */
 export const addTask = (task: Task): AddNewTaskAction => ({ type: 'ADD_NEW_TASK', data: task });
+/**
+ * Edit task is an action that can be used to edit an existing task.
+ *
+ * @param task the task to edit.
+ * @return {AddNewTaskAction} the edit task action.
+ */
 export const editTask = (task: Task): EditTaskAction => ({ type: 'EDIT_TASK', task });
 export const undoAction = () => ({ type: 'UNDO_ACTION' });
 
-export const markTask = (taskID: number) => ({ type: 'MARK_TASK', id: taskID });
-export const markSubtask = (taskID: number, subTaskID: number) => ({
-  type: 'MARK_SUBTASK', id: taskID, subtask: subTaskID,
+export const markTask = (taskID: number): MarkTaskAction => ({ type: 'MARK_TASK', id: taskID });
+export const markSubtask = (taskID: number, subtaskId: number): MarkSubTaskAction => ({
+  type: 'MARK_SUBTASK', id: taskID, subtask: subtaskId,
+});
+
+export const toggleTaskPin = (taskId: number): ToggleTaskPinAction => ({
+  type: 'TOGGLE_TASK_PIN', taskId,
+});
+export const toggleSubTaskPin = (taskId: number, subtaskId: number): ToggleSubTaskPinAction => ({
+  type: 'TOGGLE_SUBTASK_PIN', taskId, subtaskId,
 });
 
 export const addSubtask = (taskID: number, subtask: any) => ({

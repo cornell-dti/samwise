@@ -4,6 +4,7 @@ export type SubTask = {|
   +name: string; // Example: "SubTask 1 Name"
   +id: number; // Example: 32432
   +complete: boolean;
+  +inFocus: boolean; // Whether the subtask is in focus
 |};
 
 /**
@@ -15,6 +16,7 @@ export type Task = {|
   +tag: string; // Example: "CS 2112"
   +date: Date; // Example: new Date()
   +complete: boolean;
+  +inFocus: boolean; // Whether the task is in focus
   +subtaskArray: SubTask[];
 |};
 
