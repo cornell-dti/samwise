@@ -1,7 +1,7 @@
 // @flow
 
 import * as React from 'react';
-import { Button, Icon, Modal } from 'semantic-ui-react';
+import { Button, Modal } from 'semantic-ui-react';
 import type { Dispatch } from 'redux';
 import connect from 'react-redux/es/connect/connect';
 import type { SubTask, Task } from '../../store/store-types';
@@ -14,19 +14,25 @@ const mapDispatchToProps = (dispatch: Dispatch<any>) => ({
 });
 
 type Props = {|
-  ...Task; +editTask: (task: Task) => void;
+  ...Task;
+  +editTask: (task: Task) => void;
+  +trigger: (opener: () => void) => React.Node;
 |};
 type State = {| ...Task; open: boolean |};
 
 class PopupTaskEditor extends React.Component<Props, State> {
   constructor(props: Props) {
     super(props);
-    const { editTask, ...task } = props;
+    const { editTask, trigger, ...task } = props;
     this.state = { ...task, open: false };
   }
 
   openPopup() {
     this.setState((state: State) => ({ ...state, open: true }));
+  }
+
+  closePopup() {
+    this.setState((state: State) => ({ ...state, open: false }));
   }
 
   editMainTask(task: Task) {
@@ -42,13 +48,15 @@ class PopupTaskEditor extends React.Component<Props, State> {
     const { editTask } = this.props;
     const { open, ...task } = this.state;
     editTask(task);
-    this.setState((state: State) => ({ ...state, open: false }));
+    this.closePopup();
   }
 
-  render() {
+  render(): React.Node {
+    const { trigger } = this.props;
     const { open, subtaskArray, ...task } = this.state;
+    const triggerNode = trigger(() => this.openPopup());
     return (
-      <Modal open={open} trigger={<Icon name="edit" onClick={() => this.openPopup()} />}>
+      <Modal dimmer="inverted" open={open} trigger={triggerNode} onClose={() => this.closePopup()}>
         <Modal.Header>Task Editor</Modal.Header>
         <Modal.Content>
           <PopupInternalMainTaskEditor

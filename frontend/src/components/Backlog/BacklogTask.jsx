@@ -3,7 +3,7 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
 import type { Dispatch } from 'redux';
-import { Checkbox } from 'semantic-ui-react';
+import { Checkbox, Icon } from 'semantic-ui-react';
 import styles from './BacklogTask.css';
 import type { ColoredTask } from './backlog-types';
 import { markTask } from '../../store/actions';
@@ -27,7 +27,7 @@ function BacklogTask(props: Props) {
     name, id, tag, date, complete, subtaskArray,
   };
   const subTasks = subtaskArray
-    .map(subTask => (<BacklogSubTask key={id} mainTaskId={id} {...subTask} />));
+    .map(subTask => (<BacklogSubTask key={subTask.id} mainTaskId={id} {...subTask} />));
   return (
     <div className={styles.BacklogTask} style={{ backgroundColor: color }}>
       <div className={styles.BacklogTaskMainWrapper}>
@@ -42,7 +42,7 @@ function BacklogTask(props: Props) {
         >
           {name}
         </span>
-        <PopupTaskEditor {...task} />
+        <PopupTaskEditor trigger={opener => (<Icon name="edit" onClick={opener} />)} {...task} />
       </div>
       {subTasks}
     </div>
