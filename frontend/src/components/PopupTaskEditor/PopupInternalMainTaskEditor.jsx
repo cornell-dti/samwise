@@ -10,10 +10,6 @@ import type {
 import styles from './PopupTaskEditor.css';
 import ClassPicker from '../ClassPicker/ClassPicker';
 
-const mapStateToProps = ({ tagColorPicker }: StoreState): {| tagColorPicker: TagColorConfig |} => ({
-  tagColorPicker,
-});
-
 type Props = {|
   ...Task;
   tagColorPicker: TagColorConfig;
@@ -24,6 +20,10 @@ type State = {|
   doesShowTagEditor: boolean;
   doesShowCalendarEditor: boolean;
 |};
+
+const mapStateToProps = ({ tagColorPicker }: StoreState): {| tagColorPicker: TagColorConfig |} => ({
+  tagColorPicker,
+});
 
 /**
  * PopupInternalMainTaskEditor is intended for internal use for PopupTaskEditor only.

@@ -1,46 +1,60 @@
-// @flow
+// @flow strict
 
 import * as React from 'react';
 import { connect } from 'react-redux';
-import type { Dispatch } from 'redux';
 import { Checkbox, Icon } from 'semantic-ui-react';
+import { bindActionCreators } from 'redux';
 import styles from './BacklogTask.css';
 import type { ColoredTask } from './backlog-types';
-import { markTask, removeTask, toggleTaskPin } from '../../store/actions';
+import {
+  markTask as markTaskAction,
+  removeTask as removeTaskAction,
+  toggleTaskPin as toggleTaskPinAction,
+} from '../../store/actions';
 import BacklogSubTask from './BacklogSubTask';
 import PopupTaskEditor from '../PopupTaskEditor/PopupTaskEditor';
-import type { Task } from '../../store/store-types';
-
-const mapDispatchToProps = (dispatch: Dispatch<any>) => ({
-  changeCompletionStatus: (taskId: number) => dispatch(markTask(taskId)),
-  changeInFocusStatus: (taskId: number) => dispatch(toggleTaskPin(taskId)),
-  removeMe: (taskId: number) => dispatch(removeTask(taskId)),
-});
+import type { SubTask } from '../../store/store-types';
+import type {
+  Dispatch, MarkTaskAction, RemoveTaskAction, ToggleTaskPinAction,
+} from '../../store/action-types';
 
 type Props = {|
   ...ColoredTask;
-  +changeCompletionStatus: (taskId: number) => void;
-  +changeInFocusStatus: (taskId: number) => void;
-  +removeMe: (taskId: number) => void;
+  +markTask: (taskId: number) => MarkTaskAction;
+  +toggleTaskPin: (taskId: number) => ToggleTaskPinAction;
+  +removeTask: (taskId: number) => RemoveTaskAction;
 |};
 
+const mapDispatchToProps = (dispatch: Dispatch) => bindActionCreators({
+  markTask: markTaskAction,
+  toggleTaskPin: toggleTaskPinAction,
+  removeTask: removeTaskAction,
+}, dispatch);
+
+/**
+ * The component used to render one task in backlog day.
+ *
+ * @param props the props to render.
+ * @return {*} the rendered element.
+ * @constructor
+ */
 function BacklogTask(props: Props) {
   const {
-    name, id, tag, date, color, complete, inFocus, subtaskArray,
-    changeCompletionStatus, changeInFocusStatus, removeMe,
+    color, markTask, toggleTaskPin, removeTask, ...task
   } = props;
-  const task: Task = {
-    name, id, tag, date, complete, inFocus, subtaskArray,
-  };
-  const subTasks = subtaskArray
-    .map(subTask => (<BacklogSubTask key={subTask.id} mainTaskId={id} {...subTask} />));
+  const {
+    name, id, complete, inFocus, subtaskArray,
+  } = task;
+  const subTasks = subtaskArray.map((subTask: SubTask) => (
+    <BacklogSubTask key={subTask.id} mainTaskId={id} {...subTask} />
+  ));
   return (
     <div className={styles.BacklogTask} style={{ backgroundColor: color }}>
       <div className={styles.BacklogTaskMainWrapper}>
         <Checkbox
           className={styles.BacklogTaskCheckBox}
           checked={complete}
-          onChange={() => changeCompletionStatus(id)}
+          onChange={() => markTask(id)}
         />
         <span
           className={styles.BacklogTaskText}
@@ -48,10 +62,10 @@ function BacklogTask(props: Props) {
         >
           {name}
         </span>
-        <Icon name="delete calendar" onClick={() => removeMe(id)} />
+        <Icon name="delete calendar" onClick={() => removeTask(id)} />
         <Icon
           name={inFocus ? 'bookmark' : 'bookmark outline'}
-          onClick={() => changeInFocusStatus(id)}
+          onClick={() => toggleTaskPin(id)}
         />
         <PopupTaskEditor trigger={opener => (<Icon name="edit" onClick={opener} />)} {...task} />
       </div>

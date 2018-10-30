@@ -37,6 +37,9 @@ const mapStateToProps = (state: State): Props => {
   return { date2TaskMap: buildDate2TaskMap(mainTaskArray), colors: tagColorPicker };
 };
 
+/**
+ * The component used to render the entire backlog.
+ */
 class Backlog extends React.Component<Props, ComponentState> {
   constructor(props) {
     super(props);
@@ -163,8 +166,5 @@ class Backlog extends React.Component<Props, ComponentState> {
   }
 }
 
-const ConnectedBackLog = connect(
-  mapStateToProps,
-  null,
-)(Backlog);
+const ConnectedBackLog = connect(mapStateToProps, null)(Backlog);
 export default ConnectedBackLog;

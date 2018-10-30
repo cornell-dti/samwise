@@ -1,27 +1,27 @@
-// @flow
+// @flow strict
 
 import * as React from 'react';
 import { Button, Modal } from 'semantic-ui-react';
-import type { Dispatch } from 'redux';
 import connect from 'react-redux/es/connect/connect';
+import { bindActionCreators } from 'redux';
 import type { SubTask, Task } from '../../store/store-types';
 import { editTask as editTaskAction } from '../../store/actions';
 import PopupInternalSubTaskEditor from './PopupInternalSubTaskEditor';
 import PopupInternalMainTaskEditor from './PopupInternalMainTaskEditor';
-
-const mapDispatchToProps = (dispatch: Dispatch<any>) => ({
-  editTask: (task: Task): void => dispatch(editTaskAction(task)),
-});
+import type { Dispatch, EditTaskAction } from '../../store/action-types';
 
 type Props = {|
   ...Task;
-  +editTask: (task: Task) => void;
+  +editTask: (task: Task) => EditTaskAction;
   +trigger: (opener: () => void) => React.Node;
 |};
 type State = {| ...Task; open: boolean |};
 
-class PopupTaskEditor extends React.Component<Props, State> {
+const mapDispatchToProps = (dispatch: Dispatch) => bindActionCreators(
+  { editTask: editTaskAction }, dispatch,
+);
 
+class PopupTaskEditor extends React.Component<Props, State> {
   constructor(props: Props) {
     super(props);
     const { editTask, trigger, ...task } = props;

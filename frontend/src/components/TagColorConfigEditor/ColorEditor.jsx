@@ -1,20 +1,21 @@
-// @flow
+// @flow strict
 
 import * as React from 'react';
 import { connect } from 'react-redux';
 import { GithubPicker } from 'react-color';
-import type { Dispatch } from 'redux';
+import { bindActionCreators } from 'redux';
 import { editColorConfig as editColorConfigAction } from '../../store/actions';
-
-const mapDispatchToProps = (dispatch: Dispatch<any>) => ({
-  editColorConfig: (tag: string, color: string) => dispatch(editColorConfigAction(tag, color)),
-});
+import type { Dispatch, TagColorConfigEditAction } from '../../store/action-types';
 
 type Props = {|
   tag: string,
   color: string,
-  editColorConfig: (tag: string, color: string) => void,
+  editColorConfig: (tag: string, color: string) => TagColorConfigEditAction,
 |};
+
+const mapDispatchToProps = (dispatch: Dispatch) => bindActionCreators(
+  { editColorConfig: editColorConfigAction }, dispatch,
+);
 
 function ColorEditor(props: Props) {
   const { tag, color, editColorConfig } = props;

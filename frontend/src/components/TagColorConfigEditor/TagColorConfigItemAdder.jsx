@@ -1,19 +1,20 @@
-// @flow
+// @flow strict
 
 import React from 'react';
 import { connect } from 'react-redux';
-import type { Dispatch } from 'redux';
 import { GithubPicker } from 'react-color';
+import { bindActionCreators } from 'redux';
 import { editColorConfig as editColorConfigAction } from '../../store/actions';
 import styles from './TagColorConfigItemAdder.css';
+import type { Dispatch, TagColorConfigEditAction } from '../../store/action-types';
 
-const mapDispatchToProps = (dispatch: Dispatch<any>) => ({
-  editColorConfig: (tag, color) => dispatch(editColorConfigAction(tag, color)),
-});
-
-type Props = {| editColorConfig: (tag: string, color: string) => void |};
+type Props = {| editColorConfig: (tag: string, color: string) => TagColorConfigEditAction |};
 
 type State = {| tagInput: string, colorInput: string |};
+
+const mapDispatchToProps = (dispatch: Dispatch) => bindActionCreators({
+  editColorConfig: editColorConfigAction,
+}, dispatch);
 
 class TagColorConfigItemAdder extends React.Component<Props, State> {
   constructor(props: Props) {

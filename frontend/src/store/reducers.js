@@ -1,6 +1,6 @@
 // @flow
 
-import type { EditTaskAction, TagColorConfigAction } from './action-types';
+import type { Action, EditTaskAction, TagColorConfigAction } from './action-types';
 import type {
   State, Task, SubTask, TagColorConfig,
 } from './store-types';
@@ -203,7 +203,7 @@ function editTask(state: State, action: EditTaskAction) {
   };
 }
 
-const rootReducer = (state: State = initialState, action: any) => {
+const rootReducer = (state: State = initialState, action: $Subtype<Action>) => {
   switch (action.type) {
     case 'EDIT_COLOR_CONFIG':
     case 'REMOVE_COLOR_CONFIG':
