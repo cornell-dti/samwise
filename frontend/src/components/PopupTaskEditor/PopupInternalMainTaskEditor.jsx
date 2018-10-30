@@ -21,9 +21,7 @@ type State = {|
   doesShowCalendarEditor: boolean;
 |};
 
-const mapStateToProps = ({ tagColorPicker }: StoreState): {| tagColorPicker: TagColorConfig |} => ({
-  tagColorPicker,
-});
+const mapStateToProps = ({ tagColorPicker }: StoreState) => ({ tagColorPicker });
 
 /**
  * PopupInternalMainTaskEditor is intended for internal use for PopupTaskEditor only.
