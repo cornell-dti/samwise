@@ -21,11 +21,14 @@ type Props = {|
 type State = {| ...Task; open: boolean |};
 
 class PopupTaskEditor extends React.Component<Props, State> {
+
   constructor(props: Props) {
     super(props);
     const { editTask, trigger, ...task } = props;
     this.state = { ...task, open: false };
   }
+
+  internalSubTaskEditor: ?PopupInternalSubTaskEditor;
 
   openPopup() {
     this.setState((state: State) => ({ ...state, open: true }));
@@ -45,9 +48,14 @@ class PopupTaskEditor extends React.Component<Props, State> {
 
   submitChanges(event: any) {
     event.preventDefault();
+    const subTaskEditor = this.internalSubTaskEditor;
+    if (subTaskEditor == null) {
+      throw new Error('Impossible!');
+    }
     const { editTask } = this.props;
     const { open, ...task } = this.state;
-    editTask(task);
+    const latestTask: Task = { ...task, subtaskArray: subTaskEditor.reportLatestSubtaskArray() };
+    editTask(latestTask);
     this.closePopup();
   }
 
@@ -64,6 +72,9 @@ class PopupTaskEditor extends React.Component<Props, State> {
             editTask={t => this.editMainTask(t)}
           />
           <PopupInternalSubTaskEditor
+            ref={(e) => {
+              this.internalSubTaskEditor = e;
+            }}
             subtaskArray={subtaskArray}
             editSubTasks={arr => this.editSubTasks(arr)}
           />

@@ -45,22 +45,36 @@ export default class PopupInternalSubTaskEditor extends React.Component<Props, S
     this.setState((state: State) => ({ ...state, newSubTaskValue }));
   }
 
-  handleSubmitForNewSubTask(event: any) {
-    event.preventDefault();
+  reportLatestSubtaskArray(): SubTask[] {
     const createNewSubTask = (name: string) => ({
       name,
       id: ((10 * new Date()) + Math.floor(1000 * Math.random())),
       complete: false,
       inFocus: false,
     });
+    const { subtaskArray, newSubTaskValue } = this.state;
+    if (!newSubTaskValue.trim()) {
+      return subtaskArray;
+    }
+    return [...subtaskArray, createNewSubTask(newSubTaskValue)];
+  }
+
+  handleSubmitForNewSubTask(event: any) {
+    event.preventDefault();
     const { editSubTasks } = this.props;
+    const createNewSubTask = (name: string) => ({
+      name,
+      id: ((10 * new Date()) + Math.floor(1000 * Math.random())),
+      complete: false,
+      inFocus: false,
+    });
     this.setState((state: State) => {
-      const newState = {
-        subtaskArray: [...state.subtaskArray, createNewSubTask(state.newSubTaskValue)],
-        newSubTaskValue: '',
-      };
-      editSubTasks(newState.subtaskArray);
-      return newState;
+      if (!state.newSubTaskValue.trim()) {
+        return state;
+      }
+      const newSubtaskArray = [...state.subtaskArray, createNewSubTask(state.newSubTaskValue)];
+      editSubTasks(newSubtaskArray);
+      return { subtaskArray: newSubtaskArray, newSubTaskValue: '' };
     });
   }
 
