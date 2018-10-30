@@ -22,4 +22,7 @@ export type ToggleSubTaskPinAction = {|
   +type: 'TOGGLE_SUBTASK_PIN'; taskId: number; subtaskId: number;
 |};
 
+export type RemoveTaskAction = {| +type: 'REMOVE_TASK'; taskId: number; |};
+export type RemoveSubTaskAction = {| +type: 'REMOVE_SUBTASK'; taskId: number; subtaskId: number; |};
+
 export type Action = { +type: string; };

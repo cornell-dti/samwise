@@ -5,7 +5,7 @@ import { connect } from 'react-redux';
 import type { Dispatch } from 'redux';
 import { Checkbox, Icon } from 'semantic-ui-react';
 import styles from './BacklogTask.css';
-import { markSubtask, toggleSubTaskPin } from '../../store/actions';
+import { markSubtask, removeSubTask, toggleSubTaskPin } from '../../store/actions';
 import type { SubTask } from '../../store/store-types';
 
 const mapDispatchToProps = (dispatch: Dispatch<any>) => ({
@@ -15,6 +15,9 @@ const mapDispatchToProps = (dispatch: Dispatch<any>) => ({
   changeInFocusStatus: (taskId: number, subTaskId: number) => {
     dispatch(toggleSubTaskPin(taskId, subTaskId));
   },
+  removeMe: (taskId: number, subTaskId: number) => {
+    dispatch(removeSubTask(taskId, subTaskId));
+  },
 });
 
 type Props = {|
@@ -22,12 +25,13 @@ type Props = {|
   +mainTaskId: number;
   +changeCompletionStatus: (taskId: number, subTaskId: number) => void;
   +changeInFocusStatus: (taskId: number, subTaskId: number) => void;
+  +removeMe: (taskId: number, subTaskId: number) => void;
 |};
 
 function BacklogSubTask(props: Props) {
   const {
     name, id, mainTaskId, complete, inFocus,
-    changeCompletionStatus, changeInFocusStatus,
+    changeCompletionStatus, changeInFocusStatus, removeMe,
   } = props;
   return (
     <div className={styles.BacklogSubTask}>
@@ -42,6 +46,7 @@ function BacklogSubTask(props: Props) {
       >
         {name}
       </span>
+      <Icon name="delete" onClick={() => removeMe(mainTaskId, id)} />
       <Icon
         name={inFocus ? 'bookmark' : 'bookmark outline'}
         onClick={() => changeInFocusStatus(mainTaskId, id)}

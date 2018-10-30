@@ -6,7 +6,7 @@ import type { Dispatch } from 'redux';
 import { Checkbox, Icon } from 'semantic-ui-react';
 import styles from './BacklogTask.css';
 import type { ColoredTask } from './backlog-types';
-import { markTask, toggleTaskPin } from '../../store/actions';
+import { markTask, removeTask, toggleTaskPin } from '../../store/actions';
 import BacklogSubTask from './BacklogSubTask';
 import PopupTaskEditor from '../PopupTaskEditor/PopupTaskEditor';
 import type { Task } from '../../store/store-types';
@@ -14,18 +14,20 @@ import type { Task } from '../../store/store-types';
 const mapDispatchToProps = (dispatch: Dispatch<any>) => ({
   changeCompletionStatus: (taskId: number) => dispatch(markTask(taskId)),
   changeInFocusStatus: (taskId: number) => dispatch(toggleTaskPin(taskId)),
+  removeMe: (taskId: number) => dispatch(removeTask(taskId)),
 });
 
 type Props = {|
   ...ColoredTask;
   +changeCompletionStatus: (taskId: number) => void;
   +changeInFocusStatus: (taskId: number) => void;
+  +removeMe: (taskId: number) => void;
 |};
 
 function BacklogTask(props: Props) {
   const {
     name, id, tag, date, color, complete, inFocus, subtaskArray,
-    changeCompletionStatus, changeInFocusStatus,
+    changeCompletionStatus, changeInFocusStatus, removeMe,
   } = props;
   const task: Task = {
     name, id, tag, date, complete, inFocus, subtaskArray,
@@ -46,6 +48,7 @@ function BacklogTask(props: Props) {
         >
           {name}
         </span>
+        <Icon name="delete calendar" onClick={() => removeMe(id)} />
         <Icon
           name={inFocus ? 'bookmark' : 'bookmark outline'}
           onClick={() => changeInFocusStatus(id)}

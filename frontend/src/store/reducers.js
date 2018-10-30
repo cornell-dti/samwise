@@ -120,6 +120,37 @@ function toggleSubtaskPin(mainTaskArray: Task[], taskID: number, subtaskID: numb
   });
 }
 
+/**
+ * Remove a main task.
+ *
+ * @param mainTaskArray the main task array to modify.
+ * @param taskID id of the task to remove.
+ * @return {Task[]} the new task array with the specified task remove.
+ */
+function removeTask(mainTaskArray: Task[], taskID: number): Task[] {
+  return mainTaskArray.filter((task: Task) => task.id !== taskID);
+}
+
+/**
+ * Remove a subtask.
+ *
+ * @param mainTaskArray the main task array to modify.
+ * @param taskID id of the parent task of the subtask.
+ * @param subtaskID the id of the subtask.
+ * @return {Task[]} the new task array with the specified subtask removed.
+ */
+function removeSubtask(mainTaskArray: Task[], taskID: number, subtaskID: number): Task[] {
+  return mainTaskArray.map((task: Task) => {
+    if (task.id !== taskID) {
+      return task;
+    }
+    return {
+      ...task,
+      subtaskArray: task.subtaskArray.filter((subTask: SubTask) => subTask.id !== subtaskID),
+    };
+  });
+}
+
 function addSubtask(mainTaskArray: Task[], taskID: number, subtask): Task[] {
   return mainTaskArray.map((task: Task) => {
     if (task.id !== taskID) {
@@ -211,6 +242,18 @@ const rootReducer = (state: State = initialState, action: any) => {
         ...state,
         backupTaskArray: state.mainTaskArray,
         mainTaskArray: toggleSubtaskPin(state.mainTaskArray, action.taskId, action.subtaskId),
+      };
+    case 'REMOVE_TASK':
+      return {
+        ...state,
+        backupTaskArray: state.mainTaskArray,
+        mainTaskArray: removeTask(state.mainTaskArray, action.taskId),
+      };
+    case 'REMOVE_SUBTASK':
+      return {
+        ...state,
+        backupTaskArray: state.mainTaskArray,
+        mainTaskArray: removeSubtask(state.mainTaskArray, action.taskId, action.subtaskId),
       };
     case 'ADD_SUBTASK':
       return {

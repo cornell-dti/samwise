@@ -30,23 +30,44 @@ class PopupTaskEditor extends React.Component<Props, State> {
 
   internalSubTaskEditor: ?PopupInternalSubTaskEditor;
 
+  /**
+   * Open the popup.
+   */
   openPopup() {
     this.setState((state: State) => ({ ...state, open: true }));
   }
 
+  /**
+   * Close the popup.
+   */
   closePopup() {
     this.setState((state: State) => ({ ...state, open: false }));
   }
 
+  /**
+   * Update the state to contain the given latest edited main task.
+   *
+   * @param task the latest edited main task.
+   */
   editMainTask(task: Task) {
     this.setState((state: State) => ({ ...state, ...task }));
   }
 
+  /**
+   * Update the state to contain the given latest edited subtask array.
+   *
+   * @param subtaskArray the latest edited subtask array.
+   */
   editSubTasks(subtaskArray: SubTask[]) {
     this.setState((state: State) => ({ ...state, subtaskArray }));
   }
 
-  submitChanges(event: any) {
+  /**
+   * Submit all the changes when clicking submit.
+   *
+   * @param event the event that notifies about clicking 'submit'.
+   */
+  submitChanges(event: Event) {
     event.preventDefault();
     const subTaskEditor = this.internalSubTaskEditor;
     if (subTaskEditor == null) {
