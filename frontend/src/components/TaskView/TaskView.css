@@ -14,6 +14,15 @@
 
 .TaskViewControl {
   display: flex;
+  align-items: center;
+}
+
+.TaskViewControlTitle {
+  margin: 1em 0.5em !important;
+}
+
+.TaskViewControlButton {
+  margin-left: 0.5em;
 }
 
 .TaskViewControlPadding {

@@ -6,6 +6,7 @@ import BacklogViewSwitcher from '../Backlog/BacklogViewSwitcher';
 import BacklogDaysContainer from '../Backlog/BacklogDaysContainer';
 import FocusView from '../FocusView/focusView';
 import styles from './TaskView.css';
+import { Button } from 'semantic-ui-react';
 
 type Props = {||};
 
@@ -74,7 +75,14 @@ export default class TaskView extends React.Component<Props, State> {
     const backlogComponent = (
       <div className={styles.TaskViewFuturePanel}>
         <div className={styles.TaskViewControl}>
-          <h3>Future</h3>
+          <h3 className={styles.TaskViewControlTitle}>Future</h3>
+          <Button
+            className={styles.TaskViewControlButton}
+            active={doesShowFocusView}
+            onClick={() => this.toggleFocusView()}
+          >
+            Today
+          </Button>
           <span className={styles.TaskViewControlPadding} />
           <BacklogViewSwitcher onChange={option => this.switchBacklogView(option)} />
         </div>
