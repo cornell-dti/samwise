@@ -3,18 +3,17 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { GithubPicker } from 'react-color';
-import { bindActionCreators } from 'redux';
 import { editColorConfig as editColorConfigAction } from '../../store/actions';
 import styles from './TagColorConfigItemAdder.css';
-import type { Dispatch, TagColorConfigEditAction } from '../../store/action-types';
+import type { TagColorConfigEditAction } from '../../store/action-types';
 
 type Props = {| editColorConfig: (tag: string, color: string) => TagColorConfigEditAction |};
 
 type State = {| tagInput: string, colorInput: string |};
 
-const mapDispatchToProps = (dispatch: Dispatch) => bindActionCreators({
+const actionCreators = {
   editColorConfig: editColorConfigAction,
-}, dispatch);
+};
 
 class TagColorConfigItemAdder extends React.Component<Props, State> {
   constructor(props: Props) {
@@ -55,8 +54,5 @@ class TagColorConfigItemAdder extends React.Component<Props, State> {
   }
 }
 
-const ConnectedTagColorConfigItemAdder = connect(
-  null,
-  mapDispatchToProps,
-)(TagColorConfigItemAdder);
+const ConnectedTagColorConfigItemAdder = connect(null, actionCreators)(TagColorConfigItemAdder);
 export default ConnectedTagColorConfigItemAdder;

@@ -1,26 +1,35 @@
-// @flow
+// @flow strict
 
 import * as React from 'react';
-import { connect } from 'react-redux';
+import type { Node } from 'react';
 import { Grid } from 'semantic-ui-react';
 import type { BacklogDisplayOption, OneDayTask } from './backlog-types';
 import BacklogDay from './BacklogDay';
 import type { State, TagColorConfig, Task } from '../../store/store-types';
+import { simpleConnect } from '../../store/react-redux-util';
+
+type DateToTaskMap = Map<string, Task[]>;
+
+type OwnProps = {| displayOption: BacklogDisplayOption; |}
+
+type SubscribedProps = {|
+  +date2TaskMap: DateToTaskMap;
+  +colors: TagColorConfig;
+|};
 
 type Props = {|
-  displayOption: BacklogDisplayOption;
-  +date2TaskMap: Map<string, Task[]>;
-  +colors: TagColorConfig;
+  ...OwnProps;
+  ...SubscribedProps;
 |};
 
 /**
  * Compute a map from date to a list of tasks on that day for faster access.
  *
  * @param allTasks an array of all tasks. There is no assumption of the order of the tasks.
- * @return {Map<string, Task[]>} the built map.
+ * @return {DateToTaskMap} the built map.
  */
-function buildDate2TaskMap(allTasks: Task[]): Map<string, Task[]> {
-  const map: Map<string, Task[]> = new Map();
+function buildDate2TaskMap(allTasks: Task[]): DateToTaskMap {
+  const map: DateToTaskMap = new Map();
   allTasks.forEach((task) => {
     const dateString = new Date(task.date).toLocaleDateString();
     const tasksArrOpt = map.get(dateString);
@@ -33,9 +42,10 @@ function buildDate2TaskMap(allTasks: Task[]): Map<string, Task[]> {
   return map;
 }
 
-const mapStateToProps = (({ mainTaskArray, tagColorPicker }: State) => ({
-  date2TaskMap: buildDate2TaskMap(mainTaskArray), colors: tagColorPicker,
-}));
+const mapStateToProps = (state: State): SubscribedProps => ({
+  date2TaskMap: buildDate2TaskMap(state.mainTaskArray),
+  colors: state.tagColorPicker,
+});
 
 /**
  * Compute the start date and end date.
@@ -80,13 +90,13 @@ function computeStartAndEndDay(
 /**
  * Returns an array of backlog days given the current props and the display option.
  *
- * @param date2TaskMap the map from a date to all the tasks in that day.
- * @param colors all the color config.
- * @param displayOption the display option.
+ * @param {DateToTaskMap} date2TaskMap the map from a date to all the tasks in that day.
+ * @param {TagColorConfig} colors all the color config.
+ * @param {BacklogDisplayOption} displayOption the display option.
  * @return {OneDayTask[]} an array of backlog days information.
  */
 function buildDaysInBacklog(
-  date2TaskMap: Map<string, Task[]>, colors: TagColorConfig, displayOption: BacklogDisplayOption,
+  date2TaskMap: DateToTaskMap, colors: TagColorConfig, displayOption: BacklogDisplayOption,
 ): OneDayTask[] {
   const { startDate, endDate } = computeStartAndEndDay(displayOption);
   const doesRenderSubTasks = displayOption !== 'MONTHLY';
@@ -108,9 +118,9 @@ function buildDaysInBacklog(
  * Render a component for one day in backlog.
  *
  * @param day the day object to display.
- * @return {*} the rendered component.
+ * @return {Node} the rendered component.
  */
-const renderDay = (day: OneDayTask) => (
+const renderDay = (day: OneDayTask): Node => (
   <Grid.Column key={day.date.toDateString()}>
     <BacklogDay {...day} />
   </Grid.Column>
@@ -122,10 +132,10 @@ const renderDay = (day: OneDayTask) => (
  * @param date2TaskMap the map from a date to all the tasks in that day.
  * @param colors all the color config.
  * @param displayOption the display option.
- * @return {*} the rendered component.
+ * @return {Node} the rendered component.
  * @constructor
  */
-function BacklogDaysContainer({ date2TaskMap, colors, displayOption }: Props): React.Node {
+function BacklogDaysContainer({ date2TaskMap, colors, displayOption }: Props): Node {
   const days = buildDaysInBacklog(date2TaskMap, colors, displayOption);
   const rows = [];
   const columns = days.length === 4 ? 4 : 7;
@@ -147,5 +157,7 @@ function BacklogDaysContainer({ date2TaskMap, colors, displayOption }: Props): R
   return <Grid>{rows}</Grid>;
 }
 
-const ConnectedBacklogDaysContainer = connect(mapStateToProps, null)(BacklogDaysContainer);
+const ConnectedBacklogDaysContainer = simpleConnect<Props, OwnProps, SubscribedProps>(
+  mapStateToProps,
+)(BacklogDaysContainer);
 export default ConnectedBacklogDaysContainer;

@@ -1,9 +1,9 @@
 // @flow strict
 
 import * as React from 'react';
+import type { Node } from 'react';
 import { connect } from 'react-redux';
 import { Checkbox, Icon } from 'semantic-ui-react';
-import { bindActionCreators } from 'redux';
 import styles from './BacklogTask.css';
 import type { ColoredTask } from './backlog-types';
 import {
@@ -15,7 +15,7 @@ import BacklogSubTask from './BacklogSubTask';
 import PopupTaskEditor from '../PopupTaskEditor/PopupTaskEditor';
 import type { SubTask } from '../../store/store-types';
 import type {
-  Dispatch, MarkTaskAction, RemoveTaskAction, ToggleTaskPinAction,
+  MarkTaskAction, RemoveTaskAction, ToggleTaskPinAction,
 } from '../../store/action-types';
 
 type Props = {|
@@ -26,20 +26,20 @@ type Props = {|
   +removeTask: (taskId: number) => RemoveTaskAction;
 |};
 
-const mapDispatchToProps = (dispatch: Dispatch) => bindActionCreators({
+const actionCreators = {
   markTask: markTaskAction,
   toggleTaskPin: toggleTaskPinAction,
   removeTask: removeTaskAction,
-}, dispatch);
+};
 
 /**
  * The component used to render one task in backlog day.
  *
  * @param props the props to render.
- * @return {*} the rendered element.
+ * @return {Node} the rendered element.
  * @constructor
  */
-function BacklogTask(props: Props) {
+function BacklogTask(props: Props): Node {
   const {
     color, doesRenderSubTasks, markTask, toggleTaskPin, removeTask, ...task
   } = props;
@@ -83,5 +83,5 @@ function BacklogTask(props: Props) {
   );
 }
 
-const ConnectedBackLogTask = connect(null, mapDispatchToProps)(BacklogTask);
+const ConnectedBackLogTask = connect(null, actionCreators)(BacklogTask);
 export default ConnectedBackLogTask;

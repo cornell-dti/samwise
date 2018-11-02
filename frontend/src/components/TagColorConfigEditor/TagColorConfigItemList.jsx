@@ -1,10 +1,11 @@
 // @flow strict
 
 import React from 'react';
-import { connect } from 'react-redux';
+import type { Node } from 'react';
 import { List } from 'semantic-ui-react';
 import TagColorConfigItem from './TagColorConfigItem';
 import type { State, TagColorConfig } from '../../store/store-types';
+import { simpleConnect } from '../../store/react-redux-util';
 
 type Props = {| tagColorConfig: TagColorConfig, configKeys: string[] |};
 
@@ -13,7 +14,7 @@ const mapStateToProps = (state: State): Props => ({
   configKeys: Object.keys(state.tagColorPicker),
 });
 
-function TagColorConfigItemList({ tagColorConfig, configKeys }: Props) {
+function TagColorConfigItemList({ tagColorConfig, configKeys }: Props): Node {
   return (
     <List divided relaxed>
       {
@@ -25,5 +26,7 @@ function TagColorConfigItemList({ tagColorConfig, configKeys }: Props) {
   );
 }
 
-const ConnectedTagColorConfigItemList = connect(mapStateToProps, null)(TagColorConfigItemList);
+const ConnectedTagColorConfigItemList = simpleConnect<Props, {}, Props>(
+  mapStateToProps,
+)(TagColorConfigItemList);
 export default ConnectedTagColorConfigItemList;

@@ -1,6 +1,6 @@
 // @flow strict
 
-import type { Dispatch as ReduxDispatch } from 'redux';
+import type { ActionCreators as ReduxActionCreators, Dispatch as ReduxDispatch } from 'redux';
 import type { Task } from './store-types';
 
 export type TagColorConfigEditAction = { type: 'EDIT_COLOR_CONFIG'; tag: string; color: string; };
@@ -23,4 +23,8 @@ export type RemoveTaskAction = { type: 'REMOVE_TASK'; taskId: number; };
 export type RemoveSubTaskAction = { type: 'REMOVE_SUBTASK'; taskId: number; subtaskId: number; };
 
 export type Action = { type: $Subtype<string> };
+
+export type ActionProps = { [actionName: string]: (...args: Array<any>) => Action };
 export type Dispatch = ReduxDispatch<Action>;
+export type ActionCreators = ReduxActionCreators<string, Action>;
+export type MapDispatchToProps<OP> = (d: Dispatch, op: OP) => { ...OP, ...ActionProps };

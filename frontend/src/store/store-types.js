@@ -30,9 +30,9 @@ export type TagColorConfig = {
 /**
  * The type of the entire redux state.
  */
-export type State = {
-  mainTaskArray: Task[],
-  backupTaskArray: Task[],
-  tagColorPicker: TagColorConfig,
-  bearStatus: string
-};
+export type State = {|
+  +mainTaskArray: Task[];
+  +backupTaskArray: Task[];
+  +tagColorPicker: TagColorConfig;
+  +bearStatus: string
+|};
