@@ -198,8 +198,7 @@ function editTask(state: State, action: EditTaskAction) {
   return {
     ...state,
     backupTaskArray: state.mainTaskArray,
-    mainTaskArray: state.mainTaskArray
-      .map((task: Task) => (task.id === newTask.id ? newTask : task)),
+    mainTaskArray: state.mainTaskArray.map<Task>(t => (t.id === newTask.id ? newTask : t)),
   };
 }
 

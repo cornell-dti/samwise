@@ -24,15 +24,15 @@ export type Task = {|
  * The tag color picker maps a tag to a color.
  */
 export type TagColorConfig = {
-  +[tag: string]: string
+  [tag: string]: string
 };
 
 /**
  * The type of the entire redux state.
  */
 export type State = {
-  +mainTaskArray: Task[],
-  +backupTaskArray: Task[],
-  +tagColorPicker: TagColorConfig,
-  +bearStatus: string
+  mainTaskArray: Task[],
+  backupTaskArray: Task[],
+  tagColorPicker: TagColorConfig,
+  bearStatus: string
 };

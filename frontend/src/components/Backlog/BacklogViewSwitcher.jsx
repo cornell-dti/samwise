@@ -3,7 +3,6 @@
 import * as React from 'react';
 import { Button } from 'semantic-ui-react';
 import type { BacklogDisplayOption } from './backlog-types';
-import styles from './Backlog.css';
 
 type Props = {| +onChange: (option: BacklogDisplayOption) => void |};
 type State = {| +displayOption: BacklogDisplayOption |};
@@ -30,16 +29,13 @@ export default class BacklogViewSwitcher extends React.Component<Props, State> {
       <Button active={displayOption === option} onClick={setDisplayOption(option)}>{text}</Button>
     );
     return (
-      <div className={styles.BacklogControl}>
-        <span className={styles.BacklogControlPadding} />
-        <Button.Group>
-          {renderButton('FOUR_DAYS', '4D')}
-          <Button.Or />
-          {renderButton('BIWEEKLY', '2W')}
-          <Button.Or />
-          {renderButton('MONTHLY', 'M')}
-        </Button.Group>
-      </div>
+      <Button.Group>
+        {renderButton('FOUR_DAYS', '4D')}
+        <Button.Or />
+        {renderButton('BIWEEKLY', '2W')}
+        <Button.Or />
+        {renderButton('MONTHLY', 'M')}
+      </Button.Group>
     );
   }
 }

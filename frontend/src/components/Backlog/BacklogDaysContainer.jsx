@@ -8,9 +8,9 @@ import BacklogDay from './BacklogDay';
 import type { State, TagColorConfig, Task } from '../../store/store-types';
 
 type Props = {|
+  displayOption: BacklogDisplayOption;
   +date2TaskMap: Map<string, Task[]>;
   +colors: TagColorConfig;
-  +displayOption: BacklogDisplayOption;
 |};
 
 /**
@@ -33,10 +33,9 @@ function buildDate2TaskMap(allTasks: Task[]): Map<string, Task[]> {
   return map;
 }
 
-const mapStateToProps = (state: State) => {
-  const { mainTaskArray, tagColorPicker } = state;
-  return { date2TaskMap: buildDate2TaskMap(mainTaskArray), colors: tagColorPicker };
-};
+const mapStateToProps: (s: State) => ReduxProps = (({ mainTaskArray, tagColorPicker }) => ({
+  date2TaskMap: buildDate2TaskMap(mainTaskArray), colors: tagColorPicker,
+}));
 
 /**
  * Compute the start date and end date.
