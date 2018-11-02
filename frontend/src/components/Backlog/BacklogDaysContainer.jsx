@@ -33,7 +33,7 @@ function buildDate2TaskMap(allTasks: Task[]): Map<string, Task[]> {
   return map;
 }
 
-const mapStateToProps: (s: State) => ReduxProps = (({ mainTaskArray, tagColorPicker }) => ({
+const mapStateToProps = (({ mainTaskArray, tagColorPicker }: State) => ({
   date2TaskMap: buildDate2TaskMap(mainTaskArray), colors: tagColorPicker,
 }));
 
