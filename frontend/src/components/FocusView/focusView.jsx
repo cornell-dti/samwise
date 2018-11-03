@@ -10,7 +10,7 @@ const mapStateToProps = state => ({
 function unconnectedFocusView(props) {
   const destructuredProps = props;
   const listItems = destructuredProps.mainTaskArray.map(
-    item => <TaskBox {...item} key={item.id} />,
+    item => (item.inFocus ? <TaskBox {...item} key={item.id} /> : null),
   );
   return (
     <List>
