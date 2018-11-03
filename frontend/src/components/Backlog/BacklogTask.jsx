@@ -1,49 +1,87 @@
-// @flow
+// @flow strict
 
 import * as React from 'react';
+import type { Node } from 'react';
 import { connect } from 'react-redux';
-import type { Dispatch } from 'redux';
-import { Checkbox } from 'semantic-ui-react';
+import { Checkbox, Icon } from 'semantic-ui-react';
 import styles from './BacklogTask.css';
 import type { ColoredTask } from './backlog-types';
-import { markTask } from '../../store/actions';
+import {
+  markTask as markTaskAction,
+  removeTask as removeTaskAction,
+  toggleTaskPin as toggleTaskPinAction,
+} from '../../store/actions';
 import BacklogSubTask from './BacklogSubTask';
 import PopupTaskEditor from '../PopupTaskEditor/PopupTaskEditor';
-
-const mapDispatchToProps = (dispatch: Dispatch<any>) => ({
-  changeCompletionStatus: (taskId: number) => dispatch(markTask(taskId)),
-});
+import type { SubTask } from '../../store/store-types';
+import type {
+  MarkTaskAction, RemoveTaskAction, ToggleTaskPinAction,
+} from '../../store/action-types';
 
 type Props = {|
   ...ColoredTask;
-  +changeCompletionStatus: (taskId: number) => void;
+  +doesRenderSubTasks: boolean;
+  +markTask: (taskId: number) => MarkTaskAction;
+  +toggleTaskPin: (taskId: number) => ToggleTaskPinAction;
+  +removeTask: (taskId: number) => RemoveTaskAction;
 |};
 
-function BacklogTask(props: Props) {
+const actionCreators = {
+  markTask: markTaskAction,
+  toggleTaskPin: toggleTaskPinAction,
+  removeTask: removeTaskAction,
+};
+
+/**
+ * The component used to render one task in backlog day.
+ *
+ * @param props the props to render.
+ * @return {Node} the rendered element.
+ * @constructor
+ */
+function BacklogTask(props: Props): Node {
   const {
-    name, id, tag, date, color, complete, subtaskArray, changeCompletionStatus,
+    color, doesRenderSubTasks, markTask, toggleTaskPin, removeTask, ...task
   } = props;
-  const task = {
-    name, id, tag, date, complete, subtaskArray,
-  };
-  const subTasks = subtaskArray
-    .map(subTask => (<BacklogSubTask key={id} mainTaskId={id} {...subTask} />));
+  const {
+    name, id, complete, inFocus, subtaskArray,
+  } = task;
+  const subTasks = doesRenderSubTasks && subtaskArray.map((subTask: SubTask) => (
+    <BacklogSubTask key={subTask.id} mainTaskId={id} {...subTask} />
+  ));
   return (
-    <div className={styles.BacklogTask} style={{ backgroundColor: color }}>
-      <div className={styles.BacklogTaskMainWrapper}>
-        <Checkbox checked={complete} onChange={() => changeCompletionStatus(id)} />
+    <div className={styles.BacklogTask}>
+      <div className={styles.BacklogTaskMainWrapper} style={{ backgroundColor: color }}>
+        <Checkbox
+          className={styles.BacklogTaskCheckBox}
+          checked={complete}
+          onChange={() => markTask(id)}
+        />
         <span
           className={styles.BacklogTaskText}
           style={complete ? { textDecoration: 'line-through' } : {}}
         >
           {name}
         </span>
-        <PopupTaskEditor {...task} />
+        <Icon
+          name="delete calendar"
+          className={styles.BacklogTaskIcon}
+          onClick={() => removeTask(id)}
+        />
+        <Icon
+          name={inFocus ? 'bookmark' : 'bookmark outline'}
+          className={styles.BacklogTaskIcon}
+          onClick={() => toggleTaskPin(id)}
+        />
+        <PopupTaskEditor
+          trigger={o => (<Icon name="edit" className={styles.BacklogTaskIcon} onClick={o} />)}
+          {...task}
+        />
       </div>
       {subTasks}
     </div>
   );
 }
 
-const ConnectedBackLogTask = connect(null, mapDispatchToProps)(BacklogTask);
+const ConnectedBackLogTask = connect(null, actionCreators)(BacklogTask);
 export default ConnectedBackLogTask;

@@ -1,0 +1,30 @@
+.TaskView {
+  display: flex;
+  flex-direction: row;
+  padding: 1em;
+}
+
+.TaskViewFocusPanel {
+  width: 320px;
+}
+
+.TaskViewFuturePanel {
+  flex: auto;
+}
+
+.TaskViewControl {
+  display: flex;
+  align-items: center;
+}
+
+.TaskViewControlTitle {
+  margin: 1em 0.5em !important;
+}
+
+.TaskViewControlButton {
+  margin-left: 0.5em;
+}
+
+.TaskViewControlPadding {
+  flex: auto;
+}

@@ -1,41 +1,72 @@
-// @flow
+// @flow strict
 
 import * as React from 'react';
+import type { Node } from 'react';
 import { connect } from 'react-redux';
-import type { Dispatch } from 'redux';
-import { Checkbox } from 'semantic-ui-react';
+import { Checkbox, Icon } from 'semantic-ui-react';
 import styles from './BacklogTask.css';
-import { markSubtask } from '../../store/actions';
+import {
+  markSubtask as markSubtaskAction,
+  removeSubTask as removeSubTaskAction,
+  toggleSubTaskPin as toggleSubTaskPinAction,
+} from '../../store/actions';
 import type { SubTask } from '../../store/store-types';
-
-const mapDispatchToProps = (dispatch: Dispatch<any>) => ({
-  changeCompletionStatus: (taskId: number, subTaskId: number) => {
-    dispatch(markSubtask(taskId, subTaskId));
-  },
-});
+import type {
+  MarkSubTaskAction, RemoveSubTaskAction, ToggleSubTaskPinAction,
+} from '../../store/action-types';
 
 type Props = {|
   ...SubTask;
   +mainTaskId: number;
-  +changeCompletionStatus: (taskId: number, subTaskId: number) => void;
+  +markSubtask: (taskId: number, subTaskId: number) => MarkSubTaskAction;
+  +toggleSubTaskPin: (taskId: number, subTaskId: number) => ToggleSubTaskPinAction;
+  +removeSubTask: (taskId: number, subTaskId: number) => RemoveSubTaskAction;
 |};
 
-function BacklogSubTask(props: Props) {
+const actionCreators = {
+  markSubtask: markSubtaskAction,
+  toggleSubTaskPin: toggleSubTaskPinAction,
+  removeSubTask: removeSubTaskAction,
+};
+
+/**
+ * The component used to render one subtask in backlog day.
+ *
+ * @param props the props to render.
+ * @return {Node} the rendered element.
+ * @constructor
+ */
+function BacklogSubTask(props: Props): Node {
   const {
-    name, id, mainTaskId, complete, changeCompletionStatus,
+    name, id, mainTaskId, complete, inFocus,
+    markSubtask, toggleSubTaskPin, removeSubTask,
   } = props;
   return (
     <div className={styles.BacklogSubTask}>
-      <Checkbox checked={complete} onChange={() => changeCompletionStatus(mainTaskId, id)} />
+      <Checkbox
+        className={styles.BacklogTaskCheckBox}
+        checked={complete}
+        onChange={() => markSubtask(mainTaskId, id)}
+      />
       <span
         className={styles.BacklogTaskText}
         style={complete ? { textDecoration: 'line-through' } : {}}
       >
         {name}
       </span>
+      <Icon
+        name="delete"
+        className={styles.BacklogTaskIcon}
+        onClick={() => removeSubTask(mainTaskId, id)}
+      />
+      <Icon
+        name={inFocus ? 'bookmark' : 'bookmark outline'}
+        className={styles.BacklogTaskIcon}
+        onClick={() => toggleSubTaskPin(mainTaskId, id)}
+      />
     </div>
   );
 }
 
-const ConnectedBacklogSubTask = connect(null, mapDispatchToProps)(BacklogSubTask);
+const ConnectedBacklogSubTask = connect(null, actionCreators)(BacklogSubTask);
 export default ConnectedBacklogSubTask;

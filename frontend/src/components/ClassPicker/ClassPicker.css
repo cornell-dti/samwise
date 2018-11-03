@@ -3,7 +3,6 @@
 Class Picker
 */
 .NewTaskClass{
-  display:none;
   position:absolute;
   bottom:19px;left:-2px;
   min-width:150px;

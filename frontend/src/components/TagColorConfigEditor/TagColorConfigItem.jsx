@@ -1,23 +1,23 @@
-// @flow
+// @flow strict
 
 import React from 'react';
 import { connect } from 'react-redux';
 import { List } from 'semantic-ui-react';
-import type { Dispatch } from 'redux';
+import type { TagColorConfigRemoveAction } from '../../store/action-types';
 import { removeColorConfig as removeColorConfigAction } from '../../store/actions';
 import ColorEditor from './ColorEditor';
 
-const mapDispatchToProps = (dispatch: Dispatch<any>) => ({
-  removeColorConfig: tag => dispatch(removeColorConfigAction(tag)),
-});
-
 type Props = {|
-  tag: string,
-  color: string,
-  removeColorConfig: (tag: string) => void
+  +tag: string,
+  +color: string,
+  +removeColorConfig: (tag: string) => TagColorConfigRemoveAction
 |};
 
 type State = {| showEditor: boolean |};
+
+const actionCreators = {
+  removeColorConfig: removeColorConfigAction,
+};
 
 class TagColorConfigItem extends React.Component<Props, State> {
   constructor(props) {
@@ -65,5 +65,5 @@ class TagColorConfigItem extends React.Component<Props, State> {
   }
 }
 
-const ConnectedTagColorConfigItem = connect(null, mapDispatchToProps)(TagColorConfigItem);
+const ConnectedTagColorConfigItem = connect(null, actionCreators)(TagColorConfigItem);
 export default ConnectedTagColorConfigItem;

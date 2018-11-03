@@ -36,11 +36,10 @@
 .PopupTaskEditorTagEditor {
   position: absolute;
   right: 0;
-  left: calc(100% - 400px);
-  top: 50px;
+  left: calc(100% - 150px);
+  top: 60px;
   z-index: 4;
   background: white;
-  border: 1px solid #333;
 }
 
 .PopupTaskEditorCalendar {

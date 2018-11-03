@@ -2,8 +2,7 @@ import React from 'react';
 import styles from './App.css';
 import TagColorConfigEditor from './components/TagColorConfigEditor/TagColorConfigEditor';
 import NewTaskComponent from './components/NewTask/NewTaskComponent';
-import FocusView from './components/FocusView/focusView';
-import Backlog from './components/Backlog/Backlog';
+import TaskView from './components/TaskView/TaskView';
 
 export default function App() {
   return (
@@ -11,8 +10,7 @@ export default function App() {
       Project Samwise(?)
       <TagColorConfigEditor />
       <NewTaskComponent />
-      <FocusView />
-      <Backlog />
+      <TaskView />
     </div>
   );
 }
