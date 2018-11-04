@@ -195,7 +195,7 @@ class UnconNewTaskComponent extends Component {
               <ul>
                 {this.state.subtaskArray.map(
                   subtaskObj => (
-                    <li key={subtaskObj.name + Math.random()} data-subtaskid={subtaskObj.id}>
+                    <li key={subtaskObj.id} data-subtaskid={subtaskObj.id}>
                       <button onClick={this.handleDelSubtask}><Icon name="delete" /></button>
                       <input
                         onBlur={this.handleChangeSubtask}
