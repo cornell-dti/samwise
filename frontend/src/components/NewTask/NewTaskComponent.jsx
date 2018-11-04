@@ -121,13 +121,17 @@ class UnconNewTaskComponent extends Component {
 
     this.setState({ subtaskArray: newSubtaskArr });
   }
-  
+
   handleDelSubtask = (e) => {
     e.preventDefault();
+
+    let i = 0;
 
     const subtaskId = parseInt(e.target.parentElement.parentElement.getAttribute("data-subtaskid"));
     const newSubtaskArr = this.state.subtaskArray.filter(
       el => el.id != subtaskId
+    ).map(
+      el => ({ ...el, id: i++ })
     );
 
     this.setState({ subtaskArray: newSubtaskArr });
