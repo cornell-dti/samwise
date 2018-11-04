@@ -65,6 +65,7 @@ class UnconNewTaskComponent extends Component {
       closeOnClick: true,
       pauseOnHover: true,
       draggable: true,
+      toastId: 'addtasktoast'
     });
   }
 
