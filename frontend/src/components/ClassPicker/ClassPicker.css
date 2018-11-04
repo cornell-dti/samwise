@@ -4,11 +4,12 @@ Class Picker
 */
 .NewTaskClass{
   position:absolute;
-  bottom:19px;left:-2px;
+  top:20px;left:-2px;
   min-width:150px;
   margin:0;
   padding:0;
   list-style:none;
+  background:white;
 }
 
 .NewTaskClass li{
@@ -20,6 +21,8 @@ Class Picker
   border-left:1px black solid;
   border-right:1px black solid;
   border-bottom:1px gray solid;
+  
+  background:white;
 }
 
 .NewTaskClass li:first-child{
