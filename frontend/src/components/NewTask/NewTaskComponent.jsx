@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Calendar } from 'react-calendar';
+import { Icon } from 'semantic-ui-react';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { addTask, undoAction } from '../../store/actions';
@@ -23,6 +24,8 @@ class UnconNewTaskComponent extends Component {
     this.addTask = React.createRef();
     this.openClassChange = React.createRef();
     this.openDateChange = React.createRef();
+    this.addTaskModal = React.createRef();
+    this.blockModal = React.createRef();
   }
 
   
@@ -36,12 +39,24 @@ class UnconNewTaskComponent extends Component {
       subtaskArray: [],
     };
   }
+  
+  openNewTask = () => {
+    this.addTaskModal.current.style.display = 'block';
+    this.blockModal.current.style.display = 'block';
+  }
+  
+  closeNewTask = () => {
+    this.addTaskModal.current.style.display = '';
+    this.blockModal.current.style.display = '';
+  }
 
   handleSave = (e) => {
     e.preventDefault();
 
     this.props.addTask(this.state);
     this.setState(this.initialState());
+
+    this.closeNewTask();
 
     toast.success(<ToastUndo dispText="Task Added :D" changeCallback={this.handleUndo} />, {
       position: 'bottom-right',
@@ -75,8 +90,46 @@ class UnconNewTaskComponent extends Component {
     this.addTask.current.focus();
   }
 
+  handleAddSubtask = (e) => {
+    if (e.keyCode === 13) {
+      e.preventDefault();
+
+      const newSubtask = {
+        id: this.state.subtaskArray.length,
+        name: e.target.value,
+        complete: false,
+      };
+
+      this.setState({
+        subtaskArray: [...this.state.subtaskArray, newSubtask]
+      });
+      
+      e.target.value = "";
+    }
+  }
+
   forceClassChangeOpen = () => {
     this.openClassChange.current.click();
+  }
+  
+  handleChangeSubtask = (e) => {
+    const subtaskId = parseInt(e.target.parentElement.getAttribute("data-subtaskid"));
+    const newSubtaskArr = this.state.subtaskArray.map(
+      el => (el.id === subtaskId ? { ...el, name: e.target.value } : el)
+    );
+
+    this.setState({ subtaskArray: newSubtaskArr });
+  }
+  
+  handleDelSubtask = (e) => {
+    e.preventDefault();
+
+    const subtaskId = parseInt(e.target.parentElement.parentElement.getAttribute("data-subtaskid"));
+    const newSubtaskArr = this.state.subtaskArray.filter(
+      el => el.id != subtaskId
+    );
+
+    this.setState({ subtaskArray: newSubtaskArr });
   }
 
 
@@ -84,47 +137,80 @@ class UnconNewTaskComponent extends Component {
     const { name, tag, date } = this.state;
     const { tagColorPicker } = this.props;
     return (
-      <form className={styles.NewTaskWrap} onSubmit={this.handleSave}>
-        <input
-          value={name}
-          onChange={this.handleTaskNameChange}
-          type="text"
-          className={styles.NewTaskComponent}
-          placeholder="What do you have to do?"
-          ref={this.addTask}
-        />
-        <div className={styles.NewTaskActive}>
+      <div>
+        <div onClick={this.closeNewTask} className={styles.CloseNewTask} ref={this.blockModal}></div>
+        <form
+          className={styles.NewTaskWrap}
+          onSubmit={this.handleSave}
+          onFocus={this.openNewTask}
+        >
+          <input
+            value={name}
+            onChange={this.handleTaskNameChange}
+            type="text"
+            className={styles.NewTaskComponent}
+            placeholder="What do you have to do?"
+            ref={this.addTask}
+          />
+          <div className={styles.NewTaskActive} ref={this.addTaskModal}>
 
-          <div className={styles.NewTaskClass}>
-            <input id="changeClassCheckbox" type="checkbox" ref={this.openClassChange} />
-            <label
-              htmlFor="changeClassCheckbox"
-              data-curr={tag}
-              style={{ backgroundColor: tagColorPicker[tag] }}
-              ref={this.changeClass}
-            >
-              {tag}
-            </label>
-            <ClassPicker onTagChange={this.handleClassChange} />
-          </div>
-
-          <div className={styles.NewTaskDate}>
-            <label htmlFor="changeDateCheckbox">📆</label>
-            <input id="changeDateCheckbox" type="checkbox" ref={this.openDateChange} />
-            <div className={styles.NewTaskDatePick}>
-              <Calendar
-                onChange={this.handleDateChange}
-                value={date}
-                minDate={new Date()}
-              />
+            <div className={styles.NewTaskClass}>
+              <input id="changeClassCheckbox" type="checkbox" ref={this.openClassChange} />
+              <label
+                htmlFor="changeClassCheckbox"
+                data-curr={tag}
+                style={{ backgroundColor: tagColorPicker[tag] }}
+                ref={this.changeClass}
+              >
+                <span>{tag}</span>
+                <Icon name="tag" className={styles.CenterIcon} />
+              </label>
+              <ClassPicker onTagChange={this.handleClassChange} />
             </div>
-          </div>
-          <ToastContainer />
 
-        </div>
-      </form>
+            <div className={styles.NewTaskDate}>
+              <label htmlFor="changeDateCheckbox">
+                <Icon name="calendar outline" className={styles.CenterIcon} />
+              </label>
+              <input id="changeDateCheckbox" type="checkbox" ref={this.openDateChange} />
+              <div className={styles.NewTaskDatePick}>
+                <Calendar
+                  onChange={this.handleDateChange}
+                  value={date}
+                  minDate={new Date()}
+                />
+              </div>
+            </div>
+            
+            <button className={styles.SubmitNewTask}>
+              <Icon color="black" name="arrow alternate circle right outline" className={styles.CenterIcon} />
+            </button>
+            
+            <div className={styles.NewTaskModal}>
+              <ul>
+                {this.state.subtaskArray.map(
+                  subtaskObj => (
+                    <li key={subtaskObj.name + Math.random()} data-subtaskid={subtaskObj.id}>
+                      <button onClick={this.handleDelSubtask}><Icon name="delete" /></button>
+                      <input
+                        onBlur={this.handleChangeSubtask}
+                        type="text"
+                        defaultValue={subtaskObj.name} 
+                      />
+                    </li>)
+                )}
+              </ul>
+              <Icon name="plus" />
+              <input type="text" placeholder="Add a Subtask" onKeyDown={this.handleAddSubtask} />
+            </div>
+
+          </div>
+        </form>
+            
+        <ToastContainer />
+      </div>
     );
-  }
+  }//📆
 }
 
 const NewTaskComponent = connect(mapStateToProps, mapDispatchToProps)(UnconNewTaskComponent);
