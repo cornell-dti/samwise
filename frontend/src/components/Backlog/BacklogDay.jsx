@@ -3,7 +3,7 @@
 import * as React from 'react';
 import BacklogTask from './BacklogTask';
 import styles from './BacklogDay.css';
-import type { OneDayTask } from './backlog-types';
+import type { ColoredTask, OneDayTask } from './backlog-types';
 
 type State = {| doesOverflow: boolean; |}
 
@@ -31,17 +31,19 @@ export default class BacklogDay extends React.Component<OneDayTask, State> {
 
   internalTasksContainer: ?HTMLDivElement;
 
-  /**
-   * Report whether there is a vertical overflow.
-   */
-  reportVerticalOverflow() {
-
-  }
-
   render() {
     const { date, doesRenderSubTasks, tasks } = this.props;
     const { doesOverflow } = this.state;
+    const isToday = (() => {
+      const today = new Date();
+      return date.getFullYear() === today.getFullYear()
+        && date.getMonth() === today.getMonth()
+        && date.getDate() === today.getDate();
+    })();
     const dayString = (() => {
+      if (isToday) {
+        return 'TODAY';
+      }
       switch (date.getDay()) {
         case 0:
           return 'SUN';
@@ -61,8 +63,11 @@ export default class BacklogDay extends React.Component<OneDayTask, State> {
           throw new Error('Impossible Case');
       }
     })();
+    const wrapperClass = isToday
+      ? `${styles.BacklogDay} ${styles.BacklogToday}`
+      : styles.BacklogDay;
     return (
-      <div className={styles.BacklogDay}>
+      <div className={wrapperClass}>
         <div className={styles.BacklogDayDateInfo}>
           <div className={styles.BacklogDayDateInfoDay}>{dayString}</div>
           <div className={styles.BacklogDayDateInfoDateNum}>{date.getDate()}</div>
@@ -74,7 +79,7 @@ export default class BacklogDay extends React.Component<OneDayTask, State> {
           }}
         >
           {
-            tasks.map(t => (
+            tasks.map((t: ColoredTask) => (
               <BacklogTask key={t.id} doesRenderSubTasks={doesRenderSubTasks} {...t} />
             ))
           }

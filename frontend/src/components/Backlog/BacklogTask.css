@@ -7,9 +7,9 @@
 
 .BacklogTaskMainWrapper {
   display: flex;
-  padding: 1em;
+  padding: 3px;
   align-items: center;
-  font-size: 1em;
+  font-size: 9px;
   font-weight: 300;
 }
 
@@ -17,17 +17,18 @@
   display: flex;
   color: #666666;
   background-color: white;
-  padding: 0.5em 1em 0.5em 1em;
+  padding: 3px;
   font-weight: 500;
 }
 
 .BacklogTaskIcon {
   flex: none;
+  height: unset !important;
 }
 
 .BacklogTaskText {
   flex: 1 1 auto;
-  font-size: 16px;
+  font-size: 9px;
   font-weight: normal;
   overflow: hidden;
   text-overflow: ellipsis;

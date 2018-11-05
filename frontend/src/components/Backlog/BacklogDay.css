@@ -1,21 +1,27 @@
 .BacklogDay {
   margin: 0.5em;
-  background-color: #F9F9F9;
-  box-shadow: 0 1px 1px -1px rgba(0, 0, 0, .1), 0 2px 2px 0 rgba(0, 0, 0, .1), 0 1px 5px 0 rgba(0, 0, 0, .11);
+  background-color: #F7F7F7;
   height: 250px;
 }
 
+.BacklogToday {
+  background-color: white;
+  box-shadow: 0 5px 12px 0 rgba(164, 164, 164, 0.5);
+}
+
 .BacklogDayDateInfo {
-  margin: 0.5em;
-  color: #666666;
+  margin: 1em;
+  padding-top: 1em;
+  color: #3d3d3d;
+  opacity: 0.57;
 }
 
 .BacklogDayDateInfoDay {
-  font-weight: 100;
+  font-weight: normal;
 }
 
 .BacklogDayDateInfoDateNum {
-  font-weight: 500;
+  font-weight: bold;
 }
 
 .BacklogDayTaskContainer {
