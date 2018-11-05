@@ -9,6 +9,7 @@ import FocusView from '../FocusView/focusView';
 import styles from './TaskView.css';
 import BacklogCompletedTasksToggle from '../Backlog/BacklogCompletedTasksToggle';
 import BacklogHeaderTextButton from '../Backlog/BacklogHeaderTextButton';
+import { getBacklogHeaderTitle } from '../Backlog/backlog-util';
 
 type Props = {||};
 
@@ -172,6 +173,8 @@ export default class TaskView extends React.Component<Props, State> {
           <h3 className={styles.TaskViewControlTitle}>Future</h3>
           {backlogTodayButton}
           {backlogNavButtons}
+          <span className={styles.TaskViewControlPadding} />
+          <h4>{getBacklogHeaderTitle(displayOption, backlogOffset)}</h4>
           <span className={styles.TaskViewControlPadding} />
           {toggleCompletedTasksButton}
           <BacklogViewSwitcher onChange={option => this.switchBacklogView(option)} />

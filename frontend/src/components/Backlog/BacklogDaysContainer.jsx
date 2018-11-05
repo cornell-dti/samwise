@@ -7,8 +7,8 @@ import type { BacklogDisplayOption, OneDayTask } from './backlog-types';
 import BacklogDay from './BacklogDay';
 import type { State, TagColorConfig, Task } from '../../store/store-types';
 import { simpleConnect } from '../../store/react-redux-util';
-
-type DateToTaskMap = Map<string, Task[]>;
+import { buildDaysInBacklog } from './backlog-util';
+import type { DateToTaskMap } from './backlog-util';
 
 type OwnProps = {|
   +doesShowCompletedTasks: boolean;
@@ -50,83 +50,6 @@ const mapStateToProps = (state: State): SubscribedProps => ({
   date2TaskMap: buildDate2TaskMap(state.mainTaskArray),
   colors: state.tagColorPicker,
 });
-
-/**
- * Compute the start date and end date.
- *
- * @param {BacklogDisplayOption} displayOption the display option of the backlog days container.
- * @param {number} backlogOffset offset of displaying days.
- * @return {{startDate: Date, endDate: Date}} the start date and end date.
- */
-function computeStartAndEndDay(
-  displayOption: BacklogDisplayOption, backlogOffset: number,
-): {| +startDate: Date; endDate: Date |} {
-  // Compute start date (the first date to display)
-  const startDate = new Date();
-  let hasAdditionalDays: boolean;
-  switch (displayOption) {
-    case 'BIWEEKLY':
-      startDate.setDate(startDate.getDate() - startDate.getDay() + backlogOffset * 14);
-      hasAdditionalDays = false;
-      break;
-    case 'MONTHLY':
-      startDate.setMonth(startDate.getMonth() + backlogOffset, 1);
-      startDate.setDate(startDate.getDate() - startDate.getDay());
-      hasAdditionalDays = startDate.getDate() !== 1;
-      break;
-    default:
-      hasAdditionalDays = false;
-  }
-  // Compute end date (the first date not to display)
-  let endDate = new Date(startDate); // the first day not to display.
-  switch (displayOption) {
-    case 'FOUR_DAYS':
-      endDate.setDate(endDate.getDate() + 4);
-      break;
-    case 'BIWEEKLY':
-      endDate.setDate(endDate.getDate() + 14);
-      break;
-    case 'MONTHLY':
-      if (hasAdditionalDays) {
-        endDate = new Date(startDate.getFullYear(), startDate.getMonth() + 2, 1);
-      } else {
-        endDate = new Date(startDate.getFullYear(), startDate.getMonth() + 1, 1);
-      }
-      break;
-    default:
-      throw new Error('Impossible Case');
-  }
-  return { startDate, endDate };
-}
-
-/**
- * Returns an array of backlog days given the current props and the display option.
- *
- * @param {DateToTaskMap} date2TaskMap the map from a date to all the tasks in that day.
- * @param {TagColorConfig} colors all the color config.
- * @param {BacklogDisplayOption} displayOption the display option.
- * @param {number} backlogOffset offset of displaying days.
- * @return {OneDayTask[]} an array of backlog days information.
- */
-function buildDaysInBacklog(
-  date2TaskMap: DateToTaskMap, colors: TagColorConfig,
-  displayOption: BacklogDisplayOption, backlogOffset: number,
-): OneDayTask[] {
-  const { startDate, endDate } = computeStartAndEndDay(displayOption, backlogOffset);
-  const doesRenderSubTasks = displayOption !== 'MONTHLY';
-  // Adding the days to array
-  const days: OneDayTask[] = [];
-  for (let d = startDate; d < endDate; d.setDate(d.getDate() + 1)) {
-    const date = new Date(d);
-    const tasksOnThisDay = date2TaskMap.get(date.toLocaleDateString()) || [];
-    const tasks = tasksOnThisDay.map((task: Task) => {
-      const { tag } = task;
-      return { ...task, color: colors[tag] };
-    });
-    days.push({ date, tasks, doesRenderSubTasks });
-  }
-  return days;
-}
 
 /**
  * Render a component for one day in backlog.
