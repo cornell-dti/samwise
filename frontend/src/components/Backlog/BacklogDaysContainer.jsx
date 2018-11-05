@@ -63,32 +63,39 @@ function computeStartAndEndDay(
 ): {| +startDate: Date; endDate: Date |} {
   // Compute start date (the first date to display)
   const startDate = new Date();
+  let hasAdditionalDays: boolean;
   switch (displayOption) {
     case 'BIWEEKLY':
       startDate.setDate(startDate.getDate() - startDate.getDay() + backlogOffset * 14);
+      hasAdditionalDays = false;
       break;
     case 'MONTHLY':
       startDate.setMonth(startDate.getMonth() + backlogOffset, 1);
+      startDate.setDate(startDate.getDate() - startDate.getDay());
+      hasAdditionalDays = startDate.getDate() !== 1;
       break;
     default:
+      hasAdditionalDays = false;
   }
   // Compute end date (the first date not to display)
-  const endDate = new Date(startDate); // the first day not to display.
-  let offset: number;
+  let endDate = new Date(startDate); // the first day not to display.
   switch (displayOption) {
     case 'FOUR_DAYS':
-      offset = 4;
+      endDate.setDate(endDate.getDate() + 4);
       break;
     case 'BIWEEKLY':
-      offset = 14;
+      endDate.setDate(endDate.getDate() + 14);
       break;
     case 'MONTHLY':
-      offset = new Date(startDate.getFullYear(), startDate.getMonth() + 1, 0).getDate();
+      if (hasAdditionalDays) {
+        endDate = new Date(startDate.getFullYear(), startDate.getMonth() + 2, 1);
+      } else {
+        endDate = new Date(startDate.getFullYear(), startDate.getMonth() + 1, 1);
+      }
       break;
     default:
       throw new Error('Impossible Case');
   }
-  endDate.setDate(endDate.getDate() + offset);
   return { startDate, endDate };
 }
 
