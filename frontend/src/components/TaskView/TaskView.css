@@ -25,6 +25,12 @@
   margin-left: 0.5em;
 }
 
+.TaskViewNavButton {
+  cursor: pointer;
+  margin-left: 0.5em !important;
+  font-size: 1.5em !important;
+}
+
 .TaskViewControlPadding {
   flex: auto;
 }
