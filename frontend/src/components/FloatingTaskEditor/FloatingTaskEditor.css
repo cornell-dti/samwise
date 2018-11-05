@@ -1,0 +1,101 @@
+/*
+ * --------------------------------------------------------------------------------
+ * Part 1: Parent Component
+ * --------------------------------------------------------------------------------
+ */
+
+.FloatingTaskEditor {
+  color: white;
+  font-size: 12px;
+}
+
+.FloatingTaskEditorSubmitButtonRow {
+  display: flex;
+  padding: 0.5em;
+}
+
+.FloatingEditorSaveButton {
+  display: flex;
+  align-items: center;
+  flex: 0;
+  width: auto;
+  height: 2em;
+  border-radius: 2px;
+  border: solid 2px white;
+  background-color: rgba(255, 255, 255, 0.15);
+}
+
+.FloatingEditorSaveButtonText {
+  font-size: 12px;
+  color: white;
+  margin: 0 0.5em;
+}
+
+/*
+ * --------------------------------------------------------------------------------
+ * Part 2: Common Components for Both Children Components
+ * --------------------------------------------------------------------------------
+ */
+
+.FloatingTaskEditorHeader {
+  font-size: 1em;
+}
+
+.FloatingTaskEditorFlexibleContainer {
+  position: relative;
+  display: flex;
+  margin: 1em 0.5em;
+  align-content: center;
+  align-items: center;
+}
+
+.FloatingTaskEditorFlexiblePadding {
+  flex: 1 1 auto;
+}
+
+/*
+ * --------------------------------------------------------------------------------
+ * Part 3: Components for Main Task Editor
+ * --------------------------------------------------------------------------------
+ */
+
+.FloatingTaskEditorIconButton {
+  margin-left: 1em !important;
+}
+
+.FloatingTaskEditorTag {
+  margin-left: 0.5em;
+  color: white;
+}
+
+.FloatingTaskEditorTagLabel {
+  font-size: 1em;
+}
+
+.FloatingTaskEditorTag input[type="checkbox"] {
+  position: absolute;
+  left: -2px;
+  width: 22px;
+  height: 22px;
+  opacity: 0;
+  margin: 0;
+  cursor: pointer;
+}
+
+.FloatingTaskEditorTagEditor {
+  position: absolute;
+  right: 0;
+  left: calc(100% - 150px);
+  top: 0;
+  z-index: 4;
+  color: #333333;
+  background: white;
+}
+
+.FloatingTaskEditorCalendar {
+  position: absolute;
+  right: 0;
+  left: calc(100% - 350px);
+  top: 50px;
+  z-index: 4;
+}

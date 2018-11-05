@@ -9,16 +9,17 @@
   display: flex;
   padding: 3px;
   align-items: center;
-  font-size: 9px;
+  font-size: 12px;
   font-weight: 300;
 }
 
 .BacklogSubTask {
   display: flex;
+  padding: 3px;
+  align-items: center;
   color: #666666;
   background-color: white;
-  padding: 3px;
-  font-weight: 500;
+  font-weight: 300;
 }
 
 .BacklogTaskIcon {
@@ -28,12 +29,8 @@
 
 .BacklogTaskText {
   flex: 1 1 auto;
-  font-size: 9px;
+  font-size: 12px;
   font-weight: normal;
   overflow: hidden;
   text-overflow: ellipsis;
-}
-
-.BacklogTaskCheckBox {
-  margin-right: 0.5em;
 }

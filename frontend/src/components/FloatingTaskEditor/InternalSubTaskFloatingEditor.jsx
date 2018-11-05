@@ -3,7 +3,7 @@
 import * as React from 'react';
 import { Form, Input, Modal } from 'semantic-ui-react';
 import type { SubTask } from '../../store/store-types';
-import styles from './PopupTaskEditor.css';
+import styles from './FloatingTaskEditor.css';
 
 type Props = {|
   subtaskArray: SubTask[];
@@ -15,9 +15,9 @@ type State = {|
 |};
 
 /**
- * PopupInternalSubTaskEditor is intended for internal use for PopupTaskEditor only.
+ * InternalSubTaskFloatingEditor is intended for internal use for FloatingTaskEditor only.
  */
-export default class PopupInternalSubTaskEditor extends React.Component<Props, State> {
+export default class InternalSubTaskFloatingEditor extends React.Component<Props, State> {
   constructor(props: Props) {
     super(props);
     const { subtaskArray } = props;
@@ -111,10 +111,10 @@ export default class PopupInternalSubTaskEditor extends React.Component<Props, S
   render() {
     const { subtaskArray, newSubTaskValue } = this.state;
     const existingSubTasks = subtaskArray.map((subTask: SubTask) => (
-      <div key={subTask.id} className={styles.PopupTaskEditorFlexibleContainer}>
+      <div key={subTask.id} className={styles.FloatingTaskEditorFlexibleContainer}>
         <Input
           id={subTask.id}
-          className={styles.PopupTaskEditorFlexibleInput}
+          className={styles.FloatingTaskEditorFlexiblePadding}
           placeholder="Your Sub-Task"
           value={subTask.name}
           onChange={event => this.editSubTask(subTask.id, event)}
@@ -127,11 +127,11 @@ export default class PopupInternalSubTaskEditor extends React.Component<Props, S
         <div>
           {existingSubTasks}
           <Form
-            className={styles.PopupTaskEditorFlexibleContainer}
+            className={styles.FloatingTaskEditorFlexibleContainer}
             onSubmit={event => this.handleSubmitForNewSubTask(event)}
           >
             <Form.Input
-              className={styles.PopupTaskEditorFlexibleInput}
+              className={styles.FloatingTaskEditorFlexiblePadding}
               placeholder="Your New Sub-Task"
               value={newSubTaskValue}
               onChange={event => this.handleNewSubTaskValueChange(event)}

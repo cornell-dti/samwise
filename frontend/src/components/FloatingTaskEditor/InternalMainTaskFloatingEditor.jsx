@@ -1,19 +1,20 @@
-// @flow
+// @flow strict
 
 import * as React from 'react';
-import { Header, Icon, Input } from 'semantic-ui-react';
+import type { Node } from 'react';
+import { Icon, Input } from 'semantic-ui-react';
 import Calendar from 'react-calendar';
 import connect from 'react-redux/es/connect/connect';
 import type {
   State as StoreState, TagColorConfig, Task,
 } from '../../store/store-types';
-import styles from './PopupTaskEditor.css';
+import styles from './FloatingTaskEditor.css';
 import ClassPicker from '../ClassPicker/ClassPicker';
 
 type Props = {|
   ...Task;
   tagColorPicker: TagColorConfig;
-  +editTask: (task: Task) => void;
+  +editTask: (task: Task, color?: string) => void;
 |};
 type State = {|
   ...Task;
@@ -24,9 +25,9 @@ type State = {|
 const mapStateToProps = ({ tagColorPicker }: StoreState) => ({ tagColorPicker });
 
 /**
- * PopupInternalMainTaskEditor is intended for internal use for PopupTaskEditor only.
+ * InternalMainTaskFloatingEditor is intended for internal use for FloatingTaskEditor only.
  */
-class PopupInternalMainTaskEditor extends React.Component<Props, State> {
+class InternalMainTaskFloatingEditor extends React.Component<Props, State> {
   constructor(props: Props) {
     super(props);
     const { editTask, tagColorPicker, ...task } = props;
@@ -56,10 +57,10 @@ class PopupInternalMainTaskEditor extends React.Component<Props, State> {
   }
 
   editTaskTag(tag: string) {
-    const { editTask } = this.props;
+    const { editTask, tagColorPicker } = this.props;
     this.setState((state: State) => {
       const newState = { ...state, tag, doesShowTagEditor: false };
-      editTask(this.getTask(newState));
+      editTask(this.getTask(newState), tagColorPicker[tag]);
       return newState;
     });
   }
@@ -80,61 +81,66 @@ class PopupInternalMainTaskEditor extends React.Component<Props, State> {
     });
   }
 
-  render() {
+  render(): Node {
     const { tagColorPicker } = this.props;
     const {
       name, tag, date, doesShowTagEditor, doesShowCalendarEditor,
     } = this.state;
     const tagPickerElementOpt = doesShowTagEditor && (
-      <div className={styles.PopupTaskEditorTagEditor}>
+      <div className={styles.FloatingTaskEditorTagEditor}>
         <ClassPicker onTagChange={t => this.editTaskTag(t)} />
       </div>
     );
     const calendarElementOpt = doesShowCalendarEditor && (
       <Calendar
         value={date}
-        className={styles.PopupTaskEditorCalendar}
+        className={styles.FloatingTaskEditorCalendar}
         minDate={new Date()}
         onChange={e => this.editTaskDate(e)}
       />
     );
+    const headerClassNames = `${styles.FloatingTaskEditorFlexibleContainer
+    } ${styles.FloatingTaskEditorHeader}`;
     return (
-      <Header className={styles.PopupTaskEditorFlexibleContainer}>
+      <div>
+        <div className={headerClassNames}>
+          <span className={styles.FloatingTaskEditorTag}>
+            <label
+              htmlFor="floating-task-tag-editor-checkbox"
+              className={styles.FloatingTaskEditorTagLabel}
+              style={{ backgroundColor: tagColorPicker[tag] }}
+            >
+              <input id="floating-task-tag-editor-checkbox" type="checkbox" />
+              {tag}
+            </label>
+          </span>
+          <span className={styles.FloatingTaskEditorFlexiblePadding} />
+          <Icon
+            name="tag"
+            className={styles.FloatingTaskEditorIconButton}
+            onClick={() => this.toggleTagEditor()}
+          />
+          <Icon
+            name="calendar"
+            className={styles.FloatingTaskEditorIconButton}
+            onClick={() => this.toggleDateEditor()}
+          />
+          {tagPickerElementOpt}
+          {calendarElementOpt}
+        </div>
         <span style={{ marginRight: '0.5em' }}>Main Task: </span>
         <Input
-          className={styles.PopupTaskEditorFlexibleInput}
+          className={styles.FloatingTaskEditorFlexiblePadding}
           placeholder="Main Task"
           value={name}
           onChange={event => this.editTaskName(event)}
         />
-        <span className={styles.PopupTaskEditorTag}>
-          <label
-            htmlFor="popup-task-tag-editor-checkbox"
-            className={styles.PopupTaskEditorTagLabel}
-            style={{ backgroundColor: tagColorPicker[tag] }}
-          >
-            <input id="popup-task-tag-editor-checkbox" type="checkbox" />
-            {tag}
-          </label>
-        </span>
-        <Icon
-          name="tag"
-          className={styles.PopupTaskEditorIconButton}
-          onClick={() => this.toggleTagEditor()}
-        />
-        <Icon
-          name="calendar"
-          className={styles.PopupTaskEditorIconButton}
-          onClick={() => this.toggleDateEditor()}
-        />
-        {tagPickerElementOpt}
-        {calendarElementOpt}
-      </Header>
+      </div>
     );
   }
 }
 
-const ConnectedPopupInternalMainTaskEditor = connect(
+const ConnectedInternalMainTaskFloatingEditor = connect(
   mapStateToProps, null,
-)(PopupInternalMainTaskEditor);
-export default ConnectedPopupInternalMainTaskEditor;
+)(InternalMainTaskFloatingEditor);
+export default ConnectedInternalMainTaskFloatingEditor;

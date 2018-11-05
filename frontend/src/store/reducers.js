@@ -13,9 +13,9 @@ const initialState: State = {
   backupTaskArray: [],
   mainTaskArray: [],
   tagColorPicker: {
-    Personal: '#c4def6',
-    'Project Team': 'green',
-    Courses: 'purple',
+    Personal: '#7ED4E5',
+    'Project Team': '#FF8A8A',
+    Courses: '#9D4AA9',
     None: 'gray',
   },
   bearStatus: 'neutral',

@@ -3,7 +3,7 @@
 import * as React from 'react';
 import type { Node } from 'react';
 import { connect } from 'react-redux';
-import { Checkbox, Icon } from 'semantic-ui-react';
+import { Icon } from 'semantic-ui-react';
 import styles from './BacklogTask.css';
 import type { ColoredTask } from './backlog-types';
 import {
@@ -12,11 +12,12 @@ import {
   toggleTaskPin as toggleTaskPinAction,
 } from '../../store/actions';
 import BacklogSubTask from './BacklogSubTask';
-import PopupTaskEditor from '../PopupTaskEditor/PopupTaskEditor';
+import FloatingTaskEditor from '../FloatingTaskEditor/FloatingTaskEditor';
 import type { SubTask } from '../../store/store-types';
 import type {
   MarkTaskAction, RemoveTaskAction, ToggleTaskPinAction,
 } from '../../store/action-types';
+import CheckBox from '../UI/CheckBox';
 
 type Props = {|
   ...ColoredTask;
@@ -56,8 +57,7 @@ function BacklogTask(props: Props): Node {
   return (
     <div className={styles.BacklogTask}>
       <div className={styles.BacklogTaskMainWrapper} style={{ backgroundColor: color }}>
-        <Checkbox
-          className={styles.BacklogTaskCheckBox}
+        <CheckBox
           checked={complete}
           onChange={() => markTask(id)}
         />
@@ -77,7 +77,8 @@ function BacklogTask(props: Props): Node {
           className={styles.BacklogTaskIcon}
           onClick={() => toggleTaskPin(id)}
         />
-        <PopupTaskEditor
+        <FloatingTaskEditor
+          backgroundColor={color}
           trigger={o => (<Icon name="edit" className={styles.BacklogTaskIcon} onClick={o} />)}
           {...task}
         />
