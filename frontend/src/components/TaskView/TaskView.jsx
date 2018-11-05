@@ -94,7 +94,7 @@ export default class TaskView extends React.Component<Props, State> {
       let dayOffset: number;
       switch (displayOption) {
         case 'FOUR_DAYS':
-          dayOffset = backlogOffset;
+          dayOffset = backlogOffset * 4;
           break;
         case 'BIWEEKLY':
           dayOffset = backlogOffset * 14;
@@ -110,7 +110,7 @@ export default class TaskView extends React.Component<Props, State> {
       switch (newDisplayOption) {
         case 'FOUR_DAYS':
           newDoesShowFocusView = true;
-          newOffset = dayOffset;
+          newOffset = Math.floor(dayOffset / 4);
           break;
         case 'BIWEEKLY':
           newDoesShowFocusView = displayOption === 'FOUR_DAYS' ? false : doesShowFocusView;
@@ -148,7 +148,7 @@ export default class TaskView extends React.Component<Props, State> {
         onClick={() => this.changeBacklogOffset('TODAY')}
       />
     );
-    const backlogNavButtons = displayOption !== 'FOUR_DAYS' && (
+    const backlogNavButtons = (
       <React.Fragment>
         <Icon
           className={styles.TaskViewNavButton}

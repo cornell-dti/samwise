@@ -19,6 +19,9 @@ function computeStartAndEndDay(
   const startDate = new Date();
   let hasAdditionalDays = false;
   switch (displayOption) {
+    case 'FOUR_DAYS':
+      startDate.setDate(startDate.getDate() + backlogOffset * 4);
+      break;
     case 'BIWEEKLY':
       startDate.setDate(startDate.getDate() - startDate.getDay() + backlogOffset * 14);
       break;
@@ -62,10 +65,7 @@ export function getBacklogHeaderTitle(
   displayOption: BacklogDisplayOption,
   backlogOffset: number,
 ): string {
-  if (displayOption === 'FOUR_DAYS') {
-    return '';
-  }
-  if (displayOption === 'BIWEEKLY') {
+  if (displayOption === 'FOUR_DAYS' || displayOption === 'BIWEEKLY') {
     const { startDate, endDate } = computeStartAndEndDay(displayOption, backlogOffset);
     endDate.setDate(endDate.getDate() - 1);
     return `${startDate.toLocaleDateString()} - ${endDate.toLocaleDateString()}`;
