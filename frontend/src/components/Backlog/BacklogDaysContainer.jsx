@@ -10,7 +10,10 @@ import { simpleConnect } from '../../store/react-redux-util';
 
 type DateToTaskMap = Map<string, Task[]>;
 
-type OwnProps = {| displayOption: BacklogDisplayOption; |}
+type OwnProps = {|
+  displayOption: BacklogDisplayOption;
+  doesShowCompletedTasks: boolean;
+|}
 
 type SubscribedProps = {|
   +date2TaskMap: DateToTaskMap;
@@ -117,25 +120,27 @@ function buildDaysInBacklog(
 /**
  * Render a component for one day in backlog.
  *
- * @param day the day object to display.
+ * @param {OneDayTask} day the day object to display.
+ * @param {boolean} doesShowCompletedTasks whether to show tasks that are completed.
  * @return {Node} the rendered component.
  */
-const renderDay = (day: OneDayTask): Node => (
+const renderDay = (day: OneDayTask, doesShowCompletedTasks: boolean): Node => (
   <Grid.Column key={day.date.toDateString()}>
-    <BacklogDay {...day} />
+    <BacklogDay doesShowCompletedTasks={doesShowCompletedTasks} {...day} />
   </Grid.Column>
 );
 
 /**
  * The component used to contain all the backlog days.
  *
- * @param date2TaskMap the map from a date to all the tasks in that day.
- * @param colors all the color config.
- * @param displayOption the display option.
+ * @param {Props} props all of the given props.
  * @return {Node} the rendered component.
  * @constructor
  */
-function BacklogDaysContainer({ date2TaskMap, colors, displayOption }: Props): Node {
+function BacklogDaysContainer(props: Props): Node {
+  const {
+    date2TaskMap, colors, displayOption, doesShowCompletedTasks,
+  } = props;
   const days = buildDaysInBacklog(date2TaskMap, colors, displayOption);
   const rows = [];
   const columns = days.length === 4 ? 4 : 7;
@@ -149,7 +154,7 @@ function BacklogDaysContainer({ date2TaskMap, colors, displayOption }: Props): N
       rowId += 1;
       tempRow = [];
     }
-    tempRow.push(renderDay(days[i]));
+    tempRow.push(renderDay(days[i], doesShowCompletedTasks));
   }
   if (tempRow.length > 0) {
     rows.push(renderRow(rowId, tempRow));

@@ -1,7 +1,7 @@
 // @flow strict
 
 import * as React from 'react';
-import { Button } from 'semantic-ui-react';
+import { Button, Icon } from 'semantic-ui-react';
 import type { BacklogDisplayOption } from '../Backlog/backlog-types';
 import BacklogViewSwitcher from '../Backlog/BacklogViewSwitcher';
 import BacklogDaysContainer from '../Backlog/BacklogDaysContainer';
@@ -12,6 +12,7 @@ type Props = {||};
 
 type State = {|
   doesShowFocusView: boolean;
+  doesShowCompletedTasks: boolean;
   displayOption: BacklogDisplayOption;
 |};
 
@@ -20,6 +21,7 @@ export default class TaskView extends React.Component<Props, State> {
     super(props);
     this.state = {
       doesShowFocusView: true,
+      doesShowCompletedTasks: true,
       displayOption: 'FOUR_DAYS',
     };
   }
@@ -29,17 +31,23 @@ export default class TaskView extends React.Component<Props, State> {
    */
   toggleFocusView() {
     this.setState((oldState: State) => {
-      const { doesShowFocusView, displayOption } = oldState;
+      const { doesShowFocusView, doesShowCompletedTasks, displayOption } = oldState;
       switch (displayOption) {
         case 'FOUR_DAYS':
           return oldState;
         case 'BIWEEKLY':
         case 'MONTHLY':
-          return { doesShowFocusView: !doesShowFocusView, displayOption };
+          return { doesShowFocusView: !doesShowFocusView, doesShowCompletedTasks, displayOption };
         default:
           return oldState;
       }
     });
+  }
+
+  toggleCompletedTasks() {
+    this.setState((oldState: State) => ({
+      ...oldState, doesShowCompletedTasks: !oldState.doesShowCompletedTasks,
+    }));
   }
 
   /**
@@ -65,28 +73,44 @@ export default class TaskView extends React.Component<Props, State> {
   }
 
   render() {
-    const { doesShowFocusView, displayOption } = this.state;
+    const { doesShowFocusView, doesShowCompletedTasks, displayOption } = this.state;
     const focusViewComponent = doesShowFocusView && (
       <div className={styles.TaskViewFocusPanel}>
         <h3>{'Today\'s focus'}</h3>
         <FocusView />
       </div>
     );
+    const toggleFocusViewButton = displayOption !== 'FOUR_DAYS' && (
+      <Button
+        className={styles.TaskViewControlButton}
+        active={doesShowFocusView}
+        onClick={() => this.toggleFocusView()}
+      >
+        {doesShowFocusView ? 'Hide Focus' : 'Show Focus'}
+      </Button>
+    );
+    const toggleCompletedTasksButton = (
+      <Button
+        className={styles.TaskViewControlButton}
+        onClick={() => this.toggleCompletedTasks()}
+      >
+        <Icon name={doesShowCompletedTasks ? 'eye slash' : 'eye'} />
+      </Button>
+    );
     const backlogComponent = (
       <div className={styles.TaskViewFuturePanel}>
         <div className={styles.TaskViewControl}>
           <h3 className={styles.TaskViewControlTitle}>Future</h3>
-          <Button
-            className={styles.TaskViewControlButton}
-            active={doesShowFocusView}
-            onClick={() => this.toggleFocusView()}
-          >
-            Today
-          </Button>
+          {toggleFocusViewButton}
+          <Button className={styles.TaskViewControlButton}>Today</Button>
           <span className={styles.TaskViewControlPadding} />
+          {toggleCompletedTasksButton}
           <BacklogViewSwitcher onChange={option => this.switchBacklogView(option)} />
         </div>
-        <BacklogDaysContainer displayOption={displayOption} />
+        <BacklogDaysContainer
+          displayOption={displayOption}
+          doesShowCompletedTasks={doesShowCompletedTasks}
+        />
       </div>
     );
     return (

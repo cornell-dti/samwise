@@ -5,18 +5,19 @@ import BacklogTask from './BacklogTask';
 import styles from './BacklogDay.css';
 import type { ColoredTask, OneDayTask } from './backlog-types';
 
+type Props = {| ...OneDayTask; +doesShowCompletedTasks: boolean; |};
 type State = {| doesOverflow: boolean; |}
 
 /**
  * The component that renders all tasks on a certain day.
  */
-export default class BacklogDay extends React.Component<OneDayTask, State> {
-  constructor(props: OneDayTask) {
+export default class BacklogDay extends React.Component<Props, State> {
+  constructor(props: Props) {
     super(props);
     this.state = { doesOverflow: false };
   }
 
-  componentDidUpdate(prevProps: OneDayTask, prevState: State) {
+  componentDidUpdate(prevProps: Props, prevState: State) {
     const container = this.internalTasksContainer;
     if (container == null) {
       return;
@@ -32,7 +33,9 @@ export default class BacklogDay extends React.Component<OneDayTask, State> {
   internalTasksContainer: ?HTMLDivElement;
 
   render() {
-    const { date, doesRenderSubTasks, tasks } = this.props;
+    const {
+      doesShowCompletedTasks, date, doesRenderSubTasks, tasks,
+    } = this.props;
     const { doesOverflow } = this.state;
     const isToday = (() => {
       const today = new Date();
@@ -79,9 +82,16 @@ export default class BacklogDay extends React.Component<OneDayTask, State> {
           }}
         >
           {
-            tasks.map((t: ColoredTask) => (
-              <BacklogTask key={t.id} doesRenderSubTasks={doesRenderSubTasks} {...t} />
-            ))
+            tasks
+              .filter((t: ColoredTask) => (doesShowCompletedTasks || !t.complete))
+              .map((t: ColoredTask) => (
+                <BacklogTask
+                  key={t.id}
+                  doesShowCompletedTasks={doesShowCompletedTasks}
+                  doesRenderSubTasks={doesRenderSubTasks}
+                  {...t}
+                />
+              ))
           }
           {
             doesOverflow && (<div className={styles.BacklogDayMoreTasksBar}>More Tasks...</div>)

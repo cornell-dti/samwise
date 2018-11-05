@@ -20,6 +20,7 @@ import type {
 
 type Props = {|
   ...ColoredTask;
+  +doesShowCompletedTasks: boolean;
   +doesRenderSubTasks: boolean;
   +markTask: (taskId: number) => MarkTaskAction;
   +toggleTaskPin: (taskId: number) => ToggleTaskPinAction;
@@ -41,14 +42,17 @@ const actionCreators = {
  */
 function BacklogTask(props: Props): Node {
   const {
-    color, doesRenderSubTasks, markTask, toggleTaskPin, removeTask, ...task
+    color, doesShowCompletedTasks, doesRenderSubTasks,
+    markTask, toggleTaskPin, removeTask, ...task
   } = props;
   const {
     name, id, complete, inFocus, subtaskArray,
   } = task;
-  const subTasks = doesRenderSubTasks && subtaskArray.map((subTask: SubTask) => (
-    <BacklogSubTask key={subTask.id} mainTaskId={id} {...subTask} />
-  ));
+  const subTasks = doesRenderSubTasks && subtaskArray
+    .filter((t: SubTask) => (doesShowCompletedTasks || !t.complete))
+    .map((subTask: SubTask) => (
+      <BacklogSubTask key={subTask.id} mainTaskId={id} {...subTask} />
+    ));
   return (
     <div className={styles.BacklogTask}>
       <div className={styles.BacklogTaskMainWrapper} style={{ backgroundColor: color }}>
