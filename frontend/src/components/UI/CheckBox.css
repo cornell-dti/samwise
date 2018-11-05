@@ -1,8 +1,6 @@
 .CheckBox {
   display: inline-block;
   position: relative;
-  margin-left: 8px;
-  margin-right: 8px;
   height: 16px;
   width: 16px;
   cursor: pointer;

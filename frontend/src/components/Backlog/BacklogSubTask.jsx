@@ -45,6 +45,7 @@ function BacklogSubTask(props: Props): Node {
   return (
     <div className={styles.BacklogSubTask}>
       <CheckBox
+        className={styles.BacklogTaskCheckBox}
         checked={complete}
         inverted
         onChange={() => markSubtask(mainTaskId, id)}

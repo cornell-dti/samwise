@@ -21,12 +21,21 @@ export default class CheckBox extends React.Component<Props, State> {
   static defaultProps = {
     className: '',
     checked: false,
+    inverted: false,
   };
 
   constructor(props: Props) {
     super(props);
     const { checked } = props;
     this.state = { checked: checked || false };
+  }
+
+  componentDidUpdate({ checked }: Props, prevState: State) {
+    if (checked !== prevState.checked) {
+      // I have to disable this lint because I don't know any other way to solve it.
+      // eslint-disable-next-line react/no-did-update-set-state
+      this.setState({ checked });
+    }
   }
 
   /**
@@ -45,7 +54,12 @@ export default class CheckBox extends React.Component<Props, State> {
 
   render(): Node {
     const { className, inverted } = this.props;
-    const { checked } = this.state;
+    let { checked } = this.state;
+    // eslint-disable-next-line react/destructuring-assignment
+    const checkedNotNull = this.props.checked || false;
+    if (checkedNotNull !== checked) {
+      checked = checkedNotNull;
+    }
     let allClassNames = className ? `${className} ${styles.CheckBox}` : styles.CheckBox;
     if (inverted) {
       allClassNames = `${allClassNames} ${styles.InvertedCheckBox}`;

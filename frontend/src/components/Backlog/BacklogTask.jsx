@@ -58,6 +58,7 @@ function BacklogTask(props: Props): Node {
     <div className={styles.BacklogTask}>
       <div className={styles.BacklogTaskMainWrapper} style={{ backgroundColor: color }}>
         <CheckBox
+          className={styles.BacklogTaskCheckBox}
           checked={complete}
           onChange={() => markTask(id)}
         />
