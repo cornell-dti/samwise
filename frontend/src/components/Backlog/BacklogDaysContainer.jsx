@@ -93,7 +93,7 @@ function BacklogDaysContainer(props: Props): Node {
   if (tempRow.length > 0) {
     rows.push(renderRow(rowId, tempRow));
   }
-  return <Grid>{rows}</Grid>;
+  return <Grid stackable>{rows}</Grid>;
 }
 
 const ConnectedBacklogDaysContainer = simpleConnect<Props, OwnProps, SubscribedProps>(
