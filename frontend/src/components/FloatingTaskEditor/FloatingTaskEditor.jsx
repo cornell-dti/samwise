@@ -104,6 +104,7 @@ class FloatingTaskEditor extends React.Component<Props, State> {
         className={styles.FloatingTaskEditor}
         style={{ backgroundColor }}
         dimmer="inverted"
+        size="mini"
         open={open}
         trigger={triggerNode}
         onClose={() => this.closePopup()}

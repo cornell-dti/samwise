@@ -17,6 +17,7 @@
 .FloatingEditorSaveButton {
   display: flex;
   align-items: center;
+  cursor: pointer;
   flex: 0;
   width: auto;
   height: 2em;

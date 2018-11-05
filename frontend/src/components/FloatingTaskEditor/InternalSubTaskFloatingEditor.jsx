@@ -1,7 +1,7 @@
 // @flow
 
 import * as React from 'react';
-import { Form, Input } from 'semantic-ui-react';
+import { Form, Icon, Input } from 'semantic-ui-react';
 import type { SubTask } from '../../store/store-types';
 import styles from './FloatingTaskEditor.css';
 import CheckBox from '../UI/CheckBox';
@@ -42,8 +42,9 @@ export default class InternalSubTaskFloatingEditor extends React.Component<Props
   /**
    * Edit one particular subtask.
    *
-   * @param id the id of the subtask.
-   * @param event the event that notifies about the edit and gives the new value of the subtask.
+   * @param {number} id the id of the subtask.
+   * @param {Event} event the event that notifies about the edit and gives the new value of the
+   * subtask.
    */
   editSubTask(id: number, event: Event) {
     event.preventDefault();
@@ -58,6 +59,23 @@ export default class InternalSubTaskFloatingEditor extends React.Component<Props
         subtaskArray: state.subtaskArray.map((subTask: SubTask) => (
           subTask.id === id ? { ...subTask, name } : subTask
         )),
+      };
+      editSubTasks(newState.subtaskArray);
+      return newState;
+    });
+  }
+
+  /**
+   * Remove one particular subtask.
+   *
+   * @param {number} id the id of the subtask.
+   */
+  removeSubTask(id: number) {
+    const { editSubTasks } = this.props;
+    this.setState((state: State) => {
+      const newState = {
+        ...state,
+        subtaskArray: state.subtaskArray.filter((subTask: SubTask) => subTask.id !== id),
       };
       editSubTasks(newState.subtaskArray);
       return newState;
@@ -144,6 +162,7 @@ export default class InternalSubTaskFloatingEditor extends React.Component<Props
           value={subTask.name}
           onChange={event => this.editSubTask(subTask.id, event)}
         />
+        <Icon name="delete" onClick={() => this.removeSubTask(subTask.id)} />
       </div>
     ));
     return (
