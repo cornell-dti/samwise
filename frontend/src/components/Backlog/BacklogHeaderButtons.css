@@ -20,7 +20,28 @@
 
 .BacklogViewSwitcherButtonText {
   font-size: 12px;
-  margin: 0 auto;
+  margin: 0 auto !important;
+}
+
+.BacklogViewSwitcherSingleButton {
+  margin-left: 1em;
+  margin-right: 1em;
+  width: 34px;
+  height: 34px;
+  border-radius: 2px;
+}
+
+.BacklogViewSwitcherTextButton {
+  margin-left: 1em;
+  margin-right: 1em;
+  width: auto;
+  height: 34px;
+  padding: 0.5em 0;
+  border-radius: 2px;
+}
+
+.BacklogViewSwitcherTextButton span {
+  margin: 0 1em !important;
 }
 
 .BacklogViewSwitcherActiveButton {

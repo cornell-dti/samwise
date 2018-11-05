@@ -4,7 +4,7 @@
 import * as React from 'react';
 import type { Node } from 'react';
 import type { BacklogDisplayOption } from './backlog-types';
-import styles from './BacklogViewSwitcher.css';
+import styles from './BacklogHeaderButtons.css';
 
 type Props = {| +onChange: (option: BacklogDisplayOption) => void |};
 type State = {| +displayOption: BacklogDisplayOption |};

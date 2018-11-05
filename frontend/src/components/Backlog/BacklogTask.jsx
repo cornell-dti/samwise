@@ -68,7 +68,7 @@ function BacklogTask(props: Props): Node {
           {name}
         </span>
         <Icon
-          name="delete calendar"
+          name="delete"
           className={styles.BacklogTaskIcon}
           onClick={() => removeTask(id)}
         />

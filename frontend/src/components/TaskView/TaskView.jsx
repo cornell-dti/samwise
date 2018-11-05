@@ -7,6 +7,8 @@ import BacklogViewSwitcher from '../Backlog/BacklogViewSwitcher';
 import BacklogDaysContainer from '../Backlog/BacklogDaysContainer';
 import FocusView from '../FocusView/focusView';
 import styles from './TaskView.css';
+import BacklogCompletedTasksToggle from '../Backlog/BacklogCompletedTasksToggle';
+import BacklogHeaderTextButton from '../Backlog/BacklogHeaderTextButton';
 
 type Props = {||};
 
@@ -80,6 +82,9 @@ export default class TaskView extends React.Component<Props, State> {
         <FocusView />
       </div>
     );
+    // Disable the button for now.
+    const toggleFocusViewButton = false;
+    /*
     const toggleFocusViewButton = displayOption !== 'FOUR_DAYS' && (
       <Button
         className={styles.TaskViewControlButton}
@@ -89,20 +94,22 @@ export default class TaskView extends React.Component<Props, State> {
         {doesShowFocusView ? 'Hide Focus' : 'Show Focus'}
       </Button>
     );
+    */
     const toggleCompletedTasksButton = (
-      <Button
-        className={styles.TaskViewControlButton}
-        onClick={() => this.toggleCompletedTasks()}
-      >
-        <Icon name={doesShowCompletedTasks ? 'eye slash' : 'eye'} />
-      </Button>
+      <BacklogCompletedTasksToggle
+        onChange={() => this.toggleCompletedTasks()}
+      />
     );
     const backlogComponent = (
       <div className={styles.TaskViewFuturePanel}>
         <div className={styles.TaskViewControl}>
           <h3 className={styles.TaskViewControlTitle}>Future</h3>
           {toggleFocusViewButton}
-          <Button className={styles.TaskViewControlButton}>Today</Button>
+          <BacklogHeaderTextButton
+            text="Today"
+            onClick={() => {
+            }}
+          />
           <span className={styles.TaskViewControlPadding} />
           {toggleCompletedTasksButton}
           <BacklogViewSwitcher onChange={option => this.switchBacklogView(option)} />
