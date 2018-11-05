@@ -53,6 +53,38 @@
   flex: 1 1 auto;
 }
 
+.FloatingTaskEditorFlexibleInput {
+  flex: 1 1 auto;
+}
+
+.FloatingTaskEditorFlexibleInput > input, .FloatingTaskEditorFlexibleInput > div > input {
+  margin-left: 0.5em !important;
+  padding: 0.5em 0 !important;
+  border-radius: 0 !important;
+  background-color: transparent !important;
+  line-height: 1em !important;
+  border: none !important;
+  color: white !important;
+  border-bottom: 1px solid transparent !important;
+}
+
+.FloatingTaskEditorFlexibleInput > input:focus-within,
+.FloatingTaskEditorFlexibleInput > div > input:focus-within {
+  border-bottom-color: white !important;
+}
+
+.FloatingTaskEditorFlexibleInput > input::placeholder,
+.FloatingTaskEditorFlexibleInput > div > input::placeholder,
+.FloatingTaskEditorFlexibleInput > input:focus-within::placeholder,
+.FloatingTaskEditorFlexibleInput > div > input:focus-within::placeholder{
+  color: white !important;
+}
+
+.FloatingTaskEditorCheckBox {
+  margin-left: 8px;
+  margin-right: 0;
+}
+
 /*
  * --------------------------------------------------------------------------------
  * Part 3: Components for Main Task Editor
@@ -98,4 +130,14 @@
   left: calc(100% - 350px);
   top: 50px;
   z-index: 4;
+}
+
+/*
+ * --------------------------------------------------------------------------------
+ * Part 3: Components for Sub-Task Editor
+ * --------------------------------------------------------------------------------
+ */
+
+.FloatingTaskEditorSubTasksIndentedContainer {
+  margin-left: 2em;
 }

@@ -1,9 +1,10 @@
 // @flow
 
 import * as React from 'react';
-import { Form, Input, Modal } from 'semantic-ui-react';
+import { Form, Input } from 'semantic-ui-react';
 import type { SubTask } from '../../store/store-types';
 import styles from './FloatingTaskEditor.css';
+import CheckBox from '../UI/CheckBox';
 
 type Props = {|
   subtaskArray: SubTask[];
@@ -41,7 +42,7 @@ export default class InternalSubTaskFloatingEditor extends React.Component<Props
   /**
    * Edit one particular subtask.
    *
-   * @param id the id of the new subtask.
+   * @param id the id of the subtask.
    * @param event the event that notifies about the edit and gives the new value of the subtask.
    */
   editSubTask(id: number, event: Event) {
@@ -56,6 +57,25 @@ export default class InternalSubTaskFloatingEditor extends React.Component<Props
         ...state,
         subtaskArray: state.subtaskArray.map((subTask: SubTask) => (
           subTask.id === id ? { ...subTask, name } : subTask
+        )),
+      };
+      editSubTasks(newState.subtaskArray);
+      return newState;
+    });
+  }
+
+  /**
+   * Edit one particular subtask's completion.
+   *
+   * @param id the id of the subtask.
+   */
+  editSubTaskComplete(id: number) {
+    const { editSubTasks } = this.props;
+    this.setState((state: State) => {
+      const newState = {
+        ...state,
+        subtaskArray: state.subtaskArray.map((subTask: SubTask) => (
+          subTask.id === id ? { ...subTask, complete: !subTask.complete } : subTask
         )),
       };
       editSubTasks(newState.subtaskArray);
@@ -112,9 +132,14 @@ export default class InternalSubTaskFloatingEditor extends React.Component<Props
     const { subtaskArray, newSubTaskValue } = this.state;
     const existingSubTasks = subtaskArray.map((subTask: SubTask) => (
       <div key={subTask.id} className={styles.FloatingTaskEditorFlexibleContainer}>
+        <CheckBox
+          className={styles.FloatingTaskEditorCheckBox}
+          checked={subTask.complete}
+          onChange={() => this.editSubTaskComplete(subTask.id)}
+        />
         <Input
           id={subTask.id}
-          className={styles.FloatingTaskEditorFlexiblePadding}
+          className={styles.FloatingTaskEditorFlexibleInput}
           placeholder="Your Sub-Task"
           value={subTask.name}
           onChange={event => this.editSubTask(subTask.id, event)}
@@ -122,23 +147,20 @@ export default class InternalSubTaskFloatingEditor extends React.Component<Props
       </div>
     ));
     return (
-      <Modal.Description>
-        <div>Sub-tasks:</div>
-        <div>
-          {existingSubTasks}
-          <Form
-            className={styles.FloatingTaskEditorFlexibleContainer}
-            onSubmit={event => this.handleSubmitForNewSubTask(event)}
-          >
-            <Form.Input
-              className={styles.FloatingTaskEditorFlexiblePadding}
-              placeholder="Your New Sub-Task"
-              value={newSubTaskValue}
-              onChange={event => this.handleNewSubTaskValueChange(event)}
-            />
-          </Form>
-        </div>
-      </Modal.Description>
+      <div className={styles.FloatingTaskEditorSubTasksIndentedContainer}>
+        {existingSubTasks}
+        <Form
+          className={styles.FloatingTaskEditorFlexibleContainer}
+          onSubmit={event => this.handleSubmitForNewSubTask(event)}
+        >
+          <Form.Input
+            className={styles.FloatingTaskEditorFlexibleInput}
+            placeholder="Your New Sub-Task"
+            value={newSubTaskValue}
+            onChange={event => this.handleNewSubTaskValueChange(event)}
+          />
+        </Form>
+      </div>
     );
   }
 }
