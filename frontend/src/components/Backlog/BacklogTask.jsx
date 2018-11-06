@@ -1,4 +1,5 @@
 // @flow strict
+/* eslint-disable jsx-a11y/click-events-have-key-events,jsx-a11y/no-static-element-interactions */
 
 import * as React from 'react';
 import type { Node } from 'react';
@@ -54,37 +55,46 @@ function BacklogTask(props: Props): Node {
     .map((subTask: SubTask) => (
       <BacklogSubTask key={subTask.id} mainTaskId={id} {...subTask} />
     ));
-  const trigger = (o: (task: Task, backgroundColor: string) => void): Node => (
-    <Icon name="edit" className={styles.BacklogTaskIcon} onClick={() => o(task, color)} />
-  );
-  return (
-    <div className={styles.BacklogTask}>
-      <div className={styles.BacklogTaskMainWrapper} style={{ backgroundColor: color }}>
-        <CheckBox
-          className={styles.BacklogTaskCheckBox}
-          checked={complete}
-          onChange={() => markTask(id)}
-        />
-        <span
-          className={styles.BacklogTaskText}
-          style={complete ? { textDecoration: 'line-through' } : {}}
-        >
-          {name}
-        </span>
-        <Icon
-          name="delete"
-          className={styles.BacklogTaskIcon}
-          onClick={() => removeTask(id)}
-        />
-        <Icon
-          name={inFocus ? 'bookmark' : 'bookmark outline'}
-          className={styles.BacklogTaskIcon}
-          onClick={() => toggleTaskPin(id)}
-        />
-        <FloatingTaskEditor trigger={trigger} />
+  const trigger = (opener: (task: Task, backgroundColor: string) => void): Node => {
+    const onClickHandler = (e: SyntheticEvent<HTMLElement>) => {
+      if (e.target instanceof HTMLElement) {
+        const elem: HTMLElement = e.target;
+        if (elem.className === styles.BacklogTaskText) {
+          opener(task, color);
+        }
+      }
+    };
+    return (
+      <div onClick={onClickHandler} className={styles.BacklogTask}>
+        <div className={styles.BacklogTaskMainWrapper} style={{ backgroundColor: color }}>
+          <CheckBox
+            className={styles.BacklogTaskCheckBox}
+            checked={complete}
+            onChange={() => markTask(id)}
+          />
+          <span
+            className={styles.BacklogTaskText}
+            style={complete ? { textDecoration: 'line-through' } : {}}
+          >
+            {name}
+          </span>
+          <Icon
+            name="delete"
+            className={styles.BacklogTaskIcon}
+            onClick={() => removeTask(id)}
+          />
+          <Icon
+            name={inFocus ? 'bookmark' : 'bookmark outline'}
+            className={styles.BacklogTaskIcon}
+            onClick={() => toggleTaskPin(id)}
+          />
+        </div>
+        {subTasks}
       </div>
-      {subTasks}
-    </div>
+    )
+  };
+  return (
+    <FloatingTaskEditor trigger={trigger} />
   );
 }
 

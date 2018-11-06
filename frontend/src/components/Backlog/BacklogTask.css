@@ -34,6 +34,7 @@
 
 .BacklogTaskText {
   flex: 1 1 auto;
+  cursor: pointer;
   font-size: 12px;
   font-weight: normal;
   overflow: hidden;
