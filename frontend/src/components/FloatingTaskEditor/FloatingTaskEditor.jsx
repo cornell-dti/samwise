@@ -35,6 +35,13 @@ const trivialState: State = {
   backgroundColor: '',
 };
 
+/**
+ * FloatingTaskEditor is a component used to edit a task on the fly.
+ * It is triggered from a click on a specified element.
+ *
+ * Usage:
+ * <FloatingTaskEditor trigger={opener => <span onClick={() => opener(task, color)}>Ha</span>} />
+ */
 class FloatingTaskEditor extends React.Component<Props, State> {
   constructor(props: Props) {
     super(props);

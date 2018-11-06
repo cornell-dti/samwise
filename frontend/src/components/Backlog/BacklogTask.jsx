@@ -57,6 +57,7 @@ function BacklogTask(props: Props): Node {
     ));
   const trigger = (opener: (task: Task, backgroundColor: string) => void): Node => {
     const onClickHandler = (e: SyntheticEvent<HTMLElement>) => {
+      // only accept click on text.
       if (e.target instanceof HTMLElement) {
         const elem: HTMLElement = e.target;
         if (elem.className === styles.BacklogTaskText) {
@@ -91,7 +92,7 @@ function BacklogTask(props: Props): Node {
         </div>
         {subTasks}
       </div>
-    )
+    );
   };
   return (
     <FloatingTaskEditor trigger={trigger} />
