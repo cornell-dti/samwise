@@ -26,6 +26,7 @@
     "flow": "flow"
   },
   "devDependencies": {
+    "@babel/plugin-proposal-optional-chaining": "^7.0.0",
     "@babel/preset-flow": "^7.0.0",
     "babel-core": "^6.26.3",
     "babel-eslint": "^10.0.1",
