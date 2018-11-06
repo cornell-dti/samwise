@@ -15,3 +15,7 @@ nonstrict-import
 unsafe-getters-setters
 untyped-import
 untyped-type-import
+sketchy-null
+sketchy-number
+unnecessary-optional-chain
+unnecessary-invariant
