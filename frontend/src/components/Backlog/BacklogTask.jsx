@@ -13,7 +13,7 @@ import {
 } from '../../store/actions';
 import BacklogSubTask from './BacklogSubTask';
 import FloatingTaskEditor from '../FloatingTaskEditor/FloatingTaskEditor';
-import type { SubTask } from '../../store/store-types';
+import type { SubTask, Task } from '../../store/store-types';
 import type {
   MarkTaskAction, RemoveTaskAction, ToggleTaskPinAction,
 } from '../../store/action-types';
@@ -54,6 +54,9 @@ function BacklogTask(props: Props): Node {
     .map((subTask: SubTask) => (
       <BacklogSubTask key={subTask.id} mainTaskId={id} {...subTask} />
     ));
+  const trigger = (o: (task: Task, backgroundColor: string) => void): Node => (
+    <Icon name="edit" className={styles.BacklogTaskIcon} onClick={() => o(task, color)} />
+  );
   return (
     <div className={styles.BacklogTask}>
       <div className={styles.BacklogTaskMainWrapper} style={{ backgroundColor: color }}>
@@ -78,11 +81,7 @@ function BacklogTask(props: Props): Node {
           className={styles.BacklogTaskIcon}
           onClick={() => toggleTaskPin(id)}
         />
-        <FloatingTaskEditor
-          backgroundColor={color}
-          trigger={o => (<Icon name="edit" className={styles.BacklogTaskIcon} onClick={o} />)}
-          {...task}
-        />
+        <FloatingTaskEditor trigger={trigger} />
       </div>
       {subTasks}
     </div>

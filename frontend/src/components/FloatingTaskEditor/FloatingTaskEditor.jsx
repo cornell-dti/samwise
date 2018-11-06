@@ -13,27 +13,44 @@ import type { EditTaskAction } from '../../store/action-types';
 import styles from './FloatingTaskEditor.css';
 
 type Props = {|
-  ...Task;
-  +backgroundColor: string;
+  +trigger: (opener: (task: Task, backgroundColor: string) => void) => Node;
   +editTask: (task: Task) => EditTaskAction;
-  +trigger: (opener: () => void) => React.Node;
 |};
+
 type State = {| ...Task; +open: boolean; +backgroundColor: string; |};
+
+/**
+ * A trivial state used to reset things.
+ * @type {State}
+ */
+const trivialState: State = {
+  name: '',
+  id: 0,
+  tag: '',
+  date: new Date(),
+  complete: false,
+  inFocus: false,
+  subtaskArray: [],
+  open: false,
+  backgroundColor: '',
+};
 
 class FloatingTaskEditor extends React.Component<Props, State> {
   constructor(props: Props) {
     super(props);
-    const {
-      backgroundColor, editTask, trigger, ...task
-    } = props;
-    this.state = { ...task, open: false, backgroundColor };
+    this.state = trivialState;
   }
 
   /**
    * Open the popup.
+   *
+   * @param {Task} task the task used to initialized the modal.
+   * @param {string} backgroundColor the background color used to initialized the modal.
    */
-  openPopup() {
-    this.setState((state: State) => ({ ...state, open: true }));
+  openPopup(task: Task, backgroundColor: string) {
+    this.setState((state: State) => ({
+      ...state, ...task, backgroundColor, open: true,
+    }));
   }
 
   /**
@@ -87,7 +104,7 @@ class FloatingTaskEditor extends React.Component<Props, State> {
       open, backgroundColor, ...task
     } = this.state;
     const { subtaskArray } = task;
-    const triggerNode = trigger(() => this.openPopup());
+    const triggerNode = trigger((t, c) => this.openPopup(t, c));
     return (
       <Modal
         className={styles.FloatingTaskEditor}

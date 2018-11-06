@@ -2,7 +2,7 @@
 
 import * as React from 'react';
 import type { Node } from 'react';
-import { Form, Icon, Input } from 'semantic-ui-react';
+import { Icon, Input } from 'semantic-ui-react';
 import type { SubTask } from '../../store/store-types';
 import styles from './FloatingTaskEditor.css';
 import CheckBox from '../UI/CheckBox';
