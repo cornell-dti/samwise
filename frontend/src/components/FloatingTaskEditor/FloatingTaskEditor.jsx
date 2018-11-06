@@ -13,6 +13,8 @@ import type { EditTaskAction } from '../../store/action-types';
 import styles from './FloatingTaskEditor.css';
 
 type Props = {|
+  top: ?number;
+  left: ?number;
   +trigger: (opener: (task: Task, backgroundColor: string) => void) => Node;
   +editTask: (task: Task) => EditTaskAction;
 |};
@@ -40,9 +42,20 @@ const trivialState: State = {
  * It is triggered from a click on a specified element.
  *
  * Usage:
- * <FloatingTaskEditor trigger={opener => <span onClick={() => opener(task, color)}>Ha</span>} />
+ * ```jsx
+ * <FloatingTaskEditor
+ *   top={42}
+ *   left={3}
+ *   trigger={opener => <span onClick={() => opener(task, color)}>Ha</span>}
+ * />
+ * ```
  */
 class FloatingTaskEditor extends React.Component<Props, State> {
+  static defaultProps = {
+    top: undefined,
+    left: undefined,
+  };
+
   constructor(props: Props) {
     super(props);
     this.state = trivialState;
@@ -106,17 +119,21 @@ class FloatingTaskEditor extends React.Component<Props, State> {
   }
 
   render(): Node {
-    const { trigger } = this.props;
+    const { left, top, trigger } = this.props;
     const {
       open, backgroundColor, ...task
     } = this.state;
     const { subtaskArray } = task;
     const triggerNode = trigger((t, c) => this.openPopup(t, c));
+    const styleObj = {
+      backgroundColor,
+      top: top == null ? null : `${top} px`,
+      left: left == null ? null : `${left} px`,
+    };
     return (
       <Modal
         className={styles.FloatingTaskEditor}
-        style={{ backgroundColor }}
-        dimmer="inverted"
+        style={styleObj}
         size="mini"
         open={open}
         trigger={triggerNode}
