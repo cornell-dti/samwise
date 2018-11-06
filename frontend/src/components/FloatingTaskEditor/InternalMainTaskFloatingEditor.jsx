@@ -1,4 +1,4 @@
-// @flow
+// @flow strict
 
 import * as React from 'react';
 import type { Node } from 'react';
@@ -8,6 +8,7 @@ import type {
   State as StoreState, TagColorConfig, Task,
 } from '../../store/store-types';
 import styles from './FloatingTaskEditor.css';
+// $FlowFixMe FIXME
 import ClassPicker from '../ClassPicker/ClassPicker';
 import CheckBox from '../UI/CheckBox';
 import { simpleConnect } from '../../store/react-redux-util';
