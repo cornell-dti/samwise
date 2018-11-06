@@ -18,7 +18,11 @@ type Props = {|
   +editTask: (task: Task) => EditTaskAction;
 |};
 
-type State = {| ...Task; +open: boolean; +backgroundColor: string; |};
+type State = {|
+  ...Task;
+  +open: boolean;
+  +backgroundColor: string;
+|};
 
 /**
  * A trivial state used to reset things.
@@ -40,10 +44,16 @@ const trivialState: State = {
  * FloatingTaskEditor is a component used to edit a task on the fly.
  * It is triggered from a click on a specified element.
  *
- * Usage:
+ * Usage (mount to document.body):
  * ```jsx
  * <FloatingTaskEditor
- *   mountOnTriggerNode={false}
+ *   trigger={opener => <span onClick={() => opener(task, color)}>Ha</span>}
+ * />
+ * ```
+ * Usage (mount relative to another component):
+ * ```jsx
+ * <FloatingTaskEditor
+ *   mountRelativePosition={{ left: 66, top: 42 }}
  *   trigger={opener => <span onClick={() => opener(task, color)}>Ha</span>}
  * />
  * ```
@@ -57,6 +67,21 @@ class FloatingTaskEditor extends React.Component<Props, State> {
     super(props);
     this.state = trivialState;
   }
+
+  componentDidUpdate() {
+    const editorPosDiv = this.editorParentElement;
+    if (editorPosDiv == null) {
+      return;
+    }
+    editorPosDiv.style.top = `${editorPosDiv.offsetTop - 12}px`;
+    editorPosDiv.style.position = 'absolute';
+  }
+
+  /**
+   * The parent element of the actual editor.
+   * This is only used when the editor is embedded inside the DOM instead of mount to body.
+   */
+  editorParentElement: ?HTMLDivElement;
 
   /**
    * Open the popup.
@@ -72,8 +97,15 @@ class FloatingTaskEditor extends React.Component<Props, State> {
 
   /**
    * Close the popup.
+   *
+   * @param {*} event the event of clicking a div.
    */
-  closePopup() {
+  closePopup(event?: SyntheticEvent<HTMLDivElement>) {
+    if (event != null) {
+      if (event.currentTarget.className !== styles.FloatingTaskEditorBackgroundBlocker) {
+        return;
+      }
+    }
     this.setState((state: State) => ({ ...state, open: false }));
   }
 
@@ -110,7 +142,9 @@ class FloatingTaskEditor extends React.Component<Props, State> {
       event.preventDefault();
     }
     const { editTask } = this.props;
-    const { open, backgroundColor, ...task } = this.state;
+    const {
+      open, backgroundColor, ...task
+    } = this.state;
     editTask(task);
     this.closePopup();
   }
@@ -118,14 +152,22 @@ class FloatingTaskEditor extends React.Component<Props, State> {
   /**
    * Render the internals of the modal.
    *
-   * @param {string} className the additional class name of the internal content.
    * @return {Node} the internals of the modal.
    */
-  renderModalInternal(className: string = ''): Node {
-    const { open, backgroundColor, ...task } = this.state;
+  renderModalInternal(): Node {
+    const { mountInside } = this.props;
+    const {
+      open, backgroundColor, ...task
+    } = this.state;
     const { subtaskArray } = task;
+    const doesMountInside = mountInside === true;
+    const className = doesMountInside ? styles.EmbeddedFloatingTaskEditor : '';
+    const style = doesMountInside ? { backgroundColor } : {};
+    const refFunction = doesMountInside
+      ? (e) => { this.editorParentElement = e; }
+      : () => {};
     return (
-      <div className={className} style={{ backgroundColor }}>
+      <div className={className} style={style} ref={refFunction}>
         <InternalMainTaskFloatingEditor
           {...task}
           editTask={(t, c) => this.editMainTask(t, c)}
@@ -145,12 +187,13 @@ class FloatingTaskEditor extends React.Component<Props, State> {
   }
 
   /**
-   * Render the modal.
+   * Render the modal editor.
    *
    * @param {Node} triggerNode the node that triggers the modal.
    * @return {Node} the rendered modal.
    */
-  renderModal(triggerNode: Node): Node {
+  renderModalEditor(triggerNode: Node): Node {
+    console.log('Ha');
     const { open, backgroundColor } = this.state;
     return (
       <Modal
@@ -166,14 +209,14 @@ class FloatingTaskEditor extends React.Component<Props, State> {
     );
   }
 
-  render(): Node {
-    const { mountInside, trigger } = this.props;
+  /**
+   * Render the embedded editor.
+   *
+   * @param {Node} triggerNode the node that triggers the modal.
+   * @return {Node} the rendered editor.
+   */
+  renderEmbeddedEditor(triggerNode: Node): Node {
     const { open } = this.state;
-    const triggerNode = trigger((t, c) => this.openPopup(t, c));
-    if (mountInside == null || mountInside === false) {
-      return this.renderModal(triggerNode);
-    }
-    const editor = this.renderModalInternal(styles.EmbeddedFloatingTaskEditor);
     return (
       <React.Fragment>
         {triggerNode}
@@ -181,13 +224,21 @@ class FloatingTaskEditor extends React.Component<Props, State> {
           open && (
             <div
               className={styles.FloatingTaskEditorBackgroundBlocker}
-              onClick={() => this.closePopup()}
+              onClick={e => this.closePopup(e)}
             />
           )
         }
-        {open && editor}
+        {open && this.renderModalInternal()}
       </React.Fragment>
     );
+  }
+
+  render(): Node {
+    const { mountInside, trigger } = this.props;
+    const triggerNode = trigger((t, c) => this.openPopup(t, c));
+    return (mountInside === true)
+      ? this.renderEmbeddedEditor(triggerNode)
+      : this.renderModalEditor(triggerNode);
   }
 }
 
