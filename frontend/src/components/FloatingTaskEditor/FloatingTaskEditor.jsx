@@ -29,8 +29,6 @@ class FloatingTaskEditor extends React.Component<Props, State> {
     this.state = { ...task, open: false, backgroundColor };
   }
 
-  internalSubTaskEditor: ?InternalSubTaskFloatingEditor;
-
   /**
    * Open the popup.
    */
@@ -52,7 +50,7 @@ class FloatingTaskEditor extends React.Component<Props, State> {
    * @param {string} backgroundColor the optional new background color after the edit.
    */
   editMainTask(task: Task, backgroundColor?: string) {
-    if (backgroundColor) {
+    if (backgroundColor != null) {
       this.setState((state: State) => ({ ...state, ...task, backgroundColor }));
     } else {
       this.setState((state: State) => ({ ...state, ...task }));
@@ -74,17 +72,12 @@ class FloatingTaskEditor extends React.Component<Props, State> {
    * @param event the event that notifies about clicking 'submit'.
    */
   submitChanges(event: ?Event = null) {
-    if (event) {
+    if (event != null) {
       event.preventDefault();
-    }
-    const subTaskEditor = this.internalSubTaskEditor;
-    if (subTaskEditor == null) {
-      throw new Error('Impossible!');
     }
     const { editTask } = this.props;
     const { open, backgroundColor, ...task } = this.state;
-    const latestTask: Task = { ...task, subtaskArray: subTaskEditor.reportLatestSubtaskArray() };
-    editTask(latestTask);
+    editTask(task);
     this.closePopup();
   }
 
@@ -111,9 +104,6 @@ class FloatingTaskEditor extends React.Component<Props, State> {
             editTask={(t, c) => this.editMainTask(t, c)}
           />
           <InternalSubTaskFloatingEditor
-            ref={(e) => {
-              this.internalSubTaskEditor = e;
-            }}
             subtaskArray={subtaskArray}
             editSubTasks={arr => this.editSubTasks(arr)}
           />

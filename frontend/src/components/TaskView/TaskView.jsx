@@ -1,10 +1,11 @@
-// @flow
+// @flow strict
 
 import * as React from 'react';
 import { Icon } from 'semantic-ui-react';
 import type { BacklogDisplayOption } from '../Backlog/backlog-types';
 import BacklogViewSwitcher from '../Backlog/BacklogViewSwitcher';
 import BacklogDaysContainer from '../Backlog/BacklogDaysContainer';
+// $FlowFixMe FIXME
 import FocusView from '../FocusView/focusView';
 import styles from './TaskView.css';
 import BacklogCompletedTasksToggle from '../Backlog/BacklogCompletedTasksToggle';

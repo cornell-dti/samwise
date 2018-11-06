@@ -8,13 +8,22 @@ import styles from './FloatingTaskEditor.css';
 import CheckBox from '../UI/CheckBox';
 
 type Props = {|
-  subtaskArray: SubTask[];
-  editSubTasks: (subtaskArray: SubTask[]) => void;
+  +subtaskArray: SubTask[];
+  +editSubTasks: (subtaskArray: SubTask[]) => void;
 |};
+
 type State = {|
-  subtaskArray: SubTask[];
-  newSubTaskValue: string;
+  +subtaskArray: SubTask[];
+  +newSubTaskValue: string;
+  +autoFocusId: number;
 |};
+
+/**
+ * Generate a random id to make React happy.
+ *
+ * @return {number} a random id.
+ */
+const randomId = (): number => ((10 * new Date()) + Math.floor(1000 * Math.random()));
 
 /**
  * InternalSubTaskFloatingEditor is intended for internal use for FloatingTaskEditor only.
@@ -23,22 +32,32 @@ export default class InternalSubTaskFloatingEditor extends React.Component<Props
   constructor(props: Props) {
     super(props);
     const { subtaskArray } = props;
-    this.state = { subtaskArray, newSubTaskValue: '' };
+    const autoFocusId = subtaskArray.length === 0 ? 0 : subtaskArray.length - 1;
+    this.state = { subtaskArray, newSubTaskValue: '', autoFocusId };
   }
 
+  componentDidUpdate() {
+    const e = this.inputToFocus;
+    if (e != null) {
+      e.focus();
+    }
+  }
+
+  inputToFocus: ?HTMLInputElement;
+
   /**
-   * Returns a new subtask array based on the current editor state.
+   * Register the element e at index if it is the autoFocus element.
    *
-   * @param state the current editor state.
-   * @return {SubTask[]} the new subtask array.
+   * @param {HTMLInputElement} e the DOM element to register.
+   * @param {number} index the index of the element.
    */
-  createNewSubtaskArray = (state: State) => (
-    [...state.subtaskArray, {
-      name: state.newSubTaskValue,
-      id: ((10 * new Date()) + Math.floor(1000 * Math.random())),
-      complete: false,
-      inFocus: false,
-    }]);
+  registerInputToFocus(e: ?HTMLInputElement, index: number) {
+    const { autoFocusId } = this.state;
+    if (index !== autoFocusId) {
+      return;
+    }
+    this.inputToFocus = e;
+  }
 
   /**
    * Edit one particular subtask.
@@ -103,6 +122,30 @@ export default class InternalSubTaskFloatingEditor extends React.Component<Props
   }
 
   /**
+   * Handle a potential switch focus request when the user press some key, which
+   * may be ENTER, in which case we want to shift focus to the next input element.
+   *
+   * @param {KeyboardEvent} event the keyboard event to check.
+   * @param {number} currentIndex the current input index.
+   */
+  switchFocus(event: KeyboardEvent, currentIndex: number) {
+    // console.log('ss');
+    if (event.key !== 'Enter') {
+      return;
+    }
+    const autoFocusId = currentIndex + 1;
+    const inputTarget = event.target;
+    if (inputTarget instanceof HTMLInputElement) {
+      inputTarget.blur();
+      const focusInput = this.inputToFocus;
+      if (focusInput != null) {
+        focusInput.focus();
+      }
+    }
+    this.setState((state: State) => ({ ...state, autoFocusId }));
+  }
+
+  /**
    * Update the state when the new line of subtask name changes.
    *
    * @param event the event that notifies about the change and contains the new value.
@@ -110,50 +153,35 @@ export default class InternalSubTaskFloatingEditor extends React.Component<Props
   handleNewSubTaskValueChange(event: Event) {
     event.preventDefault();
     if (event.target instanceof HTMLInputElement) {
-      const newSubTaskValue = event.target.value;
-      this.setState((state: State) => ({ ...state, newSubTaskValue }));
-    }
-  }
-
-  /**
-   * Returns the latest known subtask array in the editor.
-   * This method should only be called by the PopupEditor when submit to fetch the new values.
-   *
-   * @return {SubTask[]} the latest known subtask array in the editor.
-   */
-  reportLatestSubtaskArray(): SubTask[] {
-    const { subtaskArray, newSubTaskValue } = this.state;
-    if (!newSubTaskValue.trim()) {
-      return subtaskArray;
-    }
-    return this.createNewSubtaskArray(this.state);
-  }
-
-  /**
-   * Change the state to account for a new line of subtask.
-   *
-   * @param event the keyboard event.
-   */
-  handleSubmitForNewSubTask(event: Event) {
-    event.preventDefault();
-    const { editSubTasks } = this.props;
-    this.setState((state: State) => {
-      if (!state.newSubTaskValue.trim()) {
-        return state;
+      const newSubTaskValue: string = event.target.value.trim();
+      if (newSubTaskValue.length === 0) {
+        return;
       }
-      const newSubtaskArray = this.createNewSubtaskArray(state);
-      editSubTasks(newSubtaskArray);
-      return { subtaskArray: newSubtaskArray, newSubTaskValue: '' };
-    });
+      const newSubTask: SubTask = {
+        name: newSubTaskValue,
+        id: randomId(),
+        complete: false,
+        inFocus: false,
+      };
+      this.setState((state: State) => ({
+        ...state,
+        subtaskArray: [...state.subtaskArray, newSubTask],
+        newSubTaskValue: '',
+        autoFocusId: state.subtaskArray.length,
+      }));
+    }
   }
 
   /**
    * Render a subtask.
    *
    * @param {SubTask} subTask one subtask.
+   * @param {number} index index of the subtask in the array.
    */
-  renderSubTask(subTask: SubTask): Node {
+  renderSubTask(subTask: SubTask, index: number): Node {
+    // const { autoFocusId } = this.state;
     const { id, name, complete } = subTask;
+    // const isLastElement = index === autoFocusId;
     return (
       <div key={id} className={styles.FloatingTaskEditorFlexibleContainer}>
         <CheckBox
@@ -162,10 +190,11 @@ export default class InternalSubTaskFloatingEditor extends React.Component<Props
           onChange={() => this.editSubTaskComplete(id)}
         />
         <Input
-          id={id}
+          ref={e => this.registerInputToFocus(e, index)}
           className={styles.FloatingTaskEditorFlexibleInput}
           placeholder="Your Sub-Task"
           value={name}
+          onKeyDown={event => this.switchFocus(event, index)}
           onChange={event => this.editSubTask(id, event)}
         />
         <Icon name="delete" onClick={() => this.removeSubTask(id)} />
@@ -174,20 +203,18 @@ export default class InternalSubTaskFloatingEditor extends React.Component<Props
   }
 
   render(): Node {
-    const { subtaskArray, newSubTaskValue } = this.state;
-    const existingSubTasks = subtaskArray.map((subTask: SubTask) => this.renderSubTask(subTask));
+    const { subtaskArray, newSubTaskValue, autoFocusId } = this.state;
+    const existingSubTasks = subtaskArray.map((t: SubTask, i: number) => this.renderSubTask(t, i));
     const newSubTaskEditor = (
-      <Form
-        className={styles.FloatingTaskEditorFlexibleContainer}
-        onSubmit={event => this.handleSubmitForNewSubTask(event)}
-      >
-        <Form.Input
+      <div className={styles.FloatingTaskEditorFlexibleContainer}>
+        <Input
           className={styles.FloatingTaskEditorFlexibleInput}
+          ref={e => this.registerInputToFocus(e, subtaskArray.length)}
           placeholder="Your New Sub-Task"
           value={newSubTaskValue}
           onChange={event => this.handleNewSubTaskValueChange(event)}
         />
-      </Form>
+      </div>
     );
     return (
       <div className={styles.FloatingTaskEditorSubTasksIndentedContainer}>

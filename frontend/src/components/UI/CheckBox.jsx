@@ -57,11 +57,12 @@ export default class CheckBox extends React.Component<Props, State> {
     let { checked } = this.state;
     // eslint-disable-next-line react/destructuring-assignment
     const checkedNotNull = this.props.checked || false;
+    const invertedNotNull = inverted || false;
     if (checkedNotNull !== checked) {
       checked = checkedNotNull;
     }
-    let allClassNames = className ? `${className} ${styles.CheckBox}` : styles.CheckBox;
-    if (inverted) {
+    let allClassNames = className != null ? `${className} ${styles.CheckBox}` : styles.CheckBox;
+    if (invertedNotNull) {
       allClassNames = `${allClassNames} ${styles.InvertedCheckBox}`;
     }
     const checkMarkDisplayStyle = { display: checked ? 'block' : 'none' };
