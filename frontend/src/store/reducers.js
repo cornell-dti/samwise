@@ -1,4 +1,4 @@
-// @flow
+// @flow strict
 
 import type { Action, EditTaskAction, TagColorConfigAction } from './action-types';
 import type {

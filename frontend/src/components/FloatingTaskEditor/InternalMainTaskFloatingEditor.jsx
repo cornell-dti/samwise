@@ -1,29 +1,36 @@
-// @flow strict
+// @flow
 
 import * as React from 'react';
 import type { Node } from 'react';
 import { Icon, Input } from 'semantic-ui-react';
 import Calendar from 'react-calendar';
-import connect from 'react-redux/es/connect/connect';
 import type {
   State as StoreState, TagColorConfig, Task,
 } from '../../store/store-types';
 import styles from './FloatingTaskEditor.css';
 import ClassPicker from '../ClassPicker/ClassPicker';
 import CheckBox from '../UI/CheckBox';
+import { simpleConnect } from '../../store/react-redux-util';
 
-type Props = {|
+type OwnProps = {|
   ...Task;
-  tagColorPicker: TagColorConfig;
   +editTask: (task: Task, color?: string) => void;
 |};
+
+type SubscribedProps = {| tagColorPicker: TagColorConfig; |};
+
+type Props = {|
+  ...OwnProps;
+  ...SubscribedProps;
+|};
+
 type State = {|
   ...Task;
   doesShowTagEditor: boolean;
   doesShowCalendarEditor: boolean;
 |};
 
-const mapStateToProps = ({ tagColorPicker }: StoreState) => ({ tagColorPicker });
+const mapStateToProps = ({ tagColorPicker }: StoreState): SubscribedProps => ({ tagColorPicker });
 
 /**
  * InternalMainTaskFloatingEditor is intended for internal use for FloatingTaskEditor only.
@@ -174,7 +181,7 @@ class InternalMainTaskFloatingEditor extends React.Component<Props, State> {
   }
 }
 
-const ConnectedInternalMainTaskFloatingEditor = connect(
-  mapStateToProps, null,
+const ConnectedInternalMainTaskFloatingEditor = simpleConnect<Props, OwnProps, SubscribedProps>(
+  mapStateToProps,
 )(InternalMainTaskFloatingEditor);
 export default ConnectedInternalMainTaskFloatingEditor;

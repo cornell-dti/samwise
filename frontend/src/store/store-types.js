@@ -1,4 +1,4 @@
-// @flow
+// @flow strict
 
 export type SubTask = {|
   +name: string; // Example: "SubTask 1 Name"

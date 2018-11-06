@@ -1,6 +1,7 @@
-// @flow
+// @flow strict
 
 import * as React from 'react';
+import type { Node } from 'react';
 import { Form, Icon, Input } from 'semantic-ui-react';
 import type { SubTask } from '../../store/store-types';
 import styles from './FloatingTaskEditor.css';
@@ -146,39 +147,52 @@ export default class InternalSubTaskFloatingEditor extends React.Component<Props
     });
   }
 
-  render() {
-    const { subtaskArray, newSubTaskValue } = this.state;
-    const existingSubTasks = subtaskArray.map((subTask: SubTask) => (
-      <div key={subTask.id} className={styles.FloatingTaskEditorFlexibleContainer}>
+  /**
+   * Render a subtask.
+   *
+   * @param {SubTask} subTask one subtask.
+   */
+  renderSubTask(subTask: SubTask): Node {
+    const { id, name, complete } = subTask;
+    return (
+      <div key={id} className={styles.FloatingTaskEditorFlexibleContainer}>
         <CheckBox
           className={styles.FloatingTaskEditorCheckBox}
-          checked={subTask.complete}
-          onChange={() => this.editSubTaskComplete(subTask.id)}
+          checked={complete}
+          onChange={() => this.editSubTaskComplete(id)}
         />
         <Input
-          id={subTask.id}
+          id={id}
           className={styles.FloatingTaskEditorFlexibleInput}
           placeholder="Your Sub-Task"
-          value={subTask.name}
-          onChange={event => this.editSubTask(subTask.id, event)}
+          value={name}
+          onChange={event => this.editSubTask(id, event)}
         />
-        <Icon name="delete" onClick={() => this.removeSubTask(subTask.id)} />
+        <Icon name="delete" onClick={() => this.removeSubTask(id)} />
       </div>
-    ));
+    );
+  }
+
+  render(): Node {
+    const { subtaskArray, newSubTaskValue } = this.state;
+    const existingSubTasks = subtaskArray.map((subTask: SubTask) => this.renderSubTask(subTask));
+    const newSubTaskEditor = (
+      <Form
+        className={styles.FloatingTaskEditorFlexibleContainer}
+        onSubmit={event => this.handleSubmitForNewSubTask(event)}
+      >
+        <Form.Input
+          className={styles.FloatingTaskEditorFlexibleInput}
+          placeholder="Your New Sub-Task"
+          value={newSubTaskValue}
+          onChange={event => this.handleNewSubTaskValueChange(event)}
+        />
+      </Form>
+    );
     return (
       <div className={styles.FloatingTaskEditorSubTasksIndentedContainer}>
         {existingSubTasks}
-        <Form
-          className={styles.FloatingTaskEditorFlexibleContainer}
-          onSubmit={event => this.handleSubmitForNewSubTask(event)}
-        >
-          <Form.Input
-            className={styles.FloatingTaskEditorFlexibleInput}
-            placeholder="Your New Sub-Task"
-            value={newSubTaskValue}
-            onChange={event => this.handleNewSubTaskValueChange(event)}
-          />
-        </Form>
+        {newSubTaskEditor}
       </div>
     );
   }

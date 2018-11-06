@@ -4,13 +4,12 @@
 import * as React from 'react';
 import type { Node } from 'react';
 import { Modal } from 'semantic-ui-react';
-import connect from 'react-redux/es/connect/connect';
-import { bindActionCreators } from 'redux';
+import { connect } from 'react-redux';
 import type { SubTask, Task } from '../../store/store-types';
 import { editTask as editTaskAction } from '../../store/actions';
 import InternalSubTaskFloatingEditor from './InternalSubTaskFloatingEditor';
 import InternalMainTaskFloatingEditor from './InternalMainTaskFloatingEditor';
-import type { Dispatch, EditTaskAction } from '../../store/action-types';
+import type { EditTaskAction } from '../../store/action-types';
 import styles from './FloatingTaskEditor.css';
 
 type Props = {|
@@ -20,10 +19,6 @@ type Props = {|
   +trigger: (opener: () => void) => React.Node;
 |};
 type State = {| ...Task; +open: boolean; +backgroundColor: string; |};
-
-const mapDispatchToProps = (dispatch: Dispatch) => bindActionCreators(
-  { editTask: editTaskAction }, dispatch,
-);
 
 class FloatingTaskEditor extends React.Component<Props, State> {
   constructor(props: Props) {
@@ -96,8 +91,9 @@ class FloatingTaskEditor extends React.Component<Props, State> {
   render(): Node {
     const { trigger } = this.props;
     const {
-      open, backgroundColor, subtaskArray, ...task
+      open, backgroundColor, ...task
     } = this.state;
+    const { subtaskArray } = task;
     const triggerNode = trigger(() => this.openPopup());
     return (
       <Modal
@@ -133,5 +129,5 @@ class FloatingTaskEditor extends React.Component<Props, State> {
   }
 }
 
-const ConnectedPopupTaskEditor = connect(null, mapDispatchToProps)(FloatingTaskEditor);
+const ConnectedPopupTaskEditor = connect(null, { editTask: editTaskAction })(FloatingTaskEditor);
 export default ConnectedPopupTaskEditor;
