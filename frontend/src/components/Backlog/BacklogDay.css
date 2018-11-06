@@ -1,4 +1,5 @@
 .BacklogDay {
+  position: relative;
   margin: 0.5em;
   background-color: #F7F7F7;
   height: 250px;
@@ -25,8 +26,7 @@
 }
 
 .BacklogDayTaskContainer {
-  position: relative;
-  height: calc(100% - 44px);
+  height: calc(100% - 84px);
   overflow: hidden;
 }
 

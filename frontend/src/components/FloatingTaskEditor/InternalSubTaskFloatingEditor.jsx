@@ -47,6 +47,7 @@ export default class InternalSubTaskFloatingEditor extends React.Component<Props
 
   /**
    * Register the element e at index if it is the autoFocus element.
+   * This method ensures that when we are rendering stuff, we choose the right text input to focus.
    *
    * @param {HTMLInputElement} e the DOM element to register.
    * @param {number} index the index of the element.
@@ -129,7 +130,6 @@ export default class InternalSubTaskFloatingEditor extends React.Component<Props
    * @param {number} currentIndex the current input index.
    */
   switchFocus(event: KeyboardEvent, currentIndex: number) {
-    // console.log('ss');
     if (event.key !== 'Enter') {
       return;
     }
@@ -179,9 +179,7 @@ export default class InternalSubTaskFloatingEditor extends React.Component<Props
    * @param {number} index index of the subtask in the array.
    */
   renderSubTask(subTask: SubTask, index: number): Node {
-    // const { autoFocusId } = this.state;
     const { id, name, complete } = subTask;
-    // const isLastElement = index === autoFocusId;
     return (
       <div key={id} className={styles.FloatingTaskEditorFlexibleContainer}>
         <CheckBox
@@ -203,7 +201,7 @@ export default class InternalSubTaskFloatingEditor extends React.Component<Props
   }
 
   render(): Node {
-    const { subtaskArray, newSubTaskValue, autoFocusId } = this.state;
+    const { subtaskArray, newSubTaskValue } = this.state;
     const existingSubTasks = subtaskArray.map((t: SubTask, i: number) => this.renderSubTask(t, i));
     const newSubTaskEditor = (
       <div className={styles.FloatingTaskEditorFlexibleContainer}>

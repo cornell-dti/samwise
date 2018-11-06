@@ -66,37 +66,35 @@ export default class BacklogDay extends React.Component<Props, State> {
           throw new Error('Impossible Case');
       }
     })();
-    const wrapperClass = isToday
+    const wrapperCssClass = isToday
       ? `${styles.BacklogDay} ${styles.BacklogToday}`
       : styles.BacklogDay;
+    const tasksComponent = tasks
+      .filter((t: ColoredTask) => (doesShowCompletedTasks || !t.complete))
+      .map((t: ColoredTask) => (
+        <BacklogTask
+          key={t.id}
+          doesShowCompletedTasks={doesShowCompletedTasks}
+          doesRenderSubTasks={doesRenderSubTasks}
+          {...t}
+        />
+      ));
+    const overflowComponent = doesOverflow && (
+      <div className={styles.BacklogDayMoreTasksBar}>More Tasks...</div>
+    );
     return (
-      <div className={wrapperClass}>
+      <div className={wrapperCssClass}>
         <div className={styles.BacklogDayDateInfo}>
           <div className={styles.BacklogDayDateInfoDay}>{dayString}</div>
           <div className={styles.BacklogDayDateInfoDateNum}>{date.getDate()}</div>
         </div>
         <div
           className={styles.BacklogDayTaskContainer}
-          ref={(e) => {
-            this.internalTasksContainer = e;
-          }}
+          ref={(e) => { this.internalTasksContainer = e; }}
         >
-          {
-            tasks
-              .filter((t: ColoredTask) => (doesShowCompletedTasks || !t.complete))
-              .map((t: ColoredTask) => (
-                <BacklogTask
-                  key={t.id}
-                  doesShowCompletedTasks={doesShowCompletedTasks}
-                  doesRenderSubTasks={doesRenderSubTasks}
-                  {...t}
-                />
-              ))
-          }
-          {
-            doesOverflow && (<div className={styles.BacklogDayMoreTasksBar}>More Tasks...</div>)
-          }
+          {tasksComponent}
         </div>
+        {overflowComponent}
       </div>
     );
   }

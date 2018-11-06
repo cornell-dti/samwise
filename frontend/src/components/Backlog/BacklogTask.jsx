@@ -37,70 +37,137 @@ const actionCreators = {
 
 /**
  * The component used to render one task in backlog day.
- *
- * @param props the props to render.
- * @return {Node} the rendered element.
- * @constructor
  */
-function BacklogTask(props: Props): Node {
-  const {
-    color, doesShowCompletedTasks, doesRenderSubTasks,
-    markTask, toggleTaskPin, removeTask, ...task
-  } = props;
-  const {
-    name, id, complete, inFocus, subtaskArray,
-  } = task;
-  const checkBoxElement = (
-    <CheckBox
-      className={styles.BacklogTaskCheckBox}
-      checked={complete}
-      onChange={() => markTask(id)}
-    />
-  );
-  const tagStyle = complete ? { textDecoration: 'line-through' } : {};
-  const tagElement = (
-    <span className={styles.BacklogTaskText} style={tagStyle}>{name}</span>
-  );
-  const removeTaskIcon = (
-    <Icon name="delete" className={styles.BacklogTaskIcon} onClick={() => removeTask(id)} />
-  );
-  const bookmarkIcon = (
-    <Icon
-      name={inFocus ? 'bookmark' : 'bookmark outline'}
-      className={styles.BacklogTaskIcon}
-      onClick={() => toggleTaskPin(id)}
-    />
-  );
-  const subTasks = doesRenderSubTasks && subtaskArray
-    .filter((t: SubTask) => (doesShowCompletedTasks || !t.complete))
-    .map((subTask: SubTask) => (
-      <BacklogSubTask key={subTask.id} mainTaskId={id} {...subTask} />
-    ));
-  const trigger = (opener: (task: Task, backgroundColor: string) => void): Node => {
-    const onClickHandler = (e: SyntheticEvent<HTMLElement>) => {
-      // only accept click on text.
-      if (e.target instanceof HTMLElement) {
-        const elem: HTMLElement = e.target;
+class BacklogTask extends React.Component<Props> {
+
+  /**
+   * Get an onClickHandler when the element is clicked.
+   * This methods ensure that only clicking on task text counts.
+   *
+   * @param {Function} opener the opener passed by the floating task editor.
+   * @return {Function} the onClick handler.
+   */
+  getOnClickHandler(opener: (Task, string) => void): (SyntheticEvent<HTMLElement>) => void {
+    const {
+      color, doesShowCompletedTasks, doesRenderSubTasks,
+      markTask, toggleTaskPin, removeTask, ...task
+    } = this.props;
+    return (event: SyntheticEvent<HTMLElement>) => {
+      if (event.target instanceof HTMLElement) {
+        const elem: HTMLElement = event.target;
+        // only accept click on text.
         if (elem.className === styles.BacklogTaskText) {
           opener(task, color);
         }
       }
     };
+  }
+
+  /**
+   * Render the checkbox element.
+   *
+   * @return {Node} the checkbox element.
+   */
+  renderCheckBox(): Node {
+    const { id, complete, markTask } = this.props;
     return (
-      <div onClick={onClickHandler} className={styles.BacklogTask}>
-        <div className={styles.BacklogTaskMainWrapper} style={{ backgroundColor: color }}>
-          {checkBoxElement}
-          {tagElement}
-          {removeTaskIcon}
-          {bookmarkIcon}
-        </div>
-        {subTasks}
+      <CheckBox
+        className={styles.BacklogTaskCheckBox}
+        checked={complete}
+        onChange={() => markTask(id)}
+      />
+    );
+  }
+
+  /**
+   * Render the task name.
+   *
+   * @return {Node} the task name element.
+   */
+  renderTaskName(): Node {
+    const { name, complete } = this.props;
+    const tagStyle = complete ? { textDecoration: 'line-through' } : {};
+    return (
+      <span className={styles.BacklogTaskText} style={tagStyle}>{name}</span>
+    );
+  }
+
+  /**
+   * Render the remove task icon.
+   *
+   * @return {Node} the rendered remove task icon.
+   */
+  renderRemoveTaskIcon(): Node {
+    const { id, removeTask } = this.props;
+    const handler = () => removeTask(id);
+    return (
+      <Icon name="delete" className={styles.BacklogTaskIcon} onClick={handler} />
+    );
+  }
+
+  /**
+   * Render the bookmark task icon.
+   *
+   * @return {Node} the rendered bookmark task icon.
+   */
+  renderBookmarkIcon(): Node {
+    const { id, inFocus, toggleTaskPin } = this.props;
+    const handler = () => toggleTaskPin(id);
+    return (
+      <Icon
+        name={inFocus ? 'bookmark' : 'bookmark outline'}
+        className={styles.BacklogTaskIcon}
+        onClick={handler}
+      />
+    );
+  }
+
+  /**
+   * Render the information for main task.
+   *
+   * @return {Node} the information for main task.
+   */
+  renderMainTaskInfo(): Node {
+    const { color } = this.props;
+    return (
+      <div className={styles.BacklogTaskMainWrapper} style={{ backgroundColor: color }}>
+        {this.renderCheckBox()}
+        {this.renderTaskName()}
+        {this.renderRemoveTaskIcon()}
+        {this.renderBookmarkIcon()}
       </div>
     );
-  };
-  return (
-    <FloatingTaskEditor trigger={trigger} />
-  );
+  }
+
+  /**
+   * Render the information for subtasks.
+   *
+   * @return {Node} the information for subtasks.
+   */
+  renderSubTasks(): Node {
+    const {
+      id, subtaskArray, doesShowCompletedTasks, doesRenderSubTasks,
+    } = this.props;
+    return doesRenderSubTasks && subtaskArray
+      .filter((subTask: SubTask) => (doesShowCompletedTasks || !subTask.complete))
+      .map((subTask: SubTask) => (
+        <BacklogSubTask key={subTask.id} mainTaskId={id} {...subTask} />
+      ));
+  }
+
+  render(): Node {
+    // Construct the trigger for the floating task editor.
+    const trigger = (opener: (Task, string) => void): Node => {
+      const onClickHandler = this.getOnClickHandler(opener);
+      return (
+        <div onClick={onClickHandler} className={styles.BacklogTask}>
+          {this.renderMainTaskInfo()}
+          {this.renderSubTasks()}
+        </div>
+      );
+    };
+    return (<FloatingTaskEditor mountInside trigger={trigger} />);
+  }
 }
 
 const ConnectedBackLogTask = connect(null, actionCreators)(BacklogTask);

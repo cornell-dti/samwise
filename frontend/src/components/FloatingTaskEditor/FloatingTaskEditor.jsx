@@ -13,8 +13,7 @@ import type { EditTaskAction } from '../../store/action-types';
 import styles from './FloatingTaskEditor.css';
 
 type Props = {|
-  top: ?number;
-  left: ?number;
+  mountInside?: boolean;
   +trigger: (opener: (task: Task, backgroundColor: string) => void) => Node;
   +editTask: (task: Task) => EditTaskAction;
 |};
@@ -44,16 +43,14 @@ const trivialState: State = {
  * Usage:
  * ```jsx
  * <FloatingTaskEditor
- *   top={42}
- *   left={3}
+ *   mountOnTriggerNode={false}
  *   trigger={opener => <span onClick={() => opener(task, color)}>Ha</span>}
  * />
  * ```
  */
 class FloatingTaskEditor extends React.Component<Props, State> {
   static defaultProps = {
-    top: undefined,
-    left: undefined,
+    mountInside: undefined,
   };
 
   constructor(props: Props) {
@@ -118,44 +115,78 @@ class FloatingTaskEditor extends React.Component<Props, State> {
     this.closePopup();
   }
 
-  render(): Node {
-    const { left, top, trigger } = this.props;
-    const {
-      open, backgroundColor, ...task
-    } = this.state;
+  /**
+   * Render the internals of the modal.
+   *
+   * @param {string} className the additional class name of the internal content.
+   * @return {Node} the internals of the modal.
+   */
+  renderModalInternal(className: string = ''): Node {
+    const { open, backgroundColor, ...task } = this.state;
     const { subtaskArray } = task;
-    const triggerNode = trigger((t, c) => this.openPopup(t, c));
-    const styleObj = {
-      backgroundColor,
-      top: top == null ? null : `${top} px`,
-      left: left == null ? null : `${left} px`,
-    };
+    return (
+      <div className={className} style={{ backgroundColor }}>
+        <InternalMainTaskFloatingEditor
+          {...task}
+          editTask={(t, c) => this.editMainTask(t, c)}
+        />
+        <InternalSubTaskFloatingEditor
+          subtaskArray={subtaskArray}
+          editSubTasks={arr => this.editSubTasks(arr)}
+        />
+        <div className={styles.FloatingTaskEditorSubmitButtonRow}>
+          <span className={styles.FloatingTaskEditorFlexiblePadding} />
+          <div className={styles.FloatingEditorSaveButton} onClick={e => this.submitChanges(e)}>
+            <span className={styles.FloatingEditorSaveButtonText}>Save</span>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  /**
+   * Render the modal.
+   *
+   * @param {Node} triggerNode the node that triggers the modal.
+   * @return {Node} the rendered modal.
+   */
+  renderModal(triggerNode: Node): Node {
+    const { open, backgroundColor } = this.state;
     return (
       <Modal
         className={styles.FloatingTaskEditor}
-        style={styleObj}
+        style={{ backgroundColor }}
         size="mini"
         open={open}
         trigger={triggerNode}
         onClose={() => this.closePopup()}
       >
-        <div>
-          <InternalMainTaskFloatingEditor
-            {...task}
-            editTask={(t, c) => this.editMainTask(t, c)}
-          />
-          <InternalSubTaskFloatingEditor
-            subtaskArray={subtaskArray}
-            editSubTasks={arr => this.editSubTasks(arr)}
-          />
-          <div className={styles.FloatingTaskEditorSubmitButtonRow}>
-            <span className={styles.FloatingTaskEditorFlexiblePadding} />
-            <div className={styles.FloatingEditorSaveButton} onClick={e => this.submitChanges(e)}>
-              <span className={styles.FloatingEditorSaveButtonText}>Save</span>
-            </div>
-          </div>
-        </div>
+        {this.renderModalInternal()}
       </Modal>
+    );
+  }
+
+  render(): Node {
+    const { mountInside, trigger } = this.props;
+    const { open } = this.state;
+    const triggerNode = trigger((t, c) => this.openPopup(t, c));
+    if (mountInside == null || mountInside === false) {
+      return this.renderModal(triggerNode);
+    }
+    const editor = this.renderModalInternal(styles.EmbeddedFloatingTaskEditor);
+    return (
+      <React.Fragment>
+        {triggerNode}
+        {
+          open && (
+            <div
+              className={styles.FloatingTaskEditorBackgroundBlocker}
+              onClick={() => this.closePopup()}
+            />
+          )
+        }
+        {open && editor}
+      </React.Fragment>
     );
   }
 }

@@ -32,6 +32,28 @@
   margin: 0 0.5em;
 }
 
+.FloatingTaskEditorBackgroundBlocker {
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 6;
+  background-color: rgba(0, 0, 0, 0.15);
+}
+
+.EmbeddedFloatingTaskEditor {
+  position: absolute;
+  z-index: 7;
+  top: 0;
+  left: 0;
+  width: 360px;
+  height: auto;
+  color: white;
+  font-size: 12px;
+  box-shadow: 0 5px 12px 0 rgba(0, 0, 0, 0.3);
+}
+
 /*
  * --------------------------------------------------------------------------------
  * Part 2: Common Components for Both Children Components
@@ -69,15 +91,12 @@
   border-bottom: 1px solid transparent !important;
 }
 
-.FloatingTaskEditorFlexibleInput > input:focus-within,
-.FloatingTaskEditorFlexibleInput > div > input:focus-within {
+.FloatingTaskEditorFlexibleInput > input:focus-within {
   border-bottom-color: white !important;
 }
 
 .FloatingTaskEditorFlexibleInput > input::placeholder,
-.FloatingTaskEditorFlexibleInput > div > input::placeholder,
-.FloatingTaskEditorFlexibleInput > input:focus-within::placeholder,
-.FloatingTaskEditorFlexibleInput > div > input:focus-within::placeholder{
+.FloatingTaskEditorFlexibleInput > input:focus-within::placeholder {
   color: white !important;
 }
 
@@ -135,7 +154,7 @@
 
 /*
  * --------------------------------------------------------------------------------
- * Part 3: Components for Sub-Task Editor
+ * Part 4: Components for Sub-Task Editor
  * --------------------------------------------------------------------------------
  */
 
