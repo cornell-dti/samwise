@@ -9,6 +9,7 @@ import type { State, TagColorConfig, Task } from '../../store/store-types';
 import { simpleConnect } from '../../store/react-redux-util';
 import { buildDaysInBacklog } from './backlog-util';
 import type { DateToTaskMap } from './backlog-util';
+import type { FloatingPosition } from '../FloatingTaskEditor/floating-task-editor-types';
 
 type OwnProps = {|
   +doesShowCompletedTasks: boolean;
@@ -56,11 +57,18 @@ const mapStateToProps = (state: State): SubscribedProps => ({
  *
  * @param {OneDayTask} day the day object to display.
  * @param {boolean} doesShowCompletedTasks whether to show tasks that are completed.
+ * @param {FloatingPosition} taskEditorPosition the position to put the task editor for a task.
  * @return {Node} the rendered component.
  */
-const renderDay = (day: OneDayTask, doesShowCompletedTasks: boolean): Node => (
+const renderDay = (
+  day: OneDayTask, doesShowCompletedTasks: boolean, taskEditorPosition: FloatingPosition,
+): Node => (
   <Grid.Column key={day.date.toDateString()}>
-    <BacklogDay doesShowCompletedTasks={doesShowCompletedTasks} {...day} />
+    <BacklogDay
+      doesShowCompletedTasks={doesShowCompletedTasks}
+      taskEditorPosition={taskEditorPosition}
+      {...day}
+    />
   </Grid.Column>
 );
 
@@ -88,7 +96,26 @@ function BacklogDaysContainer(props: Props): Node {
       rowId += 1;
       tempRow = [];
     }
-    tempRow.push(renderDay(days[i], doesShowCompletedTasks));
+    let taskEditorPosition: FloatingPosition;
+    if (days.length === 4) {
+      if (i < 2) {
+        taskEditorPosition = 'right';
+      } else if (i === 2) {
+        taskEditorPosition = 'below';
+      } else {
+        taskEditorPosition = 'left';
+      }
+    } else {
+      // eslint-disable-next-line no-lonely-if
+      if (i < 5) {
+        taskEditorPosition = 'right';
+      } else if (i === 5) {
+        taskEditorPosition = 'below';
+      } else {
+        taskEditorPosition = 'left';
+      }
+    }
+    tempRow.push(renderDay(days[i], doesShowCompletedTasks, taskEditorPosition));
   }
   if (tempRow.length > 0) {
     rows.push(renderRow(rowId, tempRow));

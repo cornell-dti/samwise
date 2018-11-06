@@ -19,11 +19,13 @@ import type {
   MarkTaskAction, RemoveTaskAction, ToggleTaskPinAction,
 } from '../../store/action-types';
 import CheckBox from '../UI/CheckBox';
+import type { FloatingPosition } from '../FloatingTaskEditor/floating-task-editor-types';
 
 type Props = {|
   ...ColoredTask;
   +doesShowCompletedTasks: boolean;
   +doesRenderSubTasks: boolean;
+  +taskEditorPosition: FloatingPosition;
   +markTask: (taskId: number) => MarkTaskAction;
   +toggleTaskPin: (taskId: number) => ToggleTaskPinAction;
   +removeTask: (taskId: number) => RemoveTaskAction;
@@ -48,8 +50,8 @@ class BacklogTask extends React.Component<Props> {
    */
   getOnClickHandler(opener: (Task, string) => void): (SyntheticEvent<HTMLElement>) => void {
     const {
-      color, doesShowCompletedTasks, doesRenderSubTasks,
-      markTask, toggleTaskPin, removeTask, ...task
+      doesShowCompletedTasks, doesRenderSubTasks, taskEditorPosition,
+      markTask, toggleTaskPin, removeTask, color, ...task
     } = this.props;
     return (event: SyntheticEvent<HTMLElement>) => {
       if (event.target instanceof HTMLElement) {
@@ -165,7 +167,8 @@ class BacklogTask extends React.Component<Props> {
         </div>
       );
     };
-    return (<FloatingTaskEditor mountInside trigger={trigger} />);
+    const { taskEditorPosition } = this.props;
+    return (<FloatingTaskEditor position={taskEditorPosition} trigger={trigger} />);
   }
 }
 

@@ -11,9 +11,10 @@ import InternalSubTaskFloatingEditor from './InternalSubTaskFloatingEditor';
 import InternalMainTaskFloatingEditor from './InternalMainTaskFloatingEditor';
 import type { EditTaskAction } from '../../store/action-types';
 import styles from './FloatingTaskEditor.css';
+import type { FloatingPosition } from './floating-task-editor-types';
 
 type Props = {|
-  mountInside?: boolean;
+  position?: FloatingPosition;
   +trigger: (opener: (task: Task, backgroundColor: string) => void) => Node;
   +editTask: (task: Task) => EditTaskAction;
 |};
@@ -44,23 +45,17 @@ const trivialState: State = {
  * FloatingTaskEditor is a component used to edit a task on the fly.
  * It is triggered from a click on a specified element.
  *
- * Usage (mount to document.body):
+ * Usage:
  * ```jsx
  * <FloatingTaskEditor
- *   trigger={opener => <span onClick={() => opener(task, color)}>Ha</span>}
- * />
- * ```
- * Usage (mount relative to another component):
- * ```jsx
- * <FloatingTaskEditor
- *   mountRelativePosition={{ left: 66, top: 42 }}
+ *   position="beside"
  *   trigger={opener => <span onClick={() => opener(task, color)}>Ha</span>}
  * />
  * ```
  */
 class FloatingTaskEditor extends React.Component<Props, State> {
   static defaultProps = {
-    mountInside: undefined,
+    position: undefined,
   };
 
   constructor(props: Props) {
@@ -68,20 +63,46 @@ class FloatingTaskEditor extends React.Component<Props, State> {
     this.state = trivialState;
   }
 
-  componentDidUpdate() {
-    const editorPosDiv = this.editorParentElement;
-    if (editorPosDiv == null) {
+  componentDidUpdate({ position }: Props) {
+    const editorPosDiv = this.editorElement;
+    if (editorPosDiv == null || position == null) {
       return;
     }
-    editorPosDiv.style.top = `${editorPosDiv.offsetTop - 12}px`;
-    editorPosDiv.style.position = 'absolute';
+    const taskElement = editorPosDiv.previousElementSibling?.previousElementSibling;
+    if (taskElement === null || !(taskElement instanceof HTMLDivElement)) {
+      throw new Error('Task element must be a div!');
+    }
+    editorPosDiv.style.position = 'unset';
+    if (position === 'below') {
+      editorPosDiv.style.top = `${editorPosDiv.offsetTop - 12}px`;
+      editorPosDiv.style.left = '0';
+      editorPosDiv.style.position = 'absolute';
+    } else if (position === 'right') {
+      editorPosDiv.style.top = `${editorPosDiv.offsetTop - taskElement.clientHeight - 12}px`;
+      editorPosDiv.style.left = `${taskElement.offsetWidth}px`;
+      editorPosDiv.style.position = 'absolute';
+    } else if (position === 'left') {
+      editorPosDiv.style.top = `${editorPosDiv.offsetTop - taskElement.clientHeight - 12}px`;
+      editorPosDiv.style.left = `-${editorPosDiv.offsetWidth}px`;
+      editorPosDiv.style.position = 'absolute';
+    }
   }
 
   /**
-   * The parent element of the actual editor.
+   * Returns the floating position of the editor.
+   *
+   * @return {FloatingPosition} the floating position of the editor.
+   */
+  getFloatingPosition(): FloatingPosition {
+    const { position } = this.props;
+    return position || 'center';
+  }
+
+  /**
+   * The element of the actual editor.
    * This is only used when the editor is embedded inside the DOM instead of mount to body.
    */
-  editorParentElement: ?HTMLDivElement;
+  editorElement: ?HTMLDivElement;
 
   /**
    * Open the popup.
@@ -97,15 +118,8 @@ class FloatingTaskEditor extends React.Component<Props, State> {
 
   /**
    * Close the popup.
-   *
-   * @param {*} event the event of clicking a div.
    */
-  closePopup(event?: SyntheticEvent<HTMLDivElement>) {
-    if (event != null) {
-      if (event.currentTarget.className !== styles.FloatingTaskEditorBackgroundBlocker) {
-        return;
-      }
-    }
+  closePopup() {
     this.setState((state: State) => ({ ...state, open: false }));
   }
 
@@ -155,16 +169,15 @@ class FloatingTaskEditor extends React.Component<Props, State> {
    * @return {Node} the internals of the modal.
    */
   renderModalInternal(): Node {
-    const { mountInside } = this.props;
     const {
       open, backgroundColor, ...task
     } = this.state;
     const { subtaskArray } = task;
-    const doesMountInside = mountInside === true;
+    const doesMountInside = this.getFloatingPosition() !== 'center';
     const className = doesMountInside ? styles.EmbeddedFloatingTaskEditor : '';
     const style = doesMountInside ? { backgroundColor } : {};
     const refFunction = doesMountInside
-      ? (e) => { this.editorParentElement = e; }
+      ? (e) => { this.editorElement = e; }
       : () => {};
     return (
       <div className={className} style={style} ref={refFunction}>
@@ -224,7 +237,7 @@ class FloatingTaskEditor extends React.Component<Props, State> {
           open && (
             <div
               className={styles.FloatingTaskEditorBackgroundBlocker}
-              onClick={e => this.closePopup(e)}
+              onClick={() => this.closePopup()}
             />
           )
         }
@@ -234,11 +247,12 @@ class FloatingTaskEditor extends React.Component<Props, State> {
   }
 
   render(): Node {
-    const { mountInside, trigger } = this.props;
+    const { trigger } = this.props;
     const triggerNode = trigger((t, c) => this.openPopup(t, c));
-    return (mountInside === true)
-      ? this.renderEmbeddedEditor(triggerNode)
-      : this.renderModalEditor(triggerNode);
+    const floatingPosition = this.getFloatingPosition();
+    return (floatingPosition === 'center')
+      ? this.renderModalEditor(triggerNode)
+      : this.renderEmbeddedEditor(triggerNode);
   }
 }
 

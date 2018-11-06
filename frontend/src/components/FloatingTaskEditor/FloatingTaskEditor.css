@@ -46,7 +46,7 @@
   z-index: 7;
   top: 0;
   left: 0;
-  width: 360px;
+  width: 300px;
   height: auto;
   color: white;
   font-size: 12px;
@@ -146,8 +146,8 @@
 .FloatingTaskEditorCalendar {
   position: absolute;
   right: 0;
-  left: calc(100% - 350px);
-  top: 50px;
+  left: calc(100% - 282px);
+  top: 36px;
   z-index: 4;
 }
 

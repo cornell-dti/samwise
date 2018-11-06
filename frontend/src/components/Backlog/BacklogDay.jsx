@@ -4,8 +4,13 @@ import * as React from 'react';
 import BacklogTask from './BacklogTask';
 import styles from './BacklogDay.css';
 import type { ColoredTask, OneDayTask } from './backlog-types';
+import type { FloatingPosition } from '../FloatingTaskEditor/floating-task-editor-types';
 
-type Props = {| ...OneDayTask; +doesShowCompletedTasks: boolean; |};
+type Props = {|
+  ...OneDayTask;
+  +doesShowCompletedTasks: boolean;
+  +taskEditorPosition: FloatingPosition;
+|};
 type State = {| doesOverflow: boolean; |}
 
 /**
@@ -34,7 +39,7 @@ export default class BacklogDay extends React.Component<Props, State> {
 
   render() {
     const {
-      doesShowCompletedTasks, date, doesRenderSubTasks, tasks,
+      doesShowCompletedTasks, date, doesRenderSubTasks, taskEditorPosition, tasks,
     } = this.props;
     const { doesOverflow } = this.state;
     const isToday = (() => {
@@ -76,6 +81,7 @@ export default class BacklogDay extends React.Component<Props, State> {
           key={t.id}
           doesShowCompletedTasks={doesShowCompletedTasks}
           doesRenderSubTasks={doesRenderSubTasks}
+          taskEditorPosition={taskEditorPosition}
           {...t}
         />
       ));
