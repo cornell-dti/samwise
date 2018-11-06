@@ -50,6 +50,27 @@ function BacklogTask(props: Props): Node {
   const {
     name, id, complete, inFocus, subtaskArray,
   } = task;
+  const checkBoxElement = (
+    <CheckBox
+      className={styles.BacklogTaskCheckBox}
+      checked={complete}
+      onChange={() => markTask(id)}
+    />
+  );
+  const tagStyle = complete ? { textDecoration: 'line-through' } : {};
+  const tagElement = (
+    <span className={styles.BacklogTaskText} style={tagStyle}>{name}</span>
+  );
+  const removeTaskIcon = (
+    <Icon name="delete" className={styles.BacklogTaskIcon} onClick={() => removeTask(id)} />
+  );
+  const bookmarkIcon = (
+    <Icon
+      name={inFocus ? 'bookmark' : 'bookmark outline'}
+      className={styles.BacklogTaskIcon}
+      onClick={() => toggleTaskPin(id)}
+    />
+  );
   const subTasks = doesRenderSubTasks && subtaskArray
     .filter((t: SubTask) => (doesShowCompletedTasks || !t.complete))
     .map((subTask: SubTask) => (
@@ -68,27 +89,10 @@ function BacklogTask(props: Props): Node {
     return (
       <div onClick={onClickHandler} className={styles.BacklogTask}>
         <div className={styles.BacklogTaskMainWrapper} style={{ backgroundColor: color }}>
-          <CheckBox
-            className={styles.BacklogTaskCheckBox}
-            checked={complete}
-            onChange={() => markTask(id)}
-          />
-          <span
-            className={styles.BacklogTaskText}
-            style={complete ? { textDecoration: 'line-through' } : {}}
-          >
-            {name}
-          </span>
-          <Icon
-            name="delete"
-            className={styles.BacklogTaskIcon}
-            onClick={() => removeTask(id)}
-          />
-          <Icon
-            name={inFocus ? 'bookmark' : 'bookmark outline'}
-            className={styles.BacklogTaskIcon}
-            onClick={() => toggleTaskPin(id)}
-          />
+          {checkBoxElement}
+          {tagElement}
+          {removeTaskIcon}
+          {bookmarkIcon}
         </div>
         {subTasks}
       </div>
