@@ -106,14 +106,7 @@ function BacklogDaysContainer(props: Props): Node {
         taskEditorPosition = 'left';
       }
     } else {
-      // eslint-disable-next-line no-lonely-if
-      if (i < 5) {
-        taskEditorPosition = 'right';
-      } else if (i === 5) {
-        taskEditorPosition = 'below';
-      } else {
-        taskEditorPosition = 'left';
-      }
+      taskEditorPosition = i < 6 ? 'below' : 'left';
     }
     tempRow.push(renderDay(days[i], doesShowCompletedTasks, taskEditorPosition));
   }
