@@ -22,10 +22,10 @@ type Props = {|
 type State = {|
   ...SimpleMainTask;
   +id: number;
-  +inFocus: boolean;
   +subtaskArray: SubTask[];
   +open: boolean;
   +backgroundColor: string;
+  +mainTaskInputFocused: boolean;
 |};
 
 /**
@@ -42,6 +42,7 @@ const trivialState: State = {
   subtaskArray: [],
   open: false,
   backgroundColor: '',
+  mainTaskInputFocused: true,
 };
 
 /**
@@ -160,7 +161,7 @@ class FloatingTaskEditor extends React.Component<Props, State> {
     }
     const { editTask } = this.props;
     const {
-      open, backgroundColor, ...task
+      open, backgroundColor, mainTaskInputFocused, ...task
     } = this.state;
     editTask(task);
     this.closePopup();
@@ -173,10 +174,10 @@ class FloatingTaskEditor extends React.Component<Props, State> {
    */
   renderModalInternal(): Node {
     const {
-      open, backgroundColor, ...task
+      open, backgroundColor, mainTaskInputFocused, ...task
     } = this.state;
     const {
-      id, inFocus, subtaskArray, ...mainTask
+      id, subtaskArray, ...mainTask
     } = task;
     const doesMountInside = this.getFloatingPosition() !== 'center';
     const className = doesMountInside ? styles.EmbeddedFloatingTaskEditor : '';
@@ -188,9 +189,12 @@ class FloatingTaskEditor extends React.Component<Props, State> {
       <div className={className} style={style} ref={refFunction}>
         <InternalMainTaskFloatingEditor
           {...mainTask}
+          focused={mainTaskInputFocused}
           editTask={(t, c) => this.editMainTask(t, c)}
+          onFocusChange={f => this.setState(s => ({ ...s, mainTaskInputFocused: f }))}
         />
         <InternalSubTaskFloatingEditor
+          focused={!mainTaskInputFocused}
           subtaskArray={subtaskArray}
           editSubTasks={arr => this.editSubTasks(arr)}
         />

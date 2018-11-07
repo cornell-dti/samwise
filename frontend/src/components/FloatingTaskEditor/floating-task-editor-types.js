@@ -18,4 +18,5 @@ export type SimpleMainTask = {|
   +tag: string;
   +date: Date;
   +complete: boolean;
+  +inFocus: boolean;
 |};

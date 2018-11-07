@@ -9,6 +9,7 @@ import CheckBox from '../UI/CheckBox';
 
 type Props = {|
   +subtaskArray: SubTask[];
+  +focused: boolean;
   +editSubTasks: (subtaskArray: SubTask[]) => void;
 |};
 
@@ -32,24 +33,39 @@ export default class InternalSubTaskFloatingEditor extends React.Component<Props
   constructor(props: Props) {
     super(props);
     const { subtaskArray } = props;
-    const autoFocusId = subtaskArray.length === 0 ? 0 : subtaskArray.length - 1;
-    this.state = { subtaskArray, newSubTaskValue: '', autoFocusId };
+    this.state = {
+      subtaskArray,
+      newSubTaskValue: '',
+      autoFocusId: 0,
+    };
   }
 
-  componentDidUpdate(prevProps: Props, prevState: State) {
-    const { subtaskArray } = this.props;
-    if (prevState !== this.state) {
-      // do nothing
-    } else if (prevProps.subtaskArray === subtaskArray) {
-      return;
-    }
-    const e = this.inputToFocus;
-    if (e != null) {
-      e.focus();
+  componentDidMount() {
+    this.handlePotentialFocusChange();
+  }
+
+  componentDidUpdate(prevProps: Props) {
+    this.handlePotentialFocusChange();
+    const { focused } = this.props;
+    if (focused !== prevProps.focused) {
+      // recently shifted focus
+      // eslint-disable-next-line react/no-did-update-set-state
+      this.setState((state: State) => ({ ...state, autoFocusId: 0 }));
     }
   }
 
   inputToFocus: ?HTMLInputElement;
+
+  /**
+   * Handle a potential focus change when the user switch between inputs.
+   */
+  handlePotentialFocusChange() {
+    const { focused } = this.props;
+    const e = this.inputToFocus;
+    if (e != null && focused) {
+      e.focus();
+    }
+  }
 
   /**
    * Register the element e at index if it is the autoFocus element.
@@ -64,6 +80,7 @@ export default class InternalSubTaskFloatingEditor extends React.Component<Props
       return;
     }
     this.inputToFocus = e;
+    this.handlePotentialFocusChange();
   }
 
   /**
@@ -141,14 +158,14 @@ export default class InternalSubTaskFloatingEditor extends React.Component<Props
     if (inputTarget instanceof HTMLInputElement) {
       if (event.key !== 'Enter') {
         this.setState((state: State) => ({ ...state, autoFocusId: currentIndex }));
-        return;
+      } else {
+        inputTarget.blur();
+        const focusInput = this.inputToFocus;
+        if (focusInput != null) {
+          focusInput.focus();
+        }
+        this.setState((state: State) => ({ ...state, autoFocusId }));
       }
-      inputTarget.blur();
-      const focusInput = this.inputToFocus;
-      if (focusInput != null) {
-        focusInput.focus();
-      }
-      this.setState((state: State) => ({ ...state, autoFocusId }));
     }
   }
 
@@ -210,8 +227,8 @@ export default class InternalSubTaskFloatingEditor extends React.Component<Props
 
   render(): Node {
     const { subtaskArray, newSubTaskValue } = this.state;
-    const focusId = subtaskArray.length;
     const existingSubTasks = subtaskArray.map((t: SubTask, i: number) => this.renderSubTask(t, i));
+    const focusId = subtaskArray.length;
     const newSubTaskEditor = (
       <div className={styles.FloatingTaskEditorFlexibleContainer}>
         <Input

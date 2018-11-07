@@ -6,7 +6,6 @@ import { Icon, Input } from 'semantic-ui-react';
 import Calendar from 'react-calendar';
 import type { State as StoreState, TagColorConfig } from '../../store/store-types';
 import styles from './FloatingTaskEditor.css';
-// $FlowFixMe FIXME
 import ClassPicker from '../ClassPicker/ClassPicker';
 import CheckBox from '../UI/CheckBox';
 import { simpleConnect } from '../../store/react-redux-util';
@@ -14,7 +13,9 @@ import type { SimpleMainTask } from './floating-task-editor-types';
 
 type OwnProps = {|
   ...SimpleMainTask;
+  +focused: boolean;
   +editTask: (task: SimpleMainTask, color?: string) => void;
+  +onFocusChange: (focused: boolean) => void;
 |};
 
 type SubscribedProps = {| tagColorPicker: TagColorConfig; |};
@@ -38,7 +39,9 @@ const mapStateToProps = ({ tagColorPicker }: StoreState): SubscribedProps => ({ 
 class InternalMainTaskFloatingEditor extends React.Component<Props, State> {
   constructor(props: Props) {
     super(props);
-    const { editTask, tagColorPicker, ...task } = props;
+    const {
+      focused, editTask, onFocusChange, tagColorPicker, ...task
+    } = props;
     this.state = { ...task, doesShowTagEditor: false, doesShowCalendarEditor: false };
   }
 
@@ -46,6 +49,25 @@ class InternalMainTaskFloatingEditor extends React.Component<Props, State> {
     const { doesShowTagEditor, doesShowCalendarEditor, ...task } = state;
     return task;
   };
+
+  /**
+   * Handle a potential cancel focus request when the user press some key, which
+   * may be ENTER, in which case we want to shift focus to the next input element.
+   *
+   * @param {KeyboardEvent} event the keyboard event to check.
+   */
+  cancelFocus(event: KeyboardEvent) {
+    const inputTarget = event.target;
+    if (inputTarget instanceof HTMLInputElement) {
+      const { onFocusChange } = this.props;
+      if (event.key !== 'Enter') {
+        onFocusChange(true);
+      } else {
+        inputTarget.blur();
+        onFocusChange(false);
+      }
+    }
+  }
 
   editTaskName(event: any) {
     event.preventDefault();
@@ -58,6 +80,9 @@ class InternalMainTaskFloatingEditor extends React.Component<Props, State> {
     });
   }
 
+  /**
+   * Toggle the completion status of the task.
+   */
   editComplete() {
     const { editTask } = this.props;
     this.setState((state: State) => {
@@ -67,12 +92,32 @@ class InternalMainTaskFloatingEditor extends React.Component<Props, State> {
     });
   }
 
+  /**
+   * Change the in-focus status of the task.
+   */
+  editInFocus() {
+    const { editTask } = this.props;
+    this.setState((state: State) => {
+      const newState = { ...state, inFocus: !state.inFocus };
+      editTask(this.getTask(newState));
+      return newState;
+    });
+  }
+
+  /**
+   * Toggle the editor for the tag of the task.
+   */
   toggleTagEditor() {
     this.setState((state: State) => ({
       ...state, doesShowTagEditor: !state.doesShowTagEditor,
     }));
   }
 
+  /**
+   * Edit the tag of the task.
+   *
+   * @param {string} tag the new tag.
+   */
   editTaskTag(tag: string) {
     const { editTask, tagColorPicker } = this.props;
     this.setState((state: State) => {
@@ -82,12 +127,20 @@ class InternalMainTaskFloatingEditor extends React.Component<Props, State> {
     });
   }
 
+  /**
+   * Toggle the editor of the deadline of the task.
+   */
   toggleDateEditor() {
     this.setState((state: State) => ({
       ...state, doesShowCalendarEditor: !state.doesShowCalendarEditor,
     }));
   }
 
+  /**
+   * Edit the new date of the task.
+   *
+   * @param {string} dateString the new date in string.
+   */
   editTaskDate(dateString: string) {
     const date = new Date(dateString);
     const { editTask } = this.props;
@@ -153,6 +206,7 @@ class InternalMainTaskFloatingEditor extends React.Component<Props, State> {
    * Return the rendered main task text editor element.
    */
   renderMainTaskEdit(): Node {
+    const { focused } = this.props;
     const { name, complete } = this.state;
     return (
       <div className={styles.FloatingTaskEditorFlexibleContainer}>
@@ -165,7 +219,8 @@ class InternalMainTaskFloatingEditor extends React.Component<Props, State> {
           className={styles.FloatingTaskEditorFlexibleInput}
           placeholder="Main Task"
           value={name}
-          autoFocus
+          autoFocus={focused}
+          onKeyDown={event => this.cancelFocus(event)}
           onChange={event => this.editTaskName(event)}
         />
       </div>
