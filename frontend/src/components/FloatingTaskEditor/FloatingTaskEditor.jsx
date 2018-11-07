@@ -114,11 +114,8 @@ class FloatingTaskEditor extends React.Component<Props, State> {
    * @param {string} backgroundColor the background color used to initialized the modal.
    */
   openPopup(task: Task, backgroundColor: string) {
-    const {
-      id, inFocus, subtaskArray, ...mainTask
-    } = task;
     this.setState((state: State) => ({
-      ...state, ...mainTask, backgroundColor, open: true,
+      ...state, ...task, backgroundColor, open: true,
     }));
   }
 

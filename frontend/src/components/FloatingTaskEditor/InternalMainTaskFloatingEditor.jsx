@@ -165,6 +165,7 @@ class InternalMainTaskFloatingEditor extends React.Component<Props, State> {
           className={styles.FloatingTaskEditorFlexibleInput}
           placeholder="Main Task"
           value={name}
+          autoFocus
           onChange={event => this.editTaskName(event)}
         />
       </div>
