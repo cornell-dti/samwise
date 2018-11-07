@@ -11,7 +11,7 @@ import InternalSubTaskFloatingEditor from './InternalSubTaskFloatingEditor';
 import InternalMainTaskFloatingEditor from './InternalMainTaskFloatingEditor';
 import type { EditTaskAction } from '../../store/action-types';
 import styles from './FloatingTaskEditor.css';
-import type { FloatingPosition } from './floating-task-editor-types';
+import type { FloatingPosition, SimpleMainTask } from './floating-task-editor-types';
 
 type Props = {|
   position?: FloatingPosition;
@@ -20,7 +20,10 @@ type Props = {|
 |};
 
 type State = {|
-  ...Task;
+  ...SimpleMainTask;
+  +id: number;
+  +inFocus: boolean;
+  +subtaskArray: SubTask[];
   +open: boolean;
   +backgroundColor: string;
 |};
@@ -30,8 +33,8 @@ type State = {|
  * @type {State}
  */
 const trivialState: State = {
-  name: '',
   id: 0,
+  name: '',
   tag: '',
   date: new Date(),
   complete: false,
@@ -111,8 +114,11 @@ class FloatingTaskEditor extends React.Component<Props, State> {
    * @param {string} backgroundColor the background color used to initialized the modal.
    */
   openPopup(task: Task, backgroundColor: string) {
+    const {
+      id, inFocus, subtaskArray, ...mainTask
+    } = task;
     this.setState((state: State) => ({
-      ...state, ...task, backgroundColor, open: true,
+      ...state, ...mainTask, backgroundColor, open: true,
     }));
   }
 
@@ -126,10 +132,10 @@ class FloatingTaskEditor extends React.Component<Props, State> {
   /**
    * Update the state to contain the given latest edited main task.
    *
-   * @param {Task} task the latest edited main task.
+   * @param {SimpleMainTask} task the latest edited main task.
    * @param {string} backgroundColor the optional new background color after the edit.
    */
-  editMainTask(task: Task, backgroundColor?: string) {
+  editMainTask(task: SimpleMainTask, backgroundColor?: string) {
     if (backgroundColor != null) {
       this.setState((state: State) => ({ ...state, ...task, backgroundColor }));
     } else {
@@ -172,7 +178,9 @@ class FloatingTaskEditor extends React.Component<Props, State> {
     const {
       open, backgroundColor, ...task
     } = this.state;
-    const { subtaskArray } = task;
+    const {
+      id, inFocus, subtaskArray, ...mainTask
+    } = task;
     const doesMountInside = this.getFloatingPosition() !== 'center';
     const className = doesMountInside ? styles.EmbeddedFloatingTaskEditor : '';
     const style = doesMountInside ? { backgroundColor } : {};
@@ -182,7 +190,7 @@ class FloatingTaskEditor extends React.Component<Props, State> {
     return (
       <div className={className} style={style} ref={refFunction}>
         <InternalMainTaskFloatingEditor
-          {...task}
+          {...mainTask}
           editTask={(t, c) => this.editMainTask(t, c)}
         />
         <InternalSubTaskFloatingEditor
@@ -206,7 +214,6 @@ class FloatingTaskEditor extends React.Component<Props, State> {
    * @return {Node} the rendered modal.
    */
   renderModalEditor(triggerNode: Node): Node {
-    console.log('Ha');
     const { open, backgroundColor } = this.state;
     return (
       <Modal

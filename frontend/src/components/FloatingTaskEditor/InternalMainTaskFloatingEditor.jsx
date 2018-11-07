@@ -4,18 +4,17 @@ import * as React from 'react';
 import type { Node } from 'react';
 import { Icon, Input } from 'semantic-ui-react';
 import Calendar from 'react-calendar';
-import type {
-  State as StoreState, TagColorConfig, Task,
-} from '../../store/store-types';
+import type { State as StoreState, TagColorConfig } from '../../store/store-types';
 import styles from './FloatingTaskEditor.css';
 // $FlowFixMe FIXME
 import ClassPicker from '../ClassPicker/ClassPicker';
 import CheckBox from '../UI/CheckBox';
 import { simpleConnect } from '../../store/react-redux-util';
+import type { SimpleMainTask } from './floating-task-editor-types';
 
 type OwnProps = {|
-  ...Task;
-  +editTask: (task: Task, color?: string) => void;
+  ...SimpleMainTask;
+  +editTask: (task: SimpleMainTask, color?: string) => void;
 |};
 
 type SubscribedProps = {| tagColorPicker: TagColorConfig; |};
@@ -26,7 +25,7 @@ type Props = {|
 |};
 
 type State = {|
-  ...Task;
+  ...SimpleMainTask;
   doesShowTagEditor: boolean;
   doesShowCalendarEditor: boolean;
 |};
@@ -43,7 +42,7 @@ class InternalMainTaskFloatingEditor extends React.Component<Props, State> {
     this.state = { ...task, doesShowTagEditor: false, doesShowCalendarEditor: false };
   }
 
-  getTask = (state: State): Task => {
+  getTask = (state: State): SimpleMainTask => {
     const { doesShowTagEditor, doesShowCalendarEditor, ...task } = state;
     return task;
   };

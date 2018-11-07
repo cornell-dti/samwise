@@ -9,3 +9,13 @@
  * - null: defaults to 'center'.
  */
 export type FloatingPosition = 'center' | 'below' | 'left' | 'right';
+
+/**
+ * A simple main task to edit.
+ */
+export type SimpleMainTask = {|
+  +name: string;
+  +tag: string;
+  +date: Date;
+  +complete: boolean;
+|};

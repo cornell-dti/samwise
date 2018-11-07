@@ -36,7 +36,13 @@ export default class InternalSubTaskFloatingEditor extends React.Component<Props
     this.state = { subtaskArray, newSubTaskValue: '', autoFocusId };
   }
 
-  componentDidUpdate() {
+  componentDidUpdate(prevProps: Props, prevState: State) {
+    const { subtaskArray } = this.props;
+    if (prevState !== this.state) {
+      // do nothing
+    } else if (prevProps.subtaskArray === subtaskArray) {
+      return;
+    }
     const e = this.inputToFocus;
     if (e != null) {
       e.focus();
@@ -130,19 +136,20 @@ export default class InternalSubTaskFloatingEditor extends React.Component<Props
    * @param {number} currentIndex the current input index.
    */
   switchFocus(event: KeyboardEvent, currentIndex: number) {
-    if (event.key !== 'Enter') {
-      return;
-    }
     const autoFocusId = currentIndex + 1;
     const inputTarget = event.target;
     if (inputTarget instanceof HTMLInputElement) {
+      if (event.key !== 'Enter') {
+        this.setState((state: State) => ({ ...state, autoFocusId: currentIndex }));
+        return;
+      }
       inputTarget.blur();
       const focusInput = this.inputToFocus;
       if (focusInput != null) {
         focusInput.focus();
       }
+      this.setState((state: State) => ({ ...state, autoFocusId }));
     }
-    this.setState((state: State) => ({ ...state, autoFocusId }));
   }
 
   /**
@@ -191,6 +198,7 @@ export default class InternalSubTaskFloatingEditor extends React.Component<Props
           ref={e => this.registerInputToFocus(e, index)}
           className={styles.FloatingTaskEditorFlexibleInput}
           placeholder="Your Sub-Task"
+          focusid={index}
           value={name}
           onKeyDown={event => this.switchFocus(event, index)}
           onChange={event => this.editSubTask(id, event)}
@@ -202,12 +210,14 @@ export default class InternalSubTaskFloatingEditor extends React.Component<Props
 
   render(): Node {
     const { subtaskArray, newSubTaskValue } = this.state;
+    const focusId = subtaskArray.length;
     const existingSubTasks = subtaskArray.map((t: SubTask, i: number) => this.renderSubTask(t, i));
     const newSubTaskEditor = (
       <div className={styles.FloatingTaskEditorFlexibleContainer}>
         <Input
           className={styles.FloatingTaskEditorFlexibleInput}
-          ref={e => this.registerInputToFocus(e, subtaskArray.length)}
+          ref={e => this.registerInputToFocus(e, focusId)}
+          focusid={focusId}
           placeholder="Your New Sub-Task"
           value={newSubTaskValue}
           onChange={event => this.handleNewSubTaskValueChange(event)}
