@@ -202,7 +202,7 @@ function editTask(state: State, action: EditTaskAction) {
   };
 }
 
-const rootReducer = (state: State = initialState, action: $Subtype<Action>) => {
+const rootReducer = (state: State = initialState, action: Action) => {
   switch (action.type) {
     case 'EDIT_COLOR_CONFIG':
     case 'REMOVE_COLOR_CONFIG':
@@ -215,6 +215,12 @@ const rootReducer = (state: State = initialState, action: $Subtype<Action>) => {
         ...state,
         mainTaskArray: [...state.mainTaskArray, action.data],
         backupTaskArray: state.mainTaskArray,
+      };
+    case 'ADD_SUBTASK':
+      return {
+        ...state,
+        backupTaskArray: state.mainTaskArray,
+        mainTaskArray: addSubtask(state.mainTaskArray, action.id, action.data),
       };
     case 'EDIT_TASK':
       return editTask(state, action);
@@ -253,12 +259,6 @@ const rootReducer = (state: State = initialState, action: $Subtype<Action>) => {
         ...state,
         backupTaskArray: state.mainTaskArray,
         mainTaskArray: removeSubtask(state.mainTaskArray, action.taskId, action.subtaskId),
-      };
-    case 'ADD_SUBTASK':
-      return {
-        ...state,
-        backupTaskArray: state.mainTaskArray,
-        mainTaskArray: addSubtask(state.mainTaskArray, action.id, action.data),
       };
     case 'UNDO_ACTION':
       return {
