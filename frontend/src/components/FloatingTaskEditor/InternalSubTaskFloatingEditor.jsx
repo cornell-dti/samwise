@@ -13,11 +13,7 @@ type Props = {|
   +editSubTasks: (subtaskArray: SubTask[]) => void;
 |};
 
-type State = {|
-  +subtaskArray: SubTask[];
-  +newSubTaskValue: string;
-  +autoFocusId: number;
-|};
+type State = {| +autoFocusId: number; |};
 
 /**
  * Generate a random id to make React happy.
@@ -32,13 +28,14 @@ const randomId = (): number => ((10 * new Date()) + Math.floor(1000 * Math.rando
 export default class InternalSubTaskFloatingEditor extends React.Component<Props, State> {
   constructor(props: Props) {
     super(props);
-    const { subtaskArray } = props;
-    this.state = {
-      subtaskArray,
-      newSubTaskValue: '',
-      autoFocusId: 0,
-    };
+    this.state = { autoFocusId: 0 };
   }
+
+  /*
+   * --------------------------------------------------------------------------------
+   * Part 1: Component Lifecycle & Focus Management Methods
+   * --------------------------------------------------------------------------------
+   */
 
   componentDidMount() {
     this.handlePotentialFocusChange();
@@ -50,7 +47,7 @@ export default class InternalSubTaskFloatingEditor extends React.Component<Props
     if (focused !== prevProps.focused) {
       // recently shifted focus
       // eslint-disable-next-line react/no-did-update-set-state
-      this.setState((state: State) => ({ ...state, autoFocusId: 0 }));
+      this.setState({ autoFocusId: 0 });
     }
   }
 
@@ -84,68 +81,6 @@ export default class InternalSubTaskFloatingEditor extends React.Component<Props
   }
 
   /**
-   * Edit one particular subtask.
-   *
-   * @param {number} id the id of the subtask.
-   * @param {Event} event the event that notifies about the edit and gives the new value of the
-   * subtask.
-   */
-  editSubTask(id: number, event: Event) {
-    event.preventDefault();
-    if (!(event.target instanceof HTMLInputElement)) {
-      return;
-    }
-    const name = event.target.value;
-    const { editSubTasks } = this.props;
-    this.setState((state: State) => {
-      const newState = {
-        ...state,
-        subtaskArray: state.subtaskArray.map((subTask: SubTask) => (
-          subTask.id === id ? { ...subTask, name } : subTask
-        )),
-      };
-      editSubTasks(newState.subtaskArray);
-      return newState;
-    });
-  }
-
-  /**
-   * Remove one particular subtask.
-   *
-   * @param {number} id the id of the subtask.
-   */
-  removeSubTask(id: number) {
-    const { editSubTasks } = this.props;
-    this.setState((state: State) => {
-      const newState = {
-        ...state,
-        subtaskArray: state.subtaskArray.filter((subTask: SubTask) => subTask.id !== id),
-      };
-      editSubTasks(newState.subtaskArray);
-      return newState;
-    });
-  }
-
-  /**
-   * Edit one particular subtask's completion.
-   *
-   * @param id the id of the subtask.
-   */
-  editSubTaskComplete(id: number) {
-    const { editSubTasks } = this.props;
-    this.setState((state: State) => {
-      const newState = {
-        ...state,
-        subtaskArray: state.subtaskArray.map((subTask: SubTask) => (
-          subTask.id === id ? { ...subTask, complete: !subTask.complete } : subTask
-        )),
-      };
-      editSubTasks(newState.subtaskArray);
-      return newState;
-    });
-  }
-
-  /**
    * Handle a potential switch focus request when the user press some key, which
    * may be ENTER, in which case we want to shift focus to the next input element.
    *
@@ -169,32 +104,83 @@ export default class InternalSubTaskFloatingEditor extends React.Component<Props
     }
   }
 
+  /*
+   * --------------------------------------------------------------------------------
+   * Part 2: Editor Methods
+   * --------------------------------------------------------------------------------
+   */
+
+  /**
+   * Edit one particular subtask.
+   *
+   * @param {number} id the id of the subtask.
+   * @param {Event} event the event that notifies about the edit and gives the new value of the
+   * subtask.
+   */
+  editSubTask(id: number, event: Event) {
+    event.preventDefault();
+    if (!(event.target instanceof HTMLInputElement)) {
+      return;
+    }
+    const name = event.target.value;
+    const { subtaskArray, editSubTasks } = this.props;
+    editSubTasks(subtaskArray.map((subTask: SubTask) => (
+      subTask.id === id ? { ...subTask, name } : subTask
+    )));
+  }
+
+  /**
+   * Remove one particular subtask.
+   *
+   * @param {number} id the id of the subtask.
+   */
+  removeSubTask(id: number) {
+    const { subtaskArray, editSubTasks } = this.props;
+    editSubTasks(subtaskArray.filter((subTask: SubTask) => subTask.id !== id));
+  }
+
+  /**
+   * Edit one particular subtask's completion.
+   *
+   * @param id the id of the subtask.
+   */
+  editSubTaskComplete(id: number) {
+    const { subtaskArray, editSubTasks } = this.props;
+    editSubTasks(subtaskArray.map((subTask: SubTask) => (
+      subTask.id === id ? { ...subTask, complete: !subTask.complete } : subTask
+    )));
+  }
+
   /**
    * Update the state when the new line of subtask name changes.
    *
    * @param event the event that notifies about the change and contains the new value.
    */
-  handleNewSubTaskValueChange(event: Event) {
+  handleNewSubTaskValueChange(event: SyntheticEvent<HTMLInputElement>) {
     event.preventDefault();
-    if (event.target instanceof HTMLInputElement) {
-      const newSubTaskValue: string = event.target.value.trim();
-      if (newSubTaskValue.length === 0) {
-        return;
-      }
-      const newSubTask: SubTask = {
-        name: newSubTaskValue,
-        id: randomId(),
-        complete: false,
-        inFocus: false,
-      };
-      this.setState((state: State) => ({
-        ...state,
-        subtaskArray: [...state.subtaskArray, newSubTask],
-        newSubTaskValue: '',
-        autoFocusId: state.subtaskArray.length,
-      }));
+    const newSubTaskValue: string = event.currentTarget.value.trim();
+    if (newSubTaskValue.length === 0) {
+      return;
     }
+    const newSubTask: SubTask = {
+      name: newSubTaskValue,
+      id: randomId(),
+      complete: false,
+      inFocus: false,
+    };
+    const { subtaskArray, editSubTasks } = this.props;
+    editSubTasks([...subtaskArray, newSubTask]);
+    this.setState((state: State) => ({
+      ...state,
+      autoFocusId: subtaskArray.length,
+    }));
   }
+
+  /*
+   * --------------------------------------------------------------------------------
+   * Part 3: Render Methods
+   * --------------------------------------------------------------------------------
+   */
 
   /**
    * Render a subtask.
@@ -226,7 +212,7 @@ export default class InternalSubTaskFloatingEditor extends React.Component<Props
   }
 
   render(): Node {
-    const { subtaskArray, newSubTaskValue } = this.state;
+    const { subtaskArray } = this.props;
     const existingSubTasks = subtaskArray.map((t: SubTask, i: number) => this.renderSubTask(t, i));
     const focusId = subtaskArray.length;
     const newSubTaskEditor = (
@@ -236,7 +222,7 @@ export default class InternalSubTaskFloatingEditor extends React.Component<Props
           ref={e => this.registerInputToFocus(e, focusId)}
           focusid={focusId}
           placeholder="Your New Sub-Task"
-          value={newSubTaskValue}
+          value=""
           onChange={event => this.handleNewSubTaskValueChange(event)}
         />
       </div>

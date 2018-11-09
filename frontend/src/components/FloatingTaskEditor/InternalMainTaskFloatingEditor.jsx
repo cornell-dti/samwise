@@ -1,7 +1,7 @@
 // @flow strict
 
-import * as React from 'react';
 import type { Node } from 'react';
+import * as React from 'react';
 import { Icon, Input } from 'semantic-ui-react';
 import Calendar from 'react-calendar';
 import type { State as StoreState, TagColorConfig } from '../../store/store-types';
@@ -26,7 +26,6 @@ type Props = {|
 |};
 
 type State = {|
-  ...SimpleMainTask;
   doesShowTagEditor: boolean;
   doesShowCalendarEditor: boolean;
 |};
@@ -39,16 +38,14 @@ const mapStateToProps = ({ tagColorPicker }: StoreState): SubscribedProps => ({ 
 class InternalMainTaskFloatingEditor extends React.Component<Props, State> {
   constructor(props: Props) {
     super(props);
-    const {
-      focused, editTask, onFocusChange, tagColorPicker, ...task
-    } = props;
-    this.state = { ...task, doesShowTagEditor: false, doesShowCalendarEditor: false };
+    this.state = { doesShowTagEditor: false, doesShowCalendarEditor: false };
   }
 
-  getTask = (state: State): SimpleMainTask => {
-    const { doesShowTagEditor, doesShowCalendarEditor, ...task } = state;
-    return task;
-  };
+  /*
+   * --------------------------------------------------------------------------------
+   * Part 1: Focus Methods
+   * --------------------------------------------------------------------------------
+   */
 
   /**
    * Handle a potential cancel focus request when the user press some key, which
@@ -69,48 +66,63 @@ class InternalMainTaskFloatingEditor extends React.Component<Props, State> {
     }
   }
 
-  editTaskName(event: any) {
-    event.preventDefault();
-    const name = event.target.value;
-    const { editTask } = this.props;
-    this.setState((state: State) => {
-      const newState = { ...state, name };
-      editTask(this.getTask(newState));
-      return newState;
-    });
-  }
-
-  /**
-   * Toggle the completion status of the task.
+  /*
+   * --------------------------------------------------------------------------------
+   * Part 2: Toggle Methods
+   * --------------------------------------------------------------------------------
    */
-  editComplete() {
-    const { editTask } = this.props;
-    this.setState((state: State) => {
-      const newState = { ...state, complete: !state.complete };
-      editTask(this.getTask(newState));
-      return newState;
-    });
-  }
-
-  /**
-   * Change the in-focus status of the task.
-   */
-  editInFocus() {
-    const { editTask } = this.props;
-    this.setState((state: State) => {
-      const newState = { ...state, inFocus: !state.inFocus };
-      editTask(this.getTask(newState));
-      return newState;
-    });
-  }
 
   /**
    * Toggle the editor for the tag of the task.
    */
   toggleTagEditor() {
     this.setState((state: State) => ({
-      ...state, doesShowTagEditor: !state.doesShowTagEditor,
+      ...state, doesShowTagEditor: !state.doesShowTagEditor, doesShowCalendarEditor: false,
     }));
+  }
+
+  /**
+   * Toggle the editor of the deadline of the task.
+   */
+  toggleDateEditor() {
+    this.setState((state: State) => ({
+      ...state, doesShowTagEditor: false, doesShowCalendarEditor: !state.doesShowCalendarEditor,
+    }));
+  }
+
+  /*
+   * --------------------------------------------------------------------------------
+   * Part 3: Editor Methods
+   * --------------------------------------------------------------------------------
+   */
+
+  editTaskName(event: SyntheticEvent<HTMLInputElement>) {
+    event.preventDefault();
+    const name = event.currentTarget.value;
+    const {
+      focused, editTask, onFocusChange, tagColorPicker, ...task
+    } = this.props;
+    editTask({ ...task, name });
+  }
+
+  /**
+   * Toggle the completion status of the task.
+   */
+  editComplete() {
+    const {
+      focused, editTask, onFocusChange, tagColorPicker, ...task
+    } = this.props;
+    editTask({ ...task, complete: !task.complete });
+  }
+
+  /**
+   * Change the in-focus status of the task.
+   */
+  editInFocus() {
+    const {
+      focused, editTask, onFocusChange, tagColorPicker, ...task
+    } = this.props;
+    editTask({ ...task, complete: !task.inFocus });
   }
 
   /**
@@ -119,21 +131,11 @@ class InternalMainTaskFloatingEditor extends React.Component<Props, State> {
    * @param {string} tag the new tag.
    */
   editTaskTag(tag: string) {
-    const { editTask, tagColorPicker } = this.props;
-    this.setState((state: State) => {
-      const newState = { ...state, tag, doesShowTagEditor: false };
-      editTask(this.getTask(newState), tagColorPicker[tag]);
-      return newState;
-    });
-  }
-
-  /**
-   * Toggle the editor of the deadline of the task.
-   */
-  toggleDateEditor() {
-    this.setState((state: State) => ({
-      ...state, doesShowCalendarEditor: !state.doesShowCalendarEditor,
-    }));
+    const {
+      focused, editTask, onFocusChange, tagColorPicker, ...task
+    } = this.props;
+    editTask({ ...task, tag }, tagColorPicker[tag]);
+    this.setState((state: State) => ({ ...state, doesShowTagEditor: false }));
   }
 
   /**
@@ -142,22 +144,26 @@ class InternalMainTaskFloatingEditor extends React.Component<Props, State> {
    * @param {string} dateString the new date in string.
    */
   editTaskDate(dateString: string) {
-    const date = new Date(dateString);
-    const { editTask } = this.props;
-    this.setState((state: State) => {
-      const newState = { ...state, date, doesShowCalendarEditor: false };
-      editTask(this.getTask(newState));
-      return newState;
-    });
+    const {
+      focused, editTask, onFocusChange, tagColorPicker, ...task
+    } = this.props;
+    editTask({ ...task, date: new Date(dateString) });
+    this.setState((state: State) => ({ ...state, doesShowCalendarEditor: false }));
   }
+
+  /*
+   * --------------------------------------------------------------------------------
+   * Part 4: Render Methods
+   * --------------------------------------------------------------------------------
+   */
 
   /**
    * Return the rendered header element.
    */
   renderHeader(): Node {
-    const { tagColorPicker } = this.props;
+    const { tag, date, tagColorPicker } = this.props;
     const {
-      tag, date, doesShowTagEditor, doesShowCalendarEditor,
+      doesShowTagEditor, doesShowCalendarEditor,
     } = this.state;
     const headerClassNames = `${styles.FloatingTaskEditorFlexibleContainer} ${styles.FloatingTaskEditorHeader}`;
     const tagPickerElementOpt = doesShowTagEditor && (
@@ -206,8 +212,7 @@ class InternalMainTaskFloatingEditor extends React.Component<Props, State> {
    * Return the rendered main task text editor element.
    */
   renderMainTaskEdit(): Node {
-    const { focused } = this.props;
-    const { name, complete } = this.state;
+    const { name, complete, focused } = this.props;
     return (
       <div className={styles.FloatingTaskEditorFlexibleContainer}>
         <CheckBox
