@@ -53,7 +53,7 @@ class InternalMainTaskFloatingEditor extends React.Component<Props, State> {
    *
    * @param {KeyboardEvent} event the keyboard event to check.
    */
-  cancelFocus(event: KeyboardEvent) {
+  cancelFocus = (event: KeyboardEvent): void => {
     const inputTarget = event.target;
     if (inputTarget instanceof HTMLInputElement) {
       const { onFocusChange } = this.props;
@@ -64,7 +64,7 @@ class InternalMainTaskFloatingEditor extends React.Component<Props, State> {
         onFocusChange(false);
       }
     }
-  }
+  };
 
   /*
    * --------------------------------------------------------------------------------
@@ -75,20 +75,20 @@ class InternalMainTaskFloatingEditor extends React.Component<Props, State> {
   /**
    * Toggle the editor for the tag of the task.
    */
-  toggleTagEditor() {
+  toggleTagEditor = (): void => {
     this.setState((state: State) => ({
       ...state, doesShowTagEditor: !state.doesShowTagEditor, doesShowCalendarEditor: false,
     }));
-  }
+  };
 
   /**
    * Toggle the editor of the deadline of the task.
    */
-  toggleDateEditor() {
+  toggleDateEditor = (): void => {
     this.setState((state: State) => ({
       ...state, doesShowTagEditor: false, doesShowCalendarEditor: !state.doesShowCalendarEditor,
     }));
-  }
+  };
 
   /*
    * --------------------------------------------------------------------------------
@@ -96,60 +96,65 @@ class InternalMainTaskFloatingEditor extends React.Component<Props, State> {
    * --------------------------------------------------------------------------------
    */
 
-  editTaskName(event: SyntheticEvent<HTMLInputElement>) {
+  /**
+   * Change the name of the task.
+   *
+   * @param {*} event the event to notify the name change.
+   */
+  editTaskName = (event: SyntheticEvent<HTMLInputElement>): void => {
     event.preventDefault();
     const name = event.currentTarget.value;
     const {
       focused, editTask, onFocusChange, tagColorPicker, ...task
     } = this.props;
     editTask({ ...task, name });
-  }
+  };
 
   /**
    * Toggle the completion status of the task.
    */
-  editComplete() {
+  editComplete = (): void => {
     const {
       focused, editTask, onFocusChange, tagColorPicker, ...task
     } = this.props;
     editTask({ ...task, complete: !task.complete });
-  }
+  };
 
   /**
    * Change the in-focus status of the task.
    */
-  editInFocus() {
+  editInFocus = (): void => {
     const {
       focused, editTask, onFocusChange, tagColorPicker, ...task
     } = this.props;
     editTask({ ...task, complete: !task.inFocus });
-  }
+  };
 
   /**
    * Edit the tag of the task.
    *
    * @param {string} tag the new tag.
    */
-  editTaskTag(tag: string) {
+  editTaskTag = (tag: string): void => {
     const {
       focused, editTask, onFocusChange, tagColorPicker, ...task
     } = this.props;
     editTask({ ...task, tag }, tagColorPicker[tag]);
     this.setState((state: State) => ({ ...state, doesShowTagEditor: false }));
-  }
+  };
 
   /**
    * Edit the new date of the task.
    *
    * @param {string} dateString the new date in string.
    */
-  editTaskDate(dateString: string) {
+  editTaskDate = (dateString: string): void => {
     const {
       focused, editTask, onFocusChange, tagColorPicker, ...task
     } = this.props;
     editTask({ ...task, date: new Date(dateString) });
     this.setState((state: State) => ({ ...state, doesShowCalendarEditor: false }));
-  }
+  };
 
   /*
    * --------------------------------------------------------------------------------
@@ -168,7 +173,7 @@ class InternalMainTaskFloatingEditor extends React.Component<Props, State> {
     const headerClassNames = `${styles.FloatingTaskEditorFlexibleContainer} ${styles.FloatingTaskEditorHeader}`;
     const tagPickerElementOpt = doesShowTagEditor && (
       <div className={styles.FloatingTaskEditorTagEditor}>
-        <ClassPicker onTagChange={t => this.editTaskTag(t)} />
+        <ClassPicker onTagChange={this.editTaskTag} />
       </div>
     );
     const calendarElementOpt = doesShowCalendarEditor && (
@@ -176,7 +181,7 @@ class InternalMainTaskFloatingEditor extends React.Component<Props, State> {
         value={date}
         className={styles.FloatingTaskEditorCalendar}
         minDate={new Date()}
-        onChange={e => this.editTaskDate(e)}
+        onChange={this.editTaskDate}
       />
     );
     return (
@@ -195,12 +200,12 @@ class InternalMainTaskFloatingEditor extends React.Component<Props, State> {
         <Icon
           name="tag"
           className={styles.FloatingTaskEditorIconButton}
-          onClick={() => this.toggleTagEditor()}
+          onClick={this.toggleTagEditor}
         />
         <Icon
           name="calendar"
           className={styles.FloatingTaskEditorIconButton}
-          onClick={() => this.toggleDateEditor()}
+          onClick={this.toggleDateEditor}
         />
         {tagPickerElementOpt}
         {calendarElementOpt}
@@ -218,15 +223,15 @@ class InternalMainTaskFloatingEditor extends React.Component<Props, State> {
         <CheckBox
           className={styles.FloatingTaskEditorCheckBox}
           checked={complete}
-          onChange={() => this.editComplete()}
+          onChange={this.editComplete}
         />
         <Input
           className={styles.FloatingTaskEditorFlexibleInput}
           placeholder="Main Task"
           value={name}
           autoFocus={focused}
-          onKeyDown={event => this.cancelFocus(event)}
-          onChange={event => this.editTaskName(event)}
+          onKeyDown={this.cancelFocus}
+          onChange={this.editTaskName}
         />
       </div>
     );

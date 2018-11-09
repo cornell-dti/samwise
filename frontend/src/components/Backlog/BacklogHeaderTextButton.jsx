@@ -1,5 +1,4 @@
 // @flow strict
-/* eslint-disable jsx-a11y/click-events-have-key-events,jsx-a11y/no-static-element-interactions */
 
 import * as React from 'react';
 import type { Node } from 'react';
@@ -23,7 +22,7 @@ const className = `${styles.BacklogViewSwitcherButton} ${styles.BacklogViewSwitc
  */
 export default function BacklogCompletedTasksToggle({ text, onClick }: Props): Node {
   return (
-    <div className={className} onClick={() => onClick()}>
+    <div className={className} role="button" tabIndex={-1} onClick={onClick} onKeyDown={onClick}>
       <span className={styles.BacklogViewSwitcherButtonText}>{text}</span>
     </div>
   );

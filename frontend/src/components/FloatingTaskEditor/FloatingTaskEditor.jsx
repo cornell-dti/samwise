@@ -1,5 +1,4 @@
 // @flow strict
-/* eslint-disable jsx-a11y/no-static-element-interactions,jsx-a11y/click-events-have-key-events */
 
 import * as React from 'react';
 import type { Node } from 'react';
@@ -103,29 +102,23 @@ class FloatingTaskEditor extends React.Component<Props, State> {
   }
 
   /**
-   * The element of the actual editor.
-   * This is only used when the editor is embedded inside the DOM instead of mount to body.
-   */
-  editorElement: ?HTMLDivElement;
-
-  /**
    * Open the popup.
    *
    * @param {Task} task the task used to initialized the modal.
    * @param {string} backgroundColor the background color used to initialized the modal.
    */
-  openPopup(task: Task, backgroundColor: string) {
+  openPopup = (task: Task, backgroundColor: string): void => {
     this.setState((state: State) => ({
       ...state, ...task, backgroundColor, open: true,
     }));
-  }
+  };
 
   /**
    * Close the popup.
    */
-  closePopup() {
+  closePopup = (): void => {
     this.setState((state: State) => ({ ...state, open: false }));
-  }
+  };
 
   /**
    * Update the state to contain the given latest edited main task.
@@ -133,29 +126,29 @@ class FloatingTaskEditor extends React.Component<Props, State> {
    * @param {SimpleMainTask} task the latest edited main task.
    * @param {string} backgroundColor the optional new background color after the edit.
    */
-  editMainTask(task: SimpleMainTask, backgroundColor?: string) {
+  editMainTask = (task: SimpleMainTask, backgroundColor?: string): void => {
     if (backgroundColor != null) {
       this.setState((state: State) => ({ ...state, ...task, backgroundColor }));
     } else {
       this.setState((state: State) => ({ ...state, ...task }));
     }
-  }
+  };
 
   /**
    * Update the state to contain the given latest edited subtask array.
    *
    * @param subtaskArray the latest edited subtask array.
    */
-  editSubTasks(subtaskArray: SubTask[]) {
+  editSubTasks = (subtaskArray: SubTask[]): void => {
     this.setState((state: State) => ({ ...state, subtaskArray }));
-  }
+  };
 
   /**
    * Submit all the changes when clicking submit.
    *
    * @param event the event that notifies about clicking 'submit'.
    */
-  submitChanges(event: ?Event = null) {
+  submitChanges = (event: ?Event = null): void => {
     if (event != null) {
       event.preventDefault();
     }
@@ -165,7 +158,13 @@ class FloatingTaskEditor extends React.Component<Props, State> {
     } = this.state;
     editTask(task);
     this.closePopup();
-  }
+  };
+
+  /**
+   * The element of the actual editor.
+   * This is only used when the editor is embedded inside the DOM instead of mount to body.
+   */
+  editorElement: ?HTMLDivElement;
 
   /**
    * Render the internals of the modal.
@@ -200,7 +199,13 @@ class FloatingTaskEditor extends React.Component<Props, State> {
         />
         <div className={styles.FloatingTaskEditorSubmitButtonRow}>
           <span className={styles.FloatingTaskEditorFlexiblePadding} />
-          <div className={styles.FloatingEditorSaveButton} onClick={e => this.submitChanges(e)}>
+          <div
+            className={styles.FloatingEditorSaveButton}
+            role="button"
+            tabIndex={0}
+            onClick={this.submitChanges}
+            onKeyDown={this.submitChanges}
+          >
             <span className={styles.FloatingEditorSaveButtonText}>Save</span>
           </div>
         </div>
@@ -245,7 +250,10 @@ class FloatingTaskEditor extends React.Component<Props, State> {
           open && (
             <div
               className={styles.FloatingTaskEditorBackgroundBlocker}
-              onClick={() => this.closePopup()}
+              role="button"
+              tabIndex={-1}
+              onClick={this.closePopup}
+              onKeyDown={this.closePopup}
             />
           )
         }
@@ -256,7 +264,7 @@ class FloatingTaskEditor extends React.Component<Props, State> {
 
   render(): Node {
     const { trigger } = this.props;
-    const triggerNode = trigger((t, c) => this.openPopup(t, c));
+    const triggerNode = trigger(this.openPopup);
     const floatingPosition = this.getFloatingPosition();
     return (floatingPosition === 'center')
       ? this.renderModalEditor(triggerNode)

@@ -51,43 +51,41 @@ export default class InternalSubTaskFloatingEditor extends React.Component<Props
     }
   }
 
-  inputToFocus: ?HTMLInputElement;
-
   /**
    * Handle a potential focus change when the user switch between inputs.
    */
-  handlePotentialFocusChange() {
+  handlePotentialFocusChange = (): void => {
     const { focused } = this.props;
     const e = this.inputToFocus;
     if (e != null && focused) {
       e.focus();
     }
-  }
+  };
 
   /**
    * Register the element e at index if it is the autoFocus element.
-   * This method ensures that when we are rendering stuff, we choose the right text input to focus.
    *
-   * @param {HTMLInputElement} e the DOM element to register.
    * @param {number} index the index of the element.
+   * @return {function(?HTMLInputElement): void} the function to handle a ref registration.
    */
-  registerInputToFocus(e: ?HTMLInputElement, index: number) {
+  registerInputToFocus = (index: number) => (e: ?HTMLInputElement): void => {
     const { autoFocusId } = this.state;
     if (index !== autoFocusId) {
       return;
     }
     this.inputToFocus = e;
     this.handlePotentialFocusChange();
-  }
+  };
 
   /**
    * Handle a potential switch focus request when the user press some key, which
    * may be ENTER, in which case we want to shift focus to the next input element.
    *
-   * @param {KeyboardEvent} event the keyboard event to check.
    * @param {number} currentIndex the current input index.
+   * @return {function(KeyboardEvent): void} the function to handle the keyboard event to switch
+   * focus.
    */
-  switchFocus(event: KeyboardEvent, currentIndex: number) {
+  switchFocus = (currentIndex: number) => (event: KeyboardEvent): void => {
     const autoFocusId = currentIndex + 1;
     const inputTarget = event.target;
     if (inputTarget instanceof HTMLInputElement) {
@@ -102,7 +100,7 @@ export default class InternalSubTaskFloatingEditor extends React.Component<Props
         this.setState((state: State) => ({ ...state, autoFocusId }));
       }
     }
-  }
+  };
 
   /*
    * --------------------------------------------------------------------------------
@@ -114,10 +112,10 @@ export default class InternalSubTaskFloatingEditor extends React.Component<Props
    * Edit one particular subtask.
    *
    * @param {number} id the id of the subtask.
-   * @param {Event} event the event that notifies about the edit and gives the new value of the
-   * subtask.
+   * @return {function(Event): void} the function to handle a edit subtask event that notifies
+   * about the edit and gives the new value of the subtask.
    */
-  editSubTask(id: number, event: Event) {
+  editSubTask = (id: number) => (event: Event): void => {
     event.preventDefault();
     if (!(event.target instanceof HTMLInputElement)) {
       return;
@@ -127,36 +125,38 @@ export default class InternalSubTaskFloatingEditor extends React.Component<Props
     editSubTasks(subtaskArray.map((subTask: SubTask) => (
       subTask.id === id ? { ...subTask, name } : subTask
     )));
-  }
+  };
 
   /**
    * Remove one particular subtask.
    *
    * @param {number} id the id of the subtask.
+   * @return {function(): void} the remove subtask event handler.
    */
-  removeSubTask(id: number) {
+  removeSubTask = (id: number) => (): void => {
     const { subtaskArray, editSubTasks } = this.props;
     editSubTasks(subtaskArray.filter((subTask: SubTask) => subTask.id !== id));
-  }
+  };
 
   /**
    * Edit one particular subtask's completion.
    *
-   * @param id the id of the subtask.
+   * @param {number} id the id of the subtask.
+   * @return {function(): void} the edit completion event handler.
    */
-  editSubTaskComplete(id: number) {
+  editSubTaskComplete = (id: number) => (): void => {
     const { subtaskArray, editSubTasks } = this.props;
     editSubTasks(subtaskArray.map((subTask: SubTask) => (
       subTask.id === id ? { ...subTask, complete: !subTask.complete } : subTask
     )));
-  }
+  };
 
   /**
    * Update the state when the new line of subtask name changes.
    *
    * @param event the event that notifies about the change and contains the new value.
    */
-  handleNewSubTaskValueChange(event: SyntheticEvent<HTMLInputElement>) {
+  handleNewSubTaskValueChange = (event: SyntheticEvent<HTMLInputElement>): void => {
     event.preventDefault();
     const newSubTaskValue: string = event.currentTarget.value.trim();
     if (newSubTaskValue.length === 0) {
@@ -174,7 +174,12 @@ export default class InternalSubTaskFloatingEditor extends React.Component<Props
       ...state,
       autoFocusId: subtaskArray.length,
     }));
-  }
+  };
+
+  /**
+   * The input to focus. The value will be dynamically changed when user press ENTER.
+   */
+  inputToFocus: ?HTMLInputElement;
 
   /*
    * --------------------------------------------------------------------------------
@@ -195,18 +200,18 @@ export default class InternalSubTaskFloatingEditor extends React.Component<Props
         <CheckBox
           className={styles.FloatingTaskEditorCheckBox}
           checked={complete}
-          onChange={() => this.editSubTaskComplete(id)}
+          onChange={this.editSubTaskComplete(id)}
         />
         <Input
-          ref={e => this.registerInputToFocus(e, index)}
+          ref={this.registerInputToFocus(index)}
           className={styles.FloatingTaskEditorFlexibleInput}
           placeholder="Your Sub-Task"
           focusid={index}
           value={name}
-          onKeyDown={event => this.switchFocus(event, index)}
-          onChange={event => this.editSubTask(id, event)}
+          onKeyDown={this.switchFocus(index)}
+          onChange={this.editSubTask(id)}
         />
-        <Icon name="delete" onClick={() => this.removeSubTask(id)} />
+        <Icon name="delete" onClick={this.removeSubTask(id)} />
       </div>
     );
   }
@@ -219,11 +224,10 @@ export default class InternalSubTaskFloatingEditor extends React.Component<Props
       <div className={styles.FloatingTaskEditorFlexibleContainer}>
         <Input
           className={styles.FloatingTaskEditorFlexibleInput}
-          ref={e => this.registerInputToFocus(e, focusId)}
-          focusid={focusId}
+          ref={this.registerInputToFocus(focusId)}
           placeholder="Your New Sub-Task"
           value=""
-          onChange={event => this.handleNewSubTaskValueChange(event)}
+          onChange={this.handleNewSubTaskValueChange}
         />
       </div>
     );

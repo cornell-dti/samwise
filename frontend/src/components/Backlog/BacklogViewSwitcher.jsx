@@ -1,5 +1,4 @@
 // @flow strict
-/* eslint-disable jsx-a11y/click-events-have-key-events,jsx-a11y/no-static-element-interactions */
 
 import * as React from 'react';
 import type { Node } from 'react';
@@ -32,7 +31,13 @@ export default class BacklogViewSwitcher extends React.Component<Props, State> {
         ? `${styles.BacklogViewSwitcherButton} ${styles.BacklogViewSwitcherActiveButton}`
         : styles.BacklogViewSwitcherButton;
       return (
-        <div className={className} onClick={setDisplayOption(option)}>
+        <div
+          className={className}
+          role="button"
+          tabIndex={-1}
+          onClick={setDisplayOption(option)}
+          onKeyDown={setDisplayOption(option)}
+        >
           <span className={styles.BacklogViewSwitcherButtonText}>{text}</span>
         </div>
       );
