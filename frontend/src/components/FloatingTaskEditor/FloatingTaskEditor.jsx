@@ -174,13 +174,10 @@ class FloatingTaskEditor extends React.Component<Props, State> {
     const {
       open, backgroundColor, mainTaskInputFocused, ...task
     } = this.state;
-    // editTask(task);
-
     if (!this.taskIsGood(task)) {
       return;
     }
     editTask(this.filterEmptySubTasks(task));
-
     this.closePopup();
   };
 
