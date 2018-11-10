@@ -26,6 +26,7 @@ class UnconNewTaskComponent extends Component {
     this.openDateChange = React.createRef();
     this.addTaskModal = React.createRef();
     this.blockModal = React.createRef();
+    this.subtaskList = React.createRef();
   }
 
   
@@ -54,19 +55,27 @@ class UnconNewTaskComponent extends Component {
     e.preventDefault();
 
     this.props.addTask(this.state);
-    this.setState(this.initialState());
 
     this.closeNewTask();
-
-    toast.success(<ToastUndo dispText="Task Added :D" changeCallback={this.handleUndo} />, {
-      position: 'bottom-right',
-      autoClose: 5000,
-      hideProgressBar: true,
-      closeOnClick: true,
-      pauseOnHover: true,
-      draggable: true,
-      toastId: 'addtasktoast'
+    const taskMsg = 'Added ' + this.state.name + ' ' + this.state.date.toLocaleDateString('en-US', {  
+      day: 'numeric',
+      month: 'numeric',
+      year: 'numeric',
     });
+
+    this.setState(this.initialState());
+
+    toast.success(
+      <ToastUndo dispText={taskMsg} changeCallback={this.handleUndo} />, {
+        position: 'bottom-right',
+        autoClose: 5000,
+        hideProgressBar: true,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        toastId: 'addtasktoast',
+      },
+    );
   }
 
   handleUndo = () => {
@@ -92,8 +101,8 @@ class UnconNewTaskComponent extends Component {
   }
 
   handleAddSubtask = (e) => {
-    if (e.keyCode === 13) {
-      e.preventDefault();
+    //if (e.keyCode === 13) {
+      //e.preventDefault();
 
       const newSubtask = {
         id: this.state.subtaskArray.length,
@@ -103,10 +112,16 @@ class UnconNewTaskComponent extends Component {
 
       this.setState({
         subtaskArray: [...this.state.subtaskArray, newSubtask]
+      }, () => {
+        const liList = this.subtaskList.current.getElementsByTagName("LI");
+        const lastItem = liList[liList.length - 1];
+        lastItem.getElementsByTagName("INPUT")[0].focus();
       });
       
       e.target.value = "";
-    }
+    
+    
+    //}
   }
 
   forceClassChangeOpen = () => {
@@ -186,32 +201,32 @@ class UnconNewTaskComponent extends Component {
                 />
               </div>
             </div>
-            
-            <button className={styles.SubmitNewTask}>
+
+            <button type="submit" className={styles.SubmitNewTask}>
               <Icon color="black" name="arrow alternate circle right outline" className={styles.CenterIcon} />
             </button>
-            
+
             <div className={styles.NewTaskModal}>
-              <ul>
+              <ul ref={this.subtaskList}>
                 {this.state.subtaskArray.map(
                   subtaskObj => (
-                    <li key={subtaskObj.id} data-subtaskid={subtaskObj.id}>
-                      <button onClick={this.handleDelSubtask}><Icon name="delete" /></button>
+                    <li key={subtaskObj.name + Math.random()} data-subtaskid={subtaskObj.id}>
+                      <button type="button" onClick={this.handleDelSubtask}><Icon name="delete" /></button>
                       <input
                         onBlur={this.handleChangeSubtask}
                         type="text"
-                        defaultValue={subtaskObj.name} 
+                        defaultValue={subtaskObj.name}
                       />
-                    </li>)
+                    </li>),
                 )}
               </ul>
               <Icon name="plus" />
-              <input type="text" placeholder="Add a Subtask" onKeyDown={this.handleAddSubtask} />
+              <input type="text" placeholder="Add a Subtask" onKeyUp={this.handleAddSubtask} />
             </div>
 
           </div>
         </form>
-            
+
         <ToastContainer />
       </div>
     );
