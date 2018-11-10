@@ -89,7 +89,7 @@ export default class InternalSubTaskFloatingEditor extends React.Component<Props
     const autoFocusId = currentIndex + 1;
     const inputTarget = event.target;
     if (inputTarget instanceof HTMLInputElement) {
-      if (event.key !== 'Enter') {
+      if (event.key !== 'Enter' && event.key !== 'Tab') {
         this.setState((state: State) => ({ ...state, autoFocusId: currentIndex }));
       } else {
         inputTarget.blur();

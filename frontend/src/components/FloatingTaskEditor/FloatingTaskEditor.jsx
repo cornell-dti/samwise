@@ -121,6 +121,24 @@ class FloatingTaskEditor extends React.Component<Props, State> {
   };
 
   /**
+   * Check whether a task has a good format.
+   *
+   * @param {Task} task the task to check.
+   * @return {boolean} whether the task has a good format.
+   */
+  taskIsGood = (task: Task): boolean => task.name.trim().length > 0;
+
+  /**
+   * Filter the task without all the empty subtasks.
+   *
+   * @param {Task} task the task to filter.
+   * @return {Task} the filtered task.
+   */
+  filterEmptySubTasks = (task: Task): Task => ({
+    ...task, subtaskArray: task.subtaskArray.filter(t => t.name.trim().length > 0),
+  });
+
+  /**
    * Update the state to contain the given latest edited main task.
    *
    * @param {SimpleMainTask} task the latest edited main task.
@@ -156,7 +174,13 @@ class FloatingTaskEditor extends React.Component<Props, State> {
     const {
       open, backgroundColor, mainTaskInputFocused, ...task
     } = this.state;
-    editTask(task);
+    // editTask(task);
+
+    if (!this.taskIsGood(task)) {
+      return;
+    }
+    editTask(this.filterEmptySubTasks(task));
+
     this.closePopup();
   };
 

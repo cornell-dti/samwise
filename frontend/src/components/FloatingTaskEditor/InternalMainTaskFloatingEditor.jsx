@@ -57,7 +57,7 @@ class InternalMainTaskFloatingEditor extends React.Component<Props, State> {
     const inputTarget = event.target;
     if (inputTarget instanceof HTMLInputElement) {
       const { onFocusChange } = this.props;
-      if (event.key !== 'Enter') {
+      if (event.key !== 'Enter' && event.key !== 'Tab') {
         onFocusChange(true);
       } else {
         inputTarget.blur();
