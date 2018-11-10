@@ -1,0 +1,37 @@
+.Main{
+  margin:0;
+  padding:10px 40px;
+}
+
+.Time{
+  font-weight:bold;
+  font-size:32px;
+  display:inline-block;
+  border-right:1px black solid;
+  padding-right:10px;
+  margin-right:10px;
+  height:32px;
+  line-height:32px;
+  vertical-align: top;
+}
+
+.Date{
+  line-height:32px;
+  height:32px;
+  display:inline-block;
+  vertical-align: top;
+}
+
+.Links{
+  float:right;
+}
+
+.Links button{
+  background:none;
+  border:none;
+  cursor:pointer;
+}
+
+.Links button[data-sel="sel"]{
+  font-weight:bold;
+}
