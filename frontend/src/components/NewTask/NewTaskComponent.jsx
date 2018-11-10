@@ -14,7 +14,7 @@ const mapDispatchToProps = dispatch => ({
   undoAction: () => dispatch(undoAction()),
 });
 
-const mapStateToProps = state => ({ tagColorPicker: state.tagColorPicker });
+  const mapStateToProps = state => ({ tagColorPicker: state.tagColorPicker });
 
 class UnconNewTaskComponent extends Component {
   constructor(props) {
@@ -29,7 +29,7 @@ class UnconNewTaskComponent extends Component {
     this.subtaskList = React.createRef();
   }
 
-  
+
   initialState() {
     return {
       name: '',
@@ -40,12 +40,12 @@ class UnconNewTaskComponent extends Component {
       subtaskArray: [],
     };
   }
-  
+
   openNewTask = () => {
     this.addTaskModal.current.style.display = 'block';
     this.blockModal.current.style.display = 'block';
   }
-  
+
   closeNewTask = () => {
     this.addTaskModal.current.style.display = '';
     this.blockModal.current.style.display = '';
@@ -54,7 +54,18 @@ class UnconNewTaskComponent extends Component {
   handleSave = (e) => {
     e.preventDefault();
 
-    this.props.addTask(this.state);
+    if (this.state.name == ''){
+      return;
+    }
+    
+    let i = 0;
+    const newSubtaskArr = this.state.subtaskArray.filter(
+      el => el.name != ''
+    ).map(
+      el => ({ ...el, id: i++ })
+    );
+
+    this.props.addTask({ ...this.state, subtaskArray: newSubtaskArr });
 
     this.closeNewTask();
     const taskMsg = 'Added ' + this.state.name + ' ' + this.state.date.toLocaleDateString('en-US', {  
@@ -101,33 +112,27 @@ class UnconNewTaskComponent extends Component {
   }
 
   handleAddSubtask = (e) => {
-    //if (e.keyCode === 13) {
-      //e.preventDefault();
+    const newSubtask = {
+      id: this.state.subtaskArray.length,
+      name: e.target.value,
+      complete: false,
+    };
 
-      const newSubtask = {
-        id: this.state.subtaskArray.length,
-        name: e.target.value,
-        complete: false,
-      };
+    this.setState({
+      subtaskArray: [...this.state.subtaskArray, newSubtask]
+    }, () => {
+      const liList = this.subtaskList.current.getElementsByTagName('LI');
+      const lastItem = liList[liList.length - 1];
+      lastItem.getElementsByTagName('INPUT')[0].focus();
+    });
 
-      this.setState({
-        subtaskArray: [...this.state.subtaskArray, newSubtask]
-      }, () => {
-        const liList = this.subtaskList.current.getElementsByTagName("LI");
-        const lastItem = liList[liList.length - 1];
-        lastItem.getElementsByTagName("INPUT")[0].focus();
-      });
-      
-      e.target.value = "";
-    
-    
-    //}
+    e.target.value = '';
   }
 
   forceClassChangeOpen = () => {
     this.openClassChange.current.click();
   }
-  
+
   handleChangeSubtask = (e) => {
     const subtaskId = parseInt(e.target.parentElement.getAttribute("data-subtaskid"));
     const newSubtaskArr = this.state.subtaskArray.map(
@@ -163,7 +168,7 @@ class UnconNewTaskComponent extends Component {
           className={styles.NewTaskWrap}
           onSubmit={this.handleSave}
           onFocus={this.openNewTask}
-        >
+          >
           <input
             value={name}
             onChange={this.handleTaskNameChange}
@@ -171,7 +176,8 @@ class UnconNewTaskComponent extends Component {
             className={styles.NewTaskComponent}
             placeholder="What do you have to do?"
             ref={this.addTask}
-          />
+            required
+            />
           <div className={styles.NewTaskActive} ref={this.addTaskModal}>
 
             <div className={styles.NewTaskClass}>
@@ -181,7 +187,7 @@ class UnconNewTaskComponent extends Component {
                 data-curr={tag}
                 style={{ backgroundColor: tagColorPicker[tag] }}
                 ref={this.changeClass}
-              >
+                >
                 <span>{tag}</span>
                 <Icon name="tag" className={styles.CenterIcon} />
               </label>
@@ -198,7 +204,7 @@ class UnconNewTaskComponent extends Component {
                   onChange={this.handleDateChange}
                   value={date}
                   minDate={new Date()}
-                />
+                  />
               </div>
             </div>
 
@@ -216,7 +222,7 @@ class UnconNewTaskComponent extends Component {
                         onBlur={this.handleChangeSubtask}
                         type="text"
                         defaultValue={subtaskObj.name}
-                      />
+                        />
                     </li>),
                 )}
               </ul>
