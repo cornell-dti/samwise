@@ -10,7 +10,6 @@ import type {
  * @type {{mainTaskArray: Array, tagColorConfig: *, bearStatus: string}}
  */
 const initialState: State = {
-  backupTaskArray: [],
   mainTaskArray: [],
   tagColorPicker: {
     Personal: '#c4def6',
@@ -197,7 +196,6 @@ function editTask(state: State, action: EditTaskAction) {
   const newTask = action.task;
   return {
     ...state,
-    backupTaskArray: state.mainTaskArray,
     mainTaskArray: state.mainTaskArray.map<Task>(t => (t.id === newTask.id ? newTask : t)),
   };
 }
@@ -214,57 +212,43 @@ const rootReducer = (state: State = initialState, action: $Subtype<Action>) => {
       return {
         ...state,
         mainTaskArray: [...state.mainTaskArray, action.data],
-        backupTaskArray: state.mainTaskArray,
       };
     case 'EDIT_TASK':
       return editTask(state, action);
     case 'MARK_TASK':
       return {
         ...state,
-        backupTaskArray: state.mainTaskArray,
         mainTaskArray: markTask(state.mainTaskArray, action.id),
       };
     case 'MARK_SUBTASK':
       return {
         ...state,
-        backupTaskArray: state.mainTaskArray,
         mainTaskArray: markSubtask(state.mainTaskArray, action.id, action.subtask),
       };
     case 'TOGGLE_TASK_PIN':
       return {
         ...state,
-        backupTaskArray: state.mainTaskArray,
         mainTaskArray: toggleTaskPin(state.mainTaskArray, action.taskId),
       };
     case 'TOGGLE_SUBTASK_PIN':
       return {
         ...state,
-        backupTaskArray: state.mainTaskArray,
         mainTaskArray: toggleSubtaskPin(state.mainTaskArray, action.taskId, action.subtaskId),
       };
     case 'REMOVE_TASK':
       return {
         ...state,
-        backupTaskArray: state.mainTaskArray,
         mainTaskArray: removeTask(state.mainTaskArray, action.taskId),
       };
     case 'REMOVE_SUBTASK':
       return {
         ...state,
-        backupTaskArray: state.mainTaskArray,
         mainTaskArray: removeSubtask(state.mainTaskArray, action.taskId, action.subtaskId),
       };
     case 'ADD_SUBTASK':
       return {
         ...state,
-        backupTaskArray: state.mainTaskArray,
         mainTaskArray: addSubtask(state.mainTaskArray, action.id, action.data),
-      };
-    case 'UNDO_ACTION':
-      return {
-        ...state,
-        mainTaskArray: state.backupTaskArray,
-        backupTaskArray: null,
       };
     default:
       return state;

@@ -4,17 +4,20 @@ import { Calendar } from 'react-calendar';
 import { Icon } from 'semantic-ui-react';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { addTask, undoAction } from '../../store/actions';
+import { addTask, removeTask } from '../../store/actions';
 import styles from './NewTask.css';
 import ToastUndo from './ToastUndo';
 import ClassPicker from '../ClassPicker/ClassPicker';
 
 const mapDispatchToProps = dispatch => ({
   addTask: e => dispatch(addTask(e)),
-  undoAction: () => dispatch(undoAction()),
+  removeTask: e => dispatch(removeTask(e)),
 });
 
-  const mapStateToProps = state => ({ tagColorPicker: state.tagColorPicker });
+const mapStateToProps = state => ({
+  tagColorPicker: state.tagColorPicker,
+  mainTaskArray: state.mainTaskArray,
+});
 
 class UnconNewTaskComponent extends Component {
   constructor(props) {
@@ -38,6 +41,7 @@ class UnconNewTaskComponent extends Component {
       date: new Date(),
       complete: false,
       subtaskArray: [],
+      lastDel: -1,
     };
   }
 
@@ -54,18 +58,22 @@ class UnconNewTaskComponent extends Component {
   handleSave = (e) => {
     e.preventDefault();
 
-    if (this.state.name == ''){
+    if (this.state.name === ''){
       return;
     }
     
     let i = 0;
     const newSubtaskArr = this.state.subtaskArray.filter(
-      el => el.name != ''
+      el => el.name !== ''
     ).map(
       el => ({ ...el, id: i++ })
     );
 
-    this.props.addTask({ ...this.state, subtaskArray: newSubtaskArr });
+
+    let toAdd = { ...this.state, subtaskArray: newSubtaskArr };
+    delete toAdd.lastDel;
+    this.props.addTask(toAdd);
+    const lastId = toAdd.id;
 
     this.closeNewTask();
     const taskMsg = 'Added ' + this.state.name + ' ' + this.state.date.toLocaleDateString('en-US', {  
@@ -74,7 +82,7 @@ class UnconNewTaskComponent extends Component {
       year: 'numeric',
     });
 
-    this.setState(this.initialState());
+    this.setState({ ...this.initialState(), lastDel: lastId });
 
     toast.success(
       <ToastUndo dispText={taskMsg} changeCallback={this.handleUndo} />, {
@@ -90,7 +98,14 @@ class UnconNewTaskComponent extends Component {
   }
 
   handleUndo = () => {
-    this.props.undoAction();
+    const taskId = this.state.lastDel;
+    if (taskId === -1) { return; }
+
+    const lastTask = this.props.mainTaskArray.find((e) => e.id === taskId);
+    this.props.removeTask(taskId);
+
+    this.setState({ ...lastTask, lastDel: -1 });
+    this.addTask.current.focus();
   }
 
   handleClassChange = (e) => {

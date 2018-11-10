@@ -44,12 +44,6 @@ export const addTask = (task: Task): AddNewTaskAction => ({ type: 'ADD_NEW_TASK'
  * @return {AddNewTaskAction} the edit task action.
  */
 export const editTask = (task: Task): EditTaskAction => ({ type: 'EDIT_TASK', task });
-/**
- * TODO add some docs
- *
- * @return {{type: string}}
- */
-export const undoAction = () => ({ type: 'UNDO_ACTION' });
 
 /**
  * Mark task is the action that can be used to mark a task as completed or not.
