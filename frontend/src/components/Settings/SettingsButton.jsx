@@ -1,12 +1,13 @@
 // @flow
 import React, { Component } from 'react';
+import Modal from 'react-modal';
 import TagColorConfigEditor from '../TagColorConfigEditor/TagColorConfigEditor';
 
 class SettingsButton extends Component {
   constructor() {
     super();
     this.state = {
-      showSettings: true,
+      showSettings: false,
     };
   }
 
@@ -15,16 +16,24 @@ class SettingsButton extends Component {
   };
 
   displayModal = () => {
-    this.setState(prevState => ({ showSettings: !prevState.showSettings }));
+    this.setState({ showSettings: true });
+  }
+
+  closeModal = () => {
+    this.setState({showSettings: false})
   }
 
   render() {
     const destructuredState = this.state;
-    console.log(destructuredState.showSettings);
     return (
       <div>
         <button type="submit" onClick={this.displayModal}>Settings</button>
-        {destructuredState.showSettings ? <TagColorConfigEditor /> : null}
+        <Modal
+          isOpen={destructuredState.showSettings}
+          >
+          <button type="submit" onClick={this.closeModal}>Close</button>
+          <TagColorConfigEditor />
+        </Modal>
       </div>
 
     );
