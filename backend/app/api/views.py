@@ -38,31 +38,30 @@ def test_auth():
       provider.setCustomParameters({
         'login_hint': 'user@example.com'
       });
-      
+
       firebase.auth().onAuthStateChanged(function(user) {
         if (user) {
           firebase.auth().currentUser.getIdToken(true).then(function(idToken) {
             fetch('http://localhost:5000/api/tags/all?token=' + idToken).then(function(response) {
               response.json().then(function (data) {
-                alert(data);
+                alert(JSON.stringify(data));
               });
             });
           }).catch(function(error) {
             console.log(error);
           });  
         } else {
-          console.log('user broke');
+          firebase.auth().signInWithRedirect(provider);
+          firebase.auth().getRedirectResult().then(function(result) {
+            var token = result.credential.accessToken;
+            var user = result.user;
+          }).catch(function(error) {
+            var errorCode = error.code;
+            var errorMessage = error.message;
+            var email = error.email;
+            var credential = error.credential;
+          });
         }
-      });
-      
-      firebase.auth().signInWithPopup(provider).then(function(result) {
-        var token = result.credential.accessToken;
-        var user = result.user;
-      }).catch(function(error) {
-        var errorCode = error.code;
-        var errorMessage = error.message;
-        var email = error.email;
-        var credential = error.credential;
       });
     </script>
     '''
@@ -73,6 +72,7 @@ def get_tags():
     # TODO Use current user id instead of hardcoded 1
     id_token = request.args['token']
     user_id = get_user_id(id_token)
+    return jsonify(status='success')
     tags = Tag.query.filter(Tag.user_id == user_id).all()
     tags_json = util.table_to_json(tags)
     return jsonify(tags_json)

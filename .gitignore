@@ -107,7 +107,7 @@ ENV/
 .idea/
 
 # Environment variable script
-envvar
+run_server
 
 # Service account JSON
 serviceAccount.json
