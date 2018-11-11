@@ -4,17 +4,20 @@ import { Calendar } from 'react-calendar';
 import { Icon } from 'semantic-ui-react';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { addTask, undoAction } from '../../store/actions';
+import { addTask, removeTask } from '../../store/actions';
 import styles from './NewTask.css';
 import ToastUndo from './ToastUndo';
 import ClassPicker from '../ClassPicker/ClassPicker';
 
 const mapDispatchToProps = dispatch => ({
   addTask: e => dispatch(addTask(e)),
-  undoAction: () => dispatch(undoAction()),
+  removeTask: e => dispatch(removeTask(e)),
 });
 
-const mapStateToProps = state => ({ tagColorPicker: state.tagColorPicker });
+const mapStateToProps = state => ({
+  tagColorPicker: state.tagColorPicker,
+  mainTaskArray: state.mainTaskArray,
+});
 
 class UnconNewTaskComponent extends Component {
   constructor(props) {
@@ -26,9 +29,10 @@ class UnconNewTaskComponent extends Component {
     this.openDateChange = React.createRef();
     this.addTaskModal = React.createRef();
     this.blockModal = React.createRef();
+    this.subtaskList = React.createRef();
   }
 
-  
+
   initialState() {
     return {
       name: '',
@@ -37,14 +41,15 @@ class UnconNewTaskComponent extends Component {
       date: new Date(),
       complete: false,
       subtaskArray: [],
+      lastDel: -1,
     };
   }
-  
+
   openNewTask = () => {
     this.addTaskModal.current.style.display = 'block';
     this.blockModal.current.style.display = 'block';
   }
-  
+
   closeNewTask = () => {
     this.addTaskModal.current.style.display = '';
     this.blockModal.current.style.display = '';
@@ -53,24 +58,59 @@ class UnconNewTaskComponent extends Component {
   handleSave = (e) => {
     e.preventDefault();
 
-    this.props.addTask(this.state);
-    this.setState(this.initialState());
+    const { name, subtaskArray, date } = this.state;
+    const { addTask } = this.props;
+
+    if (name === '') {
+      return;
+    }
+
+    const newSubtaskArr = subtaskArray.filter(
+      el => el.name !== '',
+    ).map(
+      (el, i) => ({ ...el, id: i }),
+    );
+
+
+    const toAdd = { ...this.state, subtaskArray: newSubtaskArr };
+    delete toAdd.lastDel;
+    addTask(toAdd);
+    const lastId = toAdd.id;
 
     this.closeNewTask();
-
-    toast.success(<ToastUndo dispText="Task Added :D" changeCallback={this.handleUndo} />, {
-      position: 'bottom-right',
-      autoClose: 5000,
-      hideProgressBar: true,
-      closeOnClick: true,
-      pauseOnHover: true,
-      draggable: true,
-      toastId: 'addtasktoast'
+    const taskMsg = 'Added ' + name + ' ' + date.toLocaleDateString('en-US', {  
+      day: 'numeric',
+      month: 'numeric',
+      year: 'numeric',
     });
+
+    this.setState({ ...this.initialState(), lastDel: lastId });
+
+    toast.success(
+      <ToastUndo dispText={taskMsg} changeCallback={this.handleUndo} />, {
+        position: 'bottom-right',
+        autoClose: 5000,
+        hideProgressBar: true,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        toastId: 'addtasktoast',
+      },
+    );
   }
 
   handleUndo = () => {
-    this.props.undoAction();
+    const { lastDel } = this.state;
+    const { mainTaskArray, removeTask } = this.props;
+
+    const taskId = lastDel;
+    if (taskId === -1) { return; }
+
+    const lastTask = mainTaskArray.find(e => e.id === taskId);
+    removeTask(taskId);
+
+    this.setState({ ...lastTask, lastDel: -1 });
+    this.addTask.current.focus();
   }
 
   handleClassChange = (e) => {
@@ -92,31 +132,40 @@ class UnconNewTaskComponent extends Component {
   }
 
   handleAddSubtask = (e) => {
-    if (e.keyCode === 13) {
-      e.preventDefault();
-
-      const newSubtask = {
-        id: this.state.subtaskArray.length,
-        name: e.target.value,
-        complete: false,
-      };
-
-      this.setState({
-        subtaskArray: [...this.state.subtaskArray, newSubtask]
-      });
-      
-      e.target.value = "";
+    if (e.target.value === '') {
+      return;
     }
+
+    const { subtaskArray } = this.state;
+
+    const newSubtask = {
+      id: subtaskArray.length,
+      name: e.target.value,
+      complete: false,
+    };
+
+    this.setState({
+      subtaskArray: [...subtaskArray, newSubtask],
+    }, () => {
+      const liList = this.subtaskList.current.getElementsByTagName('LI');
+      const lastItem = liList[liList.length - 1];
+      lastItem.getElementsByTagName('INPUT')[0].focus();
+    });
+
+    e.target.value = '';
   }
 
   forceClassChangeOpen = () => {
     this.openClassChange.current.click();
   }
-  
+
   handleChangeSubtask = (e) => {
-    const subtaskId = parseInt(e.target.parentElement.getAttribute("data-subtaskid"));
-    const newSubtaskArr = this.state.subtaskArray.map(
-      el => (el.id === subtaskId ? { ...el, name: e.target.value } : el)
+    const subtaskId = parseInt(e.target.parentElement.getAttribute('data-subtaskid'), 10);
+
+    const { subtaskArray } = this.state;
+
+    const newSubtaskArr = subtaskArray.map(
+      el => (el.id === subtaskId ? { ...el, name: e.target.value } : el),
     );
 
     this.setState({ subtaskArray: newSubtaskArr });
@@ -125,13 +174,13 @@ class UnconNewTaskComponent extends Component {
   handleDelSubtask = (e) => {
     e.preventDefault();
 
-    let i = 0;
+    const { subtaskArray } = this.state;
 
-    const subtaskId = parseInt(e.target.parentElement.parentElement.getAttribute("data-subtaskid"));
-    const newSubtaskArr = this.state.subtaskArray.filter(
-      el => el.id != subtaskId
+    const subtaskId = parseInt(e.target.parentElement.parentElement.getAttribute('data-subtaskid'), 10);
+    const newSubtaskArr = subtaskArray.filter(
+      el => el.id !== subtaskId,
     ).map(
-      el => ({ ...el, id: i++ })
+      (el, i) => ({ ...el, id: i }),
     );
 
     this.setState({ subtaskArray: newSubtaskArr });
@@ -139,11 +188,13 @@ class UnconNewTaskComponent extends Component {
 
 
   render() {
-    const { name, tag, date } = this.state;
+    const {
+      name, tag, date, subtaskArray,
+    } = this.state;
     const { tagColorPicker } = this.props;
     return (
       <div>
-        <div onClick={this.closeNewTask} className={styles.CloseNewTask} ref={this.blockModal}></div>
+        <div onClick={this.closeNewTask} className={styles.CloseNewTask} ref={this.blockModal} />
         <form
           className={styles.NewTaskWrap}
           onSubmit={this.handleSave}
@@ -156,6 +207,7 @@ class UnconNewTaskComponent extends Component {
             className={styles.NewTaskComponent}
             placeholder="What do you have to do?"
             ref={this.addTask}
+            required
           />
           <div className={styles.NewTaskActive} ref={this.addTaskModal}>
 
@@ -186,36 +238,36 @@ class UnconNewTaskComponent extends Component {
                 />
               </div>
             </div>
-            
-            <button className={styles.SubmitNewTask}>
+
+            <button type="submit" className={styles.SubmitNewTask}>
               <Icon color="black" name="arrow alternate circle right outline" className={styles.CenterIcon} />
             </button>
-            
+
             <div className={styles.NewTaskModal}>
-              <ul>
-                {this.state.subtaskArray.map(
+              <ul ref={this.subtaskList}>
+                {subtaskArray.map(
                   subtaskObj => (
-                    <li key={subtaskObj.id} data-subtaskid={subtaskObj.id}>
-                      <button onClick={this.handleDelSubtask}><Icon name="delete" /></button>
+                    <li key={subtaskObj.name + Math.random()} data-subtaskid={subtaskObj.id}>
+                      <button type="button" onClick={this.handleDelSubtask}><Icon name="delete" /></button>
                       <input
                         onBlur={this.handleChangeSubtask}
                         type="text"
-                        defaultValue={subtaskObj.name} 
+                        defaultValue={subtaskObj.name}
                       />
-                    </li>)
+                    </li>),
                 )}
               </ul>
               <Icon name="plus" />
-              <input type="text" placeholder="Add a Subtask" onKeyDown={this.handleAddSubtask} />
+              <input type="text" placeholder="Add a Subtask" onKeyUp={this.handleAddSubtask} />
             </div>
 
           </div>
         </form>
-            
+
         <ToastContainer />
       </div>
     );
-  }//📆
+  }
 }
 
 const NewTaskComponent = connect(mapStateToProps, mapDispatchToProps)(UnconNewTaskComponent);
