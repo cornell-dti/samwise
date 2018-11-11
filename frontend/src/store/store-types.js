@@ -21,9 +21,9 @@ export type Task = {|
 |};
 
 /**
- * The tag color picker maps a tag to a color.
+ * The color picker maps a tag to a color.
  */
-export type TagColorConfig = {
+export type ColorConfig = {
   [tag: string]: string
 };
 
@@ -32,7 +32,7 @@ export type TagColorConfig = {
  */
 export type State = {|
   +mainTaskArray: Task[];
-  +backupTaskArray: Task[];
-  +tagColorPicker: TagColorConfig;
+  +classColorConfig: ColorConfig;
+  +tagColorConfig: ColorConfig;
   +bearStatus: string
 |};

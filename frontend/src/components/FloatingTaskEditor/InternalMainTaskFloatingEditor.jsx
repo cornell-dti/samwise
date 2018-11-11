@@ -4,7 +4,7 @@ import type { Node } from 'react';
 import * as React from 'react';
 import { Icon, Input } from 'semantic-ui-react';
 import Calendar from 'react-calendar';
-import type { State as StoreState, TagColorConfig } from '../../store/store-types';
+import type { State as StoreState, ColorConfig } from '../../store/store-types';
 import styles from './FloatingTaskEditor.css';
 import ClassPicker from '../ClassPicker/ClassPicker';
 import CheckBox from '../UI/CheckBox';
@@ -18,7 +18,7 @@ type OwnProps = {|
   +onFocusChange: (focused: boolean) => void;
 |};
 
-type SubscribedProps = {| tagColorPicker: TagColorConfig; |};
+type SubscribedProps = {| colors: ColorConfig; |};
 
 type Props = {|
   ...OwnProps;
@@ -30,7 +30,9 @@ type State = {|
   doesShowCalendarEditor: boolean;
 |};
 
-const mapStateToProps = ({ tagColorPicker }: StoreState): SubscribedProps => ({ tagColorPicker });
+const mapStateToProps = ({ classColorConfig, tagColorConfig }: StoreState): SubscribedProps => ({
+  colors: { ...classColorConfig, ...tagColorConfig },
+});
 
 /**
  * InternalMainTaskFloatingEditor is intended for internal use for FloatingTaskEditor only.
@@ -105,7 +107,7 @@ class InternalMainTaskFloatingEditor extends React.Component<Props, State> {
     event.preventDefault();
     const name = event.currentTarget.value;
     const {
-      focused, editTask, onFocusChange, tagColorPicker, ...task
+      focused, editTask, onFocusChange, colors, ...task
     } = this.props;
     editTask({ ...task, name });
   };
@@ -115,7 +117,7 @@ class InternalMainTaskFloatingEditor extends React.Component<Props, State> {
    */
   editComplete = (): void => {
     const {
-      focused, editTask, onFocusChange, tagColorPicker, ...task
+      focused, editTask, onFocusChange, colors, ...task
     } = this.props;
     editTask({ ...task, complete: !task.complete });
   };
@@ -125,7 +127,7 @@ class InternalMainTaskFloatingEditor extends React.Component<Props, State> {
    */
   editInFocus = (): void => {
     const {
-      focused, editTask, onFocusChange, tagColorPicker, ...task
+      focused, editTask, onFocusChange, colors, ...task
     } = this.props;
     editTask({ ...task, complete: !task.inFocus });
   };
@@ -137,9 +139,9 @@ class InternalMainTaskFloatingEditor extends React.Component<Props, State> {
    */
   editTaskTag = (tag: string): void => {
     const {
-      focused, editTask, onFocusChange, tagColorPicker, ...task
+      focused, editTask, onFocusChange, colors, ...task
     } = this.props;
-    editTask({ ...task, tag }, tagColorPicker[tag]);
+    editTask({ ...task, tag }, colors[tag]);
     this.setState((state: State) => ({ ...state, doesShowTagEditor: false }));
   };
 
@@ -150,7 +152,7 @@ class InternalMainTaskFloatingEditor extends React.Component<Props, State> {
    */
   editTaskDate = (dateString: string): void => {
     const {
-      focused, editTask, onFocusChange, tagColorPicker, ...task
+      focused, editTask, onFocusChange, colors, ...task
     } = this.props;
     editTask({ ...task, date: new Date(dateString) });
     this.setState((state: State) => ({ ...state, doesShowCalendarEditor: false }));
@@ -166,7 +168,9 @@ class InternalMainTaskFloatingEditor extends React.Component<Props, State> {
    * Return the rendered header element.
    */
   renderHeader(): Node {
-    const { tag, date, tagColorPicker } = this.props;
+    const {
+      tag, date, colors,
+    } = this.props;
     const {
       doesShowTagEditor, doesShowCalendarEditor,
     } = this.state;
@@ -190,7 +194,7 @@ class InternalMainTaskFloatingEditor extends React.Component<Props, State> {
           <label
             htmlFor="floating-task-tag-editor-checkbox"
             className={styles.FloatingTaskEditorTagLabel}
-            style={{ backgroundColor: tagColorPicker[tag] }}
+            style={{ backgroundColor: colors[tag] }}
           >
             <input id="floating-task-tag-editor-checkbox" type="checkbox" />
             {tag}

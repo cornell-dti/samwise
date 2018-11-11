@@ -1,20 +1,20 @@
 // @flow strict
 
-import type { Action, EditTaskAction, TagColorConfigAction } from './action-types';
+import type { Action, EditTaskAction, ColorConfigAction } from './action-types';
 import type {
-  State, Task, SubTask, TagColorConfig,
+  State, Task, SubTask, ColorConfig,
 } from './store-types';
 
 /**
  * Initial state of the application.
- * @type {{mainTaskArray: Array, tagColorConfig: *, bearStatus: string}}
+ * @type {State}
  */
 const initialState: State = {
   mainTaskArray: [],
-  classColorPicker: {
+  classColorConfig: {
     CS1110: 'red',
   },
-  tagColorPicker: {
+  tagColorConfig: {
     Personal: '#7ED4E5',
     'Project Team': '#FF8A8A',
     Courses: '#9D4AA9',
@@ -153,7 +153,7 @@ function removeSubtask(mainTaskArray: Task[], taskID: number, subtaskID: number)
   });
 }
 
-function addSubtask(mainTaskArray: Task[], taskID: number, subtask): Task[] {
+function addSubtask(mainTaskArray: Task[], taskID: number, subtask: SubTask): Task[] {
   return mainTaskArray.map((task: Task) => {
     if (task.id !== taskID) {
       return task;
@@ -168,24 +168,33 @@ function addSubtask(mainTaskArray: Task[], taskID: number, subtask): Task[] {
 /**
  * Reducer from a old tag-color config to a new one.
  *
- * @param {TagColorConfig} config the old tag-color config.
- * @param {TagColorConfigAction} action the action related to tag-color config to perform.
- * @return {TagColorConfig} the new tag-color config.
+ * @param {State} prevState the previous state.
+ * @param {ColorConfigAction} action the action related to tag-color config to perform.
+ * @return {State} the new state.
  */
-function tagColorConfigReducer(
-  config: TagColorConfig, action: TagColorConfigAction,
-): TagColorConfig {
+function colorConfigReducer(
+  prevState: State,
+  action: ColorConfigAction,
+): State {
+  const oldConfig = action.classOrTag === 'class'
+    ? prevState.classColorConfig : prevState.tagColorConfig;
+  let newConfig: ColorConfig;
   switch (action.type) {
     case 'EDIT_COLOR_CONFIG':
-      return { ...config, [action.tag]: action.color };
+      newConfig = { ...oldConfig, [action.tag]: action.color };
+      break;
     case 'REMOVE_COLOR_CONFIG':
-      return ((c): TagColorConfig => {
+      newConfig = ((c: ColorConfig): ColorConfig => {
         const { [action.tag]: _, ...rest } = c;
         return rest;
-      })(config);
+      })(oldConfig);
+      break;
     default:
-      return config;
+      throw new Error('Bad action type!');
   }
+  return action.classOrTag === 'class'
+    ? { ...prevState, classColorConfig: newConfig }
+    : { ...prevState, tagColorConfig: newConfig };
 }
 
 /**
@@ -206,23 +215,8 @@ function editTask(state: State, action: EditTaskAction) {
 const rootReducer = (state: State = initialState, action: Action) => {
   switch (action.type) {
     case 'EDIT_COLOR_CONFIG':
-      if (action.classOrTag === 'class') {
-        return {
-          ...state,
-          classColorPicker: tagColorConfigReducer(state.classColorPicker, action, action.c),
-        };
-      }
     case 'REMOVE_COLOR_CONFIG':
-      if (action.classOrTag === 'class') {
-          return {
-            ...state,
-            classColorPicker: tagColorConfigReducer(state.classColorPicker, action),
-          };
-        }
-      return {
-        ...state,
-        tagColorPicker: tagColorConfigReducer(state.tagColorPicker, action, action.c),
-      };
+      return colorConfigReducer(state, action);
     case 'ADD_NEW_TASK':
       return {
         ...state,

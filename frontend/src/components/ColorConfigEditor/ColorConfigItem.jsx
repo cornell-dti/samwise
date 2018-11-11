@@ -3,14 +3,15 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { List } from 'semantic-ui-react';
-import type { TagColorConfigRemoveAction } from '../../store/action-types';
+import type { ColorConfigRemoveAction } from '../../store/action-types';
 import { removeColorConfig as removeColorConfigAction } from '../../store/actions';
 import ColorEditor from './ColorEditor';
 
 type Props = {|
   +tag: string,
   +color: string,
-  +removeColorConfig: (tag: string, classOrTag: string) => TagColorConfigRemoveAction
+  +isClass: boolean;
+  +removeColorConfig: (tag: string, classOrTag: string) => ColorConfigRemoveAction
 |};
 
 type State = {| showEditor: boolean |};
@@ -19,7 +20,7 @@ const actionCreators = {
   removeColorConfig: removeColorConfigAction,
 };
 
-class TagColorConfigItem extends React.Component<Props, State> {
+class ColorConfigItem extends React.Component<Props, State> {
   constructor(props) {
     super(props);
     this.state = {
@@ -64,5 +65,5 @@ class TagColorConfigItem extends React.Component<Props, State> {
   }
 }
 
-const ConnectedTagColorConfigItem = connect(null, actionCreators)(TagColorConfigItem);
+const ConnectedTagColorConfigItem = connect(null, actionCreators)(ColorConfigItem);
 export default ConnectedTagColorConfigItem;

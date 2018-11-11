@@ -5,7 +5,7 @@ import type { Node } from 'react';
 import { Grid } from 'semantic-ui-react';
 import type { BacklogDisplayOption, OneDayTask } from './backlog-types';
 import BacklogDay from './BacklogDay';
-import type { State, TagColorConfig, Task } from '../../store/store-types';
+import type { State, ColorConfig, Task } from '../../store/store-types';
 import { simpleConnect } from '../../store/react-redux-util';
 import { buildDaysInBacklog } from './backlog-util';
 import type { DateToTaskMap } from './backlog-util';
@@ -19,7 +19,7 @@ type OwnProps = {|
 
 type SubscribedProps = {|
   +date2TaskMap: DateToTaskMap;
-  +colors: TagColorConfig;
+  +colors: ColorConfig;
 |};
 
 type Props = {|
@@ -47,9 +47,11 @@ function buildDate2TaskMap(allTasks: Task[]): DateToTaskMap {
   return map;
 }
 
-const mapStateToProps = (state: State): SubscribedProps => ({
-  date2TaskMap: buildDate2TaskMap(state.mainTaskArray),
-  colors: state.tagColorPicker,
+const mapStateToProps = (
+  { mainTaskArray, classColorConfig, tagColorConfig }: State,
+): SubscribedProps => ({
+  date2TaskMap: buildDate2TaskMap(mainTaskArray),
+  colors: { ...classColorConfig, ...tagColorConfig },
 });
 
 /**
