@@ -1,0 +1,12 @@
+.closeButton {
+  text-align: right;
+  float: right;
+}
+
+.settingsModal {
+  width: 720px;
+  position: fixed;
+  left: 0;
+  z-index: 10;
+  background-color: #7b7b7b;
+}

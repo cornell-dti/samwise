@@ -17,8 +17,8 @@ import type { SubTask, Task } from './store-types';
  * (e.g. 'red' or '#000000')
  * @return {TagColorConfigEditAction} the edit color action.
  */
-export const editColorConfig = (tag: string, color: string): TagColorConfigEditAction => ({
-  type: 'EDIT_COLOR_CONFIG', tag, color,
+export const editColorConfig = (tag: string, color: string, classOrTag: string): TagColorConfigEditAction => ({
+  type: 'EDIT_COLOR_CONFIG', tag, color, classOrTag,
 });
 /**
  * Remove color config is an action that can be used to remove a color config from the store.
@@ -26,8 +26,8 @@ export const editColorConfig = (tag: string, color: string): TagColorConfigEditA
  * @param {string} tag tag of the config to remove, which is usually a class name (e.g. CS 2112)
  * @return {TagColorConfigRemoveAction} the remove color action.
  */
-export const removeColorConfig = (tag: string): TagColorConfigRemoveAction => ({
-  type: 'REMOVE_COLOR_CONFIG', tag,
+export const removeColorConfig = (tag: string, classOrTag: string): TagColorConfigRemoveAction => ({
+  type: 'REMOVE_COLOR_CONFIG', tag, classOrTag
 });
 
 /**

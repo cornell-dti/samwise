@@ -7,7 +7,7 @@ import { editColorConfig as editColorConfigAction } from '../../store/actions';
 import styles from './TagColorConfigItemAdder.css';
 import type { TagColorConfigEditAction } from '../../store/action-types';
 
-type Props = {| editColorConfig: (tag: string, color: string) => TagColorConfigEditAction |};
+type Props = {| editColorConfig: (tag: string, color: string, classOrTag: string) => TagColorConfigEditAction |};
 
 type State = {| tagInput: string, colorInput: string |};
 
@@ -19,7 +19,7 @@ class TagColorConfigItemAdder extends React.Component<Props, State> {
   constructor(props: Props) {
     super(props);
     this.state = {
-      tagInput: 'Some Random Class',
+      tagInput: 'Search classes',
       colorInput: 'red',
     };
   }
@@ -29,26 +29,30 @@ class TagColorConfigItemAdder extends React.Component<Props, State> {
     this.setState(state => ({ ...state, tagInput: event.target.value }));
   };
 
-  changeColor = color => this.setState(state => ({ ...state, colorInput: color.hex }));
+  changeColor = () => this.setState(state => ({ ...state, colorInput: '#B80000' }));
 
-  addItemColor = () => {
-    const { tagInput, colorInput } = this.state;
-    const { editColorConfig } = this.props;
-    editColorConfig(tagInput, colorInput);
-  };
+  // addItemColor = () => {
+  //   const { tagInput, colorInput } = this.state;
+  //   const { editColorConfig } = this.props;
+  //   editColorConfig(tagInput, colorInput);
+  // };
+
+  checkEnterStatus = (e) => {
+    if (e.key === 'Enter') {
+      const { tagInput, colorInput } = this.state;
+      const { editColorConfig } = this.props;
+      editColorConfig(tagInput, colorInput, 'class');
+    }
+  }
 
   render() {
     const { tagInput, colorInput } = this.state;
     return (
       <div className={styles.TagColorConfigItemAdder}>
-        <input type="text" value={tagInput} onChange={this.changeTagName} />
         <div>
-          Chosen Color is
-          {' '}
-          {colorInput}
+          <p className={styles.searchClassesLabel}>Add Class Tags</p>
+          <input className={styles.searchClasses} type="text" value={tagInput} onChange={this.changeTagName} onKeyPress={this.checkEnterStatus} />
         </div>
-        <GithubPicker color={colorInput} onChangeComplete={this.changeColor} />
-        <button type="button" onClick={this.addItemColor}>Add me</button>
       </div>
     );
   }

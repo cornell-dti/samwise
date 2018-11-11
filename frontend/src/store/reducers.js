@@ -11,6 +11,9 @@ import type {
  */
 const initialState: State = {
   mainTaskArray: [],
+  classColorPicker: {
+    CS1110: 'red',
+  },
   tagColorPicker: {
     Personal: '#7ED4E5',
     'Project Team': '#FF8A8A',
@@ -203,10 +206,22 @@ function editTask(state: State, action: EditTaskAction) {
 const rootReducer = (state: State = initialState, action: Action) => {
   switch (action.type) {
     case 'EDIT_COLOR_CONFIG':
+      if (action.classOrTag === 'class') {
+        return {
+          ...state,
+          classColorPicker: tagColorConfigReducer(state.classColorPicker, action, action.c),
+        };
+      }
     case 'REMOVE_COLOR_CONFIG':
+      if (action.classOrTag === 'class') {
+          return {
+            ...state,
+            classColorPicker: tagColorConfigReducer(state.classColorPicker, action),
+          };
+        }
       return {
         ...state,
-        tagColorPicker: tagColorConfigReducer(state.tagColorPicker, action),
+        tagColorPicker: tagColorConfigReducer(state.tagColorPicker, action, action.c),
       };
     case 'ADD_NEW_TASK':
       return {

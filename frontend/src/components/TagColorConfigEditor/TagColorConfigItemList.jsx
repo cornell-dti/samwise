@@ -16,10 +16,10 @@ const mapStateToProps = (state: State): Props => ({
 
 function TagColorConfigItemList({ tagColorConfig, configKeys }: Props): Node {
   return (
-    <List divided relaxed>
+    <List divided relaxed style={{ width: '250px', display: 'inline-block' }}>
       {
         configKeys.map(key => (
-          <TagColorConfigItem key={key} tag={key} color={tagColorConfig[key]} />
+          <TagColorConfigItem key={key} tag={key} color={tagColorConfig[key]} isClass={false}/>
         ))
       }
     </List>
