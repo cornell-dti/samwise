@@ -1,4 +1,4 @@
-// @flow
+// @flow strict
 
 import type { Action, EditTaskAction, TagColorConfigAction } from './action-types';
 import type {
@@ -12,9 +12,9 @@ import type {
 const initialState: State = {
   mainTaskArray: [],
   tagColorPicker: {
-    Personal: '#c4def6',
-    'Project Team': 'green',
-    Courses: 'purple',
+    Personal: '#7ED4E5',
+    'Project Team': '#FF8A8A',
+    Courses: '#9D4AA9',
     None: 'gray',
   },
   bearStatus: 'neutral',
@@ -200,7 +200,7 @@ function editTask(state: State, action: EditTaskAction) {
   };
 }
 
-const rootReducer = (state: State = initialState, action: $Subtype<Action>) => {
+const rootReducer = (state: State = initialState, action: Action) => {
   switch (action.type) {
     case 'EDIT_COLOR_CONFIG':
     case 'REMOVE_COLOR_CONFIG':
@@ -212,6 +212,11 @@ const rootReducer = (state: State = initialState, action: $Subtype<Action>) => {
       return {
         ...state,
         mainTaskArray: [...state.mainTaskArray, action.data],
+      };
+    case 'ADD_SUBTASK':
+      return {
+        ...state,
+        mainTaskArray: addSubtask(state.mainTaskArray, action.id, action.data),
       };
     case 'EDIT_TASK':
       return editTask(state, action);
@@ -244,11 +249,6 @@ const rootReducer = (state: State = initialState, action: $Subtype<Action>) => {
       return {
         ...state,
         mainTaskArray: removeSubtask(state.mainTaskArray, action.taskId, action.subtaskId),
-      };
-    case 'ADD_SUBTASK':
-      return {
-        ...state,
-        mainTaskArray: addSubtask(state.mainTaskArray, action.id, action.data),
       };
     default:
       return state;

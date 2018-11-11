@@ -14,19 +14,20 @@ A web application designed to help Cornell students plan their semesters.
 ## Getting Started
 You will need the latest npm (at least 5.6.0) to run the latest version of this app. The app makes use of the following technologies:
 ​
- * React
-   * React version 16.4
- * Redux
-   * Redux version 4.0.0
+ * React (16.6.0)
+ * Redux (4.0.1)
+ * React-Redux (5.1.0)
 
 To start the app, navigate to the frontend folder, then run `npm install` first followed by `npm start`.
 
-_Last updated **9/23/2018**_.
+_Last updated **11/05/2018**_.
 ​
 ## Dependencies & Libraries
- * [React (16.4.2)](https://reactjs.org/) - a Facebook library for frontend. We use it for frontend UI.
- * [Redux (4.0.0)](https://redux.js.org/) - a predictable state container for JavaScript apps. We used it for state management.
- * [React-Redux (5.0.7)](https://github.com/reduxjs/react-redux) - a library for bindings between React and Redux.
+ * [React (16.6.0)](https://reactjs.org/) - a Facebook library for frontend. We use it for frontend UI.
+ * [Redux (4.0.1)](https://redux.js.org/) - a predictable state container for JavaScript apps. We used it for state management.
+ * [React-Redux (5.1.0)](https://github.com/reduxjs/react-redux) - a library for bindings between React and Redux.
+ * [Semantic UI React](https://react.semantic-ui.com/) - a library of pre-styled components in Semantic UI for React.
+ * [React Calendar (2.14.1)](https://www.npmjs.com/package/react-calendar) - A calendar component for React.
  * [React Color (2.14.1)](https://casesandberg.github.io/react-color/) - a collection of React components for picking colors.
 ​
 ## External Documentation

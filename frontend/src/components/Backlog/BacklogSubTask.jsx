@@ -3,7 +3,7 @@
 import * as React from 'react';
 import type { Node } from 'react';
 import { connect } from 'react-redux';
-import { Checkbox, Icon } from 'semantic-ui-react';
+import { Icon } from 'semantic-ui-react';
 import styles from './BacklogTask.css';
 import {
   markSubtask as markSubtaskAction,
@@ -14,6 +14,7 @@ import type { SubTask } from '../../store/store-types';
 import type {
   MarkSubTaskAction, RemoveSubTaskAction, ToggleSubTaskPinAction,
 } from '../../store/action-types';
+import CheckBox from '../UI/CheckBox';
 
 type Props = {|
   ...SubTask;
@@ -43,9 +44,10 @@ function BacklogSubTask(props: Props): Node {
   } = props;
   return (
     <div className={styles.BacklogSubTask}>
-      <Checkbox
+      <CheckBox
         className={styles.BacklogTaskCheckBox}
         checked={complete}
+        inverted
         onChange={() => markSubtask(mainTaskId, id)}
       />
       <span
