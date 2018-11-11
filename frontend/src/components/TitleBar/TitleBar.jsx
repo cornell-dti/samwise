@@ -5,7 +5,7 @@ import styles from './TitleBar.css';
 function TitleBar() {
   return (
     <header className={styles.Main}>
-      <span className={styles.Time}><Clock format="h:mm A" ticking="true" /></span>
+      <span className={styles.Time}><Clock format="h:mm A" ticking /></span>
       <span className={styles.Date}>
         { new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' }) }
       </span>
