@@ -1,4 +1,4 @@
-from flask import request, Blueprint, jsonify
+from flask import request, Blueprint, jsonify, redirect, url_for, session
 
 from app import db, util
 from app.api.models import Tag, Task
@@ -8,13 +8,27 @@ api = Blueprint('api', __name__, url_prefix='/api')
 
 
 def get_user_id(firebase_id_token):
-    decoded_token = auth.auth.verify_id_token(firebase_id_token)
-    return decoded_token['uid']
-
+    try:
+        decoded_token = auth.auth.verify_id_token(firebase_id_token)
+        return decoded_token['uid']
+    except ValueError:
+        return
 
 @api.route('/', methods=['GET'])
 def index():
     return jsonify(status='success')
+
+
+@api.route('/login', methods=['GET'])
+def login():
+    token = request.args.get('token')
+    user_id = get_user_id(token)
+    if user_id:
+        session['token'] = token
+        redirect_url = request.args.get('redirect', url_for('api.index'))
+        return redirect(redirect_url)
+    else:
+        return auth.html
 
 
 @api.route('/test', methods=['GET'])
@@ -69,9 +83,9 @@ def test_auth():
 
 @api.route('/tags/all', methods=['GET'])
 def get_tags():
-    # TODO Use current user id instead of hardcoded 1
-    id_token = request.args['token']
-    user_id = get_user_id(id_token)
+    user_id = get_user_id(session.get('token'))
+    if not user_id:
+        return redirect(url_for('api.login', redirect=request.path))
     tags = Tag.query.filter(Tag.user_id == user_id).all()
     tags_json = util.table_to_json(tags)
     return jsonify(tags_json)
