@@ -1,6 +1,7 @@
 import React from 'react';
 import Clock from 'react-live-clock';
 import styles from './TitleBar.css';
+import SettingsButton from '../Settings/SettingsButton';
 
 function TitleBar() {
   return (
@@ -12,7 +13,7 @@ function TitleBar() {
 
       <span className={styles.Links}>
         <button type="button" data-sel="sel">Dashboard</button>
-        <button type="button">Settings</button>
+        <SettingsButton />
       </span>
     </header>
   );

@@ -10,7 +10,6 @@ export default function App() {
     <div className={styles.App}>
       <TitleBar />
       <NewTaskComponent />
-      <TagColorConfigEditor />
       <TaskView />
     </div>
   );
