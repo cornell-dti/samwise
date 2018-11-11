@@ -213,6 +213,12 @@ const rootReducer = (state: State = initialState, action: Action) => {
         };
       }
     case 'REMOVE_COLOR_CONFIG':
+      if (action.classOrTag === 'class') {
+        return {
+          ...state,
+          classColorPicker: tagColorConfigReducer(state.classColorPicker, action),
+        };
+      }
       return {
         ...state,
         tagColorPicker: tagColorConfigReducer(state.tagColorPicker, action),

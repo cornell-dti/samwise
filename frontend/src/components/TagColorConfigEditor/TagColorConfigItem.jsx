@@ -10,7 +10,7 @@ import ColorEditor from './ColorEditor';
 type Props = {|
   +tag: string,
   +color: string,
-  +removeColorConfig: (tag: string) => TagColorConfigRemoveAction
+  +removeColorConfig: (tag: string, classOrTag: string) => TagColorConfigRemoveAction
 |};
 
 type State = {| showEditor: boolean |};
@@ -33,8 +33,8 @@ class TagColorConfigItem extends React.Component<Props, State> {
     if (!confirm('Do you want to remove this config?')) {
       return;
     }
-    const { tag, removeColorConfig } = this.props;
-    removeColorConfig(tag);
+    const { tag, removeColorConfig, isClass } = this.props;
+    removeColorConfig(tag, isClass ? 'class' : 'tag');
   };
 
   toggleEditor = () => {

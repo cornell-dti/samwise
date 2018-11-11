@@ -26,8 +26,8 @@ export const editColorConfig = (tag: string, color: string, classOrTag: string):
  * @param {string} tag tag of the config to remove, which is usually a class name (e.g. CS 2112)
  * @return {TagColorConfigRemoveAction} the remove color action.
  */
-export const removeColorConfig = (tag: string): TagColorConfigRemoveAction => ({
-  type: 'REMOVE_COLOR_CONFIG', tag,
+export const removeColorConfig = (tag: string, classOrTag: string): TagColorConfigRemoveAction => ({
+  type: 'REMOVE_COLOR_CONFIG', tag, classOrTag
 });
 
 /**
