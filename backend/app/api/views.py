@@ -2,8 +2,14 @@ from flask import request, Blueprint, jsonify
 
 from app import db, util
 from app.api.models import Tag, Task
+from app import auth
 
 api = Blueprint('api', __name__, url_prefix='/api')
+
+
+def get_user_id(firebase_id_token):
+    decoded_token = auth.auth.verify_id_token(firebase_id_token)
+    return decoded_token['uid']
 
 
 @api.route('/', methods=['GET'])
@@ -11,10 +17,62 @@ def index():
     return jsonify(status='success')
 
 
+@api.route('/test', methods=['GET'])
+def test_auth():
+    return '''
+    <script src="https://www.gstatic.com/firebasejs/5.5.8/firebase.js"></script>
+    <script>
+      var config = {
+        apiKey: "AIzaSyBrnR-ai3ZQrr3aYnezDZTZdw9e2TWTRtc",
+        authDomain: "dti-samwise.firebaseapp.com",
+        databaseURL: "https://dti-samwise.firebaseio.com",
+        projectId: "dti-samwise",
+        storageBucket: "dti-samwise.appspot.com",
+        messagingSenderId: "114434220691"
+      };
+      firebase.initializeApp(config);
+      
+      var provider = new firebase.auth.GoogleAuthProvider();
+      provider.addScope('https://www.googleapis.com/auth/contacts.readonly');
+      firebase.auth().useDeviceLanguage();
+      provider.setCustomParameters({
+        'login_hint': 'user@example.com'
+      });
+      
+      firebase.auth().onAuthStateChanged(function(user) {
+        if (user) {
+          firebase.auth().currentUser.getIdToken(true).then(function(idToken) {
+            fetch('http://localhost:5000/api/tags/all?token=' + idToken).then(function(response) {
+              response.json().then(function (data) {
+                alert(data);
+              });
+            });
+          }).catch(function(error) {
+            console.log(error);
+          });  
+        } else {
+          console.log('user broke');
+        }
+      });
+      
+      firebase.auth().signInWithPopup(provider).then(function(result) {
+        var token = result.credential.accessToken;
+        var user = result.user;
+      }).catch(function(error) {
+        var errorCode = error.code;
+        var errorMessage = error.message;
+        var email = error.email;
+        var credential = error.credential;
+      });
+    </script>
+    '''
+
+
 @api.route('/tags/all', methods=['GET'])
 def get_tags():
     # TODO Use current user id instead of hardcoded 1
-    user_id = 1
+    id_token = request.args['token']
+    user_id = get_user_id(id_token)
     tags = Tag.query.filter(Tag.user_id == user_id).all()
     tags_json = util.table_to_json(tags)
     return jsonify(tags_json)
