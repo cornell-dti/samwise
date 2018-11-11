@@ -14,7 +14,6 @@
 }
 
 .NewTaskComponent::placeholder{
-  font-style:italic;
   font-weight:lighter;
   color:gray;
   text-align:center;
