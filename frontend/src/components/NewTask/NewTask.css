@@ -1,5 +1,3 @@
-@import url('https://fonts.googleapis.com/css?family=Lato:light,regular');
-
 .NewTaskComponent {
   border-top: none;
   border-left: none;
@@ -11,55 +9,37 @@
   text-align:left;
 
   font-size:20px;
-  font-family: 'Lato', sans-serif;
+  font-family: 'Open Sans', sans-serif;
   transition: border 0.3s ease;
 }
 
 .NewTaskComponent::placeholder{
-  font-style:italic;
   font-weight:lighter;
   color:gray;
   text-align:center;
 }
 
-/*.NewTaskWrap:focus-within .NewTaskComponent{
-  border-bottom: 2px solid black;
-  outline:none;
-}*/
-
+.NewTaskComponent:focus::placeholder{
+  color:white;
+}
 
 .NewTaskWrap {
   width:30vw;
   text-align:center;
-  position:absolute;
-  bottom:100px;
-  left:100px;
-  top:100px;
+  position:relative;
   left:50%;
   height:initial;
   transform:translateX(-50%);
   z-index:5;
   
   max-height:44px;
+  margin-bottom:20px;
 }
 
 .NewTaskComponent:focus{
   border-bottom: 2px solid black;
   outline:none;
-  /*text-align:left;*/
 }
-
-/*.NewTaskWrap::before{
-  content:'';
-  position:absolute;
-  display:block;
-  height:100%;
-  width:calc(100% + 20px);
-  top:0;
-  left:-10px;
-  background:white;
-  z-index:-1;
-}*/
 
 
 
@@ -258,29 +238,6 @@ Date Picker
   
   z-index:2;
 }
-
-
-
-
-
-/*
-
-.NewTaskCal{
-  border: 1px black solid;
-  z-index:2;
-}
-
-.NewTaskCal button{
-  background:white;
-  border:none;
-  padding:3px 0;
-  cursor:pointer;
-}
-
-.NewTaskCal button:hover{
-  background:lightgray;
-}*/
-
 
 
 .CenterIcon{
