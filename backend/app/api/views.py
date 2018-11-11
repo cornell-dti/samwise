@@ -69,6 +69,22 @@ def test_auth():
 
 @api.route('/tags/all', methods=['GET'])
 def get_tags():
+    """
+    Returns all tags.
+
+    Output format:
+
+    List of tags in form:
+
+    {
+        "user_id": id number,
+        "tag_name": "name",
+        "in_focus": True,
+        "color": "#ffffff",
+        "_order": order,
+        "archived": False,
+    }
+    """
     # TODO Use current user id instead of hardcoded 1
     id_token = request.args['token']
     user_id = get_user_id(id_token)
@@ -79,6 +95,22 @@ def get_tags():
 
 @api.route('/tags/focus', methods=['GET'])
 def get_tags_in_focus():
+    """
+    Returns all tags with in_focus == true.
+
+    Output format:
+
+    List of tags in form:
+
+    {
+        "user_id": id number,
+        "tag_name": "name",
+        "in_focus": True,
+        "color": "#ffffff",
+        "_order": order,
+        "archived": False,
+    }
+    """
     # TODO Use current user id instead of hardcoded 1
     user_id = 1
     tags = Tag.query.filter(Tag.user_id == user_id).filter(Tag.in_focus == True).all()
@@ -89,9 +121,21 @@ def get_tags_in_focus():
 @api.route('/tags/<tag_id>/focus', methods=['POST'])
 def set_tag_focus(tag_id):
     """
-    Format:
+    Set the focus of a tag. True means in focus, false means not in focus.
+
+    Input format:
     {
         "focus": true|false
+    }
+
+    Output format:
+    {
+        "user_id": id number,
+        "tag_name": "name",
+        "in_focus": True,
+        "color": "#ffffff",
+        "_order": order,
+        "archived": False,
     }
     """
     # TODO Use current user id instead of hardcoded 1
@@ -111,10 +155,22 @@ def set_tag_focus(tag_id):
 @api.route('/tags/new', methods=['POST'])
 def new_tag():
     """
+    Creates a new tag.
+
     Input format:
     {
         "name": "Tag name",
         "color": "#ffffff"
+    }
+
+    Output format:
+    {
+        "user_id": id number,
+        "tag_name": "name",
+        "in_focus": True,
+        "color": "#ffffff",
+        "_order": order,
+        "archived": False,
     }
     """
     # TODO Use current user id instead of hardcoded 1
@@ -132,6 +188,23 @@ def new_tag():
 
 @api.route('/tags/<tag_id>/tasks/all', methods=['GET'])
 def get_tasks(tag_id):
+    """
+    Returns all tasks.
+
+    Output format:
+
+    List of tags in form:
+
+    {
+        "content": content,
+        "start_date": yyyy-mm-dd hh:mm:ss,
+        "end_date": yyyy-mm-dd hh:mm:ss,
+        "tag_id": id,
+        "parent_task": parent id,
+        "_order": order,
+        "archived": False
+    }
+    """
     # TODO Use current user id instead of hardcoded 1
     user_id = 1
     tasks = Task.query.filter(Task.tag_id == Tag.tag_id).filter(Tag.user_id == user_id).filter(
@@ -141,6 +214,27 @@ def get_tasks(tag_id):
 
 @api.route('/tags/<tag_id>/tasks/new', methods=['POST'])
 def new_task(tag_id):
+
+    """
+    Creates a new task.
+    {
+        "content": content,
+        "start_date": yyyy-mm-dd hh:mm:ss,
+        "end_date": yyyy-mm-dd hh:mm:ss,
+        "parent_task": parent id
+    }
+
+    Output format:
+    {
+        "content": content,
+        "start_date": yyyy-mm-dd hh:mm:ss,
+        "end_date": yyyy-mm-dd hh:mm:ss,
+        "tag_id": id,
+        "parent_task": parent id,
+        "_order": order,
+        "archived": False
+    }
+    """
     user_id = 1
     data = request.get_json(force=True)
     content = data['content']
