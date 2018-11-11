@@ -3,10 +3,15 @@
 import type { ActionCreators as ReduxActionCreators, Dispatch as ReduxDispatch } from 'redux';
 import type { SubTask, Task } from './store-types';
 
-export type TagColorConfigEditAction = { type: 'EDIT_COLOR_CONFIG'; tag: string; color: string; };
-export type TagColorConfigRemoveAction = { type: 'REMOVE_COLOR_CONFIG'; tag: string; };
+export type ClassOrTag = 'class' | 'tag';
+export type ColorConfigEditAction = {
+  type: 'EDIT_COLOR_CONFIG'; classOrTag: ClassOrTag; tag: string; color: string;
+};
+export type ColorConfigRemoveAction = {
+  type: 'REMOVE_COLOR_CONFIG'; classOrTag: ClassOrTag; tag: string;
+};
 
-export type TagColorConfigAction = TagColorConfigEditAction | TagColorConfigRemoveAction;
+export type ColorConfigAction = ColorConfigEditAction | ColorConfigRemoveAction;
 
 export type AddNewTaskAction = { type: 'ADD_NEW_TASK'; data: Task; };
 export type AddNewSubTaskAction = { type: 'ADD_SUBTASK'; id: number; data: SubTask; }
@@ -36,7 +41,7 @@ type TaskAction =
   | RemoveTaskAction
   | RemoveSubTaskAction;
 
-export type Action = TagColorConfigAction | TaskAction | UndoAction;
+export type Action = ColorConfigAction | TaskAction | UndoAction;
 
 export type ActionProps = { [actionName: string]: (...args: Array<any>) => Action };
 export type Dispatch = ReduxDispatch<Action>;

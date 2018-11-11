@@ -4,10 +4,12 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { GithubPicker } from 'react-color';
 import { editColorConfig as editColorConfigAction } from '../../store/actions';
-import styles from './TagColorConfigItemAdder.css';
-import type { TagColorConfigEditAction } from '../../store/action-types';
+import styles from './ColorConfigItemAdder.css';
+import type { ColorConfigEditAction } from '../../store/action-types';
 
-type Props = {| editColorConfig: (tag: string, color: string, classOrTag: string) => TagColorConfigEditAction |};
+type Props = {|
+  editColorConfig: (tag: string, color: string, classOrTag: string) => ColorConfigEditAction
+|};
 
 type State = {| tagInput: string, colorInput: string |};
 
@@ -15,7 +17,7 @@ const actionCreators = {
   editColorConfig: editColorConfigAction,
 };
 
-class TagColorConfigItemAdder extends React.Component<Props, State> {
+class ColorConfigItemAdder extends React.Component<Props, State> {
   constructor(props: Props) {
     super(props);
     this.state = {
@@ -43,7 +45,7 @@ class TagColorConfigItemAdder extends React.Component<Props, State> {
       const { editColorConfig } = this.props;
       editColorConfig(tagInput, colorInput, 'class');
     }
-  }
+  };
 
   render() {
     const { tagInput, colorInput } = this.state;
@@ -51,12 +53,18 @@ class TagColorConfigItemAdder extends React.Component<Props, State> {
       <div className={styles.TagColorConfigItemAdder}>
         <div>
           <p className={styles.searchClassesLabel}>Add Class Tags</p>
-          <input className={styles.searchClasses} type="text" value={tagInput} onChange={this.changeTagName} onKeyPress={this.checkEnterStatus} />
+          <input
+            className={styles.searchClasses}
+            type="text"
+            value={tagInput}
+            onChange={this.changeTagName}
+            onKeyPress={this.checkEnterStatus}
+          />
         </div>
       </div>
     );
   }
 }
 
-const ConnectedTagColorConfigItemAdder = connect(null, actionCreators)(TagColorConfigItemAdder);
+const ConnectedTagColorConfigItemAdder = connect(null, actionCreators)(ColorConfigItemAdder);
 export default ConnectedTagColorConfigItemAdder;

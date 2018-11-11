@@ -3,15 +3,14 @@
 import React from 'react';
 import type { Node } from 'react';
 import { List } from 'semantic-ui-react';
-import TagColorConfigItem from './TagColorConfigItem';
-import type { State, TagColorConfig } from '../../store/store-types';
+import ColorConfigItem from './ColorConfigItem';
+import type { State, ColorConfig } from '../../store/store-types';
 import { simpleConnect } from '../../store/react-redux-util';
 
-type Props = {| tagColorConfig: TagColorConfig, configKeys: string[] |};
+type Props = {| tagColorConfig: ColorConfig, configKeys: string[] |};
 
-const mapStateToProps = (state: State): Props => ({
-  tagColorConfig: state.tagColorPicker,
-  configKeys: Object.keys(state.tagColorPicker),
+const mapStateToProps = ({ tagColorConfig }: State): Props => ({
+  tagColorConfig, configKeys: Object.keys(tagColorConfig),
 });
 
 function TagColorConfigItemList({ tagColorConfig, configKeys }: Props): Node {
@@ -19,7 +18,7 @@ function TagColorConfigItemList({ tagColorConfig, configKeys }: Props): Node {
     <List divided relaxed style={{ width: '250px', display: 'inline-block' }}>
       {
         configKeys.map(key => (
-          <TagColorConfigItem key={key} tag={key} color={tagColorConfig[key]} isClass={false}/>
+          <ColorConfigItem key={key} tag={key} color={tagColorConfig[key]} isClass={false} />
         ))
       }
     </List>

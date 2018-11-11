@@ -1,7 +1,7 @@
 // @flow strict
 
 import type { BacklogDisplayOption, OneDayTask } from './backlog-types';
-import type { TagColorConfig, Task } from '../../store/store-types';
+import type { ColorConfig, Task } from '../../store/store-types';
 
 export type DateToTaskMap = Map<string, Task[]>;
 
@@ -124,13 +124,13 @@ export function getBacklogHeaderTitle(
  * Returns an array of backlog days given the current props and the display option.
  *
  * @param {DateToTaskMap} date2TaskMap the map from a date to all the tasks in that day.
- * @param {TagColorConfig} colors all the color config.
+ * @param {ColorConfig} colors all the color config.
  * @param {BacklogDisplayOption} displayOption the display option.
  * @param {number} backlogOffset offset of displaying days.
  * @return {OneDayTask[]} an array of backlog days information.
  */
 export function buildDaysInBacklog(
-  date2TaskMap: DateToTaskMap, colors: TagColorConfig,
+  date2TaskMap: DateToTaskMap, colors: ColorConfig,
   displayOption: BacklogDisplayOption, backlogOffset: number,
 ): OneDayTask[] {
   const { startDate, endDate } = computeStartAndEndDay(displayOption, backlogOffset);
