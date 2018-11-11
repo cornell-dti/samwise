@@ -42,11 +42,10 @@ class TagColorConfigItem extends React.Component<Props, State> {
   };
 
   render() {
-    const { color, tag } = this.props;
+    const { color, tag, isClass } = this.props;
     const { showEditor } = this.state;
     return (
-      <List.Item>
-        <List.Icon name="github" size="large" verticalAlign="middle" />
+      <List.Item style={isClass ? { width: '500px' } : { width: '250px' }}>
         <List.Content>
           <List.Header as="a" style={{ backgroundColor: color }}>{tag}</List.Header>
           <List.Description as="a">

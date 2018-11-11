@@ -1,7 +1,7 @@
 // @flow
 import React, { Component } from 'react';
-import Modal from 'react-modal';
 import TagColorConfigEditor from '../TagColorConfigEditor/TagColorConfigEditor';
+import styles from './SettingsButtonStyles.css';
 
 class SettingsButton extends Component {
   constructor() {
@@ -25,17 +25,19 @@ class SettingsButton extends Component {
 
   render() {
     const destructuredState = this.state;
+    const showStyles = destructuredState.showSettings ? {display: 'block'} : {display: 'none'};
     return (
       <div>
         <button type="submit" onClick={this.displayModal}>Settings</button>
-        <Modal
-          isOpen={destructuredState.showSettings}
-          >
-          <button type="submit" onClick={this.closeModal}>Close</button>
-          <TagColorConfigEditor />
-        </Modal>
+        <div className={styles.settingsModal}>
+          <div
+            style={showStyles}
+            >
+            <button className={styles.closeButton} type="submit" onClick={this.closeModal}>Close</button>
+            <TagColorConfigEditor />
+          </div>
+        </div>
       </div>
-
     );
   }
 }
