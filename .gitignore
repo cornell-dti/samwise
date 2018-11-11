@@ -108,3 +108,6 @@ ENV/
 
 # Environment variable script
 envvar
+
+# Service account JSON
+serviceAccount.json
