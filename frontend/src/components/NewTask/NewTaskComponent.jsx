@@ -127,6 +127,9 @@ class UnconNewTaskComponent extends Component {
   }
 
   handleAddSubtask = (e) => {
+    if(e.target.value == ''){
+      return;
+    }
     const newSubtask = {
       id: this.state.subtaskArray.length,
       name: e.target.value,
