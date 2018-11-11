@@ -3,20 +3,26 @@
 import * as React from 'react';
 import BacklogTask from './BacklogTask';
 import styles from './BacklogDay.css';
-import type { OneDayTask } from './backlog-types';
+import type { ColoredTask, OneDayTask } from './backlog-types';
+import type { FloatingPosition } from '../FloatingTaskEditor/floating-task-editor-types';
 
+type Props = {|
+  ...OneDayTask;
+  +doesShowCompletedTasks: boolean;
+  +taskEditorPosition: FloatingPosition;
+|};
 type State = {| doesOverflow: boolean; |}
 
 /**
  * The component that renders all tasks on a certain day.
  */
-export default class BacklogDay extends React.Component<OneDayTask, State> {
-  constructor(props: OneDayTask) {
+export default class BacklogDay extends React.Component<Props, State> {
+  constructor(props: Props) {
     super(props);
     this.state = { doesOverflow: false };
   }
 
-  componentDidUpdate(prevProps: OneDayTask, prevState: State) {
+  componentDidUpdate(prevProps: Props, prevState: State) {
     const container = this.internalTasksContainer;
     if (container == null) {
       return;
@@ -31,17 +37,21 @@ export default class BacklogDay extends React.Component<OneDayTask, State> {
 
   internalTasksContainer: ?HTMLDivElement;
 
-  /**
-   * Report whether there is a vertical overflow.
-   */
-  reportVerticalOverflow() {
-
-  }
-
   render() {
-    const { date, doesRenderSubTasks, tasks } = this.props;
+    const {
+      doesShowCompletedTasks, date, doesRenderSubTasks, taskEditorPosition, tasks,
+    } = this.props;
     const { doesOverflow } = this.state;
+    const isToday = (() => {
+      const today = new Date();
+      return date.getFullYear() === today.getFullYear()
+        && date.getMonth() === today.getMonth()
+        && date.getDate() === today.getDate();
+    })();
     const dayString = (() => {
+      if (isToday) {
+        return 'TODAY';
+      }
       switch (date.getDay()) {
         case 0:
           return 'SUN';
@@ -61,27 +71,36 @@ export default class BacklogDay extends React.Component<OneDayTask, State> {
           throw new Error('Impossible Case');
       }
     })();
+    const wrapperCssClass = isToday
+      ? `${styles.BacklogDay} ${styles.BacklogToday}`
+      : styles.BacklogDay;
+    const tasksComponent = tasks
+      .filter((t: ColoredTask) => (doesShowCompletedTasks || !t.complete))
+      .map((t: ColoredTask) => (
+        <BacklogTask
+          key={t.id}
+          doesShowCompletedTasks={doesShowCompletedTasks}
+          doesRenderSubTasks={doesRenderSubTasks}
+          taskEditorPosition={taskEditorPosition}
+          {...t}
+        />
+      ));
+    const overflowComponent = doesOverflow && (
+      <div className={styles.BacklogDayMoreTasksBar}>More Tasks...</div>
+    );
     return (
-      <div className={styles.BacklogDay}>
+      <div className={wrapperCssClass}>
         <div className={styles.BacklogDayDateInfo}>
           <div className={styles.BacklogDayDateInfoDay}>{dayString}</div>
           <div className={styles.BacklogDayDateInfoDateNum}>{date.getDate()}</div>
         </div>
         <div
           className={styles.BacklogDayTaskContainer}
-          ref={(e) => {
-            this.internalTasksContainer = e;
-          }}
+          ref={(e) => { this.internalTasksContainer = e; }}
         >
-          {
-            tasks.map(t => (
-              <BacklogTask key={t.id} doesRenderSubTasks={doesRenderSubTasks} {...t} />
-            ))
-          }
-          {
-            doesOverflow && (<div className={styles.BacklogDayMoreTasksBar}>More Tasks...</div>)
-          }
+          {tasksComponent}
         </div>
+        {overflowComponent}
       </div>
     );
   }

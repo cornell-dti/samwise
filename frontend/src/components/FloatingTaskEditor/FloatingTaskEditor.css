@@ -1,0 +1,162 @@
+/*
+ * --------------------------------------------------------------------------------
+ * Part 1: Parent Component
+ * --------------------------------------------------------------------------------
+ */
+
+.FloatingTaskEditor {
+  color: white;
+  font-size: 12px;
+}
+
+.FloatingTaskEditorSubmitButtonRow {
+  display: flex;
+  padding: 0.5em;
+}
+
+.FloatingEditorSaveButton {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  flex: 0;
+  width: auto;
+  height: 2em;
+  border-radius: 2px;
+  border: solid 2px white;
+  background-color: rgba(255, 255, 255, 0.15);
+}
+
+.FloatingEditorSaveButtonText {
+  font-size: 12px;
+  color: white;
+  margin: 0 0.5em;
+}
+
+.FloatingTaskEditorBackgroundBlocker {
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 6;
+  background-color: rgba(0, 0, 0, 0.15);
+}
+
+.EmbeddedFloatingTaskEditor {
+  z-index: 7;
+  top: 0;
+  left: 0;
+  width: 300px;
+  height: auto;
+  color: white;
+  font-size: 12px;
+  box-shadow: 0 5px 12px 0 rgba(0, 0, 0, 0.3);
+}
+
+/*
+ * --------------------------------------------------------------------------------
+ * Part 2: Common Components for Both Children Components
+ * --------------------------------------------------------------------------------
+ */
+
+.FloatingTaskEditorHeader {
+  font-size: 1em;
+}
+
+.FloatingTaskEditorFlexibleContainer {
+  position: relative;
+  display: flex;
+  margin: 1em 0.5em;
+  align-content: center;
+  align-items: center;
+}
+
+.FloatingTaskEditorFlexiblePadding {
+  flex: 1 1 auto;
+}
+
+.FloatingTaskEditorFlexibleInput {
+  flex: 1 1 auto;
+}
+
+.FloatingTaskEditorFlexibleInput > input, .FloatingTaskEditorFlexibleInput > div > input {
+  margin-left: 0.5em !important;
+  padding: 0.5em 0 !important;
+  border-radius: 0 !important;
+  background-color: transparent !important;
+  line-height: 1em !important;
+  border: none !important;
+  color: white !important;
+  border-bottom: 1px solid transparent !important;
+}
+
+.FloatingTaskEditorFlexibleInput > input:focus-within {
+  border-bottom-color: white !important;
+}
+
+.FloatingTaskEditorFlexibleInput > input::placeholder,
+.FloatingTaskEditorFlexibleInput > input:focus-within::placeholder {
+  color: white !important;
+}
+
+.FloatingTaskEditorCheckBox {
+  margin-left: 8px;
+  margin-right: 0;
+}
+
+/*
+ * --------------------------------------------------------------------------------
+ * Part 3: Components for Main Task Editor
+ * --------------------------------------------------------------------------------
+ */
+
+.FloatingTaskEditorIconButton {
+  margin-left: 1em !important;
+}
+
+.FloatingTaskEditorTag {
+  margin-left: 0.5em;
+  color: white;
+}
+
+.FloatingTaskEditorTagLabel {
+  font-size: 1em;
+}
+
+.FloatingTaskEditorTag input[type="checkbox"] {
+  position: absolute;
+  left: -2px;
+  width: 22px;
+  height: 22px;
+  opacity: 0;
+  margin: 0;
+  cursor: pointer;
+}
+
+.FloatingTaskEditorTagEditor {
+  position: absolute;
+  right: 0;
+  left: calc(100% - 150px);
+  top: 0;
+  z-index: 4;
+  color: #333333;
+  background: white;
+}
+
+.FloatingTaskEditorCalendar {
+  position: absolute;
+  right: 0;
+  left: calc(100% - 282px);
+  top: 36px;
+  z-index: 4;
+}
+
+/*
+ * --------------------------------------------------------------------------------
+ * Part 4: Components for Sub-Task Editor
+ * --------------------------------------------------------------------------------
+ */
+
+.FloatingTaskEditorSubTasksIndentedContainer {
+  margin-left: 2em;
+}

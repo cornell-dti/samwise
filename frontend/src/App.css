@@ -5,3 +5,8 @@
 body {
   background-color: white;
 }
+
+:global(.ui.dimmer) {
+  transition: background-color 1s linear;
+  background-color: rgba(0, 0, 0, .15);
+}

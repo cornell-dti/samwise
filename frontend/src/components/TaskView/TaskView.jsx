@@ -1,18 +1,24 @@
 // @flow strict
 
 import * as React from 'react';
-import { Button } from 'semantic-ui-react';
+import { Icon } from 'semantic-ui-react';
 import type { BacklogDisplayOption } from '../Backlog/backlog-types';
 import BacklogViewSwitcher from '../Backlog/BacklogViewSwitcher';
 import BacklogDaysContainer from '../Backlog/BacklogDaysContainer';
+// $FlowFixMe
 import FocusView from '../FocusView/focusView';
 import styles from './TaskView.css';
+import BacklogCompletedTasksToggle from '../Backlog/BacklogCompletedTasksToggle';
+import BacklogHeaderTextButton from '../Backlog/BacklogHeaderTextButton';
+import { getBacklogHeaderTitle } from '../Backlog/backlog-util';
 
 type Props = {||};
 
 type State = {|
-  doesShowFocusView: boolean;
-  displayOption: BacklogDisplayOption;
+  +doesShowFocusView: boolean;
+  +doesShowCompletedTasks: boolean;
+  +displayOption: BacklogDisplayOption;
+  +backlogOffset: number;
 |};
 
 export default class TaskView extends React.Component<Props, State> {
@@ -20,73 +26,169 @@ export default class TaskView extends React.Component<Props, State> {
     super(props);
     this.state = {
       doesShowFocusView: true,
+      doesShowCompletedTasks: true,
       displayOption: 'FOUR_DAYS',
+      backlogOffset: 0,
     };
   }
 
   /**
-   * Toggle the focus view. In four-days mode, it cannot be toggled.
+   * Handler for toggling the focus view. In four-days mode, it cannot be toggled.
    */
-  toggleFocusView() {
+  toggleFocusView = (): void => {
     this.setState((oldState: State) => {
-      const { doesShowFocusView, displayOption } = oldState;
+      const { doesShowFocusView, doesShowCompletedTasks, displayOption } = oldState;
       switch (displayOption) {
         case 'FOUR_DAYS':
           return oldState;
         case 'BIWEEKLY':
         case 'MONTHLY':
-          return { doesShowFocusView: !doesShowFocusView, displayOption };
+          return { doesShowFocusView: !doesShowFocusView, doesShowCompletedTasks, displayOption };
         default:
           return oldState;
       }
     });
-  }
+  };
+
+  /**
+   * Change the current offset in backlog.
+   *
+   * @param newOffsetInstruction 'TODAY' to reset, 'PREV' to go back, 'NEXT' to move forward.
+   * @return {function(): void} the handler for changing offset.
+   */
+  changeBacklogOffset = (newOffsetInstruction: 'TODAY' | 'PREV' | 'NEXT') => (): void => {
+    this.setState((oldState: State) => {
+      const { backlogOffset } = oldState;
+      let newOffset: number;
+      switch (newOffsetInstruction) {
+        case 'TODAY':
+          newOffset = 0;
+          break;
+        case 'PREV':
+          newOffset = backlogOffset - 1;
+          break;
+        case 'NEXT':
+          newOffset = backlogOffset + 1;
+          break;
+        default:
+          throw new Error('Bad offset instruction!');
+      }
+      return { ...oldState, backlogOffset: newOffset };
+    });
+  };
+
+  /**
+   * Handler for toggling completed tasks.
+   */
+  toggleCompletedTasks = (): void => {
+    this.setState((oldState: State) => ({
+      ...oldState, doesShowCompletedTasks: !oldState.doesShowCompletedTasks,
+    }));
+  };
 
   /**
    * Change the current view of the backlog.
    *
    * @param newDisplayOption the new display option for backlog.
    */
-  switchBacklogView(newDisplayOption: BacklogDisplayOption) {
+  switchBacklogView = (newDisplayOption: BacklogDisplayOption): void => {
     this.setState((oldState: State) => {
-      const { doesShowFocusView, displayOption } = oldState;
+      const {
+        doesShowFocusView, doesShowCompletedTasks, displayOption, backlogOffset,
+      } = oldState;
+      let dayOffset: number;
+      switch (displayOption) {
+        case 'FOUR_DAYS':
+          dayOffset = backlogOffset * 4;
+          break;
+        case 'BIWEEKLY':
+          dayOffset = backlogOffset * 14;
+          break;
+        case 'MONTHLY':
+          dayOffset = backlogOffset * 30;
+          break;
+        default:
+          throw new Error('Bad display option');
+      }
+      let newDoesShowFocusView: boolean;
+      let newOffset: number;
       switch (newDisplayOption) {
         case 'FOUR_DAYS':
-          return { doesShowFocusView: true, displayOption: newDisplayOption };
+          newDoesShowFocusView = true;
+          newOffset = Math.floor(dayOffset / 4);
+          break;
         case 'BIWEEKLY':
+          newDoesShowFocusView = displayOption === 'FOUR_DAYS' ? false : doesShowFocusView;
+          newOffset = Math.floor(dayOffset / 14);
+          break;
         case 'MONTHLY':
-          return displayOption === 'FOUR_DAYS'
-            ? { doesShowFocusView: false, displayOption: newDisplayOption }
-            : { doesShowFocusView, displayOption: newDisplayOption };
+          newDoesShowFocusView = displayOption === 'FOUR_DAYS' ? false : doesShowFocusView;
+          newOffset = Math.floor(dayOffset / 30);
+          break;
         default:
-          return oldState;
+          throw new Error('Bad display option');
       }
+      return {
+        doesShowFocusView: newDoesShowFocusView,
+        doesShowCompletedTasks,
+        displayOption: newDisplayOption,
+        backlogOffset: newOffset,
+      };
     });
-  }
+  };
 
   render() {
-    const { doesShowFocusView, displayOption } = this.state;
+    const {
+      doesShowFocusView, doesShowCompletedTasks, displayOption, backlogOffset,
+    } = this.state;
     const focusViewComponent = doesShowFocusView && (
       <div className={styles.TaskViewFocusPanel}>
         <h3>{'Today\'s focus'}</h3>
         <FocusView />
       </div>
     );
+    const backlogTodayButton = (
+      <BacklogHeaderTextButton
+        text="Today"
+        onClick={this.changeBacklogOffset('TODAY')}
+      />
+    );
+    const backlogNavButtons = (
+      <React.Fragment>
+        <Icon
+          className={styles.TaskViewNavButton}
+          name="chevron left"
+          onClick={this.changeBacklogOffset('PREV')}
+        />
+        <Icon
+          className={styles.TaskViewNavButton}
+          name="chevron right"
+          onClick={this.changeBacklogOffset('NEXT')}
+        />
+      </React.Fragment>
+    );
+    const toggleCompletedTasksButton = (
+      <BacklogCompletedTasksToggle
+        onChange={this.toggleCompletedTasks}
+      />
+    );
     const backlogComponent = (
       <div className={styles.TaskViewFuturePanel}>
         <div className={styles.TaskViewControl}>
           <h3 className={styles.TaskViewControlTitle}>Future</h3>
-          <Button
-            className={styles.TaskViewControlButton}
-            active={doesShowFocusView}
-            onClick={() => this.toggleFocusView()}
-          >
-            Today
-          </Button>
+          {backlogTodayButton}
+          {backlogNavButtons}
           <span className={styles.TaskViewControlPadding} />
-          <BacklogViewSwitcher onChange={option => this.switchBacklogView(option)} />
+          <h4>{getBacklogHeaderTitle(displayOption, backlogOffset)}</h4>
+          <span className={styles.TaskViewControlPadding} />
+          {toggleCompletedTasksButton}
+          <BacklogViewSwitcher onChange={this.switchBacklogView} />
         </div>
-        <BacklogDaysContainer displayOption={displayOption} />
+        <BacklogDaysContainer
+          doesShowCompletedTasks={doesShowCompletedTasks}
+          displayOption={displayOption}
+          backlogOffset={backlogOffset}
+        />
       </div>
     );
     return (

@@ -1,13 +1,13 @@
-// @flow
+// @flow strict
 
 import type {
   AddNewTaskAction, EditTaskAction,
   MarkTaskAction, MarkSubTaskAction,
   ToggleTaskPinAction, ToggleSubTaskPinAction,
   RemoveTaskAction, RemoveSubTaskAction,
-  TagColorConfigEditAction, TagColorConfigRemoveAction,
+  TagColorConfigEditAction, TagColorConfigRemoveAction, AddNewSubTaskAction, UndoAction,
 } from './action-types';
-import type { Task } from './store-types';
+import type { SubTask, Task } from './store-types';
 
 /**
  * Edit color config is an action that can be used to add OR edit a color config in the store.
@@ -38,18 +38,22 @@ export const removeColorConfig = (tag: string): TagColorConfigRemoveAction => ({
  */
 export const addTask = (task: Task): AddNewTaskAction => ({ type: 'ADD_NEW_TASK', data: task });
 /**
+ * Add a subtask to the task.
+ *
+ * @param {number} taskID the id of the task to append subtask.
+ * @param {SubTask} subTask the subtask to add.
+ * @return {AddNewSubTaskAction} the add subtask action.
+ */
+export const addSubtask = (taskID: number, subTask: SubTask): AddNewSubTaskAction => ({
+  type: 'ADD_SUBTASK', id: taskID, data: subTask,
+});
+/**
  * Edit task is an action that can be used to edit an existing task.
  *
  * @param task the task to edit.
  * @return {AddNewTaskAction} the edit task action.
  */
 export const editTask = (task: Task): EditTaskAction => ({ type: 'EDIT_TASK', task });
-/**
- * TODO add some docs
- *
- * @return {{type: string}}
- */
-export const undoAction = () => ({ type: 'UNDO_ACTION' });
 
 /**
  * Mark task is the action that can be used to mark a task as completed or not.
@@ -110,12 +114,8 @@ export const removeSubTask = (taskId: number, subtaskId: number): RemoveSubTaskA
 });
 
 /**
- * TODO add some docs
+ * Undo the previous operation.
  *
- * @param taskID
- * @param subtask
- * @return {{type: string, id: number, data: *}}
+ * @return {UndoAction} the undo action.
  */
-export const addSubtask = (taskID: number, subtask: any) => ({
-  type: 'ADD_SUBTASK', id: taskID, data: subtask,
-});
+export const undoAction = (): UndoAction => ({ type: 'UNDO_ACTION' });
