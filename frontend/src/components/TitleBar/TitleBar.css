@@ -1,6 +1,6 @@
 .Main{
   margin:0;
-  padding:10px 40px;
+  padding:30px 50px;
 }
 
 .Time{
@@ -30,6 +30,7 @@
   background:none;
   border:none;
   cursor:pointer;
+  line-height:32px;
 }
 
 .Links button[data-sel="sel"]{

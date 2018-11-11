@@ -8,7 +8,6 @@ import TitleBar from './components/TitleBar/TitleBar';
 export default function App() {
   return (
     <div className={styles.App}>
-      Project Samwise(?)
       <TitleBar />
       <TagColorConfigEditor />
       <NewTaskComponent />
