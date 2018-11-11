@@ -10,7 +10,6 @@ export default function App() {
       <TitleBar />
       <NewTaskComponent />
       <TaskView />
-      <NewTaskComponent />
     </div>
   );
 }

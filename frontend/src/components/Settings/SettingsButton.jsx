@@ -27,7 +27,7 @@ class SettingsButton extends Component {
     const destructuredState = this.state;
     const showStyles = destructuredState.showSettings ? {display: 'block'} : {display: 'none'};
     return (
-      <div>
+      <div style={{ display: 'inline-block' }}>
         <button type="submit" onClick={this.displayModal}>Settings</button>
         <div className={styles.settingsModal}>
           <div

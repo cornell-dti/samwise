@@ -206,7 +206,19 @@ function editTask(state: State, action: EditTaskAction) {
 const rootReducer = (state: State = initialState, action: Action) => {
   switch (action.type) {
     case 'EDIT_COLOR_CONFIG':
+      if (action.classOrTag === 'class') {
+        return {
+          ...state,
+          classColorPicker: tagColorConfigReducer(state.classColorPicker, action, action.c),
+        };
+      }
     case 'REMOVE_COLOR_CONFIG':
+      if (action.classOrTag === 'class') {
+          return {
+            ...state,
+            classColorPicker: tagColorConfigReducer(state.classColorPicker, action),
+          };
+        }
       return {
         ...state,
         tagColorPicker: tagColorConfigReducer(state.tagColorPicker, action, action.c),
