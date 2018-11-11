@@ -13,7 +13,7 @@ class Base(db.Model):
 class User(Base):
     __tablename__ = 'users'
 
-    user_id = db.Column(db.BigInteger, primary_key=True)
+    user_id = db.Column(db.String, primary_key=True)
     email = db.Column(db.String, nullable=False, unique=True)
 
 
@@ -21,17 +21,17 @@ class Tag(Base):
     __tablename__ = 'tags'
 
     tag_id = db.Column(db.BigInteger, primary_key=True)
-    user_id = db.Column(db.BigInteger, nullable=False)
+    user_id = db.Column(db.String, nullable=False)
     tag_name = db.Column(db.String, nullable=False)
-    active = db.Column(db.Boolean, nullable=False)
+    in_focus = db.Column(db.Boolean, nullable=False)
     color = db.Column(db.String, nullable=False)
     _order = db.Column(db.Integer, nullable=False)
     archived = db.Column(db.Boolean, nullable=False)
 
-    def __init__(self, user_id=None, tag_name=None, active=True, color=None, _order=None, archived=False):
+    def __init__(self, user_id=None, tag_name=None, in_focus=True, color=None, _order=None, archived=False):
         self.user_id = user_id
         self.tag_name = tag_name
-        self.active = active
+        self.in_focus = in_focus
         self.color = color
         self._order = _order
         self.archived = archived
@@ -68,7 +68,7 @@ class Action(Base):
     __tablename__ = 'action'
 
     action_id = db.Column(db.BigInteger, primary_key=True)
-    user_id = db.Column(db.BigInteger, nullable=False)
+    user_id = db.Column(db.String, nullable=False)
     action = db.Column(action_type_enum, nullable=False)
     extra_data = db.Column(JSONB, nullable=True)
 
@@ -78,4 +78,4 @@ class Points(Base):
 
     point_id = db.Column(db.BigInteger, primary_key=True)
     action_id = db.Column(db.BigInteger, nullable=False)
-    user_id = db.Column(db.BigInteger, nullable=False)
+    user_id = db.Column(db.String, nullable=False)

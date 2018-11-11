@@ -72,7 +72,6 @@ def get_tags():
     # TODO Use current user id instead of hardcoded 1
     id_token = request.args['token']
     user_id = get_user_id(id_token)
-    return jsonify(status='success')
     tags = Tag.query.filter(Tag.user_id == user_id).all()
     tags_json = util.table_to_json(tags)
     return jsonify(tags_json)
@@ -82,7 +81,7 @@ def get_tags():
 def get_tags_in_focus():
     # TODO Use current user id instead of hardcoded 1
     user_id = 1
-    tags = Tag.query.filter(Tag.user_id == user_id).filter(Tag.active == True).all()
+    tags = Tag.query.filter(Tag.user_id == user_id).filter(Tag.in_focus == True).all()
     tags_json = util.table_to_json(tags)
     return jsonify(tags_json)
 
@@ -104,7 +103,7 @@ def set_tag_focus(tag_id):
         return jsonify(status='error. tag not found.')
     if focus is None:
         return jsonify(status='error. key "focus" is required.')
-    tag.active = focus
+    tag.in_focus = focus
     db.session.commit()
     return jsonify(tag=util.sqlalchemy_object_to_dict(tag))
 
@@ -125,7 +124,7 @@ def new_tag():
     color = data['color']
     last_tag = Tag.query.filter(Tag.user_id == user_id).order_by(Tag._order.desc()).first()
     order = last_tag._order + 1 if last_tag else 0
-    tag = Tag(user_id=user_id, tag_name=tag_name, active=True, color=color, _order=order, archived=False)
+    tag = Tag(user_id=user_id, tag_name=tag_name, in_focus=True, color=color, _order=order, archived=False)
     db.session.add(tag)
     db.session.commit()
     return jsonify(created=util.sqlalchemy_object_to_dict(tag))
