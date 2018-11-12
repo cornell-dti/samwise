@@ -157,7 +157,7 @@ export default class TaskView extends React.Component<Props, State> {
         </div>
       </div>
     );
-    const backlogTodayButton = (
+    const backlogTodayButton = backlogOffset !== 0 && (
       <SquareTextButton
         text="Today"
         onClick={this.changeBacklogOffset('TODAY')}

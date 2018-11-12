@@ -103,7 +103,10 @@ export default class BacklogDay extends React.Component<Props, State> {
     );
     return (
       <div className={wrapperCssClass}>
-        <div className={styles.BacklogDayDateInfo}>
+        <div
+          className={styles.BacklogDayDateInfo}
+          style={inFourDaysView ? { paddingTop: '1em' } : {}}
+        >
           {
             inFourDaysView && <div className={styles.BacklogDayDateInfoDay}>{dayString}</div>
           }
