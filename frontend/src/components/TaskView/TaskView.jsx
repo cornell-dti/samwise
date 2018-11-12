@@ -6,10 +6,10 @@ import type { BacklogDisplayOption } from '../Backlog/backlog-types';
 import BacklogViewSwitcher from '../Backlog/BacklogViewSwitcher';
 import BacklogDaysContainer from '../Backlog/BacklogDaysContainer';
 import FocusView from '../FocusView/FocusView';
-import styles from './TaskView.css';
-import BacklogCompletedTasksToggle from '../Backlog/BacklogCompletedTasksToggle';
-import BacklogHeaderTextButton from '../Backlog/BacklogHeaderTextButton';
 import { getBacklogHeaderTitle } from '../Backlog/backlog-util';
+import SquareIconButton from '../UI/SquareIconButton';
+import SquareTextButton from '../UI/SquareTextButton';
+import styles from './TaskView.css';
 
 type Props = {||};
 
@@ -158,7 +158,7 @@ export default class TaskView extends React.Component<Props, State> {
       </div>
     );
     const backlogTodayButton = (
-      <BacklogHeaderTextButton
+      <SquareTextButton
         text="Today"
         onClick={this.changeBacklogOffset('TODAY')}
       />
@@ -182,8 +182,11 @@ export default class TaskView extends React.Component<Props, State> {
       </React.Fragment>
     );
     const toggleCompletedTasksButton = (
-      <BacklogCompletedTasksToggle
-        onChange={this.toggleCompletedTasks}
+      <SquareIconButton
+        active={doesShowCompletedTasks}
+        activeIconName="eye slash"
+        inactiveIconName="eye"
+        onClick={this.toggleCompletedTasks}
       />
     );
     const backlogComponent = (
