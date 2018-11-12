@@ -217,6 +217,7 @@ class FloatingTaskEditor extends React.Component<Props, State> {
           focused={!mainTaskInputFocused}
           subtaskArray={subtaskArray}
           editSubTasks={arr => this.editSubTasks(arr)}
+          onFocusChange={f => this.setState(s => ({ ...s, mainTaskInputFocused: !f }))}
         />
         <div className={styles.FloatingTaskEditorSubmitButtonRow}>
           <span className={styles.FloatingTaskEditorFlexiblePadding} />
