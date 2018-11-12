@@ -47,12 +47,12 @@ export const addTask = (task: Task): AddNewTaskAction => ({ type: 'ADD_NEW_TASK'
 /**
  * Add a subtask to the task.
  *
- * @param {number} taskID the id of the task to append subtask.
+ * @param {number} id the id of the task to append subtask.
  * @param {SubTask} subTask the subtask to add.
  * @return {AddNewSubTaskAction} the add subtask action.
  */
-export const addSubtask = (taskID: number, subTask: SubTask): AddNewSubTaskAction => ({
-  type: 'ADD_SUBTASK', id: taskID, data: subTask,
+export const addSubtask = (id: number, subTask: SubTask): AddNewSubTaskAction => ({
+  type: 'ADD_SUBTASK', id, data: subTask,
 });
 /**
  * Edit task is an action that can be used to edit an existing task.

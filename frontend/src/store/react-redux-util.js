@@ -15,3 +15,17 @@ export function simpleConnect<P: Object, OP: Object, SP: Object>(
 ): (ComponentType<P>) => (ComponentType<OP>) {
   return connect<ComponentType<P>, _, {}, _, _, OP, _>(mapStateToProps, {});
 }
+
+/**
+ * A connect function for react-redux that just uses the normal mapStateToProps.
+ *
+ * @param mapStateToProps the normal mapStateToProps function.
+ * @param actionCreators the action creator used to bind actions.
+ * @return {*} the connect function that connects a react component.
+ */
+export function fullConnect<P: Object, OP: Object, SP: Object, MP: Object>(
+  mapStateToProps: (state: State) => SP,
+  actionCreators: MP,
+): (ComponentType<P>) => (ComponentType<OP>) {
+  return connect<ComponentType<P>, _, MP, _, _, OP, _>(mapStateToProps, actionCreators);
+}
