@@ -1,6 +1,7 @@
 // @flow strict
 
 import * as React from 'react';
+import type { Node } from 'react';
 import { Icon } from 'semantic-ui-react';
 import type { BacklogDisplayOption } from '../Backlog/backlog-types';
 import BacklogViewSwitcher from '../Backlog/BacklogViewSwitcher';
@@ -136,43 +137,49 @@ export default class TaskView extends React.Component<Props, State> {
     });
   };
 
-  render() {
-    const {
-      doesShowFocusView, doesShowCompletedTasks, displayOption, backlogOffset,
-    } = this.state;
-    const focusViewComponent = doesShowFocusView && (
-      <div className={styles.TaskViewFocusPanel}>
-        <h3 className={styles.TaskViewControlTitle}>{'Today\'s focus'}</h3>
-        <FocusView />
+  /**
+   * Render the toggle for focus view.
+   *
+   * @return {Node} the rendered component.
+   */
+  renderFocusViewToggleComponent(): Node {
+    const { doesShowFocusView, displayOption } = this.state;
+    if (displayOption === 'FOUR_DAYS') {
+      return null;
+    }
+    const wrapperStyle = doesShowFocusView ? { left: '-5em' } : { left: '-1em' };
+    const buttonStyle = doesShowFocusView ? { left: '2em' } : {};
+    const iconName = doesShowFocusView ? 'chevron left' : 'chevron right';
+    const iconClass = doesShowFocusView
+      ? styles.TaskViewFocusViewToggleIconFocusViewShow
+      : styles.TaskViewFocusViewToggleIconFocusViewHide;
+    return (
+      <div className={styles.TaskViewFocusViewToggleWrapper} style={wrapperStyle}>
+        <div
+          role="button"
+          tabIndex={-1}
+          className={styles.TaskViewFocusViewToggle}
+          style={buttonStyle}
+          onClick={this.toggleFocusView}
+          onKeyDown={this.toggleFocusView}
+        >
+          <Icon name={iconName} className={iconClass} />
+        </div>
       </div>
     );
-    const focusViewToggleComponent = displayOption !== 'FOUR_DAYS' && (() => {
-      const wrapperStyle = doesShowFocusView ? { left: '-5em' } : { left: '-1em' };
-      const buttonStyle = doesShowFocusView ? { left: '2em' } : {};
-      const iconName = doesShowFocusView ? 'chevron left' : 'chevron right';
-      const iconClass = doesShowFocusView
-        ? styles.TaskViewFocusViewToggleIconFocusViewShow
-        : styles.TaskViewFocusViewToggleIconFocusViewHide;
-      return (
-        <div className={styles.TaskViewFocusViewToggleWrapper} style={wrapperStyle}>
-          <div
-            role="button"
-            tabIndex={-1}
-            className={styles.TaskViewFocusViewToggle}
-            style={buttonStyle}
-            onClick={this.toggleFocusView}
-            onKeyDown={this.toggleFocusView}
-          >
-            <Icon name={iconName} className={iconClass} />
-          </div>
-        </div>
-      );
-    })();
+  }
+
+  /**
+   * Render the backlog component.
+   *
+   * @return {Node} the rendered component.
+   */
+  renderBacklogComponent(): Node {
+    const {
+      doesShowCompletedTasks, displayOption, backlogOffset,
+    } = this.state;
     const backlogTodayButton = backlogOffset !== 0 && (
-      <SquareTextButton
-        text="Today"
-        onClick={this.changeBacklogOffset('TODAY')}
-      />
+      <SquareTextButton text="Today" onClick={this.changeBacklogOffset('TODAY')} />
     );
     const backlogNav = (
       <React.Fragment>
@@ -203,9 +210,9 @@ export default class TaskView extends React.Component<Props, State> {
         onClick={this.toggleCompletedTasks}
       />
     );
-    const backlogComponent = (
+    return (
       <div className={styles.TaskViewFuturePanel}>
-        {focusViewToggleComponent}
+        {this.renderFocusViewToggleComponent()}
         <div className={styles.TaskViewControl}>
           <h3 className={styles.TaskViewControlTitle}>Future</h3>
           {backlogTodayButton}
@@ -222,10 +229,20 @@ export default class TaskView extends React.Component<Props, State> {
         />
       </div>
     );
+  }
+
+  render(): Node {
+    const { doesShowFocusView } = this.state;
+    const focusViewComponent = doesShowFocusView && (
+      <div className={styles.TaskViewFocusPanel}>
+        <h3 className={styles.TaskViewControlTitle}>Focus</h3>
+        <FocusView />
+      </div>
+    );
     return (
       <div className={styles.TaskView}>
         {focusViewComponent}
-        {backlogComponent}
+        {this.renderBacklogComponent()}
       </div>
     );
   }

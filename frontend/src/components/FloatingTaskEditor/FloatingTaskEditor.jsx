@@ -2,15 +2,14 @@
 
 import * as React from 'react';
 import type { Node } from 'react';
-import { Modal } from 'semantic-ui-react';
 import { connect } from 'react-redux';
 import type { SubTask, Task } from '../../store/store-types';
 import { editTask as editTaskAction } from '../../store/actions';
-import InternalSubTaskFloatingEditor from './InternalSubTaskFloatingEditor';
-import InternalMainTaskFloatingEditor from './InternalMainTaskFloatingEditor';
+import InternalMainTaskEditor from './InternalMainTaskEditor';
+import InternalSubTaskEditor from './InternalSubTaskEditor';
 import type { EditTaskAction } from '../../store/action-types';
-import styles from './FloatingTaskEditor.css';
 import type { FloatingPosition, SimpleMainTask } from './floating-task-editor-types';
+import styles from './FloatingTaskEditor.css';
 
 type Props = {|
   position?: FloatingPosition;
@@ -76,29 +75,15 @@ class FloatingTaskEditor extends React.Component<Props, State> {
       throw new Error('Task element must be a div!');
     }
     editorPosDiv.style.position = 'unset';
-    if (position === 'below') {
-      editorPosDiv.style.top = `${editorPosDiv.offsetTop - 12}px`;
-      editorPosDiv.style.left = '0';
-      editorPosDiv.style.position = 'absolute';
-    } else if (position === 'right') {
-      editorPosDiv.style.top = `${editorPosDiv.offsetTop - taskElement.clientHeight - 12}px`;
+    editorPosDiv.style.top = `${editorPosDiv.offsetTop - taskElement.clientHeight - 12}px`;
+    if (position === 'right') {
       editorPosDiv.style.left = `${taskElement.offsetWidth}px`;
-      editorPosDiv.style.position = 'absolute';
     } else if (position === 'left') {
-      editorPosDiv.style.top = `${editorPosDiv.offsetTop - taskElement.clientHeight - 12}px`;
       editorPosDiv.style.left = `-${editorPosDiv.offsetWidth}px`;
-      editorPosDiv.style.position = 'absolute';
+    } else {
+      throw new Error('Bad floating position!');
     }
-  }
-
-  /**
-   * Returns the floating position of the editor.
-   *
-   * @return {FloatingPosition} the floating position of the editor.
-   */
-  getFloatingPosition(): FloatingPosition {
-    const { position } = this.props;
-    return position || 'center';
+    editorPosDiv.style.position = 'absolute';
   }
 
   /**
@@ -188,32 +173,30 @@ class FloatingTaskEditor extends React.Component<Props, State> {
   editorElement: ?HTMLDivElement;
 
   /**
-   * Render the internals of the modal.
+   * Render the editor component.
    *
-   * @return {Node} the internals of the modal.
+   * @return {Node} the editor component.
    */
-  renderModalInternal(): Node {
+  renderEditorComponent(): Node {
     const {
       open, backgroundColor, mainTaskInputFocused, ...task
     } = this.state;
     const {
       id, subtaskArray, ...mainTask
     } = task;
-    const doesMountInside = this.getFloatingPosition() !== 'center';
-    const className = doesMountInside ? styles.EmbeddedFloatingTaskEditor : '';
-    const style = doesMountInside ? { backgroundColor } : {};
-    const refFunction = doesMountInside
-      ? (e) => { this.editorElement = e; }
-      : () => {};
     return (
-      <div className={className} style={style} ref={refFunction}>
-        <InternalMainTaskFloatingEditor
+      <div
+        className={styles.EmbeddedFloatingTaskEditor}
+        style={{ backgroundColor }}
+        ref={(e) => { this.editorElement = e; }}
+      >
+        <InternalMainTaskEditor
           {...mainTask}
           focused={mainTaskInputFocused}
           editTask={(t, c) => this.editMainTask(t, c)}
           onFocusChange={f => this.setState(s => ({ ...s, mainTaskInputFocused: f }))}
         />
-        <InternalSubTaskFloatingEditor
+        <InternalSubTaskEditor
           focused={!mainTaskInputFocused}
           subtaskArray={subtaskArray}
           editSubTasks={arr => this.editSubTasks(arr)}
@@ -235,36 +218,10 @@ class FloatingTaskEditor extends React.Component<Props, State> {
     );
   }
 
-  /**
-   * Render the modal editor.
-   *
-   * @param {Node} triggerNode the node that triggers the modal.
-   * @return {Node} the rendered modal.
-   */
-  renderModalEditor(triggerNode: Node): Node {
-    const { open, backgroundColor } = this.state;
-    return (
-      <Modal
-        className={styles.FloatingTaskEditor}
-        style={{ backgroundColor }}
-        size="mini"
-        open={open}
-        trigger={triggerNode}
-        onClose={() => this.closePopup()}
-      >
-        {this.renderModalInternal()}
-      </Modal>
-    );
-  }
-
-  /**
-   * Render the embedded editor.
-   *
-   * @param {Node} triggerNode the node that triggers the modal.
-   * @return {Node} the rendered editor.
-   */
-  renderEmbeddedEditor(triggerNode: Node): Node {
+  render(): Node {
+    const { trigger } = this.props;
     const { open } = this.state;
+    const triggerNode = trigger(this.openPopup);
     return (
       <React.Fragment>
         {triggerNode}
@@ -279,18 +236,9 @@ class FloatingTaskEditor extends React.Component<Props, State> {
             />
           )
         }
-        {open && this.renderModalInternal()}
+        {open && this.renderEditorComponent()}
       </React.Fragment>
     );
-  }
-
-  render(): Node {
-    const { trigger } = this.props;
-    const triggerNode = trigger(this.openPopup);
-    const floatingPosition = this.getFloatingPosition();
-    return (floatingPosition === 'center')
-      ? this.renderModalEditor(triggerNode)
-      : this.renderEmbeddedEditor(triggerNode);
   }
 }
 

@@ -35,9 +35,9 @@ const mapStateToProps = ({ classColorConfig, tagColorConfig }: StoreState): Subs
 });
 
 /**
- * InternalMainTaskFloatingEditor is intended for internal use for FloatingTaskEditor only.
+ * InternalMainTaskEditor is intended for internal use for FloatingTaskEditor only.
  */
-class InternalMainTaskFloatingEditor extends React.Component<Props, State> {
+class InternalMainTaskEditor extends React.Component<Props, State> {
   constructor(props: Props) {
     super(props);
     this.state = { doesShowTagEditor: false, doesShowCalendarEditor: false };
@@ -253,5 +253,5 @@ class InternalMainTaskFloatingEditor extends React.Component<Props, State> {
 
 const ConnectedInternalMainTaskFloatingEditor = simpleConnect<Props, OwnProps, SubscribedProps>(
   mapStateToProps,
-)(InternalMainTaskFloatingEditor);
+)(InternalMainTaskEditor);
 export default ConnectedInternalMainTaskFloatingEditor;
