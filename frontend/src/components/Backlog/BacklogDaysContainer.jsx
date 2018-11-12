@@ -100,15 +100,9 @@ function BacklogDaysContainer(props: Props): Node {
     }
     let taskEditorPosition: FloatingPosition;
     if (days.length === 4) {
-      if (i < 2) {
-        taskEditorPosition = 'right';
-      } else if (i === 2) {
-        taskEditorPosition = 'below';
-      } else {
-        taskEditorPosition = 'left';
-      }
+      taskEditorPosition = i < 2 ? 'right' : 'left';
     } else {
-      taskEditorPosition = i < 6 ? 'below' : 'left';
+      taskEditorPosition = i < 4 ? 'right' : 'left';
     }
     tempRow.push(renderDay(days[i], doesShowCompletedTasks, taskEditorPosition));
   }
