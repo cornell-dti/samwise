@@ -134,7 +134,7 @@ export function buildDaysInBacklog(
   displayOption: BacklogDisplayOption, backlogOffset: number,
 ): OneDayTask[] {
   const { startDate, endDate } = computeStartAndEndDay(displayOption, backlogOffset);
-  const doesRenderSubTasks = displayOption !== 'MONTHLY';
+  const doesRenderSubTasks = displayOption === 'FOUR_DAYS';
   // Adding the days to array
   const days: OneDayTask[] = [];
   for (let d = startDate; d < endDate; d.setDate(d.getDate() + 1)) {
