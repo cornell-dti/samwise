@@ -18,7 +18,6 @@
   position: absolute;
   z-index: 1;
   bottom: 0.5em;
-  left: -1em;
   width: 4em;
   height: 5em;
   overflow-x: hidden;
@@ -41,7 +40,11 @@
   box-shadow: 0 1px 5px 0 rgba(0, 0, 0, 0.5);
 }
 
-.TaskViewFocusViewToggleIcon {
+.TaskViewFocusViewToggleIconFocusViewShow {
+  margin: 0 0 3px 6px !important;
+}
+
+.TaskViewFocusViewToggleIconFocusViewHide {
   margin: 0 0 3px 31px !important;
 }
 

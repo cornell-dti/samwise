@@ -127,7 +127,21 @@ function BacklogDaysContainer(props: Props): Node {
   if (tempRow.length > 0) {
     rows.push(renderRow(rowId, tempRow));
   }
-  return <Grid stackable>{rows}</Grid>;
+  if (!inFourDaysView) {
+    // Add weekday bar
+    rows.unshift((
+      <Grid.Row key="grid-weekdays-row" columns={7}>
+        <Grid.Column className={styles.ColumnInWeekdayRow}>SUN</Grid.Column>
+        <Grid.Column className={styles.ColumnInWeekdayRow}>MON</Grid.Column>
+        <Grid.Column className={styles.ColumnInWeekdayRow}>TUE</Grid.Column>
+        <Grid.Column className={styles.ColumnInWeekdayRow}>WED</Grid.Column>
+        <Grid.Column className={styles.ColumnInWeekdayRow}>THU</Grid.Column>
+        <Grid.Column className={styles.ColumnInWeekdayRow}>FRI</Grid.Column>
+        <Grid.Column className={styles.ColumnInWeekdayRow}>SAT</Grid.Column>
+      </Grid.Row>
+    ));
+  }
+  return <Grid className={inFourDaysView ? '' : styles.GridOtherViews} stackable>{rows}</Grid>;
 }
 
 const ConnectedBacklogDaysContainer = simpleConnect<Props, OwnProps, SubscribedProps>(

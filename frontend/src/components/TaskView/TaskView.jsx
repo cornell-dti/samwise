@@ -146,17 +146,28 @@ export default class TaskView extends React.Component<Props, State> {
         <FocusView />
       </div>
     );
-    const focusViewToggleComponent = displayOption !== 'FOUR_DAYS' && (
-      <div className={styles.TaskViewFocusViewToggleWrapper}>
-        <div className={styles.TaskViewFocusViewToggle}>
-          <Icon
-            className={styles.TaskViewFocusViewToggleIcon}
-            name={doesShowFocusView ? 'chevron left' : 'chevron right'}
+    const focusViewToggleComponent = displayOption !== 'FOUR_DAYS' && (() => {
+      const wrapperStyle = doesShowFocusView ? { left: '-5em' } : { left: '-1em' };
+      const buttonStyle = doesShowFocusView ? { left: '2em' } : {};
+      const iconName = doesShowFocusView ? 'chevron left' : 'chevron right';
+      const iconClass = doesShowFocusView
+        ? styles.TaskViewFocusViewToggleIconFocusViewShow
+        : styles.TaskViewFocusViewToggleIconFocusViewHide;
+      return (
+        <div className={styles.TaskViewFocusViewToggleWrapper} style={wrapperStyle}>
+          <div
+            role="button"
+            tabIndex={-1}
+            className={styles.TaskViewFocusViewToggle}
+            style={buttonStyle}
             onClick={this.toggleFocusView}
-          />
+            onKeyDown={this.toggleFocusView}
+          >
+            <Icon name={iconName} className={iconClass} />
+          </div>
         </div>
-      </div>
-    );
+      );
+    })();
     const backlogTodayButton = backlogOffset !== 0 && (
       <SquareTextButton
         text="Today"
