@@ -2,12 +2,13 @@
 
 import * as React from 'react';
 import BacklogTask from './BacklogTask';
-import styles from './BacklogDay.css';
 import type { ColoredTask, OneDayTask } from './backlog-types';
 import type { FloatingPosition } from '../FloatingTaskEditor/floating-task-editor-types';
+import styles from './BacklogDay.css';
 
 type Props = {|
   ...OneDayTask;
+  +inFourDaysView: boolean;
   +doesShowCompletedTasks: boolean;
   +taskEditorPosition: FloatingPosition;
 |};
@@ -39,7 +40,8 @@ export default class BacklogDay extends React.Component<Props, State> {
 
   render() {
     const {
-      doesShowCompletedTasks, date, doesRenderSubTasks, taskEditorPosition, tasks,
+      inFourDaysView, doesShowCompletedTasks, doesRenderSubTasks, taskEditorPosition,
+      date, tasks,
     } = this.props;
     const { doesOverflow } = this.state;
     const isToday = (() => {
@@ -49,6 +51,9 @@ export default class BacklogDay extends React.Component<Props, State> {
         && date.getDate() === today.getDate();
     })();
     const dayString = (() => {
+      if (!inFourDaysView) {
+        return '';
+      }
       if (isToday) {
         return 'TODAY';
       }
@@ -71,9 +76,17 @@ export default class BacklogDay extends React.Component<Props, State> {
           throw new Error('Impossible Case');
       }
     })();
-    const wrapperCssClass = isToday
-      ? `${styles.BacklogDay} ${styles.BacklogToday}`
-      : styles.BacklogDay;
+    let wrapperCssClass: string;
+    if (inFourDaysView) {
+      wrapperCssClass = isToday
+        ? `${styles.BacklogDayFourDaysView} ${styles.BacklogToday}`
+        : styles.BacklogDayFourDaysView;
+    } else {
+      wrapperCssClass = styles.BacklogDayOtherView;
+    }
+    const dateNumCssClass = inFourDaysView
+      ? styles.BacklogDayDateInfoDateNumFourDaysView
+      : styles.BacklogDayDateInfoDateNumOtherViews;
     const tasksComponent = tasks
       .filter((t: ColoredTask) => (doesShowCompletedTasks || !t.complete))
       .map((t: ColoredTask) => (
@@ -91,8 +104,12 @@ export default class BacklogDay extends React.Component<Props, State> {
     return (
       <div className={wrapperCssClass}>
         <div className={styles.BacklogDayDateInfo}>
-          <div className={styles.BacklogDayDateInfoDay}>{dayString}</div>
-          <div className={styles.BacklogDayDateInfoDateNum}>{date.getDate()}</div>
+          {
+            inFourDaysView && <div className={styles.BacklogDayDateInfoDay}>{dayString}</div>
+          }
+          <div className={dateNumCssClass}>
+            {date.getDate()}
+          </div>
         </div>
         <div
           className={styles.BacklogDayTaskContainer}

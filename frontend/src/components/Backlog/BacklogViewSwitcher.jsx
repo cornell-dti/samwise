@@ -31,15 +31,13 @@ export default class BacklogViewSwitcher extends React.Component<Props, State> {
         ? `${styles.BacklogViewSwitcherButton} ${styles.BacklogViewSwitcherActiveButton}`
         : styles.BacklogViewSwitcherButton;
       return (
-        <div
+        <button
           className={className}
-          role="button"
-          tabIndex={-1}
+          type="button"
           onClick={setDisplayOption(option)}
-          onKeyDown={setDisplayOption(option)}
         >
           <span className={styles.BacklogViewSwitcherButtonText}>{text}</span>
-        </div>
+        </button>
       );
     };
     return (

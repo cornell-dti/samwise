@@ -7,6 +7,10 @@
   border: solid 1px #5A5A5A;
 }
 
+:focus {
+  outline: none;
+}
+
 .SquareButtonIconButton {
   margin-left: 1em;
   margin-right: 1em;
@@ -24,7 +28,7 @@
   border-radius: 2px;
 }
 
-.SquareButtonTextButton  span {
+.SquareButtonTextButton span {
   margin: 0 1em !important;
 }
 

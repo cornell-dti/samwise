@@ -17,10 +17,10 @@
 .TaskViewFocusViewToggleWrapper {
   position: absolute;
   z-index: 1;
-  bottom: 1.5em;
-  left: 0;
-  width: 3em;
-  height: 4em;
+  bottom: 0.5em;
+  left: -1em;
+  width: 4em;
+  height: 5em;
   overflow-x: hidden;
   overflow-y: visible;
 }
@@ -30,18 +30,19 @@
   display: flex;
   align-items: center;
   align-content: center;
+  cursor: pointer;
   top: 0;
-  left: -1.5em;
-  width: 3em;
-  height: 3em;
+  left: -2em;
+  width: 4em;
+  height: 4em;
   color: white;
   background-color: #81B2EB;
-  border-radius: 1.5em;
+  border-radius: 2em;
   box-shadow: 0 1px 5px 0 rgba(0, 0, 0, 0.5);
 }
 
 .TaskViewFocusViewToggleIcon {
-  margin: 0 0 3px 21px !important
+  margin: 0 0 3px 31px !important;
 }
 
 .TaskViewControl {
@@ -51,6 +52,7 @@
 }
 
 .TaskViewControlTitle {
+  font-size: 24px;
   margin: 1em 0.5em !important;
 }
 

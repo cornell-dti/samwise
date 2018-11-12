@@ -27,11 +27,11 @@ export default function SquareIconButton(props: Props): Node {
     ? `${styles.SquareButton} ${styles.SquareButtonIconButton}`
     : `${styles.SquareButton} ${styles.SquareButtonIconButton} ${styles.active}`;
   return (
-    <div role="button" tabIndex={-1} className={className} onClick={onClick} onKeyDown={onClick}>
+    <button className={className} type="button" onClick={onClick}>
       <Icon
         className={styles.SquareButtonText}
         name={active ? activeIconName : inactiveIconName}
       />
-    </div>
+    </button>
   );
 }

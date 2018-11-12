@@ -22,8 +22,8 @@ const className = `${styles.SquareButton} ${styles.SquareButtonTextButton}`;
  */
 export default function SquareTextButton({ text, onClick }: Props): Node {
   return (
-    <div className={className} role="button" tabIndex={-1} onClick={onClick} onKeyDown={onClick}>
+    <button className={className} type="button" onClick={onClick}>
       <span className={styles.SquareButtonText}>{text}</span>
-    </div>
+    </button>
   );
 }

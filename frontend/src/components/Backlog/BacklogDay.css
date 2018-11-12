@@ -1,8 +1,16 @@
-.BacklogDay {
+.BacklogDayFourDaysView {
   position: relative;
   margin: 0.5em;
   background-color: #F7F7F7;
-  height: 300px;
+  height: 400px;
+}
+
+.BacklogDayOtherView {
+  position: relative;
+  margin: 0;
+  background-color: white;
+  border: 1px solid #CCC;
+  height: 200px;
 }
 
 .BacklogToday {
@@ -21,8 +29,14 @@
   font-weight: normal;
 }
 
-.BacklogDayDateInfoDateNum {
+.BacklogDayDateInfoDateNumFourDaysView {
   font-weight: bold;
+}
+
+.BacklogDayDateInfoDateNumOtherViews {
+  font-weight: bold;
+  font-size: 16px;
+  color: #4A90E2;
 }
 
 .BacklogDayTaskContainer {

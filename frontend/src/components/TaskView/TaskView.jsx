@@ -142,7 +142,7 @@ export default class TaskView extends React.Component<Props, State> {
     } = this.state;
     const focusViewComponent = doesShowFocusView && (
       <div className={styles.TaskViewFocusPanel}>
-        <h3>{'Today\'s focus'}</h3>
+        <h3 className={styles.TaskViewControlTitle}>{'Today\'s focus'}</h3>
         <FocusView />
       </div>
     );
@@ -151,7 +151,7 @@ export default class TaskView extends React.Component<Props, State> {
         <div className={styles.TaskViewFocusViewToggle}>
           <Icon
             className={styles.TaskViewFocusViewToggleIcon}
-            name="chevron right"
+            name={doesShowFocusView ? 'chevron left' : 'chevron right'}
             onClick={this.toggleFocusView}
           />
         </div>
@@ -163,7 +163,7 @@ export default class TaskView extends React.Component<Props, State> {
         onClick={this.changeBacklogOffset('TODAY')}
       />
     );
-    const backlogNavButtons = (
+    const backlogNav = (
       <React.Fragment>
         {
           (backlogOffset >= 1 || (backlogOffset >= 0 && displayOption === 'BIWEEKLY')) && (
@@ -174,6 +174,9 @@ export default class TaskView extends React.Component<Props, State> {
             />
           )
         }
+        <h3 className={styles.TaskViewControlTitle}>
+          {getBacklogHeaderTitle(displayOption, backlogOffset)}
+        </h3>
         <Icon
           className={styles.TaskViewNavButton}
           name="chevron right"
@@ -195,9 +198,8 @@ export default class TaskView extends React.Component<Props, State> {
         <div className={styles.TaskViewControl}>
           <h3 className={styles.TaskViewControlTitle}>Future</h3>
           {backlogTodayButton}
-          {backlogNavButtons}
           <span className={styles.TaskViewControlPadding} />
-          <h4>{getBacklogHeaderTitle(displayOption, backlogOffset)}</h4>
+          {backlogNav}
           <span className={styles.TaskViewControlPadding} />
           {toggleCompletedTasksButton}
           <BacklogViewSwitcher onChange={this.switchBacklogView} />
