@@ -5,11 +5,43 @@
 }
 
 .TaskViewFocusPanel {
-  width: 320px;
+  min-width: 320px;
+  max-width: 320px;
 }
 
 .TaskViewFuturePanel {
+  position: relative;
   flex: auto;
+}
+
+.TaskViewFocusViewToggleWrapper {
+  position: absolute;
+  z-index: 1;
+  bottom: 1.5em;
+  left: 0;
+  width: 3em;
+  height: 4em;
+  overflow-x: hidden;
+  overflow-y: visible;
+}
+
+.TaskViewFocusViewToggle {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  align-content: center;
+  top: 0;
+  left: -1.5em;
+  width: 3em;
+  height: 3em;
+  color: white;
+  background-color: #81B2EB;
+  border-radius: 1.5em;
+  box-shadow: 0 1px 5px 0 rgba(0, 0, 0, 0.5);
+}
+
+.TaskViewFocusViewToggleIcon {
+  margin: 0 0 3px 21px !important
 }
 
 .TaskViewControl {

@@ -146,6 +146,17 @@ export default class TaskView extends React.Component<Props, State> {
         <FocusView />
       </div>
     );
+    const focusViewToggleComponent = displayOption !== 'FOUR_DAYS' && (
+      <div className={styles.TaskViewFocusViewToggleWrapper}>
+        <div className={styles.TaskViewFocusViewToggle}>
+          <Icon
+            className={styles.TaskViewFocusViewToggleIcon}
+            name="chevron right"
+            onClick={this.toggleFocusView}
+          />
+        </div>
+      </div>
+    );
     const backlogTodayButton = (
       <BacklogHeaderTextButton
         text="Today"
@@ -154,11 +165,15 @@ export default class TaskView extends React.Component<Props, State> {
     );
     const backlogNavButtons = (
       <React.Fragment>
-        <Icon
-          className={styles.TaskViewNavButton}
-          name="chevron left"
-          onClick={this.changeBacklogOffset('PREV')}
-        />
+        {
+          (backlogOffset >= 1 || (backlogOffset >= 0 && displayOption === 'BIWEEKLY')) && (
+            <Icon
+              className={styles.TaskViewNavButton}
+              name="chevron left"
+              onClick={this.changeBacklogOffset('PREV')}
+            />
+          )
+        }
         <Icon
           className={styles.TaskViewNavButton}
           name="chevron right"
@@ -173,6 +188,7 @@ export default class TaskView extends React.Component<Props, State> {
     );
     const backlogComponent = (
       <div className={styles.TaskViewFuturePanel}>
+        {focusViewToggleComponent}
         <div className={styles.TaskViewControl}>
           <h3 className={styles.TaskViewControlTitle}>Future</h3>
           {backlogTodayButton}
