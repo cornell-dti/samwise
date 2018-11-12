@@ -51,7 +51,7 @@ const trivialState: State = {
  * Usage:
  * ```jsx
  * <FloatingTaskEditor
- *   position="beside"
+ *   position="left"
  *   trigger={opener => <span onClick={() => opener(task, color)}>Ha</span>}
  * />
  * ```

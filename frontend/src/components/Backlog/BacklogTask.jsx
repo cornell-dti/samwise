@@ -1,5 +1,4 @@
 // @flow strict
-/* eslint-disable jsx-a11y/click-events-have-key-events,jsx-a11y/no-static-element-interactions */
 
 import * as React from 'react';
 import type { Node } from 'react';
@@ -161,7 +160,13 @@ class BacklogTask extends React.Component<Props> {
     const trigger = (opener: (Task, string) => void): Node => {
       const onClickHandler = this.getOnClickHandler(opener);
       return (
-        <div onClick={onClickHandler} className={styles.BacklogTask}>
+        <div
+          className={styles.BacklogTask}
+          role="button"
+          tabIndex={-1}
+          onClick={onClickHandler}
+          onKeyDown={onClickHandler}
+        >
           {this.renderMainTaskInfo()}
           {this.renderSubTasks()}
         </div>

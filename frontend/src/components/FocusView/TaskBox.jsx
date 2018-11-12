@@ -2,14 +2,15 @@
 
 import * as React from 'react';
 import type { Node } from 'react';
-import SubtaskBox from './SubtaskBox';
+import SubTaskBox from './SubTaskBox';
 import { markTask as markTaskAction, addSubtask as addSubtaskAction } from '../../store/actions';
-import styles from './FocusView.css';
 import type {
   State as StoreState, ColorConfig, Task, SubTask,
 } from '../../store/store-types';
 import type { AddNewSubTaskAction, MarkTaskAction } from '../../store/action-types';
 import { fullConnect } from '../../store/react-redux-util';
+import CheckBox from '../UI/CheckBox';
+import styles from './TaskBox.css';
 
 type OwnProps = Task;
 type SubscribedProps = {| colorConfig: ColorConfig |};
@@ -36,13 +37,20 @@ class TaskBox extends React.Component<Props, State> {
     this.state = { value: '' };
   }
 
-  markTaskAsComplete = (event) => {
-    event.stopPropagation();
+  /**
+   * Mark the task as complete.
+   */
+  markTaskAsComplete = (): void => {
     const { id, markTask } = this.props;
     markTask(id);
   };
 
-  addNewSubtask = (event) => {
+  /**
+   * Add a new subtask.
+   *
+   * @param {Event} event the event to signal the user action.
+   */
+  addNewSubtask = (event: Event) => {
     event.preventDefault();
     const { id, addSubtask } = this.props;
     const { value } = this.state;
@@ -53,54 +61,77 @@ class TaskBox extends React.Component<Props, State> {
       inFocus: false,
     };
     addSubtask(id, subtask);
+    this.setState({ value: '' });
   };
 
   handleSubtaskInputChange = (event) => {
     this.setState({ value: event.target.value });
   };
 
+  /**
+   * Renders the name of the task.
+   *
+   * @return {Node} the rendered task name.
+   */
+  renderTaskName(): Node {
+    const { name, complete } = this.props;
+    const style = complete ? { textDecoration: 'line-through' } : {};
+    return (
+      <span className={styles.TaskBoxTaskText} style={style}>{name}</span>
+    );
+  }
+
   render(): Node {
     const {
-      id, name, tag, complete, subtaskArray, colorConfig,
+      id, name, date, tag, complete, subtaskArray, colorConfig,
     } = this.props;
     const { value } = this.state;
-
-    const boxColor = colorConfig[tag];
-    const jsxSubtaskArray = subtaskArray.map(item => (
-      <li className={styles.subtaskItem} key={item.id}>
-        <SubtaskBox {...item} mainTaskID={id} />
-      </li>
+    const backgroundColor = colorConfig[tag];
+    const headerComponent = (
+      <div className={styles.TaskBoxTagHeader}>
+        <span className={styles.TaskBoxTag}>{tag}</span>
+        <span className={styles.TaskBoxFlexiblePadding} />
+        <span>{`${date.getMonth() + 1}/${date.getDate()}`}</span>
+      </div>
+    );
+    const mainTaskCheckboxComponent = (
+      <CheckBox
+        className={styles.TaskBoxCheckBox}
+        checked={complete}
+        onChange={this.markTaskAsComplete}
+      />
+    );
+    const mainTaskNameComponent = (() => {
+      const style = complete ? { textDecoration: 'line-through' } : {};
+      return (
+        <span className={styles.TaskBoxTaskText} style={style}>{name}</span>
+      );
+    })();
+    const subtasksComponent = subtaskArray.map(item => (
+      <SubTaskBox key={item.id} {...item} mainTaskID={id} />
     ));
-    return (
-      <div className={styles.boxClass} style={{ backgroundColor: boxColor }}>
-        <p className={styles.tagLabel}>{tag}</p>
-        <div className={styles.mainLabel}>
+    const newSubtaskComponent = (
+      <div className={styles.newSubtaskDiv}>
+        <form onSubmit={this.addNewSubtask}>
           <input
-            type="checkbox"
-            className={styles.taskCheckbox}
-            onClick={this.markTaskAsComplete}
+            type="text"
+            className={styles.newSubtask}
+            placeholder="New subtask"
+            value={value}
+            onChange={this.handleSubtaskInputChange}
           />
-          <p
-            className={styles.taskNameLabel}
-            style={complete ? { textDecoration: 'line-through' } : {}}
-          >
-            {name}
-          </p>
+        </form>
+      </div>
+    );
+    return (
+      <div className={styles.TaskBox} style={{ backgroundColor }}>
+        {headerComponent}
+        <div className={styles.TaskBoxMainLabel}>
+          {mainTaskCheckboxComponent}
+          {mainTaskNameComponent}
         </div>
-        <ul>
-          {jsxSubtaskArray}
-        </ul>
-        <div className={styles.newSubtaskDiv}>
-          <form onSubmit={this.addNewSubtask}>
-            <input
-              type="text"
-              className={styles.newSubtask}
-              placeholder="New subtask"
-              value={value}
-              onChange={this.handleSubtaskInputChange}
-            />
-          </form>
-        </div>
+        {subtasksComponent}
+        {newSubtaskComponent}
       </div>
     );
   }

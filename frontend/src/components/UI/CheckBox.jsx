@@ -6,10 +6,10 @@ import type { Node } from 'react';
 import styles from './CheckBox.css';
 
 type Props = {|
-  className?: string;
-  checked?: boolean;
-  inverted?: boolean;
-  +onChange: (checked: boolean) => any;
+  className?: string; // additional className to apply
+  checked?: boolean; // whether the box is initially checked
+  inverted?: boolean; // whether the color is inverted.
+  +onChange: (checked: boolean) => any; // called when the value changed.
 |};
 
 type State = {| +checked: boolean |};
