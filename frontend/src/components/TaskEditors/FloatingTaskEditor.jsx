@@ -1,10 +1,10 @@
 // @flow strict
 
-import * as React from 'react';
+import React from 'react';
 import type { Node } from 'react';
 import { connect } from 'react-redux';
 import type { Task } from '../../store/store-types';
-import type { FloatingPosition } from './floating-task-editor-types';
+import type { FloatingPosition } from './task-editors-types';
 import { editTask as editTaskAction } from '../../store/actions';
 import TaskEditor from './TaskEditor';
 import type { EditTaskAction } from '../../store/action-types';
@@ -104,6 +104,7 @@ class FloatingTaskEditor extends React.PureComponent<Props, State> {
         initialTask={initialTask}
         autoSave={false}
         onSave={this.onSave}
+        className={styles.FloatingTaskEditor}
         refFunction={(e) => { this.editorElement = e; }}
       />
     );

@@ -1,6 +1,6 @@
 // @flow strict
 
-import * as React from 'react';
+import React from 'react';
 import type { Node } from 'react';
 import SubTaskBox from './SubTaskBox';
 import { markTask as markTaskAction, addSubtask as addSubtaskAction } from '../../store/actions';
@@ -11,20 +11,21 @@ import type { AddNewSubTaskAction, MarkTaskAction } from '../../store/action-typ
 import { fullConnect } from '../../store/react-redux-util';
 import CheckBox from '../UI/CheckBox';
 import styles from './TaskBox.css';
+import InlineTaskEditor from '../TaskEditors/InlineTaskEditor';
 
 type OwnProps = Task;
 type SubscribedProps = {| +colorConfig: ColorConfig |};
-type ActionProps = {|
+type DispatchedProps = {|
   +markTask: (id: number) => MarkTaskAction;
-  +addSubtask: (id: number, subTask: SubTask) => AddNewSubTaskAction;
+  +addSubTask: (id: number, subTask: SubTask) => AddNewSubTaskAction;
 |};
-type Props = {| ...OwnProps; ...SubscribedProps; ...ActionProps; |};
+type Props = {| ...OwnProps; ...SubscribedProps; ...DispatchedProps; |};
 
 type State = {| +value: string |};
 
 const actionCreators = {
   markTask: markTaskAction,
-  addSubtask: addSubtaskAction,
+  addSubTask: addSubtaskAction,
 };
 
 const mapStateToProps = ({ classColorConfig, tagColorConfig }: StoreState): SubscribedProps => ({
@@ -52,7 +53,7 @@ class TaskBox extends React.Component<Props, State> {
    */
   addNewSubtask = (event: Event) => {
     event.preventDefault();
-    const { id, addSubtask } = this.props;
+    const { id, addSubTask } = this.props;
     const { value } = this.state;
     const subtask = {
       id: (10 * new Date()) + Math.floor(10 * Math.random()),
@@ -60,7 +61,7 @@ class TaskBox extends React.Component<Props, State> {
       complete: false,
       inFocus: false,
     };
-    addSubtask(id, subtask);
+    addSubTask(id, subtask);
     this.setState({ value: '' });
   };
 
@@ -83,7 +84,7 @@ class TaskBox extends React.Component<Props, State> {
 
   render(): Node {
     const {
-      id, name, date, tag, complete, subtaskArray, colorConfig,
+      id, name, date, tag, complete, inFocus, subtaskArray, colorConfig,
     } = this.props;
     const { value } = this.state;
     const backgroundColor = colorConfig[tag];
@@ -123,6 +124,14 @@ class TaskBox extends React.Component<Props, State> {
         </form>
       </div>
     );
+    const task = { id, name, date, tag, complete, inFocus, subtaskArray };
+    return (
+      <div className={styles.TaskBox} style={{ backgroundColor }}>
+        {headerComponent}
+        <InlineTaskEditor initialTask={task} />
+      </div>
+    );
+    /*
     return (
       <div className={styles.TaskBox} style={{ backgroundColor }}>
         {headerComponent}
@@ -134,10 +143,11 @@ class TaskBox extends React.Component<Props, State> {
         {newSubtaskComponent}
       </div>
     );
+    */
   }
 }
 
-const ConnectedTaskBox = fullConnect<Props, OwnProps, SubscribedProps, ActionProps>(
+const ConnectedTaskBox = fullConnect<OwnProps, SubscribedProps, DispatchedProps>(
   mapStateToProps, actionCreators,
 )(TaskBox);
 export default ConnectedTaskBox;

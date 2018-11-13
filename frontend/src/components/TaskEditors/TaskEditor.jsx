@@ -1,21 +1,25 @@
 // @flow strict
 
-import * as React from 'react';
+import React from 'react';
 import type { Node } from 'react';
 import type {
   ColorConfig, State as StoreState, SubTask, Task,
 } from '../../store/store-types';
 import InternalMainTaskEditor from './InternalMainTaskEditor';
 import InternalSubTaskEditor from './InternalSubTaskEditor';
-import type { SimpleMainTask } from './floating-task-editor-types';
+import type { SimpleMainTask } from './task-editors-types';
 import styles from './TaskEditor.css';
 import { simpleConnect } from '../../store/react-redux-util';
 
 type OwnProps = {|
   +initialTask: Task; // The initial task to edit, as a starting point.
+  isReadOnly?: boolean; // whether the editor is read-only, which defaults to false.
   +autoSave: boolean; // whether to auto-save changes
   +onSave: (Task) => void; // called when the task is saved, either automatically or save by user.
-  +refFunction: (HTMLDivElement | null) => void; // used to get the div DOM element.
+  className?: string;
+  onFocus?: () => void;
+  onBlur?: () => void;
+  refFunction?: (HTMLDivElement | null) => void; // used to get the div DOM element.
 |};
 type SubscribedProps = {| +colors: ColorConfig; |};
 type Props = {| ...OwnProps; ...SubscribedProps |};
@@ -35,6 +39,8 @@ const mapStateToProps = ({ classColorConfig, tagColorConfig }: StoreState): Subs
 /**
  * The component of an standalone task editor. It is designed to be wrapped inside another
  * component to extend its functionality.
+ * You can read the docs for props above.
+ * When finished editing, the element should be unmounted.
  */
 class TaskEditor extends React.PureComponent<Props, State> {
   constructor(props: Props) {
@@ -44,6 +50,16 @@ class TaskEditor extends React.PureComponent<Props, State> {
       ...initialTask, backgroundColor: colors[initialTask.tag], mainTaskInputFocused: true,
     };
   }
+
+  /**
+   * Report whether the task editor is read only.
+   *
+   * @return {boolean} whether the task editor is read only.
+   */
+  isReadOnly = (): boolean => {
+    const { isReadOnly } = this.props;
+    return isReadOnly != null && isReadOnly;
+  };
 
   /**
    * Check whether a task has a good format.
@@ -132,25 +148,34 @@ class TaskEditor extends React.PureComponent<Props, State> {
   }
 
   render(): Node {
-    const { autoSave, refFunction } = this.props;
+    const {
+      autoSave, className, onFocus, onBlur, refFunction,
+    } = this.props;
     const { backgroundColor, mainTaskInputFocused, ...task } = this.state;
     const {
       id, subtaskArray, ...mainTask
     } = task;
+    const readOnly = this.isReadOnly();
+    const actualClassName = className == null
+      ? styles.TaskEditor : `${styles.TaskEditor} ${className}`;
     return (
       <div
-        className={styles.TaskEditor}
+        tabIndex={-1}
+        className={actualClassName}
         style={{ backgroundColor }}
+        onFocus={onFocus}
+        onBlur={onBlur}
         ref={refFunction}
       >
         <InternalMainTaskEditor
           {...mainTask}
-          focused={mainTaskInputFocused}
+          focused={!readOnly && mainTaskInputFocused}
           editTask={this.editMainTask}
           onFocusChange={f => this.setState({ mainTaskInputFocused: f })}
         />
         <InternalSubTaskEditor
-          focused={!mainTaskInputFocused}
+          focused={!readOnly && !mainTaskInputFocused}
+          isReadOnly={readOnly}
           subtaskArray={subtaskArray}
           editSubTasks={this.editSubTasks}
           onFocusChange={f => this.setState({ mainTaskInputFocused: !f })}
@@ -161,7 +186,7 @@ class TaskEditor extends React.PureComponent<Props, State> {
   }
 }
 
-const ConnectedTaskEditor = simpleConnect<Props, OwnProps, SubscribedProps>(
+const ConnectedTaskEditor = simpleConnect<OwnProps, SubscribedProps>(
   mapStateToProps,
 )(TaskEditor);
 export default ConnectedTaskEditor;

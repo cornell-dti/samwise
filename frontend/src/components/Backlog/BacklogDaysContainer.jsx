@@ -1,6 +1,6 @@
 // @flow strict
 
-import * as React from 'react';
+import React from 'react';
 import type { Node } from 'react';
 import { Grid } from 'semantic-ui-react';
 import type { BacklogDisplayOption, OneDayTask } from './backlog-types';
@@ -9,7 +9,7 @@ import type { State, ColorConfig, Task } from '../../store/store-types';
 import { simpleConnect } from '../../store/react-redux-util';
 import { buildDaysInBacklog } from './backlog-util';
 import type { DateToTaskMap } from './backlog-util';
-import type { FloatingPosition } from '../TaskEditors/floating-task-editor-types';
+import type { FloatingPosition } from '../TaskEditors/task-editors-types';
 import styles from './BacklogDayContainer.css';
 
 type OwnProps = {|
@@ -144,7 +144,7 @@ function BacklogDaysContainer(props: Props): Node {
   return <Grid className={inFourDaysView ? '' : styles.GridOtherViews} stackable>{rows}</Grid>;
 }
 
-const ConnectedBacklogDaysContainer = simpleConnect<Props, OwnProps, SubscribedProps>(
+const ConnectedBacklogDaysContainer = simpleConnect<OwnProps, SubscribedProps>(
   mapStateToProps,
 )(BacklogDaysContainer);
 export default ConnectedBacklogDaysContainer;

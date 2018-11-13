@@ -25,7 +25,7 @@ function TagColorConfigItemList({ tagColorConfig, configKeys }: Props): Node {
   );
 }
 
-const ConnectedTagColorConfigItemList = simpleConnect<Props, {}, Props>(
+const ConnectedTagColorConfigItemList = simpleConnect<{}, Props>(
   mapStateToProps,
 )(TagColorConfigItemList);
 export default ConnectedTagColorConfigItemList;

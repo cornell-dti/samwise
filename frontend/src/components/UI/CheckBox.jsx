@@ -1,7 +1,7 @@
 // @flow strict
 /* eslint-disable jsx-a11y/label-has-associated-control,jsx-a11y/label-has-for */
 
-import * as React from 'react';
+import React from 'react';
 import type { Node } from 'react';
 import styles from './CheckBox.css';
 

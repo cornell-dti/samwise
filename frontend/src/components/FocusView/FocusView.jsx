@@ -1,6 +1,6 @@
 // @flow strict
 
-import * as React from 'react';
+import React from 'react';
 import type { Node } from 'react';
 import { List } from 'semantic-ui-react';
 import TaskBox from './TaskBox';
@@ -32,5 +32,5 @@ function FocusView({ mainTaskArray }: Props): Node {
   return (<List>{listItems}</List>);
 }
 
-const ConnectedFocusView = simpleConnect<Props, {||}, Props>(mapStateToProps)(FocusView);
+const ConnectedFocusView = simpleConnect<{}, Props>(mapStateToProps)(FocusView);
 export default ConnectedFocusView;

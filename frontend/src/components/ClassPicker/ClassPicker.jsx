@@ -44,7 +44,7 @@ function ClassPicker({ onTagChange, classColorConfig, tagColorConfig }: Props): 
   );
 }
 
-const ConnectedClassPicker = simpleConnect<Props, OwnProps, SubscribedProps>(
+const ConnectedClassPicker = simpleConnect<OwnProps, SubscribedProps>(
   mapStateToProps,
 )(ClassPicker);
 export default ConnectedClassPicker;

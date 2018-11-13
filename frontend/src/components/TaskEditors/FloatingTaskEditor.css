@@ -1,6 +1,7 @@
 .FloatingTaskEditor {
-  color: white;
-  font-size: 12px;
+  width: 300px;
+  z-index: 7;
+  box-shadow: 0 5px 12px 0 rgba(0, 0, 0, 0.3);
 }
 
 .FloatingTaskEditorBackgroundBlocker {

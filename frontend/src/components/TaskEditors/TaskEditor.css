@@ -5,14 +5,12 @@
  */
 
 .TaskEditor {
-  z-index: 7;
   top: 0;
   left: 0;
-  width: 300px;
+  width: 100%;
   height: auto;
   color: white;
   font-size: 12px;
-  box-shadow: 0 5px 12px 0 rgba(0, 0, 0, 0.3);
 }
 
 .TaskEditorSubmitButtonRow {

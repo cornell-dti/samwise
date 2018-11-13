@@ -1,6 +1,6 @@
 // @flow strict
 
-import * as React from 'react';
+import React from 'react';
 import type { Node } from 'react';
 import type { BacklogDisplayOption } from './backlog-types';
 import styles from './BacklogHeaderButtons.css';

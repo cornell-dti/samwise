@@ -1,6 +1,6 @@
 // @flow strict
 
-import * as React from 'react';
+import React from 'react';
 import type { Node } from 'react';
 import { Icon } from 'semantic-ui-react';
 import type { BacklogDisplayOption } from '../Backlog/backlog-types';

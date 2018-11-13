@@ -1,9 +1,9 @@
 // @flow strict
 
-import * as React from 'react';
+import React from 'react';
 import BacklogTask from './BacklogTask';
 import type { ColoredTask, OneDayTask } from './backlog-types';
-import type { FloatingPosition } from '../TaskEditors/floating-task-editor-types';
+import type { FloatingPosition } from '../TaskEditors/task-editors-types';
 import styles from './BacklogDay.css';
 
 type Props = {|

@@ -1,6 +1,6 @@
 // @flow strict
 
-import * as React from 'react';
+import React from 'react';
 import type { Node } from 'react';
 import { connect } from 'react-redux';
 import { Icon } from 'semantic-ui-react';

@@ -1,12 +1,12 @@
 // @flow strict
 
+import React from 'react';
 import type { Node } from 'react';
-import * as React from 'react';
 import { Icon, Input } from 'semantic-ui-react';
 import Calendar from 'react-calendar';
 import ClassPicker from '../ClassPicker/ClassPicker';
 import CheckBox from '../UI/CheckBox';
-import type { SimpleMainTask } from './floating-task-editor-types';
+import type { SimpleMainTask } from './task-editors-types';
 import styles from './TaskEditor.css';
 
 type Props = {|

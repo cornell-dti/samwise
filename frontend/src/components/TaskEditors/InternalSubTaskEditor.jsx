@@ -1,6 +1,6 @@
 // @flow strict
 
-import * as React from 'react';
+import React from 'react';
 import type { Node } from 'react';
 import { Icon, Input } from 'semantic-ui-react';
 import type { SubTask } from '../../store/store-types';
@@ -9,6 +9,7 @@ import CheckBox from '../UI/CheckBox';
 
 type Props = {|
   +subtaskArray: SubTask[];
+  +isReadOnly: boolean;
   +focused: boolean;
   +editSubTasks: (subtaskArray: SubTask[]) => void;
   +onFocusChange: (focused: boolean) => void;
@@ -218,10 +219,10 @@ export default class InternalSubTaskEditor extends React.PureComponent<Props, St
   }
 
   render(): Node {
-    const { subtaskArray } = this.props;
+    const { subtaskArray, isReadOnly } = this.props;
     const existingSubTasks = subtaskArray.map((t: SubTask, i: number) => this.renderSubTask(t, i));
     const focusId = subtaskArray.length;
-    const newSubTaskEditor = (
+    const newSubTaskEditor = !isReadOnly && (
       <div className={styles.TaskEditorFlexibleContainer}>
         <Input
           className={styles.TaskEditorFlexibleInput}

@@ -1,6 +1,6 @@
 // @flow strict
 
-import * as React from 'react';
+import React from 'react';
 import type { Node } from 'react';
 import { connect } from 'react-redux';
 import { Icon } from 'semantic-ui-react';
@@ -18,7 +18,7 @@ import type {
   MarkTaskAction, RemoveTaskAction, ToggleTaskPinAction,
 } from '../../store/action-types';
 import CheckBox from '../UI/CheckBox';
-import type { FloatingPosition } from '../TaskEditors/floating-task-editor-types';
+import type { FloatingPosition } from '../TaskEditors/task-editors-types';
 
 type Props = {|
   ...ColoredTask;
