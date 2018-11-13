@@ -47,12 +47,16 @@ class InlineTaskEditor extends React.Component<Props, State> {
   /**
    * Handler when the component gains focus.
    */
-  onFocus = (): void => this.setState({ isReadOnly: false });
+  onFocus = (): void => {
+    this.setState({ isReadOnly: false });
+  };
 
   /**
    * Handler when the component loses focus.
    */
-  onBlur = (): void => this.setState({ isReadOnly: true });
+  onBlur = (): void => {
+    this.setState({ isReadOnly: true });
+  };
 
   /**
    * Handler when the task editor saves.

@@ -195,7 +195,7 @@ export default class InternalSubTaskEditor extends React.PureComponent<Props, St
    * @param {SubTask} subTask one subtask.
    * @param {number} index index of the subtask in the array.
    */
-  renderSubTask(subTask: SubTask, index: number): Node {
+  renderSubTask = (subTask: SubTask, index: number): Node => {
     const { id, name, complete } = subTask;
     return (
       <div key={id} className={styles.TaskEditorFlexibleContainer}>
@@ -215,11 +215,11 @@ export default class InternalSubTaskEditor extends React.PureComponent<Props, St
         <Icon name="delete" onClick={this.removeSubTask(id)} />
       </div>
     );
-  }
+  };
 
   render(): Node {
     const { subtaskArray, isReadOnly } = this.props;
-    const existingSubTasks = subtaskArray.map((t: SubTask, i: number) => this.renderSubTask(t, i));
+    const existingSubTasks = subtaskArray.map(this.renderSubTask);
     const focusId = subtaskArray.length;
     const newSubTaskEditor = !isReadOnly && (
       <div className={styles.TaskEditorFlexibleContainer}>

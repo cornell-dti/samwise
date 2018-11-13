@@ -17,8 +17,8 @@ type OwnProps = {|
   +autoSave: boolean; // whether to auto-save changes
   +onSave: (Task) => void; // called when the task is saved, either automatically or save by user.
   className?: string;
-  onFocus?: () => void;
-  onBlur?: () => void;
+  onFocus?: (event: SyntheticFocusEvent<HTMLElement>) => void;
+  onBlur?: (event: SyntheticFocusEvent<HTMLElement>) => void;
   refFunction?: (HTMLDivElement | null) => void; // used to get the div DOM element.
 |};
 type SubscribedProps = {| +colors: ColorConfig; |};
@@ -172,8 +172,10 @@ class TaskEditor extends React.PureComponent<Props, State> {
         tabIndex={-1}
         className={actualClassName}
         style={{ backgroundColor }}
+        onMouseOver={onFocus}
+        onMouseOut={onBlur}
         onFocus={onFocus}
-        onBlur={onBlur}
+        onBlur={() => {}}
         ref={refFunction}
       >
         <InternalMainTaskEditor
