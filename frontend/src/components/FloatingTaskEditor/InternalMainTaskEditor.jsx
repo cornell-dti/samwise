@@ -4,25 +4,16 @@ import type { Node } from 'react';
 import * as React from 'react';
 import { Icon, Input } from 'semantic-ui-react';
 import Calendar from 'react-calendar';
-import type { State as StoreState, ColorConfig } from '../../store/store-types';
-import styles from './FloatingTaskEditor.css';
 import ClassPicker from '../ClassPicker/ClassPicker';
 import CheckBox from '../UI/CheckBox';
-import { simpleConnect } from '../../store/react-redux-util';
 import type { SimpleMainTask } from './floating-task-editor-types';
-
-type OwnProps = {|
-  ...SimpleMainTask;
-  +focused: boolean;
-  +editTask: (task: SimpleMainTask, color?: string) => void;
-  +onFocusChange: (focused: boolean) => void;
-|};
-
-type SubscribedProps = {| colors: ColorConfig; |};
+import styles from './FloatingTaskEditor.css';
 
 type Props = {|
-  ...OwnProps;
-  ...SubscribedProps;
+  ...SimpleMainTask;
+  +focused: boolean;
+  +editTask: (task: SimpleMainTask) => void;
+  +onFocusChange: (focused: boolean) => void;
 |};
 
 type State = {|
@@ -30,14 +21,10 @@ type State = {|
   doesShowCalendarEditor: boolean;
 |};
 
-const mapStateToProps = ({ classColorConfig, tagColorConfig }: StoreState): SubscribedProps => ({
-  colors: { ...classColorConfig, ...tagColorConfig },
-});
-
 /**
  * InternalMainTaskEditor is intended for internal use for FloatingTaskEditor only.
  */
-class InternalMainTaskEditor extends React.Component<Props, State> {
+export default class InternalMainTaskEditor extends React.Component<Props, State> {
   constructor(props: Props) {
     super(props);
     this.state = { doesShowTagEditor: false, doesShowCalendarEditor: false };
@@ -79,7 +66,7 @@ class InternalMainTaskEditor extends React.Component<Props, State> {
    */
   toggleTagEditor = (): void => {
     this.setState((state: State) => ({
-      ...state, doesShowTagEditor: !state.doesShowTagEditor, doesShowCalendarEditor: false,
+      doesShowTagEditor: !state.doesShowTagEditor, doesShowCalendarEditor: false,
     }));
   };
 
@@ -88,7 +75,7 @@ class InternalMainTaskEditor extends React.Component<Props, State> {
    */
   toggleDateEditor = (): void => {
     this.setState((state: State) => ({
-      ...state, doesShowTagEditor: false, doesShowCalendarEditor: !state.doesShowCalendarEditor,
+      doesShowTagEditor: false, doesShowCalendarEditor: !state.doesShowCalendarEditor,
     }));
   };
 
@@ -107,7 +94,7 @@ class InternalMainTaskEditor extends React.Component<Props, State> {
     event.preventDefault();
     const name = event.currentTarget.value;
     const {
-      focused, editTask, onFocusChange, colors, ...task
+      focused, editTask, onFocusChange, ...task
     } = this.props;
     editTask({ ...task, name });
   };
@@ -117,7 +104,7 @@ class InternalMainTaskEditor extends React.Component<Props, State> {
    */
   editComplete = (): void => {
     const {
-      focused, editTask, onFocusChange, colors, ...task
+      focused, editTask, onFocusChange, ...task
     } = this.props;
     editTask({ ...task, complete: !task.complete });
   };
@@ -127,7 +114,7 @@ class InternalMainTaskEditor extends React.Component<Props, State> {
    */
   editInFocus = (): void => {
     const {
-      focused, editTask, onFocusChange, colors, ...task
+      focused, editTask, onFocusChange, ...task
     } = this.props;
     editTask({ ...task, complete: !task.inFocus });
   };
@@ -139,10 +126,10 @@ class InternalMainTaskEditor extends React.Component<Props, State> {
    */
   editTaskTag = (tag: string): void => {
     const {
-      focused, editTask, onFocusChange, colors, ...task
+      focused, editTask, onFocusChange, ...task
     } = this.props;
-    editTask({ ...task, tag }, colors[tag]);
-    this.setState((state: State) => ({ ...state, doesShowTagEditor: false }));
+    editTask({ ...task, tag });
+    this.setState({ doesShowTagEditor: false });
   };
 
   /**
@@ -152,10 +139,10 @@ class InternalMainTaskEditor extends React.Component<Props, State> {
    */
   editTaskDate = (dateString: string): void => {
     const {
-      focused, editTask, onFocusChange, colors, ...task
+      focused, editTask, onFocusChange, ...task
     } = this.props;
     editTask({ ...task, date: new Date(dateString) });
-    this.setState((state: State) => ({ ...state, doesShowCalendarEditor: false }));
+    this.setState({ doesShowCalendarEditor: false });
   };
 
   /*
@@ -168,9 +155,7 @@ class InternalMainTaskEditor extends React.Component<Props, State> {
    * Return the rendered header element.
    */
   renderHeader(): Node {
-    const {
-      tag, date, colors,
-    } = this.props;
+    const { tag, date } = this.props;
     const {
       doesShowTagEditor, doesShowCalendarEditor,
     } = this.state;
@@ -192,11 +177,10 @@ class InternalMainTaskEditor extends React.Component<Props, State> {
       <div className={headerClassNames}>
         <span className={styles.FloatingTaskEditorTag}>
           <label
-            htmlFor="floating-task-tag-editor-checkbox"
+            htmlFor="task-tag-editor-checkbox"
             className={styles.FloatingTaskEditorTagLabel}
-            style={{ backgroundColor: colors[tag] }}
           >
-            <input id="floating-task-tag-editor-checkbox" type="checkbox" />
+            <input id="task-tag-editor-checkbox" type="checkbox" />
             {tag}
           </label>
         </span>
@@ -250,8 +234,3 @@ class InternalMainTaskEditor extends React.Component<Props, State> {
     );
   }
 }
-
-const ConnectedInternalMainTaskFloatingEditor = simpleConnect<Props, OwnProps, SubscribedProps>(
-  mapStateToProps,
-)(InternalMainTaskEditor);
-export default ConnectedInternalMainTaskFloatingEditor;

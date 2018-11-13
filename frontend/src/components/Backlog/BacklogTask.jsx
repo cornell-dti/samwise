@@ -44,24 +44,18 @@ class BacklogTask extends React.Component<Props> {
    * Get an onClickHandler when the element is clicked.
    * This methods ensure that only clicking on task text counts.
    *
-   * @param {Function} opener the opener passed by the floating task editor.
-   * @return {Function} the onClick handler.
+   * @param {function(): void} opener the opener passed by the floating task editor.
+   * @return {function} the onClick handler.
    */
-  getOnClickHandler(opener: (Task, string) => void): (SyntheticEvent<HTMLElement>) => void {
-    const {
-      doesShowCompletedTasks, doesRenderSubTasks, taskEditorPosition,
-      markTask, toggleTaskPin, removeTask, color, ...task
-    } = this.props;
-    return (event: SyntheticEvent<HTMLElement>) => {
-      if (event.target instanceof HTMLElement) {
-        const elem: HTMLElement = event.target;
-        // only accept click on text.
-        if (elem.className === styles.BacklogTaskText) {
-          opener(task, color);
-        }
+  getOnClickHandler = (opener: () => void) => (event: SyntheticEvent<HTMLElement>): void => {
+    if (event.target instanceof HTMLElement) {
+      const elem: HTMLElement = event.target;
+      // only accept click on text.
+      if (elem.className === styles.BacklogTaskText) {
+        opener();
       }
-    };
-  }
+    }
+  };
 
   /**
    * Render the checkbox element.
@@ -157,7 +151,7 @@ class BacklogTask extends React.Component<Props> {
 
   render(): Node {
     // Construct the trigger for the floating task editor.
-    const trigger = (opener: (Task, string) => void): Node => {
+    const trigger = (opener: () => void): Node => {
       const onClickHandler = this.getOnClickHandler(opener);
       return (
         <div
@@ -172,8 +166,13 @@ class BacklogTask extends React.Component<Props> {
         </div>
       );
     };
-    const { taskEditorPosition } = this.props;
-    return (<FloatingTaskEditor position={taskEditorPosition} trigger={trigger} />);
+    const {
+      doesShowCompletedTasks, doesRenderSubTasks, taskEditorPosition,
+      markTask, toggleTaskPin, removeTask, color, ...task
+    } = this.props;
+    return (
+      <FloatingTaskEditor position={taskEditorPosition} initialTask={task} trigger={trigger} />
+    );
   }
 }
 

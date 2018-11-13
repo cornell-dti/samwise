@@ -13,14 +13,14 @@ import CheckBox from '../UI/CheckBox';
 import styles from './TaskBox.css';
 
 type OwnProps = Task;
-type SubscribedProps = {| colorConfig: ColorConfig |};
+type SubscribedProps = {| +colorConfig: ColorConfig |};
 type ActionProps = {|
-  markTask: (id: number) => MarkTaskAction;
-  addSubtask: (id: number, subTask: SubTask) => AddNewSubTaskAction;
+  +markTask: (id: number) => MarkTaskAction;
+  +addSubtask: (id: number, subTask: SubTask) => AddNewSubTaskAction;
 |};
 type Props = {| ...OwnProps; ...SubscribedProps; ...ActionProps; |};
 
-type State = {| value: string |};
+type State = {| +value: string |};
 
 const actionCreators = {
   markTask: markTaskAction,
