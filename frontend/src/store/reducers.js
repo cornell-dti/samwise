@@ -97,7 +97,15 @@ function markSubtask(mainTaskArray: Task[], taskID: number, subtaskID: number): 
  */
 function toggleTaskPin(mainTaskArray: Task[], taskID: number): Task[] {
   return mainTaskArray
-    .map((task: Task) => (task.id === taskID ? { ...task, inFocus: !task.inFocus } : task));
+    .map((task: Task) => (
+      task.id === taskID ? {
+        ...task,
+        inFocus: !task.inFocus,
+        subtaskArray: task.subtaskArray.map(subTask => ({
+          ...subTask, inFocus: false,
+        })),
+      } : task
+    ));
 }
 
 /**
@@ -205,10 +213,20 @@ function colorConfigReducer(
  * @return {State} the new state.
  */
 function editTask(state: State, action: EditTaskAction) {
-  const newTask = action.task;
+  const t = action.task;
+  const newTask = {
+    ...t,
+    subtaskArray: t.subtaskArray.map((subTask: SubTask) => ({
+      ...subTask,
+      complete: t.complete || subTask.complete,
+      inFocus: !t.inFocus && subTask.inFocus,
+    })),
+  };
   return {
     ...state,
-    mainTaskArray: state.mainTaskArray.map<Task>(t => (t.id === newTask.id ? newTask : t)),
+    mainTaskArray: state.mainTaskArray.map<Task>((task: Task) => (
+      task.id === newTask.id ? newTask : task
+    )),
   };
 }
 

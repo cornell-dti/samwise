@@ -13,7 +13,7 @@ import {
 } from '../../store/actions';
 import BacklogSubTask from './BacklogSubTask';
 import FloatingTaskEditor from '../TaskEditors/FloatingTaskEditor';
-import type { SubTask, Task } from '../../store/store-types';
+import type { SubTask } from '../../store/store-types';
 import type {
   MarkTaskAction, RemoveTaskAction, ToggleTaskPinAction,
 } from '../../store/action-types';
