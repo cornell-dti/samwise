@@ -10,6 +10,7 @@ import TaskEditor from './TaskEditor';
 
 type Props = {|
   +initialTask: Task; // the initial task given to the editor.
+  className?: string; // additional class names applied to the editor.
   +editTask: (task: Task) => EditTaskAction;
 |};
 
@@ -29,6 +30,10 @@ const doSaveInterval = 2000;
  * The task editor used to edit task inline, activated on focus.
  */
 class InlineTaskEditor extends React.Component<Props, State> {
+  static defaultProps = {
+    className: undefined,
+  };
+
   constructor(props) {
     super(props);
     this.state = { isReadOnly: true };
@@ -80,7 +85,7 @@ class InlineTaskEditor extends React.Component<Props, State> {
   };
 
   render(): Node {
-    const { initialTask } = this.props;
+    const { initialTask, className } = this.props;
     const { isReadOnly } = this.state;
     // To un-mount the editor when finished editing.
     return (
@@ -89,6 +94,7 @@ class InlineTaskEditor extends React.Component<Props, State> {
         isReadOnly={isReadOnly}
         autoSave
         onSave={this.onSave}
+        className={className}
         onFocus={this.onFocus}
         onBlur={this.onBlur}
       />

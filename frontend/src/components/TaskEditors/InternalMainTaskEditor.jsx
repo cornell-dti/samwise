@@ -200,27 +200,17 @@ export default class InternalMainTaskEditor extends React.PureComponent<Props, S
     );
     return (
       <div className={headerClassNames}>
-        <span className={styles.TaskEditorTag}>
-          <label
-            htmlFor="task-tag-editor-checkbox"
-            className={styles.TaskEditorTagLabel}
-          >
-            <input id="task-tag-editor-checkbox" type="checkbox" />
-            {tag}
-          </label>
-        </span>
+        <button type="button" className={styles.TaskEditorTag} onClick={this.toggleTagEditor}>
+          {tag}
+        </button>
+        {tagPickerElementOpt}
         <span className={styles.TaskEditorFlexiblePadding} />
-        <Icon
-          name="tag"
-          className={styles.TaskEditorIconButton}
-          onClick={this.toggleTagEditor}
-        />
         <Icon
           name="calendar"
           className={styles.TaskEditorIconButton}
           onClick={this.toggleDateEditor}
         />
-        {tagPickerElementOpt}
+        <span>{`${date.getMonth() + 1}/${date.getDate()}`}</span>
         {calendarElementOpt}
       </div>
     );
