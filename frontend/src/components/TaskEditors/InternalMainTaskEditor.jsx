@@ -2,7 +2,7 @@
 
 import React from 'react';
 import type { Node } from 'react';
-import { Icon, Input } from 'semantic-ui-react';
+import { Icon } from 'semantic-ui-react';
 import Calendar from 'react-calendar';
 import ClassPicker from '../ClassPicker/ClassPicker';
 import CheckBox from '../UI/CheckBox';
@@ -35,6 +35,29 @@ export default class InternalMainTaskEditor extends React.PureComponent<Props, S
    * Part 1: Focus Methods
    * --------------------------------------------------------------------------------
    */
+
+  componentDidMount() {
+    this.handlePotentialFocusChange();
+  }
+
+  componentDidUpdate() {
+    this.handlePotentialFocusChange();
+  }
+
+  /**
+   * Handle a potential focus change when the user switch between inputs.
+   */
+  handlePotentialFocusChange = (): void => {
+    const e = this.inputElement;
+    const { focused } = this.props;
+    if (e != null) {
+      if (focused) {
+        e.focus();
+      } else {
+        e.blur();
+      }
+    }
+  };
 
   /**
    * Handle a potential cancel focus request when the user press some key, which
@@ -151,6 +174,8 @@ export default class InternalMainTaskEditor extends React.PureComponent<Props, S
    * --------------------------------------------------------------------------------
    */
 
+  inputElement: ?HTMLInputElement;
+
   /**
    * Return the rendered header element.
    */
@@ -213,11 +238,11 @@ export default class InternalMainTaskEditor extends React.PureComponent<Props, S
           checked={complete}
           onChange={this.editComplete}
         />
-        <Input
+        <input
           className={styles.TaskEditorFlexibleInput}
           placeholder="Main Task"
           value={name}
-          autoFocus={focused}
+          ref={(e) => { this.inputElement = e; }}
           onKeyDown={this.cancelFocus}
           onChange={this.editTaskName}
         />

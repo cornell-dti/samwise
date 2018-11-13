@@ -2,7 +2,7 @@
 
 import React from 'react';
 import type { Node } from 'react';
-import { Icon, Input } from 'semantic-ui-react';
+import { Icon } from 'semantic-ui-react';
 import type { SubTask } from '../../store/store-types';
 import styles from './TaskEditor.css';
 import CheckBox from '../UI/CheckBox';
@@ -204,11 +204,10 @@ export default class InternalSubTaskEditor extends React.PureComponent<Props, St
           checked={complete}
           onChange={this.editSubTaskComplete(id)}
         />
-        <Input
+        <input
           ref={this.registerInputToFocus(index)}
           className={styles.TaskEditorFlexibleInput}
           placeholder="Your Sub-Task"
-          focusid={index}
           value={name}
           onKeyDown={this.switchFocus(index)}
           onChange={this.editSubTask(id)}
@@ -224,7 +223,7 @@ export default class InternalSubTaskEditor extends React.PureComponent<Props, St
     const focusId = subtaskArray.length;
     const newSubTaskEditor = !isReadOnly && (
       <div className={styles.TaskEditorFlexibleContainer}>
-        <Input
+        <input
           className={styles.TaskEditorFlexibleInput}
           ref={this.registerInputToFocus(focusId)}
           placeholder="A new subtask"

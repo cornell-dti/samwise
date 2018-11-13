@@ -86,7 +86,7 @@ class TaskBox extends React.Component<Props, State> {
     const {
       id, name, date, tag, complete, inFocus, subtaskArray, colorConfig,
     } = this.props;
-    const { value } = this.state;
+    // const { value } = this.state;
     const backgroundColor = colorConfig[tag];
     const headerComponent = (
       <div className={styles.TaskBoxTagHeader}>
@@ -95,6 +95,7 @@ class TaskBox extends React.Component<Props, State> {
         <span>{`${date.getMonth() + 1}/${date.getDate()}`}</span>
       </div>
     );
+    /*
     const mainTaskCheckboxComponent = (
       <CheckBox
         className={styles.TaskBoxCheckBox}
@@ -124,14 +125,6 @@ class TaskBox extends React.Component<Props, State> {
         </form>
       </div>
     );
-    const task = { id, name, date, tag, complete, inFocus, subtaskArray };
-    return (
-      <div className={styles.TaskBox} style={{ backgroundColor }}>
-        {headerComponent}
-        <InlineTaskEditor initialTask={task} />
-      </div>
-    );
-    /*
     return (
       <div className={styles.TaskBox} style={{ backgroundColor }}>
         {headerComponent}
@@ -144,6 +137,15 @@ class TaskBox extends React.Component<Props, State> {
       </div>
     );
     */
+    const task = {
+      id, name, date, tag, complete, inFocus, subtaskArray,
+    };
+    return (
+      <div className={styles.TaskBox} style={{ backgroundColor }}>
+        {headerComponent}
+        <InlineTaskEditor initialTask={task} />
+      </div>
+    );
   }
 }
 

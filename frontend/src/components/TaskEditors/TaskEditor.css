@@ -58,11 +58,8 @@
   flex: 1 1 auto;
 }
 
-.TaskEditorFlexibleInput {
+input.TaskEditorFlexibleInput {
   flex: 1 1 auto;
-}
-
-.TaskEditorFlexibleInput > input, .TaskEditorFlexibleInput > div > input {
   margin-left: 0.5em !important;
   padding: 0.5em 0 !important;
   border-radius: 0 !important;
@@ -73,12 +70,12 @@
   border-bottom: 1px solid transparent !important;
 }
 
-.TaskEditorFlexibleInput > input:focus-within {
+input.TaskEditorFlexibleInput:focus-within {
   border-bottom-color: white !important;
 }
 
-.TaskEditorFlexibleInput > input::placeholder,
-.TaskEditorFlexibleInput > input:focus-within::placeholder {
+input.TaskEditorFlexibleInput::placeholder,
+input.TaskEditorFlexibleInput:focus-within::placeholder {
   color: white !important;
 }
 

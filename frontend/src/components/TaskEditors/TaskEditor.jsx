@@ -40,7 +40,6 @@ const mapStateToProps = ({ classColorConfig, tagColorConfig }: StoreState): Subs
  * The component of an standalone task editor. It is designed to be wrapped inside another
  * component to extend its functionality.
  * You can read the docs for props above.
- * When finished editing, the element should be unmounted.
  */
 class TaskEditor extends React.PureComponent<Props, State> {
   constructor(props: Props) {
@@ -49,6 +48,16 @@ class TaskEditor extends React.PureComponent<Props, State> {
     this.state = {
       ...initialTask, backgroundColor: colors[initialTask.tag], mainTaskInputFocused: true,
     };
+  }
+
+  componentWillReceiveProps(nextProps: Props) {
+    // This methods ensure that the stuff inside the editor is always the latest from store.
+    // Since we implement task in an immutable data structure, a shallow equality comparison is
+    // enough.
+    const { initialTask } = this.props;
+    if (initialTask !== nextProps.initialTask) {
+      this.setState({ ...nextProps.initialTask });
+    }
   }
 
   /**
