@@ -10,7 +10,7 @@ import InternalMainTaskEditor from './InternalMainTaskEditor';
 import InternalSubTaskEditor from './InternalSubTaskEditor';
 import type { EditTaskAction } from '../../store/action-types';
 import type { SimpleMainTask } from './floating-task-editor-types';
-import styles from './FloatingTaskEditor.css';
+import styles from './TaskEditor.css';
 import { fullConnect } from '../../store/react-redux-util';
 
 type OwnProps = {|
@@ -122,16 +122,16 @@ class TaskEditor extends React.Component<Props, State> {
    */
   renderManualSubmitComponent(): Node {
     return (
-      <div className={styles.FloatingTaskEditorSubmitButtonRow}>
-        <span className={styles.FloatingTaskEditorFlexiblePadding} />
+      <div className={styles.TaskEditorSubmitButtonRow}>
+        <span className={styles.TaskEditorFlexiblePadding} />
         <div
-          className={styles.FloatingEditorSaveButton}
+          className={styles.TaskEditorSaveButton}
           role="button"
           tabIndex={0}
           onClick={this.submitChanges}
           onKeyDown={this.submitChanges}
         >
-          <span className={styles.FloatingEditorSaveButtonText}>Save</span>
+          <span className={styles.TaskEditorSaveButtonText}>Save</span>
         </div>
       </div>
     );
@@ -145,7 +145,7 @@ class TaskEditor extends React.Component<Props, State> {
     } = task;
     return (
       <div
-        className={styles.EmbeddedFloatingTaskEditor}
+        className={styles.TaskEditor}
         style={{ backgroundColor }}
         ref={refFunction}
       >

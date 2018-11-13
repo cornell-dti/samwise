@@ -7,7 +7,7 @@ import Calendar from 'react-calendar';
 import ClassPicker from '../ClassPicker/ClassPicker';
 import CheckBox from '../UI/CheckBox';
 import type { SimpleMainTask } from './floating-task-editor-types';
-import styles from './FloatingTaskEditor.css';
+import styles from './TaskEditor.css';
 
 type Props = {|
   ...SimpleMainTask;
@@ -159,40 +159,40 @@ export default class InternalMainTaskEditor extends React.Component<Props, State
     const {
       doesShowTagEditor, doesShowCalendarEditor,
     } = this.state;
-    const headerClassNames = `${styles.FloatingTaskEditorFlexibleContainer} ${styles.FloatingTaskEditorHeader}`;
+    const headerClassNames = `${styles.TaskEditorFlexibleContainer} ${styles.TaskEditorHeader}`;
     const tagPickerElementOpt = doesShowTagEditor && (
-      <div className={styles.FloatingTaskEditorTagEditor}>
+      <div className={styles.TaskEditorTagEditor}>
         <ClassPicker onTagChange={this.editTaskTag} />
       </div>
     );
     const calendarElementOpt = doesShowCalendarEditor && (
       <Calendar
         value={date}
-        className={styles.FloatingTaskEditorCalendar}
+        className={styles.TaskEditorCalendar}
         minDate={new Date()}
         onChange={this.editTaskDate}
       />
     );
     return (
       <div className={headerClassNames}>
-        <span className={styles.FloatingTaskEditorTag}>
+        <span className={styles.TaskEditorTag}>
           <label
             htmlFor="task-tag-editor-checkbox"
-            className={styles.FloatingTaskEditorTagLabel}
+            className={styles.TaskEditorTagLabel}
           >
             <input id="task-tag-editor-checkbox" type="checkbox" />
             {tag}
           </label>
         </span>
-        <span className={styles.FloatingTaskEditorFlexiblePadding} />
+        <span className={styles.TaskEditorFlexiblePadding} />
         <Icon
           name="tag"
-          className={styles.FloatingTaskEditorIconButton}
+          className={styles.TaskEditorIconButton}
           onClick={this.toggleTagEditor}
         />
         <Icon
           name="calendar"
-          className={styles.FloatingTaskEditorIconButton}
+          className={styles.TaskEditorIconButton}
           onClick={this.toggleDateEditor}
         />
         {tagPickerElementOpt}
@@ -207,14 +207,14 @@ export default class InternalMainTaskEditor extends React.Component<Props, State
   renderMainTaskEdit(): Node {
     const { name, complete, focused } = this.props;
     return (
-      <div className={styles.FloatingTaskEditorFlexibleContainer}>
+      <div className={styles.TaskEditorFlexibleContainer}>
         <CheckBox
-          className={styles.FloatingTaskEditorCheckBox}
+          className={styles.TaskEditorCheckBox}
           checked={complete}
           onChange={this.editComplete}
         />
         <Input
-          className={styles.FloatingTaskEditorFlexibleInput}
+          className={styles.TaskEditorFlexibleInput}
           placeholder="Main Task"
           value={name}
           autoFocus={focused}

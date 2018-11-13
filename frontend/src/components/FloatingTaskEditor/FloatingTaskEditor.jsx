@@ -4,8 +4,8 @@ import * as React from 'react';
 import type { Node } from 'react';
 import type { Task } from '../../store/store-types';
 import type { FloatingPosition } from './floating-task-editor-types';
-import styles from './FloatingTaskEditor.css';
 import TaskEditor from './TaskEditor';
+import styles from './FloatingTaskEditor.css';
 
 type Props = {|
   +position: FloatingPosition;

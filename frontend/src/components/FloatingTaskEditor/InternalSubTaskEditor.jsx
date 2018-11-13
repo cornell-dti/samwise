@@ -4,7 +4,7 @@ import * as React from 'react';
 import type { Node } from 'react';
 import { Icon, Input } from 'semantic-ui-react';
 import type { SubTask } from '../../store/store-types';
-import styles from './FloatingTaskEditor.css';
+import styles from './TaskEditor.css';
 import CheckBox from '../UI/CheckBox';
 
 type Props = {|
@@ -197,15 +197,15 @@ export default class InternalSubTaskEditor extends React.Component<Props, State>
   renderSubTask(subTask: SubTask, index: number): Node {
     const { id, name, complete } = subTask;
     return (
-      <div key={id} className={styles.FloatingTaskEditorFlexibleContainer}>
+      <div key={id} className={styles.TaskEditorFlexibleContainer}>
         <CheckBox
-          className={styles.FloatingTaskEditorCheckBox}
+          className={styles.TaskEditorCheckBox}
           checked={complete}
           onChange={this.editSubTaskComplete(id)}
         />
         <Input
           ref={this.registerInputToFocus(index)}
-          className={styles.FloatingTaskEditorFlexibleInput}
+          className={styles.TaskEditorFlexibleInput}
           placeholder="Your Sub-Task"
           focusid={index}
           value={name}
@@ -222,9 +222,9 @@ export default class InternalSubTaskEditor extends React.Component<Props, State>
     const existingSubTasks = subtaskArray.map((t: SubTask, i: number) => this.renderSubTask(t, i));
     const focusId = subtaskArray.length;
     const newSubTaskEditor = (
-      <div className={styles.FloatingTaskEditorFlexibleContainer}>
+      <div className={styles.TaskEditorFlexibleContainer}>
         <Input
-          className={styles.FloatingTaskEditorFlexibleInput}
+          className={styles.TaskEditorFlexibleInput}
           ref={this.registerInputToFocus(focusId)}
           placeholder="A new subtask"
           value=""
@@ -233,7 +233,7 @@ export default class InternalSubTaskEditor extends React.Component<Props, State>
       </div>
     );
     return (
-      <div className={styles.FloatingTaskEditorSubTasksIndentedContainer}>
+      <div className={styles.TaskEditorSubTasksIndentedContainer}>
         {existingSubTasks}
         {newSubTaskEditor}
       </div>
