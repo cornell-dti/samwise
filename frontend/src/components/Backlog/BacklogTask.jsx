@@ -22,8 +22,8 @@ import type { FloatingPosition } from '../TaskEditors/task-editors-types';
 
 type Props = {|
   ...ColoredTask;
+  +inFourDaysView: boolean;
   +doesShowCompletedTasks: boolean;
-  +doesRenderSubTasks: boolean;
   +taskEditorPosition: FloatingPosition;
   +markTask: (taskId: number) => MarkTaskAction;
   +toggleTaskPin: (taskId: number) => ToggleTaskPinAction;
@@ -122,13 +122,13 @@ class BacklogTask extends React.PureComponent<Props> {
    * @return {Node} the information for main task.
    */
   renderMainTaskInfo(): Node {
-    const { color } = this.props;
+    const { color, inFourDaysView } = this.props;
     return (
       <div className={styles.BacklogTaskMainWrapper} style={{ backgroundColor: color }}>
-        {this.renderCheckBox()}
+        {inFourDaysView && this.renderCheckBox()}
         {this.renderTaskName()}
-        {this.renderBookmarkIcon()}
-        {this.renderRemoveTaskIcon()}
+        {inFourDaysView && this.renderBookmarkIcon()}
+        {inFourDaysView && this.renderRemoveTaskIcon()}
       </div>
     );
   }
@@ -139,10 +139,8 @@ class BacklogTask extends React.PureComponent<Props> {
    * @return {Node} the information for subtasks.
    */
   renderSubTasks(): Node {
-    const {
-      id, subtaskArray, doesShowCompletedTasks, doesRenderSubTasks,
-    } = this.props;
-    return doesRenderSubTasks && subtaskArray
+    const { id, subtaskArray, doesShowCompletedTasks } = this.props;
+    return subtaskArray
       .filter((subTask: SubTask) => (doesShowCompletedTasks || !subTask.complete))
       .map((subTask: SubTask) => (
         <BacklogSubTask key={subTask.id} mainTaskId={id} {...subTask} />
@@ -150,12 +148,24 @@ class BacklogTask extends React.PureComponent<Props> {
   }
 
   render(): Node {
+    const {
+      inFourDaysView, doesShowCompletedTasks, taskEditorPosition,
+      markTask, toggleTaskPin, removeTask, color, ...task
+    } = this.props;
+    if (!inFourDaysView) {
+      return (
+        <div className={styles.BacklogTask}>
+          {this.renderMainTaskInfo()}
+        </div>
+      );
+    }
     // Construct the trigger for the floating task editor.
     const trigger = (opener: () => void): Node => {
       const onClickHandler = this.getOnClickHandler(opener);
       return (
         <div
           className={styles.BacklogTask}
+          style={{ cursor: 'pointer' }}
           role="button"
           tabIndex={-1}
           onClick={onClickHandler}
@@ -166,10 +176,6 @@ class BacklogTask extends React.PureComponent<Props> {
         </div>
       );
     };
-    const {
-      doesShowCompletedTasks, doesRenderSubTasks, taskEditorPosition,
-      markTask, toggleTaskPin, removeTask, color, ...task
-    } = this.props;
     return (
       <FloatingTaskEditor position={taskEditorPosition} initialTask={task} trigger={trigger} />
     );

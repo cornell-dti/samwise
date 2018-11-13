@@ -25,7 +25,7 @@
 
 .BacklogTaskCheckBox {
   margin-left: 8px;
-  margin-right: 8px;
+  margin-right: 5px;
 }
 
 .BacklogTaskIcon {
@@ -37,7 +37,7 @@
 
 .BacklogTaskText {
   flex: 1 1 auto;
-  cursor: pointer;
+  margin-left: 3px;
   font-size: 12px;
   font-weight: normal;
   overflow: hidden;

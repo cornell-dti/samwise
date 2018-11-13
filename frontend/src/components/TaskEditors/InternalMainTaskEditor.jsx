@@ -168,6 +168,13 @@ export default class InternalMainTaskEditor extends React.PureComponent<Props, S
     this.setState({ doesShowCalendarEditor: false });
   };
 
+  /**
+   * Remove the task.
+   */
+  removeTask = (): void => {
+
+  };
+
   /*
    * --------------------------------------------------------------------------------
    * Part 4: Render Methods
@@ -241,6 +248,7 @@ export default class InternalMainTaskEditor extends React.PureComponent<Props, S
           className={styles.TaskEditorIcon}
           onClick={this.editInFocus}
         />
+        <Icon className={styles.TaskEditorIcon} name="delete" onClick={this.removeTask} />
       </div>
     );
   }

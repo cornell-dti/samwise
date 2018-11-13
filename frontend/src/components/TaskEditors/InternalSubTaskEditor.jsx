@@ -209,7 +209,9 @@ export default class InternalSubTaskEditor extends React.PureComponent<Props, St
    * @param {number} index index of the subtask in the array.
    */
   renderSubTask = (subTask: SubTask, index: number): Node => {
-    const { id, name, complete, inFocus } = subTask;
+    const {
+      id, name, complete, inFocus,
+    } = subTask;
     return (
       <div key={id} className={styles.TaskEditorFlexibleContainer}>
         <CheckBox

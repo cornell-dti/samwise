@@ -92,8 +92,8 @@ export default class BacklogDay extends React.PureComponent<Props, State> {
       .map((t: ColoredTask) => (
         <BacklogTask
           key={t.id}
+          inFourDaysView={inFourDaysView}
           doesShowCompletedTasks={doesShowCompletedTasks}
-          doesRenderSubTasks={doesRenderSubTasks}
           taskEditorPosition={taskEditorPosition}
           {...t}
         />
