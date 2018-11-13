@@ -36,7 +36,7 @@ const mapStateToProps = ({ classColorConfig, tagColorConfig }: StoreState): Subs
  * The component of an standalone task editor. It is designed to be wrapped inside another
  * component to extend its functionality.
  */
-class TaskEditor extends React.Component<Props, State> {
+class TaskEditor extends React.PureComponent<Props, State> {
   constructor(props: Props) {
     super(props);
     const { initialTask, colors } = props;

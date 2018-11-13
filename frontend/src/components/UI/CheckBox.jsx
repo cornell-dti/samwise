@@ -17,7 +17,7 @@ type State = {| +checked: boolean |};
 /**
  * This is the checkbox that implements the minimalist design.
  */
-export default class CheckBox extends React.Component<Props, State> {
+export default class CheckBox extends React.PureComponent<Props, State> {
   static defaultProps = {
     className: '',
     checked: false,

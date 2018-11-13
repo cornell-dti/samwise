@@ -26,7 +26,7 @@ const randomId = (): number => ((10 * new Date()) + Math.floor(1000 * Math.rando
 /**
  * InternalSubTaskEditor is intended for internal use for TaskEditor only.
  */
-export default class InternalSubTaskEditor extends React.Component<Props, State> {
+export default class InternalSubTaskEditor extends React.PureComponent<Props, State> {
   constructor(props: Props) {
     super(props);
     this.state = { autoFocusId: 0 };

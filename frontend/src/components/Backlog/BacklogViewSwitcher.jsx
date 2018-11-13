@@ -11,7 +11,7 @@ type State = {| +displayOption: BacklogDisplayOption |};
 /**
  * The component used to render a switcher for different backlog views.
  */
-export default class BacklogViewSwitcher extends React.Component<Props, State> {
+export default class BacklogViewSwitcher extends React.PureComponent<Props, State> {
   constructor(props: Props) {
     super(props);
     this.state = { displayOption: 'FOUR_DAYS' };

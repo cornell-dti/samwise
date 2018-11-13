@@ -39,7 +39,7 @@ const actionCreators = {
 /**
  * The component used to render one task in backlog day.
  */
-class BacklogTask extends React.Component<Props> {
+class BacklogTask extends React.PureComponent<Props> {
   /**
    * Get an onClickHandler when the element is clicked.
    * This methods ensure that only clicking on task text counts.

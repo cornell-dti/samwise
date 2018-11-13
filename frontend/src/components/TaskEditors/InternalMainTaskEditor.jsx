@@ -24,7 +24,7 @@ type State = {|
 /**
  * InternalMainTaskEditor is intended for internal use for TaskEditor only.
  */
-export default class InternalMainTaskEditor extends React.Component<Props, State> {
+export default class InternalMainTaskEditor extends React.PureComponent<Props, State> {
   constructor(props: Props) {
     super(props);
     this.state = { doesShowTagEditor: false, doesShowCalendarEditor: false };

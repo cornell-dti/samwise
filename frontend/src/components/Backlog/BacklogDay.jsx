@@ -17,7 +17,7 @@ type State = {| doesOverflow: boolean; |}
 /**
  * The component that renders all tasks on a certain day.
  */
-export default class BacklogDay extends React.Component<Props, State> {
+export default class BacklogDay extends React.PureComponent<Props, State> {
   constructor(props: Props) {
     super(props);
     this.state = { doesOverflow: false };

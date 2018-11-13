@@ -32,7 +32,7 @@ type State = {| +open: boolean; |};
  * />
  * ```
  */
-class FloatingTaskEditor extends React.Component<Props, State> {
+class FloatingTaskEditor extends React.PureComponent<Props, State> {
   constructor(props: Props) {
     super(props);
     this.state = { open: false };

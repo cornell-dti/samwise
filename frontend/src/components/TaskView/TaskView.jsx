@@ -21,7 +21,7 @@ type State = {|
   +backlogOffset: number;
 |};
 
-export default class TaskView extends React.Component<Props, State> {
+export default class TaskView extends React.PureComponent<Props, State> {
   constructor(props: Props) {
     super(props);
     this.state = {
