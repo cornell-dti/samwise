@@ -24,7 +24,7 @@ type State = {| +autoFocusId: number; |};
 const randomId = (): number => ((10 * new Date()) + Math.floor(1000 * Math.random()));
 
 /**
- * InternalSubTaskEditor is intended for internal use for FloatingTaskEditor only.
+ * InternalSubTaskEditor is intended for internal use for TaskEditor only.
  */
 export default class InternalSubTaskEditor extends React.Component<Props, State> {
   constructor(props: Props) {

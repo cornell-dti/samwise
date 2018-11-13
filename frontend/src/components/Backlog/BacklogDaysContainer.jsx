@@ -9,7 +9,7 @@ import type { State, ColorConfig, Task } from '../../store/store-types';
 import { simpleConnect } from '../../store/react-redux-util';
 import { buildDaysInBacklog } from './backlog-util';
 import type { DateToTaskMap } from './backlog-util';
-import type { FloatingPosition } from '../FloatingTaskEditor/floating-task-editor-types';
+import type { FloatingPosition } from '../TaskEditors/floating-task-editor-types';
 import styles from './BacklogDayContainer.css';
 
 type OwnProps = {|

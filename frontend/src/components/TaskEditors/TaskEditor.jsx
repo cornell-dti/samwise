@@ -5,23 +5,20 @@ import type { Node } from 'react';
 import type {
   ColorConfig, State as StoreState, SubTask, Task,
 } from '../../store/store-types';
-import { editTask as editTaskAction } from '../../store/actions';
 import InternalMainTaskEditor from './InternalMainTaskEditor';
 import InternalSubTaskEditor from './InternalSubTaskEditor';
-import type { EditTaskAction } from '../../store/action-types';
 import type { SimpleMainTask } from './floating-task-editor-types';
 import styles from './TaskEditor.css';
-import { fullConnect } from '../../store/react-redux-util';
+import { simpleConnect } from '../../store/react-redux-util';
 
 type OwnProps = {|
-  +initialTask: Task;
-  +onSave: () => void;
-  +refFunction: (HTMLDivElement | null) => void;
+  +initialTask: Task; // The initial task to edit, as a starting point.
+  +autoSave: boolean; // whether to auto-save changes
+  +onSave: (Task) => void; // called when the task is saved, either automatically or save by user.
+  +refFunction: (HTMLDivElement | null) => void; // used to get the div DOM element.
 |};
 type SubscribedProps = {| +colors: ColorConfig; |};
-type ActionProps = {| +editTask: (task: Task) => EditTaskAction; |};
-
-type Props = {| ...OwnProps; ...SubscribedProps; ...ActionProps |};
+type Props = {| ...OwnProps; ...SubscribedProps |};
 
 type State = {|
   ...SimpleMainTask;
@@ -36,27 +33,16 @@ const mapStateToProps = ({ classColorConfig, tagColorConfig }: StoreState): Subs
 });
 
 /**
- * A trivial state used to reset things.
- * @type {State}
+ * The component of an standalone task editor. It is designed to be wrapped inside another
+ * component to extend its functionality.
  */
-const trivialState: State = {
-  id: 0,
-  name: '',
-  tag: '',
-  date: new Date(),
-  complete: false,
-  inFocus: false,
-  subtaskArray: [],
-  backgroundColor: '',
-  mainTaskInputFocused: true,
-};
-
-
 class TaskEditor extends React.Component<Props, State> {
   constructor(props: Props) {
     super(props);
     const { initialTask, colors } = props;
-    this.state = { ...trivialState, ...initialTask, backgroundColor: colors[initialTask.tag] };
+    this.state = {
+      ...initialTask, backgroundColor: colors[initialTask.tag], mainTaskInputFocused: true,
+    };
   }
 
   /**
@@ -78,22 +64,13 @@ class TaskEditor extends React.Component<Props, State> {
   });
 
   /**
-   * Update the state to contain the given latest edited main task.
-   *
-   * @param {SimpleMainTask} task the latest edited main task.
+   * The auto save handler.
    */
-  editMainTask = (task: SimpleMainTask): void => {
-    const { colors } = this.props;
-    this.setState((state: State) => ({ ...state, ...task, backgroundColor: colors[task.tag] }));
-  };
-
-  /**
-   * Update the state to contain the given latest edited subtask array.
-   *
-   * @param subtaskArray the latest edited subtask array.
-   */
-  editSubTasks = (subtaskArray: SubTask[]): void => {
-    this.setState((state: State) => ({ ...state, subtaskArray }));
+  autoSave = (): void => {
+    const { autoSave } = this.props;
+    if (autoSave) {
+      this.submitChanges();
+    }
   };
 
   /**
@@ -105,14 +82,31 @@ class TaskEditor extends React.Component<Props, State> {
     if (event != null) {
       event.preventDefault();
     }
-    const { editTask } = this.props;
     const { backgroundColor, mainTaskInputFocused, ...task } = this.state;
     if (!this.taskIsGood(task)) {
       return;
     }
-    editTask(this.filterEmptySubTasks(task));
     const { onSave } = this.props;
-    onSave();
+    onSave(this.filterEmptySubTasks(task));
+  };
+
+  /**
+   * Update the state to contain the given latest edited main task.
+   *
+   * @param {SimpleMainTask} task the latest edited main task.
+   */
+  editMainTask = (task: SimpleMainTask): void => {
+    const { colors } = this.props;
+    this.setState({ ...task, backgroundColor: colors[task.tag] }, this.autoSave);
+  };
+
+  /**
+   * Update the state to contain the given latest edited subtask array.
+   *
+   * @param subtaskArray the latest edited subtask array.
+   */
+  editSubTasks = (subtaskArray: SubTask[]): void => {
+    this.setState({ subtaskArray }, this.autoSave);
   };
 
   /**
@@ -138,7 +132,7 @@ class TaskEditor extends React.Component<Props, State> {
   }
 
   render(): Node {
-    const { refFunction } = this.props;
+    const { autoSave, refFunction } = this.props;
     const { backgroundColor, mainTaskInputFocused, ...task } = this.state;
     const {
       id, subtaskArray, ...mainTask
@@ -161,13 +155,13 @@ class TaskEditor extends React.Component<Props, State> {
           editSubTasks={this.editSubTasks}
           onFocusChange={f => this.setState({ mainTaskInputFocused: !f })}
         />
-        {this.renderManualSubmitComponent()}
+        {!autoSave && this.renderManualSubmitComponent()}
       </div>
     );
   }
 }
 
-const ConnectedTaskEditor = fullConnect<Props, OwnProps, SubscribedProps, ActionProps>(
-  mapStateToProps, { editTask: editTaskAction },
+const ConnectedTaskEditor = simpleConnect<Props, OwnProps, SubscribedProps>(
+  mapStateToProps,
 )(TaskEditor);
 export default ConnectedTaskEditor;

@@ -22,7 +22,7 @@ type State = {|
 |};
 
 /**
- * InternalMainTaskEditor is intended for internal use for FloatingTaskEditor only.
+ * InternalMainTaskEditor is intended for internal use for TaskEditor only.
  */
 export default class InternalMainTaskEditor extends React.Component<Props, State> {
   constructor(props: Props) {

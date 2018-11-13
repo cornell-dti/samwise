@@ -2,15 +2,19 @@
 
 import * as React from 'react';
 import type { Node } from 'react';
+import { connect } from 'react-redux';
 import type { Task } from '../../store/store-types';
 import type { FloatingPosition } from './floating-task-editor-types';
+import { editTask as editTaskAction } from '../../store/actions';
 import TaskEditor from './TaskEditor';
+import type { EditTaskAction } from '../../store/action-types';
 import styles from './FloatingTaskEditor.css';
 
 type Props = {|
   +position: FloatingPosition;
   +initialTask: Task;
   +trigger: (opener: () => void) => Node;
+  +editTask: (task: Task) => EditTaskAction;
 |};
 
 type State = {| +open: boolean; |};
@@ -23,11 +27,12 @@ type State = {| +open: boolean; |};
  * ```jsx
  * <FloatingTaskEditor
  *   position="left"
- *   trigger={opener => <span onClick={() => opener(task)}>Ha</span>}
+ *   initialTask={task}
+ *   trigger={opener => <span onClick={opener}>Ha</span>}
  * />
  * ```
  */
-export default class FloatingTaskEditor extends React.Component<Props, State> {
+class FloatingTaskEditor extends React.Component<Props, State> {
   constructor(props: Props) {
     super(props);
     this.state = { open: false };
@@ -65,6 +70,17 @@ export default class FloatingTaskEditor extends React.Component<Props, State> {
   closePopup = (): void => this.setState({ open: false });
 
   /**
+   * Handle the onSave event.
+   *
+   * @param {Task} task task to save.
+   */
+  onSave = (task: Task): void => {
+    const { editTask } = this.props;
+    editTask(task);
+    this.closePopup();
+  };
+
+  /**
    * The element of the actual editor.
    * This is only used when the editor is embedded inside the DOM instead of mount to body.
    */
@@ -86,7 +102,8 @@ export default class FloatingTaskEditor extends React.Component<Props, State> {
     const editorNode = open && (
       <TaskEditor
         initialTask={initialTask}
-        onSave={this.closePopup}
+        autoSave={false}
+        onSave={this.onSave}
         refFunction={(e) => { this.editorElement = e; }}
       />
     );
@@ -99,3 +116,6 @@ export default class FloatingTaskEditor extends React.Component<Props, State> {
     );
   }
 }
+
+const ConnectedFloatingTaskEditor = connect(null, { editTask: editTaskAction })(FloatingTaskEditor);
+export default ConnectedFloatingTaskEditor;

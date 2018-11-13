@@ -12,13 +12,13 @@ import {
   toggleTaskPin as toggleTaskPinAction,
 } from '../../store/actions';
 import BacklogSubTask from './BacklogSubTask';
-import FloatingTaskEditor from '../FloatingTaskEditor/FloatingTaskEditor';
+import FloatingTaskEditor from '../TaskEditors/FloatingTaskEditor';
 import type { SubTask, Task } from '../../store/store-types';
 import type {
   MarkTaskAction, RemoveTaskAction, ToggleTaskPinAction,
 } from '../../store/action-types';
 import CheckBox from '../UI/CheckBox';
-import type { FloatingPosition } from '../FloatingTaskEditor/floating-task-editor-types';
+import type { FloatingPosition } from '../TaskEditors/floating-task-editor-types';
 
 type Props = {|
   ...ColoredTask;

@@ -3,7 +3,7 @@
 import * as React from 'react';
 import BacklogTask from './BacklogTask';
 import type { ColoredTask, OneDayTask } from './backlog-types';
-import type { FloatingPosition } from '../FloatingTaskEditor/floating-task-editor-types';
+import type { FloatingPosition } from '../TaskEditors/floating-task-editor-types';
 import styles from './BacklogDay.css';
 
 type Props = {|
