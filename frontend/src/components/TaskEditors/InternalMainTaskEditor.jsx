@@ -139,7 +139,7 @@ export default class InternalMainTaskEditor extends React.PureComponent<Props, S
     const {
       focused, editTask, onFocusChange, ...task
     } = this.props;
-    editTask({ ...task, complete: !task.inFocus });
+    editTask({ ...task, inFocus: !task.inFocus });
   };
 
   /**
@@ -220,7 +220,7 @@ export default class InternalMainTaskEditor extends React.PureComponent<Props, S
    * Return the rendered main task text editor element.
    */
   renderMainTaskEdit(): Node {
-    const { name, complete, focused } = this.props;
+    const { name, complete, inFocus } = this.props;
     return (
       <div className={styles.TaskEditorFlexibleContainer}>
         <CheckBox
@@ -235,6 +235,11 @@ export default class InternalMainTaskEditor extends React.PureComponent<Props, S
           ref={(e) => { this.inputElement = e; }}
           onKeyDown={this.cancelFocus}
           onChange={this.editTaskName}
+        />
+        <Icon
+          name={inFocus ? 'bookmark' : 'bookmark outline'}
+          className={styles.TaskEditorIcon}
+          onClick={this.editInFocus}
         />
       </div>
     );

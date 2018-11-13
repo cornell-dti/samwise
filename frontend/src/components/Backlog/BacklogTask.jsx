@@ -127,8 +127,8 @@ class BacklogTask extends React.PureComponent<Props> {
       <div className={styles.BacklogTaskMainWrapper} style={{ backgroundColor: color }}>
         {this.renderCheckBox()}
         {this.renderTaskName()}
-        {this.renderRemoveTaskIcon()}
         {this.renderBookmarkIcon()}
+        {this.renderRemoveTaskIcon()}
       </div>
     );
   }

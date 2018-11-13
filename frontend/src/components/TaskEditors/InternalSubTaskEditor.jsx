@@ -155,6 +155,19 @@ export default class InternalSubTaskEditor extends React.PureComponent<Props, St
   };
 
   /**
+   * Edit one particular subtask's in focus status.
+   *
+   * @param {number} id the id of the subtask.
+   * @return {function(): void} the edit completion event handler.
+   */
+  editSubTaskInFocus = (id: number) => (): void => {
+    const { subtaskArray, editSubTasks } = this.props;
+    editSubTasks(subtaskArray.map((subTask: SubTask) => (
+      subTask.id === id ? { ...subTask, inFocus: !subTask.inFocus } : subTask
+    )));
+  };
+
+  /**
    * Update the state when the new line of subtask name changes.
    *
    * @param event the event that notifies about the change and contains the new value.
@@ -196,7 +209,7 @@ export default class InternalSubTaskEditor extends React.PureComponent<Props, St
    * @param {number} index index of the subtask in the array.
    */
   renderSubTask = (subTask: SubTask, index: number): Node => {
-    const { id, name, complete } = subTask;
+    const { id, name, complete, inFocus } = subTask;
     return (
       <div key={id} className={styles.TaskEditorFlexibleContainer}>
         <CheckBox
@@ -212,7 +225,12 @@ export default class InternalSubTaskEditor extends React.PureComponent<Props, St
           onKeyDown={this.switchFocus(index)}
           onChange={this.editSubTask(id)}
         />
-        <Icon name="delete" onClick={this.removeSubTask(id)} />
+        <Icon
+          name={inFocus ? 'bookmark' : 'bookmark outline'}
+          className={styles.TaskEditorIcon}
+          onClick={this.editSubTaskInFocus(id)}
+        />
+        <Icon className={styles.TaskEditorIcon} name="delete" onClick={this.removeSubTask(id)} />
       </div>
     );
   };

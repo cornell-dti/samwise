@@ -6,8 +6,6 @@ import type { Task } from '../../store/store-types';
 import styles from './FocusViewTaskBox.css';
 import InlineTaskEditor from '../TaskEditors/InlineTaskEditor';
 
-type Props = Task;
-
 /**
  * A task box inside focus view.
  *
@@ -15,6 +13,6 @@ type Props = Task;
  * @return {Node} the rendered box.
  * @constructor
  */
-export default function FocusViewTaskBox(props: Props): Node {
+export default function FocusViewTaskBox(props: Task): Node {
   return (<InlineTaskEditor className={styles.FocusViewTaskBox} initialTask={props} />);
 }

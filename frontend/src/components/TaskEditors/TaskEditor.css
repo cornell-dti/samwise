@@ -84,6 +84,12 @@ input.TaskEditorFlexibleInput:focus-within::placeholder {
   margin-right: 0;
 }
 
+.TaskEditorIcon {
+  flex: none;
+  cursor: pointer;
+  height: unset !important;
+}
+
 /*
  * --------------------------------------------------------------------------------
  * Part 3: Components for Main Task Editor
