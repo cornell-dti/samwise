@@ -1,6 +1,7 @@
 // @flow strict
 
 import React from 'react';
+import type { Node } from 'react';
 import BacklogTask from './BacklogTask';
 import type { ColoredTask, OneDayTask } from './backlog-types';
 import type { FloatingPosition } from '../TaskEditors/task-editors-types';
@@ -38,56 +39,76 @@ export default class BacklogDay extends React.PureComponent<Props, State> {
 
   internalTasksContainer: ?HTMLDivElement;
 
-  render() {
-    const {
-      inFourDaysView, doesShowCompletedTasks, doesRenderSubTasks, taskEditorPosition,
-      date, tasks,
-    } = this.props;
-    const { doesOverflow } = this.state;
-    const isToday = (() => {
-      const today = new Date();
-      return date.getFullYear() === today.getFullYear()
-        && date.getMonth() === today.getMonth()
-        && date.getDate() === today.getDate();
-    })();
-    const dayString = (() => {
-      if (!inFourDaysView) {
-        return '';
-      }
-      if (isToday) {
-        return 'TODAY';
-      }
-      switch (date.getDay()) {
-        case 0:
-          return 'SUN';
-        case 1:
-          return 'MON';
-        case 2:
-          return 'TUE';
-        case 3:
-          return 'WED';
-        case 4:
-          return 'THU';
-        case 5:
-          return 'FRI';
-        case 6:
-          return 'SAT';
-        default:
-          throw new Error('Impossible Case');
-      }
-    })();
-    let wrapperCssClass: string;
-    if (inFourDaysView) {
-      wrapperCssClass = isToday
-        ? `${styles.BacklogDayFourDaysView} ${styles.BacklogToday}`
-        : styles.BacklogDayFourDaysView;
-    } else {
-      wrapperCssClass = styles.BacklogDayOtherView;
+  /**
+   * Returns the string for day.
+   *
+   * @param {boolean} isToday whether the day is today.
+   * @return {*} the day string.
+   */
+  getDayString = (isToday: boolean): string => {
+    const { date, inFourDaysView } = this.props;
+    if (!inFourDaysView) {
+      return '';
     }
+    if (isToday) {
+      return 'TODAY';
+    }
+    switch (date.getDay()) {
+      case 0:
+        return 'SUN';
+      case 1:
+        return 'MON';
+      case 2:
+        return 'TUE';
+      case 3:
+        return 'WED';
+      case 4:
+        return 'THU';
+      case 5:
+        return 'FRI';
+      case 6:
+        return 'SAT';
+      default:
+        throw new Error('Impossible Case');
+    }
+  };
+
+  /**
+   * Render the header component.
+   *
+   * @param {boolean} isToday whether the day is today.
+   * @return {*} the rendered header component.
+   */
+  renderHeader = (isToday: boolean): Node => {
+    const { date, inFourDaysView } = this.props;
     const dateNumCssClass = inFourDaysView
       ? styles.BacklogDayDateInfoDateNumFourDaysView
       : styles.BacklogDayDateInfoDateNumOtherViews;
-    const tasksComponent = tasks
+    return (
+      <div
+        className={styles.BacklogDayDateInfo}
+        style={inFourDaysView ? { paddingTop: '1em' } : {}}
+      >
+        {
+          inFourDaysView && (
+            <div className={styles.BacklogDayDateInfoDay}>{this.getDayString(isToday)}</div>
+          )
+        }
+        <div className={dateNumCssClass}>{date.getDate()}</div>
+      </div>
+    );
+  };
+
+  /**
+   * Render the tasks.
+   *
+   * @return {Node} the rendered tasks.
+   */
+  renderTasks = (): Node => {
+    const {
+      inFourDaysView, doesShowCompletedTasks, taskEditorPosition, tasks,
+    } = this.props;
+    const taskListComponent = tasks
       .filter((t: ColoredTask) => (doesShowCompletedTasks || !t.complete))
       .map((t: ColoredTask) => (
         <BacklogTask
@@ -98,28 +119,40 @@ export default class BacklogDay extends React.PureComponent<Props, State> {
           {...t}
         />
       ));
+    return (
+      <div
+        className={styles.BacklogDayTaskContainer}
+        ref={(e) => { this.internalTasksContainer = e; }}
+      >
+        {taskListComponent}
+      </div>
+    );
+  };
+
+  render(): Node {
+    const { date, inFourDaysView } = this.props;
+    const { doesOverflow } = this.state;
+    const isToday = (() => {
+      const today = new Date();
+      return date.getFullYear() === today.getFullYear()
+        && date.getMonth() === today.getMonth()
+        && date.getDate() === today.getDate();
+    })();
+    let wrapperCssClass: string;
+    if (inFourDaysView) {
+      wrapperCssClass = isToday
+        ? `${styles.BacklogDayFourDaysView} ${styles.BacklogToday}`
+        : styles.BacklogDayFourDaysView;
+    } else {
+      wrapperCssClass = styles.BacklogDayOtherView;
+    }
     const overflowComponent = doesOverflow && (
       <div className={styles.BacklogDayMoreTasksBar}>More Tasks...</div>
     );
     return (
       <div className={wrapperCssClass}>
-        <div
-          className={styles.BacklogDayDateInfo}
-          style={inFourDaysView ? { paddingTop: '1em' } : {}}
-        >
-          {
-            inFourDaysView && <div className={styles.BacklogDayDateInfoDay}>{dayString}</div>
-          }
-          <div className={dateNumCssClass}>
-            {date.getDate()}
-          </div>
-        </div>
-        <div
-          className={styles.BacklogDayTaskContainer}
-          ref={(e) => { this.internalTasksContainer = e; }}
-        >
-          {tasksComponent}
-        </div>
+        {this.renderHeader(isToday)}
+        {this.renderTasks()}
         {overflowComponent}
       </div>
     );

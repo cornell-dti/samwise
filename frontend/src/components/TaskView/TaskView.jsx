@@ -181,8 +181,27 @@ export default class TaskView extends React.PureComponent<Props, State> {
     const backlogTodayButton = backlogOffset !== 0 && (
       <SquareTextButton text="Today" onClick={this.changeBacklogOffset('TODAY')} />
     );
-    const backlogNav = (
+    const backlogNav = displayOption === 'FOUR_DAYS' ? (
       <React.Fragment>
+        {
+          backlogOffset >= 1 && (
+            <Icon
+              className={styles.TaskViewNavButton}
+              name="chevron left"
+              onClick={this.changeBacklogOffset('PREV')}
+            />
+          )
+        }
+        <Icon
+          className={styles.TaskViewNavButton}
+          name="chevron right"
+          onClick={this.changeBacklogOffset('NEXT')}
+        />
+        <span className={styles.TaskViewControlPadding} />
+      </React.Fragment>
+    ) : (
+      <React.Fragment>
+        <span className={styles.TaskViewControlPadding} />
         {
           (backlogOffset >= 1 || (backlogOffset >= 0 && displayOption === 'BIWEEKLY')) && (
             <Icon
@@ -200,6 +219,7 @@ export default class TaskView extends React.PureComponent<Props, State> {
           name="chevron right"
           onClick={this.changeBacklogOffset('NEXT')}
         />
+        <span className={styles.TaskViewControlPadding} />
       </React.Fragment>
     );
     const toggleCompletedTasksButton = (
@@ -216,9 +236,7 @@ export default class TaskView extends React.PureComponent<Props, State> {
         <div className={styles.TaskViewControl}>
           <h3 className={styles.TaskViewControlTitle}>Future</h3>
           {backlogTodayButton}
-          <span className={styles.TaskViewControlPadding} />
           {backlogNav}
-          <span className={styles.TaskViewControlPadding} />
           {toggleCompletedTasksButton}
           <BacklogViewSwitcher onChange={this.switchBacklogView} />
         </div>
