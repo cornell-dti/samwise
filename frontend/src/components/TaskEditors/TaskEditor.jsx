@@ -171,8 +171,8 @@ class TaskEditor extends React.PureComponent<Props, State> {
         tabIndex={-1}
         className={actualClassName}
         style={{ backgroundColor }}
-        onMouseOver={onFocus}
-        onMouseOut={onBlur}
+        onMouseEnter={onFocus}
+        onMouseLeave={onBlur}
         onFocus={onFocus}
         onBlur={() => {}}
         ref={refFunction}
