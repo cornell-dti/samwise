@@ -4,15 +4,19 @@ import React from 'react';
 import type { Node } from 'react';
 import { Icon } from 'semantic-ui-react';
 import Calendar from 'react-calendar';
+import { connect } from 'react-redux';
 import ClassPicker from '../ClassPicker/ClassPicker';
 import CheckBox from '../UI/CheckBox';
 import type { SimpleMainTask } from './task-editors-types';
+import type { RemoveTaskAction } from '../../store/action-types';
+import { removeTask as removeTaskAction } from '../../store/actions';
 import styles from './TaskEditor.css';
 
 type Props = {|
   ...SimpleMainTask;
   +focused: boolean;
   +editTask: (task: SimpleMainTask) => void;
+  +removeTask: (taskId: number) => RemoveTaskAction;
   +onFocusChange: (focused: boolean) => void;
 |};
 
@@ -24,7 +28,7 @@ type State = {|
 /**
  * InternalMainTaskEditor is intended for internal use for TaskEditor only.
  */
-export default class InternalMainTaskEditor extends React.PureComponent<Props, State> {
+class InternalMainTaskEditor extends React.PureComponent<Props, State> {
   constructor(props: Props) {
     super(props);
     this.state = { doesShowTagEditor: false, doesShowCalendarEditor: false };
@@ -117,7 +121,7 @@ export default class InternalMainTaskEditor extends React.PureComponent<Props, S
     event.preventDefault();
     const name = event.currentTarget.value;
     const {
-      focused, editTask, onFocusChange, ...task
+      focused, editTask, removeTask, onFocusChange, ...task
     } = this.props;
     editTask({ ...task, name });
   };
@@ -127,7 +131,7 @@ export default class InternalMainTaskEditor extends React.PureComponent<Props, S
    */
   editComplete = (): void => {
     const {
-      focused, editTask, onFocusChange, ...task
+      focused, editTask, removeTask, onFocusChange, ...task
     } = this.props;
     editTask({ ...task, complete: !task.complete });
   };
@@ -137,7 +141,7 @@ export default class InternalMainTaskEditor extends React.PureComponent<Props, S
    */
   editInFocus = (): void => {
     const {
-      focused, editTask, onFocusChange, ...task
+      focused, editTask, removeTask, onFocusChange, ...task
     } = this.props;
     editTask({ ...task, inFocus: !task.inFocus });
   };
@@ -149,7 +153,7 @@ export default class InternalMainTaskEditor extends React.PureComponent<Props, S
    */
   editTaskTag = (tag: string): void => {
     const {
-      focused, editTask, onFocusChange, ...task
+      focused, editTask, removeTask, onFocusChange, ...task
     } = this.props;
     editTask({ ...task, tag });
     this.setState({ doesShowTagEditor: false });
@@ -162,7 +166,7 @@ export default class InternalMainTaskEditor extends React.PureComponent<Props, S
    */
   editTaskDate = (dateString: string): void => {
     const {
-      focused, editTask, onFocusChange, ...task
+      focused, editTask, removeTask, onFocusChange, ...task
     } = this.props;
     editTask({ ...task, date: new Date(dateString) });
     this.setState({ doesShowCalendarEditor: false });
@@ -172,7 +176,8 @@ export default class InternalMainTaskEditor extends React.PureComponent<Props, S
    * Remove the task.
    */
   removeTask = (): void => {
-
+    const { id, removeTask } = this.props;
+    removeTask(id);
   };
 
   /*
@@ -262,3 +267,8 @@ export default class InternalMainTaskEditor extends React.PureComponent<Props, S
     );
   }
 }
+
+const ConnectedInternalMainTaskEditor = connect(
+  null, { removeTask: removeTaskAction },
+)(InternalMainTaskEditor);
+export default ConnectedInternalMainTaskEditor;

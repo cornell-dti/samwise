@@ -26,7 +26,6 @@ type Props = {| ...OwnProps; ...SubscribedProps |};
 
 type State = {|
   ...SimpleMainTask;
-  +id: number;
   +subtaskArray: SubTask[];
   +backgroundColor: string;
   +mainTaskInputFocused: boolean;
@@ -162,7 +161,7 @@ class TaskEditor extends React.PureComponent<Props, State> {
     } = this.props;
     const { backgroundColor, mainTaskInputFocused, ...task } = this.state;
     const {
-      id, subtaskArray, ...mainTask
+      subtaskArray, ...mainTask
     } = task;
     const readOnly = this.isReadOnly();
     const actualClassName = className == null
