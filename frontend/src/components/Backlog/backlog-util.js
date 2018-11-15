@@ -55,6 +55,70 @@ function computeStartAndEndDay(
 }
 
 /**
+ * Convert a day to a string.
+ *
+ * @param {number} month the month to convert, which must be between 0 to 11.
+ * @return {string} the converted month string.
+ */
+export function month2String(month: number): string {
+  switch (month) {
+    case 0:
+      return 'January';
+    case 1:
+      return 'February';
+    case 2:
+      return 'March';
+    case 3:
+      return 'April';
+    case 4:
+      return 'May';
+    case 5:
+      return 'June';
+    case 6:
+      return 'July';
+    case 7:
+      return 'August';
+    case 8:
+      return 'September';
+    case 9:
+      return 'October';
+    case 10:
+      return 'November';
+    case 11:
+      return 'December';
+    default:
+      throw new Error('Bad Month!');
+  }
+}
+
+/**
+ * Convert a day to a string.
+ *
+ * @param {number} day the day to convert, which must be between 0 to 6.
+ * @return {string} the converted day string.
+ */
+export function day2String(day: number): string {
+  switch (day) {
+    case 0:
+      return 'SUN';
+    case 1:
+      return 'MON';
+    case 2:
+      return 'TUE';
+    case 3:
+      return 'WED';
+    case 4:
+      return 'THU';
+    case 5:
+      return 'FRI';
+    case 6:
+      return 'SAT';
+    default:
+      throw new Error('Impossible Case');
+  }
+}
+
+/**
  * Returns a suitable title for the backlog header title.
  *
  * @param {BacklogDisplayOption} displayOption the display option.
@@ -62,8 +126,7 @@ function computeStartAndEndDay(
  * @return {string} a suitable title for the backlog header title.
  */
 export function getBacklogHeaderTitle(
-  displayOption: BacklogDisplayOption,
-  backlogOffset: number,
+  displayOption: BacklogDisplayOption, backlogOffset: number,
 ): string {
   if (displayOption === 'FOUR_DAYS' || displayOption === 'BIWEEKLY') {
     const { startDate, endDate } = computeStartAndEndDay(displayOption, backlogOffset);
@@ -73,49 +136,7 @@ export function getBacklogHeaderTitle(
   if (displayOption === 'MONTHLY') {
     const d = new Date();
     d.setMonth(d.getMonth() + backlogOffset, 1);
-    const month = d.getMonth();
-    let monthString: string;
-    switch (month) {
-      case 0:
-        monthString = 'January';
-        break;
-      case 1:
-        monthString = 'February';
-        break;
-      case 2:
-        monthString = 'March';
-        break;
-      case 3:
-        monthString = 'April';
-        break;
-      case 4:
-        monthString = 'May';
-        break;
-      case 5:
-        monthString = 'June';
-        break;
-      case 6:
-        monthString = 'July';
-        break;
-      case 7:
-        monthString = 'August';
-        break;
-      case 8:
-        monthString = 'September';
-        break;
-      case 9:
-        monthString = 'October';
-        break;
-      case 10:
-        monthString = 'November';
-        break;
-      case 11:
-        monthString = 'December';
-        break;
-      default:
-        throw new Error('Bad Month!');
-    }
-    return `${monthString} ${d.getFullYear()}`;
+    return `${month2String(d.getMonth())} ${d.getFullYear()}`;
   }
   throw new Error('Bad display option!');
 }
@@ -134,7 +155,6 @@ export function buildDaysInBacklog(
   displayOption: BacklogDisplayOption, backlogOffset: number,
 ): OneDayTask[] {
   const { startDate, endDate } = computeStartAndEndDay(displayOption, backlogOffset);
-  const doesRenderSubTasks = displayOption === 'FOUR_DAYS';
   // Adding the days to array
   const days: OneDayTask[] = [];
   for (let d = startDate; d < endDate; d.setDate(d.getDate() + 1)) {
@@ -144,7 +164,7 @@ export function buildDaysInBacklog(
       const { tag } = task;
       return { ...task, color: colors[tag] };
     });
-    days.push({ date, tasks, doesRenderSubTasks });
+    days.push({ date, tasks });
   }
   return days;
 }

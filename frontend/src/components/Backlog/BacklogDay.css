@@ -13,6 +13,14 @@
   height: 15vw;
 }
 
+.BacklogDayFloatingView {
+  background-color: white;
+  box-shadow: 0 5px 12px 0 rgba(164, 164, 164, 0.5);
+  width: 300px;
+  max-height: 400px;
+  overflow-y: scroll;
+}
+
 .BacklogToday {
   background-color: white;
   box-shadow: 0 5px 12px 0 rgba(164, 164, 164, 0.5);
