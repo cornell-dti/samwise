@@ -5,14 +5,14 @@ import type { Node } from 'react';
 import type { ColoredTask } from './backlog-types';
 import type { FloatingPosition } from '../TaskEditors/task-editors-types';
 import BacklogTask from './BacklogTask';
-import styles from './BacklogDay.css';
+import styles from './BacklogDayTaskContainer.css';
 
 type Props = {|
   +tasks: ColoredTask[];
   +inFourDaysView: boolean;
   +doesShowCompletedTasks: boolean;
   +taskEditorPosition: FloatingPosition;
-  refFunction?: (HTMLDivElement | null) => void;
+  +hideOverflow: boolean;
 |};
 
 /**
@@ -23,7 +23,7 @@ type Props = {|
  */
 export default function BacklogDayTaskContainer(props: Props): Node {
   const {
-    tasks, inFourDaysView, doesShowCompletedTasks, taskEditorPosition, refFunction,
+    tasks, inFourDaysView, doesShowCompletedTasks, taskEditorPosition, hideOverflow,
   } = props;
   const taskListComponent = tasks
     .filter((t: ColoredTask) => (doesShowCompletedTasks || !t.complete))
@@ -36,14 +36,9 @@ export default function BacklogDayTaskContainer(props: Props): Node {
         {...t}
       />
     ));
-  return (
-    <div
-      className={styles.BacklogDayTaskContainer}
-      ref={refFunction}
-    >
-      {taskListComponent}
-    </div>
-  );
+  const className = inFourDaysView
+    ? styles.BacklogDayTaskContainerFourDaysView
+    : styles.BacklogDayTaskContainerOtherViews;
+  const style = hideOverflow ? { overflow: 'hidden' } : {};
+  return (<div className={className} style={style}>{taskListComponent}</div>);
 }
-
-BacklogDayTaskContainer.defaultProps = { refFunction: undefined };

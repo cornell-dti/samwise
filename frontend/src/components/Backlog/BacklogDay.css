@@ -2,7 +2,7 @@
   position: relative;
   margin: -1em 0.5em;
   background-color: #F7F7F7;
-  height: 400px;
+  height: 350px;
 }
 
 .BacklogDayOtherView {
@@ -10,14 +10,18 @@
   margin: -1px 0 0 -1px;
   background-color: white;
   border: 1px solid #CCC;
-  height: 15vw;
+  height: 200px;
 }
 
 .BacklogDayFloatingView {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
   background-color: white;
   box-shadow: 0 5px 12px 0 rgba(164, 164, 164, 0.5);
-  width: 300px;
   max-height: 400px;
+  z-index: 7;
   overflow-y: scroll;
 }
 
@@ -46,11 +50,6 @@
   color: #4A90E2;
 }
 
-.BacklogDayTaskContainer {
-  height: calc(100% - 84px);
-  overflow: hidden;
-}
-
 .BacklogDayMoreTasksBar {
   position: absolute;
   width: 100%;
@@ -58,8 +57,18 @@
   left: 0;
   right: 0;
   background-color: #333333;
-  opacity: 0.5;
+  opacity: 0.9;
   color: #E7E7E7;
   text-align: center;
   font-size: 1em;
+}
+
+.BacklogDayFloatingViewBackgroundBlocker {
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 6;
+  background-color: rgba(0, 0, 0, 0);
 }

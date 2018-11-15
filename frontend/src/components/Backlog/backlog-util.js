@@ -1,7 +1,7 @@
 // @flow strict
 
-import type { BacklogDisplayOption, OneDayTask } from './backlog-types';
-import type { ColorConfig, Task } from '../../store/store-types';
+import type { BacklogDisplayOption, ColoredTask, OneDayTask } from './backlog-types';
+import type { ColorConfig, SubTask, Task } from '../../store/store-types';
 
 export type DateToTaskMap = Map<string, Task[]>;
 
@@ -167,4 +167,27 @@ export function buildDaysInBacklog(
     days.push({ date, tasks });
   }
   return days;
+}
+
+/**
+ * Returns the total number of tasks in the given task array.
+ *
+ * @param {ColoredTask[]} tasks the given task array.
+ * @param {boolean} includeSubTasks whether to include subtasks.
+ * @param {boolean} includeCompletedTasks whether to include completed tasks.
+ * @return {number} total number of tasks, including main task and subtasks.
+ */
+export function countTasks(
+  tasks: ColoredTask[], includeSubTasks: boolean, includeCompletedTasks: boolean,
+): number {
+  if (!includeSubTasks) {
+    return tasks.length;
+  }
+  const subtaskReducer = (a: number, s: SubTask) => (
+    a + ((includeCompletedTasks || s.complete) ? 1 : 0)
+  );
+  const reducer = (a: number, t: ColoredTask): number => (
+    a + ((includeCompletedTasks || t.complete) ? 1 : 0) + t.subtaskArray.reduce(subtaskReducer, 0)
+  );
+  return tasks.reduce(reducer, 0);
 }

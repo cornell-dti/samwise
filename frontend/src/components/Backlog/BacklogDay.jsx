@@ -2,19 +2,36 @@
 
 import React from 'react';
 import type { Node } from 'react';
-import type { OneDayTask } from './backlog-types';
+import type { ColoredTask } from './backlog-types';
 import type { FloatingPosition } from '../TaskEditors/task-editors-types';
 import styles from './BacklogDay.css';
 import BacklogDayTaskContainer from './BacklogDayTaskContainer';
-import { day2String } from './backlog-util';
+import { countTasks, day2String } from './backlog-util';
 
 type Props = {|
-  ...OneDayTask;
+  +date: Date;
+  +tasks: ColoredTask[];
   +inFourDaysView: boolean;
   +doesShowCompletedTasks: boolean;
   +taskEditorPosition: FloatingPosition;
 |};
-type State = {| doesOverflow: boolean; |}
+type State = {| doesShowFloatingTaskList: boolean; |};
+
+/**
+ * Height of the task container in four days view.
+ * @type {number}
+ */
+const taskContainerHeightFourDaysView = 284;
+/**
+ * Height of the task container in other views.
+ * @type {number}
+ */
+const taskContainerHeightOtherViews = 151;
+/**
+ * Height of each task line in display.
+ * @type {number}
+ */
+const taskHeight = 25;
 
 /**
  * The component that renders all tasks on a certain day.
@@ -22,20 +39,7 @@ type State = {| doesOverflow: boolean; |}
 export default class BacklogDay extends React.PureComponent<Props, State> {
   constructor(props: Props) {
     super(props);
-    this.state = { doesOverflow: false };
-  }
-
-  componentDidUpdate(prevProps: Props, prevState: State) {
-    const container = this.internalTasksContainer;
-    if (container == null) {
-      return;
-    }
-    const doesOverflow = container.offsetHeight < container.scrollHeight;
-    if (doesOverflow !== prevState.doesOverflow) {
-      // I have to disable this lint because I don't know any other way to solve it.
-      // eslint-disable-next-line react/no-did-update-set-state
-      this.setState({ doesOverflow });
-    }
+    this.state = { doesShowFloatingTaskList: false };
   }
 
   /**
@@ -43,7 +47,7 @@ export default class BacklogDay extends React.PureComponent<Props, State> {
    *
    * @return {boolean} whether the day is today.
    */
-  isToday = () => {
+  isToday = (): boolean => {
     const { date } = this.props;
     const today = new Date();
     return date.getFullYear() === today.getFullYear()
@@ -51,7 +55,28 @@ export default class BacklogDay extends React.PureComponent<Props, State> {
       && date.getDate() === today.getDate();
   };
 
-  internalTasksContainer: ?HTMLDivElement;
+  /**
+   * Report whether the container will overflow.
+   *
+   * @return {boolean} whether the container overflows.
+   */
+  doesOverFlow = (): boolean => {
+    const { tasks, inFourDaysView, doesShowCompletedTasks } = this.props;
+    const totalRequiredHeight = taskHeight * countTasks(
+      tasks, inFourDaysView, doesShowCompletedTasks,
+    );
+    const actualHeight = inFourDaysView
+      ? taskContainerHeightFourDaysView
+      : taskContainerHeightOtherViews;
+    return totalRequiredHeight > actualHeight;
+  };
+
+  /**
+   * Toggle the floating task list.
+   */
+  toggleFloatingTaskList = (): void => this.setState(({ doesShowFloatingTaskList }: State) => ({
+    doesShowFloatingTaskList: !doesShowFloatingTaskList,
+  }));
 
   /**
    * Render the header component.
@@ -79,11 +104,57 @@ export default class BacklogDay extends React.PureComponent<Props, State> {
     );
   };
 
+  /**
+   * Render the overflow component.
+   *
+   * @return {Node} the rendered overflow component
+   */
+  renderOverflowComponent = (): Node => {
+    const { doesShowFloatingTaskList } = this.state;
+    if (!this.doesOverFlow()) {
+      return null;
+    }
+    const toggleButton = (
+      <button
+        type="button"
+        className={styles.BacklogDayMoreTasksBar}
+        onClick={this.toggleFloatingTaskList}
+      >
+        More Tasks...
+      </button>
+    );
+    if (!doesShowFloatingTaskList) {
+      return toggleButton;
+    }
+    const blockerNode = (
+      <div
+        className={styles.BacklogDayFloatingViewBackgroundBlocker}
+        role="button"
+        tabIndex={-1}
+        onClick={this.toggleFloatingTaskList}
+        onKeyDown={this.toggleFloatingTaskList}
+      />
+    );
+    const { date, ...rest } = this.props;
+    const tasksListNode = (
+      <div className={styles.BacklogDayFloatingView}>
+        {this.renderHeader(this.isToday())}
+        <BacklogDayTaskContainer {...rest} hideOverflow={false} />
+      </div>
+    );
+    return (
+      <React.Fragment>
+        {toggleButton}
+        {blockerNode}
+        {tasksListNode}
+      </React.Fragment>
+    );
+  };
+
   render(): Node {
     const {
       tasks, inFourDaysView, doesShowCompletedTasks, taskEditorPosition,
     } = this.props;
-    const { doesOverflow } = this.state;
     const isToday = this.isToday();
     let wrapperCssClass: string;
     if (inFourDaysView) {
@@ -93,9 +164,6 @@ export default class BacklogDay extends React.PureComponent<Props, State> {
     } else {
       wrapperCssClass = styles.BacklogDayOtherView;
     }
-    const overflowComponent = doesOverflow && (
-      <div className={styles.BacklogDayMoreTasksBar}>More Tasks...</div>
-    );
     return (
       <div className={wrapperCssClass}>
         {this.renderHeader(isToday)}
@@ -104,9 +172,9 @@ export default class BacklogDay extends React.PureComponent<Props, State> {
           inFourDaysView={inFourDaysView}
           doesShowCompletedTasks={doesShowCompletedTasks}
           taskEditorPosition={taskEditorPosition}
-          refFunction={(e) => { this.internalTasksContainer = e; }}
+          hideOverflow
         />
-        {overflowComponent}
+        {this.renderOverflowComponent()}
       </div>
     );
   }
