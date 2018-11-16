@@ -293,6 +293,11 @@ const rootReducer = (state: State = initialState, action: Action) => {
         mainTaskArray: [...state.mainTaskArray, state.undoCache.lastDeletedTask],
         undoCache: { ...state.undoCache, lastDeletedTask: null },
       };
+    case 'CLEAR_UNDO_DELETE_TASK':
+      return {
+        ...state,
+        undoCache: { ...state.undoCache, lastDeletedTask: null },
+      };
     default:
       return state;
   }

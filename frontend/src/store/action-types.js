@@ -60,8 +60,11 @@ export type ColorConfigAction = ColorConfigEditAction | ColorConfigRemoveAction;
  */
 
 export type UndoDeleteTaskAction = {| +type: 'UNDO_DELETE_TASK' |};
+export type ClearUndoDeleteTaskAction = {| +type: 'CLEAR_UNDO_DELETE_TASK' |};
 
-export type UndoAction = UndoDeleteTaskAction;
+export type UndoAction =
+  | UndoDeleteTaskAction
+  | ClearUndoDeleteTaskAction;
 
 /*
  * --------------------------------------------------------------------------------

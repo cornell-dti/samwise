@@ -19,6 +19,7 @@ import type {
 } from '../../store/action-types';
 import CheckBox from '../UI/CheckBox';
 import type { FloatingPosition } from '../TaskEditors/task-editors-types';
+import emitToast from '../UI/UndoToast';
 
 type Props = {|
   ...ColoredTask;
@@ -93,7 +94,10 @@ class BacklogTask extends React.PureComponent<Props> {
    */
   renderRemoveTaskIcon(): Node {
     const { id, removeTask } = this.props;
-    const handler = () => removeTask(id);
+    const handler = () => {
+      removeTask(id);
+      emitToast('remove-task', 'remove ahhh', () => {console.log('undo')}, () => console.log('dismissed'));
+    };
     return (
       <Icon name="delete" className={styles.BacklogTaskIcon} onClick={handler} />
     );

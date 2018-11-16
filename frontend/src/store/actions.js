@@ -6,7 +6,8 @@ import type {
   ToggleTaskPinAction, ToggleSubTaskPinAction,
   RemoveTaskAction, RemoveSubTaskAction,
   ColorConfigEditAction, ColorConfigRemoveAction,
-  AddNewSubTaskAction, UndoAction, ClassOrTag, UndoDeleteTaskAction,
+  AddNewSubTaskAction, ClassOrTag,
+  UndoDeleteTaskAction, ClearUndoDeleteTaskAction,
 } from './action-types';
 import type { SubTask, Task } from './store-types';
 
@@ -126,3 +127,11 @@ export const removeSubTask = (taskId: number, subtaskId: number): RemoveSubTaskA
  * @return {UndoDeleteTaskAction} the undo delete task action.
  */
 export const undoDeleteTask = (): UndoDeleteTaskAction => ({ type: 'UNDO_DELETE_TASK' });
+/**
+ * Undo the previous delete task operation.
+ *
+ * @return {UndoDeleteTaskAction} the undo delete task action.
+ */
+export const clearUndoDeleteTask = (): ClearUndoDeleteTaskAction => ({
+  type: 'CLEAR_UNDO_DELETE_TASK',
+});
