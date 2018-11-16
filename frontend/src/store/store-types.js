@@ -28,11 +28,19 @@ export type ColorConfig = {
 };
 
 /**
+ * The cache that is designed to store the stuff that can be undo.
+ */
+export type UndoCache = {|
+  +lastDeletedTask: Task | null;
+|};
+
+/**
  * The type of the entire redux state.
  */
 export type State = {|
   +mainTaskArray: Task[];
   +classColorConfig: ColorConfig;
   +tagColorConfig: ColorConfig;
-  +bearStatus: string
+  +bearStatus: string;
+  +undoCache: UndoCache;
 |};

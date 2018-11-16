@@ -4,8 +4,9 @@ import React from 'react';
 import type { Node } from 'react';
 import { Icon } from 'semantic-ui-react';
 import type { SubTask } from '../../store/store-types';
-import styles from './TaskEditor.css';
 import CheckBox from '../UI/CheckBox';
+import { randomId } from '../../util/general-util';
+import styles from './TaskEditor.css';
 
 type Props = {|
   +subtaskArray: SubTask[];
@@ -16,13 +17,6 @@ type Props = {|
 |};
 
 type State = {| +autoFocusId: number; |};
-
-/**
- * Generate a random id to make React happy.
- *
- * @return {number} a random id.
- */
-const randomId = (): number => ((10 * new Date()) + Math.floor(1000 * Math.random()));
 
 /**
  * InternalSubTaskEditor is intended for internal use for TaskEditor only.

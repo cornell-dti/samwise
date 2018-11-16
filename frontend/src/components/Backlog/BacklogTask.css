@@ -38,8 +38,11 @@
 .BacklogTaskText {
   flex: 1 1 auto;
   margin-left: 3px;
+  margin-right: 3px;
   font-size: 12px;
+  height: 19px;
   font-weight: normal;
   overflow: hidden;
   text-overflow: ellipsis;
+  white-space: nowrap;
 }

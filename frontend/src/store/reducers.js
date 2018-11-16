@@ -21,6 +21,7 @@ const initialState: State = {
     None: 'gray',
   },
   bearStatus: 'neutral',
+  undoCache: { lastDeletedTask: null },
 };
 
 // function to update the bear's status
@@ -131,14 +132,23 @@ function toggleSubtaskPin(mainTaskArray: Task[], taskID: number, subtaskID: numb
 }
 
 /**
- * Remove a main task.
+ * The reducer for remove a main task.
  *
- * @param mainTaskArray the main task array to modify.
- * @param taskID id of the task to remove.
- * @return {Task[]} the new task array with the specified task remove.
+ * @param {State} prevState the previous state.
+ * @param {number} taskID id of the task to remove.
+ * @return {[Task[], Task | null]} the new task array with the specified task remove.
  */
-function removeTask(mainTaskArray: Task[], taskID: number): Task[] {
-  return mainTaskArray.filter((task: Task) => task.id !== taskID);
+function removeTaskReducer(prevState: State, taskID: number): State {
+  let lastDeletedTask: Task | null = null;
+  const mainTaskArray = prevState.mainTaskArray.filter((task: Task) => {
+    if (task.id !== taskID) {
+      return true;
+    }
+    lastDeletedTask = task;
+    return false;
+  });
+  const undoCache = { ...prevState.undoCache, lastDeletedTask };
+  return { ...prevState, mainTaskArray, undoCache };
 }
 
 /**
@@ -232,9 +242,6 @@ function editTask(state: State, action: EditTaskAction) {
 
 const rootReducer = (state: State = initialState, action: Action) => {
   switch (action.type) {
-    case 'EDIT_COLOR_CONFIG':
-    case 'REMOVE_COLOR_CONFIG':
-      return colorConfigReducer(state, action);
     case 'ADD_NEW_TASK':
       return {
         ...state,
@@ -268,14 +275,23 @@ const rootReducer = (state: State = initialState, action: Action) => {
         mainTaskArray: toggleSubtaskPin(state.mainTaskArray, action.taskId, action.subtaskId),
       };
     case 'REMOVE_TASK':
-      return {
-        ...state,
-        mainTaskArray: removeTask(state.mainTaskArray, action.taskId),
-      };
+      return removeTaskReducer(state, action.taskId);
     case 'REMOVE_SUBTASK':
       return {
         ...state,
         mainTaskArray: removeSubtask(state.mainTaskArray, action.taskId, action.subtaskId),
+      };
+    case 'EDIT_COLOR_CONFIG':
+    case 'REMOVE_COLOR_CONFIG':
+      return colorConfigReducer(state, action);
+    case 'UNDO_DELETE_TASK':
+      if (state.undoCache.lastDeletedTask === null) {
+        return state;
+      }
+      return {
+        ...state,
+        mainTaskArray: [...state.mainTaskArray, state.undoCache.lastDeletedTask],
+        undoCache: { ...state.undoCache, lastDeletedTask: null },
       };
     default:
       return state;
