@@ -47,21 +47,20 @@ class FloatingTaskEditor extends React.PureComponent<Props, State> {
     if (taskElement === null || !(taskElement instanceof HTMLDivElement)) {
       throw new Error('Task element must be a div!');
     }
+    editorPosDiv.style.position = 'fixed';
     const taskElementBoundingRect = taskElement.getBoundingClientRect();
     if (!(taskElementBoundingRect instanceof DOMRect)) {
       throw new Error('Bad taskElementBoundingRect!');
     }
-    const { x, y } = taskElementBoundingRect;
-    editorPosDiv.style.position = 'unset';
+    const { y, left, right } = taskElementBoundingRect;
     editorPosDiv.style.top = `${y}px`;
     if (position === 'right') {
-      editorPosDiv.style.left = `${x + taskElement.offsetWidth}px`;
+      editorPosDiv.style.left = `${right}px`;
     } else if (position === 'left') {
-      editorPosDiv.style.left = `${x + -editorPosDiv.offsetWidth}px`;
+      editorPosDiv.style.left = `${left - editorPosDiv.offsetWidth}px`;
     } else {
       throw new Error('Bad floating position!');
     }
-    editorPosDiv.style.position = 'fixed';
   }
 
   /**
