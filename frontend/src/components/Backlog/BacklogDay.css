@@ -75,8 +75,21 @@
   top: 0;
   left: 0;
   right: 0;
+  width: 300px;
   max-height: 400px;
+  overflow-x: hidden;
   overflow-y: scroll;
   background-color: white;
   box-shadow: 0 5px 12px 0 rgba(164, 164, 164, 0.7);
+}
+
+.BacklogDayFloatingView::-webkit-scrollbar {
+  width: 0;
+  height: 0;
+}
+
+.BacklogDayFloatingView::-webkit-scrollbar-thumb {
+  cursor: pointer;
+  border-radius: unset;
+  background-color: unset !important;
 }

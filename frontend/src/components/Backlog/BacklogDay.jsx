@@ -20,7 +20,8 @@ type Props = {|
   +doesShowCompletedTasks: boolean;
   +taskEditorPosition: FloatingPosition;
 |};
-type State = {| doesShowFloatingTaskList: boolean; |};
+
+type State = {| +floatingFlowParentRect: DOMRect | null; |};
 
 /**
  * The component that renders all tasks on a certain day.
@@ -28,7 +29,7 @@ type State = {| doesShowFloatingTaskList: boolean; |};
 export default class BacklogDay extends React.PureComponent<Props, State> {
   constructor(props: Props) {
     super(props);
-    this.state = { doesShowFloatingTaskList: false };
+    this.state = { floatingFlowParentRect: null };
   }
 
   /**
@@ -63,9 +64,21 @@ export default class BacklogDay extends React.PureComponent<Props, State> {
   /**
    * Toggle the floating task list.
    */
-  toggleFloatingTaskList = (): void => this.setState(({ doesShowFloatingTaskList }: State) => ({
-    doesShowFloatingTaskList: !doesShowFloatingTaskList,
-  }));
+  toggleFloatingView = (): void => this.setState((state: State) => {
+    const { floatingFlowParentRect } = state;
+    if (floatingFlowParentRect != null) {
+      return { floatingFlowParentRect: null };
+    }
+    const componentDiv = this.backlogDayElement;
+    if (componentDiv == null) {
+      throw new Error('Impossible Case!');
+    }
+    const boundingRect = componentDiv.getBoundingClientRect();
+    if (!(boundingRect instanceof DOMRect)) {
+      throw new Error('Bad boundingRect!');
+    }
+    return { floatingFlowParentRect: boundingRect };
+  });
 
   /**
    * Render the header component.
@@ -100,7 +113,6 @@ export default class BacklogDay extends React.PureComponent<Props, State> {
    * @return {Node} the rendered overflow component
    */
   renderOverflowComponent = (): Node => {
-    const { doesShowFloatingTaskList } = this.state;
     if (!this.doesOverFlow()) {
       return null;
     }
@@ -108,32 +120,38 @@ export default class BacklogDay extends React.PureComponent<Props, State> {
       <button
         type="button"
         className={styles.BacklogDayMoreTasksBar}
-        onClick={this.toggleFloatingTaskList}
+        onClick={this.toggleFloatingView}
       >
         More Tasks...
       </button>
     );
-    if (!doesShowFloatingTaskList) {
+    const { floatingFlowParentRect } = this.state;
+    if (floatingFlowParentRect == null) {
       return toggleButton;
     }
-    const blockerNode = (
-      <div
-        className={styles.BacklogDayFloatingViewBackgroundBlocker}
-        role="button"
-        tabIndex={-1}
-        onClick={this.toggleFloatingTaskList}
-        onKeyDown={this.toggleFloatingTaskList}
-      />
-    );
     const {
       tasks, inFourDaysView, doesShowCompletedTasks, taskEditorPosition,
     } = this.props;
     const headerHeight = inFourDaysView ? fourDaysViewHeaderHeight : otherViewsHeightHeader;
     const tasksHeight = taskHeight * countTasks(tasks, inFourDaysView, doesShowCompletedTasks);
-    const height = headerHeight + tasksHeight - 16;
-    const tasksListNode = (
-      <div className={styles.BacklogDayFloatingView}>
-        <div style={{ height: `${height}px` }}>
+    const totalHeight = headerHeight + tasksHeight;
+    const { width, height } = floatingFlowParentRect;
+    const floatingViewStyle = {
+      left: `${(width - 300) / 2}px`,
+      top: `${(height - totalHeight) / 2}px`,
+      height: `${totalHeight}px`,
+    };
+    return (
+      <React.Fragment>
+        {toggleButton}
+        <div
+          className={styles.BacklogDayFloatingViewBackgroundBlocker}
+          role="button"
+          tabIndex={-1}
+          onClick={this.toggleFloatingView}
+          onKeyDown={this.toggleFloatingView}
+        />
+        <div className={styles.BacklogDayFloatingView} style={floatingViewStyle}>
           {this.renderHeader(this.isToday(), false)}
           <BacklogDayTaskContainer
             tasks={tasks}
@@ -143,16 +161,11 @@ export default class BacklogDay extends React.PureComponent<Props, State> {
             hideOverflow={false}
           />
         </div>
-      </div>
-    );
-    return (
-      <React.Fragment>
-        {toggleButton}
-        {blockerNode}
-        {tasksListNode}
       </React.Fragment>
     );
   };
+
+  backlogDayElement: ?HTMLDivElement;
 
   render(): Node {
     const {
@@ -168,7 +181,7 @@ export default class BacklogDay extends React.PureComponent<Props, State> {
       wrapperCssClass = styles.BacklogDayOtherView;
     }
     return (
-      <div className={wrapperCssClass}>
+      <div className={wrapperCssClass} ref={(e) => { this.backlogDayElement = e; }}>
         {this.renderHeader(isToday, true)}
         <BacklogDayTaskContainer
           tasks={tasks}
