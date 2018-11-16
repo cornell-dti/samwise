@@ -15,7 +15,7 @@ export const otherViewsHeightHeader = 47;
  * Height of the task container in four days view.
  * @type {number}
  */
-export const taskContainerHeightFourDaysView = 301;
+export const taskContainerHeightFourDaysView = 300;
 /**
  * Height of the task container in other views.
  * @type {number}

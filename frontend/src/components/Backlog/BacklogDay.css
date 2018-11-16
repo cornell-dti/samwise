@@ -3,7 +3,7 @@
   overflow: visible;
   margin: -1em 0.5em;
   background-color: #F7F7F7;
-  height: 367px;
+  height: 366px;
 }
 
 .BacklogDayOtherView {
@@ -52,7 +52,7 @@
   right: 0;
   cursor: pointer;
   background-color: #333333;
-  opacity: 0.9;
+  opacity: 0.98;
   color: #E7E7E7;
   text-align: center;
   line-height: 20px;
