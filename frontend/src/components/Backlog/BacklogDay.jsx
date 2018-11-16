@@ -7,6 +7,11 @@ import type { FloatingPosition } from '../TaskEditors/task-editors-types';
 import styles from './BacklogDay.css';
 import BacklogDayTaskContainer from './BacklogDayTaskContainer';
 import { countTasks, day2String } from './backlog-util';
+import {
+  fourDaysViewHeaderHeight, otherViewsHeightHeader,
+  taskContainerHeightFourDaysView, taskContainerHeightOtherViews,
+  taskHeight,
+} from './backlog-css-props';
 
 type Props = {|
   +date: Date;
@@ -16,22 +21,6 @@ type Props = {|
   +taskEditorPosition: FloatingPosition;
 |};
 type State = {| doesShowFloatingTaskList: boolean; |};
-
-/**
- * Height of the task container in four days view.
- * @type {number}
- */
-const taskContainerHeightFourDaysView = 284;
-/**
- * Height of the task container in other views.
- * @type {number}
- */
-const taskContainerHeightOtherViews = 151;
-/**
- * Height of each task line in display.
- * @type {number}
- */
-const taskHeight = 25;
 
 /**
  * The component that renders all tasks on a certain day.
@@ -82,14 +71,15 @@ export default class BacklogDay extends React.PureComponent<Props, State> {
    * Render the header component.
    *
    * @param {boolean} isToday whether the day is today.
+   * @param {boolean} inMainList whether the header is in main list as opposed to floating list.
    * @return {*} the rendered header component.
    */
-  renderHeader = (isToday: boolean): Node => {
+  renderHeader = (isToday: boolean, inMainList: boolean): Node => {
     const { date, inFourDaysView } = this.props;
     const dateNumCssClass = inFourDaysView
       ? styles.BacklogDayDateInfoDateNumFourDaysView
       : styles.BacklogDayDateInfoDateNumOtherViews;
-    const containerStyle = inFourDaysView ? { paddingTop: '1em' } : {};
+    const containerStyle = (inFourDaysView && inMainList) ? { paddingTop: '1em' } : {};
     return (
       <div className={styles.BacklogDayDateInfo} style={containerStyle}>
         {
@@ -135,11 +125,22 @@ export default class BacklogDay extends React.PureComponent<Props, State> {
         onKeyDown={this.toggleFloatingTaskList}
       />
     );
-    const { date, ...rest } = this.props;
+    const {
+      tasks, inFourDaysView, doesShowCompletedTasks, taskEditorPosition,
+    } = this.props;
+    const headerHeight = inFourDaysView ? fourDaysViewHeaderHeight : otherViewsHeightHeader;
+    const tasksHeight = taskHeight * countTasks(tasks, inFourDaysView, doesShowCompletedTasks);
+    const height = headerHeight + tasksHeight;
     const tasksListNode = (
-      <div className={styles.BacklogDayFloatingView}>
-        {this.renderHeader(this.isToday())}
-        <BacklogDayTaskContainer {...rest} hideOverflow={false} />
+      <div className={styles.BacklogDayFloatingView} style={{ height: `${height}px` }}>
+        {this.renderHeader(this.isToday(), false)}
+        <BacklogDayTaskContainer
+          tasks={tasks}
+          inFourDaysView={inFourDaysView}
+          doesShowCompletedTasks={doesShowCompletedTasks}
+          taskEditorPosition={taskEditorPosition}
+          hideOverflow={false}
+        />
       </div>
     );
     return (
@@ -166,7 +167,7 @@ export default class BacklogDay extends React.PureComponent<Props, State> {
     }
     return (
       <div className={wrapperCssClass}>
-        {this.renderHeader(isToday)}
+        {this.renderHeader(isToday, true)}
         <BacklogDayTaskContainer
           tasks={tasks}
           inFourDaysView={inFourDaysView}

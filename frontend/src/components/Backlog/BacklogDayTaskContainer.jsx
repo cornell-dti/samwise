@@ -39,6 +39,8 @@ export default function BacklogDayTaskContainer(props: Props): Node {
   const className = inFourDaysView
     ? styles.BacklogDayTaskContainerFourDaysView
     : styles.BacklogDayTaskContainerOtherViews;
-  const style = hideOverflow ? { overflow: 'hidden' } : {};
-  return (<div className={className} style={style}>{taskListComponent}</div>);
+  if (hideOverflow) {
+    return (<div className={className} style={{ overflow: 'hidden' }}>{taskListComponent}</div>);
+  }
+  return (<div className={className}>{taskListComponent}</div>);
 }
