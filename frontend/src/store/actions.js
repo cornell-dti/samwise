@@ -104,11 +104,12 @@ export const toggleSubTaskPin = (taskId: number, subtaskId: number): ToggleSubTa
 /**
  * Remove task is the action that can be used to remove a task.
  *
- * @param taskId the id of the task to remove.
+ * @param {number} taskId the id of the task to remove.
+ * @param {boolean} undoable whether the removal can be undone, which defaults to false.
  * @return {RemoveTaskAction} the remove task action.
  */
-export const removeTask = (taskId: number): RemoveTaskAction => ({
-  type: 'REMOVE_TASK', taskId,
+export const removeTask = (taskId: number, undoable: boolean = false): RemoveTaskAction => ({
+  type: 'REMOVE_TASK', taskId, undoable,
 });
 /**
  * Remove subtask is the action that can be used to remove a subtask.

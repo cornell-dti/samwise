@@ -1,9 +1,12 @@
 // @flow strict
 
-import type { Action, EditTaskAction, ColorConfigAction } from './action-types';
+import type {
+  Action, EditTaskAction, ColorConfigAction, RemoveTaskAction,
+} from './action-types';
 import type {
   State, Task, SubTask, ColorConfig,
 } from './store-types';
+import { emitUndoRemoveTaskToast } from '../util/toast-util';
 
 /**
  * Initial state of the application.
@@ -135,19 +138,27 @@ function toggleSubtaskPin(mainTaskArray: Task[], taskID: number, subtaskID: numb
  * The reducer for remove a main task.
  *
  * @param {State} prevState the previous state.
- * @param {number} taskID id of the task to remove.
+ * @param {RemoveTaskAction} action the action of removing task.
  * @return {[Task[], Task | null]} the new task array with the specified task remove.
  */
-function removeTaskReducer(prevState: State, taskID: number): State {
+function removeTaskReducer(prevState: State, action: RemoveTaskAction): State {
   let lastDeletedTask: Task | null = null;
+  const { taskId, undoable } = action;
   const mainTaskArray = prevState.mainTaskArray.filter((task: Task) => {
-    if (task.id !== taskID) {
+    if (task.id !== taskId) {
       return true;
     }
     lastDeletedTask = task;
     return false;
   });
-  const undoCache = { ...prevState.undoCache, lastDeletedTask };
+  if (undoable) {
+    const undoCache = { ...prevState.undoCache, lastDeletedTask };
+    if (lastDeletedTask != null) {
+      emitUndoRemoveTaskToast(lastDeletedTask);
+    }
+    return { ...prevState, mainTaskArray, undoCache };
+  }
+  const undoCache = { ...prevState.undoCache, lastDeletedTask: null };
   return { ...prevState, mainTaskArray, undoCache };
 }
 
@@ -275,7 +286,7 @@ const rootReducer = (state: State = initialState, action: Action) => {
         mainTaskArray: toggleSubtaskPin(state.mainTaskArray, action.taskId, action.subtaskId),
       };
     case 'REMOVE_TASK':
-      return removeTaskReducer(state, action.taskId);
+      return removeTaskReducer(state, action);
     case 'REMOVE_SUBTASK':
       return {
         ...state,

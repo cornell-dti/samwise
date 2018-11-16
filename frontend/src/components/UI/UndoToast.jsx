@@ -4,7 +4,8 @@ import React from 'react';
 import type { Node } from 'react';
 import { toast } from 'react-toastify';
 
-type Props = {|
+export type Props = {|
+  +toastId: string;
   +message: string;
   +onUndo: () => void;
   +onDismiss: () => void;
@@ -13,24 +14,28 @@ type Props = {|
 /**
  * The component for the undo toast.
  *
- * @param {string} message the message to be displayed on the toast.
- * @param {function(): void} onUndo the function to be called when the undo button is clicked.
- * @param {function(): void} onDismiss the function to be called when the toast is dismissed.
+ * @param {Props} props all the props.
  * @return {Node} the rendered UNDO toast.
  * @constructor
  */
-function UndoToast({ message, onUndo, onDismiss }: Props): Node {
-  const spanClickHandler = (e: SyntheticMouseEvent<HTMLSpanElement>): void => {
-    if (e.target instanceof HTMLButtonElement) {
-      return;
-    }
+function UndoToast(props: Props): Node {
+  const {
+    toastId, message, onUndo, onDismiss,
+  } = props;
+  const handleUndo = () => {
+    onUndo();
+    toast.dismiss(toastId);
+  };
+  const handleDismiss = () => {
     onDismiss();
+    toast.dismiss(toastId);
   };
   return (
-    <span role="button" tabIndex={-1} onClick={spanClickHandler} onKeyDown={() => {}}>
+    <span>
       {message}
       {' '}
-      <button type="button" onClick={onUndo}>Undo</button>
+      <button type="button" onClick={handleUndo}>Undo</button>
+      <button type="button" onClick={handleDismiss}>Dismiss</button>
     </span>
   );
 }
@@ -44,17 +49,20 @@ function UndoToast({ message, onUndo, onDismiss }: Props): Node {
  * @param {function(): void} onDismiss the function to be called when the toast is dismissed.
  */
 export default function emitToast(
-  toastId: string,
-  message: string,
-  onUndo: () => void,
-  onDismiss: () => void,
+  {
+    toastId, message, onUndo, onDismiss,
+  }: Props,
 ): void {
-  toast.success((<UndoToast message={message} onUndo={onUndo} onDismiss={onDismiss} />), {
+  const props = {
+    toastId, message, onUndo, onDismiss,
+  };
+  toast.success((<UndoToast {...props} />), {
+    toastId,
     position: 'top-right',
     autoClose: 5000,
+    closeOnClick: false,
+    closeButton: false,
     hideProgressBar: true,
-    closeOnClick: true,
     draggable: false,
-    toastId,
   });
 }

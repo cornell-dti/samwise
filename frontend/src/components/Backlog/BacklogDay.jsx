@@ -6,12 +6,13 @@ import type { ColoredTask } from './backlog-types';
 import type { FloatingPosition } from '../TaskEditors/task-editors-types';
 import styles from './BacklogDay.css';
 import BacklogDayTaskContainer from './BacklogDayTaskContainer';
-import { countTasks, day2String } from './backlog-util';
+import { countTasks } from './backlog-util';
 import {
   fourDaysViewHeaderHeight, otherViewsHeightHeader,
   taskContainerHeightFourDaysView, taskContainerHeightOtherViews,
   taskHeight,
 } from './backlog-css-props';
+import { day2String } from '../../util/datetime-util';
 
 type Props = {|
   +date: Date;

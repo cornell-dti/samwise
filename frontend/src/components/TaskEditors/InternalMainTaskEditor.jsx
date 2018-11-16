@@ -16,7 +16,7 @@ type Props = {|
   ...SimpleMainTask;
   +focused: boolean;
   +editTask: (task: SimpleMainTask) => void;
-  +removeTask: (taskId: number) => RemoveTaskAction;
+  +removeTask: (taskId: number, undoable?: boolean) => RemoveTaskAction;
   +onFocusChange: (focused: boolean) => void;
 |};
 
@@ -177,7 +177,7 @@ class InternalMainTaskEditor extends React.PureComponent<Props, State> {
    */
   removeTask = (): void => {
     const { id, removeTask } = this.props;
-    removeTask(id);
+    removeTask(id, true);
   };
 
   /*
