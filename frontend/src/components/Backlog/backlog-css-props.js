@@ -15,12 +15,12 @@ export const otherViewsHeightHeader = 47;
  * Height of the task container in four days view.
  * @type {number}
  */
-export const taskContainerHeightFourDaysView = 284;
+export const taskContainerHeightFourDaysView = 301;
 /**
  * Height of the task container in other views.
  * @type {number}
  */
-export const taskContainerHeightOtherViews = 153;
+export const taskContainerHeightOtherViews = 150;
 
 /**
  * Height of each task line in display.

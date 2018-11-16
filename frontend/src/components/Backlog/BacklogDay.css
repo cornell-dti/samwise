@@ -1,8 +1,9 @@
 .BacklogDayFourDaysView {
   position: relative;
+  overflow: visible;
   margin: -1em 0.5em;
   background-color: #F7F7F7;
-  height: 350px;
+  height: 367px;
 }
 
 .BacklogDayOtherView {
@@ -10,19 +11,12 @@
   margin: -1px 0 0 -1px;
   background-color: white;
   border: 1px solid #CCC;
-  height: 200px;
+  height: 197px;
 }
 
-.BacklogDayFloatingView {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  background-color: white;
-  box-shadow: 0 5px 12px 0 rgba(164, 164, 164, 0.5);
-  max-height: 400px;
-  z-index: 7;
-  overflow-y: scroll;
+.BacklogDayFourDaysView::-webkit-scrollbar, .BacklogDayOtherView::-webkit-scrollbar {
+  width: 0;
+  height: 0;
 }
 
 .BacklogToday {
@@ -56,10 +50,12 @@
   bottom: 0;
   left: 0;
   right: 0;
+  cursor: pointer;
   background-color: #333333;
   opacity: 0.9;
   color: #E7E7E7;
   text-align: center;
+  line-height: 20px;
   font-size: 1em;
 }
 
@@ -69,6 +65,18 @@
   bottom: 0;
   left: 0;
   right: 0;
-  z-index: 6;
-  background-color: rgba(0, 0, 0, 0);
+  z-index: 4;
+  background-color: rgba(0, 0, 0, 0.05);
+}
+
+.BacklogDayFloatingView {
+  position: absolute;
+  z-index: 5;
+  top: 0;
+  left: 0;
+  right: 0;
+  max-height: 400px;
+  overflow-y: scroll;
+  background-color: white;
+  box-shadow: 0 5px 12px 0 rgba(164, 164, 164, 0.7);
 }

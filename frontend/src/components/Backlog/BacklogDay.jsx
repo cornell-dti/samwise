@@ -130,17 +130,19 @@ export default class BacklogDay extends React.PureComponent<Props, State> {
     } = this.props;
     const headerHeight = inFourDaysView ? fourDaysViewHeaderHeight : otherViewsHeightHeader;
     const tasksHeight = taskHeight * countTasks(tasks, inFourDaysView, doesShowCompletedTasks);
-    const height = headerHeight + tasksHeight;
+    const height = headerHeight + tasksHeight - 16;
     const tasksListNode = (
-      <div className={styles.BacklogDayFloatingView} style={{ height: `${height}px` }}>
-        {this.renderHeader(this.isToday(), false)}
-        <BacklogDayTaskContainer
-          tasks={tasks}
-          inFourDaysView={inFourDaysView}
-          doesShowCompletedTasks={doesShowCompletedTasks}
-          taskEditorPosition={taskEditorPosition}
-          hideOverflow={false}
-        />
+      <div className={styles.BacklogDayFloatingView}>
+        <div style={{ height: `${height}px` }}>
+          {this.renderHeader(this.isToday(), false)}
+          <BacklogDayTaskContainer
+            tasks={tasks}
+            inFourDaysView={inFourDaysView}
+            doesShowCompletedTasks={doesShowCompletedTasks}
+            taskEditorPosition={taskEditorPosition}
+            hideOverflow={false}
+          />
+        </div>
       </div>
     );
     return (
