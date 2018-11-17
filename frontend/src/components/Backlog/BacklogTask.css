@@ -19,24 +19,30 @@
   align-items: center;
   color: #666666;
   background-color: white;
+  font-size: 12px;
   font-weight: 300;
 }
 
 .BacklogTaskCheckBox {
   margin-left: 8px;
-  margin-right: 8px;
+  margin-right: 5px;
 }
 
 .BacklogTaskIcon {
   flex: none;
-  height: unset !important;
+  cursor: pointer;
+  margin: 0 4px 0 0 !important;
+  height: 16px !important;
 }
 
 .BacklogTaskText {
   flex: 1 1 auto;
-  cursor: pointer;
+  margin-left: 3px;
+  margin-right: 3px;
   font-size: 12px;
+  height: 19px;
   font-weight: normal;
   overflow: hidden;
   text-overflow: ellipsis;
+  white-space: nowrap;
 }

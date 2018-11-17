@@ -6,7 +6,8 @@ import type {
   ToggleTaskPinAction, ToggleSubTaskPinAction,
   RemoveTaskAction, RemoveSubTaskAction,
   ColorConfigEditAction, ColorConfigRemoveAction,
-  AddNewSubTaskAction, UndoAction, ClassOrTag,
+  AddNewSubTaskAction, ClassOrTag,
+  UndoDeleteTaskAction, ClearUndoDeleteTaskAction,
 } from './action-types';
 import type { SubTask, Task } from './store-types';
 
@@ -47,12 +48,12 @@ export const addTask = (task: Task): AddNewTaskAction => ({ type: 'ADD_NEW_TASK'
 /**
  * Add a subtask to the task.
  *
- * @param {number} taskID the id of the task to append subtask.
+ * @param {number} id the id of the task to append subtask.
  * @param {SubTask} subTask the subtask to add.
  * @return {AddNewSubTaskAction} the add subtask action.
  */
-export const addSubtask = (taskID: number, subTask: SubTask): AddNewSubTaskAction => ({
-  type: 'ADD_SUBTASK', id: taskID, data: subTask,
+export const addSubtask = (id: number, subTask: SubTask): AddNewSubTaskAction => ({
+  type: 'ADD_SUBTASK', id, data: subTask,
 });
 /**
  * Edit task is an action that can be used to edit an existing task.
@@ -103,11 +104,12 @@ export const toggleSubTaskPin = (taskId: number, subtaskId: number): ToggleSubTa
 /**
  * Remove task is the action that can be used to remove a task.
  *
- * @param taskId the id of the task to remove.
+ * @param {number} taskId the id of the task to remove.
+ * @param {boolean} undoable whether the removal can be undone, which defaults to false.
  * @return {RemoveTaskAction} the remove task action.
  */
-export const removeTask = (taskId: number): RemoveTaskAction => ({
-  type: 'REMOVE_TASK', taskId,
+export const removeTask = (taskId: number, undoable: boolean = false): RemoveTaskAction => ({
+  type: 'REMOVE_TASK', taskId, undoable,
 });
 /**
  * Remove subtask is the action that can be used to remove a subtask.
@@ -121,8 +123,16 @@ export const removeSubTask = (taskId: number, subtaskId: number): RemoveSubTaskA
 });
 
 /**
- * Undo the previous operation.
+ * Undo the previous delete task operation.
  *
- * @return {UndoAction} the undo action.
+ * @return {UndoDeleteTaskAction} the undo delete task action.
  */
-export const undoAction = (): UndoAction => ({ type: 'UNDO_ACTION' });
+export const undoDeleteTask = (): UndoDeleteTaskAction => ({ type: 'UNDO_DELETE_TASK' });
+/**
+ * Undo the previous delete task operation.
+ *
+ * @return {UndoDeleteTaskAction} the undo delete task action.
+ */
+export const clearUndoDeleteTask = (): ClearUndoDeleteTaskAction => ({
+  type: 'CLEAR_UNDO_DELETE_TASK',
+});

@@ -25,7 +25,7 @@ function ClassColorConfigItemList({ classColorConfig, configKeys }: Props): Node
   );
 }
 
-const ConnectedClassColorConfigItemList = simpleConnect<Props, {}, Props>(
+const ConnectedClassColorConfigItemList = simpleConnect<{}, Props>(
   mapStateToProps,
 )(ClassColorConfigItemList);
 export default ConnectedClassColorConfigItemList;

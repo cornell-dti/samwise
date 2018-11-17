@@ -1,31 +1,27 @@
 // @flow strict
 
-import * as React from 'react';
+import React from 'react';
 import type { Node } from 'react';
-import { Icon, Input } from 'semantic-ui-react';
+import { Icon } from 'semantic-ui-react';
 import type { SubTask } from '../../store/store-types';
-import styles from './FloatingTaskEditor.css';
 import CheckBox from '../UI/CheckBox';
+import { randomId } from '../../util/general-util';
+import styles from './TaskEditor.css';
 
 type Props = {|
   +subtaskArray: SubTask[];
+  +isReadOnly: boolean;
   +focused: boolean;
   +editSubTasks: (subtaskArray: SubTask[]) => void;
+  +onFocusChange: (focused: boolean) => void;
 |};
 
 type State = {| +autoFocusId: number; |};
 
 /**
- * Generate a random id to make React happy.
- *
- * @return {number} a random id.
+ * InternalSubTaskEditor is intended for internal use for TaskEditor only.
  */
-const randomId = (): number => ((10 * new Date()) + Math.floor(1000 * Math.random()));
-
-/**
- * InternalSubTaskFloatingEditor is intended for internal use for FloatingTaskEditor only.
- */
-export default class InternalSubTaskFloatingEditor extends React.Component<Props, State> {
+export default class InternalSubTaskEditor extends React.PureComponent<Props, State> {
   constructor(props: Props) {
     super(props);
     this.state = { autoFocusId: 0 };
@@ -71,6 +67,7 @@ export default class InternalSubTaskFloatingEditor extends React.Component<Props
   registerInputToFocus = (index: number) => (e: ?HTMLInputElement): void => {
     const { autoFocusId } = this.state;
     if (index !== autoFocusId) {
+      this.inputToFocus = null;
       return;
     }
     this.inputToFocus = e;
@@ -89,6 +86,8 @@ export default class InternalSubTaskFloatingEditor extends React.Component<Props
     const autoFocusId = currentIndex + 1;
     const inputTarget = event.target;
     if (inputTarget instanceof HTMLInputElement) {
+      const { onFocusChange } = this.props;
+      onFocusChange(true);
       if (event.key !== 'Enter' && event.key !== 'Tab') {
         this.setState((state: State) => ({ ...state, autoFocusId: currentIndex }));
       } else {
@@ -97,7 +96,7 @@ export default class InternalSubTaskFloatingEditor extends React.Component<Props
         if (focusInput != null) {
           focusInput.focus();
         }
-        this.setState((state: State) => ({ ...state, autoFocusId }));
+        this.setState({ autoFocusId });
       }
     }
   };
@@ -115,13 +114,11 @@ export default class InternalSubTaskFloatingEditor extends React.Component<Props
    * @return {function(Event): void} the function to handle a edit subtask event that notifies
    * about the edit and gives the new value of the subtask.
    */
-  editSubTask = (id: number) => (event: Event): void => {
+  editSubTask = (id: number) => (event: SyntheticEvent<HTMLInputElement>): void => {
     event.preventDefault();
-    if (!(event.target instanceof HTMLInputElement)) {
-      return;
-    }
-    const name = event.target.value;
-    const { subtaskArray, editSubTasks } = this.props;
+    const name = event.currentTarget.value;
+    const { subtaskArray, editSubTasks, onFocusChange } = this.props;
+    onFocusChange(true);
     editSubTasks(subtaskArray.map((subTask: SubTask) => (
       subTask.id === id ? { ...subTask, name } : subTask
     )));
@@ -152,6 +149,19 @@ export default class InternalSubTaskFloatingEditor extends React.Component<Props
   };
 
   /**
+   * Edit one particular subtask's in focus status.
+   *
+   * @param {number} id the id of the subtask.
+   * @return {function(): void} the edit completion event handler.
+   */
+  editSubTaskInFocus = (id: number) => (): void => {
+    const { subtaskArray, editSubTasks } = this.props;
+    editSubTasks(subtaskArray.map((subTask: SubTask) => (
+      subTask.id === id ? { ...subTask, inFocus: !subTask.inFocus } : subTask
+    )));
+  };
+
+  /**
    * Update the state when the new line of subtask name changes.
    *
    * @param event the event that notifies about the change and contains the new value.
@@ -168,12 +178,11 @@ export default class InternalSubTaskFloatingEditor extends React.Component<Props
       complete: false,
       inFocus: false,
     };
-    const { subtaskArray, editSubTasks } = this.props;
+    const { subtaskArray, editSubTasks, onFocusChange } = this.props;
+    const autoFocusId = subtaskArray.length;
     editSubTasks([...subtaskArray, newSubTask]);
-    this.setState((state: State) => ({
-      ...state,
-      autoFocusId: subtaskArray.length,
-    }));
+    onFocusChange(true);
+    this.setState((state: State) => ({ ...state, autoFocusId }));
   };
 
   /**
@@ -193,46 +202,52 @@ export default class InternalSubTaskFloatingEditor extends React.Component<Props
    * @param {SubTask} subTask one subtask.
    * @param {number} index index of the subtask in the array.
    */
-  renderSubTask(subTask: SubTask, index: number): Node {
-    const { id, name, complete } = subTask;
+  renderSubTask = (subTask: SubTask, index: number): Node => {
+    const {
+      id, name, complete, inFocus,
+    } = subTask;
     return (
-      <div key={id} className={styles.FloatingTaskEditorFlexibleContainer}>
+      <div key={id} className={styles.TaskEditorFlexibleContainer}>
         <CheckBox
-          className={styles.FloatingTaskEditorCheckBox}
+          className={styles.TaskEditorCheckBox}
           checked={complete}
           onChange={this.editSubTaskComplete(id)}
         />
-        <Input
+        <input
           ref={this.registerInputToFocus(index)}
-          className={styles.FloatingTaskEditorFlexibleInput}
+          className={styles.TaskEditorFlexibleInput}
           placeholder="Your Sub-Task"
-          focusid={index}
           value={name}
           onKeyDown={this.switchFocus(index)}
           onChange={this.editSubTask(id)}
         />
-        <Icon name="delete" onClick={this.removeSubTask(id)} />
+        <Icon
+          name={inFocus ? 'bookmark' : 'bookmark outline'}
+          className={styles.TaskEditorIcon}
+          onClick={this.editSubTaskInFocus(id)}
+        />
+        <Icon className={styles.TaskEditorIcon} name="delete" onClick={this.removeSubTask(id)} />
       </div>
     );
-  }
+  };
 
   render(): Node {
-    const { subtaskArray } = this.props;
-    const existingSubTasks = subtaskArray.map((t: SubTask, i: number) => this.renderSubTask(t, i));
+    const { subtaskArray, isReadOnly } = this.props;
+    const existingSubTasks = subtaskArray.map(this.renderSubTask);
     const focusId = subtaskArray.length;
-    const newSubTaskEditor = (
-      <div className={styles.FloatingTaskEditorFlexibleContainer}>
-        <Input
-          className={styles.FloatingTaskEditorFlexibleInput}
+    const newSubTaskEditor = !isReadOnly && (
+      <div className={styles.TaskEditorFlexibleContainer}>
+        <input
+          className={styles.TaskEditorFlexibleInput}
           ref={this.registerInputToFocus(focusId)}
-          placeholder="Your New Sub-Task"
+          placeholder="A new subtask"
           value=""
           onChange={this.handleNewSubTaskValueChange}
         />
       </div>
     );
     return (
-      <div className={styles.FloatingTaskEditorSubTasksIndentedContainer}>
+      <div className={styles.TaskEditorSubTasksIndentedContainer}>
         {existingSubTasks}
         {newSubTaskEditor}
       </div>

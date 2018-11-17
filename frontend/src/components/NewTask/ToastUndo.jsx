@@ -1,14 +1,28 @@
+// @flow strict
+
 import React from 'react';
+import type { Node } from 'react';
 
+type Props = {|
+  +dispText: string;
+  +changeCallback: (SyntheticMouseEvent<HTMLButtonElement>) => void
+|};
 
-function ToastUndo({ dispText, changeCallback }) {
+/**
+ * The component for the undo toast.
+ *
+ * @param {string} dispText the text to be displayed on the toast.
+ * @param {function(SyntheticMouseEvent<HTMLButtonElement>): void} changeCallback the function to
+ * be called when the undo button is clicked.
+ * @return {Node} the rendered UNDO toast.
+ * @constructor
+ */
+export default function ToastUndo({ dispText, changeCallback }: Props): Node {
   return (
     <span>
       {dispText}
-      &nbsp;
+      {' '}
       <button type="button" onClick={changeCallback}>Undo</button>
     </span>
   );
 }
-
-export default ToastUndo;

@@ -1,6 +1,6 @@
 // @flow strict
 
-import * as React from 'react';
+import React from 'react';
 import type { Node } from 'react';
 import type { BacklogDisplayOption } from './backlog-types';
 import styles from './BacklogHeaderButtons.css';
@@ -11,7 +11,7 @@ type State = {| +displayOption: BacklogDisplayOption |};
 /**
  * The component used to render a switcher for different backlog views.
  */
-export default class BacklogViewSwitcher extends React.Component<Props, State> {
+export default class BacklogViewSwitcher extends React.PureComponent<Props, State> {
   constructor(props: Props) {
     super(props);
     this.state = { displayOption: 'FOUR_DAYS' };
@@ -31,15 +31,13 @@ export default class BacklogViewSwitcher extends React.Component<Props, State> {
         ? `${styles.BacklogViewSwitcherButton} ${styles.BacklogViewSwitcherActiveButton}`
         : styles.BacklogViewSwitcherButton;
       return (
-        <div
+        <button
           className={className}
-          role="button"
-          tabIndex={-1}
+          type="button"
           onClick={setDisplayOption(option)}
-          onKeyDown={setDisplayOption(option)}
         >
           <span className={styles.BacklogViewSwitcherButtonText}>{text}</span>
-        </div>
+        </button>
       );
     };
     return (
