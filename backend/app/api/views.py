@@ -7,6 +7,11 @@ from app import auth
 api = Blueprint('api', __name__, url_prefix='/api')
 
 
+# Note: To authenticate requests:
+# - GET requests: pass token as a url parameter
+# - POST/PUT requests: pass token in the JSON body.
+
+
 def get_user_id(firebase_id_token):
     try:
         decoded_token = auth.auth.verify_id_token(firebase_id_token)
@@ -25,9 +30,12 @@ def login():
     token = request.args.get('token')
     user_id = get_user_id(token)
     if user_id:
-        session['token'] = token
         redirect_url = request.args.get('redirect', url_for('api.index'))
-        return redirect(redirect_url)
+        param_prefix = '?' if '?' not in redirect_url else '&'
+        if param_prefix == '&':
+            import pdb
+            pdb.set_trace()
+        return redirect('{}{}token={}'.format(redirect_url, param_prefix, token))
     else:
         return auth.html
 
@@ -52,12 +60,16 @@ def new_tag():
         "completed": False,
     }
     """
-    user_id = get_user_id(session.get('token'))
+    data = request.get_json(force=True)
+    if not data or 'token' not in data:
+        return jsonify(error='token not passed in')
+    user_id = get_user_id(data['token'])
     if not user_id:
         return redirect(url_for('api.login', redirect=request.path))
-    data = request.get_json(force=True)
-    tag_name = data['name']
-    color = data['color']
+    tag_name = data.get('name')
+    color = data.get('color')
+    if type(tag_name) != str or type(color) != str:
+        return jsonify(error='tag name and color must be strings'), 400
     last_tag = Tag.query.filter(Tag.user_id == user_id).order_by(Tag._order.desc()).first()
     order = last_tag._order + 1 if last_tag else 0
     tag = Tag(user_id=user_id, tag_name=tag_name, color=color, _order=order, completed=False)
@@ -82,7 +94,7 @@ def get_tags():
         "completed": False,
     }
     """
-    user_id = get_user_id(session.get('token'))
+    user_id = get_user_id(request.args.get('token'))
     if not user_id:
         return redirect(url_for('api.login', redirect=request.path))
     tags = Tag.query.filter(Tag.user_id == user_id).all()
@@ -92,7 +104,10 @@ def get_tags():
 
 @api.route('/tags/<tag_id>/delete', methods=['PUT'])
 def delete_tag(tag_id):
-    user_id = get_user_id(session.get('token'))
+    data = request.get_json(force=True)
+    if not data or 'token' not in data:
+        return jsonify(error='token not passed in')
+    user_id = get_user_id(data['token'])
     if not user_id:
         return redirect(url_for('api.login', redirect=request.path))
     tag = Tag.query.filter(Tag.tag_id == tag_id).filter(Tag.user_id == user_id).first()
@@ -122,9 +137,12 @@ def edit_tag_color(tag_id):
         "completed": False,
     }
     """
-    # TODO Use current user id instead of hardcoded 1
-    user_id = 1
     data = request.get_json(force=True)
+    if not data or 'token' not in data:
+        return jsonify(error='token not passed in')
+    user_id = get_user_id(data['token'])
+    if not user_id:
+        return redirect(url_for('api.login', redirect=request.path))
     color = data.get('color')
     tag = Tag.query.filter(Tag.user_id == user_id).filter(Tag.tag_id == tag_id).first()
     if tag is None:
@@ -158,10 +176,12 @@ def new_task(tag_id):
         "completed": False
     }
     """
-    user_id = get_user_id(session.get('token'))
+    data = request.get_json(force=True)
+    if not data or 'token' not in data:
+        return jsonify(error='token not passed in')
+    user_id = get_user_id(data['token'])
     if not user_id:
         return redirect(url_for('api.login', redirect=request.path))
-    data = request.get_json(force=True)
     content = data['content']
     start_date = data['start_date']
     end_date = data['end_date']
@@ -199,7 +219,7 @@ def get_tasks(tag_id):
         "completed": False
     }
     """
-    user_id = get_user_id(session.get('token'))
+    user_id = get_user_id(request.args.get('token'))
     if not user_id:
         return redirect(url_for('api.login', redirect=request.path))
     tasks = Task.query.filter(Task.tag_id == Tag.tag_id).filter(Tag.user_id == user_id).filter(
@@ -227,7 +247,7 @@ def get_tasks_in_focus():
         "completed": False
     }
     """
-    user_id = get_user_id(session.get('token'))
+    user_id = get_user_id(request.args.get('token'))
     if not user_id:
         return redirect(url_for('api.login', redirect=request.path))
     tasks = Task.query.filter(Task.user_id == user_id).filter(Task.in_focus == True).all()
@@ -248,17 +268,21 @@ def mark_task_complete(task_id):
     {"error": error message} if failed.
     {"
     """
-    user_id = get_user_id(session.get('token'))
+    data = request.get_json(force=True)
+    if not data or 'token' not in data:
+        return jsonify(error='token not passed in')
+    user_id = get_user_id(data['token'])
     if not user_id:
         return redirect(url_for('api.login', redirect=request.path))
-    data = request.get_json(force=True)
-    if not data or not ('completed' in data) or not (type(data['completed']) == bool):
+    if 'completed' not in data or type(data['completed']) != bool:
         return jsonify(error='param completed missing or of wrong type'), 400
     completed = data['completed']
     task = Task.query.filter(Task.task_id == task_id).filter(Task.user_id == user_id).first()
     if task is None:
         return jsonify(error='error. no task with id {} exists for this user.'.format(task_id)), 404
     task.completed = completed
+    db.session.commit()
+    return jsonify(status='success')
 
 
 @api.route('/tasks/<task_id>/delete', methods=['PUT'])
@@ -270,13 +294,17 @@ def delete_task(task_id):
     {"status": "success"} if succeeded.
     {"error": error message} if failed.
     """
-    user_id = get_user_id(session.get('token'))
+    data = request.get_json(force=True)
+    if not data or 'token' not in data:
+        return jsonify(error='token not passed in')
+    user_id = get_user_id(data['token'])
     if not user_id:
         return redirect(url_for('api.login', redirect=request.path))
     task = Task.query.filter(Task.task_id == task_id).filter(Task.user_id == user_id).first()
     if task is None:
         return jsonify(status='error. no task with id {} exists for this user.'.format(task_id)), 404
     task.deleted = True
+    db.session.commit()
     return jsonify(status='success')
 
 
@@ -303,16 +331,19 @@ def set_task_focus(task_id):
         "completed": False
     }
     """
-    # TODO Use current user id instead of hardcoded 1
-    user_id = 1
     data = request.get_json(force=True)
+    if not data or 'token' not in data:
+        return jsonify(error='token not passed in')
+    user_id = get_user_id(data['token'])
+    if not user_id:
+        return redirect(url_for('api.login', redirect=request.path))
     focus = data.get('focus')
     task = Task.query.filter(Task.user_id == user_id).filter(Task.tag_id == task_id).first()
     if task is None:
         return jsonify(status='error. tag not found.')
     if focus is None:
         return jsonify(status='error. key "focus" is required.')
-    Task.in_focus = focus
+    task.in_focus = focus
     db.session.commit()
     return jsonify(task=util.sqlalchemy_object_to_dict(task))
 
@@ -320,48 +351,51 @@ def set_task_focus(task_id):
 @api.route('/tasks/<task_id>/edit', methods=['POST'])
 def edit_task(task_id):
     """
-        Edit any feature of a task.
+    Edit any feature of a task.
 
-        Input format:
+    Input format:
 
-        {
-            "content": content,
-            "start_date": yyyy-mm-dd hh:mm:ss,
-            "end_date": yyyy-mm-dd hh:mm:ss,
-            "tag_id": id,
-            "parent_task": parent id,
-            "in_focus": True,
-            "_order": order,
-            "completed": False
-        }
+    {
+        "content": content,
+        "start_date": yyyy-mm-dd hh:mm:ss,
+        "end_date": yyyy-mm-dd hh:mm:ss,
+        "tag_id": id,
+        "parent_task": parent id,
+        "in_focus": True,
+        "_order": order,
+        "completed": False
+    }
 
-        Output format:
+    Output format:
 
 
-        {
-            "content": content,
-            "start_date": yyyy-mm-dd hh:mm:ss,
-            "end_date": yyyy-mm-dd hh:mm:ss,
-            "tag_id": id,
-            "parent_task": parent id,
-            "in_focus": True,
-            "_order": order,
-            "completed": False
-        }
-        """
-    # TODO Use current user id instead of hardcoded 1
-    user_id = 1
+    {
+        "content": content,
+        "start_date": yyyy-mm-dd hh:mm:ss,
+        "end_date": yyyy-mm-dd hh:mm:ss,
+        "tag_id": id,
+        "parent_task": parent id,
+        "in_focus": True,
+        "_order": order,
+        "completed": False
+    }
+    """
     data = request.get_json(force=True)
+    if not data or 'token' not in data:
+        return jsonify(error='token not passed in')
+    user_id = get_user_id(data['token'])
+    if not user_id:
+        return redirect(url_for('api.login', redirect=request.path))
     task = Task.query.filter(Task.user_id == user_id).filter(Task.tag_id == task_id).first()
     if task is None:
         return jsonify(status='error. tag not found.')
 
-    Task.content = data.get('content') or task.content
-    Task.start_date = data.get('start_date') or task.start_date
-    Task.end_date = data.get('end_date') or task.end_date
-    Task.parent_task = data.get('parent_task') or task.parent_task
-    Task.in_focus = data.get('in_focus') or task.in_focus
-    Task._order = data.get('_order') or task._order
-    Task.completed = data.get('completed') or task.completed
+    task.content = data.get('content') or task.content
+    task.start_date = data.get('start_date') or task.start_date
+    task.end_date = data.get('end_date') or task.end_date
+    task.parent_task = data.get('parent_task') or task.parent_task
+    task.in_focus = data.get('in_focus') or task.in_focus
+    task._order = data.get('_order') or task._order
+    task.completed = data.get('completed') or task.completed
     db.session.commit()
     return jsonify(task=util.sqlalchemy_object_to_dict(task))
