@@ -26,15 +26,16 @@ class Tag(Base):
     in_focus = db.Column(db.Boolean, nullable=False)
     color = db.Column(db.String, nullable=False)
     _order = db.Column(db.Integer, nullable=False)
-    archived = db.Column(db.Boolean, nullable=False)
+    completed = db.Column(db.Boolean, nullable=False)
+    deleted = db.Column(db.Boolean, nullable=False)
 
-    def __init__(self, user_id=None, tag_name=None, in_focus=True, color=None, _order=None, archived=False):
+    def __init__(self, user_id=None, tag_name=None, in_focus=True, color=None, _order=None, completed=False):
         self.user_id = user_id
         self.tag_name = tag_name
         self.in_focus = in_focus
         self.color = color
         self._order = _order
-        self.archived = archived
+        self.completed = completed
 
 
 class Task(Base):
@@ -47,17 +48,18 @@ class Task(Base):
     tag_id = db.Column(db.BigInteger, nullable=False)
     parent_task = db.Column(db.BigInteger)
     _order = db.Column(db.Integer, nullable=False)
-    archived = db.Column(db.Boolean, nullable=False)
+    completed = db.Column(db.Boolean, nullable=False)
+    deleted = db.Column(db.Boolean, nullable=False)
 
     def __init__(self, content=None, start_date=None, end_date=None, tag_id=None, parent_task=None, _order=None,
-                 archived=False):
+                 completed=False):
         self.content = content
         self.start_date = start_date
         self.end_date = end_date
         self.tag_id = tag_id
         self.parent_task = parent_task
         self._order = _order
-        self.archived = archived
+        self.completed = completed
 
 
 action_type_enum_elements = ('check', 'uncheck', 'add', 'delete')

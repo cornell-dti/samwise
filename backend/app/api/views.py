@@ -47,7 +47,7 @@ def get_tags():
         "in_focus": True,
         "color": "#ffffff",
         "_order": order,
-        "archived": False,
+        "completed": False,
     }
     """
     # TODO Use current user id instead of hardcoded 1
@@ -74,7 +74,7 @@ def get_tags_in_focus():
         "in_focus": True,
         "color": "#ffffff",
         "_order": order,
-        "archived": False,
+        "completed": False,
     }
     """
     # TODO Use current user id instead of hardcoded 1
@@ -101,7 +101,7 @@ def set_tag_focus(tag_id):
         "in_focus": True,
         "color": "#ffffff",
         "_order": order,
-        "archived": False,
+        "completed": False,
     }
     """
     # TODO Use current user id instead of hardcoded 1
@@ -136,7 +136,7 @@ def new_tag():
         "in_focus": True,
         "color": "#ffffff",
         "_order": order,
-        "archived": False,
+        "completed": False,
     }
     """
     # TODO Use current user id instead of hardcoded 1
@@ -146,7 +146,7 @@ def new_tag():
     color = data['color']
     last_tag = Tag.query.filter(Tag.user_id == user_id).order_by(Tag._order.desc()).first()
     order = last_tag._order + 1 if last_tag else 0
-    tag = Tag(user_id=user_id, tag_name=tag_name, in_focus=True, color=color, _order=order, archived=False)
+    tag = Tag(user_id=user_id, tag_name=tag_name, in_focus=True, color=color, _order=order, completed=False)
     db.session.add(tag)
     db.session.commit()
     return jsonify(created=util.sqlalchemy_object_to_dict(tag))
@@ -168,7 +168,7 @@ def get_tasks(tag_id):
         "tag_id": id,
         "parent_task": parent id,
         "_order": order,
-        "archived": False
+        "completed": False
     }
     """
     # TODO Use current user id instead of hardcoded 1
@@ -198,7 +198,7 @@ def new_task(tag_id):
         "tag_id": id,
         "parent_task": parent id,
         "_order": order,
-        "archived": False
+        "completed": False
     }
     """
     user_id = 1
@@ -214,7 +214,7 @@ def new_task(tag_id):
         Tag.user_id == user_id).order_by(Task._order.desc()).first()
     order = last_task._order + 1 if last_task else 0
     new_task = Task(content=content, start_date=start_date, end_date=end_date, tag_id=tag_id, parent_task=parent_task,
-                    _order=order, archived=False)
+                    _order=order, completed=False)
     db.session.add(new_task)
     db.session.commit()
     return jsonify(created=util.sqlalchemy_object_to_dict(new_task))
