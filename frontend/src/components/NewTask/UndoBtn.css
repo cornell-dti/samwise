@@ -1,0 +1,12 @@
+.Main{
+  background:none;
+  float:right;
+  color:#70a7ff;
+  border:none;
+  margin-right:10px;
+  cursor:pointer;
+}
+
+.Wrap{
+  padding-left:20px;
+}

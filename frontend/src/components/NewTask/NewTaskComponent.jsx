@@ -90,11 +90,11 @@ class UnconNewTaskComponent extends Component {
     addTask(toAdd);
     const lastId = toAdd.id;
 
-    const taskMsg = 'Added ' + name + ' ' + date.toLocaleDateString('en-US', {  
+    const taskMsg = 'Added "' + name + '" (' + date.toLocaleDateString('en-US', {  
       day: 'numeric',
       month: 'numeric',
       year: 'numeric',
-    });
+    }) + ')';
 
 
     toast.dismiss(lastToast);
@@ -114,9 +114,10 @@ class UnconNewTaskComponent extends Component {
   }
 
   handleUndo = () => {
-    const { lastDel } = this.state;
+    const { lastDel, lastToast } = this.state;
     const { mainTaskArray, removeTask } = this.props;
 
+    toast.dismiss(lastToast);
     const taskId = lastDel;
     if (taskId === -1) { return; }
 
@@ -284,7 +285,7 @@ class UnconNewTaskComponent extends Component {
           </div>
         </form>
 
-        <ToastContainer />
+        <ToastContainer className={styles.Toast} />
       </div>
     );
   }
