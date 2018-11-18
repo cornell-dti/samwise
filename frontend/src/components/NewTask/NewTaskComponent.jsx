@@ -117,7 +117,8 @@ class UnconNewTaskComponent extends Component {
     this.tagPicker.current.wrappedInstance.resetState();
   }
 
-  handleUndo = () => {
+  handleUndo = (e) => {
+    e.stopPropagation();
     const { lastDel, lastToast } = this.state;
     const { mainTaskArray, removeTask } = this.props;
 
