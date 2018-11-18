@@ -187,8 +187,6 @@ def new_task(tag_id):
     end_date = data['end_date']
     parent_task = data.get('parent_task', None)
     tag = Tag.query.filter(Tag.tag_id == tag_id).filter(Tag.user_id == user_id).first()
-    if tag is None:
-        return jsonify(error='error. no tag with id {} exists for this user.'.format(tag_id)), 404
     last_task = Task.query.filter(Task.tag_id == Tag.tag_id).filter(Tag.tag_id == tag_id).filter(
         Tag.user_id == user_id).order_by(Task._order.desc()).first()
     order = last_task._order + 1 if last_task else 0
