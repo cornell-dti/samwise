@@ -1,0 +1,71 @@
+.Main{
+  display:inline-block;
+  height:20px;
+  line-height:20px;
+  
+  text-align:center;
+  
+  position:relative;
+  color:white;
+  margin-left:5px;
+}
+
+
+.LabelHack{
+  background:#9b9b9b;
+  border-radius:10px;
+  
+  cursor:pointer;
+}
+
+
+.NewTaskDatePick{
+  width:300px;
+  position:absolute;
+  top:20px;
+  display:none;
+  left:0;
+  
+  z-index:2;
+}
+
+.HideInput{
+  display:none;
+}
+
+.DateDisplay{
+  padding: 0 5px;
+}
+.TagDisplay{
+  padding: 0 5px 0 10px;
+}
+
+.ResetButton{
+  background:none;
+  border:none;
+  cursor:pointer;
+  color:white;
+  height:18px;
+  width:18px;
+  border-radius:9px;
+  margin:0 2px 0 0;
+  padding:0;
+  line-height:20px;
+  
+  position:relative;
+  bottom:0;
+}
+
+.ResetButton:hover{
+  background:rgba(0,0,0,0.1);
+}
+
+
+
+
+
+
+
+.NewTaskClassPick{
+  color:black;
+}
