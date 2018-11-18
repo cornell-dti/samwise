@@ -63,7 +63,9 @@ class UnconNewTaskComponent extends Component {
   }
 
   handleSave = (e) => {
-    e.preventDefault();
+    if (e) {
+      e.preventDefault();
+    }
 
     const { name, subtaskArray, date } = this.state;
     const { addTask } = this.props;
@@ -170,7 +172,7 @@ class UnconNewTaskComponent extends Component {
     this.openClassChange.current.click();
   }
 
-  handleChangeSubtask = (e) => {
+  handleChangeSubtask = (e, toSave) => {
     const subtaskId = parseInt(e.target.parentElement.getAttribute('data-subtaskid'), 10);
 
     const { subtaskArray } = this.state;
@@ -179,7 +181,11 @@ class UnconNewTaskComponent extends Component {
       el => (el.id === subtaskId ? { ...el, name: e.target.value } : el),
     );
 
-    this.setState({ subtaskArray: newSubtaskArr });
+    if (toSave) {
+      this.setState({ subtaskArray: newSubtaskArr }, () => this.handleSave());
+    } else {
+      this.setState({ subtaskArray: newSubtaskArr });
+    }
   }
 
   handleDelSubtask = (e) => {
@@ -226,9 +232,7 @@ class UnconNewTaskComponent extends Component {
           <div className={styles.NewTaskActive} ref={this.addTaskModal}>
 
             <FocusPicker onPinChange={this.handlePinChange} />
-            <span style={{ marginRight: '5px' }} />
             <ClassPickerWrap onTagChange={this.handleTagChange} />
-            <span style={{ marginRight: '5px' }} />
             <CalPicker onDateChange={this.handleDateChange} />
 
             <button type="submit" className={styles.SubmitNewTask}>
@@ -243,6 +247,7 @@ class UnconNewTaskComponent extends Component {
                       <button type="button" onClick={this.handleDelSubtask}><Icon name="delete" /></button>
                       <input
                         onBlur={this.handleChangeSubtask}
+                        onKeyDown={e => {if (e.keyCode == 13){this.handleChangeSubtask(e, true);}}}
                         type="text"
                         defaultValue={subtaskObj.name}
                       />
