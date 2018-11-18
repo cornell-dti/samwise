@@ -30,94 +30,6 @@ def login():
     else:
         return auth.html
 
-
-
-@api.route('/tags/all', methods=['GET'])
-def get_tags():
-    """
-    Returns all tags.
-
-    Output format:
-
-    List of tags in form:
-
-    {
-        "user_id": id number,
-        "tag_name": "name",
-        "in_focus": True,
-        "color": "#ffffff",
-        "_order": order,
-        "completed": False,
-    }
-    """
-    # TODO Use current user id instead of hardcoded 1
-    user_id = get_user_id(session.get('token'))
-    if not user_id:
-        return redirect(url_for('api.login', redirect=request.path))
-    tags = Tag.query.filter(Tag.user_id == user_id).all()
-    tags_json = util.table_to_json(tags)
-    return jsonify(tags_json)
-
-
-@api.route('/tags/focus', methods=['GET'])
-def get_tags_in_focus():
-    """
-    Returns all tags with in_focus == true.
-
-    Output format:
-
-    List of tags in form:
-
-    {
-        "user_id": id number,
-        "tag_name": "name",
-        "in_focus": True,
-        "color": "#ffffff",
-        "_order": order,
-        "completed": False,
-    }
-    """
-    # TODO Use current user id instead of hardcoded 1
-    user_id = 1
-    tags = Tag.query.filter(Tag.user_id == user_id).filter(Tag.in_focus == True).all()
-    tags_json = util.table_to_json(tags)
-    return jsonify(tags_json)
-
-
-@api.route('/tags/<tag_id>/focus', methods=['POST'])
-def set_tag_focus(tag_id):
-    """
-    Set the focus of a tag. True means in focus, false means not in focus.
-
-    Input format:
-    {
-        "focus": true|false
-    }
-
-    Output format:
-    {
-        "user_id": id number,
-        "tag_name": "name",
-        "in_focus": True,
-        "color": "#ffffff",
-        "_order": order,
-        "completed": False,
-    }
-    """
-    # TODO Use current user id instead of hardcoded 1
-    user_id = 1
-    data = request.get_json(force=True)
-    focus = data.get('focus')
-    tag = Tag.query.filter(Tag.user_id == user_id).filter(Tag.tag_id == tag_id).first()
-    if tag is None:
-        return jsonify(status='error. tag not found.')
-    if focus is None:
-        return jsonify(status='error. key "focus" is required.')
-    tag.in_focus = focus
-    db.session.commit()
-    return jsonify(tag=util.sqlalchemy_object_to_dict(tag))
-
-
 @api.route('/tags/new', methods=['POST'])
 def new_tag():
     """
@@ -133,7 +45,6 @@ def new_tag():
     {
         "user_id": id number,
         "tag_name": "name",
-        "in_focus": True,
         "color": "#ffffff",
         "_order": order,
         "completed": False,
@@ -146,37 +57,35 @@ def new_tag():
     color = data['color']
     last_tag = Tag.query.filter(Tag.user_id == user_id).order_by(Tag._order.desc()).first()
     order = last_tag._order + 1 if last_tag else 0
-    tag = Tag(user_id=user_id, tag_name=tag_name, in_focus=True, color=color, _order=order, completed=False)
+    tag = Tag(user_id=user_id, tag_name=tag_name, color=color, _order=order, completed=False)
     db.session.add(tag)
     db.session.commit()
     return jsonify(created=util.sqlalchemy_object_to_dict(tag))
 
-
-@api.route('/tags/<tag_id>/tasks/all', methods=['GET'])
-def get_tasks(tag_id):
+@api.route('/tags/all', methods=['GET'])
+def get_tags():
     """
-    Returns all tasks.
+    Returns all tags.
 
     Output format:
 
     List of tags in form:
 
     {
-        "content": content,
-        "start_date": yyyy-mm-dd hh:mm:ss,
-        "end_date": yyyy-mm-dd hh:mm:ss,
-        "tag_id": id,
-        "parent_task": parent id,
+        "user_id": id number,
+        "tag_name": "name",
+        "color": "#ffffff",
         "_order": order,
-        "completed": False
+        "completed": False,
     }
     """
     # TODO Use current user id instead of hardcoded 1
-    user_id = 1
-    tasks = Task.query.filter(Task.tag_id == Tag.tag_id).filter(Tag.user_id == user_id).filter(
-        Tag.tag_id == tag_id).all()
-    return jsonify(util.table_to_json(tasks))
-
+    user_id = get_user_id(session.get('token'))
+    if not user_id:
+        return redirect(url_for('api.login', redirect=request.path))
+    tags = Tag.query.filter(Tag.user_id == user_id).all()
+    tags_json = util.table_to_json(tags)
+    return jsonify(tags_json)
 
 @api.route('/tags/<tag_id>/tasks/new', methods=['POST'])
 def new_task(tag_id):
@@ -197,6 +106,7 @@ def new_task(tag_id):
         "end_date": yyyy-mm-dd hh:mm:ss,
         "tag_id": id,
         "parent_task": parent id,
+        "in_focus": False,
         "_order": order,
         "completed": False
     }
@@ -214,7 +124,60 @@ def new_task(tag_id):
         Tag.user_id == user_id).order_by(Task._order.desc()).first()
     order = last_task._order + 1 if last_task else 0
     new_task = Task(content=content, start_date=start_date, end_date=end_date, tag_id=tag_id, parent_task=parent_task,
-                    _order=order, completed=False)
+                    in_focus=False, _order=order, completed=False)
     db.session.add(new_task)
     db.session.commit()
     return jsonify(created=util.sqlalchemy_object_to_dict(new_task))
+
+@api.route('/tags/<tag_id>/tasks/all', methods=['GET'])
+def get_tasks(tag_id):
+    """
+    Returns all tasks.
+
+    Output format:
+
+    List of tags in form:
+
+    {
+        "content": content,
+        "start_date": yyyy-mm-dd hh:mm:ss,
+        "end_date": yyyy-mm-dd hh:mm:ss,
+        "tag_id": id,
+        "parent_task": parent id,
+        "in_focus": True,
+        "_order": order,
+        "completed": False
+    }
+    """
+    # TODO Use current user id instead of hardcoded 1
+    user_id = 1
+    tasks = Task.query.filter(Task.tag_id == Tag.tag_id).filter(Tag.user_id == user_id).filter(
+        Tag.tag_id == tag_id).all()
+    return jsonify(util.table_to_json(tasks))
+
+
+@api.route('/tasks/focus', methods=['GET'])
+def get_tasks_in_focus():
+    """
+    Returns all tasks with in_focus == true.
+
+    Output format:
+
+    List of tags in form:
+
+    {
+        "content": content,
+        "start_date": yyyy-mm-dd hh:mm:ss,
+        "end_date": yyyy-mm-dd hh:mm:ss,
+        "tag_id": id,
+        "parent_task": parent id,
+        "in_focus": True,
+        "_order": order,
+        "completed": False
+    }
+    """
+    # TODO Use current user id instead of hardcoded 1
+    user_id = 1
+    tasks = Task.query.filter(Task.user_id == user_id).filter(Task.in_focus == True).all()
+    tasks_json = util.table_to_json(tasks)
+    return jsonify(tasks_json)
