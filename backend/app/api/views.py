@@ -14,6 +14,7 @@ def get_user_id(firebase_id_token):
     except ValueError:
         return
 
+
 @api.route('/', methods=['GET'])
 def index():
     return jsonify(status='success')
@@ -29,6 +30,7 @@ def login():
         return redirect(redirect_url)
     else:
         return auth.html
+
 
 @api.route('/tags/new', methods=['POST'])
 def new_tag():
@@ -62,6 +64,7 @@ def new_tag():
     db.session.commit()
     return jsonify(created=util.sqlalchemy_object_to_dict(tag))
 
+
 @api.route('/tags/all', methods=['GET'])
 def get_tags():
     """
@@ -86,6 +89,41 @@ def get_tags():
     tags = Tag.query.filter(Tag.user_id == user_id).all()
     tags_json = util.table_to_json(tags)
     return jsonify(tags_json)
+
+
+@api.route('/tags/<tag_id>/color', methods=['POST'])
+def edit_tag_color(tag_id):
+    """
+
+    Edit or add a color to a specific tag.
+
+    Input format:
+    {
+        "color": "#ffffff",
+    }
+
+    Output format:
+    {
+        "user_id": id number,
+        "tag_name": "name",
+        "color": "#ffffff",
+        "_order": order,
+        "completed": False,
+    }
+    """
+    # TODO Use current user id instead of hardcoded 1
+    user_id = 1
+    data = request.get_json(force=True)
+    color = data.get('color')
+    tag = Tag.query.filter(Tag.user_id == user_id).filter(Tag.tag_id == tag_id).first()
+    if tag is None:
+        return jsonify(status='error. tag not found.')
+    if color is None:
+        return jsonify(status='error. key "color" is required.')
+    Tag.color = color
+    db.session.commit()
+    return jsonify(tag=util.sqlalchemy_object_to_dict(tag))
+
 
 @api.route('/tags/<tag_id>/tasks/new', methods=['POST'])
 def new_task(tag_id):
@@ -128,6 +166,7 @@ def new_task(tag_id):
     db.session.add(new_task)
     db.session.commit()
     return jsonify(created=util.sqlalchemy_object_to_dict(new_task))
+
 
 @api.route('/tags/<tag_id>/tasks/all', methods=['GET'])
 def get_tasks(tag_id):
@@ -181,3 +220,90 @@ def get_tasks_in_focus():
     tasks = Task.query.filter(Task.user_id == user_id).filter(Task.in_focus == True).all()
     tasks_json = util.table_to_json(tasks)
     return jsonify(tasks_json)
+
+
+@api.route('/tasks/<task_id>/focus', methods=['POST'])
+def set_task_focus(task_id):
+    """
+    Set the focus of a tag. True means in focus, false means not in focus.
+
+    Input format:
+
+    {
+        "focus": true|false
+    }
+
+    Output format:
+    {
+        "content": content,
+        "start_date": yyyy-mm-dd hh:mm:ss,
+        "end_date": yyyy-mm-dd hh:mm:ss,
+        "tag_id": id,
+        "parent_task": parent id,
+        "in_focus": focus,
+        "_order": order,
+        "completed": False
+    }
+    """
+    # TODO Use current user id instead of hardcoded 1
+    user_id = 1
+    data = request.get_json(force=True)
+    focus = data.get('focus')
+    task = Task.query.filter(Task.user_id == user_id).filter(Task.tag_id == task_id).first()
+    if task is None:
+        return jsonify(status='error. tag not found.')
+    if focus is None:
+        return jsonify(status='error. key "focus" is required.')
+    Task.in_focus = focus
+    db.session.commit()
+    return jsonify(task=util.sqlalchemy_object_to_dict(task))
+
+
+@api.route('/tasks/<task_id>/edit', methods=['POST'])
+def edit_task(task_id):
+    """
+        Edit any feature of a task.
+
+        Input format:
+
+        {
+            "content": content,
+            "start_date": yyyy-mm-dd hh:mm:ss,
+            "end_date": yyyy-mm-dd hh:mm:ss,
+            "tag_id": id,
+            "parent_task": parent id,
+            "in_focus": True,
+            "_order": order,
+            "completed": False
+        }
+
+        Output format:
+
+
+        {
+            "content": content,
+            "start_date": yyyy-mm-dd hh:mm:ss,
+            "end_date": yyyy-mm-dd hh:mm:ss,
+            "tag_id": id,
+            "parent_task": parent id,
+            "in_focus": True,
+            "_order": order,
+            "completed": False
+        }
+        """
+    # TODO Use current user id instead of hardcoded 1
+    user_id = 1
+    data = request.get_json(force=True)
+    task = Task.query.filter(Task.user_id == user_id).filter(Task.tag_id == task_id).first()
+    if task is None:
+        return jsonify(status='error. tag not found.')
+
+    Task.content = data.get('content') or task.content
+    Task.start_date = data.get('start_date') or task.start_date
+    Task.end_date = data.get('end_date') or task.end_date
+    Task.parent_task = data.get('parent_task') or task.parent_task
+    Task.in_focus = data.get('in_focus') or task.in_focus
+    Task._order = data.get('_order') or task._order
+    Task.completed = data.get('completed') or task.completed
+    db.session.commit()
+    return jsonify(task=util.sqlalchemy_object_to_dict(task))
