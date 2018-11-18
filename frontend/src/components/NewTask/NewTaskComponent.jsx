@@ -101,7 +101,7 @@ class UnconNewTaskComponent extends Component {
     toast.dismiss(lastToast);
     const newToast = toast.success(
       <ToastUndo dispText={taskMsg} changeCallback={this.handleUndo} />, {
-        position: 'bottom-right',
+        position: 'top-right',
         autoClose: 5000,
         hideProgressBar: true,
         closeOnClick: true,
