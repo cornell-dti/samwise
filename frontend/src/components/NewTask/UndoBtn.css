@@ -6,6 +6,12 @@
   margin-right:10px;
   cursor:pointer;
 }
+.Main:hover{
+  color:white;
+}
+.Main:active{
+  color:#70a7ff;
+}
 
 .Wrap{
   padding-left:20px;

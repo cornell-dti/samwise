@@ -93,8 +93,7 @@ class UnconNewTaskComponent extends Component {
 
     const taskMsg = 'Added "' + name + '" (' + date.toLocaleDateString('en-US', {  
       day: 'numeric',
-      month: 'numeric',
-      year: 'numeric',
+      month: 'numeric'
     }) + ')';
 
 
@@ -227,6 +226,7 @@ class UnconNewTaskComponent extends Component {
   resetTask = () => {
     const { lastDel, lastToast } = this.state;
     this.setState({ ...this.initialState(), lastDel, lastToast });
+    this.addTask.current.focus();
   }
 
 
