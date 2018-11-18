@@ -173,3 +173,22 @@ Wrapper for all options only visible when adding task
   color:gray;
   bottom:8px;
 }
+
+
+
+
+.ResetButton{
+  position:absolute;
+  background:none;
+  border:none;
+  cursor:pointer;
+  bottom:-30px;
+  right:10px;
+  color:white;
+}
+.ResetButton:hover{
+  background:rgba(0,0,0,0.2);
+}
+.ResetButton:active{
+  background:none;
+}

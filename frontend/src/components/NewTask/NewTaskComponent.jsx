@@ -218,6 +218,12 @@ class UnconNewTaskComponent extends Component {
   }
 
 
+  resetTask = () => {
+    const { lastDel, lastToast } = this.state;
+    this.setState({ ...this.initialState(), lastDel, lastToast });
+  }
+
+
   render() {
     const { name, subtaskArray } = this.state;
     const { colorConfig } = this.props;
@@ -272,6 +278,7 @@ class UnconNewTaskComponent extends Component {
               </ul>
               <Icon name="plus" />
               <input type="text" placeholder="Add a Subtask" onKeyUp={this.handleAddSubtask} />
+              <button type="button" className={styles.ResetButton} onClick={this.resetTask}>Clear</button>
             </div>
 
           </div>
