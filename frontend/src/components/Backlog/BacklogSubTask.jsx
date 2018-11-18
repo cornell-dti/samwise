@@ -1,6 +1,6 @@
 // @flow strict
 
-import * as React from 'react';
+import React from 'react';
 import type { Node } from 'react';
 import { connect } from 'react-redux';
 import { Icon } from 'semantic-ui-react';
@@ -57,14 +57,14 @@ function BacklogSubTask(props: Props): Node {
         {name}
       </span>
       <Icon
-        name="delete"
-        className={styles.BacklogTaskIcon}
-        onClick={() => removeSubTask(mainTaskId, id)}
-      />
-      <Icon
         name={inFocus ? 'bookmark' : 'bookmark outline'}
         className={styles.BacklogTaskIcon}
         onClick={() => toggleSubTaskPin(mainTaskId, id)}
+      />
+      <Icon
+        name="delete"
+        className={styles.BacklogTaskIcon}
+        onClick={() => removeSubTask(mainTaskId, id)}
       />
     </div>
   );

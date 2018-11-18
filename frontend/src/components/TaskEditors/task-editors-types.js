@@ -8,12 +8,13 @@
  * - 'right': to the right the element.
  * - null: defaults to 'center'.
  */
-export type FloatingPosition = 'center' | 'below' | 'left' | 'right';
+export type FloatingPosition = 'left' | 'right';
 
 /**
  * A simple main task to edit.
  */
 export type SimpleMainTask = {|
+  +id: number;
   +name: string;
   +tag: string;
   +date: Date;

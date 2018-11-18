@@ -14,9 +14,9 @@ const mapDispatchToProps = dispatch => ({
   removeTask: e => dispatch(removeTask(e)),
 });
 
-const mapStateToProps = state => ({
-  tagColorPicker: state.tagColorPicker,
-  mainTaskArray: state.mainTaskArray,
+const mapStateToProps = ({ mainTaskArray, classColorConfig, tagColorConfig }) => ({
+  colorConfig: { ...classColorConfig, ...tagColorConfig },
+  mainTaskArray,
 });
 
 class UnconNewTaskComponent extends Component {
@@ -191,7 +191,7 @@ class UnconNewTaskComponent extends Component {
     const {
       name, tag, date, subtaskArray,
     } = this.state;
-    const { tagColorPicker } = this.props;
+    const { colorConfig } = this.props;
     return (
       <div>
         <div onClick={this.closeNewTask} className={styles.CloseNewTask} ref={this.blockModal} />
@@ -216,7 +216,7 @@ class UnconNewTaskComponent extends Component {
               <label
                 htmlFor="changeClassCheckbox"
                 data-curr={tag}
-                style={{ backgroundColor: tagColorPicker[tag] }}
+                style={{ backgroundColor: colorConfig[tag] }}
                 ref={this.changeClass}
               >
                 <span>{tag}</span>

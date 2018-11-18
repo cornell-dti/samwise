@@ -4,37 +4,38 @@ import * as React from 'react';
 import type { Node } from 'react';
 import ClassPickerItem from './ClassPickerItem';
 import styles from './ClassPicker.css';
-import type { TagColorConfig, State } from '../../store/store-types';
+import type { ColorConfig, State } from '../../store/store-types';
 import { simpleConnect } from '../../store/react-redux-util';
 
 type OwnProps = {| +onTagChange: (string) => void |};
-type SubscribedProps = {| +tagColorPicker: TagColorConfig |};
+type SubscribedProps = {| +classColorConfig: ColorConfig; +tagColorConfig: ColorConfig; |};
 type Props = {| ...OwnProps; ...SubscribedProps; |};
 
-const mapStateToProps = ({ tagColorPicker }: State) => ({ tagColorPicker });
+const mapStateToProps = ({ classColorConfig, tagColorConfig }: State) => ({
+  classColorConfig, tagColorConfig,
+});
 
 /**
  * The component used to pick a class.
  *
  * @param {function} onTagChange the function to call when tag changed.
- * @param {TagColorConfig} tagColorPicker the config of all colors.
+ * @param {ColorConfig} classColorConfig the config of all class colors.
+ * @param {ColorConfig} tagColorConfig the config of all tag colors.
  * @return {Node} the rendered picker.
  * @constructor
  */
-function ClassPicker({ onTagChange, tagColorPicker }: Props): Node {
+function ClassPicker({ onTagChange, classColorConfig, tagColorConfig }: Props): Node {
   const handleClassChange = (e) => {
     const newTag = e.currentTarget.getAttribute('data-class-title') || 'None';
     onTagChange(newTag);
   };
-  const items = Object.keys(tagColorPicker).map(
-    cTitle => (
-      <ClassPickerItem
-        key={cTitle}
-        color={tagColorPicker[cTitle]}
-        title={cTitle}
-        onChange={handleClassChange}
-      />
-    ),
+  const items = Object.keys({ ...classColorConfig, ...tagColorConfig }).map(
+    (title: string) => {
+      const color = tagColorConfig[title] || classColorConfig[title];
+      return (
+        <ClassPickerItem key={title} color={color} title={title} onChange={handleClassChange} />
+      );
+    },
   );
   return (
     <ul className={styles.NewTaskClass}>
@@ -43,7 +44,7 @@ function ClassPicker({ onTagChange, tagColorPicker }: Props): Node {
   );
 }
 
-const ConnectedClassPicker = simpleConnect<Props, OwnProps, SubscribedProps>(
+const ConnectedClassPicker = simpleConnect<OwnProps, SubscribedProps>(
   mapStateToProps,
 )(ClassPicker);
 export default ConnectedClassPicker;

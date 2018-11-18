@@ -4,12 +4,12 @@ import * as React from 'react';
 import { connect } from 'react-redux';
 import { GithubPicker } from 'react-color';
 import { editColorConfig as editColorConfigAction } from '../../store/actions';
-import type { TagColorConfigEditAction } from '../../store/action-types';
+import type { ColorConfigEditAction } from '../../store/action-types';
 
 type Props = {|
   tag: string,
   color: string,
-  editColorConfig: (tag: string, color: string) => TagColorConfigEditAction,
+  editColorConfig: (tag: string, color: string) => ColorConfigEditAction,
 |};
 
 function ColorEditor(props: Props) {

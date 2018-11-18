@@ -1,7 +1,6 @@
 // @flow strict
-/* eslint-disable jsx-a11y/click-events-have-key-events,jsx-a11y/no-static-element-interactions */
 
-import * as React from 'react';
+import React from 'react';
 import type { Node } from 'react';
 import { connect } from 'react-redux';
 import { Icon } from 'semantic-ui-react';
@@ -13,22 +12,22 @@ import {
   toggleTaskPin as toggleTaskPinAction,
 } from '../../store/actions';
 import BacklogSubTask from './BacklogSubTask';
-import FloatingTaskEditor from '../FloatingTaskEditor/FloatingTaskEditor';
-import type { SubTask, Task } from '../../store/store-types';
+import FloatingTaskEditor from '../TaskEditors/FloatingTaskEditor';
+import type { SubTask } from '../../store/store-types';
 import type {
   MarkTaskAction, RemoveTaskAction, ToggleTaskPinAction,
 } from '../../store/action-types';
 import CheckBox from '../UI/CheckBox';
-import type { FloatingPosition } from '../FloatingTaskEditor/floating-task-editor-types';
+import type { FloatingPosition } from '../TaskEditors/task-editors-types';
 
 type Props = {|
   ...ColoredTask;
+  +inFourDaysView: boolean;
   +doesShowCompletedTasks: boolean;
-  +doesRenderSubTasks: boolean;
   +taskEditorPosition: FloatingPosition;
   +markTask: (taskId: number) => MarkTaskAction;
   +toggleTaskPin: (taskId: number) => ToggleTaskPinAction;
-  +removeTask: (taskId: number) => RemoveTaskAction;
+  +removeTask: (taskId: number, undoable?: boolean) => RemoveTaskAction;
 |};
 
 const actionCreators = {
@@ -40,29 +39,23 @@ const actionCreators = {
 /**
  * The component used to render one task in backlog day.
  */
-class BacklogTask extends React.Component<Props> {
+class BacklogTask extends React.PureComponent<Props> {
   /**
    * Get an onClickHandler when the element is clicked.
    * This methods ensure that only clicking on task text counts.
    *
-   * @param {Function} opener the opener passed by the floating task editor.
-   * @return {Function} the onClick handler.
+   * @param {function(): void} opener the opener passed by the floating task editor.
+   * @return {function} the onClick handler.
    */
-  getOnClickHandler(opener: (Task, string) => void): (SyntheticEvent<HTMLElement>) => void {
-    const {
-      doesShowCompletedTasks, doesRenderSubTasks, taskEditorPosition,
-      markTask, toggleTaskPin, removeTask, color, ...task
-    } = this.props;
-    return (event: SyntheticEvent<HTMLElement>) => {
-      if (event.target instanceof HTMLElement) {
-        const elem: HTMLElement = event.target;
-        // only accept click on text.
-        if (elem.className === styles.BacklogTaskText) {
-          opener(task, color);
-        }
+  getOnClickHandler = (opener: () => void) => (event: SyntheticEvent<HTMLElement>): void => {
+    if (event.target instanceof HTMLElement) {
+      const elem: HTMLElement = event.target;
+      // only accept click on text.
+      if (elem.className === styles.BacklogTaskText) {
+        opener();
       }
-    };
-  }
+    }
+  };
 
   /**
    * Render the checkbox element.
@@ -100,7 +93,9 @@ class BacklogTask extends React.Component<Props> {
    */
   renderRemoveTaskIcon(): Node {
     const { id, removeTask } = this.props;
-    const handler = () => removeTask(id);
+    const handler = () => {
+      removeTask(id, true);
+    };
     return (
       <Icon name="delete" className={styles.BacklogTaskIcon} onClick={handler} />
     );
@@ -129,13 +124,13 @@ class BacklogTask extends React.Component<Props> {
    * @return {Node} the information for main task.
    */
   renderMainTaskInfo(): Node {
-    const { color } = this.props;
+    const { color, inFourDaysView } = this.props;
     return (
       <div className={styles.BacklogTaskMainWrapper} style={{ backgroundColor: color }}>
-        {this.renderCheckBox()}
+        {inFourDaysView && this.renderCheckBox()}
         {this.renderTaskName()}
-        {this.renderRemoveTaskIcon()}
-        {this.renderBookmarkIcon()}
+        {inFourDaysView && this.renderBookmarkIcon()}
+        {inFourDaysView && this.renderRemoveTaskIcon()}
       </div>
     );
   }
@@ -146,10 +141,8 @@ class BacklogTask extends React.Component<Props> {
    * @return {Node} the information for subtasks.
    */
   renderSubTasks(): Node {
-    const {
-      id, subtaskArray, doesShowCompletedTasks, doesRenderSubTasks,
-    } = this.props;
-    return doesRenderSubTasks && subtaskArray
+    const { id, subtaskArray, doesShowCompletedTasks } = this.props;
+    return subtaskArray
       .filter((subTask: SubTask) => (doesShowCompletedTasks || !subTask.complete))
       .map((subTask: SubTask) => (
         <BacklogSubTask key={subTask.id} mainTaskId={id} {...subTask} />
@@ -157,18 +150,37 @@ class BacklogTask extends React.Component<Props> {
   }
 
   render(): Node {
+    const {
+      inFourDaysView, doesShowCompletedTasks, taskEditorPosition,
+      markTask, toggleTaskPin, removeTask, color, ...task
+    } = this.props;
+    if (!inFourDaysView) {
+      return (
+        <div className={styles.BacklogTask}>
+          {this.renderMainTaskInfo()}
+        </div>
+      );
+    }
     // Construct the trigger for the floating task editor.
-    const trigger = (opener: (Task, string) => void): Node => {
+    const trigger = (opener: () => void): Node => {
       const onClickHandler = this.getOnClickHandler(opener);
       return (
-        <div onClick={onClickHandler} className={styles.BacklogTask}>
+        <div
+          className={styles.BacklogTask}
+          style={{ cursor: 'pointer' }}
+          role="button"
+          tabIndex={-1}
+          onClick={onClickHandler}
+          onKeyDown={onClickHandler}
+        >
           {this.renderMainTaskInfo()}
           {this.renderSubTasks()}
         </div>
       );
     };
-    const { taskEditorPosition } = this.props;
-    return (<FloatingTaskEditor position={taskEditorPosition} trigger={trigger} />);
+    return (
+      <FloatingTaskEditor position={taskEditorPosition} initialTask={task} trigger={trigger} />
+    );
   }
 }
 

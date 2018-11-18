@@ -3,15 +3,14 @@
 import React from 'react';
 import type { Node } from 'react';
 import { List } from 'semantic-ui-react';
-import TagColorConfigItem from './TagColorConfigItem';
-import type { State, TagColorConfig } from '../../store/store-types';
+import ColorConfigItem from './ColorConfigItem';
+import type { State, ColorConfig } from '../../store/store-types';
 import { simpleConnect } from '../../store/react-redux-util';
 
-type Props = {| classColorConfig: ClassColorConfig, configKeys: string[] |};
+type Props = {| classColorConfig: ColorConfig, configKeys: string[] |};
 
-const mapStateToProps = (state: State): Props => ({
-  classColorConfig: state.classColorPicker,
-  configKeys: Object.keys(state.classColorPicker),
+const mapStateToProps = ({ classColorConfig }: State): Props => ({
+  classColorConfig, configKeys: Object.keys(classColorConfig),
 });
 
 function ClassColorConfigItemList({ classColorConfig, configKeys }: Props): Node {
@@ -19,14 +18,14 @@ function ClassColorConfigItemList({ classColorConfig, configKeys }: Props): Node
     <List divided relaxed style={{ width: '500px', display: 'inline-block' }}>
       {
         configKeys.map(key => (
-          <TagColorConfigItem key={key} tag={key} color={classColorConfig[key]} isClass={true}/>
+          <ColorConfigItem key={key} tag={key} color={classColorConfig[key]} isClass />
         ))
       }
     </List>
   );
 }
 
-const ConnectedClassColorConfigItemList = simpleConnect<Props, {}, Props>(
+const ConnectedClassColorConfigItemList = simpleConnect<{}, Props>(
   mapStateToProps,
 )(ClassColorConfigItemList);
 export default ConnectedClassColorConfigItemList;

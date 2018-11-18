@@ -1,7 +1,8 @@
 // @flow strict
 
-import type { BacklogDisplayOption, OneDayTask } from './backlog-types';
-import type { TagColorConfig, Task } from '../../store/store-types';
+import type { BacklogDisplayOption, ColoredTask, OneDayTask } from './backlog-types';
+import type { ColorConfig, SubTask, Task } from '../../store/store-types';
+import { month2String } from '../../util/datetime-util';
 
 export type DateToTaskMap = Map<string, Task[]>;
 
@@ -62,8 +63,7 @@ function computeStartAndEndDay(
  * @return {string} a suitable title for the backlog header title.
  */
 export function getBacklogHeaderTitle(
-  displayOption: BacklogDisplayOption,
-  backlogOffset: number,
+  displayOption: BacklogDisplayOption, backlogOffset: number,
 ): string {
   if (displayOption === 'FOUR_DAYS' || displayOption === 'BIWEEKLY') {
     const { startDate, endDate } = computeStartAndEndDay(displayOption, backlogOffset);
@@ -73,49 +73,7 @@ export function getBacklogHeaderTitle(
   if (displayOption === 'MONTHLY') {
     const d = new Date();
     d.setMonth(d.getMonth() + backlogOffset, 1);
-    const month = d.getMonth();
-    let monthString: string;
-    switch (month) {
-      case 0:
-        monthString = 'January';
-        break;
-      case 1:
-        monthString = 'February';
-        break;
-      case 2:
-        monthString = 'March';
-        break;
-      case 3:
-        monthString = 'April';
-        break;
-      case 4:
-        monthString = 'May';
-        break;
-      case 5:
-        monthString = 'June';
-        break;
-      case 6:
-        monthString = 'July';
-        break;
-      case 7:
-        monthString = 'August';
-        break;
-      case 8:
-        monthString = 'September';
-        break;
-      case 9:
-        monthString = 'October';
-        break;
-      case 10:
-        monthString = 'November';
-        break;
-      case 11:
-        monthString = 'December';
-        break;
-      default:
-        throw new Error('Bad Month!');
-    }
-    return `${monthString} ${d.getFullYear()}`;
+    return `${month2String(d.getMonth())} ${d.getFullYear()}`;
   }
   throw new Error('Bad display option!');
 }
@@ -124,17 +82,16 @@ export function getBacklogHeaderTitle(
  * Returns an array of backlog days given the current props and the display option.
  *
  * @param {DateToTaskMap} date2TaskMap the map from a date to all the tasks in that day.
- * @param {TagColorConfig} colors all the color config.
+ * @param {ColorConfig} colors all the color config.
  * @param {BacklogDisplayOption} displayOption the display option.
  * @param {number} backlogOffset offset of displaying days.
  * @return {OneDayTask[]} an array of backlog days information.
  */
 export function buildDaysInBacklog(
-  date2TaskMap: DateToTaskMap, colors: TagColorConfig,
+  date2TaskMap: DateToTaskMap, colors: ColorConfig,
   displayOption: BacklogDisplayOption, backlogOffset: number,
 ): OneDayTask[] {
   const { startDate, endDate } = computeStartAndEndDay(displayOption, backlogOffset);
-  const doesRenderSubTasks = displayOption !== 'MONTHLY';
   // Adding the days to array
   const days: OneDayTask[] = [];
   for (let d = startDate; d < endDate; d.setDate(d.getDate() + 1)) {
@@ -144,7 +101,30 @@ export function buildDaysInBacklog(
       const { tag } = task;
       return { ...task, color: colors[tag] };
     });
-    days.push({ date, tasks, doesRenderSubTasks });
+    days.push({ date, tasks });
   }
   return days;
+}
+
+/**
+ * Returns the total number of tasks in the given task array.
+ *
+ * @param {ColoredTask[]} tasks the given task array.
+ * @param {boolean} includeSubTasks whether to include subtasks.
+ * @param {boolean} includeCompletedTasks whether to include completed tasks.
+ * @return {number} total number of tasks, including main task and subtasks.
+ */
+export function countTasks(
+  tasks: ColoredTask[], includeSubTasks: boolean, includeCompletedTasks: boolean,
+): number {
+  if (!includeSubTasks) {
+    return tasks.length;
+  }
+  const subtaskReducer = (a: number, s: SubTask) => (
+    a + ((includeCompletedTasks || s.complete) ? 1 : 0)
+  );
+  const reducer = (a: number, t: ColoredTask): number => (
+    a + ((includeCompletedTasks || t.complete) ? 1 : 0) + t.subtaskArray.reduce(subtaskReducer, 0)
+  );
+  return tasks.reduce(reducer, 0);
 }

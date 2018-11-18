@@ -21,18 +21,26 @@ export type Task = {|
 |};
 
 /**
- * The tag color picker maps a tag to a color.
+ * The color picker maps a tag to a color.
  */
-export type TagColorConfig = {
+export type ColorConfig = {
   [tag: string]: string
 };
+
+/**
+ * The cache that is designed to store the stuff that can be undo.
+ */
+export type UndoCache = {|
+  +lastDeletedTask: Task | null;
+|};
 
 /**
  * The type of the entire redux state.
  */
 export type State = {|
   +mainTaskArray: Task[];
-  +backupTaskArray: Task[];
-  +tagColorPicker: TagColorConfig;
-  +bearStatus: string
+  +classColorConfig: ColorConfig;
+  +tagColorConfig: ColorConfig;
+  +bearStatus: string;
+  +undoCache: UndoCache;
 |};

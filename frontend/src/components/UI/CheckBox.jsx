@@ -1,15 +1,15 @@
 // @flow strict
 /* eslint-disable jsx-a11y/label-has-associated-control,jsx-a11y/label-has-for */
 
-import * as React from 'react';
+import React from 'react';
 import type { Node } from 'react';
 import styles from './CheckBox.css';
 
 type Props = {|
-  className?: string;
-  checked?: boolean;
-  inverted?: boolean;
-  +onChange: (checked: boolean) => any;
+  className?: string; // additional className to apply
+  checked?: boolean; // whether the box is initially checked
+  inverted?: boolean; // whether the color is inverted.
+  +onChange: (checked: boolean) => any; // called when the value changed.
 |};
 
 type State = {| +checked: boolean |};
@@ -17,7 +17,7 @@ type State = {| +checked: boolean |};
 /**
  * This is the checkbox that implements the minimalist design.
  */
-export default class CheckBox extends React.Component<Props, State> {
+export default class CheckBox extends React.PureComponent<Props, State> {
   static defaultProps = {
     className: '',
     checked: false,

@@ -5,29 +5,37 @@ import type {
   MarkTaskAction, MarkSubTaskAction,
   ToggleTaskPinAction, ToggleSubTaskPinAction,
   RemoveTaskAction, RemoveSubTaskAction,
-  TagColorConfigEditAction, TagColorConfigRemoveAction, AddNewSubTaskAction, UndoAction,
+  ColorConfigEditAction, ColorConfigRemoveAction,
+  AddNewSubTaskAction, ClassOrTag,
+  UndoDeleteTaskAction, ClearUndoDeleteTaskAction,
 } from './action-types';
 import type { SubTask, Task } from './store-types';
 
 /**
  * Edit color config is an action that can be used to add OR edit a color config in the store.
  *
+ * @param {ClassOrTag} classOrTag whether it's a class or tag.
  * @param {string} tag tag of the config, which is usually a class name (e.g. CS 2112)
  * @param {string} color color of the config, which should be a valid color in CSS
  * (e.g. 'red' or '#000000')
- * @return {TagColorConfigEditAction} the edit color action.
+ * @return {ColorConfigEditAction} the edit color action.
  */
-export const editColorConfig = (tag: string, color: string, classOrTag: string): TagColorConfigEditAction => ({
-  type: 'EDIT_COLOR_CONFIG', tag, color, classOrTag,
+export const editColorConfig = (
+  tag: string, color: string, classOrTag: ClassOrTag,
+): ColorConfigEditAction => ({
+  type: 'EDIT_COLOR_CONFIG', classOrTag, tag, color,
 });
 /**
  * Remove color config is an action that can be used to remove a color config from the store.
  *
+ * @param {ClassOrTag} classOrTag whether it's a class or tag.
  * @param {string} tag tag of the config to remove, which is usually a class name (e.g. CS 2112)
- * @return {TagColorConfigRemoveAction} the remove color action.
+ * @return {ColorConfigRemoveAction} the remove color action.
  */
-export const removeColorConfig = (tag: string, classOrTag: string): TagColorConfigRemoveAction => ({
-  type: 'REMOVE_COLOR_CONFIG', tag, classOrTag
+export const removeColorConfig = (
+  tag: string, classOrTag: ClassOrTag,
+): ColorConfigRemoveAction => ({
+  type: 'REMOVE_COLOR_CONFIG', classOrTag, tag,
 });
 
 /**
@@ -40,12 +48,12 @@ export const addTask = (task: Task): AddNewTaskAction => ({ type: 'ADD_NEW_TASK'
 /**
  * Add a subtask to the task.
  *
- * @param {number} taskID the id of the task to append subtask.
+ * @param {number} id the id of the task to append subtask.
  * @param {SubTask} subTask the subtask to add.
  * @return {AddNewSubTaskAction} the add subtask action.
  */
-export const addSubtask = (taskID: number, subTask: SubTask): AddNewSubTaskAction => ({
-  type: 'ADD_SUBTASK', id: taskID, data: subTask,
+export const addSubtask = (id: number, subTask: SubTask): AddNewSubTaskAction => ({
+  type: 'ADD_SUBTASK', id, data: subTask,
 });
 /**
  * Edit task is an action that can be used to edit an existing task.
@@ -96,11 +104,12 @@ export const toggleSubTaskPin = (taskId: number, subtaskId: number): ToggleSubTa
 /**
  * Remove task is the action that can be used to remove a task.
  *
- * @param taskId the id of the task to remove.
+ * @param {number} taskId the id of the task to remove.
+ * @param {boolean} undoable whether the removal can be undone, which defaults to false.
  * @return {RemoveTaskAction} the remove task action.
  */
-export const removeTask = (taskId: number): RemoveTaskAction => ({
-  type: 'REMOVE_TASK', taskId,
+export const removeTask = (taskId: number, undoable: boolean = false): RemoveTaskAction => ({
+  type: 'REMOVE_TASK', taskId, undoable,
 });
 /**
  * Remove subtask is the action that can be used to remove a subtask.
@@ -114,8 +123,16 @@ export const removeSubTask = (taskId: number, subtaskId: number): RemoveSubTaskA
 });
 
 /**
- * Undo the previous operation.
+ * Undo the previous delete task operation.
  *
- * @return {UndoAction} the undo action.
+ * @return {UndoDeleteTaskAction} the undo delete task action.
  */
-export const undoAction = (): UndoAction => ({ type: 'UNDO_ACTION' });
+export const undoDeleteTask = (): UndoDeleteTaskAction => ({ type: 'UNDO_DELETE_TASK' });
+/**
+ * Undo the previous delete task operation.
+ *
+ * @return {UndoDeleteTaskAction} the undo delete task action.
+ */
+export const clearUndoDeleteTask = (): ClearUndoDeleteTaskAction => ({
+  type: 'CLEAR_UNDO_DELETE_TASK',
+});
