@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Calendar } from 'react-calendar';
 import { Icon } from 'semantic-ui-react';
-import styles from './CalPicker.css';
+import styles from './Picker.css';
 
 class CalPicker extends Component {
   constructor(props) {

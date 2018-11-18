@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Icon } from 'semantic-ui-react';
 import ClassPicker from '../ClassPicker/ClassPicker';
-import styles from './CalPicker.css';
+import styles from './Picker.css';
 
 const mapStateToProps = ({ classColorConfig, tagColorConfig }) => ({
   colorConfig: { ...classColorConfig, ...tagColorConfig },

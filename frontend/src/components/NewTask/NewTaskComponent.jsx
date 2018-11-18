@@ -6,9 +6,9 @@ import 'react-toastify/dist/ReactToastify.css';
 import { addTask, removeTask } from '../../store/actions';
 import styles from './NewTask.css';
 import ToastUndo from './ToastUndo';
-import ClassPicker from '../ClassPicker/ClassPicker';
 import ClassPickerWrap from './ClassPickerWrap';
 import CalPicker from './CalPicker';
+import FocusPicker from './FocusPicker';
 
 const placeholderText = 'What do you have to do?';
 
@@ -45,6 +45,7 @@ class UnconNewTaskComponent extends Component {
       complete: false,
       subtaskArray: [],
       lastDel: -1,
+      inFocus: false,
     };
   }
 
@@ -119,27 +120,27 @@ class UnconNewTaskComponent extends Component {
     this.addTask.current.focus();
   }
 
-  handleClassChange = (e) => {
-    this.changeClass.current.previousSibling.checked = false;
-    this.addTask.current.focus();
-    this.setState({ tag: e });
-  }
-
-  handleTagChange = (e) => {
-    this.addTask.current.focus();
-    this.setState({ tag: e });
-  }
-
 
   handleTaskNameChange = (e) => {
     this.setState({ name: e.target.value });
   }
 
 
+  handleTagChange = (e) => {
+    this.addTask.current.focus();
+    this.setState({ tag: e });
+  }
+
   handleDateChange = (e) => {
     this.setState({ date: e });
     this.addTask.current.focus();
   }
+
+  handlePinChange = (e) => {
+    this.setState({ inFocus: e });
+    this.addTask.current.focus();
+  }
+
 
   handleAddSubtask = (e) => {
     if (e.target.value === '') {
@@ -198,9 +199,7 @@ class UnconNewTaskComponent extends Component {
 
 
   render() {
-    const {
-      name, tag, subtaskArray,
-    } = this.state;
+    const { name, subtaskArray } = this.state;
     const { colorConfig } = this.props;
     return (
       <div>
@@ -226,21 +225,10 @@ class UnconNewTaskComponent extends Component {
           />
           <div className={styles.NewTaskActive} ref={this.addTaskModal}>
 
-            {/* <div className={styles.NewTaskDate}>
-              <label htmlFor="changeDateCheckbox">
-                <Icon name="calendar outline" className={styles.CenterIcon} />
-              </label>
-              <input id="changeDateCheckbox" type="checkbox" ref={this.openDateChange} />
-              <div className={styles.NewTaskDatePick}>
-                <Calendar
-                  onChange={this.handleDateChange}
-                  value={date}
-                  minDate={new Date()}
-                />
-              </div>
-            </div> */}
+            <FocusPicker onPinChange={this.handlePinChange} />
+            <span style={{ marginRight: '5px' }} />
             <ClassPickerWrap onTagChange={this.handleTagChange} />
-            <span style={{ marginRight: '10px' }} />
+            <span style={{ marginRight: '5px' }} />
             <CalPicker onDateChange={this.handleDateChange} />
 
             <button type="submit" className={styles.SubmitNewTask}>
