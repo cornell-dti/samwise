@@ -1,4 +1,4 @@
-from flask import request, Blueprint, jsonify, redirect, url_for, session
+from flask import request, Blueprint, jsonify, redirect, url_for
 
 from app import db, util
 from app.api.models import Tag, Task
