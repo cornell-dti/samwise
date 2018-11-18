@@ -19,6 +19,10 @@ class CalPicker extends Component {
     this.setState({ pinned: !pinned });
     onPinChange(!pinned);
   }
+  
+  resetState = () => {
+    this.setState({ pinned: false });
+  }
 
   render() {
     const { pinned } = this.state;

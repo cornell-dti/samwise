@@ -16,7 +16,9 @@ class CalPicker extends Component {
   })
 
   resetState = (e) => {
-    e.stopPropagation();
+    if (e) {
+      e.stopPropagation();
+    }
     this.setState(this.initialState());
   }
 

@@ -33,6 +33,7 @@ class UnconNewTaskComponent extends Component {
     this.subtaskList = React.createRef();
     this.datePicker = React.createRef();
     this.tagPicker = React.createRef();
+    this.pinPicker = React.createRef();
   }
 
 
@@ -111,6 +112,9 @@ class UnconNewTaskComponent extends Component {
 
     this.setState({ ...this.initialState(), lastDel: lastId, lastToast: newToast });
     this.closeNewTask();
+    this.datePicker.current.resetState();
+    this.pinPicker.current.resetState();
+    this.tagPicker.current.wrappedInstance.resetState();
   }
 
   handleUndo = () => {
@@ -252,7 +256,7 @@ class UnconNewTaskComponent extends Component {
           />
           <div className={styles.NewTaskActive} ref={this.addTaskModal}>
 
-            <FocusPicker onPinChange={this.handlePinChange} />
+            <FocusPicker onPinChange={this.handlePinChange} ref={this.pinPicker} />
             <ClassPickerWrap onTagChange={this.handleTagChange} ref={this.tagPicker} onOpened={this.closeCal} />
             <CalPicker onDateChange={this.handleDateChange} ref={this.datePicker} onOpened={this.closeTag} />
 
