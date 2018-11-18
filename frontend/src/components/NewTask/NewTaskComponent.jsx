@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { Calendar } from 'react-calendar';
 import { Icon } from 'semantic-ui-react';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -8,6 +7,10 @@ import { addTask, removeTask } from '../../store/actions';
 import styles from './NewTask.css';
 import ToastUndo from './ToastUndo';
 import ClassPicker from '../ClassPicker/ClassPicker';
+import ClassPickerWrap from './ClassPickerWrap';
+import CalPicker from './CalPicker';
+
+const placeholderText = 'What do you have to do?';
 
 const mapDispatchToProps = dispatch => ({
   addTask: e => dispatch(addTask(e)),
@@ -48,11 +51,14 @@ class UnconNewTaskComponent extends Component {
   openNewTask = () => {
     this.addTaskModal.current.style.display = 'block';
     this.blockModal.current.style.display = 'block';
+    this.addTask.current.placeholder = '';
   }
 
   closeNewTask = () => {
     this.addTaskModal.current.style.display = '';
     this.blockModal.current.style.display = '';
+    this.addTask.current.placeholder = placeholderText;
+    this.addTask.current.blur();
   }
 
   handleSave = (e) => {
@@ -77,7 +83,6 @@ class UnconNewTaskComponent extends Component {
     addTask(toAdd);
     const lastId = toAdd.id;
 
-    this.closeNewTask();
     const taskMsg = 'Added ' + name + ' ' + date.toLocaleDateString('en-US', {  
       day: 'numeric',
       month: 'numeric',
@@ -97,6 +102,7 @@ class UnconNewTaskComponent extends Component {
         toastId: 'addtasktoast',
       },
     );
+    this.closeNewTask();
   }
 
   handleUndo = () => {
@@ -119,6 +125,11 @@ class UnconNewTaskComponent extends Component {
     this.setState({ tag: e });
   }
 
+  handleTagChange = (e) => {
+    this.addTask.current.focus();
+    this.setState({ tag: e });
+  }
+
 
   handleTaskNameChange = (e) => {
     this.setState({ name: e.target.value });
@@ -126,7 +137,6 @@ class UnconNewTaskComponent extends Component {
 
 
   handleDateChange = (e) => {
-    this.openDateChange.current.click();
     this.setState({ date: e });
     this.addTask.current.focus();
   }
@@ -189,12 +199,17 @@ class UnconNewTaskComponent extends Component {
 
   render() {
     const {
-      name, tag, date, subtaskArray,
+      name, tag, subtaskArray,
     } = this.state;
     const { colorConfig } = this.props;
     return (
       <div>
-        <div onClick={this.closeNewTask} className={styles.CloseNewTask} ref={this.blockModal} />
+        <div
+          onClick={this.closeNewTask}
+          role="presentation"
+          className={styles.CloseNewTask}
+          ref={this.blockModal}
+        />
         <form
           className={styles.NewTaskWrap}
           onSubmit={this.handleSave}
@@ -211,21 +226,7 @@ class UnconNewTaskComponent extends Component {
           />
           <div className={styles.NewTaskActive} ref={this.addTaskModal}>
 
-            <div className={styles.NewTaskClass}>
-              <input id="changeClassCheckbox" type="checkbox" ref={this.openClassChange} />
-              <label
-                htmlFor="changeClassCheckbox"
-                data-curr={tag}
-                style={{ backgroundColor: colorConfig[tag] }}
-                ref={this.changeClass}
-              >
-                <span>{tag}</span>
-                <Icon name="tag" className={styles.CenterIcon} />
-              </label>
-              <ClassPicker onTagChange={this.handleClassChange} />
-            </div>
-
-            <div className={styles.NewTaskDate}>
+            {/* <div className={styles.NewTaskDate}>
               <label htmlFor="changeDateCheckbox">
                 <Icon name="calendar outline" className={styles.CenterIcon} />
               </label>
@@ -237,7 +238,10 @@ class UnconNewTaskComponent extends Component {
                   minDate={new Date()}
                 />
               </div>
-            </div>
+            </div> */}
+            <ClassPickerWrap onTagChange={this.handleTagChange} />
+            <span style={{ marginRight: '10px' }} />
+            <CalPicker onDateChange={this.handleDateChange} />
 
             <button type="submit" className={styles.SubmitNewTask}>
               <Icon color="black" name="arrow alternate circle right outline" className={styles.CenterIcon} />
