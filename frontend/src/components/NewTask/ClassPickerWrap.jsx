@@ -30,6 +30,14 @@ class UnconClassPickerWrap extends Component {
   handleOpenClose = () => {
     const { opened } = this.state;
     this.setState({ opened: !opened });
+    if (!opened) {
+      const { onOpened } = this.props;
+      onOpened();
+    }
+  }
+
+  close = () => {
+    this.setState({ opened: false });
   }
 
   handleTagChange = (e) => {
@@ -80,5 +88,5 @@ class UnconClassPickerWrap extends Component {
 }
 
 
-const ClassPickerWrap = connect(mapStateToProps, null)(UnconClassPickerWrap);
+const ClassPickerWrap = connect(mapStateToProps, null, null, { withRef: true })(UnconClassPickerWrap);
 export default ClassPickerWrap;

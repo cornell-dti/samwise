@@ -24,12 +24,20 @@ class CalPicker extends Component {
     e.stopPropagation();
     const { opened } = this.state;
     this.setState({ opened: !opened });
+    if (!opened) {
+      const { onOpened } = this.props;
+      onOpened();
+    }
   }
 
   handleDateChange = (e) => {
     const { onDateChange } = this.props;
     this.setState({ date: e, opened: false, reset: false });
     onDateChange(e);
+  }
+
+  close = () => {
+    this.setState({ opened: false });
   }
 
   render() {

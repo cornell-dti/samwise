@@ -28,11 +28,11 @@ class UnconNewTaskComponent extends Component {
     this.state = this.initialState();
     this.changeClass = React.createRef();
     this.addTask = React.createRef();
-    this.openClassChange = React.createRef();
-    this.openDateChange = React.createRef();
     this.addTaskModal = React.createRef();
     this.blockModal = React.createRef();
     this.subtaskList = React.createRef();
+    this.datePicker = React.createRef();
+    this.tagPicker = React.createRef();
   }
 
 
@@ -45,6 +45,7 @@ class UnconNewTaskComponent extends Component {
       complete: false,
       subtaskArray: [],
       lastDel: -1,
+      lastToast: -1,
       inFocus: false,
     };
   }
@@ -67,7 +68,9 @@ class UnconNewTaskComponent extends Component {
       e.preventDefault();
     }
 
-    const { name, subtaskArray, date } = this.state;
+    const {
+      name, subtaskArray, date, lastToast,
+    } = this.state;
     const { addTask } = this.props;
 
     if (name === '') {
@@ -83,6 +86,7 @@ class UnconNewTaskComponent extends Component {
 
     const toAdd = { ...this.state, subtaskArray: newSubtaskArr };
     delete toAdd.lastDel;
+    delete toAdd.lastToast;
     addTask(toAdd);
     const lastId = toAdd.id;
 
@@ -92,9 +96,9 @@ class UnconNewTaskComponent extends Component {
       year: 'numeric',
     });
 
-    this.setState({ ...this.initialState(), lastDel: lastId });
 
-    toast.success(
+    toast.dismiss(lastToast);
+    const newToast = toast.success(
       <ToastUndo dispText={taskMsg} changeCallback={this.handleUndo} />, {
         position: 'bottom-right',
         autoClose: 5000,
@@ -102,9 +106,10 @@ class UnconNewTaskComponent extends Component {
         closeOnClick: true,
         pauseOnHover: true,
         draggable: true,
-        toastId: 'addtasktoast',
       },
     );
+
+    this.setState({ ...this.initialState(), lastDel: lastId, lastToast: newToast });
     this.closeNewTask();
   }
 
@@ -204,6 +209,15 @@ class UnconNewTaskComponent extends Component {
   }
 
 
+  closeCal = () => {
+    this.datePicker.current.close();
+  }
+
+  closeTag = () => {
+    this.tagPicker.current.wrappedInstance.close();
+  }
+
+
   render() {
     const { name, subtaskArray } = this.state;
     const { colorConfig } = this.props;
@@ -232,8 +246,8 @@ class UnconNewTaskComponent extends Component {
           <div className={styles.NewTaskActive} ref={this.addTaskModal}>
 
             <FocusPicker onPinChange={this.handlePinChange} />
-            <ClassPickerWrap onTagChange={this.handleTagChange} />
-            <CalPicker onDateChange={this.handleDateChange} />
+            <ClassPickerWrap onTagChange={this.handleTagChange} ref={this.tagPicker} onOpened={this.closeCal} />
+            <CalPicker onDateChange={this.handleDateChange} ref={this.datePicker} onOpened={this.closeTag} />
 
             <button type="submit" className={styles.SubmitNewTask}>
               <Icon color="black" name="arrow alternate circle right outline" className={styles.CenterIcon} />
@@ -247,7 +261,9 @@ class UnconNewTaskComponent extends Component {
                       <button type="button" onClick={this.handleDelSubtask}><Icon name="delete" /></button>
                       <input
                         onBlur={this.handleChangeSubtask}
-                        onKeyDown={e => {if (e.keyCode == 13){this.handleChangeSubtask(e, true);}}}
+                        onKeyDown={
+                          (e) => { if (e.keyCode === 13) { this.handleChangeSubtask(e, true); } }
+                        }
                         type="text"
                         defaultValue={subtaskObj.name}
                       />
