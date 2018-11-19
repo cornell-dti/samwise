@@ -139,7 +139,7 @@ export default class BacklogDay extends React.PureComponent<Props, State> {
     const { width, height } = floatingFlowParentRect;
     const floatingViewStyle = {
       left: `${(width - 300) / 2}px`,
-      top: `${(height - totalHeight) / 2}px`,
+      top: `${(Math.max(height, 400) - totalHeight) / 2}px`,
       height: `${totalHeight}px`,
     };
     return (

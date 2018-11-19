@@ -26,6 +26,8 @@ _Last updated **11/05/2018**_.
  * [React (16.6.0)](https://reactjs.org/) - a Facebook library for frontend. We use it for frontend UI.
  * [Redux (4.0.1)](https://redux.js.org/) - a predictable state container for JavaScript apps. We used it for state management.
  * [React-Redux (5.1.0)](https://github.com/reduxjs/react-redux) - a library for bindings between React and Redux.
+ * [Firebase (5.5.8)](https://firebase.google.com) - a serverless service for auth, database, etc. We used it for auth.
+ * [React FirebaseUI (3.1.2)](https://github.com/firebase/firebaseui-web-react) - a simple sign-in component library for firebase auth.
  * [Semantic UI React](https://react.semantic-ui.com/) - a library of pre-styled components in Semantic UI for React.
  * [React Calendar (2.14.1)](https://www.npmjs.com/package/react-calendar) - A calendar component for React.
  * [React Color (2.14.1)](https://casesandberg.github.io/react-color/) - a collection of React components for picking colors.
