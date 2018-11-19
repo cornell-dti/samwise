@@ -57,7 +57,6 @@ def new_tag():
         "tag_name": "name",
         "color": "#ffffff",
         "_order": order,
-        "completed": False,
     }
     """
     data = request.get_json(force=True)
@@ -91,7 +90,6 @@ def get_tags():
         "tag_name": "name",
         "color": "#ffffff",
         "_order": order,
-        "completed": False,
     }
     """
     user_id = get_user_id(request.args.get('token'))
