@@ -197,6 +197,38 @@ def new_task(tag_id):
     return jsonify(created=util.sqlalchemy_object_to_dict(new_task))
 
 
+@api.route('/tasks/all', methods=['GET'])
+def get_all_tasks():
+    """
+    Return all tasks.
+
+    :return: a list of all tasks.
+
+    Output format:
+
+    List of tags in form:
+
+    {
+        "content": content,
+        "start_date": yyyy-mm-dd hh:mm:ss,
+        "end_date": yyyy-mm-dd hh:mm:ss,
+        "tag_id": id,
+        "parent_task": parent id,
+        "in_focus": True,
+        "_order": order,
+        "completed": False
+    }
+    """
+    user_id = get_user_id(request.args.get('token'))
+    if not user_id:
+        return redirect(url_for('api.login', redirect=request.path))
+    tasks = Task.query\
+        .filter(Task.tag_id == Tag.tag_id)\
+        .filter(Tag.user_id == user_id)\
+        .all()
+    return jsonify(util.table_to_json(tasks))
+
+
 @api.route('/tags/<tag_id>/tasks/all', methods=['GET'])
 def get_tasks(tag_id):
     """
