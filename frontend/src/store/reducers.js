@@ -390,8 +390,7 @@ const rootReducer = (state: State = initialState, action: Action): State => {
     case 'BACKEND_PATCH_EXISTING_TASK':
       return backendPatchExistingTask(state, action.task);
     default:
-      throw new Error(`Unrecognized action ${action.type}!
-      Please check errors in your code or check if we include all the action types in reducer.`);
+      return state;
   }
 };
 
