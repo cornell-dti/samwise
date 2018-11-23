@@ -6,10 +6,11 @@ import type {
   ToggleTaskPinAction, ToggleSubTaskPinAction,
   RemoveTaskAction, RemoveSubTaskAction,
   ColorConfigEditAction, ColorConfigRemoveAction,
-  AddNewSubTaskAction, ClassOrTag,
+  ClassOrTag,
   UndoDeleteTaskAction, ClearUndoDeleteTaskAction,
+  BackendPatchNewTaskAction, BackendPatchExistingTaskAction,
 } from './action-types';
-import type { SubTask, Task } from './store-types';
+import type { Task } from './store-types';
 
 /**
  * Edit color config is an action that can be used to add OR edit a color config in the store.
@@ -45,16 +46,7 @@ export const removeColorConfig = (
  * @return {AddNewTaskAction} the add task action.
  */
 export const addTask = (task: Task): AddNewTaskAction => ({ type: 'ADD_NEW_TASK', data: task });
-/**
- * Add a subtask to the task.
- *
- * @param {number} id the id of the task to append subtask.
- * @param {SubTask} subTask the subtask to add.
- * @return {AddNewSubTaskAction} the add subtask action.
- */
-export const addSubtask = (id: number, subTask: SubTask): AddNewSubTaskAction => ({
-  type: 'ADD_SUBTASK', id, data: subTask,
-});
+
 /**
  * Edit task is an action that can be used to edit an existing task.
  *
@@ -135,4 +127,25 @@ export const undoDeleteTask = (): UndoDeleteTaskAction => ({ type: 'UNDO_DELETE_
  */
 export const clearUndoDeleteTask = (): ClearUndoDeleteTaskAction => ({
   type: 'CLEAR_UNDO_DELETE_TASK',
+});
+
+/**
+ * Let the backend patch an existing task.
+ *
+ * @param {number} id the temp randomly assigned new task id.
+ * @param {Task} t the task to patch.
+ * @return {BackendPatchExistingTaskAction} the backend patch task action.
+ */
+export const backendPatchNewTask = (id: number, t: Task): BackendPatchNewTaskAction => ({
+  type: 'BACKEND_PATCH_NEW_TASK', tempNewTaskId: id, task: t,
+});
+
+/**
+ * Let the backend patch an existing task.
+ *
+ * @param {Task} task the task to patch.
+ * @return {BackendPatchExistingTaskAction} the backend patch task action.
+ */
+export const backendPatchExistingTask = (task: Task): BackendPatchExistingTaskAction => ({
+  type: 'BACKEND_PATCH_EXISTING_TASK', task,
 });

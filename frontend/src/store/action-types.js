@@ -1,7 +1,7 @@
 // @flow strict
 
 import type { ActionCreators as ReduxActionCreators, Dispatch as ReduxDispatch } from 'redux';
-import type { SubTask, Task } from './store-types';
+import type { Task } from './store-types';
 
 /*
  * --------------------------------------------------------------------------------
@@ -10,7 +10,6 @@ import type { SubTask, Task } from './store-types';
  */
 
 export type AddNewTaskAction = {| +type: 'ADD_NEW_TASK'; +data: Task; |};
-export type AddNewSubTaskAction = {| +type: 'ADD_SUBTASK'; +id: number; +data: SubTask; |};
 export type EditTaskAction = {| +type: 'EDIT_TASK'; +task: Task; |};
 
 export type MarkTaskAction = {| +type: 'MARK_TASK'; +id: number; |};
@@ -28,7 +27,6 @@ export type RemoveSubTaskAction = {|
 
 type TaskAction =
   | AddNewTaskAction
-  | AddNewSubTaskAction
   | EditTaskAction
   | MarkTaskAction
   | MarkSubTaskAction
@@ -68,11 +66,31 @@ export type UndoAction =
 
 /*
  * --------------------------------------------------------------------------------
- * Part 4: All Actions
+ * Part 4: Backend Patch Actions
  * --------------------------------------------------------------------------------
  */
 
-export type Action = ColorConfigAction | TaskAction | UndoAction;
+export type BackendPatchNewTaskAction = {|
+  +type: 'BACKEND_PATCH_NEW_TASK'; +tempNewTaskId: number; +task: Task;
+|};
+export type BackendPatchExistingTaskAction = {|
+  +type: 'BACKEND_PATCH_EXISTING_TASK'; +task: Task;
+|};
+
+/**
+ * All the tasks that lets the backend patch the store with all the latest values.
+ */
+export type BackendPatchAction =
+  | BackendPatchNewTaskAction
+  | BackendPatchExistingTaskAction
+
+/*
+ * --------------------------------------------------------------------------------
+ * Part 5: All Actions
+ * --------------------------------------------------------------------------------
+ */
+
+export type Action = ColorConfigAction | TaskAction | UndoAction | BackendPatchAction;
 
 export type ActionProps = { [actionName: string]: (...args: Array<any>) => Action };
 export type Dispatch = ReduxDispatch<Action>;
