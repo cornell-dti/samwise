@@ -4,23 +4,19 @@ import React from 'react';
 import type { Node } from 'react';
 import { List } from 'semantic-ui-react';
 import ColorConfigItem from './ColorConfigItem';
-import type { State, ColorConfig } from '../../store/store-types';
+import type { State, Tag } from '../../store/store-types';
 import { simpleConnect } from '../../store/react-redux-util';
 
-type Props = {| tagColorConfig: ColorConfig, configKeys: string[] |};
+type Props = {| tags: Tag[] |};
 
-const mapStateToProps = ({ tagColorConfig }: State): Props => ({
-  tagColorConfig, configKeys: Object.keys(tagColorConfig),
+const mapStateToProps = ({ tags }: State): Props => ({
+  tags: tags.filter(t => t.type === 'other'),
 });
 
-function TagColorConfigItemList({ tagColorConfig, configKeys }: Props): Node {
+function TagColorConfigItemList({ tags }: Props): Node {
   return (
     <List divided relaxed style={{ width: '250px', display: 'inline-block' }}>
-      {
-        configKeys.map(key => (
-          <ColorConfigItem key={key} tag={key} color={tagColorConfig[key]} isClass={false} />
-        ))
-      }
+      {tags.map(tag => (<ColorConfigItem key={tag.id} tag={tag} />))}
     </List>
   );
 }

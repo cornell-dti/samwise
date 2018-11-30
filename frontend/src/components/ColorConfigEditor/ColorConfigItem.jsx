@@ -3,22 +3,17 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { List } from 'semantic-ui-react';
-import type { ColorConfigRemoveAction } from '../../store/action-types';
-import { removeColorConfig as removeColorConfigAction } from '../../store/actions';
+import type { RemoveTagAction } from '../../store/action-types';
+import { removeTag as removeTagAction } from '../../store/actions';
 import ColorEditor from './ColorEditor';
+import type { Tag } from '../../store/store-types';
 
 type Props = {|
-  +tag: string,
-  +color: string,
-  +isClass: boolean;
-  +removeColorConfig: (tag: string, classOrTag: string) => ColorConfigRemoveAction
+  +tag: Tag;
+  +removeTag: (tagId: number) => RemoveTagAction
 |};
 
 type State = {| showEditor: boolean |};
-
-const actionCreators = {
-  removeColorConfig: removeColorConfigAction,
-};
 
 class ColorConfigItem extends React.Component<Props, State> {
   constructor(props) {
@@ -34,8 +29,8 @@ class ColorConfigItem extends React.Component<Props, State> {
     if (!confirm('Do you want to remove this config?')) {
       return;
     }
-    const { tag, removeColorConfig, isClass } = this.props;
-    removeColorConfig(tag, isClass ? 'class' : 'tag');
+    const { tag, removeTag } = this.props;
+    removeTag(tag.id);
   };
 
   toggleEditor = () => {
@@ -43,12 +38,14 @@ class ColorConfigItem extends React.Component<Props, State> {
   };
 
   render() {
-    const { color, tag, isClass } = this.props;
+    const { tag } = this.props;
+    const { name, color, type } = tag;
     const { showEditor } = this.state;
+    const isClass = type === 'class';
     return (
       <List.Item style={isClass ? { width: '500px' } : { width: '250px' }}>
         <List.Content>
-          <List.Header as="a" style={{ backgroundColor: color }}>{tag}</List.Header>
+          <List.Header as="a" style={{ backgroundColor: color }}>{name}</List.Header>
           <List.Description as="a">
             Color:
             {' '}
@@ -57,7 +54,7 @@ class ColorConfigItem extends React.Component<Props, State> {
           <button type="button" onClick={this.removeMe}>Remove me</button>
           <button type="button" onClick={this.toggleEditor}>Toggle Editor</button>
           {
-            showEditor && <ColorEditor tag={tag} color={color} />
+            showEditor && <ColorEditor tag={tag} />
           }
         </List.Content>
       </List.Item>
@@ -65,5 +62,5 @@ class ColorConfigItem extends React.Component<Props, State> {
   }
 }
 
-const ConnectedTagColorConfigItem = connect(null, actionCreators)(ColorConfigItem);
+const ConnectedTagColorConfigItem = connect(null, { removeTag: removeTagAction })(ColorConfigItem);
 export default ConnectedTagColorConfigItem;

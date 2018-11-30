@@ -1,43 +1,47 @@
 // @flow strict
 
 import type {
-  AddNewTaskAction, EditTaskAction,
-  MarkTaskAction, MarkSubTaskAction,
-  ToggleTaskPinAction, ToggleSubTaskPinAction,
-  RemoveTaskAction, RemoveSubTaskAction,
-  ColorConfigEditAction, ColorConfigRemoveAction,
-  ClassOrTag,
-  UndoDeleteTaskAction, ClearUndoDeleteTaskAction,
-  BackendPatchNewTaskAction, BackendPatchExistingTaskAction,
+  AddTagAction,
+  EditTagAction,
+  RemoveTagAction,
+  AddNewTaskAction,
+  EditTaskAction,
+  MarkTaskAction,
+  MarkSubTaskAction,
+  ToggleTaskPinAction,
+  ToggleSubTaskPinAction,
+  RemoveTaskAction,
+  RemoveSubTaskAction,
+  UndoDeleteTaskAction,
+  ClearUndoDeleteTaskAction,
+  BackendPatchNewTaskAction,
+  BackendPatchExistingTaskAction,
+  BackendPatchLoadedDataAction,
+  BackendPatchNewTagAction,
 } from './action-types';
-import type { Task } from './store-types';
+import type { Tag, Task } from './store-types';
 
 /**
- * Edit color config is an action that can be used to add OR edit a color config in the store.
+ * Edit tag is an action that can be used to edit a tag.
  *
- * @param {ClassOrTag} classOrTag whether it's a class or tag.
- * @param {string} tag tag of the config, which is usually a class name (e.g. CS 2112)
- * @param {string} color color of the config, which should be a valid color in CSS
- * (e.g. 'red' or '#000000')
- * @return {ColorConfigEditAction} the edit color action.
+ * @param {Tag} tag the tag to edit.
+ * @return {AddTagAction} the edit tag action.
  */
-export const editColorConfig = (
-  tag: string, color: string, classOrTag: ClassOrTag,
-): ColorConfigEditAction => ({
-  type: 'EDIT_COLOR_CONFIG', classOrTag, tag, color,
-});
+export const addTag = (tag: Tag): AddTagAction => ({ type: 'ADD_TAG', tag });
 /**
- * Remove color config is an action that can be used to remove a color config from the store.
+ * Edit tag is an action that can be used to edit a tag.
  *
- * @param {ClassOrTag} classOrTag whether it's a class or tag.
- * @param {string} tag tag of the config to remove, which is usually a class name (e.g. CS 2112)
- * @return {ColorConfigRemoveAction} the remove color action.
+ * @param {Tag} tag the tag to edit.
+ * @return {A} the edit tag action.
  */
-export const removeColorConfig = (
-  tag: string, classOrTag: ClassOrTag,
-): ColorConfigRemoveAction => ({
-  type: 'REMOVE_COLOR_CONFIG', classOrTag, tag,
-});
+export const editTag = (tag: Tag): EditTagAction => ({ type: 'EDIT_TAG', tag });
+/**
+ * Remove tag is an action that can be used to remove a tag from the store.
+ *
+ * @param {number} tagId the id of the tag to remove.
+ * @return {RemoveTagAction} the remove color action.
+ */
+export const removeTag = (tagId: number): RemoveTagAction => ({ type: 'REMOVE_TAG', tagId });
 
 /**
  * Add task is an action that can be used to add a new task.
@@ -130,7 +134,18 @@ export const clearUndoDeleteTask = (): ClearUndoDeleteTaskAction => ({
 });
 
 /**
- * Let the backend patch an existing task.
+ * Let the backend patch a new task.
+ *
+ * @param {number} id the temp randomly assigned new tag id.
+ * @param {Tag} t the task to patch.
+ * @return {BackendPatchExistingTaskAction} the backend patch task action.
+ */
+export const backendPatchNewTag = (id: number, t: Tag): BackendPatchNewTagAction => ({
+  type: 'BACKEND_PATCH_NEW_TAG', tempNewTagId: id, tag: t,
+});
+
+/**
+ * Let the backend patch a new task.
  *
  * @param {number} id the temp randomly assigned new task id.
  * @param {Task} t the task to patch.
@@ -148,4 +163,17 @@ export const backendPatchNewTask = (id: number, t: Task): BackendPatchNewTaskAct
  */
 export const backendPatchExistingTask = (task: Task): BackendPatchExistingTaskAction => ({
   type: 'BACKEND_PATCH_EXISTING_TASK', task,
+});
+
+/**
+ * Let the backend patch loaded data.
+ *
+ * @param {Tag[]} tags tags from the backend.
+ * @param {Task[]} tasks tasks from the backend.
+ * @return {{type: string, tags: Tag[], tasks: Task[]}}
+ */
+export const backendPatchLoadedData = (
+  tags: Tag[], tasks: Task[],
+): BackendPatchLoadedDataAction => ({
+  type: 'BACKEND_PATCH_LOADED_DATA', tags, tasks,
 });

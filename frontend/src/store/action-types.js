@@ -1,7 +1,7 @@
 // @flow strict
 
 import type { ActionCreators as ReduxActionCreators, Dispatch as ReduxDispatch } from 'redux';
-import type { Task } from './store-types';
+import type { Tag, Task } from './store-types';
 
 /*
  * --------------------------------------------------------------------------------
@@ -41,15 +41,11 @@ type TaskAction =
  * --------------------------------------------------------------------------------
  */
 
-export type ClassOrTag = 'class' | 'tag';
-export type ColorConfigEditAction = {|
-  +type: 'EDIT_COLOR_CONFIG'; +classOrTag: ClassOrTag; +tag: string; +color: string;
-|};
-export type ColorConfigRemoveAction = {|
-  +type: 'REMOVE_COLOR_CONFIG'; +classOrTag: ClassOrTag; +tag: string;
-|};
+export type AddTagAction = {| +type: 'ADD_TAG'; +tag: Tag; |};
+export type EditTagAction = {| +type: 'EDIT_TAG'; +tag: Tag; |};
+export type RemoveTagAction = {| +type: 'REMOVE_TAG'; +tagId: number; |};
 
-export type ColorConfigAction = ColorConfigEditAction | ColorConfigRemoveAction;
+export type TagAction = AddTagAction | EditTagAction | RemoveTagAction;
 
 /*
  * --------------------------------------------------------------------------------
@@ -70,19 +66,27 @@ export type UndoAction =
  * --------------------------------------------------------------------------------
  */
 
+export type BackendPatchNewTagAction = {|
+  +type: 'BACKEND_PATCH_NEW_TAG'; +tempNewTagId: number; +tag: Tag;
+|};
 export type BackendPatchNewTaskAction = {|
   +type: 'BACKEND_PATCH_NEW_TASK'; +tempNewTaskId: number; +task: Task;
 |};
 export type BackendPatchExistingTaskAction = {|
   +type: 'BACKEND_PATCH_EXISTING_TASK'; +task: Task;
 |};
+export type BackendPatchLoadedDataAction = {|
+  +type: 'BACKEND_PATCH_LOADED_DATA'; +tags: Tag[]; +tasks: Task[];
+|};
 
 /**
  * All the tasks that lets the backend patch the store with all the latest values.
  */
 export type BackendPatchAction =
+  | BackendPatchNewTagAction
   | BackendPatchNewTaskAction
   | BackendPatchExistingTaskAction
+  | BackendPatchLoadedDataAction
 
 /*
  * --------------------------------------------------------------------------------
@@ -90,7 +94,7 @@ export type BackendPatchAction =
  * --------------------------------------------------------------------------------
  */
 
-export type Action = ColorConfigAction | TaskAction | UndoAction | BackendPatchAction;
+export type Action = TagAction | TaskAction | UndoAction | BackendPatchAction;
 
 export type ActionProps = { [actionName: string]: (...args: Array<any>) => Action };
 export type Dispatch = ReduxDispatch<Action>;

@@ -117,14 +117,15 @@ def delete_tag(tag_id):
     return jsonify(status='success')
 
 
-@api.route('/tags/<tag_id>/color', methods=['POST'])
-def edit_tag_color(tag_id):
+@api.route('/tags/<tag_id>/edit', methods=['POST'])
+def edit_tag(tag_id):
     """
 
     Edit or add a color to a specific tag.
 
     Input format:
     {
+        "tag_name": "ABC",
         "color": "#ffffff",
     }
 
@@ -143,12 +144,16 @@ def edit_tag_color(tag_id):
     user_id = get_user_id(data['token'])
     if not user_id:
         return redirect(url_for('api.login', redirect=request.path))
+    tag_name = data.get('tag_name')
     color = data.get('color')
     tag = Tag.query.filter(Tag.user_id == user_id).filter(Tag.tag_id == tag_id).first()
     if tag is None:
         return jsonify(status='error. tag not found.')
+    if tag_name is None:
+        return jsonify(status='error. key "tag_name" is required.')
     if color is None:
         return jsonify(status='error. key "color" is required.')
+    Tag.tag_name = tag_name
     Tag.color = color
     db.session.commit()
     return jsonify(tag=util.sqlalchemy_object_to_dict(tag))

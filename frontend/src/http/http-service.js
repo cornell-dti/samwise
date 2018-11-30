@@ -1,7 +1,8 @@
 // @flow strict
 
 import { get, post, put } from '../util/http-util';
-import type { ColorConfig, SubTask, Task } from '../store/store-types';
+import type { Tag, SubTask, Task } from '../store/store-types';
+import { getIdByTag } from '../util/tag-util';
 
 /**
  * Format date for backend.
@@ -20,36 +21,50 @@ function formatDate(date: Date): string {
 }
 
 /**
- * Create a new tag.
+ * Returns the promise of a ColorConfig.
  *
- * @param {string} tag tag to create.
- * @param {string} color color of the new tag.
- * @return {Promise<void>} promise when done.
+ * @return {Promise<Tag[]>} the promise of a ColorConfig.
  */
-export async function httpNewTag(tag: string, color: string): Promise<void> {
-  await post('/tags/new', { tag, color });
+export async function httpGetTags(): Promise<Tag[]> {
+  const rawTagList = await get<any[]>('/tags/all');
+  return rawTagList.map((e: any): Tag => ({
+    id: e.tag_id,
+    type: 'other',
+    name: e.tag_name,
+    color: e.color,
+  }));
 }
 
 /**
- * Returns the promise of a ColorConfig.
+ * Create a new tag.
  *
- * @return {Promise<ColorConfig>} the promise of a ColorConfig.
+ * @param {Tag} tag tag to create.
+ * @return {Promise<Tag>} promise of the tag returned by the server.
  */
-export async function httpGetTags(): Promise<ColorConfig> {
-  const rawTagList = await get<any[]>('/tags/all');
-  const entries: { [_: string]: string }[] = rawTagList.map(e => ({ [e.tag_name]: e.color }));
-  // $FlowFixMe
-  return Object.assign(...entries);
+export async function httpNewTag(tag: Tag): Promise<Tag> {
+  const serverTag = await post<any>('/tags/new', { name: tag.name, color: tag.color });
+  return { ...tag, id: serverTag.tag_id };
+}
+
+/**
+ * Edit a tag.
+ *
+ * @param {Tag} tag the updated tag.
+ * @return {Promise<void>} promise when done.
+ */
+export async function httpEditTag(tag: Tag): Promise<void> {
+  const data = { tag_name: tag.name, color: tag.color };
+  await post(`/tags/${tag.id}/edit`, data);
 }
 
 /**
  * Delete a tag of the given name.
  *
- * @param {string} tag name of the tag.
+ * @param {number} tagId id of the tag.
  * @return {Promise<void>} promise when done.
  */
-export async function httpDeleteTag(tag: string): Promise<void> {
-  await put(`/tags/${tag}/delete`, {});
+export async function httpDeleteTag(tagId: number): Promise<void> {
+  await put(`/tags/${tagId}/delete`, {});
 }
 
 /**
@@ -78,15 +93,17 @@ export async function httpPinTask(taskId: number, inFocus: boolean): Promise<voi
  * Add a new task.
  *
  * @param {Task} task the new task to add.
+ * @param {Tag[]} tags a list of tags as reference.
  * @return {Promise<Task>} promise of the task with new information.
  */
-export async function httpAddTask(task: Task): Promise<Task> {
+export async function httpAddTask(task: Task, tags: Tag[]): Promise<Task> {
   const data = {
     content: task.name,
     start_date: formatDate(new Date()),
     end_date: formatDate(task.date),
   };
-  const serverTask = await post<any>(`/tags/${task.tag}/tasks/new`, data);
+  const tag = getIdByTag(tags, task.tag);
+  const serverTask = await post<any>(`/tags/${tag}/tasks/new`, data);
   return { ...task, id: serverTask.task_id };
 }
 
@@ -106,19 +123,23 @@ export async function httpDeleteTask(taskId: number): Promise<void> {
  *
  * @param {Task} mainTask the main task of the subtask's parent.
  * @param {SubTask} subTask the subtask to create.
+ * @param {Tag[]} tags a list of tags as reference.
  * @return {Promise<SubTask>} the subtask coming from server with latest information.
  */
-export async function httpNewSubTask(mainTask: Task, subTask: SubTask): Promise<SubTask> {
+export async function httpNewSubTask(
+  mainTask: Task, subTask: SubTask, tags: Tag[],
+): Promise<SubTask> {
   const {
     id, name, complete, inFocus,
   } = subTask;
+  const tag = getIdByTag(tags, mainTask.tag);
   const data = {
     task_id: id,
     parent_task: mainTask.id,
     content: name,
     start_date: formatDate(new Date()),
     end_date: formatDate(mainTask.date),
-    tag_id: mainTask.tag,
+    tag_id: tag,
     completed: complete,
     in_focus: inFocus,
   };
@@ -131,19 +152,23 @@ export async function httpNewSubTask(mainTask: Task, subTask: SubTask): Promise<
  *
  * @param {Task} mainTask the main task of the subtask's parent.
  * @param {SubTask} subTask the subtask to edit.
+ * @param {Tag[]} tags a list of tags as reference.
  * @return {Promise<SubTask>} the subtask coming from server with latest information.
  */
-export async function httpEditSubTask(mainTask: Task, subTask: SubTask): Promise<SubTask> {
+export async function httpEditSubTask(
+  mainTask: Task, subTask: SubTask, tags: Tag[],
+): Promise<SubTask> {
   const {
     id, name, complete, inFocus,
   } = subTask;
+  const tag = getIdByTag(tags, mainTask.tag);
   const data = {
     task_id: id,
     parent_task: mainTask.id,
     content: name,
     start_date: formatDate(new Date()),
     end_date: formatDate(mainTask.date),
-    tag_id: mainTask.tag,
+    tag_id: tag,
     completed: complete,
     in_focus: inFocus,
   };
@@ -156,15 +181,19 @@ export async function httpEditSubTask(mainTask: Task, subTask: SubTask): Promise
  *
  * @param {Task} oldTask the old task used as a reference.
  * @param {Task} newTask the new task to replace the old task.
+ * @param {Tag[]} tags a list of tags as reference.
  * @return {Promise<Task>} the edited task with the latest information from the server.
  */
-export async function httpEditTask(oldTask: Task, newTask: Task): Promise<Task> {
+export async function httpEditTask(
+  oldTask: Task, newTask: Task, tags: Tag[],
+): Promise<Task> {
   if (oldTask.id !== newTask.id) {
     throw new Error('Inconsistent id of old task and new task.');
   }
+  const tag = getIdByTag(tags, newTask.tag);
   const mainTaskData = {
     task_id: newTask.id,
-    tag_id: newTask.tag,
+    tag_id: tag,
     start_date: formatDate(new Date()),
     end_date: formatDate(newTask.date),
     content: newTask.name,
@@ -187,10 +216,10 @@ export async function httpEditTask(oldTask: Task, newTask: Task): Promise<Task> 
   });
   const deletedSubTasks: SubTask[] = newTask.subtaskArray.filter(({ id }) => oldTasksIdSet.has(id));
   const subTasksEditPromises = editedSubTasks.map(
-    (subTask: SubTask) => httpEditSubTask(newTask, subTask),
+    (subTask: SubTask) => httpEditSubTask(newTask, subTask, tags),
   );
   const subTasksNewPromises = newSubTasks.map(
-    (subTask: SubTask) => httpNewSubTask(newTask, subTask),
+    (subTask: SubTask) => httpNewSubTask(newTask, subTask, tags),
   );
   const subTasksDeletePromises = deletedSubTasks.map(
     ({ id }: SubTask) => httpDeleteTask(id),
