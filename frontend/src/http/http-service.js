@@ -2,7 +2,9 @@
 
 import { get, post, put } from '../util/http-util';
 import type { Tag, SubTask, Task } from '../store/store-types';
-import { getIdByTag } from '../util/tag-util';
+import { getIdByTag, getNameByTagId } from '../util/tag-util';
+import type { BackendPatchLoadedDataAction } from '../store/action-types';
+import { backendPatchLoadedData } from '../store/actions';
 
 /**
  * Format date for backend.
@@ -65,6 +67,63 @@ export async function httpEditTag(tag: Tag): Promise<void> {
  */
 export async function httpDeleteTag(tagId: number): Promise<void> {
   await put(`/tags/${tagId}/delete`, {});
+}
+
+/**
+ * Returns the promise of loaded tasks.
+ *
+ * @param {Tag[]} tags a list of tags as reference.
+ * @return {Promise<Task[]>}
+ */
+export async function httpGetTasks(tags: Tag[]): Promise<Task[]> {
+  const serverTasks = await get<any[]>('/tasks/all');
+  const mainTasks = new Map<number, Task>();
+  const serverSubTasks = new Map<number, SubTask[]>(); // key is parent id
+  serverTasks.forEach((serverTask: any) => {
+    const id: number = serverTask.task_id;
+    const name: string = serverTask.content;
+    const complete: boolean = serverTask.completed;
+    const inFocus: boolean = serverTask.in_focus;
+    if (serverTask.parent_task == null) {
+      const tag = getNameByTagId(tags, serverTask.tag_id);
+      const date = new Date(serverTask.end_date);
+      const subtaskArray = [];
+      const mainTask: Task = {
+        id, name, tag, date, complete, inFocus, subtaskArray,
+      };
+      mainTasks.set(id, mainTask);
+    } else {
+      const subTask: SubTask = {
+        id, name, complete, inFocus,
+      };
+      const arr = serverSubTasks.get(serverTask.parent_task) || [];
+      arr.push(subTask);
+      serverSubTasks.set(serverTask.parent_task, arr);
+    }
+  });
+  serverSubTasks.forEach((subTasks: SubTask[], parentId: number) => {
+    const mainTask = mainTasks.get(parentId);
+    if (mainTask == null) {
+      throw new Error('Corrupted backend!');
+    }
+    mainTasks.set(parentId, { ...mainTask, subtaskArray: subTasks });
+  });
+  const assembledTasks: Task[] = [];
+  mainTasks.forEach((task: Task) => {
+    assembledTasks.push(task);
+  });
+  return assembledTasks;
+}
+
+/**
+ * Initialize the data from the backend.
+ *
+ * @return {Promise<BackendPatchLoadedDataAction>} the promise of the action to perform.
+ */
+export async function httpInitializeData(): Promise<BackendPatchLoadedDataAction> {
+  const tags = await httpGetTags();
+  const tasks = await httpGetTasks(tags);
+  return backendPatchLoadedData(tags, tasks);
 }
 
 /**

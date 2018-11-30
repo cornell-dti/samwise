@@ -30,6 +30,21 @@ export const getIdByTag = (tags: Tag[], name: string): number => getTagByName(ta
  * Returns the color by tag from a list of tags given the name.
  *
  * @param {Tag[]} tags the tags to search.
+ * @param {number} id the tag od to find.
+ * @return {string} the tag name.
+ */
+export const getNameByTagId = (tags: Tag[], id: string): string => {
+  const tagOpt = tags.find(t => t.id === id);
+  if (tagOpt == null) {
+    throw new Error('Color not found! Corrupted store.');
+  }
+  return tagOpt.name;
+};
+
+/**
+ * Returns the color by tag from a list of tags given the name.
+ *
+ * @param {Tag[]} tags the tags to search.
  * @param {string} name the tag name to find.
  * @return {string} the color.
  */

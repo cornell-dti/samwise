@@ -16,6 +16,10 @@ import {
   backendPatchExistingTask as backendPatchExistingTaskAction, backendPatchNewTag,
 } from './actions';
 
+const defaultNoneTag: Tag = {
+  id: -1, type: 'other', name: 'None', color: 'gray',
+};
+
 /**
  * Initial state of the application.
  * @type {State}
@@ -23,17 +27,15 @@ import {
 const initialState: State = {
   mainTaskArray: [],
   tags: [
+    defaultNoneTag,
     {
-      id: 0, type: 'other', name: 'None', color: 'gray',
+      id: 0, type: 'other', name: 'Personal', color: '#9D4AA9',
     },
     {
-      id: 1, type: 'other', name: 'Personal', color: '#9D4AA9',
+      id: 1, type: 'other', name: 'Project Team', color: '#FF8A8A',
     },
     {
-      id: 2, type: 'other', name: 'Project Team', color: '#FF8A8A',
-    },
-    {
-      id: 3, type: 'class', name: 'CS1110', color: 'red',
+      id: 2, type: 'class', name: 'CS1110', color: 'red',
     },
   ],
   bearStatus: 'neutral',
@@ -374,6 +376,8 @@ const rootReducer = (state: State = initialState, action: Action): State => {
       return backendPatchNewTask(state, action.tempNewTaskId, action.task);
     case 'BACKEND_PATCH_EXISTING_TASK':
       return backendPatchExistingTask(state, action.task);
+    case 'BACKEND_PATCH_LOADED_DATA':
+      return { ...state, tags: [defaultNoneTag, ...action.tags], mainTaskArray: action.tasks };
     default:
       return state;
   }

@@ -228,7 +228,6 @@ def get_all_tasks():
     if not user_id:
         return redirect(url_for('api.login', redirect=request.path))
     tasks = Task.query\
-        .filter(Task.tag_id == Tag.tag_id)\
         .filter(Tag.user_id == user_id)\
         .all()
     return jsonify(util.table_to_json(tasks))

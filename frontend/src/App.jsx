@@ -9,6 +9,8 @@ import TaskView from './components/TaskView/TaskView';
 import TitleBar from './components/TitleBar/TitleBar';
 import type { FirebaseUser } from './util/firebase-util';
 import Login from './components/Login/Login';
+import { httpInitializeData } from './http/http-service';
+import store from './store';
 
 type Props = {| +user: FirebaseUser | null |};
 
@@ -16,6 +18,7 @@ export default function App({ user }: Props) {
   if (user == null) {
     return (<Login />);
   }
+  httpInitializeData().then(a => store.dispatch(a));
   return (
     <div className={styles.App}>
       <TitleBar />
