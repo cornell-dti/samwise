@@ -110,7 +110,6 @@ export async function httpGetTasks(): Promise<Task[]> {
   mainTasks.forEach((task: Task) => {
     assembledTasks.push(task);
   });
-  console.log(assembledTasks);
   return assembledTasks;
 }
 
