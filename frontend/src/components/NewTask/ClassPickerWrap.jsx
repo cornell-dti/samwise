@@ -1,31 +1,30 @@
-import React, { Component } from 'react';
+import React from 'react';
 import { connect } from 'react-redux';
 import { Icon } from 'semantic-ui-react';
 import ClassPicker from '../ClassPicker/ClassPicker';
 import styles from './Picker.css';
+import { getColorByTagId, getNameByTagId } from '../../util/tag-util';
 
-const mapStateToProps = ({ classColorConfig, tagColorConfig }) => ({
-  colorConfig: { ...classColorConfig, ...tagColorConfig },
-});
+const mapStateToProps = ({ tags }) => ({ tags });
 
-class UnconClassPickerWrap extends Component {
+class ClassPickerWrap extends React.Component {
   constructor(props) {
     super(props);
     this.state = this.initialState();
   }
 
   initialState = () => ({
-    tag: 'None',
+    tag: -1,
     opened: false,
     reset: true,
-  })
+  });
 
   resetState = (e) => {
     if (e) {
       e.stopPropagation();
     }
     this.setState(this.initialState());
-  }
+  };
 
   handleOpenClose = () => {
     const { opened } = this.state;
@@ -34,36 +33,36 @@ class UnconClassPickerWrap extends Component {
       const { onOpened } = this.props;
       onOpened();
     }
-  }
+  };
 
   close = () => {
     this.setState({ opened: false });
-  }
+  };
 
   handleTagChange = (e) => {
-    if (e === 'None') {
+    if (e === -1) {
       this.resetState();
     } else {
       this.setState({ tag: e, opened: false, reset: false });
     }
     const { onTagChange } = this.props;
     onTagChange(e);
-  }
+  };
 
   render() {
     const { tag, opened, reset } = this.state;
-    const { colorConfig } = this.props;
+    const { tags } = this.props;
     return (
       <div className={styles.Main}>
         <span
           htmlFor="changeTagCheckbox"
           ref={this.changeClass}
           onClick={this.handleOpenClose}
-          style={{ background: reset ? 'none' : colorConfig[tag] }}
+          style={{ background: reset ? 'none' : getColorByTagId(tags, tag) }}
           className={styles.LabelHack}
         >
           <span className={styles.TagDisplay} style={{ display: reset ? 'none' : 'inline' }}>
-            {tag}
+            {getNameByTagId(tags, tag)}
           </span>
           <Icon
             name="tag"
@@ -87,6 +86,7 @@ class UnconClassPickerWrap extends Component {
   }
 }
 
-
-const ClassPickerWrap = connect(mapStateToProps, null, null, { withRef: true })(UnconClassPickerWrap);
-export default ClassPickerWrap;
+const ConnectedClassPickerWrap = connect(
+  mapStateToProps, null, null, { withRef: true },
+)(ClassPickerWrap);
+export default ConnectedClassPickerWrap;

@@ -3,7 +3,7 @@
 import type { BacklogDisplayOption, ColoredTask, OneDayTask } from './backlog-types';
 import type { Tag, SubTask, Task } from '../../store/store-types';
 import { month2String } from '../../util/datetime-util';
-import { getColorByTag } from '../../util/tag-util';
+import { getColorByTagId } from '../../util/tag-util';
 
 export type DateToTaskMap = Map<string, Task[]>;
 
@@ -100,7 +100,7 @@ export function buildDaysInBacklog(
     const tasksOnThisDay = date2TaskMap.get(date.toLocaleDateString()) || [];
     const tasks = tasksOnThisDay.map((task: Task) => {
       const { tag } = task;
-      return { ...task, color: getColorByTag(tags, tag) };
+      return { ...task, color: getColorByTagId(tags, tag) };
     });
     days.push({ date, tasks });
   }

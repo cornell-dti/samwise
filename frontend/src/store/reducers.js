@@ -71,7 +71,7 @@ function recalculateBearStatus(focusTaskArray) {
  * @param {Tag[]} tags a list of tags as reference.
  * @return {Task[]} the new task array with task's completion status inverted.
  */
-function markTask(mainTaskArray: Task[], taskID: number, tags: Tag[]): Task[] {
+function markTask(mainTaskArray: Task[], taskID: number): Task[] {
   return mainTaskArray.map((task: Task) => {
     if (task.id !== taskID) {
       return task;
@@ -83,7 +83,7 @@ function markTask(mainTaskArray: Task[], taskID: number, tags: Tag[]): Task[] {
         ...subTask, complete: !task.complete,
       })),
     };
-    httpEditTask(task, newTask, tags).then(t => store.dispatch(backendPatchExistingTaskAction(t)));
+    httpEditTask(task, newTask).then(t => store.dispatch(backendPatchExistingTaskAction(t)));
     return newTask;
   });
 }
@@ -117,10 +117,9 @@ function markSubtask(mainTaskArray: Task[], taskID: number, subtaskID: number): 
  *
  * @param {Task[]} mainTaskArray the main task array to modify.
  * @param {number} taskID id of the task to change completion status.
- * @param {Tag[]} tags a list of tags as reference.
  * @return {Task[]} the new task array with task's in-focus status inverted.
  */
-function toggleTaskPin(mainTaskArray: Task[], taskID: number, tags: Tag[]): Task[] {
+function toggleTaskPin(mainTaskArray: Task[], taskID: number): Task[] {
   return mainTaskArray.map((task: Task) => {
     if (task.id !== taskID) {
       return task;
@@ -132,7 +131,7 @@ function toggleTaskPin(mainTaskArray: Task[], taskID: number, tags: Tag[]): Task
         ...subTask, inFocus: false,
       })),
     };
-    httpEditTask(task, newTask, tags).then(t => store.dispatch(backendPatchExistingTaskAction(t)));
+    httpEditTask(task, newTask).then(t => store.dispatch(backendPatchExistingTaskAction(t)));
     return newTask;
   });
 }
@@ -166,11 +165,10 @@ function toggleSubtaskPin(mainTaskArray: Task[], taskID: number, subtaskID: numb
  *
  * @param {State} prevState the previous state.
  * @param {Task} newTask the new task.
- * @param {Tag[]} tags a list of tags as reference.
  * @return {State} the new state.
  */
-function addTask(prevState: State, newTask: Task, tags: Tag[]): State {
-  httpAddTask(newTask, tags).then(t => store.dispatch(backendPatchNewTaskAction(newTask.id, t)));
+function addTask(prevState: State, newTask: Task): State {
+  httpAddTask(newTask).then(t => store.dispatch(backendPatchNewTaskAction(newTask.id, t)));
   return {
     ...prevState,
     mainTaskArray: [...prevState.mainTaskArray, newTask],
@@ -252,8 +250,7 @@ function editTask(state: State, action: EditTaskAction) {
     if (task.id !== newTask.id) {
       return task;
     }
-    httpEditTask(task, newTask, state.tags)
-      .then(st => store.dispatch(backendPatchExistingTaskAction(st)));
+    httpEditTask(task, newTask).then(st => store.dispatch(backendPatchExistingTaskAction(st)));
     return newTask;
   });
   return { ...state, mainTaskArray };
@@ -271,7 +268,7 @@ function undoDeleteTask(state: State): State {
   if (lastDeletedTask === null) {
     return state;
   }
-  httpAddTask(lastDeletedTask, state.tags).then(
+  httpAddTask(lastDeletedTask).then(
     task => store.dispatch(backendPatchNewTaskAction(lastDeletedTask.id, task)),
   );
   return {
@@ -340,11 +337,11 @@ const rootReducer = (state: State = initialState, action: Action): State => {
         ...state, tags: state.tags.filter((oldTag: Tag) => (oldTag.id !== action.tagId)),
       };
     case 'ADD_NEW_TASK':
-      return addTask(state, action.data, state.tags);
+      return addTask(state, action.data);
     case 'EDIT_TASK':
       return editTask(state, action);
     case 'MARK_TASK':
-      return { ...state, mainTaskArray: markTask(state.mainTaskArray, action.id, state.tags) };
+      return { ...state, mainTaskArray: markTask(state.mainTaskArray, action.id) };
     case 'MARK_SUBTASK':
       return {
         ...state, mainTaskArray: markSubtask(state.mainTaskArray, action.id, action.subtask),
@@ -352,7 +349,7 @@ const rootReducer = (state: State = initialState, action: Action): State => {
     case 'TOGGLE_TASK_PIN':
       return {
         ...state,
-        mainTaskArray: toggleTaskPin(state.mainTaskArray, action.taskId, state.tags),
+        mainTaskArray: toggleTaskPin(state.mainTaskArray, action.taskId),
       };
     case 'TOGGLE_SUBTASK_PIN':
       return {

@@ -22,7 +22,7 @@ export type SubTask = {|
 export type Task = {|
   +name: string; // Example: "Task 1 name"
   +id: number; // Example: 3213
-  +tag: string; // Example: "CS 2112"
+  +tag: number; // ID of the tag
   +date: Date; // Example: new Date()
   +complete: boolean;
   +inFocus: boolean; // Whether the task is in focus

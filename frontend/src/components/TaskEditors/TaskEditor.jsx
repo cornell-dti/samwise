@@ -10,7 +10,7 @@ import InternalSubTaskEditor from './InternalSubTaskEditor';
 import type { SimpleMainTask } from './task-editors-types';
 import styles from './TaskEditor.css';
 import { simpleConnect } from '../../store/react-redux-util';
-import { getColorByTag } from '../../util/tag-util';
+import { getColorByTagId } from '../../util/tag-util';
 
 type OwnProps = {|
   +initialTask: Task; // The initial task to edit, as a starting point.
@@ -45,7 +45,7 @@ class TaskEditor extends React.PureComponent<Props, State> {
     const { initialTask, tags } = props;
     this.state = {
       ...initialTask,
-      backgroundColor: getColorByTag(tags, initialTask.tag),
+      backgroundColor: getColorByTagId(tags, initialTask.tag),
       mainTaskInputFocused: true,
     };
   }
@@ -122,7 +122,7 @@ class TaskEditor extends React.PureComponent<Props, State> {
    */
   editMainTask = (task: SimpleMainTask): void => {
     const { tags } = this.props;
-    this.setState({ ...task, backgroundColor: getColorByTag(tags, task.tag) }, this.autoSave);
+    this.setState({ ...task, backgroundColor: getColorByTagId(tags, task.tag) }, this.autoSave);
   };
 
   /**
@@ -158,7 +158,7 @@ class TaskEditor extends React.PureComponent<Props, State> {
 
   render(): Node {
     const {
-      autoSave, className, onFocus, onBlur, refFunction,
+      autoSave, className, tags, onFocus, onBlur, refFunction,
     } = this.props;
     const { backgroundColor, mainTaskInputFocused, ...task } = this.state;
     const {
@@ -180,6 +180,7 @@ class TaskEditor extends React.PureComponent<Props, State> {
       >
         <InternalMainTaskEditor
           {...mainTask}
+          tags={tags}
           focused={!readOnly && mainTaskInputFocused}
           editTask={this.editMainTask}
           onFocusChange={f => this.setState({ mainTaskInputFocused: f })}

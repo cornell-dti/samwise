@@ -17,10 +17,7 @@ const mapDispatchToProps = dispatch => ({
   removeTask: e => dispatch(removeTask(e)),
 });
 
-const mapStateToProps = ({ mainTaskArray, classColorConfig, tagColorConfig }) => ({
-  colorConfig: { ...classColorConfig, ...tagColorConfig },
-  mainTaskArray,
-});
+const mapStateToProps = ({ mainTaskArray }) => ({ mainTaskArray });
 
 class UnconNewTaskComponent extends Component {
   constructor(props) {
@@ -36,33 +33,30 @@ class UnconNewTaskComponent extends Component {
     this.pinPicker = React.createRef();
   }
 
-
-  initialState() {
-    return {
-      name: '',
-      id: (10 * new Date()) + Math.floor(10 * Math.random()),
-      tag: 'None',
-      date: new Date(),
-      complete: false,
-      subtaskArray: [],
-      lastDel: -1,
-      lastToast: -1,
-      inFocus: false,
-    };
-  }
+  initialState = () => ({
+    name: '',
+    id: (10 * new Date()) + Math.floor(10 * Math.random()),
+    tag: -1,
+    date: new Date(),
+    complete: false,
+    subtaskArray: [],
+    lastDel: -1,
+    lastToast: -1,
+    inFocus: false,
+  });
 
   openNewTask = () => {
     this.addTaskModal.current.style.display = 'block';
     this.blockModal.current.style.display = 'block';
     this.addTask.current.placeholder = '';
-  }
+  };
 
   closeNewTask = () => {
     this.addTaskModal.current.style.display = '';
     this.blockModal.current.style.display = '';
     this.addTask.current.placeholder = placeholderText;
     this.addTask.current.blur();
-  }
+  };
 
   handleSave = (e) => {
     if (e) {
@@ -91,7 +85,7 @@ class UnconNewTaskComponent extends Component {
     addTask(toAdd);
     const lastId = toAdd.id;
 
-    const taskMsg = 'Added "' + name + '" (' + date.toLocaleDateString('en-US', {  
+    const taskMsg = 'Added "' + name + '" (' + date.toLocaleDateString('en-US', {
       day: 'numeric',
       month: 'numeric'
     }) + ')';
@@ -232,7 +226,6 @@ class UnconNewTaskComponent extends Component {
 
   render() {
     const { name, subtaskArray } = this.state;
-    const { colorConfig } = this.props;
     return (
       <div>
         <div
@@ -258,11 +251,14 @@ class UnconNewTaskComponent extends Component {
           <div className={styles.NewTaskActive} ref={this.addTaskModal}>
 
             <FocusPicker onPinChange={this.handlePinChange} ref={this.pinPicker} />
-            <ClassPickerWrap onTagChange={this.handleTagChange} ref={this.tagPicker} onOpened={this.closeCal} />
-            <CalPicker onDateChange={this.handleDateChange} ref={this.datePicker} onOpened={this.closeTag} />
+            <ClassPickerWrap onTagChange={this.handleTagChange} ref={this.tagPicker}
+                             onOpened={this.closeCal} />
+            <CalPicker onDateChange={this.handleDateChange} ref={this.datePicker}
+                       onOpened={this.closeTag} />
 
             <button type="submit" className={styles.SubmitNewTask}>
-              <Icon color="black" name="arrow alternate circle right outline" className={styles.CenterIcon} />
+              <Icon color="black" name="arrow alternate circle right outline"
+                    className={styles.CenterIcon} />
             </button>
 
             <div className={styles.NewTaskModal}>
@@ -270,7 +266,8 @@ class UnconNewTaskComponent extends Component {
                 {subtaskArray.map(
                   subtaskObj => (
                     <li key={subtaskObj.name + Math.random()} data-subtaskid={subtaskObj.id}>
-                      <button type="button" onClick={this.handleDelSubtask}><Icon name="delete" /></button>
+                      <button type="button" onClick={this.handleDelSubtask}><Icon name="delete" />
+                      </button>
                       <input
                         onBlur={this.handleChangeSubtask}
                         onKeyDown={
@@ -284,7 +281,8 @@ class UnconNewTaskComponent extends Component {
               </ul>
               <Icon name="plus" />
               <input type="text" placeholder="Add a Subtask" onKeyUp={this.handleAddSubtask} />
-              <button type="button" className={styles.ResetButton} onClick={this.resetTask}>Clear</button>
+              <button type="button" className={styles.ResetButton} onClick={this.resetTask}>Clear
+              </button>
             </div>
 
           </div>

@@ -7,7 +7,7 @@ import styles from './ClassPicker.css';
 import type { State, Tag } from '../../store/store-types';
 import { simpleConnect } from '../../store/react-redux-util';
 
-type OwnProps = {| +onTagChange: (string) => void |};
+type OwnProps = {| +onTagChange: (number) => void |};
 type SubscribedProps = {| +tags: Tag[]; |};
 type Props = {| ...OwnProps; ...SubscribedProps; |};
 
@@ -23,11 +23,11 @@ const mapStateToProps = ({ tags }: State) => ({ tags });
  */
 function ClassPicker({ onTagChange, tags }: Props): Node {
   const handleClassChange = (e) => {
-    const newTag = e.currentTarget.getAttribute('data-class-title') || 'None';
+    const newTag = parseInt(e.currentTarget.getAttribute('data-id') || -1, 10);
     onTagChange(newTag);
   };
   const items = tags.map(({ id, name, color }: Tag) => (
-    <ClassPickerItem key={id} title={name} color={color} onChange={handleClassChange} />
+    <ClassPickerItem key={id} id={id} title={name} color={color} onChange={handleClassChange} />
   ));
   return (
     <ul className={styles.NewTaskClass}>
