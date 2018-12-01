@@ -1,0 +1,331 @@
+.NewTaskComponent {
+  border-top: none;
+  border-left: none;
+  border-right: none;
+  border-bottom: 1px solid gray;
+
+  width:100%;
+  padding: 10px 20px;
+  text-align:left;
+
+  font-size:20px;
+  font-family: 'Open Sans', sans-serif;
+  transition: border 0.3s ease;
+}
+
+.NewTaskComponent::placeholder{
+  font-weight:lighter;
+  color:gray;
+  text-align:center;
+}
+
+.NewTaskComponent:focus::placeholder{
+  color:white;
+}
+
+.NewTaskWrap {
+  width:30vw;
+  text-align:center;
+  position:relative;
+  left:50%;
+  height:initial;
+  transform:translateX(-50%);
+  z-index:5;
+  
+  max-height:44px;
+  margin-bottom:20px;
+}
+
+.NewTaskComponent:focus{
+  border-bottom: 2px solid black;
+  outline:none;
+}
+
+
+
+
+.CloseNewTask{
+  position:fixed;
+  background:black;
+  opacity:0.4;
+  z-index:4;
+  top:0;left:0;
+  width:100vw;
+  height:100vh;
+  
+  display:none;
+}
+
+
+/*
+Wrapper for all options only visible when adding task
+*/
+.NewTaskActive{
+  position:absolute;
+  top:12px;
+  height:20px;
+  width:50px;
+  right:0;
+
+  display:none;
+}
+
+.OpenNewTask .NewTaskActive{
+  display:block;
+}
+
+
+
+
+.SubmitNewTask{
+  position:absolute;
+  right:0;
+  top:-3px;
+  width:20px;
+  height:100%;
+  background:white;
+  border:none;
+  cursor:pointer;
+  padding:0;margin:0;
+  font-size:25px;
+  z-index:0;
+}
+
+/*
+Class Picker
+*/
+.NewTaskClass{
+  position:absolute;
+  right:60px;
+  height:100%;
+  width:20px;
+}
+
+.NewTaskClass input[type="checkbox"]{
+  opacity:0;
+  width:22px;height:22px;
+  position:absolute;
+  left:-2px;
+  margin:0;
+  cursor:pointer;
+}
+
+
+
+.NewTaskClass label{
+  height:20px;
+  /*background:white;*/
+  min-width:20px;
+  /*border:1px black solid;*/
+  padding:0 3px 0 0;
+  display:inline-block;
+  cursor:pointer;
+
+  white-space:nowrap;
+  color:white;
+
+  position:absolute;
+  right:0px;
+  font-size:12px;
+  color:gray;
+}
+.NewTaskClass label span{
+  padding: 0 10px;
+  color:white;
+}
+
+.NewTaskClass label[data-curr="None"]{
+  background-color:white !important;
+  padding:0;
+}
+.NewTaskClass label span:empty, .NewTaskClass label[data-curr="None"] span{
+  display:none;
+}
+
+.NewTaskClass ul{
+  display:none;
+  position:absolute;
+  bottom:19px;left:-2px;
+  min-width:150px;
+  margin:0;
+  padding:0;
+  list-style:none;
+  
+  z-index:2;
+}
+
+.NewTaskClass li{
+  position:relative;
+
+  text-align:left;
+
+  padding:5px 10px 5px 30px;
+  border-left:1px black solid;
+  border-right:1px black solid;
+  border-bottom:1px gray solid;
+}
+
+.NewTaskClass li:first-child{
+  border-top:1px black solid;
+}
+.NewTaskClass li:last-child{
+  border-bottom:1px black solid;
+}
+
+.NewTaskClass li input[type="checkbox"]{
+  position:absolute;
+  width:100%;height:100%;
+  margin:0;padding:0;
+  left:0;top:0;
+  opacity:0;
+  cursor:pointer;
+}
+
+.NewTaskClass li::before{
+  content:'';
+  display:block;
+  position:absolute;
+  left:5px;top:5px;
+  width:20px;height:20px;
+  background-color:var(--custom-color);
+}
+
+
+.NewTaskClass input[type="checkbox"]:checked+label+ul{
+  display:block;
+}
+
+
+/*
+Date Picker
+*/
+.NewTaskDate{
+  width:20px;
+  position:absolute;
+  right:30px;
+  height:20px;
+  color:gray;
+}
+
+.NewTaskDate label{
+  /*background:white;
+  border:1px black solid;*/
+  height:20px;width:20px;
+  display:inline-block;
+  line-height:20px;
+  text-align:center;
+  cursor:pointer;
+  font-size:85%;
+}
+
+.NewTaskDate input[type="checkbox"]{
+  opacity:0;
+  pointer-events:none;
+}
+
+.NewTaskDate input[type="checkbox"]:checked+.NewTaskDatePick{
+  display:block;
+}
+
+
+
+.NewTaskDatePick{
+  width:300px;
+  position:absolute;
+  top:20px;
+  display:none;
+  left:0;
+  
+  z-index:2;
+}
+
+
+.CenterIcon{
+  text-align:center;
+  margin:0 !important;
+  line-height:20px;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+/*
+  Pop Open Modal
+*/
+.NewTaskModal{
+  background:white;
+  position:absolute;
+  top:-30px;right:-30px;
+  width:calc(30vw + 60px);
+  padding:70px 0 10px 0;
+  z-index:-1;
+  box-shadow: 0px 2px 25px 5px #444;
+}
+
+.NewTaskModal ul{
+  list-style-type:none;
+  margin:0;padding:0;
+}
+
+.NewTaskModal input[type="text"]{
+  border-top:none;
+  border-left:none;
+  border-right:none;
+  border-bottom: 1px gray solid;
+  
+  width:calc(100% - 60px);
+  padding: 10px 20px 10px 50px;
+  
+  outline:none;
+}
+
+.NewTaskModal input[type="text"]::placeholder{
+  color:gray;
+}
+
+.NewTaskModal .AddSubTask::before{
+  content:'+';
+  position:relative;
+  font-size:20px;
+}
+
+.NewTaskModal li{
+  position:relative;
+}
+
+
+.NewTaskModal li button{
+  position:absolute;
+  width:20px;
+  height:20px;
+  bottom:10px;
+  border:none;
+  background:none;
+  left:40px;
+  cursor:pointer;
+}
+.NewTaskModal li i{
+  bottom:0;
+  left:0;
+  font-size:15px;
+  display:block;
+  position:absolute;
+  width:100%;
+  height:100%;
+  margin:0;padding:0;
+}
+
+.NewTaskModal i{
+  position:absolute;
+  font-size:30px;
+  color:gray;
+  bottom:8px;
+}

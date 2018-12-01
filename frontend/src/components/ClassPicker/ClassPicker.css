@@ -1,0 +1,56 @@
+
+/*
+Class Picker
+*/
+.NewTaskClass{
+  position:absolute;
+  top:20px;left:-2px;
+  min-width:150px;
+  margin:0;
+  padding:0;
+  list-style:none;
+  background:white;
+}
+
+.NewTaskClass li{
+  position:relative;
+
+  text-align:left;
+
+  padding:5px 10px 5px 30px;
+  border-left:1px black solid;
+  border-right:1px black solid;
+  border-bottom:1px gray solid;
+  
+  background:white;
+}
+
+.NewTaskClass li:first-child{
+  border-top:1px black solid;
+}
+.NewTaskClass li:last-child{
+  border-bottom:1px black solid;
+}
+
+.NewTaskClass li input[type="checkbox"]{
+  position:absolute;
+  width:100%;height:100%;
+  margin:0;padding:0;
+  left:0;top:0;
+  opacity:0;
+  cursor:pointer;
+}
+
+.NewTaskClass li::before{
+  content:'';
+  display:block;
+  position:absolute;
+  left:5px;top:5px;
+  width:20px;height:20px;
+  background-color:var(--custom-color);
+}
+
+
+.NewTaskClass input[type="checkbox"]:checked+label+ul{
+  display:block;
+}
