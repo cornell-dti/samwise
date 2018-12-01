@@ -148,3 +148,4 @@ run_db_viewer
 
 # Service account JSON
 serviceAccount.json
+backend/run_server.bat
