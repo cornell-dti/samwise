@@ -31,6 +31,7 @@ def login():
     user_id = get_user_id(token)
     if user_id:
         redirect_url = request.args.get('redirect', url_for('api.index'))
+
         param_prefix = '?' if '?' not in redirect_url else '&'
         if param_prefix == '&':
             import pdb
@@ -169,10 +170,13 @@ def new_task():
     """
     Creates a new task.
     {
+        "token": auth_token,
         "content": content,
         "start_date": yyyy-mm-dd hh:mm:ss,
         "end_date": yyyy-mm-dd hh:mm:ss,
-        "parent_task": parent id
+        "parent_task": parent id,
+        "tag_id": tag_id,
+        "subtasks": [same format as above but without parent_task or tag_id]
     }
 
     Output format:
@@ -192,11 +196,14 @@ def new_task():
     user_id = get_user_id(data['token'])
     if not user_id:
         return redirect(url_for('api.login', redirect=request.path))
-    content = data['content']
-    tag_id = data['tag_id']
-    start_date = data['start_date']
-    end_date = data['end_date']
-    parent_task = data.get('parent_task', None)
+    content = data.get('content')
+    tag_id = data.get('tag_id')
+    start_date = data.get('start_date')
+    end_date = data.get('end_date')
+    if None in (content, tag_id, start_date, end_date):
+        return jsonify(error='Parameters content, tag_id, start_date, and end_date are required!')
+
+    parent_task = data.get('parent_task')
     last_task = Task.query.filter(
         Task.tag_id == tag_id).filter(
         Task.user_id == user_id).order_by(Task._order.desc()).first()
@@ -206,6 +213,27 @@ def new_task():
                     tag_id=tag_id, parent_task=parent_task,
                     _order=order, completed=False)
     db.session.add(new_task)
+
+    subtasks = data.get('subtasks')
+    if subtasks:
+        # Validate subtasks
+        for i, subtask in enumerate(subtasks):
+            content = subtask.get('content')
+            start_date = subtask.get('start_date')
+            end_date = subtask.get('end_date')
+            if None in (content, start_date, end_date):
+                return jsonify(error='subtask {} is missing content, start_date, and/or end_date.'.format(i))
+
+        # Add subtasks
+        for i, subtask in enumerate(subtasks):
+            content = subtask.get('content')
+            start_date = subtask.get('start_date')
+            end_date = subtask.get('end_date')
+            new_subtask = Task(user_id=user_id, content=content,
+                               start_date=start_date, end_date=end_date,
+                               tag_id=tag_id, parent_task=new_task.task_id,
+                               _order=i, completed=False)
+            db.session.add(new_subtask)
     db.session.commit()
     return jsonify(created=util.sqlalchemy_object_to_dict(new_task))
 
