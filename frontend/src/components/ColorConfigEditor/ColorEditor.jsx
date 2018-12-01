@@ -10,18 +10,18 @@ import type { Tag } from '../../store/store-types';
 type Props = {|
   tag: Tag,
   editTag: (tag: Tag) => EditTagAction,
+  changeCallback: Function,
 |};
 
 function ColorEditor(props: Props) {
-  const { tag, editTag } = props;
+  const { tag, editTag, changeCallback } = props;
   const { color } = tag;
   const handleStateComplete = (c) => {
     editTag({ ...tag, color: c.hex });
+    changeCallback();
   };
   return (
-    <div>
-      <GithubPicker color={color} onChangeComplete={handleStateComplete} />
-    </div>
+    <GithubPicker color={color} onChangeComplete={handleStateComplete} triangle="top-right" />
   );
 }
 

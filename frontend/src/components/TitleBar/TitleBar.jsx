@@ -12,7 +12,7 @@ function TitleBar() {
       </span>
 
       <span className={styles.Links}>
-        <button type="button" data-sel="sel">Dashboard</button>
+        {/* <button type="button" data-sel="sel">Dashboard</button> */}
         <SettingsButton />
       </span>
     </header>

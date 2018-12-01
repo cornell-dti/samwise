@@ -21,7 +21,7 @@ class ColorConfigItemAdder extends React.Component<Props, State> {
   constructor(props: Props) {
     super(props);
     this.state = {
-      tagInput: 'Search classes',
+      tagInput: '',
       colorInput: 'red',
     };
   }
@@ -46,6 +46,7 @@ class ColorConfigItemAdder extends React.Component<Props, State> {
       addTag({
         id: randomId(), type: 'class', name: tagInput, color: colorInput,
       });
+    this.setState(state => ({ ...state, tagInput: '' }));
     }
   };
 
@@ -53,16 +54,14 @@ class ColorConfigItemAdder extends React.Component<Props, State> {
     const { tagInput, colorInput } = this.state;
     return (
       <div className={styles.TagColorConfigItemAdder}>
-        <div>
-          <p className={styles.searchClassesLabel}>Add Class Tags</p>
-          <input
-            className={styles.searchClasses}
-            type="text"
-            value={tagInput}
-            onChange={this.changeTagName}
-            onKeyPress={this.checkEnterStatus}
-          />
-        </div>
+        <input
+          className={styles.searchClasses}
+          type="text"
+          value={tagInput}
+          onChange={this.changeTagName}
+          onKeyPress={this.checkEnterStatus}
+          placeholder="&#x1F50E; Search classes"
+        />
       </div>
     );
   }

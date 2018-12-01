@@ -6,6 +6,7 @@ import { List } from 'semantic-ui-react';
 import ColorConfigItem from './ColorConfigItem';
 import type { State, Tag } from '../../store/store-types';
 import { simpleConnect } from '../../store/react-redux-util';
+import AddNormalTag from './AddNormalTag';
 
 type Props = {| tags: Tag[] |};
 
@@ -15,9 +16,10 @@ const mapStateToProps = ({ tags }: State): Props => ({
 
 function TagColorConfigItemList({ tags }: Props): Node {
   return (
-    <List divided relaxed style={{ width: '250px', display: 'inline-block' }}>
-      {tags.map(tag => (<ColorConfigItem key={tag.id} tag={tag} />))}
-    </List>
+    <ul style={{ width: '100%', display: 'inline-block', padding: 0, margin:0, listStyle: 'none' }}>
+      {tags.filter(tag => tag.name != 'None').map(tag => (<ColorConfigItem key={tag.id} tag={tag} />))}
+      <AddNormalTag />
+    </ul>
   );
 }
 

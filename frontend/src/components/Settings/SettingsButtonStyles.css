@@ -1,7 +1,22 @@
 .closeButton {
-  text-align: right;
-  float: right;
+  position:absolute;
+  top:40px;
+  right:40px;
+  color:white;
+  font-size:30px;
 }
+
+.changesSaved {
+  position:absolute;
+  top:40px;
+  right:100px;
+  line-height:30px;
+  padding:0;margin:0;
+  font-style:italic;
+}
+
+
+
 
 .settingsModal {
   position: fixed;
@@ -11,4 +26,12 @@
   right: 0;
   z-index: 10;
   background-color: #7b7b7b;
+  color:white;
+  overflow-y:auto;
+}
+
+
+
+.contentWrap{
+  padding: 60px 50px;
 }

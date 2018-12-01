@@ -2,11 +2,12 @@
 
 import React from 'react';
 import { connect } from 'react-redux';
-import { List } from 'semantic-ui-react';
 import type { RemoveTagAction } from '../../store/action-types';
 import { removeTag as removeTagAction } from '../../store/actions';
 import ColorEditor from './ColorEditor';
+import { Icon } from 'semantic-ui-react';
 import type { Tag } from '../../store/store-types';
+import styles from './IndividualItem.css';
 
 type Props = {|
   +tag: Tag;
@@ -43,24 +44,32 @@ class ColorConfigItem extends React.Component<Props, State> {
     const { showEditor } = this.state;
     const isClass = type === 'class';
     return (
-      <List.Item style={isClass ? { width: '500px' } : { width: '250px' }}>
-        <List.Content>
-          <List.Header as="a" style={{ backgroundColor: color }}>{name}</List.Header>
-          <List.Description as="a">
-            Color:
-            {' '}
-            {color}
-          </List.Description>
-          <button type="button" onClick={this.removeMe}>Remove me</button>
-          <button type="button" onClick={this.toggleEditor}>Toggle Editor</button>
-          {
-            showEditor && <ColorEditor tag={tag} />
-          }
-        </List.Content>
-      </List.Item>
+      <li style={{ width: '100%', margin:0 }} className={styles.Main}>
+        <span className={styles.TagName} style={{ width: isClass ? '100px' : 'calc(100% - 150px)' }}>{name}</span>
+        <span className={styles.ClassExpandedTitle} style={{ display: isClass ? 'inline-block' : 'none' }}>
+          Class Name Goes Here
+        </span>
+        <button type="button" className={styles.ColorEdit} onClick={this.toggleEditor}>
+          {color}
+          <span className={styles.ColorEditDisp} style={{ backgroundColor: color }} />
+          <Icon className={styles.ColorEditArrow} name="angle down" />
+        </button>
+        <button type="button" className={styles.DeleteTag} onClick={this.removeMe}>
+          <Icon name="close" />
+        </button>
+        {
+          showEditor && <div className={styles.OpenPicker}><ColorEditor tag={tag} changeCallback={this.toggleEditor} /></div>
+        }
+      </li>
     );
   }
 }
+//style={{ backgroundColor: color }}
+/*
+Color:
+            {' '}
+            {color}
+            */
 
 const ConnectedTagColorConfigItem = connect(null, { removeTag: removeTagAction })(ColorConfigItem);
 export default ConnectedTagColorConfigItem;
