@@ -107,8 +107,8 @@ class UnconNewTaskComponent extends Component {
     this.closeNewTask();
     this.datePicker.current.resetState();
     this.pinPicker.current.resetState();
-    this.tagPicker.current.wrappedInstance.resetState();
-  }
+    // this.tagPicker.current.wrappedInstance.resetState();
+  };
 
   handleUndo = (e) => {
     e.stopPropagation();

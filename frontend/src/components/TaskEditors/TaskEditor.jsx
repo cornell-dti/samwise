@@ -54,9 +54,11 @@ class TaskEditor extends React.PureComponent<Props, State> {
     // This methods ensure that the stuff inside the editor is always the latest from store.
     // Since we implement task in an immutable data structure, a shallow equality comparison is
     // enough.
-    const { initialTask } = this.props;
-    if (initialTask !== nextProps.initialTask) {
-      this.setState({ ...nextProps.initialTask });
+    const { initialTask, tags } = this.props;
+    if (initialTask !== nextProps.initialTask || tags !== nextProps.tags) {
+      const nextInitialTask = nextProps.initialTask;
+      const backgroundColor = getColorByTagId(nextProps.tags, nextInitialTask.tag);
+      this.setState({ ...nextInitialTask, backgroundColor });
     }
   }
 

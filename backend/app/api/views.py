@@ -396,9 +396,9 @@ def set_task_focus(task_id):
         return redirect(url_for('api.login', redirect=request.path))
     focus = data.get('focus')
     task = Task.query.filter(Task.user_id == user_id).filter(
-        Task.tag_id == task_id).first()
+        Task.task_id == task_id).first()
     if task is None:
-        return jsonify(status='error. tag not found.')
+        return jsonify(status='error. task not found.')
     if focus is None:
         return jsonify(status='error. key "focus" is required.')
     task.in_focus = focus

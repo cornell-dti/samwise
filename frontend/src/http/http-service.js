@@ -16,8 +16,8 @@ function formatDate(date: Date): string {
     const s = num.toString(10);
     return s.length === 1 ? `0${s}` : s;
   };
-  const dateString = `${date.getFullYear()}-${padZero(date.getMonth() + 1)}-${padZero(date.getDate())}`;
-  const timeString = `${padZero(date.getHours())}:${padZero(date.getMinutes())}:00`;
+  const dateString = `${date.getUTCFullYear()}-${padZero(date.getUTCMonth() + 1)}-${padZero(date.getUTCDate())}`;
+  const timeString = `${padZero(date.getUTCHours())}:${padZero(date.getUTCMinutes())}:00`;
   return `${dateString} ${timeString}`;
 }
 
@@ -159,7 +159,7 @@ export async function httpAddTask(task: Task): Promise<Task> {
     end_date: formatDate(task.date),
   };
   const serverTask = await post<any>('/tasks/new', data);
-  return { ...task, id: serverTask.task_id };
+  return { ...task, id: serverTask.created.task_id };
 }
 
 /**
@@ -195,7 +195,7 @@ export async function httpNewSubTask(mainTask: Task, subTask: SubTask): Promise<
     in_focus: inFocus,
   };
   const serverSubTask = await post<any>('/tasks/new', data);
-  return { ...subTask, id: serverSubTask.task_id };
+  return { ...subTask, id: serverSubTask.created.task_id };
 }
 
 /**
@@ -220,7 +220,7 @@ export async function httpEditSubTask(mainTask: Task, subTask: SubTask): Promise
     in_focus: inFocus,
   };
   const serverSubTask = await post<any>(`/tasks/${id}/edit`, data);
-  return { ...subTask, id: serverSubTask.task_id };
+  return { ...subTask, id: serverSubTask.task.task_id };
 }
 
 /**

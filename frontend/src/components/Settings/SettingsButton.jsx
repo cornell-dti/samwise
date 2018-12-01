@@ -24,18 +24,19 @@ export default class SettingsButton extends React.Component<{}, State> {
 
   render() {
     const { showSettings } = this.state;
-    const showStyles = showSettings ? { display: 'block' } : { display: 'none' };
     return (
       <div style={{ display: 'inline-block' }}>
         <button type="submit" onClick={this.displayModal}>Settings</button>
-        <div className={styles.settingsModal}>
-          <div style={showStyles}>
-            <button className={styles.closeButton} type="submit" onClick={this.closeModal}>
-              Close
-            </button>
-            <TagColorConfigEditor />
-          </div>
-        </div>
+        {
+          showSettings && (
+            <div className={styles.settingsModal}>
+              <button className={styles.closeButton} type="submit" onClick={this.closeModal}>
+                Close
+              </button>
+              <TagColorConfigEditor />
+            </div>
+          )
+        }
       </div>
     );
   }
