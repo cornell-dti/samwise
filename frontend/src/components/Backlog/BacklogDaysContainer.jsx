@@ -5,7 +5,7 @@ import type { Node } from 'react';
 import { Grid } from 'semantic-ui-react';
 import type { BacklogDisplayOption, OneDayTask } from './backlog-types';
 import BacklogDay from './BacklogDay';
-import type { State, ColorConfig, Task } from '../../store/store-types';
+import type { State, Tag, Task } from '../../store/store-types';
 import { simpleConnect } from '../../store/react-redux-util';
 import { buildDaysInBacklog } from './backlog-util';
 import type { DateToTaskMap } from './backlog-util';
@@ -20,7 +20,7 @@ type OwnProps = {|
 
 type SubscribedProps = {|
   +date2TaskMap: DateToTaskMap;
-  +colors: ColorConfig;
+  +tags: Tag[];
 |};
 
 type Props = {|
@@ -48,11 +48,8 @@ function buildDate2TaskMap(allTasks: Task[]): DateToTaskMap {
   return map;
 }
 
-const mapStateToProps = (
-  { mainTaskArray, classColorConfig, tagColorConfig }: State,
-): SubscribedProps => ({
-  date2TaskMap: buildDate2TaskMap(mainTaskArray),
-  colors: { ...classColorConfig, ...tagColorConfig },
+const mapStateToProps = ({ mainTaskArray, tags }: State): SubscribedProps => ({
+  date2TaskMap: buildDate2TaskMap(mainTaskArray), tags,
 });
 
 /**
@@ -92,10 +89,10 @@ const renderDay = (
  */
 function BacklogDaysContainer(props: Props): Node {
   const {
-    date2TaskMap, colors, displayOption, backlogOffset, doesShowCompletedTasks,
+    date2TaskMap, tags, displayOption, backlogOffset, doesShowCompletedTasks,
   } = props;
   const inFourDaysView = displayOption === 'FOUR_DAYS';
-  const days = buildDaysInBacklog(date2TaskMap, colors, displayOption, backlogOffset);
+  const days = buildDaysInBacklog(date2TaskMap, tags, displayOption, backlogOffset);
   const rows = [];
   const columns = days.length === 4 ? 4 : 7;
   const renderRow = (id, row) => (

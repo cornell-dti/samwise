@@ -1,5 +1,14 @@
 // @flow strict
 
+export type TagType = 'class' | 'other';
+
+export type Tag = {|
+  +id: number;
+  +type: TagType;
+  +name: string;
+  +color: string;
+|};
+
 export type SubTask = {|
   +name: string; // Example: "SubTask 1 Name"
   +id: number; // Example: 32432
@@ -13,19 +22,12 @@ export type SubTask = {|
 export type Task = {|
   +name: string; // Example: "Task 1 name"
   +id: number; // Example: 3213
-  +tag: string; // Example: "CS 2112"
+  +tag: number; // ID of the tag
   +date: Date; // Example: new Date()
   +complete: boolean;
   +inFocus: boolean; // Whether the task is in focus
   +subtaskArray: SubTask[];
 |};
-
-/**
- * The color picker maps a tag to a color.
- */
-export type ColorConfig = {
-  [tag: string]: string
-};
 
 /**
  * The cache that is designed to store the stuff that can be undo.
@@ -39,8 +41,7 @@ export type UndoCache = {|
  */
 export type State = {|
   +mainTaskArray: Task[];
-  +classColorConfig: ColorConfig;
-  +tagColorConfig: ColorConfig;
+  +tags: Tag[];
   +bearStatus: string;
   +undoCache: UndoCache;
 |};

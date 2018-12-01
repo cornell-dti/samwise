@@ -1,12 +1,24 @@
 // @flow strict
 
 import type {
-  Action, EditTaskAction, ColorConfigAction, RemoveTaskAction,
+  Action, EditTaskAction, RemoveTaskAction,
 } from './action-types';
 import type {
-  State, Task, SubTask, ColorConfig,
+  State, Task, SubTask, Tag,
 } from './store-types';
 import { emitUndoRemoveTaskToast } from '../util/toast-util';
+import {
+  httpAddTask, httpDeleteTag, httpDeleteTask, httpEditTag, httpEditTask, httpNewTag, httpPinTask,
+} from '../http/http-service';
+import store from './index';
+import {
+  backendPatchNewTask as backendPatchNewTaskAction,
+  backendPatchExistingTask as backendPatchExistingTaskAction, backendPatchNewTag,
+} from './actions';
+
+const defaultNoneTag: Tag = {
+  id: -1, type: 'other', name: 'None', color: 'gray',
+};
 
 /**
  * Initial state of the application.
@@ -14,15 +26,18 @@ import { emitUndoRemoveTaskToast } from '../util/toast-util';
  */
 const initialState: State = {
   mainTaskArray: [],
-  classColorConfig: {
-    CS1110: 'red',
-  },
-  tagColorConfig: {
-    Personal: '#7ED4E5',
-    'Project Team': '#FF8A8A',
-    Courses: '#9D4AA9',
-    None: 'gray',
-  },
+  tags: [
+    defaultNoneTag,
+    {
+      id: 0, type: 'other', name: 'Personal', color: '#9D4AA9',
+    },
+    {
+      id: 1, type: 'other', name: 'Project Team', color: '#FF8A8A',
+    },
+    {
+      id: 2, type: 'class', name: 'CS1110', color: 'red',
+    },
+  ],
   bearStatus: 'neutral',
   undoCache: { lastDeletedTask: null },
 };
@@ -51,8 +66,9 @@ function recalculateBearStatus(focusTaskArray) {
 /**
  * Change the completion status of a main task.
  *
- * @param mainTaskArray the main task array to modify.
- * @param taskID id of the task to change completion status.
+ * @param {Task[]} mainTaskArray the main task array to modify.
+ * @param {number} taskID id of the task to change completion status.
+ * @param {Tag[]} tags a list of tags as reference.
  * @return {Task[]} the new task array with task's completion status inverted.
  */
 function markTask(mainTaskArray: Task[], taskID: number): Task[] {
@@ -60,13 +76,15 @@ function markTask(mainTaskArray: Task[], taskID: number): Task[] {
     if (task.id !== taskID) {
       return task;
     }
-    return {
+    const newTask = {
       ...task,
       complete: !task.complete,
       subtaskArray: task.subtaskArray.map(subTask => ({
         ...subTask, complete: !task.complete,
       })),
     };
+    httpEditTask(task, newTask).then(t => store.dispatch(backendPatchExistingTaskAction(t)));
+    return newTask;
   });
 }
 
@@ -83,33 +101,39 @@ function markSubtask(mainTaskArray: Task[], taskID: number, subtaskID: number): 
     if (task.id !== taskID) {
       return task;
     }
-    return {
-      ...task,
-      subtaskArray: task.subtaskArray.map((subTask: SubTask) => (
-        subTask.id === subtaskID ? { ...subTask, complete: !subTask.complete } : subTask
-      )),
-    };
+    const subtaskArray = task.subtaskArray.map((subTask: SubTask) => {
+      if (subTask.id !== subtaskID) {
+        return subTask;
+      }
+      httpPinTask(subTask.id, !subTask.complete).then(() => {});
+      return { ...subTask, complete: !subTask.complete };
+    });
+    return { ...task, subtaskArray };
   });
 }
 
 /**
  * Change the in-focus status of a main task.
  *
- * @param mainTaskArray the main task array to modify.
- * @param taskID id of the task to change completion status.
+ * @param {Task[]} mainTaskArray the main task array to modify.
+ * @param {number} taskID id of the task to change completion status.
  * @return {Task[]} the new task array with task's in-focus status inverted.
  */
 function toggleTaskPin(mainTaskArray: Task[], taskID: number): Task[] {
-  return mainTaskArray
-    .map((task: Task) => (
-      task.id === taskID ? {
-        ...task,
-        inFocus: !task.inFocus,
-        subtaskArray: task.subtaskArray.map(subTask => ({
-          ...subTask, inFocus: false,
-        })),
-      } : task
-    ));
+  return mainTaskArray.map((task: Task) => {
+    if (task.id !== taskID) {
+      return task;
+    }
+    const newTask = {
+      ...task,
+      inFocus: !task.inFocus,
+      subtaskArray: task.subtaskArray.map(subTask => ({
+        ...subTask, inFocus: false,
+      })),
+    };
+    httpEditTask(task, newTask).then(t => store.dispatch(backendPatchExistingTaskAction(t)));
+    return newTask;
+  });
 }
 
 /**
@@ -125,13 +149,30 @@ function toggleSubtaskPin(mainTaskArray: Task[], taskID: number, subtaskID: numb
     if (task.id !== taskID) {
       return task;
     }
-    return {
-      ...task,
-      subtaskArray: task.subtaskArray.map((subTask: SubTask) => (
-        subTask.id === subtaskID ? { ...subTask, inFocus: !subTask.inFocus } : subTask
-      )),
-    };
+    const subtaskArray = task.subtaskArray.map((subTask: SubTask) => {
+      if (subTask.id !== subtaskID) {
+        return subTask;
+      }
+      httpPinTask(subTask.id, !subTask.inFocus).then(() => {});
+      return { ...subTask, inFocus: !subTask.inFocus };
+    });
+    return { ...task, subtaskArray };
   });
+}
+
+/**
+ * Add a new task.
+ *
+ * @param {State} prevState the previous state.
+ * @param {Task} newTask the new task.
+ * @return {State} the new state.
+ */
+function addTask(prevState: State, newTask: Task): State {
+  httpAddTask(newTask).then(t => store.dispatch(backendPatchNewTaskAction(newTask.id, t)));
+  return {
+    ...prevState,
+    mainTaskArray: [...prevState.mainTaskArray, newTask],
+  };
 }
 
 /**
@@ -144,6 +185,7 @@ function toggleSubtaskPin(mainTaskArray: Task[], taskID: number, subtaskID: numb
 function removeTaskReducer(prevState: State, action: RemoveTaskAction): State {
   let lastDeletedTask: Task | null = null;
   const { taskId, undoable } = action;
+  httpDeleteTask(taskId).then(() => {});
   const mainTaskArray = prevState.mainTaskArray.filter((task: Task) => {
     if (task.id !== taskId) {
       return true;
@@ -175,62 +217,23 @@ function removeSubtask(mainTaskArray: Task[], taskID: number, subtaskID: number)
     if (task.id !== taskID) {
       return task;
     }
-    return {
-      ...task,
-      subtaskArray: task.subtaskArray.filter((subTask: SubTask) => subTask.id !== subtaskID),
-    };
+    const subtaskArray = [];
+    task.subtaskArray.forEach((subTask: SubTask) => {
+      if (subTask.id === subtaskID) {
+        httpDeleteTask(subtaskID).then(() => {});
+      } else {
+        subtaskArray.push(subTask);
+      }
+    });
+    return { ...task, subtaskArray };
   });
-}
-
-function addSubtask(mainTaskArray: Task[], taskID: number, subtask: SubTask): Task[] {
-  return mainTaskArray.map((task: Task) => {
-    if (task.id !== taskID) {
-      return task;
-    }
-    return {
-      ...task,
-      subtaskArray: [...task.subtaskArray, subtask],
-    };
-  });
-}
-
-/**
- * Reducer from a old tag-color config to a new one.
- *
- * @param {State} prevState the previous state.
- * @param {ColorConfigAction} action the action related to tag-color config to perform.
- * @return {State} the new state.
- */
-function colorConfigReducer(
-  prevState: State,
-  action: ColorConfigAction,
-): State {
-  const oldConfig = action.classOrTag === 'class'
-    ? prevState.classColorConfig : prevState.tagColorConfig;
-  let newConfig: ColorConfig;
-  switch (action.type) {
-    case 'EDIT_COLOR_CONFIG':
-      newConfig = { ...oldConfig, [action.tag]: action.color };
-      break;
-    case 'REMOVE_COLOR_CONFIG':
-      newConfig = ((c: ColorConfig): ColorConfig => {
-        const { [action.tag]: _, ...rest } = c;
-        return rest;
-      })(oldConfig);
-      break;
-    default:
-      throw new Error('Bad action type!');
-  }
-  return action.classOrTag === 'class'
-    ? { ...prevState, classColorConfig: newConfig }
-    : { ...prevState, tagColorConfig: newConfig };
 }
 
 /**
  * Reducer from an old state with old task to a new state with one task edited.
  *
- * @param state the old state.
- * @param action the reduce action to edit a task.
+ * @param {State} state the old state.
+ * @param {EditTaskAction} action the reduce action to edit a task.
  * @return {State} the new state.
  */
 function editTask(state: State, action: EditTaskAction) {
@@ -243,37 +246,105 @@ function editTask(state: State, action: EditTaskAction) {
       inFocus: !t.inFocus && subTask.inFocus,
     })),
   };
+  const mainTaskArray = state.mainTaskArray.map<Task>((task: Task) => {
+    if (task.id !== newTask.id) {
+      return task;
+    }
+    httpEditTask(task, newTask).then(st => store.dispatch(backendPatchExistingTaskAction(st)));
+    return newTask;
+  });
+  return { ...state, mainTaskArray };
+}
+
+/**
+ * Undo the operation of delete task.
+ *
+ * @param {State} state the old state.
+ * @return {State} the new state after the undo.
+ */
+function undoDeleteTask(state: State): State {
+  const { mainTaskArray, undoCache } = state;
+  const { lastDeletedTask } = undoCache;
+  if (lastDeletedTask === null) {
+    return state;
+  }
+  httpAddTask(lastDeletedTask).then(
+    task => store.dispatch(backendPatchNewTaskAction(lastDeletedTask.id, task)),
+  );
   return {
     ...state,
-    mainTaskArray: state.mainTaskArray.map<Task>((task: Task) => (
-      task.id === newTask.id ? newTask : task
+    mainTaskArray: [...mainTaskArray, lastDeletedTask],
+    undoCache: { ...undoCache, lastDeletedTask: null },
+  };
+}
+
+/**
+ * Let the backend patch a a new task.
+ *
+ * @param {State} state the old state.
+ * @param {number} tempNewTaskId the temp new task id.
+ * @param {Task} task the new task to patch.
+ * @return {State} the new state.
+ */
+function backendPatchNewTask(state: State, tempNewTaskId: number, task: Task): State {
+  return {
+    ...state,
+    mainTaskArray: state.mainTaskArray.map(oldTask => (
+      oldTask.id === tempNewTaskId ? task : oldTask
     )),
   };
 }
 
-const rootReducer = (state: State = initialState, action: Action) => {
+/**
+ * Let the backend patch an existing task.
+ *
+ * @param {State} state the old state.
+ * @param {Task} task the task to patch.
+ * @return {State} the new state.
+ */
+function backendPatchExistingTask(state: State, task: Task): State {
+  return {
+    ...state,
+    mainTaskArray: state.mainTaskArray.map(oldTask => (
+      oldTask.id === task.id ? task : oldTask
+    )),
+  };
+}
+
+/**
+ * The root reducer.
+ *
+ * @param {State} state the previous state.
+ * @param {Action} action the action that decides the next state.
+ * @return {State} the new state.
+ */
+const rootReducer = (state: State = initialState, action: Action): State => {
   switch (action.type) {
+    case 'ADD_TAG':
+      httpNewTag(action.tag).then(t => store.dispatch(backendPatchNewTag(action.tag.id, t)));
+      return { ...state, tags: [...state.tags, action.tag] };
+    case 'EDIT_TAG':
+      httpEditTag(action.tag).then(() => {});
+      return {
+        ...state,
+        tags: state.tags.map((oldTag: Tag) => (
+          oldTag.id === action.tag.id ? action.tag : oldTag
+        )),
+      };
+    case 'REMOVE_TAG':
+      httpDeleteTag(action.tagId).then(() => {});
+      return {
+        ...state, tags: state.tags.filter((oldTag: Tag) => (oldTag.id !== action.tagId)),
+      };
     case 'ADD_NEW_TASK':
-      return {
-        ...state,
-        mainTaskArray: [...state.mainTaskArray, action.data],
-      };
-    case 'ADD_SUBTASK':
-      return {
-        ...state,
-        mainTaskArray: addSubtask(state.mainTaskArray, action.id, action.data),
-      };
+      return addTask(state, action.data);
     case 'EDIT_TASK':
       return editTask(state, action);
     case 'MARK_TASK':
-      return {
-        ...state,
-        mainTaskArray: markTask(state.mainTaskArray, action.id),
-      };
+      return { ...state, mainTaskArray: markTask(state.mainTaskArray, action.id) };
     case 'MARK_SUBTASK':
       return {
-        ...state,
-        mainTaskArray: markSubtask(state.mainTaskArray, action.id, action.subtask),
+        ...state, mainTaskArray: markSubtask(state.mainTaskArray, action.id, action.subtask),
       };
     case 'TOGGLE_TASK_PIN':
       return {
@@ -292,23 +363,18 @@ const rootReducer = (state: State = initialState, action: Action) => {
         ...state,
         mainTaskArray: removeSubtask(state.mainTaskArray, action.taskId, action.subtaskId),
       };
-    case 'EDIT_COLOR_CONFIG':
-    case 'REMOVE_COLOR_CONFIG':
-      return colorConfigReducer(state, action);
     case 'UNDO_DELETE_TASK':
-      if (state.undoCache.lastDeletedTask === null) {
-        return state;
-      }
-      return {
-        ...state,
-        mainTaskArray: [...state.mainTaskArray, state.undoCache.lastDeletedTask],
-        undoCache: { ...state.undoCache, lastDeletedTask: null },
-      };
+      return undoDeleteTask(state);
     case 'CLEAR_UNDO_DELETE_TASK':
       return {
-        ...state,
-        undoCache: { ...state.undoCache, lastDeletedTask: null },
+        ...state, undoCache: { ...state.undoCache, lastDeletedTask: null },
       };
+    case 'BACKEND_PATCH_NEW_TASK':
+      return backendPatchNewTask(state, action.tempNewTaskId, action.task);
+    case 'BACKEND_PATCH_EXISTING_TASK':
+      return backendPatchExistingTask(state, action.task);
+    case 'BACKEND_PATCH_LOADED_DATA':
+      return { ...state, tags: [defaultNoneTag, ...action.tags], mainTaskArray: action.tasks };
     default:
       return state;
   }

@@ -11,10 +11,13 @@ import type { SimpleMainTask } from './task-editors-types';
 import type { RemoveTaskAction } from '../../store/action-types';
 import { removeTask as removeTaskAction } from '../../store/actions';
 import styles from './TaskEditor.css';
+import { getNameByTagId } from '../../util/tag-util';
+import type { Tag } from '../../store/store-types';
 
 type Props = {|
   ...SimpleMainTask;
   +focused: boolean;
+  +tags: Tag[];
   +editTask: (task: SimpleMainTask) => void;
   +removeTask: (taskId: number, undoable?: boolean) => RemoveTaskAction;
   +onFocusChange: (focused: boolean) => void;
@@ -121,7 +124,7 @@ class InternalMainTaskEditor extends React.PureComponent<Props, State> {
     event.preventDefault();
     const name = event.currentTarget.value;
     const {
-      focused, editTask, removeTask, onFocusChange, ...task
+      focused, tags, editTask, removeTask, onFocusChange, ...task
     } = this.props;
     editTask({ ...task, name });
   };
@@ -131,7 +134,7 @@ class InternalMainTaskEditor extends React.PureComponent<Props, State> {
    */
   editComplete = (): void => {
     const {
-      focused, editTask, removeTask, onFocusChange, ...task
+      focused, tags, editTask, removeTask, onFocusChange, ...task
     } = this.props;
     editTask({ ...task, complete: !task.complete });
   };
@@ -141,7 +144,7 @@ class InternalMainTaskEditor extends React.PureComponent<Props, State> {
    */
   editInFocus = (): void => {
     const {
-      focused, editTask, removeTask, onFocusChange, ...task
+      focused, tags, editTask, removeTask, onFocusChange, ...task
     } = this.props;
     editTask({ ...task, inFocus: !task.inFocus });
   };
@@ -149,11 +152,11 @@ class InternalMainTaskEditor extends React.PureComponent<Props, State> {
   /**
    * Edit the tag of the task.
    *
-   * @param {string} tag the new tag.
+   * @param {number} tag the new tag id.
    */
-  editTaskTag = (tag: string): void => {
+  editTaskTag = (tag: number): void => {
     const {
-      focused, editTask, removeTask, onFocusChange, ...task
+      focused, tags, editTask, removeTask, onFocusChange, ...task
     } = this.props;
     editTask({ ...task, tag });
     this.setState({ doesShowTagEditor: false });
@@ -166,7 +169,7 @@ class InternalMainTaskEditor extends React.PureComponent<Props, State> {
    */
   editTaskDate = (dateString: string): void => {
     const {
-      focused, editTask, removeTask, onFocusChange, ...task
+      focused, tags, editTask, removeTask, onFocusChange, ...task
     } = this.props;
     editTask({ ...task, date: new Date(dateString) });
     this.setState({ doesShowCalendarEditor: false });
@@ -192,7 +195,7 @@ class InternalMainTaskEditor extends React.PureComponent<Props, State> {
    * Return the rendered header element.
    */
   renderHeader(): Node {
-    const { tag, date } = this.props;
+    const { tag, date, tags } = this.props;
     const {
       doesShowTagEditor, doesShowCalendarEditor,
     } = this.state;
@@ -213,7 +216,7 @@ class InternalMainTaskEditor extends React.PureComponent<Props, State> {
     return (
       <div className={headerClassNames}>
         <button type="button" className={styles.TaskEditorTag} onClick={this.toggleTagEditor}>
-          {tag}
+          {getNameByTagId(tags, tag)}
         </button>
         {tagPickerElementOpt}
         <span className={styles.TaskEditorFlexiblePadding} />

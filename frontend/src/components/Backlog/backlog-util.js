@@ -1,8 +1,9 @@
 // @flow strict
 
 import type { BacklogDisplayOption, ColoredTask, OneDayTask } from './backlog-types';
-import type { ColorConfig, SubTask, Task } from '../../store/store-types';
+import type { Tag, SubTask, Task } from '../../store/store-types';
 import { month2String } from '../../util/datetime-util';
+import { getColorByTagId } from '../../util/tag-util';
 
 export type DateToTaskMap = Map<string, Task[]>;
 
@@ -82,13 +83,13 @@ export function getBacklogHeaderTitle(
  * Returns an array of backlog days given the current props and the display option.
  *
  * @param {DateToTaskMap} date2TaskMap the map from a date to all the tasks in that day.
- * @param {ColorConfig} colors all the color config.
+ * @param {Tag[]} tags all the color config.
  * @param {BacklogDisplayOption} displayOption the display option.
  * @param {number} backlogOffset offset of displaying days.
  * @return {OneDayTask[]} an array of backlog days information.
  */
 export function buildDaysInBacklog(
-  date2TaskMap: DateToTaskMap, colors: ColorConfig,
+  date2TaskMap: DateToTaskMap, tags: Tag[],
   displayOption: BacklogDisplayOption, backlogOffset: number,
 ): OneDayTask[] {
   const { startDate, endDate } = computeStartAndEndDay(displayOption, backlogOffset);
@@ -99,7 +100,7 @@ export function buildDaysInBacklog(
     const tasksOnThisDay = date2TaskMap.get(date.toLocaleDateString()) || [];
     const tasks = tasksOnThisDay.map((task: Task) => {
       const { tag } = task;
-      return { ...task, color: colors[tag] };
+      return { ...task, color: getColorByTagId(tags, tag) };
     });
     days.push({ date, tasks });
   }

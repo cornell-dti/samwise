@@ -16,7 +16,7 @@ export type FloatingPosition = 'left' | 'right';
 export type SimpleMainTask = {|
   +id: number;
   +name: string;
-  +tag: string;
+  +tag: number;
   +date: Date;
   +complete: boolean;
   +inFocus: boolean;

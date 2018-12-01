@@ -64,10 +64,16 @@ Wrapper for all options only visible when adding task
   position:absolute;
   top:12px;
   height:20px;
-  width:50px;
+  width:100%;
   right:0;
-
+  padding-right:40px;
+  
+  text-align:right;
   display:none;
+  pointer-events:none;
+}
+.NewTaskActive *{
+  pointer-events:auto;
 }
 
 .OpenNewTask .NewTaskActive{
@@ -91,169 +97,6 @@ Wrapper for all options only visible when adding task
   z-index:0;
 }
 
-/*
-Class Picker
-*/
-.NewTaskClass{
-  position:absolute;
-  right:60px;
-  height:100%;
-  width:20px;
-}
-
-.NewTaskClass input[type="checkbox"]{
-  opacity:0;
-  width:22px;height:22px;
-  position:absolute;
-  left:-2px;
-  margin:0;
-  cursor:pointer;
-}
-
-
-
-.NewTaskClass label{
-  height:20px;
-  /*background:white;*/
-  min-width:20px;
-  /*border:1px black solid;*/
-  padding:0 3px 0 0;
-  display:inline-block;
-  cursor:pointer;
-
-  white-space:nowrap;
-  color:white;
-
-  position:absolute;
-  right:0px;
-  font-size:12px;
-  color:gray;
-}
-.NewTaskClass label span{
-  padding: 0 10px;
-  color:white;
-}
-
-.NewTaskClass label[data-curr="None"]{
-  background-color:white !important;
-  padding:0;
-}
-.NewTaskClass label span:empty, .NewTaskClass label[data-curr="None"] span{
-  display:none;
-}
-
-.NewTaskClass ul{
-  display:none;
-  position:absolute;
-  bottom:19px;left:-2px;
-  min-width:150px;
-  margin:0;
-  padding:0;
-  list-style:none;
-  
-  z-index:2;
-}
-
-.NewTaskClass li{
-  position:relative;
-
-  text-align:left;
-
-  padding:5px 10px 5px 30px;
-  border-left:1px black solid;
-  border-right:1px black solid;
-  border-bottom:1px gray solid;
-}
-
-.NewTaskClass li:first-child{
-  border-top:1px black solid;
-}
-.NewTaskClass li:last-child{
-  border-bottom:1px black solid;
-}
-
-.NewTaskClass li input[type="checkbox"]{
-  position:absolute;
-  width:100%;height:100%;
-  margin:0;padding:0;
-  left:0;top:0;
-  opacity:0;
-  cursor:pointer;
-}
-
-.NewTaskClass li::before{
-  content:'';
-  display:block;
-  position:absolute;
-  left:5px;top:5px;
-  width:20px;height:20px;
-  background-color:var(--custom-color);
-}
-
-
-.NewTaskClass input[type="checkbox"]:checked+label+ul{
-  display:block;
-}
-
-
-/*
-Date Picker
-*/
-.NewTaskDate{
-  width:20px;
-  position:absolute;
-  right:30px;
-  height:20px;
-  color:gray;
-}
-
-.NewTaskDate label{
-  /*background:white;
-  border:1px black solid;*/
-  height:20px;width:20px;
-  display:inline-block;
-  line-height:20px;
-  text-align:center;
-  cursor:pointer;
-  font-size:85%;
-}
-
-.NewTaskDate input[type="checkbox"]{
-  opacity:0;
-  pointer-events:none;
-}
-
-.NewTaskDate input[type="checkbox"]:checked+.NewTaskDatePick{
-  display:block;
-}
-
-
-
-.NewTaskDatePick{
-  width:300px;
-  position:absolute;
-  top:20px;
-  display:none;
-  left:0;
-  
-  z-index:2;
-}
-
-
-.CenterIcon{
-  text-align:center;
-  margin:0 !important;
-  line-height:20px;
-}
-
-
-
-
-
-
-
-
-
 
 
 
@@ -268,6 +111,7 @@ Date Picker
   padding:70px 0 10px 0;
   z-index:-1;
   box-shadow: 0px 2px 25px 5px #444;
+  text-align:center;
 }
 
 .NewTaskModal ul{
@@ -328,4 +172,30 @@ Date Picker
   font-size:30px;
   color:gray;
   bottom:8px;
+}
+
+
+
+
+.ResetButton{
+  position:absolute;
+  background:none;
+  border:none;
+  cursor:pointer;
+  bottom:-30px;
+  right:10px;
+  color:white;
+}
+.ResetButton:hover{
+  background:rgba(0,0,0,0.2);
+}
+.ResetButton:active{
+  background:none;
+}
+
+
+
+.Toast div{
+  background:#676767;
+  border-radius:5px;
 }
