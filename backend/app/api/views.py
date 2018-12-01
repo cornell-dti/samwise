@@ -475,13 +475,13 @@ def edit_task(task_id):
     if task is None:
         return jsonify(status='error. tag not found.')
 
-    task.content = data.get('content')
-    task.tag_id = data.get('tag_id')
-    task.start_date = data.get('start_date')
-    task.end_date = data.get('end_date')
-    task.completed = data.get('completed')
-    task.in_focus = data.get('in_focus')
-    task.parent_task = data.get('parent_task') or task.parent_task
-    task._order = data.get('_order') or task._order
+    task.content = data.get('content', task.content)
+    task.tag_id = data.get('tag_id', task.tag_id)
+    task.start_date = data.get('start_date', task.start_date)
+    task.end_date = data.get('end_date', task.end_date)
+    task.completed = data.get('completed', task.completed)
+    task.in_focus = data.get('in_focus', task.in_focus)
+    task.parent_task = data.get('parent_task', task.parent_task)
+    task._order = data.get('_order', task._order)
     db.session.commit()
     return jsonify(task=util.sqlalchemy_object_to_dict(task))
