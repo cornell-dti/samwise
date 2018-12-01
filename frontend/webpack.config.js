@@ -6,6 +6,9 @@ module.exports = {
   devServer: {
     contentBase: './dist',
     port: 3000,
+    proxy: {
+      '/api': 'http://localhost:5000',
+    },
   },
   mode: 'development',
   module: {

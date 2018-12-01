@@ -1,31 +1,42 @@
-import React, { Component } from 'react';
-import { connect } from 'react-redux';
+// @flow strict
+
+import React from 'react';
 import { Icon } from 'semantic-ui-react';
 import ClassPicker from '../ClassPicker/ClassPicker';
 import styles from './Picker.css';
+import type { State as StoreState, Tag } from '../../store/store-types';
+import { getColorByTagId, getNameByTagId } from '../../util/tag-util';
+import { simpleConnect } from '../../store/react-redux-util';
 
-const mapStateToProps = ({ classColorConfig, tagColorConfig }) => ({
-  colorConfig: { ...classColorConfig, ...tagColorConfig },
-});
+type OwnProps = {|
+  +onOpened: () => void;
+  +onTagChange: (number) => void;
+|};
+type SubscribedProps = {| +tags: Tag[] |};
+type Props = {| ...OwnProps; ...SubscribedProps |};
 
-class UnconClassPickerWrap extends Component {
+type State = {|
+  +tag: number;
+  +opened: boolean;
+  +reset: boolean;
+|};
+
+const mapStateToProps = ({ tags }: StoreState) => ({ tags });
+
+const initialState = { tag: -1, opened: false, reset: true };
+
+class ClassPickerWrap extends React.Component<Props, State> {
   constructor(props) {
     super(props);
-    this.state = this.initialState();
+    this.state = initialState;
   }
 
-  initialState = () => ({
-    tag: 'None',
-    opened: false,
-    reset: true,
-  })
-
-  resetState = (e) => {
+  resetState = (e?: SyntheticEvent<HTMLButtonElement>) => {
     if (e) {
       e.stopPropagation();
     }
-    this.setState(this.initialState());
-  }
+    this.setState(initialState);
+  };
 
   handleOpenClose = () => {
     const { opened } = this.state;
@@ -34,36 +45,37 @@ class UnconClassPickerWrap extends Component {
       const { onOpened } = this.props;
       onOpened();
     }
-  }
+  };
 
   close = () => {
     this.setState({ opened: false });
-  }
+  };
 
-  handleTagChange = (e) => {
-    if (e === 'None') {
+  handleTagChange = (tag: number) => {
+    if (tag === -1) {
       this.resetState();
     } else {
-      this.setState({ tag: e, opened: false, reset: false });
+      this.setState({ tag, opened: false, reset: false });
     }
     const { onTagChange } = this.props;
-    onTagChange(e);
-  }
+    onTagChange(tag);
+  };
 
   render() {
     const { tag, opened, reset } = this.state;
-    const { colorConfig } = this.props;
+    const { tags } = this.props;
     return (
       <div className={styles.Main}>
         <span
-          htmlFor="changeTagCheckbox"
-          ref={this.changeClass}
+          role="button"
+          tabIndex={-1}
           onClick={this.handleOpenClose}
-          style={{ background: reset ? 'none' : colorConfig[tag] }}
+          onKeyDown={() => {}}
+          style={{ background: reset ? 'none' : getColorByTagId(tags, tag) }}
           className={styles.LabelHack}
         >
           <span className={styles.TagDisplay} style={{ display: reset ? 'none' : 'inline' }}>
-            {tag}
+            {getNameByTagId(tags, tag)}
           </span>
           <Icon
             name="tag"
@@ -87,6 +99,7 @@ class UnconClassPickerWrap extends Component {
   }
 }
 
-
-const ClassPickerWrap = connect(mapStateToProps, null, null, { withRef: true })(UnconClassPickerWrap);
-export default ClassPickerWrap;
+const ConnectedClassPickerWrap = simpleConnect<OwnProps, SubscribedProps, Props>(
+  mapStateToProps,
+)(ClassPickerWrap);
+export default ConnectedClassPickerWrap;

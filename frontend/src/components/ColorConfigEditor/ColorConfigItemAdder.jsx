@@ -3,19 +3,19 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { GithubPicker } from 'react-color';
-import { editColorConfig as editColorConfigAction } from '../../store/actions';
+import { addTag as addTagAction } from '../../store/actions';
+import type { AddTagAction } from '../../store/action-types';
 import styles from './ColorConfigItemAdder.css';
-import type { ColorConfigEditAction } from '../../store/action-types';
+import type { Tag } from '../../store/store-types';
+import { randomId } from '../../util/general-util';
 
 type Props = {|
-  editColorConfig: (tag: string, color: string, classOrTag: string) => ColorConfigEditAction
+  addTag: (tag: Tag) => AddTagAction
 |};
 
 type State = {| tagInput: string, colorInput: string |};
 
-const actionCreators = {
-  editColorConfig: editColorConfigAction,
-};
+const actionCreators = { addTag: addTagAction };
 
 class ColorConfigItemAdder extends React.Component<Props, State> {
   constructor(props: Props) {
@@ -42,8 +42,10 @@ class ColorConfigItemAdder extends React.Component<Props, State> {
   checkEnterStatus = (e) => {
     if (e.key === 'Enter') {
       const { tagInput, colorInput } = this.state;
-      const { editColorConfig } = this.props;
-      editColorConfig(tagInput, colorInput, 'class');
+      const { addTag } = this.props;
+      addTag({
+        id: randomId(), type: 'class', name: tagInput, color: colorInput,
+      });
     }
   };
 

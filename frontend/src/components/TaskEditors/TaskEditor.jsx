@@ -3,13 +3,14 @@
 import React from 'react';
 import type { Node } from 'react';
 import type {
-  ColorConfig, State as StoreState, SubTask, Task,
+  Tag, State as StoreState, SubTask, Task,
 } from '../../store/store-types';
 import InternalMainTaskEditor from './InternalMainTaskEditor';
 import InternalSubTaskEditor from './InternalSubTaskEditor';
 import type { SimpleMainTask } from './task-editors-types';
 import styles from './TaskEditor.css';
 import { simpleConnect } from '../../store/react-redux-util';
+import { getColorByTagId } from '../../util/tag-util';
 
 type OwnProps = {|
   +initialTask: Task; // The initial task to edit, as a starting point.
@@ -21,7 +22,7 @@ type OwnProps = {|
   onBlur?: (event: SyntheticFocusEvent<HTMLElement>) => void;
   refFunction?: (HTMLDivElement | null) => void; // used to get the div DOM element.
 |};
-type SubscribedProps = {| +colors: ColorConfig; |};
+type SubscribedProps = {| +tags: Tag[]; |};
 type Props = {| ...OwnProps; ...SubscribedProps |};
 
 type State = {|
@@ -31,9 +32,7 @@ type State = {|
   +mainTaskInputFocused: boolean;
 |};
 
-const mapStateToProps = ({ classColorConfig, tagColorConfig }: StoreState): SubscribedProps => ({
-  colors: { ...classColorConfig, ...tagColorConfig },
-});
+const mapStateToProps = ({ tags }: StoreState): SubscribedProps => ({ tags });
 
 /**
  * The component of an standalone task editor. It is designed to be wrapped inside another
@@ -43,9 +42,11 @@ const mapStateToProps = ({ classColorConfig, tagColorConfig }: StoreState): Subs
 class TaskEditor extends React.PureComponent<Props, State> {
   constructor(props: Props) {
     super(props);
-    const { initialTask, colors } = props;
+    const { initialTask, tags } = props;
     this.state = {
-      ...initialTask, backgroundColor: colors[initialTask.tag], mainTaskInputFocused: true,
+      ...initialTask,
+      backgroundColor: getColorByTagId(tags, initialTask.tag),
+      mainTaskInputFocused: true,
     };
   }
 
@@ -53,9 +54,11 @@ class TaskEditor extends React.PureComponent<Props, State> {
     // This methods ensure that the stuff inside the editor is always the latest from store.
     // Since we implement task in an immutable data structure, a shallow equality comparison is
     // enough.
-    const { initialTask } = this.props;
-    if (initialTask !== nextProps.initialTask) {
-      this.setState({ ...nextProps.initialTask });
+    const { initialTask, tags } = this.props;
+    if (initialTask !== nextProps.initialTask || tags !== nextProps.tags) {
+      const nextInitialTask = nextProps.initialTask;
+      const backgroundColor = getColorByTagId(nextProps.tags, nextInitialTask.tag);
+      this.setState({ ...nextInitialTask, backgroundColor });
     }
   }
 
@@ -120,8 +123,8 @@ class TaskEditor extends React.PureComponent<Props, State> {
    * @param {SimpleMainTask} task the latest edited main task.
    */
   editMainTask = (task: SimpleMainTask): void => {
-    const { colors } = this.props;
-    this.setState({ ...task, backgroundColor: colors[task.tag] }, this.autoSave);
+    const { tags } = this.props;
+    this.setState({ ...task, backgroundColor: getColorByTagId(tags, task.tag) }, this.autoSave);
   };
 
   /**
@@ -157,7 +160,7 @@ class TaskEditor extends React.PureComponent<Props, State> {
 
   render(): Node {
     const {
-      autoSave, className, onFocus, onBlur, refFunction,
+      autoSave, className, tags, onFocus, onBlur, refFunction,
     } = this.props;
     const { backgroundColor, mainTaskInputFocused, ...task } = this.state;
     const {
@@ -179,6 +182,7 @@ class TaskEditor extends React.PureComponent<Props, State> {
       >
         <InternalMainTaskEditor
           {...mainTask}
+          tags={tags}
           focused={!readOnly && mainTaskInputFocused}
           editTask={this.editMainTask}
           onFocusChange={f => this.setState({ mainTaskInputFocused: f })}

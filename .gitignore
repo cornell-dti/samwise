@@ -144,6 +144,7 @@ ENV/
 
 # Environment variable script
 run_server
+run_db_viewer
 
 # Service account JSON
 serviceAccount.json

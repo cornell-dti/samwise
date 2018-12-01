@@ -114,8 +114,8 @@ input.TaskEditorFlexibleInput:focus-within::placeholder {
 .TaskEditorTagEditor {
   position: absolute;
   right: 0;
-  left: 50px;
-  top: 0;
+  left: 8px;
+  top: 4px;
   z-index: 4;
   color: #333333;
   background: white;

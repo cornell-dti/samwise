@@ -3,19 +3,20 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
 import { GithubPicker } from 'react-color';
-import { editColorConfig as editColorConfigAction } from '../../store/actions';
-import type { ColorConfigEditAction } from '../../store/action-types';
+import { editTag as editTagAction } from '../../store/actions';
+import type { EditTagAction } from '../../store/action-types';
+import type { Tag } from '../../store/store-types';
 
 type Props = {|
-  tag: string,
-  color: string,
-  editColorConfig: (tag: string, color: string) => ColorConfigEditAction,
+  tag: Tag,
+  editTag: (tag: Tag) => EditTagAction,
 |};
 
 function ColorEditor(props: Props) {
-  const { tag, color, editColorConfig } = props;
+  const { tag, editTag } = props;
+  const { color } = tag;
   const handleStateComplete = (c) => {
-    editColorConfig(tag, c.hex);
+    editTag({ ...tag, color: c.hex });
   };
   return (
     <div>
@@ -24,5 +25,5 @@ function ColorEditor(props: Props) {
   );
 }
 
-const ConnectedColorEditor = connect(null, { editColorConfig: editColorConfigAction })(ColorEditor);
+const ConnectedColorEditor = connect(null, { editTag: editTagAction })(ColorEditor);
 export default ConnectedColorEditor;

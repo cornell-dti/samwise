@@ -43,6 +43,7 @@ class Task(Base):
     __tablename__ = 'tasks'
 
     task_id = db.Column(db.BigInteger, primary_key=True)
+    user_id = db.Column(db.String, nullable=False)
     content = db.Column(db.String, nullable=False)
     start_date = db.Column(db.DateTime, nullable=False)
     end_date = db.Column(db.DateTime, nullable=False)
@@ -50,10 +51,12 @@ class Task(Base):
     parent_task = db.Column(db.BigInteger)
     _order = db.Column(db.Integer, nullable=False)
     completed = db.Column(db.Boolean, nullable=False)
+    in_focus = db.Column(db.Boolean, nullable=False)
     deleted = db.Column(db.Boolean, nullable=False)
 
-    def __init__(self, content=None, start_date=None, end_date=None, tag_id=None, parent_task=None, _order=None,
-                 completed=False, deleted=False):
+    def __init__(self, user_id=None, content=None, start_date=None, end_date=None, tag_id=None, parent_task=None, _order=None,
+                 completed=False, in_focus=False, deleted=False):
+        self.user_id = user_id
         self.content = content
         self.start_date = start_date
         self.end_date = end_date
@@ -61,7 +64,8 @@ class Task(Base):
         self.parent_task = parent_task
         self._order = _order
         self.completed = completed
-        self.deleted = False
+        self.in_focus = in_focus
+        self.deleted = deleted
 
 
 action_type_enum_elements = ('check', 'uncheck', 'add', 'delete')
