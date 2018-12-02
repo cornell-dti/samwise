@@ -51,6 +51,7 @@ def new_tag():
     {
         "name": "Tag name",
         "color": "#ffffff"
+        "isClass": True | False
     }
 
     Output format:
@@ -59,6 +60,7 @@ def new_tag():
         "tag_name": "name",
         "color": "#ffffff",
         "_order": order,
+        "isClass": True | False
     }
     """
     data = request.get_json(force=True)
@@ -69,12 +71,13 @@ def new_tag():
         return redirect(url_for('api.login', redirect=request.path))
     tag_name = data.get('name')
     color = data.get('color')
-    if type(tag_name) != str or type(color) != str:
+    if type(tag_name) != str or type(color) != str or type(tag_name) != 'unicode' or type(color) != 'unicode':
         return jsonify(error='tag name and color must be strings'), 400
+    isClass = data.get('class')
     last_tag = Tag.query.filter(Tag.user_id == user_id).order_by(
         Tag._order.desc()).first()
     order = last_tag._order + 1 if last_tag else 0
-    tag = Tag(user_id=user_id, tag_name=tag_name, color=color, _order=order,
+    tag = Tag(user_id=user_id, tag_name=tag_name, color=color, _order=order, isClass=isClass,
               completed=False)
     db.session.add(tag)
     db.session.commit()
@@ -100,6 +103,28 @@ def get_tags():
     if not user_id:
         return redirect(url_for('api.login', redirect=request.path))
     tags = Tag.query.filter(Tag.user_id == user_id).all()
+    tags_json = util.table_to_json(tags)
+    return jsonify(tags_json)
+
+@api.route('/tags/classes', methods=['GET'])
+def get_classes():
+    """
+    Returns all classes.
+
+    Output format:
+    List of tags in form:
+
+    {
+        "user_id": id number,
+        "tag_name": "name",
+        "color": "#ffffff",
+        "_order": order,
+    }
+    """
+    user_id = get_user_id(request.args.get('token'))
+    if not user_id:
+        return redirect(url_for('api.login', redirect=request.path))
+    tags = Tag.query.filter(Tag.user_id == user_id).filter(Tag.isClass is True).all()
     tags_json = util.table_to_json(tags)
     return jsonify(tags_json)
 
