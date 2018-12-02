@@ -22,7 +22,7 @@ class ColorConfigItemAdder extends React.Component<Props, State> {
     super(props);
     this.state = {
       tagInput: '',
-      colorInput: 'red',
+      colorInput: '#56d9c1',
     };
   }
 
@@ -46,7 +46,7 @@ class ColorConfigItemAdder extends React.Component<Props, State> {
       addTag({
         id: randomId(), type: 'class', name: tagInput, color: colorInput,
       });
-    this.setState(state => ({ ...state, tagInput: '' }));
+    this.setState(state => ({ ...state, tagInput: '', colorInput: '#56d9c1' }));
     }
   };
 
