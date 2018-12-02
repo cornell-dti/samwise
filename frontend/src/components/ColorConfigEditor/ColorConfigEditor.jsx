@@ -34,7 +34,7 @@ export default function ColorConfigEditor(): Node {
         <p>Auto Import Exams</p>
         <div className={styles.ImportBtn}>
           Click the following button to automatically import the prelims and finals
-          from your registered classes into your calendar.
+          from your registered classes into your planner.
           <br />
           <button type="button">Import</button>
         </div>
