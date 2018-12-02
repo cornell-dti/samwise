@@ -1,6 +1,7 @@
 // @flow strict
 
 import * as React from 'react';
+import { Icon } from 'semantic-ui-react';
 import TagColorConfigEditor from '../ColorConfigEditor/ColorConfigEditor';
 import styles from './SettingsButtonStyles.css';
 
@@ -26,14 +27,20 @@ export default class SettingsButton extends React.Component<{}, State> {
     const { showSettings } = this.state;
     return (
       <div style={{ display: 'inline-block' }}>
-        <button type="submit" onClick={this.displayModal}>Settings</button>
+        <button type="submit" onClick={this.displayModal}>
+          <Icon name="setting" />
+        </button>
         {
           showSettings && (
             <div className={styles.settingsModal}>
+              <span className={styles.changesSaved}>All changes saved</span>
               <button className={styles.closeButton} type="submit" onClick={this.closeModal}>
-                Close
+                <Icon name="close" />
               </button>
-              <TagColorConfigEditor />
+              <section className={styles.contentWrap}>
+                <h2>Settings</h2>
+                <TagColorConfigEditor />
+              </section>
             </div>
           )
         }

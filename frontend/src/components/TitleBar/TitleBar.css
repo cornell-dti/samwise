@@ -32,7 +32,3 @@
   cursor:pointer;
   line-height:32px;
 }
-
-.Links button[data-sel="sel"]{
-  font-weight:bold;
-}

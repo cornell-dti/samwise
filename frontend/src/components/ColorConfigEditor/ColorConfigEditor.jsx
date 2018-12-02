@@ -16,15 +16,41 @@ import styles from './ColorConfigEditor.css';
 export default function ColorConfigEditor(): Node {
   return (
     <div>
-      <ColorConfigItemAdder />
-      <div>
-        <p className={styles.classTags}>Class Tags</p>
-        <ClassColorConfigItemList />
+
+      <div className={styles.SettingsSection}>
+        <p>Add Classes</p>
+        <div>
+          <ColorConfigItemAdder />
+          <small>Add classes to get upcoming prelims automatically added to your planner</small>
+        </div>
       </div>
-      <div>
+      <div className={styles.SettingsSection}>
+        <p>Class Tags</p>
+        <div>
+          <ClassColorConfigItemList />
+        </div>
+      </div>
+      <div className={styles.SettingsSection}>
+        <p>Auto Import Exams</p>
+        <div className={styles.ImportBtn}>
+          Click the following button to automatically import the prelims and finals
+          from your registered classes into your planner.
+          <br />
+          <button type="button">Import</button>
+        </div>
+      </div>
+      <div className={styles.SettingsSection}>
         <p className={styles.otherTags}>Other Tags</p>
-        <TagColorConfigItemList />
+        <div>
+          <TagColorConfigItemList />
+        </div>
       </div>
+      <div className={styles.SettingsSection}>
+        <div className={styles.ImportBtn} style={{ paddingTop: '15px' }}>
+          <button type="button" className={styles.SignBtn}>Sign Out</button>
+        </div>
+      </div>
+
     </div>
   );
 }

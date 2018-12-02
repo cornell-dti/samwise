@@ -2,7 +2,6 @@
 
 import React from 'react';
 import type { Node } from 'react';
-import { List } from 'semantic-ui-react';
 import ColorConfigItem from './ColorConfigItem';
 import type { State, Tag } from '../../store/store-types';
 import { simpleConnect } from '../../store/react-redux-util';
@@ -15,9 +14,9 @@ const mapStateToProps = ({ tags }: State): Props => ({
 
 function ClassColorConfigItemList({ tags }: Props): Node {
   return (
-    <List divided relaxed style={{ width: '500px', display: 'inline-block' }}>
+    <ul style={{ width: '100%', display: 'inline-block', padding: 0, margin:0, listStyle: 'none' }}>
       {tags.map(tag => (<ColorConfigItem key={tag.id} tag={tag} />))}
-    </List>
+    </ul>
   );
 }
 
