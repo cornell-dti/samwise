@@ -28,7 +28,10 @@ html = '''
     firebase.auth().onAuthStateChanged(function(user) {
         if (user) {
             firebase.auth().currentUser.getIdToken(true).then(function(idToken) {
-                window.location.replace(window.location + '&token=' + idToken);
+                if (window.location.toString().indexOf('?') !== -1)
+                    window.location.replace(window.location + '&token=' + idToken);
+                else
+                    window.location.replace(window.location + '?token=' + idToken);
             }).catch(function(error) {
                 console.log(error);
             });    

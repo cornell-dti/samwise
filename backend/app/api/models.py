@@ -36,7 +36,7 @@ class Tag(Base):
         self.color = color
         self._order = _order
         self.completed = completed
-        self.deleted = False
+        self.deleted = deleted
 
 
 class Task(Base):
