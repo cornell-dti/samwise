@@ -1,9 +1,16 @@
 export const colMap = {
-  '#56d9c1': 'light blue       ',
+  /*'#56d9c1': 'light blue       ',
   '#5ed3e9': 'seafoam          ',
   '#ff8a8a': 'coral            ',
   '#5f53ff': 'dark blue        ',
-  '#740794': 'purple           ',
+  '#740794': 'purple           ',*/
+  '#7ed321': 'green     ',
+  '#b92424': 'red       ',
+  '#5ed3e9': 'light blue',
+  '#459ae5': 'dark blue ',
+  '#9d4aa9': 'purple    ',
+  '#ff8a8a': 'pink      ',
+  '#56d9c1': 'seafoam   ',
 };
 
 
