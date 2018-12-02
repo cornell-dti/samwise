@@ -71,7 +71,8 @@ def new_tag():
         return redirect(url_for('api.login', redirect=request.path))
     tag_name = data.get('name')
     color = data.get('color')
-    if type(tag_name) != str or type(color) != str or type(tag_name) != 'unicode' or type(color) != 'unicode':
+    if not(type(tag_name) == str or type(tag_name) == 'unicode') \
+            or not(type(color) == str or type(color) == 'unicode'):
         return jsonify(error='tag name and color must be strings'), 400
     isClass = data.get('class')
     last_tag = Tag.query.filter(Tag.user_id == user_id).order_by(
@@ -124,7 +125,7 @@ def get_classes():
     user_id = get_user_id(request.args.get('token'))
     if not user_id:
         return redirect(url_for('api.login', redirect=request.path))
-    tags = Tag.query.filter(Tag.user_id == user_id).filter(Tag.isClass is True).all()
+    tags = Tag.query.filter(Tag.isClass is True).all()
     tags_json = util.table_to_json(tags)
     return jsonify(tags_json)
 
