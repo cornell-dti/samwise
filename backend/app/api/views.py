@@ -73,7 +73,8 @@ def new_tag():
     color = data.get('color')
     if not(type(tag_name) == str or type(tag_name) == 'unicode') \
             or not(type(color) == str or type(color) == 'unicode'):
-        return jsonify(error='tag name and color must be strings'), 400
+        return jsonify(error='tag name and color must be strings. Current color type is '
+                             + type(color) + '. Current tag name types is ' + type(tag_name)), 400
     isClass = data.get('class')
     last_tag = Tag.query.filter(Tag.user_id == user_id).order_by(
         Tag._order.desc()).first()
