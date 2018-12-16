@@ -1,29 +1,62 @@
-import React, { Component } from 'react';
-import { connect } from 'react-redux';
+// @flow strict
+
+import React from 'react';
+import type { Node } from 'react';
 import { Icon } from 'semantic-ui-react';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { addTask, removeTask } from '../../store/actions';
 import styles from './NewTask.css';
 import ToastUndo from './ToastUndo';
 import ClassPickerWrap from './ClassPickerWrap';
 import CalPicker from './CalPicker';
 import FocusPicker from './FocusPicker';
+import { randomId } from '../../util/general-util';
+import { fullConnect } from '../../store/react-redux-util';
+import type { Task, State as StoreState, SubTask } from '../../store/store-types';
+import { addTask as addTaskAction, removeTask as removeTaskAction } from '../../store/actions';
+import type { AddNewTaskAction, RemoveTaskAction } from '../../store/action-types';
 
+type OwnProps = {||};
+type SubscribedProps = {| +mainTaskArray: Task[]; |};
+type ActionProps = {|
+  +addTask: (task: Task) => AddNewTaskAction;
+  +removeTask: (taskId: number) => RemoveTaskAction;
+|}
+type Props = {| ...OwnProps; ...SubscribedProps; ...ActionProps |};
+
+type State = {|
+  ...Task;
+  +opened: boolean;
+  +lastDel: number;
+  +lastToast: number;
+|};
+
+/**
+ * The placeholder text in the main task input box.
+ * @type {string}
+ */
 const placeholderText = 'What do you have to do?';
-
-const mapDispatchToProps = dispatch => ({
-  addTask: e => dispatch(addTask(e)),
-  removeTask: e => dispatch(removeTask(e)),
+/**
+ * Generate the initial state.
+ * @return {State}
+ */
+const initialState = () => ({
+  id: randomId(),
+  name: '',
+  tag: -1, // the id of the None tag.
+  date: new Date(),
+  complete: false,
+  inFocus: false,
+  subtaskArray: [],
+  opened: false,
+  lastDel: -1,
+  lastToast: -1,
 });
 
-const mapStateToProps = ({ mainTaskArray }) => ({ mainTaskArray });
-
-class UnconNewTaskComponent extends Component {
+class NewTaskComponent extends React.Component<Props, State> {
   constructor(props) {
     super(props);
-    this.state = this.initialState();
-    this.changeClass = React.createRef();
+    this.state = initialState();
     this.addTask = React.createRef();
     this.addTaskModal = React.createRef();
     this.blockModal = React.createRef();
@@ -33,64 +66,52 @@ class UnconNewTaskComponent extends Component {
     this.pinPicker = React.createRef();
   }
 
-  initialState = () => ({
-    name: '',
-    id: (10 * new Date()) + Math.floor(10 * Math.random()),
-    tag: -1,
-    date: new Date(),
-    complete: false,
-    subtaskArray: [],
-    lastDel: -1,
-    lastToast: -1,
-    inFocus: false,
-  });
-
   openNewTask = () => {
+    // this.setState({ opened: true });
     this.addTaskModal.current.style.display = 'block';
     this.blockModal.current.style.display = 'block';
     this.addTask.current.placeholder = '';
   };
 
   closeNewTask = () => {
+    // this.setState({ opened: false });
     this.addTaskModal.current.style.display = '';
     this.blockModal.current.style.display = '';
     this.addTask.current.placeholder = placeholderText;
     this.addTask.current.blur();
   };
 
-  handleSave = (e) => {
-    if (e) {
+  /**
+   * Handle on potential save.
+   *
+   * @param e the event that signals a potential save action.
+   */
+  handleSave = (e?: SyntheticEvent<HTMLElement>) => {
+    if (e != null) {
       e.preventDefault();
     }
-
     const {
-      name, subtaskArray, date, lastToast,
+      opened, lastToast, lastDel, ...task
     } = this.state;
     const { addTask } = this.props;
-
+    const {
+      id, name, date, subtaskArray,
+    } = task;
     if (name === '') {
       return;
     }
-
-    const newSubtaskArr = subtaskArray.filter(
-      el => el.name !== '',
-    ).map(
-      (el, i) => ({ ...el, id: i }),
-    );
-
-
-    const toAdd = { ...this.state, subtaskArray: newSubtaskArr };
-    delete toAdd.lastDel;
-    delete toAdd.lastToast;
-    addTask(toAdd);
-    const lastId = toAdd.id;
-
-    const taskMsg = 'Added "' + name + '" (' + date.toLocaleDateString('en-US', {
+    // Add the task to the store.
+    addTask({
+      ...task,
+      subtaskArray: subtaskArray
+        .filter(subTask => subTask.name !== '')
+        .map((subTask, index) => ({ ...subTask, id: index })),
+    });
+    // Emit a new toast.
+    const taskMsg = `Added "${name}" (${date.toLocaleDateString('en-US', {
       day: 'numeric',
-      month: 'numeric'
-    }) + ')';
-
-
+      month: 'numeric',
+    })})`;
     toast.dismiss(lastToast);
     const newToast = toast.success(
       <ToastUndo dispText={taskMsg} changeCallback={this.handleUndo} />, {
@@ -102,12 +123,12 @@ class UnconNewTaskComponent extends Component {
         draggable: true,
       },
     );
-
-    this.setState({ ...this.initialState(), lastDel: lastId, lastToast: newToast });
+    // Reset the state.
+    this.setState({ ...initialState(), lastDel: id, lastToast: newToast });
     this.closeNewTask();
     this.datePicker.current.resetState();
     this.pinPicker.current.resetState();
-    // this.tagPicker.current.wrappedInstance.resetState();
+    this.tagPicker.current.wrappedInstance.resetState();
   };
 
   handleUndo = (e) => {
@@ -119,62 +140,53 @@ class UnconNewTaskComponent extends Component {
     const taskId = lastDel;
     if (taskId === -1) { return; }
 
-    const lastTask = mainTaskArray.find(e => e.id === taskId);
+    const lastTask = mainTaskArray.find(task => task.id === taskId);
     removeTask(taskId);
-
     this.setState({ ...lastTask, lastDel: -1 });
     this.addTask.current.focus();
-  }
+  };
 
+  editTaskName = (e: SyntheticEvent<HTMLInputElement>) => {
+    this.setState({ name: e.currentTarget.value });
+  };
 
-  handleTaskNameChange = (e) => {
-    this.setState({ name: e.target.value });
-  }
-
-
-  handleTagChange = (e) => {
+  editTag = (tag: number) => {
+    this.setState({ tag });
     this.addTask.current.focus();
-    this.setState({ tag: e });
-  }
+  };
 
-  handleDateChange = (e) => {
-    this.setState({ date: e });
+  editDate = (date: Date) => {
+    this.setState({ date });
     this.addTask.current.focus();
-  }
+  };
 
-  handlePinChange = (e) => {
-    this.setState({ inFocus: e });
+  togglePin = (inFocus: boolean) => {
+    this.setState({ inFocus });
     this.addTask.current.focus();
-  }
+  };
 
-
-  handleAddSubtask = (e) => {
-    if (e.target.value === '') {
+  addNewSubTask = (e) => {
+    const newSubTaskName = e.target.value;
+    if (newSubTaskName === '') {
       return;
     }
-
-    const { subtaskArray } = this.state;
-
-    const newSubtask = {
-      id: subtaskArray.length,
-      name: e.target.value,
-      complete: false,
-    };
-
-    this.setState({
-      subtaskArray: [...subtaskArray, newSubtask],
+    this.setState(({ subtaskArray }: State) => {
+      const newSubtask: SubTask = {
+        id: subtaskArray.length,
+        name: newSubTaskName,
+        complete: false,
+        inFocus: false,
+      };
+      return {
+        subtaskArray: [...subtaskArray, newSubtask],
+      };
     }, () => {
       const liList = this.subtaskList.current.getElementsByTagName('LI');
       const lastItem = liList[liList.length - 1];
       lastItem.getElementsByTagName('INPUT')[0].focus();
     });
-
     e.target.value = '';
-  }
-
-  forceClassChangeOpen = () => {
-    this.openClassChange.current.click();
-  }
+  };
 
   handleChangeSubtask = (e, toSave) => {
     const subtaskId = parseInt(e.target.parentElement.getAttribute('data-subtaskid'), 10);
@@ -190,42 +202,31 @@ class UnconNewTaskComponent extends Component {
     } else {
       this.setState({ subtaskArray: newSubtaskArr });
     }
-  }
+  };
 
-  handleDelSubtask = (e) => {
+  deleteSubTask = (subtaskId: number) => (e: SyntheticEvent<HTMLButtonElement>) => {
     e.preventDefault();
-
     const { subtaskArray } = this.state;
-
-    const subtaskId = parseInt(e.target.parentElement.parentElement.getAttribute('data-subtaskid'), 10);
-    const newSubtaskArr = subtaskArray.filter(
-      el => el.id !== subtaskId,
-    ).map(
-      (el, i) => ({ ...el, id: i }),
-    );
-
-    this.setState({ subtaskArray: newSubtaskArr });
-  }
-
+    this.setState({ subtaskArray: subtaskArray.filter(el => el.id !== subtaskId) });
+  };
 
   closeCal = () => {
     this.datePicker.current.close();
-  }
+  };
 
   closeTag = () => {
     this.tagPicker.current.wrappedInstance.close();
-  }
-
+  };
 
   resetTask = () => {
     const { lastDel, lastToast } = this.state;
-    this.setState({ ...this.initialState(), lastDel, lastToast });
+    this.setState({ ...initialState(), lastDel, lastToast });
     this.addTask.current.focus();
-  }
+  };
 
-
-  render() {
-    const { name, subtaskArray } = this.state;
+  render(): Node {
+    const { name, subtaskArray, opened } = this.state;
+    // const toggleDisplayStyle = opened ? { display: 'block' } : {};
     return (
       <div>
         <div
@@ -241,32 +242,39 @@ class UnconNewTaskComponent extends Component {
         >
           <input
             value={name}
-            onChange={this.handleTaskNameChange}
+            onChange={this.editTaskName}
             type="text"
             className={styles.NewTaskComponent}
-            placeholder="What do you have to do?"
+            placeholder={opened ? '' : placeholderText}
             ref={this.addTask}
             required
           />
           <div className={styles.NewTaskActive} ref={this.addTaskModal}>
-
-            <FocusPicker onPinChange={this.handlePinChange} ref={this.pinPicker} />
-            <ClassPickerWrap onTagChange={this.handleTagChange} ref={this.tagPicker}
-                             onOpened={this.closeCal} />
-            <CalPicker onDateChange={this.handleDateChange} ref={this.datePicker}
-                       onOpened={this.closeTag} />
-
+            <FocusPicker ref={this.pinPicker} onPinChange={this.togglePin} />
+            <ClassPickerWrap
+              ref={this.tagPicker}
+              onTagChange={this.editTag}
+              onOpened={this.closeCal}
+            />
+            <CalPicker
+              ref={this.datePicker}
+              onDateChange={this.editDate}
+              onOpened={this.closeTag}
+            />
             <button type="submit" className={styles.SubmitNewTask}>
-              <Icon color="black" name="arrow alternate circle right outline"
-                    className={styles.CenterIcon} />
+              <Icon
+                name="arrow alternate circle right outline"
+                color="black"
+                className={styles.CenterIcon}
+              />
             </button>
-
             <div className={styles.NewTaskModal}>
               <ul ref={this.subtaskList}>
-                {subtaskArray.map(
-                  subtaskObj => (
+                {
+                  subtaskArray.map((subtaskObj: SubTask) => (
                     <li key={subtaskObj.name + Math.random()} data-subtaskid={subtaskObj.id}>
-                      <button type="button" onClick={this.handleDelSubtask}><Icon name="delete" />
+                      <button type="button" onClick={this.deleteSubTask(subtaskObj.id)}>
+                        <Icon name="delete" />
                       </button>
                       <input
                         onBlur={this.handleChangeSubtask}
@@ -276,23 +284,26 @@ class UnconNewTaskComponent extends Component {
                         type="text"
                         defaultValue={subtaskObj.name}
                       />
-                    </li>),
-                )}
+                    </li>
+                  ))
+                }
               </ul>
               <Icon name="plus" />
-              <input type="text" placeholder="Add a Subtask" onKeyUp={this.handleAddSubtask} />
-              <button type="button" className={styles.ResetButton} onClick={this.resetTask}>Clear
+              <input type="text" placeholder="Add a Subtask" onKeyUp={this.addNewSubTask} />
+              <button type="button" className={styles.ResetButton} onClick={this.resetTask}>
+                Clear
               </button>
             </div>
-
           </div>
         </form>
-
         <ToastContainer className={styles.Toast} />
       </div>
     );
   }
 }
 
-const NewTaskComponent = connect(mapStateToProps, mapDispatchToProps)(UnconNewTaskComponent);
-export default NewTaskComponent;
+const ConnectedNewTaskComponent = fullConnect<OwnProps, SubscribedProps, ActionProps>(
+  ({ mainTaskArray }: StoreState) => ({ mainTaskArray }),
+  { addTask: addTaskAction, removeTask: removeTaskAction },
+)(NewTaskComponent);
+export default ConnectedNewTaskComponent;
