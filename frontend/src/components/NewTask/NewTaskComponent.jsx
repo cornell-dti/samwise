@@ -188,19 +188,22 @@ class NewTaskComponent extends React.Component<Props, State> {
     e.target.value = '';
   };
 
-  handleChangeSubtask = (e, toSave) => {
-    const subtaskId = parseInt(e.target.parentElement.getAttribute('data-subtaskid'), 10);
-
+  editSubTask = (
+    subtaskId: number, doSave: boolean, e: SyntheticEvent<HTMLInputElement>,
+  ) => {
     const { subtaskArray } = this.state;
-
-    const newSubtaskArr = subtaskArray.map(
-      el => (el.id === subtaskId ? { ...el, name: e.target.value } : el),
+    const newSubtaskArr = subtaskArray.map(el => (
+      el.id === subtaskId ? { ...el, name: e.currentTarget.value } : el
+    ));
+    this.setState(
+      { subtaskArray: newSubtaskArr },
+      doSave ? this.handleSave : () => {},
     );
+  };
 
-    if (toSave) {
-      this.setState({ subtaskArray: newSubtaskArr }, () => this.handleSave());
-    } else {
-      this.setState({ subtaskArray: newSubtaskArr });
+  submitSubTask = (subtaskId: number) => (e: SyntheticKeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter') {
+      this.editSubTask(subtaskId, true, e);
     }
   };
 
@@ -272,17 +275,15 @@ class NewTaskComponent extends React.Component<Props, State> {
               <ul ref={this.subtaskList}>
                 {
                   subtaskArray.map((subtaskObj: SubTask) => (
-                    <li key={subtaskObj.name + Math.random()} data-subtaskid={subtaskObj.id}>
+                    <li key={subtaskObj.name + Math.random()}>
                       <button type="button" onClick={this.deleteSubTask(subtaskObj.id)}>
                         <Icon name="delete" />
                       </button>
                       <input
-                        onBlur={this.handleChangeSubtask}
-                        onKeyDown={
-                          (e) => { if (e.keyCode === 13) { this.handleChangeSubtask(e, true); } }
-                        }
                         type="text"
                         defaultValue={subtaskObj.name}
+                        onBlur={e => this.editSubTask(subtaskObj.id, false, e)}
+                        onKeyDown={this.submitSubTask(subtaskObj.id)}
                       />
                     </li>
                   ))
