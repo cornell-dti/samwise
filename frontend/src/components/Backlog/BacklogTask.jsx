@@ -124,13 +124,13 @@ class BacklogTask extends React.PureComponent<Props> {
    * @return {Node} the information for main task.
    */
   renderMainTaskInfo(): Node {
-    const { color, inFourDaysView } = this.props;
+    const { color } = this.props;
     return (
       <div className={styles.BacklogTaskMainWrapper} style={{ backgroundColor: color }}>
-        {inFourDaysView && this.renderCheckBox()}
+        {this.renderCheckBox()}
         {this.renderTaskName()}
-        {inFourDaysView && this.renderBookmarkIcon()}
-        {inFourDaysView && this.renderRemoveTaskIcon()}
+        {this.renderBookmarkIcon()}
+        {this.renderRemoveTaskIcon()}
       </div>
     );
   }
