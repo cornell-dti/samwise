@@ -1,9 +1,9 @@
 // @flow strict
-// $FlowFixMe
 import firebase from 'firebase/app';
+import type { FirebaseUser } from 'firebase';
 import 'firebase/auth';
 
-export type FirebaseUser = {|
+export type AppUser = {|
   +displayName: string;
   +email: string;
   +token: string;
@@ -31,18 +31,26 @@ export function firebaseInit(): void {
  * @return {Promise<FirebaseUser | null>} the promise of firebase user or promise of null if
  * there is no signed-in user.
  */
-export async function firebaseUserPromise(): Promise<FirebaseUser | null> {
-  const rawUser = await new Promise<firebase.User>(
+export async function firebaseUserPromise(): Promise<AppUser | null> {
+  const rawUser = await new Promise<?FirebaseUser>(
     (resolve, reject) => firebase.auth().onAuthStateChanged(resolve, reject),
   );
   if (rawUser == null) {
     return null;
   }
   // eslint-disable-next-line prefer-destructuring
-  const currentUser = firebase.auth().currentUser;
+  const currentUser: FirebaseUser | null = firebase.auth().currentUser;
+  if (currentUser == null) {
+    return null;
+  }
   const { displayName, email } = currentUser;
   const token: string = await currentUser.getIdToken(true);
+  const nonEmptyDisplayName = displayName == null ? 'Anonymous' : displayName;
+  const nonEmptyEmail = email == null ? 'dummy-email@gmail.com' : email;
   return {
-    displayName, email, token, isDummy: false,
+    displayName: nonEmptyDisplayName,
+    email: nonEmptyEmail,
+    token,
+    isDummy: false,
   };
 }

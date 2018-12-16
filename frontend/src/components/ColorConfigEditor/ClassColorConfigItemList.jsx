@@ -5,6 +5,7 @@ import type { Node } from 'react';
 import ColorConfigItem from './ColorConfigItem';
 import type { State, Tag } from '../../store/store-types';
 import { simpleConnect } from '../../store/react-redux-util';
+import styles from './ColorConfigItemList.css';
 
 type Props = {| tags: Tag[] |};
 
@@ -14,7 +15,7 @@ const mapStateToProps = ({ tags }: State): Props => ({
 
 function ClassColorConfigItemList({ tags }: Props): Node {
   return (
-    <ul style={{ width: '100%', display: 'inline-block', padding: 0, margin:0, listStyle: 'none' }}>
+    <ul className={styles.ColorConfigItemList}>
       {tags.map(tag => (<ColorConfigItem key={tag.id} tag={tag} />))}
     </ul>
   );

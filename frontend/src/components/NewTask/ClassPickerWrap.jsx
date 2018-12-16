@@ -1,12 +1,12 @@
 // @flow strict
 
 import React from 'react';
-import { connect } from 'react-redux';
 import { Icon } from 'semantic-ui-react';
 import ClassPicker from '../ClassPicker/ClassPicker';
 import styles from './Picker.css';
 import type { State as StoreState, Tag } from '../../store/store-types';
 import { getColorByTagId, getNameByTagId } from '../../util/tag-util';
+import { connectWithOptions } from '../../store/react-redux-util';
 
 type OwnProps = {|
   +onOpened: () => void;
@@ -99,7 +99,7 @@ class ClassPickerWrap extends React.Component<Props, State> {
   }
 }
 
-const ConnectedClassPickerWrap = connect<OwnProps, SubscribedProps, Props>(
-  mapStateToProps, null, null, { withRef: true },
+const ConnectedClassPickerWrap = connectWithOptions<OwnProps, SubscribedProps>(
+  mapStateToProps, { withRef: true },
 )(ClassPickerWrap);
 export default ConnectedClassPickerWrap;

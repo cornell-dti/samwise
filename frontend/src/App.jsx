@@ -7,12 +7,12 @@ import NewTaskComponent from './components/NewTask/NewTaskComponent';
 import TaskView from './components/TaskView/TaskView';
 // $FlowFixMe
 import TitleBar from './components/TitleBar/TitleBar';
-import type { FirebaseUser } from './util/firebase-util';
+import type { AppUser } from './util/firebase-util';
 import Login from './components/Login/Login';
 import { httpInitializeData } from './http/http-service';
 import store from './store';
 
-type Props = {| +user: FirebaseUser | null |};
+type Props = {| +user: AppUser | null |};
 
 export default function App({ user }: Props) {
   if (user == null) {
