@@ -1,28 +1,45 @@
-import React, { Component } from 'react';
+// @flow strict
+
+import React from 'react';
 import { Calendar } from 'react-calendar';
 import { Icon } from 'semantic-ui-react';
 import styles from './Picker.css';
 
-class CalPicker extends Component {
-  constructor(props) {
+type Props = {|
+  +onDateChange: (date: Date) => void;
+  +onOpened: () => void;
+|};
+type State = {|
+  +date: Date;
+  +opened: boolean;
+  +reset: boolean;
+|};
+
+/**
+ * Returns the initial state.
+ *
+ * @return {State} the initial state.
+ */
+const initialState = (): State => ({
+  date: new Date(),
+  opened: false,
+  reset: true,
+});
+
+export default class CalPicker extends React.Component<Props, State> {
+  constructor(props: Props) {
     super(props);
-    this.state = this.initialState();
+    this.state = initialState();
   }
 
-  initialState = () => ({
-    date: new Date(),
-    opened: false,
-    reset: true,
-  })
-
-  resetState = (e) => {
+  resetState = (e: SyntheticEvent<HTMLButtonElement>) => {
     if (e) {
       e.stopPropagation();
     }
-    this.setState(this.initialState());
-  }
+    this.setState(initialState());
+  };
 
-  handleOpenClose = (e) => {
+  handleOpenClose = (e: SyntheticEvent<HTMLElement>) => {
     e.stopPropagation();
     const { opened } = this.state;
     this.setState({ opened: !opened });
@@ -30,26 +47,26 @@ class CalPicker extends Component {
       const { onOpened } = this.props;
       onOpened();
     }
-  }
+  };
 
-  handleDateChange = (e) => {
+  handleDateChange = (date: Date) => {
     const { onDateChange } = this.props;
-    this.setState({ date: e, opened: false, reset: false });
-    onDateChange(e);
-  }
+    this.setState({ date, opened: false, reset: false });
+    onDateChange(date);
+  };
 
-  close = () => {
-    this.setState({ opened: false });
-  }
+  close = () => this.setState({ opened: false });
 
   render() {
     const { date, opened, reset } = this.state;
     return (
       <div className={styles.Main}>
         <span
-          ref={this.changeClass}
-          onClick={this.handleOpenClose}
+          role="button"
+          tabIndex={-1}
           style={{ background: reset ? 'none' : '' }}
+          onKeyDown={() => {}}
+          onClick={this.handleOpenClose}
           className={styles.LabelHack}
         >
           <span className={styles.DateDisplay} style={{ display: reset ? 'none' : 'inline' }}>
@@ -80,5 +97,3 @@ class CalPicker extends Component {
     );
   }
 }
-
-export default CalPicker;

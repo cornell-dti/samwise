@@ -1,35 +1,39 @@
-import React, { Component } from 'react';
+// @flow strict
+
+import React from 'react';
 import { Icon } from 'semantic-ui-react';
 import styles from './Picker.css';
 
-class CalPicker extends Component {
-  constructor(props) {
+type Props = {|
+  +onPinChange: (inFocus: boolean) => void;
+|};
+type State = {| +pinned: boolean; |}
+
+export default class FocusPicker extends React.Component<Props, State> {
+  constructor(props: Props) {
     super(props);
-    this.state = this.initialState();
+    this.state = { pinned: false };
   }
 
-  initialState = () => ({
-    pinned: false,
-  })
-
-  handleOpenClose = (e) => {
+  handleOpenClose = (e: SyntheticEvent<HTMLElement>) => {
     e.stopPropagation();
     const { onPinChange } = this.props;
     const { pinned } = this.state;
     this.setState({ pinned: !pinned });
     onPinChange(!pinned);
-  }
-  
-  resetState = () => {
-    this.setState({ pinned: false });
-  }
+  };
+
+  resetState = () => this.setState({ pinned: false });
 
   render() {
     const { pinned } = this.state;
     return (
       <div className={styles.Main}>
         <span
+          role="button"
+          tabIndex={-1}
           onClick={this.handleOpenClose}
+          onKeyDown={() => {}}
           style={{ background: 'none' }}
           className={styles.LabelHack}
         >
@@ -43,5 +47,3 @@ class CalPicker extends Component {
     );
   }
 }
-
-export default CalPicker;

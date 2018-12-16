@@ -2,10 +2,8 @@
 
 import React from 'react';
 import styles from './App.css';
-// $FlowFixMe
 import NewTaskComponent from './components/NewTask/NewTaskComponent';
 import TaskView from './components/TaskView/TaskView';
-// $FlowFixMe
 import TitleBar from './components/TitleBar/TitleBar';
 import type { AppUser } from './util/firebase-util';
 import Login from './components/Login/Login';
