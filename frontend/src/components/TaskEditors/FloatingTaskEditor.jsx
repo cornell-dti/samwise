@@ -91,7 +91,7 @@ class FloatingTaskEditor extends React.PureComponent<Props, State> {
    * The element of the actual editor.
    * This is only used when the editor is embedded inside the DOM instead of mount to body.
    */
-  editorElement: ?HTMLDivElement;
+  editorElement: ?HTMLElement;
 
   render(): Node {
     const { initialTask, trigger } = this.props;
