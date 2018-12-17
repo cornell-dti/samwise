@@ -26,17 +26,15 @@ type ActionProps = {|
 |}
 type Props = {| ...OwnProps; ...SubscribedProps; ...ActionProps |};
 
-type DisplayState = {|
+type State = {|
+  ...Task;
   +opened: boolean;
   +tagPickerOpened: boolean;
   +datePickerOpened: boolean;
   +datePicked: boolean;
+  +needToSwitchFocus: boolean;
   +lastDel: number;
   +lastToast: number;
-|};
-type State = {|
-  ...Task;
-  ...DisplayState;
 |};
 
 /**
@@ -60,17 +58,45 @@ const initialState = (): State => ({
   tagPickerOpened: false,
   datePickerOpened: false,
   datePicked: false,
+  needToSwitchFocus: false,
   lastDel: -1,
   lastToast: -1,
 });
 
-class NewTaskComponent extends React.Component<Props, State> {
-  constructor(props) {
-    super(props);
-    this.state = initialState();
-    this.addTaskModal = React.createRef();
-    this.blockModal = React.createRef();
-  }
+class NewTaskComponent extends React.PureComponent<Props, State> {
+  state: State = initialState();
+
+  /*
+   * --------------------------------------------------------------------------------
+   * Part 1: Openers & Closers
+   * --------------------------------------------------------------------------------
+   */
+
+  /**
+   * Open the new task editor.
+   */
+  openNewTask = () => this.setState({ opened: true });
+
+  /**
+   * Close (collapse) the new task editor.
+   */
+  closeNewTask = () => this.setState({ opened: false });
+
+  /**
+   * Open the tag picker and close the date picker.
+   */
+  openTagPicker = () => this.setState({ tagPickerOpened: true, datePickerOpened: false });
+
+  /**
+   * Open the date picker and close the tag picker.
+   */
+  openDatePicker = () => this.setState({ tagPickerOpened: false, datePickerOpened: true });
+
+  /*
+   * --------------------------------------------------------------------------------
+   * Part 2: Manager functions when finished editing.
+   * --------------------------------------------------------------------------------
+   */
 
   /**
    * Focus on the task name, if possible.
@@ -78,24 +104,6 @@ class NewTaskComponent extends React.Component<Props, State> {
   focusTaskName = () => {
     if (this.addTask) {
       this.addTask.focus();
-    }
-  };
-
-  openNewTask = () => {
-    // this.setState({ opened: true });
-    this.addTaskModal.current.style.display = 'block';
-    this.blockModal.current.style.display = 'block';
-    if (this.addTask) {
-      this.addTask.placeholder = '';
-    }
-  };
-
-  closeNewTask = () => {
-    // this.setState({ opened: false });
-    this.addTaskModal.current.style.display = '';
-    this.blockModal.current.style.display = '';
-    if (this.addTask) {
-      this.addTask.placeholder = PLACEHOLDER_TEXT;
     }
   };
 
@@ -146,20 +154,30 @@ class NewTaskComponent extends React.Component<Props, State> {
     this.closeNewTask();
   };
 
-  handleUndo = (e) => {
+  /**
+   * Handle on undoing an operation.
+   *
+   * @param {SyntheticMouseEvent<HTMLButtonElement>} e the event signaling an undo.
+   */
+  handleUndo = (e: SyntheticMouseEvent<HTMLButtonElement>) => {
     e.stopPropagation();
     const { lastDel, lastToast } = this.state;
     const { mainTaskArray, removeTask } = this.props;
     toast.dismiss(lastToast);
-    const taskId = lastDel;
-    if (taskId === -1) {
+    if (lastDel === -1) {
       return;
     }
-    const lastTask = mainTaskArray.find(task => task.id === taskId);
-    removeTask(taskId);
+    const lastTask = mainTaskArray.find(task => task.id === lastDel);
+    removeTask(lastDel);
     this.setState({ ...lastTask, lastDel: -1 });
     this.focusTaskName();
   };
+
+  /*
+   * --------------------------------------------------------------------------------
+   * Part 3: Various Editors
+   * --------------------------------------------------------------------------------
+   */
 
   /**
    * Edit the task name.
@@ -194,143 +212,170 @@ class NewTaskComponent extends React.Component<Props, State> {
    */
   togglePin = (inFocus: boolean) => this.setState({ inFocus }, this.focusTaskName);
 
-  addNewSubTask = (e) => {
-    const newSubTaskName = e.target.value;
+  /**
+   * Add a new subtask.
+   *
+   * @param e the event that contains the new name for new sub-task.
+   */
+  addNewSubTask = (e: SyntheticEvent<HTMLInputElement>) => {
+    const newSubTaskName = e.currentTarget.value;
     if (newSubTaskName === '') {
       return;
     }
-    this.setState(({ subtaskArray }: State) => {
-      const newSubtask: SubTask = {
+    this.setState(({ subtaskArray }: State) => ({
+      subtaskArray: [...subtaskArray, {
         id: subtaskArray.length,
         name: newSubTaskName,
         complete: false,
         inFocus: false,
-      };
-      return {
-        subtaskArray: [...subtaskArray, newSubtask],
-      };
-    }, () => {
-      if (this.subtaskList) {
-        const liList = this.subtaskList.getElementsByTagName('LI');
-        const lastItem = liList[liList.length - 1];
-        lastItem.getElementsByTagName('INPUT')[0].focus();
-      }
-    });
-    e.target.value = '';
+      }],
+      needToSwitchFocus: true,
+    }));
   };
 
-  editSubTask = (
-    subtaskId: number, doSave: boolean, e: SyntheticEvent<HTMLInputElement>,
-  ) => {
+  /**
+   * Edit a subtask.
+   *
+   * @param {number} subtaskId id of the subtask to edit.
+   * @return {Function<SyntheticEvent<HTMLInputElement>, void>} the event handler.
+   */
+  editSubTask = (subtaskId: number) => (e: SyntheticEvent<HTMLInputElement>) => {
+    const name = e.currentTarget.value;
     const { subtaskArray } = this.state;
-    const newSubtaskArr = subtaskArray.map(el => (
-      el.id === subtaskId ? { ...el, name: e.currentTarget.value } : el
-    ));
-    this.setState(
-      { subtaskArray: newSubtaskArr },
-      doSave ? this.handleSave : () => {},
-    );
+    this.setState({
+      subtaskArray: subtaskArray.map(s => (s.id === subtaskId ? { ...s, name } : s)),
+    });
   };
 
-  submitSubTask = (subtaskId: number) => (e: SyntheticKeyboardEvent<HTMLInputElement>) => {
+  /**
+   * Potentially submit a subtask.
+   *
+   * @param {SyntheticKeyboardEvent<HTMLInputElement>} e the keyboard event.
+   */
+  submitSubTask = (e: SyntheticKeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Enter') {
-      this.editSubTask(subtaskId, true, e);
+      this.handleSave();
     }
   };
 
+  /**
+   * Delete a subtask.
+   *
+   * @param {number} subtaskId id of the subtask to delete.
+   * @return {Function<SyntheticEvent<HTMLInputElement>, void>} the event handler.
+   */
   deleteSubTask = (subtaskId: number) => (e: SyntheticEvent<HTMLButtonElement>) => {
     e.preventDefault();
     const { subtaskArray } = this.state;
     this.setState({ subtaskArray: subtaskArray.filter(el => el.id !== subtaskId) });
   };
 
-  openTagPicker = () => this.setState({ tagPickerOpened: true, datePickerOpened: false });
-
-  openDatePicker = () => this.setState({ tagPickerOpened: false, datePickerOpened: true });
-
+  /**
+   * Reset the task.
+   */
   resetTask = () => {
     const { lastDel, lastToast } = this.state;
     this.setState({ ...initialState(), lastDel, lastToast }, this.focusTaskName);
   };
 
   addTask: ?HTMLInputElement;
-  subtaskList: ?HTMLUListElement;
+
+  /**
+   * Renders the editor for all the other info except main task name.
+   *
+   * @return {Node} the rendered other info editor.
+   */
+  renderOtherInfoEditor(): Node {
+    const { opened } = this.state;
+    if (!opened) {
+      return null;
+    }
+    const {
+      tag, date, inFocus, subtaskArray,
+      tagPickerOpened, datePickerOpened, datePicked, needToSwitchFocus,
+    } = this.state;
+    const existingSubTaskEditor = ({ id, name }: SubTask, i: number, arr: SubTask[]) => {
+      const refHandler = (inputElementRef) => {
+        if (i === arr.length - 1 && needToSwitchFocus && inputElementRef != null) {
+          inputElementRef.focus();
+          this.setState({ needToSwitchFocus: false });
+        }
+      };
+      return (
+        <li key={id}>
+          <button type="button" tabIndex={-1} onClick={this.deleteSubTask(id)}>
+            <Icon name="delete" />
+          </button>
+          <input
+            type="text"
+            ref={refHandler}
+            value={name}
+            onChange={this.editSubTask(id)}
+            onKeyDown={this.submitSubTask}
+          />
+        </li>
+      );
+    };
+    return (
+      <div className={styles.NewTaskActive}>
+        <FocusPicker pinned={inFocus} onPinChange={this.togglePin} />
+        <ClassPicker
+          tag={tag}
+          opened={tagPickerOpened}
+          onTagChange={this.editTag}
+          onPickerOpened={this.openTagPicker}
+        />
+        <DatePicker
+          date={date}
+          opened={datePickerOpened}
+          datePicked={datePicked}
+          onDateChange={this.editDate}
+          onPickerOpened={this.openDatePicker}
+        />
+        <button type="submit" className={styles.SubmitNewTask}>
+          <Icon name="arrow alternate circle right outline" color="black" />
+        </button>
+        <div className={styles.NewTaskModal}>
+          <ul>{subtaskArray.map(existingSubTaskEditor)}</ul>
+          <Icon name="plus" />
+          <input type="text" placeholder="Add a Subtask" value="" onChange={this.addNewSubTask} />
+          <button type="button" className={styles.ResetButton} onClick={this.resetTask}>
+            Clear
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   render(): Node {
-    const {
-      name, tag, date, inFocus, subtaskArray,
-      opened, tagPickerOpened, datePickerOpened, datePicked,
-    } = this.state;
-    // const toggleDisplayStyle = opened ? { display: 'block' } : {};
+    const { name, opened } = this.state;
+    const toggleDisplayStyle = opened ? {} : { display: 'none' };
+    // Click this component, new task component closes.
+    const newTaskCloser = (
+      <div
+        onClick={this.closeNewTask}
+        role="presentation"
+        className={styles.CloseNewTask}
+        style={toggleDisplayStyle}
+      />
+    );
+    const mainTaskNameEditor = (
+      <input
+        required
+        type="text"
+        value={name}
+        onChange={this.editTaskName}
+        className={styles.NewTaskComponent}
+        placeholder={opened ? '' : PLACEHOLDER_TEXT}
+        ref={(e) => { this.addTask = e; }}
+      />
+    );
     return (
       <div>
-        <div
-          onClick={this.closeNewTask}
-          role="presentation"
-          className={styles.CloseNewTask}
-          ref={this.blockModal}
-        />
-        <form
-          className={styles.NewTaskWrap}
-          onSubmit={this.handleSave}
-          onFocus={this.openNewTask}
-        >
-          <input
-            required
-            value={name}
-            onChange={this.editTaskName}
-            type="text"
-            className={styles.NewTaskComponent}
-            placeholder={opened ? '' : PLACEHOLDER_TEXT}
-            ref={(e) => { this.addTask = e; }}
-          />
-          <div className={styles.NewTaskActive} ref={this.addTaskModal}>
-            <FocusPicker pinned={inFocus} onPinChange={this.togglePin} />
-            <ClassPicker
-              tag={tag}
-              opened={tagPickerOpened}
-              onTagChange={this.editTag}
-              onPickerOpened={this.openTagPicker}
-            />
-            <DatePicker
-              opened={datePickerOpened}
-              date={date}
-              datePicked={datePicked}
-              onDateChange={this.editDate}
-              onPickerOpened={this.openDatePicker}
-            />
-            <button type="submit" className={styles.SubmitNewTask}>
-              <Icon
-                name="arrow alternate circle right outline"
-                color="black"
-                className={styles.CenterIcon}
-              />
-            </button>
-            <div className={styles.NewTaskModal}>
-              <ul ref={(e) => { this.subtaskList = e; }}>
-                {
-                  subtaskArray.map((subtaskObj: SubTask) => (
-                    <li key={subtaskObj.name + Math.random()}>
-                      <button type="button" onClick={this.deleteSubTask(subtaskObj.id)}>
-                        <Icon name="delete" />
-                      </button>
-                      <input
-                        type="text"
-                        defaultValue={subtaskObj.name}
-                        onBlur={e => this.editSubTask(subtaskObj.id, false, e)}
-                        onKeyDown={this.submitSubTask(subtaskObj.id)}
-                      />
-                    </li>
-                  ))
-                }
-              </ul>
-              <Icon name="plus" />
-              <input type="text" placeholder="Add a Subtask" onKeyUp={this.addNewSubTask} />
-              <button type="button" className={styles.ResetButton} onClick={this.resetTask}>
-                Clear
-              </button>
-            </div>
-          </div>
+        {newTaskCloser}
+        <form className={styles.NewTaskWrap} onSubmit={this.handleSave} onFocus={this.openNewTask}>
+          {mainTaskNameEditor}
+          {this.renderOtherInfoEditor()}
         </form>
         <ToastContainer className={styles.Toast} />
       </div>
