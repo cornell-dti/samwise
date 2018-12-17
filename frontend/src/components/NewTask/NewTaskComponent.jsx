@@ -68,7 +68,6 @@ class NewTaskComponent extends React.Component<Props, State> {
   constructor(props) {
     super(props);
     this.state = initialState();
-    // this.addTask = React.createRef();
     this.addTaskModal = React.createRef();
     this.blockModal = React.createRef();
   }
