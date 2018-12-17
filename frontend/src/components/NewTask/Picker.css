@@ -10,10 +10,9 @@
   margin-left: 5px;
 }
 
-.LabelHack {
+.Label {
   background: #9b9b9b;
   border-radius: 10px;
-
   cursor: pointer;
 }
 
@@ -21,9 +20,7 @@
   width: 300px;
   position: absolute;
   top: 20px;
-  display: none;
   left: 0;
-
   z-index: 2;
 }
 
@@ -32,15 +29,23 @@
 }
 
 .DateDisplay {
+  display: inline;
   padding: 0 5px;
 }
 
 .TagDisplay {
+  display: inline;
   padding: 0 5px 0 10px;
+}
+
+.CenterIcon {
+  display: inline;
+  color: black;
 }
 
 .ResetButton {
   background: none;
+  display: inline;
   border: none;
   cursor: pointer;
   color: white;

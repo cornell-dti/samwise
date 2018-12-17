@@ -72,7 +72,18 @@ export function day2String(day: number): string {
  */
 export function date2String(date: Date): string {
   return date.toLocaleDateString('en-US', {
-    day: 'numeric',
-    month: 'numeric',
+    month: 'numeric', day: 'numeric',
+  });
+}
+
+/**
+ * Returns the formatted string of date with year.
+ *
+ * @param {Date} date the date to convert.
+ * @return {string} the formatted date.
+ */
+export function date2StringWithYear(date: Date): string {
+  return date.toLocaleDateString('en-US', {
+    month: 'long', day: 'numeric', year: 'numeric',
   });
 }

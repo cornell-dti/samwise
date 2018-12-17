@@ -10,7 +10,7 @@ import TitleBar from './components/TitleBar/TitleBar';
 import type { AppUser } from './util/firebase-util';
 import LoginBarrier from './components/Login/LoginBarrier';
 import { httpInitializeData } from './http/http-service';
-import { initializeStore, dispatchAction } from './store/store';
+import { initializeApp, dispatchAction } from './store/store';
 
 /**
  * Whether to disable login.
@@ -27,7 +27,7 @@ const disableLogin: boolean = false;
  * @return {Node} the rendered app node.
  */
 const appRenderer = (appUser: AppUser): Node => {
-  const store = initializeStore(appUser);
+  const store = initializeApp(appUser);
   httpInitializeData().then(a => dispatchAction(a));
   return (
     <Provider store={store}>

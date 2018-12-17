@@ -5,28 +5,20 @@ import { Icon } from 'semantic-ui-react';
 import styles from './Picker.css';
 
 type Props = {|
+  +pinned: boolean;
   +onPinChange: (inFocus: boolean) => void;
 |};
-type State = {| +pinned: boolean; |}
 
-export default class FocusPicker extends React.Component<Props, State> {
-  constructor(props: Props) {
-    super(props);
-    this.state = { pinned: false };
-  }
+export default class FocusPicker extends React.Component<Props> {
 
   handleOpenClose = (e: SyntheticEvent<HTMLElement>) => {
     e.stopPropagation();
-    const { onPinChange } = this.props;
-    const { pinned } = this.state;
-    this.setState({ pinned: !pinned });
+    const { pinned, onPinChange } = this.props;
     onPinChange(!pinned);
   };
 
-  resetState = () => this.setState({ pinned: false });
-
   render() {
-    const { pinned } = this.state;
+    const { pinned } = this.props;
     return (
       <div className={styles.Main}>
         <span
@@ -35,7 +27,7 @@ export default class FocusPicker extends React.Component<Props, State> {
           onClick={this.handleOpenClose}
           onKeyDown={() => {}}
           style={{ background: 'none' }}
-          className={styles.LabelHack}
+          className={styles.Label}
         >
           <Icon
             name="pin"

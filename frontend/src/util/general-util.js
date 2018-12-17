@@ -1,12 +1,6 @@
 // @flow strict
 
 /**
- * Name of the app.
- * @type {string}
- */
-export const APP_NAME = 'Samwise';
-
-/**
  * Generate a random id to make React happy.
  *
  * @return {number} a random id.

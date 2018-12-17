@@ -7,7 +7,7 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import styles from './NewTask.css';
 import ToastUndo from './ToastUndo';
-import ClassPickerWrap from './ClassPickerWrap';
+import ClassPicker from './ClassPickerComponent';
 import CalPicker from './CalPicker';
 import FocusPicker from './FocusPicker';
 import { randomId } from '../../util/general-util';
@@ -15,6 +15,8 @@ import { fullConnect } from '../../store/react-redux-util';
 import type { Task, State as StoreState, SubTask } from '../../store/store-types';
 import { addTask as addTaskAction, removeTask as removeTaskAction } from '../../store/actions';
 import type { AddNewTaskAction, RemoveTaskAction } from '../../store/action-types';
+import { date2String } from '../../util/datetime-util';
+import { NONE_TAG_ID } from '../../util/constants';
 
 type OwnProps = {||};
 type SubscribedProps = {| +mainTaskArray: Task[]; |};
@@ -27,6 +29,8 @@ type Props = {| ...OwnProps; ...SubscribedProps; ...ActionProps |};
 type State = {|
   ...Task;
   +opened: boolean;
+  +tagPickerOpened: boolean;
+  +calPickerOpened: boolean;
   +lastDel: number;
   +lastToast: number;
 |};
@@ -40,15 +44,17 @@ const placeholderText = 'What do you have to do?';
  * Generate the initial state.
  * @return {State}
  */
-const initialState = () => ({
+const initialState = (): State => ({
   id: randomId(),
   name: '',
-  tag: -1, // the id of the None tag.
+  tag: NONE_TAG_ID, // the id of the None tag.
   date: new Date(),
   complete: false,
   inFocus: false,
   subtaskArray: [],
   opened: false,
+  tagPickerOpened: false,
+  calPickerOpened: false,
   lastDel: -1,
   lastToast: -1,
 });
@@ -62,8 +68,6 @@ class NewTaskComponent extends React.Component<Props, State> {
     this.blockModal = React.createRef();
     this.subtaskList = React.createRef();
     this.datePicker = React.createRef();
-    this.tagPicker = React.createRef();
-    this.pinPicker = React.createRef();
   }
 
   openNewTask = () => {
@@ -91,7 +95,7 @@ class NewTaskComponent extends React.Component<Props, State> {
       e.preventDefault();
     }
     const {
-      opened, lastToast, lastDel, ...task
+      opened, tagPickerOpened, calPickerOpened, lastToast, lastDel, ...task
     } = this.state;
     const { addTask } = this.props;
     const {
@@ -108,10 +112,7 @@ class NewTaskComponent extends React.Component<Props, State> {
         .map((subTask, index) => ({ ...subTask, id: index })),
     });
     // Emit a new toast.
-    const taskMsg = `Added "${name}" (${date.toLocaleDateString('en-US', {
-      day: 'numeric',
-      month: 'numeric',
-    })})`;
+    const taskMsg = `Added "${name}" (${date2String(date)})`;
     toast.dismiss(lastToast);
     const newToast = toast.success(
       <ToastUndo dispText={taskMsg} changeCallback={this.handleUndo} />, {
@@ -126,20 +127,18 @@ class NewTaskComponent extends React.Component<Props, State> {
     // Reset the state.
     this.setState({ ...initialState(), lastDel: id, lastToast: newToast });
     this.closeNewTask();
-    this.datePicker.current.resetState();
-    this.pinPicker.current.resetState();
-    this.tagPicker.current.wrappedInstance.resetState();
+    this.datePicker.current.reset();
   };
 
   handleUndo = (e) => {
     e.stopPropagation();
     const { lastDel, lastToast } = this.state;
     const { mainTaskArray, removeTask } = this.props;
-
     toast.dismiss(lastToast);
     const taskId = lastDel;
-    if (taskId === -1) { return; }
-
+    if (taskId === -1) {
+      return;
+    }
     const lastTask = mainTaskArray.find(task => task.id === taskId);
     removeTask(taskId);
     this.setState({ ...lastTask, lastDel: -1 });
@@ -151,12 +150,12 @@ class NewTaskComponent extends React.Component<Props, State> {
   };
 
   editTag = (tag: number) => {
-    this.setState({ tag });
+    this.setState({ tag, tagPickerOpened: false });
     this.addTask.current.focus();
   };
 
   editDate = (date: Date) => {
-    this.setState({ date });
+    this.setState({ date, calPickerOpened: false });
     this.addTask.current.focus();
   };
 
@@ -213,13 +212,9 @@ class NewTaskComponent extends React.Component<Props, State> {
     this.setState({ subtaskArray: subtaskArray.filter(el => el.id !== subtaskId) });
   };
 
-  closeCal = () => {
-    this.datePicker.current.close();
-  };
+  openTag = () => this.setState({ tagPickerOpened: true, calPickerOpened: false });
 
-  closeTag = () => {
-    this.tagPicker.current.wrappedInstance.close();
-  };
+  openCal = () => this.setState({ tagPickerOpened: false, calPickerOpened: true });
 
   resetTask = () => {
     const { lastDel, lastToast } = this.state;
@@ -228,7 +223,9 @@ class NewTaskComponent extends React.Component<Props, State> {
   };
 
   render(): Node {
-    const { name, subtaskArray, opened } = this.state;
+    const {
+      name, tag, inFocus, subtaskArray, opened, tagPickerOpened, calPickerOpened,
+    } = this.state;
     // const toggleDisplayStyle = opened ? { display: 'block' } : {};
     return (
       <div>
@@ -253,16 +250,18 @@ class NewTaskComponent extends React.Component<Props, State> {
             required
           />
           <div className={styles.NewTaskActive} ref={this.addTaskModal}>
-            <FocusPicker ref={this.pinPicker} onPinChange={this.togglePin} />
-            <ClassPickerWrap
-              ref={this.tagPicker}
+            <FocusPicker pinned={inFocus} onPinChange={this.togglePin} />
+            <ClassPicker
+              tag={tag}
+              opened={tagPickerOpened}
               onTagChange={this.editTag}
-              onOpened={this.closeCal}
+              onPickerOpened={this.openTag}
             />
             <CalPicker
               ref={this.datePicker}
+              opened={calPickerOpened}
               onDateChange={this.editDate}
-              onOpened={this.closeTag}
+              onPickerOpened={this.openCal}
             />
             <button type="submit" className={styles.SubmitNewTask}>
               <Icon

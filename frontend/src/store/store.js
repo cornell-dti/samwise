@@ -9,39 +9,31 @@ import type { AppUser } from '../util/firebase-util';
 
 export type GlobalStore = Store<State, $Subtype<Action>>;
 
-let store: GlobalStore | null = null;
+const store: GlobalStore = createStore(rootReducer);
+let appUser: AppUser | null = null;
 
 /**
- * Initialize and record a global store and returns the newly initialized store.
+ * Initialize the app and record a global user and returns the initialized store.
  *
- * @param {AppUser} appUser the user of the app.
+ * @param {AppUser} user the user of the app.
  * @return {GlobalStore} the newly initialized store.
  */
-export function initializeStore(appUser: AppUser): GlobalStore {
-  const newStore = createStore(rootReducer(appUser));
-  store = newStore;
-  return newStore;
+export function initializeApp(user: AppUser): GlobalStore {
+  appUser = user;
+  return store;
 }
 
 /**
- * Returns the global store.
+ * Returns the global app user.
  *
- * @return {GlobalStore} the global store.
- * @throws Error if the store is not initialized.
+ * @return {AppUser} the global app user.
  */
-const getStore = (): GlobalStore => {
-  if (store != null) {
-    return store;
+export const getAppUser = (): AppUser => {
+  if (appUser != null) {
+    return appUser;
   }
-  throw new Error('Store is not initialized.');
+  throw new Error('App is not initialized.');
 };
-
-/**
- * Returns the app user in the global store.
- *
- * @return {AppUser} the app user in the global store.
- */
-export const getAppUser = (): AppUser => getStore().getState().appUser;
 
 /**
  * Dispatch an action and returns the dispatched action.
@@ -49,4 +41,4 @@ export const getAppUser = (): AppUser => getStore().getState().appUser;
  * @param {Action} action the action to dispatch.
  * @return {Action} the action to dispatch.
  */
-export const dispatchAction = (action: Action): Action => getStore().dispatch(action);
+export const dispatchAction = (action: Action): Action => store.dispatch(action);

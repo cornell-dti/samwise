@@ -4,14 +4,15 @@ import React from 'react';
 import { Calendar } from 'react-calendar';
 import { Icon } from 'semantic-ui-react';
 import styles from './Picker.css';
+import { date2String } from '../../util/datetime-util';
 
 type Props = {|
   +onDateChange: (date: Date) => void;
-  +onOpened: () => void;
+  +opened: boolean;
+  +onPickerOpened: () => void;
 |};
 type State = {|
   +date: Date;
-  +opened: boolean;
   +reset: boolean;
 |};
 
@@ -22,7 +23,6 @@ type State = {|
  */
 const initialState = (): State => ({
   date: new Date(),
-  opened: false,
   reset: true,
 });
 
@@ -32,67 +32,55 @@ export default class CalPicker extends React.Component<Props, State> {
     this.state = initialState();
   }
 
-  resetState = (e: SyntheticEvent<HTMLButtonElement>) => {
-    if (e) {
-      e.stopPropagation();
-    }
-    this.setState(initialState());
-  };
+  reset = () => this.setState(initialState());
 
-  handleOpenClose = (e: SyntheticEvent<HTMLElement>) => {
+  clickPicker = (e: SyntheticEvent<HTMLElement>) => {
     e.stopPropagation();
-    const { opened } = this.state;
-    this.setState({ opened: !opened });
+    const { opened, onPickerOpened } = this.props;
     if (!opened) {
-      const { onOpened } = this.props;
-      onOpened();
+      onPickerOpened();
     }
   };
 
   handleDateChange = (date: Date) => {
     const { onDateChange } = this.props;
-    this.setState({ date, opened: false, reset: false });
+    this.setState({ date, reset: false });
     onDateChange(date);
   };
 
-  close = () => this.setState({ opened: false });
-
   render() {
-    const { date, opened, reset } = this.state;
+    const { opened } = this.props;
+    const { date, reset } = this.state;
+    const displayedNode = (isDefault: boolean) => {
+      const style = { background: reset ? 'none' : '' };
+      const internal = isDefault
+        ? (<Icon name="calendar outline" className={styles.CenterIcon} />)
+        : (
+          <React.Fragment>
+            <span className={styles.DateDisplay}>{date2String(date)}</span>
+            <button type="button" className={styles.ResetButton} onClick={this.reset}>
+              &times;
+            </button>
+          </React.Fragment>
+        );
+      return (
+        <span role="presentation" onClick={this.clickPicker} className={styles.Label} style={style}>
+          {internal}
+        </span>
+      );
+    };
     return (
       <div className={styles.Main}>
-        <span
-          role="button"
-          tabIndex={-1}
-          style={{ background: reset ? 'none' : '' }}
-          onKeyDown={() => {}}
-          onClick={this.handleOpenClose}
-          className={styles.LabelHack}
-        >
-          <span className={styles.DateDisplay} style={{ display: reset ? 'none' : 'inline' }}>
-            {date.toLocaleDateString('en-US', { month: 'numeric', day: 'numeric' })}
-          </span>
-          <Icon
-            name="calendar outline"
-            className={styles.CenterIcon}
-            style={{ display: reset ? 'inline' : 'none', color: 'black' }}
-          />
-          <button
-            type="button"
-            className={styles.ResetButton}
-            onClick={this.resetState}
-            style={{ display: reset ? 'none' : 'inline' }}
-          >
-            &times;
-          </button>
-        </span>
-        <div className={styles.NewTaskDatePick} style={{ display: opened ? 'block' : 'none' }}>
-          <Calendar
-            onChange={this.handleDateChange}
-            value={date}
-            minDate={new Date()}
-          />
-        </div>
+        {displayedNode(reset)}
+        {opened && (
+          <div className={styles.NewTaskDatePick}>
+            <Calendar
+              onChange={this.handleDateChange}
+              value={date}
+              minDate={new Date()}
+            />
+          </div>
+        )}
       </div>
     );
   }

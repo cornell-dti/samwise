@@ -42,7 +42,6 @@ export type UndoCache = {|
  * The type of the entire redux state.
  */
 export type State = {|
-  +appUser: AppUser;
   +mainTaskArray: Task[];
   +tags: Tag[];
   +bearStatus: string;

@@ -6,7 +6,7 @@ import firebase from 'firebase/app';
 import 'firebase/auth';
 // $FlowFixMe
 import { FirebaseAuth } from 'react-firebaseui';
-import { APP_NAME } from '../../util/general-util';
+import { APP_NAME } from '../../util/constants';
 import styles from './Login.css';
 import type { AppUser } from '../../util/firebase-util';
 import { toAppUser } from '../../util/firebase-util';
