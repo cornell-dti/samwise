@@ -14,8 +14,6 @@ type Props = {|
   changeCallback: Function,
 |};
 
-
-
 const colArray = Object.keys(colMap);
 
 function ColorEditor(props: Props) {

@@ -16,7 +16,6 @@ import styles from './ColorConfigEditor.css';
 export default function ColorConfigEditor(): Node {
   return (
     <div>
-
       <div className={styles.SettingsSection}>
         <p>Add Classes</p>
         <div>

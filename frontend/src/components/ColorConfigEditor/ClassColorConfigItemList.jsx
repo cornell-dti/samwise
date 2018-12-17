@@ -9,10 +9,6 @@ import styles from './ColorConfigItemList.css';
 
 type Props = {| tags: Tag[] |};
 
-const mapStateToProps = ({ tags }: State): Props => ({
-  tags: tags.filter(t => t.type === 'class'),
-});
-
 function ClassColorConfigItemList({ tags }: Props): Node {
   return (
     <ul className={styles.ColorConfigItemList}>
@@ -22,6 +18,6 @@ function ClassColorConfigItemList({ tags }: Props): Node {
 }
 
 const ConnectedClassColorConfigItemList = simpleConnect<{}, Props>(
-  mapStateToProps,
+  ({ tags }: State): Props => ({ tags: tags.filter(t => t.type === 'class') }),
 )(ClassColorConfigItemList);
 export default ConnectedClassColorConfigItemList;

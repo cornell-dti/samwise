@@ -11,8 +11,6 @@ type OwnProps = {| +onTagChange: (number) => void |};
 type SubscribedProps = {| +tags: Tag[]; |};
 type Props = {| ...OwnProps; ...SubscribedProps; |};
 
-const mapStateToProps = ({ tags }: State) => ({ tags });
-
 /**
  * The component used to pick a class.
  *
@@ -37,6 +35,6 @@ function ClassPicker({ onTagChange, tags }: Props): Node {
 }
 
 const ConnectedClassPicker = simpleConnect<OwnProps, SubscribedProps>(
-  mapStateToProps,
+  ({ tags }: State) => ({ tags }),
 )(ClassPicker);
 export default ConnectedClassPicker;

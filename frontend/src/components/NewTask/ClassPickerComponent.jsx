@@ -22,12 +22,12 @@ function ClassPickerComponent(props: Props) {
   const {
     tag, opened, tags, onTagChange, onPickerOpened,
   } = props;
-  // Some Handlers
+  // Controllers
   const clickPicker = () => { if (!opened) { onPickerOpened(); } };
   const reset = () => onTagChange(NONE_TAG_ID);
-  // Picker and Displayer
+  // Nodes
   const displayedNode = (isDefault: boolean) => {
-    const style = { background: isDefault ? 'none' : getColorByTagId(tags, tag) };
+    const style = isDefault ? {} : { background: getColorByTagId(tags, tag) };
     const internal = isDefault
       ? (<Icon name="tag" className={styles.CenterIcon} />)
       : (

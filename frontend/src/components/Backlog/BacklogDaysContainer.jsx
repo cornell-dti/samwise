@@ -48,10 +48,6 @@ function buildDate2TaskMap(allTasks: Task[]): DateToTaskMap {
   return map;
 }
 
-const mapStateToProps = ({ mainTaskArray, tags }: State): SubscribedProps => ({
-  date2TaskMap: buildDate2TaskMap(mainTaskArray), tags,
-});
-
 /**
  * Render a component for one day in backlog.
  *
@@ -142,6 +138,8 @@ function BacklogDaysContainer(props: Props): Node {
 }
 
 const ConnectedBacklogDaysContainer = simpleConnect<OwnProps, SubscribedProps>(
-  mapStateToProps,
+  ({ mainTaskArray, tags }: State): SubscribedProps => ({
+    date2TaskMap: buildDate2TaskMap(mainTaskArray), tags,
+  }),
 )(BacklogDaysContainer);
 export default ConnectedBacklogDaysContainer;

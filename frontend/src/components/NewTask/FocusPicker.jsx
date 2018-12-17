@@ -9,33 +9,17 @@ type Props = {|
   +onPinChange: (inFocus: boolean) => void;
 |};
 
-export default class FocusPicker extends React.Component<Props> {
-
-  handleOpenClose = (e: SyntheticEvent<HTMLElement>) => {
+export default function FocusPicker({ pinned, onPinChange }: Props) {
+  const clickPicker = (e: SyntheticEvent<HTMLElement>) => {
     e.stopPropagation();
-    const { pinned, onPinChange } = this.props;
     onPinChange(!pinned);
   };
-
-  render() {
-    const { pinned } = this.props;
-    return (
-      <div className={styles.Main}>
-        <span
-          role="button"
-          tabIndex={-1}
-          onClick={this.handleOpenClose}
-          onKeyDown={() => {}}
-          style={{ background: 'none' }}
-          className={styles.Label}
-        >
-          <Icon
-            name="pin"
-            className={styles.CenterIcon}
-            style={{ color: pinned ? 'black' : 'gray' }}
-          />
-        </span>
-      </div>
-    );
-  }
+  const iconStyle = { color: pinned ? 'black' : 'gray' };
+  return (
+    <div className={styles.Main}>
+      <span role="presentation" onClick={clickPicker} className={styles.Label}>
+        <Icon name="pin" className={styles.CenterIcon} style={iconStyle} />
+      </span>
+    </div>
+  );
 }
