@@ -39,6 +39,7 @@ type State = {|
   +backgroundColor: string;
   +doesShowTagEditor: boolean;
   +doesShowCalendarEditor: boolean;
+  +needToSwitchFocus: boolean;
 |};
 
 const mapStateToProps = ({ tags }: StoreState): SubscribedProps => ({ tags });
@@ -57,6 +58,7 @@ class TaskEditor extends React.PureComponent<Props, State> {
       backgroundColor: getColorByTagId(tags, initialTask.tag),
       doesShowTagEditor: false,
       doesShowCalendarEditor: false,
+      needToSwitchFocus: false,
     };
   }
 
@@ -120,7 +122,8 @@ class TaskEditor extends React.PureComponent<Props, State> {
       event.preventDefault();
     }
     const {
-      backgroundColor, doesShowTagEditor, doesShowCalendarEditor, ...task
+      backgroundColor, doesShowTagEditor, doesShowCalendarEditor, needToSwitchFocus,
+      ...task
     } = this.state;
     if (!this.taskIsGood(task)) {
       return;
@@ -308,7 +311,10 @@ class TaskEditor extends React.PureComponent<Props, State> {
       inFocus: false,
     };
     const { subtaskArray } = this.state;
-    this.setState({ subtaskArray: [...subtaskArray, newSubTask] }, this.autoSave);
+    this.setState({
+      subtaskArray: [...subtaskArray, newSubTask],
+      needToSwitchFocus: true,
+    }, this.autoSave);
   };
 
   /*
@@ -393,12 +399,21 @@ class TaskEditor extends React.PureComponent<Props, State> {
    * Render a subtask.
    *
    * @param {SubTask} subTask one subtask.
+   * @param {number} index index of the subtask.
+   * @param {SubTask[]} array the entire subtask array.
    * @return {Node} the rendered subtask.
    */
-  renderSubTask = (subTask: SubTask): Node => {
+  renderSubTask = (subTask: SubTask, index: number, array: SubTask[]): Node => {
     const {
       id, name, complete, inFocus,
     } = subTask;
+    const { needToSwitchFocus } = this.state;
+    const refHandler = (inputElementRef) => {
+      if (index === array.length - 1 && needToSwitchFocus && inputElementRef != null) {
+        inputElementRef.focus();
+        this.setState({ needToSwitchFocus: false });
+      }
+    };
     return (
       <div key={id} className={styles.TaskEditorFlexibleContainer}>
         <CheckBox
@@ -410,6 +425,7 @@ class TaskEditor extends React.PureComponent<Props, State> {
           className={styles.TaskEditorFlexibleInput}
           placeholder="Your Sub-Task"
           value={name}
+          ref={refHandler}
           onChange={this.editSubTask(id)}
         />
         <Icon
@@ -449,9 +465,8 @@ class TaskEditor extends React.PureComponent<Props, State> {
     <div className={styles.TaskEditorSubmitButtonRow}>
       <span className={styles.TaskEditorFlexiblePadding} />
       <div
+        role="presentation"
         className={styles.TaskEditorSaveButton}
-        role="button"
-        tabIndex={0}
         onClick={this.submitChanges}
         onKeyDown={this.submitChanges}
       >

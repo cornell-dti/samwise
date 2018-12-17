@@ -8,16 +8,22 @@ import type { EditTaskAction } from '../../store/action-types';
 import { editTask as editTaskAction } from '../../store/actions';
 import TaskEditor from './TaskEditor';
 
-type Props = {|
+type OwnProps = {|
   +initialTask: Task; // the initial task given to the editor.
-  className?: string; // additional class names applied to the editor.
   +editTask: (task: Task) => EditTaskAction;
+|};
+type DefaultProps = {|
+  +className?: string; // additional class names applied to the editor.
+|};
+type Props = {|
+  ...OwnProps;
+  ...DefaultProps;
 |};
 
 type State = {|
   +isReadOnly: boolean;
-  savedTask?: Task; // has a value only when there is some unsaved state.
-  intervalId?: IntervalID; // used for regular saving
+  +savedTask?: Task; // has a value only when there is some unsaved state.
+  +intervalId?: IntervalID; // used for regular saving
 |};
 
 /**
@@ -30,14 +36,9 @@ const doSaveInterval = 2000;
  * The task editor used to edit task inline, activated on focus.
  */
 class InlineTaskEditor extends React.Component<Props, State> {
-  static defaultProps = {
-    className: undefined,
-  };
+  static defaultProps: DefaultProps;
 
-  constructor(props) {
-    super(props);
-    this.state = { isReadOnly: true };
-  }
+  state: State = { isReadOnly: true };
 
   componentDidMount() {
     const intervalId = setInterval(this.regularSaveCheck, doSaveInterval);
@@ -101,6 +102,10 @@ class InlineTaskEditor extends React.Component<Props, State> {
     );
   }
 }
+
+InlineTaskEditor.defaultProps = {
+  className: undefined,
+};
 
 const ConnectedInlineTaskEditor = connect(null, { editTask: editTaskAction })(InlineTaskEditor);
 export default ConnectedInlineTaskEditor;

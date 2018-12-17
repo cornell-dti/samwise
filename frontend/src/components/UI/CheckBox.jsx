@@ -69,6 +69,7 @@ export default class CheckBox extends React.PureComponent<Props, State> {
     return (
       <label className={allClassNames}>
         <input
+          tabIndex={-1}
           defaultChecked={checked}
           onClick={() => this.handleClick()}
           type="checkbox"
