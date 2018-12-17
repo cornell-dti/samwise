@@ -1,6 +1,6 @@
 // @flow strict
 
-import { firebaseUserPromise } from './firebase-util';
+import { getAppUser } from '../store/store';
 
 /**
  * Send a GET request to the given endPoint and returns the promise of response.
@@ -9,11 +9,7 @@ import { firebaseUserPromise } from './firebase-util';
  * @return {Promise<T>} the promise of the result.
  */
 export async function get<T>(endPoint: string): Promise<T> {
-  const user = await firebaseUserPromise();
-  if (user == null) {
-    throw new Error('The user has not logged in yet.');
-  }
-  const result = await fetch(`/api${endPoint}?token=${user.token}`);
+  const result = await fetch(`/api${endPoint}?token=${getAppUser().token}`);
   return result.json();
 }
 
@@ -26,14 +22,9 @@ export async function get<T>(endPoint: string): Promise<T> {
  * @return {Promise<T>} the promise of the result.
  */
 async function sendData<T>(method: 'POST' | 'PUT', endPoint: string, data: Object): Promise<T> {
-  const user = await firebaseUserPromise();
-  if (user == null) {
-    throw new Error('The user has not logged in yet.');
-  }
-  const { token } = user;
   const result = await fetch(`/api${endPoint}`, {
     method,
-    body: JSON.stringify({ ...data, token }),
+    body: JSON.stringify({ ...data, token: getAppUser().token }),
   });
   return result.json();
 }

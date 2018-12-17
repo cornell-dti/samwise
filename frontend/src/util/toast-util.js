@@ -1,7 +1,7 @@
 // @flow strict
 
 import emitToast from '../components/UI/UndoToast';
-import store from '../store';
+import { dispatchAction } from '../store/store';
 import { clearUndoDeleteTask, undoDeleteTask } from '../store/actions';
 import type { Task } from '../store/store-types';
 import { date2String } from './datetime-util';
@@ -16,7 +16,7 @@ export function emitUndoRemoveTaskToast(task: Task): void {
   emitToast({
     toastId: 'remove-task',
     message,
-    onUndo: () => { store.dispatch(undoDeleteTask()); },
-    onDismiss: () => { store.dispatch(clearUndoDeleteTask()); },
+    onUndo: () => { dispatchAction(undoDeleteTask()); },
+    onDismiss: () => { dispatchAction(clearUndoDeleteTask()); },
   });
 }

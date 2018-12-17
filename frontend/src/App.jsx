@@ -1,27 +1,47 @@
 // @flow strict
 
 import React from 'react';
+import type { Node } from 'react';
+import { Provider } from 'react-redux';
 import styles from './App.css';
 import NewTaskComponent from './components/NewTask/NewTaskComponent';
 import TaskView from './components/TaskView/TaskView';
 import TitleBar from './components/TitleBar/TitleBar';
 import type { AppUser } from './util/firebase-util';
-import Login from './components/Login/Login';
+import LoginBarrier from './components/Login/LoginBarrier';
 import { httpInitializeData } from './http/http-service';
-import store from './store';
+import { initializeStore, dispatchAction } from './store/store';
 
-type Props = {| +user: AppUser | null |};
+/**
+ * Whether to disable login.
+ * In production, this must be set to false.
+ * It can be set to true in development to speed up loading time.
+ * @type {boolean}
+ */
+const disableLogin: boolean = false;
 
-export default function App({ user }: Props) {
-  if (user == null) {
-    return (<Login />);
-  }
-  httpInitializeData().then(a => store.dispatch(a));
+/**
+ * The function to render the entire app given a user.
+ *
+ * @param {AppUser} appUser the user of the app.
+ * @return {Node} the rendered app node.
+ */
+const appRenderer = (appUser: AppUser): Node => {
+  const store = initializeStore(appUser);
+  httpInitializeData().then(a => dispatchAction(a));
   return (
-    <div className={styles.App}>
-      <TitleBar />
-      <NewTaskComponent />
-      <TaskView />
-    </div>
+    <Provider store={store}>
+      <div className={styles.App}>
+        <TitleBar />
+        <NewTaskComponent />
+        <TaskView />
+      </div>
+    </Provider>
   );
-}
+};
+
+export default (): Node => (
+  disableLogin
+    ? appRenderer({ displayName: 'BAD_USER', email: 'BAD_EMAIL', token: 'BAD_TOKEN' })
+    : (<LoginBarrier appRenderer={appRenderer} />)
+);

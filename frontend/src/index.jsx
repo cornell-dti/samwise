@@ -2,11 +2,10 @@
 
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { Provider } from 'react-redux';
-import store from './store/index';
-import styles from './index.css';
+import './index.css';
 import App from './App';
 import { firebaseUserPromise, firebaseInit } from './util/firebase-util';
+import Loading from './components/UI/Loading';
 
 firebaseInit();
 
@@ -15,15 +14,8 @@ if (root == null) {
   throw new Error('The root node is not found!');
 }
 
-ReactDOM.render(
-  (
-    <div className={styles.LoadingTextWrapper}>
-      <div className={styles.LoadingText}>Loading...</div>
-    </div>
-  ),
-  root,
-);
+ReactDOM.render(<Loading />, root);
 (async () => {
   const user = await firebaseUserPromise();
-  ReactDOM.render(<Provider store={store}><App user={user} /></Provider>, root);
+  ReactDOM.render(<App />, root);
 })();
