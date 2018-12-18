@@ -5,7 +5,7 @@ import type { Node } from 'react';
 import { Icon } from 'semantic-ui-react';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import styles from './NewTask.css';
+import styles from './TaskCreator.css';
 import ToastUndo from './ToastUndo';
 import TagPicker from './TagPicker';
 import DatePicker from './DatePicker';
@@ -63,7 +63,7 @@ const initialState = (): State => ({
   lastToast: -1,
 });
 
-class NewTaskComponent extends React.PureComponent<Props, State> {
+class TaskCreator extends React.PureComponent<Props, State> {
   state: State = initialState();
 
   /*
@@ -383,8 +383,8 @@ class NewTaskComponent extends React.PureComponent<Props, State> {
   }
 }
 
-const ConnectedNewTaskComponent = fullConnect<OwnProps, SubscribedProps, ActionProps>(
+const ConnectedTaskCreator = fullConnect<OwnProps, SubscribedProps, ActionProps>(
   ({ mainTaskArray }: StoreState) => ({ mainTaskArray }),
   { addTask: addTaskAction, removeTask: removeTaskAction },
-)(NewTaskComponent);
-export default ConnectedNewTaskComponent;
+)(TaskCreator);
+export default ConnectedTaskCreator;

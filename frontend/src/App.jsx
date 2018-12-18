@@ -4,7 +4,7 @@ import React from 'react';
 import type { Node } from 'react';
 import { Provider } from 'react-redux';
 import styles from './App.css';
-import NewTaskComponent from './components/NewTask/NewTaskComponent';
+import TaskCreator from './components/TaskCreator/TaskCreator';
 import TaskView from './components/TaskView/TaskView';
 import TitleBar from './components/TitleBar/TitleBar';
 import type { AppUser } from './util/firebase-util';
@@ -33,7 +33,7 @@ const appRenderer = (appUser: AppUser): Node => {
     <Provider store={store}>
       <div className={styles.App}>
         <TitleBar />
-        <NewTaskComponent />
+        <TaskCreator />
         <TaskView />
       </div>
     </Provider>
