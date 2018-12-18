@@ -38,9 +38,24 @@ class FloatingTaskEditor extends React.PureComponent<Props, State> {
     this.state = { open: false };
   }
 
-  componentDidUpdate({ position }: Props) {
+  componentDidMount() {
+    window.addEventListener('resize', this.updateFloatingEditorPosition);
+  }
+
+  componentDidUpdate() {
+    this.updateFloatingEditorPosition();
+  }
+
+  componentWillUnmount() {
+    window.removeEventListener('resize', this.updateFloatingEditorPosition);
+  }
+
+  /**
+   * Update the position of itself.
+   */
+  updateFloatingEditorPosition = () => {
     const editorPosDiv = this.editorElement;
-    if (editorPosDiv == null || position == null) {
+    if (editorPosDiv == null) {
       return;
     }
     const taskElement = editorPosDiv.previousElementSibling?.previousElementSibling;
@@ -57,6 +72,7 @@ class FloatingTaskEditor extends React.PureComponent<Props, State> {
     const myHeight = editorPosDiv.offsetHeight;
     const topPos = (y + myHeight) > windowHeight ? windowHeight - myHeight : y;
     editorPosDiv.style.top = `${topPos}px`;
+    const { position } = this.props;
     if (position === 'right') {
       editorPosDiv.style.left = `${right}px`;
     } else if (position === 'left') {
@@ -64,12 +80,12 @@ class FloatingTaskEditor extends React.PureComponent<Props, State> {
     } else {
       throw new Error('Bad floating position!');
     }
-  }
+  };
 
   /**
    * Open the popup.
    */
-  openPopup = (): void => this.setState({ open: true });
+  openPopup = () => this.setState({ open: true });
 
   /**
    * Close the popup.
