@@ -10,9 +10,7 @@ import SettingsButton from './Settings/SettingsButton';
 export default (): Node => (
   <header className={styles.Main}>
     <span className={styles.Time}><Clock format="h:mm A" ticking /></span>
-    <span className={styles.Date}>
-      {date2StringWithYear(new Date())}
-    </span>
+    <span className={styles.Date}>{date2StringWithYear(new Date())}</span>
     <span className={styles.Links}><SettingsButton /></span>
   </header>
 );
