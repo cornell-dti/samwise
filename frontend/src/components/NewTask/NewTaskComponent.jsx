@@ -7,7 +7,7 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import styles from './NewTask.css';
 import ToastUndo from './ToastUndo';
-import ClassPicker from './ClassPickerComponent';
+import TagPicker from './TagPicker';
 import DatePicker from './DatePicker';
 import FocusPicker from './FocusPicker';
 import { randomId } from '../../util/general-util';
@@ -319,7 +319,7 @@ class NewTaskComponent extends React.PureComponent<Props, State> {
     return (
       <div className={styles.NewTaskActive}>
         <FocusPicker pinned={inFocus} onPinChange={this.togglePin} />
-        <ClassPicker
+        <TagPicker
           tag={tag}
           opened={tagPickerOpened}
           onTagChange={this.editTag}

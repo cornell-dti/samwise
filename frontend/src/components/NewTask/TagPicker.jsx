@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { Icon } from 'semantic-ui-react';
-import ClassPicker from '../ClassPicker/ClassPicker';
+import TagListPicker from '../TagListPicker/TagListPicker';
 import styles from './Picker.css';
 import type { State as StoreState, Tag } from '../../store/store-types';
 import { getColorByTagId, getNameByTagId } from '../../util/tag-util';
@@ -18,7 +18,7 @@ type OwnProps = {|
 type SubscribedProps = {| +tags: Tag[] |};
 type Props = {| ...OwnProps; ...SubscribedProps |};
 
-function ClassPickerComponent(props: Props) {
+function TagPicker(props: Props) {
   const {
     tag, opened, tags, onTagChange, onPickerOpened,
   } = props;
@@ -47,14 +47,14 @@ function ClassPickerComponent(props: Props) {
       {displayedNode(tag === NONE_TAG_ID)}
       {opened && (
         <div className={styles.NewTaskClassPick}>
-          <ClassPicker onTagChange={onTagChange} />
+          <TagListPicker onTagChange={onTagChange} />
         </div>
       )}
     </div>
   );
 }
 
-const ConnectedClassPicker = simpleConnect<OwnProps, SubscribedProps>(
+const ConnectedTagPicker = simpleConnect<OwnProps, SubscribedProps>(
   ({ tags }: StoreState) => ({ tags }),
-)(ClassPickerComponent);
-export default ConnectedClassPicker;
+)(TagPicker);
+export default ConnectedTagPicker;

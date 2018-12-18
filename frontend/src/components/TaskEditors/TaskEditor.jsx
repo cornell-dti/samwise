@@ -7,7 +7,7 @@ import Calendar from 'react-calendar';
 import type {
   Tag, State as StoreState, SubTask, Task, PartialMainTask, PartialSubTask,
 } from '../../store/store-types';
-import ClassPicker from '../ClassPicker/ClassPicker';
+import TagListPicker from '../TagListPicker/TagListPicker';
 import CheckBox from '../UI/CheckBox';
 import styles from './TaskEditor.css';
 import { simpleConnect } from '../../store/react-redux-util';
@@ -215,7 +215,7 @@ class TaskEditor extends React.PureComponent<Props, State> {
     );
     const tagEditor = doesShowTagEditor && (
       <div className={styles.TaskEditorTagEditor}>
-        <ClassPicker onTagChange={this.editTaskTag} />
+        <TagListPicker onTagChange={this.editTaskTag} />
       </div>
     );
     const dateDisplay = (<span>{`${date.getMonth() + 1}/${date.getDate()}`}</span>);

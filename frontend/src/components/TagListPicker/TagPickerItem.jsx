@@ -17,7 +17,7 @@ type Props = {|
  * @return {Node} the rendered item.
  * @constructor
  */
-export default function ClassPickerItem(props: Props): Node {
+export default function TagPickerItem(props: Props): Node {
   const {
     id, color, title, onChange,
   } = props;
