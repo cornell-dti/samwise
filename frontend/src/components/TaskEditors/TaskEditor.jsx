@@ -150,20 +150,16 @@ class TaskEditor extends React.PureComponent<Props, State> {
   /**
    * Toggle the editor for the tag of the task.
    */
-  toggleTagEditor = (): void => {
-    this.setState((state: State) => ({
-      doesShowTagEditor: !state.doesShowTagEditor, doesShowCalendarEditor: false,
-    }));
-  };
+  toggleTagEditor = () => this.setState(({ doesShowTagEditor }: State) => ({
+    doesShowTagEditor: !doesShowTagEditor, doesShowCalendarEditor: false,
+  }));
 
   /**
    * Toggle the editor of the deadline of the task.
    */
-  toggleDateEditor = (): void => {
-    this.setState((state: State) => ({
-      doesShowTagEditor: false, doesShowCalendarEditor: !state.doesShowCalendarEditor,
-    }));
-  };
+  toggleDateEditor = () => this.setState(({ doesShowCalendarEditor }: State) => ({
+    doesShowTagEditor: false, doesShowCalendarEditor: !doesShowCalendarEditor,
+  }));
 
   /*
    * --------------------------------------------------------------------------------
@@ -465,10 +461,7 @@ class TaskEditor extends React.PureComponent<Props, State> {
    * @return {Node} the rendered subtask.
    */
   renderSubTask = (subTask: SubTask, index: number, array: SubTask[]): Node => {
-    const {
-      id, name, complete, inFocus,
-    } = subTask;
-    const { needToSwitchFocus } = this.state;
+    const { complete, needToSwitchFocus } = this.state;
     const refHandler = (inputElementRef) => {
       if (index === array.length - 1 && needToSwitchFocus && inputElementRef != null) {
         inputElementRef.focus();
@@ -476,25 +469,30 @@ class TaskEditor extends React.PureComponent<Props, State> {
       }
     };
     return (
-      <div key={id} className={styles.TaskEditorFlexibleContainer}>
+      <div key={subTask.id} className={styles.TaskEditorFlexibleContainer}>
         <CheckBox
           className={styles.TaskEditorCheckBox}
-          checked={complete}
+          checked={complete || subTask.complete}
+          disabled={complete}
           onChange={this.editSubTaskComplete(subTask)}
         />
         <input
           className={styles.TaskEditorFlexibleInput}
           placeholder="Your Sub-Task"
-          value={name}
+          value={subTask.name}
           ref={refHandler}
-          onChange={this.editSubTaskName(id)}
+          onChange={this.editSubTaskName(subTask.id)}
         />
         <Icon
-          name={inFocus ? 'bookmark' : 'bookmark outline'}
+          name={subTask.inFocus ? 'bookmark' : 'bookmark outline'}
           className={styles.TaskEditorIcon}
           onClick={this.editSubTaskInFocus(subTask)}
         />
-        <Icon className={styles.TaskEditorIcon} name="delete" onClick={this.removeSubTask(id)} />
+        <Icon
+          name="delete"
+          className={styles.TaskEditorIcon}
+          onClick={this.removeSubTask(subTask.id)}
+        />
       </div>
     );
   };

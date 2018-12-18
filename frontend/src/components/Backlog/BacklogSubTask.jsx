@@ -35,19 +35,15 @@ function BacklogSubTask(props: Props): Node {
     name, id, mainTaskId, complete, inFocus,
     mainTaskCompleted, editSubTask, removeSubTask,
   } = props;
-  const checkboxPositionElement = mainTaskCompleted
-    ? (<span className={styles.BacklogTaskCheckBoxPlaceHolder} />)
-    : (
+  return (
+    <div className={styles.BacklogSubTask}>
       <CheckBox
         className={styles.BacklogTaskCheckBox}
-        checked={complete}
+        checked={mainTaskCompleted || complete}
+        disabled={mainTaskCompleted}
         inverted
         onChange={() => editSubTask(mainTaskId, id, { complete: !complete })}
       />
-    );
-  return (
-    <div className={styles.BacklogSubTask}>
-      {checkboxPositionElement}
       <span
         className={styles.BacklogTaskText}
         style={(mainTaskCompleted || complete) ? { textDecoration: 'line-through' } : {}}
