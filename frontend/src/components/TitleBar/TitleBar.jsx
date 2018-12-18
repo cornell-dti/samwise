@@ -5,7 +5,7 @@ import type { Node } from 'react';
 import Clock from 'react-live-clock';
 import { date2StringWithYear } from '../../util/datetime-util';
 import styles from './TitleBar.css';
-import SettingsButton from '../Settings/SettingsButton';
+import SettingsButton from './Settings/SettingsButton';
 
 export default (): Node => (
   <header className={styles.Main}>

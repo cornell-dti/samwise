@@ -3,11 +3,11 @@
 import React from 'react';
 import type { Node } from 'react';
 import { Icon } from 'semantic-ui-react';
-import type { BacklogDisplayOption } from '../Backlog/backlog-types';
-import BacklogViewSwitcher from '../Backlog/BacklogViewSwitcher';
-import BacklogDaysContainer from '../Backlog/BacklogDaysContainer';
-import FocusView from '../FocusView/FocusView';
-import { getBacklogHeaderTitle } from '../Backlog/backlog-util';
+import type { FutureViewDisplayOption } from './FutureView/future-view-types';
+import FutureViewSwitcher from './FutureView/FutureViewSwitcher';
+import FutureViewDaysContainer from './FutureView/FutureViewDaysContainer';
+import FocusView from './FocusView/FocusView';
+import { getBacklogHeaderTitle } from './FutureView/future-view-util';
 import SquareIconButton from '../UI/SquareIconButton';
 import SquareTextButton from '../UI/SquareTextButton';
 import styles from './TaskView.css';
@@ -17,7 +17,7 @@ type Props = {||};
 type State = {|
   +doesShowFocusView: boolean;
   +doesShowCompletedTasks: boolean;
-  +displayOption: BacklogDisplayOption;
+  +displayOption: FutureViewDisplayOption;
   +backlogOffset: number;
 |};
 
@@ -91,7 +91,7 @@ export default class TaskView extends React.PureComponent<Props, State> {
    *
    * @param newDisplayOption the new display option for backlog.
    */
-  switchBacklogView = (newDisplayOption: BacklogDisplayOption): void => {
+  switchBacklogView = (newDisplayOption: FutureViewDisplayOption): void => {
     this.setState((oldState: State) => {
       const {
         doesShowFocusView, doesShowCompletedTasks, displayOption, backlogOffset,
@@ -238,9 +238,9 @@ export default class TaskView extends React.PureComponent<Props, State> {
           {backlogTodayButton}
           {backlogNav}
           {toggleCompletedTasksButton}
-          <BacklogViewSwitcher onChange={this.switchBacklogView} />
+          <FutureViewSwitcher onChange={this.switchBacklogView} />
         </div>
-        <BacklogDaysContainer
+        <FutureViewDaysContainer
           doesShowCompletedTasks={doesShowCompletedTasks}
           displayOption={displayOption}
           backlogOffset={backlogOffset}

@@ -2,17 +2,17 @@
 
 import React from 'react';
 import type { Node } from 'react';
-import type { ColoredTask } from './backlog-types';
-import type { FloatingPosition } from '../TaskEditors/task-editors-types';
-import styles from './BacklogDay.css';
-import BacklogDayTaskContainer from './BacklogDayTaskContainer';
-import { countTasks } from './backlog-util';
+import type { ColoredTask } from './future-view-types';
+import type { FloatingPosition } from '../../Util/TaskEditors/task-editors-types';
+import styles from './FutureViewDay.css';
+import FutureViewDayTaskContainer from './FutureViewDayTaskContainer';
+import { countTasks } from './future-view-util';
 import {
   fourDaysViewHeaderHeight, otherViewsHeightHeader,
   taskContainerHeightFourDaysView, taskContainerHeightOtherViews,
   taskHeight,
-} from './backlog-css-props';
-import { day2String } from '../../util/datetime-util';
+} from './future-view-css-props';
+import { day2String } from '../../../util/datetime-util';
 
 type Props = {|
   +date: Date;
@@ -27,7 +27,7 @@ type State = {| +floatingFlowParentRect: DOMRect | null; |};
 /**
  * The component that renders all tasks on a certain day.
  */
-export default class BacklogDay extends React.PureComponent<Props, State> {
+export default class FutureViewDay extends React.PureComponent<Props, State> {
   constructor(props: Props) {
     super(props);
     this.state = { floatingFlowParentRect: null };
@@ -154,7 +154,7 @@ export default class BacklogDay extends React.PureComponent<Props, State> {
         />
         <div className={styles.BacklogDayFloatingView} style={floatingViewStyle}>
           {this.renderHeader(this.isToday(), false)}
-          <BacklogDayTaskContainer
+          <FutureViewDayTaskContainer
             tasks={tasks}
             inFourDaysView={inFourDaysView}
             doesShowCompletedTasks={doesShowCompletedTasks}
@@ -184,7 +184,7 @@ export default class BacklogDay extends React.PureComponent<Props, State> {
     return (
       <div className={wrapperCssClass} ref={(e) => { this.backlogDayElement = e; }}>
         {this.renderHeader(isToday, true)}
-        <BacklogDayTaskContainer
+        <FutureViewDayTaskContainer
           tasks={tasks}
           inFourDaysView={inFourDaysView}
           doesShowCompletedTasks={doesShowCompletedTasks}

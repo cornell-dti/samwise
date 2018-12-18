@@ -3,10 +3,10 @@
 import React from 'react';
 import type { Node } from 'react';
 import { List } from 'semantic-ui-react';
-import type { State, Task } from '../../store/store-types';
-import { simpleConnect } from '../../store/react-redux-util';
+import type { State, Task } from '../../../store/store-types';
+import { simpleConnect } from '../../../store/react-redux-util';
 import styles from './FocusView.css';
-import InlineTaskEditor from '../TaskEditors/InlineTaskEditor';
+import InlineTaskEditor from '../../Util/TaskEditors/InlineTaskEditor';
 
 type Props = {| mainTaskArray: Task[] |};
 

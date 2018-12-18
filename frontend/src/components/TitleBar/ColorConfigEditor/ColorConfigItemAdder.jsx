@@ -3,11 +3,11 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { GithubPicker } from 'react-color';
-import { addTag as addTagAction } from '../../store/actions';
-import type { AddTagAction } from '../../store/action-types';
+import { addTag as addTagAction } from '../../../store/actions';
+import type { AddTagAction } from '../../../store/action-types';
 import styles from './ColorConfigItemAdder.css';
-import type { Tag } from '../../store/store-types';
-import { randomId } from '../../util/general-util';
+import type { Tag } from '../../../store/store-types';
+import { randomId } from '../../../util/general-util';
 
 type Props = {|
   addTag: (tag: Tag) => AddTagAction

@@ -4,8 +4,8 @@ import * as React from 'react';
 import type { Node } from 'react';
 import TagPickerItem from './TagPickerItem';
 import styles from './TagListPicker.css';
-import type { State, Tag } from '../../store/store-types';
-import { simpleConnect } from '../../store/react-redux-util';
+import type { State, Tag } from '../../../store/store-types';
+import { simpleConnect } from '../../../store/react-redux-util';
 
 type OwnProps = {| +onTagChange: (number) => void |};
 type SubscribedProps = {| +tags: Tag[]; |};

@@ -3,9 +3,9 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
 import { GithubPicker } from 'react-color';
-import { editTag as editTagAction } from '../../store/actions';
-import type { EditTagAction } from '../../store/action-types';
-import type { Tag } from '../../store/store-types';
+import { editTag as editTagAction } from '../../../store/actions';
+import type { EditTagAction } from '../../../store/action-types';
+import type { Tag } from '../../../store/store-types';
 import { colMap } from './ListColors';
 
 type Props = {|

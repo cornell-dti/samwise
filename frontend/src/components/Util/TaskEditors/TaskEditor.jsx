@@ -6,13 +6,13 @@ import { Icon } from 'semantic-ui-react';
 import Calendar from 'react-calendar';
 import type {
   Tag, State as StoreState, SubTask, Task, PartialMainTask, PartialSubTask,
-} from '../../store/store-types';
+} from '../../../store/store-types';
 import TagListPicker from '../TagListPicker/TagListPicker';
-import CheckBox from '../UI/CheckBox';
+import CheckBox from '../../UI/CheckBox';
 import styles from './TaskEditor.css';
-import { simpleConnect } from '../../store/react-redux-util';
-import { getNameByTagId, getColorByTagId } from '../../util/tag-util';
-import { randomId } from '../../util/general-util';
+import { simpleConnect } from '../../../store/react-redux-util';
+import { getNameByTagId, getColorByTagId } from '../../../util/tag-util';
+import { randomId } from '../../../util/general-util';
 
 type Actions = {|
   +editMainTask: (partialMainTask: PartialMainTask) => void;

@@ -3,18 +3,18 @@
 import React from 'react';
 import type { Node } from 'react';
 import { Grid } from 'semantic-ui-react';
-import type { BacklogDisplayOption, OneDayTask } from './backlog-types';
-import BacklogDay from './BacklogDay';
-import type { State, Tag, Task } from '../../store/store-types';
-import { simpleConnect } from '../../store/react-redux-util';
-import { buildDaysInBacklog } from './backlog-util';
-import type { DateToTaskMap } from './backlog-util';
-import type { FloatingPosition } from '../TaskEditors/task-editors-types';
-import styles from './BacklogDayContainer.css';
+import type { FutureViewDisplayOption, OneDayTask } from './future-view-types';
+import FutureViewDay from './FutureViewDay';
+import type { State, Tag, Task } from '../../../store/store-types';
+import { simpleConnect } from '../../../store/react-redux-util';
+import { buildDaysInBacklog } from './future-view-util';
+import type { DateToTaskMap } from './future-view-util';
+import type { FloatingPosition } from '../../Util/TaskEditors/task-editors-types';
+import styles from './FutureViewDayContainer.css';
 
 type OwnProps = {|
   +doesShowCompletedTasks: boolean;
-  +displayOption: BacklogDisplayOption;
+  +displayOption: FutureViewDisplayOption;
   +backlogOffset: number;
 |}
 
@@ -67,7 +67,7 @@ const renderDay = (
     key={day.date.toDateString()}
     className={inFourDaysView ? '' : styles.ColumnOtherViews}
   >
-    <BacklogDay
+    <FutureViewDay
       inFourDaysView={inFourDaysView}
       doesShowCompletedTasks={doesShowCompletedTasks}
       taskEditorPosition={taskEditorPosition}
@@ -83,7 +83,7 @@ const renderDay = (
  * @return {Node} the rendered component.
  * @constructor
  */
-function BacklogDaysContainer(props: Props): Node {
+function FutureViewDaysContainer(props: Props): Node {
   const {
     date2TaskMap, tags, displayOption, backlogOffset, doesShowCompletedTasks,
   } = props;
@@ -137,9 +137,9 @@ function BacklogDaysContainer(props: Props): Node {
   return <Grid className={inFourDaysView ? '' : styles.GridOtherViews} stackable>{rows}</Grid>;
 }
 
-const ConnectedBacklogDaysContainer = simpleConnect<OwnProps, SubscribedProps>(
+const ConnectedFutureViewDaysContainer = simpleConnect<OwnProps, SubscribedProps>(
   ({ mainTaskArray, tags }: State): SubscribedProps => ({
     date2TaskMap: buildDate2TaskMap(mainTaskArray), tags,
   }),
-)(BacklogDaysContainer);
-export default ConnectedBacklogDaysContainer;
+)(FutureViewDaysContainer);
+export default ConnectedFutureViewDaysContainer;

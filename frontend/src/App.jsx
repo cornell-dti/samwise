@@ -2,13 +2,13 @@
 
 import React from 'react';
 import type { Node } from 'react';
-import { Provider } from 'react-redux';
+import ReactRedux from 'react-redux';
 import styles from './App.css';
 import TaskCreator from './components/TaskCreator/TaskCreator';
 import TaskView from './components/TaskView/TaskView';
 import TitleBar from './components/TitleBar/TitleBar';
 import type { AppUser } from './util/firebase-util';
-import LoginBarrier from './components/Login/LoginBarrier';
+import LoginBarrier from './components/Util/Login/LoginBarrier';
 import { httpInitializeData } from './http/http-service';
 import { initializeApp, dispatchAction } from './store/store';
 
@@ -30,13 +30,13 @@ const appRenderer = (appUser: AppUser): Node => {
   const store = initializeApp(appUser);
   httpInitializeData().then(a => dispatchAction(a));
   return (
-    <Provider store={store}>
+    <ReactRedux.Provider store={store}>
       <div className={styles.App}>
         <TitleBar />
         <TaskCreator />
         <TaskView />
       </div>
-    </Provider>
+    </ReactRedux.Provider>
   );
 };
 

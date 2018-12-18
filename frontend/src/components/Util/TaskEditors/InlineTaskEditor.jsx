@@ -5,21 +5,21 @@ import type { Node } from 'react';
 import { connect } from 'react-redux';
 import type {
   PartialMainTask, PartialSubTask, SubTask, Task,
-} from '../../store/store-types';
+} from '../../../store/store-types';
 import type {
   EditMainTaskAction,
   EditSubTaskAction,
   AddNewSubTaskAction,
   RemoveSubTaskAction,
   RemoveTaskAction,
-} from '../../store/action-types';
+} from '../../../store/action-types';
 import {
   editMainTask as editMainTaskAction,
   editSubTask as editSubTaskAction,
   addSubTask as addSubTaskAction,
   removeTask as removeTaskAction,
   removeSubTask as removeSubTaskAction,
-} from '../../store/actions';
+} from '../../../store/actions';
 import TaskEditor from './TaskEditor';
 
 type OwnProps = {|

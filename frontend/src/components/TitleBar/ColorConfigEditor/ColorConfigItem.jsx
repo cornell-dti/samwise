@@ -3,10 +3,10 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { Icon } from 'semantic-ui-react';
-import type { RemoveTagAction } from '../../store/action-types';
-import { removeTag as removeTagAction } from '../../store/actions';
+import type { RemoveTagAction } from '../../../store/action-types';
+import { removeTag as removeTagAction } from '../../../store/actions';
 import ColorEditor from './ColorEditor';
-import type { Tag } from '../../store/store-types';
+import type { Tag } from '../../../store/store-types';
 import styles from './IndividualItem.css';
 import { colMap } from './ListColors';
 

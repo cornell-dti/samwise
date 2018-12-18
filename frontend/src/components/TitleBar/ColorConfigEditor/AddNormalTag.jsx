@@ -4,11 +4,11 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { Icon } from 'semantic-ui-react';
 import { GithubPicker } from 'react-color';
-import type { Tag } from '../../store/store-types';
+import type { Tag } from '../../../store/store-types';
 import styles from './IndividualItem.css';
-import type { AddTagAction } from '../../store/action-types';
-import { addTag as addTagAction } from '../../store/actions';
-import { randomId } from '../../util/general-util';
+import type { AddTagAction } from '../../../store/action-types';
+import { addTag as addTagAction } from '../../../store/actions';
+import { randomId } from '../../../util/general-util';
 import { colMap } from './ListColors';
 
 type Props = {|

@@ -3,8 +3,8 @@
 import React from 'react';
 import type { Node } from 'react';
 import ColorConfigItem from './ColorConfigItem';
-import type { State, Tag } from '../../store/store-types';
-import { simpleConnect } from '../../store/react-redux-util';
+import type { State, Tag } from '../../../store/store-types';
+import { simpleConnect } from '../../../store/react-redux-util';
 import AddNormalTag from './AddNormalTag';
 import styles from './ColorConfigItemList.css';
 

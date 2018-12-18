@@ -1,21 +1,21 @@
 // @flow strict
 
-import type { BacklogDisplayOption, ColoredTask, OneDayTask } from './backlog-types';
-import type { Tag, SubTask, Task } from '../../store/store-types';
-import { month2String } from '../../util/datetime-util';
-import { getColorByTagId } from '../../util/tag-util';
+import type { FutureViewDisplayOption, ColoredTask, OneDayTask } from './future-view-types';
+import type { Tag, SubTask, Task } from '../../../store/store-types';
+import { month2String } from '../../../util/datetime-util';
+import { getColorByTagId } from '../../../util/tag-util';
 
 export type DateToTaskMap = Map<string, Task[]>;
 
 /**
  * Compute the start date and end date.
  *
- * @param {BacklogDisplayOption} displayOption the display option of the backlog days container.
+ * @param {FutureViewDisplayOption} displayOption the display option of the backlog days container.
  * @param {number} backlogOffset offset of displaying days.
  * @return {{startDate: Date, endDate: Date}} the start date and end date.
  */
 function computeStartAndEndDay(
-  displayOption: BacklogDisplayOption, backlogOffset: number,
+  displayOption: FutureViewDisplayOption, backlogOffset: number,
 ): {| +startDate: Date; endDate: Date |} {
   // Compute start date (the first date to display)
   const startDate = new Date();
@@ -59,12 +59,12 @@ function computeStartAndEndDay(
 /**
  * Returns a suitable title for the backlog header title.
  *
- * @param {BacklogDisplayOption} displayOption the display option.
+ * @param {FutureViewDisplayOption} displayOption the display option.
  * @param {number} backlogOffset offset of displaying days.
  * @return {string} a suitable title for the backlog header title.
  */
 export function getBacklogHeaderTitle(
-  displayOption: BacklogDisplayOption, backlogOffset: number,
+  displayOption: FutureViewDisplayOption, backlogOffset: number,
 ): string {
   if (displayOption === 'FOUR_DAYS' || displayOption === 'BIWEEKLY') {
     const { startDate, endDate } = computeStartAndEndDay(displayOption, backlogOffset);
@@ -84,13 +84,13 @@ export function getBacklogHeaderTitle(
  *
  * @param {DateToTaskMap} date2TaskMap the map from a date to all the tasks in that day.
  * @param {Tag[]} tags all the color config.
- * @param {BacklogDisplayOption} displayOption the display option.
+ * @param {FutureViewDisplayOption} displayOption the display option.
  * @param {number} backlogOffset offset of displaying days.
  * @return {OneDayTask[]} an array of backlog days information.
  */
 export function buildDaysInBacklog(
   date2TaskMap: DateToTaskMap, tags: Tag[],
-  displayOption: BacklogDisplayOption, backlogOffset: number,
+  displayOption: FutureViewDisplayOption, backlogOffset: number,
 ): OneDayTask[] {
   const { startDate, endDate } = computeStartAndEndDay(displayOption, backlogOffset);
   // Adding the days to array

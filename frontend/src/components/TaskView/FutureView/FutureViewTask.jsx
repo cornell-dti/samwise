@@ -4,18 +4,18 @@ import React from 'react';
 import type { Node } from 'react';
 import { connect } from 'react-redux';
 import { Icon } from 'semantic-ui-react';
-import styles from './BacklogTask.css';
-import type { ColoredTask } from './backlog-types';
+import styles from './FutureViewTask.css';
+import type { ColoredTask } from './future-view-types';
 import {
   editMainTask as editMainTaskAction,
   removeTask as removeTaskAction,
-} from '../../store/actions';
-import BacklogSubTask from './BacklogSubTask';
-import FloatingTaskEditor from '../TaskEditors/FloatingTaskEditor';
-import type { PartialMainTask, SubTask } from '../../store/store-types';
-import type { EditMainTaskAction, RemoveTaskAction } from '../../store/action-types';
-import CheckBox from '../UI/CheckBox';
-import type { FloatingPosition } from '../TaskEditors/task-editors-types';
+} from '../../../store/actions';
+import FutureViewSubTask from './FutureViewSubTask';
+import FloatingTaskEditor from '../../Util/TaskEditors/FloatingTaskEditor';
+import type { PartialMainTask, SubTask } from '../../../store/store-types';
+import type { EditMainTaskAction, RemoveTaskAction } from '../../../store/action-types';
+import CheckBox from '../../UI/CheckBox';
+import type { FloatingPosition } from '../../Util/TaskEditors/task-editors-types';
 
 type Props = {|
   ...ColoredTask;
@@ -29,7 +29,7 @@ type Props = {|
 /**
  * The component used to render one task in backlog day.
  */
-class BacklogTask extends React.PureComponent<Props> {
+class FutureViewTask extends React.PureComponent<Props> {
   /**
    * Get an onClickHandler when the element is clicked.
    * This methods ensure that only clicking on task text counts.
@@ -136,7 +136,7 @@ class BacklogTask extends React.PureComponent<Props> {
     return subtaskArray
       .filter((subTask: SubTask) => (doesShowCompletedTasks || !subTask.complete))
       .map((subTask: SubTask) => (
-        <BacklogSubTask
+        <FutureViewSubTask
           key={subTask.id}
           mainTaskId={id}
           mainTaskCompleted={complete}
@@ -180,8 +180,8 @@ class BacklogTask extends React.PureComponent<Props> {
   }
 }
 
-const ConnectedBackLogTask = connect(
+const ConnectedFutureViewTask = connect(
   null,
   { editMainTask: editMainTaskAction, removeTask: removeTaskAction },
-)(BacklogTask);
-export default ConnectedBackLogTask;
+)(FutureViewTask);
+export default ConnectedFutureViewTask;

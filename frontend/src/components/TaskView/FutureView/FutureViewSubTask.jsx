@@ -4,14 +4,14 @@ import React from 'react';
 import type { Node } from 'react';
 import { connect } from 'react-redux';
 import { Icon } from 'semantic-ui-react';
-import styles from './BacklogTask.css';
+import styles from './FutureViewTask.css';
 import {
   editSubTask as editSubTaskAction,
   removeSubTask as removeSubTaskAction,
-} from '../../store/actions';
-import type { PartialSubTask, SubTask } from '../../store/store-types';
-import type { EditSubTaskAction, RemoveSubTaskAction } from '../../store/action-types';
-import CheckBox from '../UI/CheckBox';
+} from '../../../store/actions';
+import type { PartialSubTask, SubTask } from '../../../store/store-types';
+import type { EditSubTaskAction, RemoveSubTaskAction } from '../../../store/action-types';
+import CheckBox from '../../UI/CheckBox';
 
 type Props = {|
   ...SubTask;
@@ -30,7 +30,7 @@ type Props = {|
  * @return {Node} the rendered element.
  * @constructor
  */
-function BacklogSubTask(props: Props): Node {
+function FutureViewSubTask(props: Props): Node {
   const {
     name, id, mainTaskId, complete, inFocus,
     mainTaskCompleted, editSubTask, removeSubTask,
@@ -64,8 +64,8 @@ function BacklogSubTask(props: Props): Node {
   );
 }
 
-const ConnectedBacklogSubTask = connect(
+const ConnectedFutureViewSubTask = connect(
   null,
   { editSubTask: editSubTaskAction, removeSubTask: removeSubTaskAction },
-)(BacklogSubTask);
-export default ConnectedBacklogSubTask;
+)(FutureViewSubTask);
+export default ConnectedFutureViewSubTask;

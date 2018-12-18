@@ -2,10 +2,10 @@
 
 import React from 'react';
 import type { Node } from 'react';
-import type { ColoredTask } from './backlog-types';
-import type { FloatingPosition } from '../TaskEditors/task-editors-types';
-import BacklogTask from './BacklogTask';
-import styles from './BacklogDayTaskContainer.css';
+import type { ColoredTask } from './future-view-types';
+import type { FloatingPosition } from '../../Util/TaskEditors/task-editors-types';
+import FutureViewTask from './FutureViewTask';
+import styles from './FutureViewDayTaskContainer.css';
 
 type Props = {|
   +tasks: ColoredTask[];
@@ -21,14 +21,14 @@ type Props = {|
  * @param {Props} props all the props passed in. Read the type definitions above.
  * @constructor
  */
-export default function BacklogDayTaskContainer(props: Props): Node {
+export default function FutureViewDayTaskContainer(props: Props): Node {
   const {
     tasks, inFourDaysView, doesShowCompletedTasks, taskEditorPosition, hideOverflow,
   } = props;
   const taskListComponent = tasks
     .filter((t: ColoredTask) => (doesShowCompletedTasks || !t.complete))
     .map((t: ColoredTask) => (
-      <BacklogTask
+      <FutureViewTask
         key={t.id}
         inFourDaysView={inFourDaysView}
         doesShowCompletedTasks={doesShowCompletedTasks}

@@ -5,14 +5,14 @@ import type { Node } from 'react';
 import { connect } from 'react-redux';
 import type {
   PartialMainTask, PartialSubTask, SubTask, Task,
-} from '../../store/store-types';
+} from '../../../store/store-types';
 import type { FloatingPosition } from './task-editors-types';
-import { editTask as editTaskAction, removeTask as removeTaskAction } from '../../store/actions';
+import { editTask as editTaskAction, removeTask as removeTaskAction } from '../../../store/actions';
 import TaskEditor from './TaskEditor';
-import type { EditTaskAction, RemoveTaskAction } from '../../store/action-types';
+import type { EditTaskAction, RemoveTaskAction } from '../../../store/action-types';
 import styles from './FloatingTaskEditor.css';
 import { TaskEditorFlexiblePadding as flexiblePaddingClass } from './TaskEditor.css';
-import { replaceSubTask } from '../../util/task-util';
+import { replaceSubTask } from '../../../util/task-util';
 
 type Props = {|
   +position: FloatingPosition;

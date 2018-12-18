@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { Icon } from 'semantic-ui-react';
-import TagListPicker from '../TagListPicker/TagListPicker';
+import TagListPicker from '../Util/TagListPicker/TagListPicker';
 import styles from './Picker.css';
 import type { State as StoreState, Tag } from '../../store/store-types';
 import { getColorByTagId, getNameByTagId } from '../../util/tag-util';
