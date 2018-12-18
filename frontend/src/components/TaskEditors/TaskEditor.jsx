@@ -5,7 +5,7 @@ import type { Node } from 'react';
 import { Icon } from 'semantic-ui-react';
 import Calendar from 'react-calendar';
 import type {
-  Tag, State as StoreState, SubTask, Task, MainTask, PartialSubTask,
+  Tag, State as StoreState, SubTask, Task, PartialMainTask, PartialSubTask,
 } from '../../store/store-types';
 import ClassPicker from '../ClassPicker/ClassPicker';
 import CheckBox from '../UI/CheckBox';
@@ -36,7 +36,7 @@ type OwnProps = {|
 |};
 type SubscribedProps = {| +tags: Tag[]; |};
 type ActionProps = {|
-  +editMainTask: (taskId: number, partialMainTask: $Shape<MainTask>) => EditMainTaskAction;
+  +editMainTask: (taskId: number, partialMainTask: PartialMainTask) => EditMainTaskAction;
   +editSubTask: (
     taskId: number, subtaskId: number, partialSubTask: PartialSubTask,
   ) => EditSubTaskAction;

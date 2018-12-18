@@ -1,7 +1,9 @@
 // @flow strict
 
 import type { ActionCreators as ReduxActionCreators, Dispatch as ReduxDispatch } from 'redux';
-import type { MainTask, PartialSubTask, Tag, Task } from './store-types';
+import type {
+  PartialMainTask, PartialSubTask, Tag, Task,
+} from './store-types';
 
 /*
  * --------------------------------------------------------------------------------
@@ -13,7 +15,7 @@ export type AddNewTaskAction = {| +type: 'ADD_NEW_TASK'; +data: Task; |};
 export type EditTaskAction = {| +type: 'EDIT_TASK'; +task: Task; |};
 
 export type EditMainTaskAction = {|
-  +type: 'EDIT_MAIN_TASK'; +taskId: number; +partialMainTask: $Shape<MainTask>;
+  +type: 'EDIT_MAIN_TASK'; +taskId: number; +partialMainTask: PartialMainTask;
 |};
 export type EditSubTaskAction = {|
   +type: 'EDIT_SUB_TASK'; +taskId: number; +subtaskId: number; +partialSubTask: PartialSubTask;

@@ -12,7 +12,7 @@ import {
 } from '../../store/actions';
 import BacklogSubTask from './BacklogSubTask';
 import FloatingTaskEditor from '../TaskEditors/FloatingTaskEditor';
-import type { MainTask, SubTask } from '../../store/store-types';
+import type { PartialMainTask, SubTask } from '../../store/store-types';
 import type { EditMainTaskAction, RemoveTaskAction } from '../../store/action-types';
 import CheckBox from '../UI/CheckBox';
 import type { FloatingPosition } from '../TaskEditors/task-editors-types';
@@ -22,7 +22,7 @@ type Props = {|
   +inFourDaysView: boolean;
   +doesShowCompletedTasks: boolean;
   +taskEditorPosition: FloatingPosition;
-  +editMainTask: (taskId: number, partialMainTask: $Shape<MainTask>) => EditMainTaskAction;
+  +editMainTask: (taskId: number, partialMainTask: PartialMainTask) => EditMainTaskAction;
   +removeTask: (taskId: number, undoable?: boolean) => RemoveTaskAction;
 |};
 

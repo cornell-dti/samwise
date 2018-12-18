@@ -16,7 +16,7 @@ import type {
   BackendPatchNewTagAction, EditMainTaskAction, EditSubTaskAction,
 } from './action-types';
 import type {
-  MainTask, PartialSubTask, Tag, Task,
+  PartialMainTask, PartialSubTask, Tag, Task,
 } from './store-types';
 
 /**
@@ -61,11 +61,11 @@ export const editTask = (task: Task): EditTaskAction => ({ type: 'EDIT_TASK', ta
  * Edit main task is the action to edit various parts of main task except subtasks.
  *
  * @param {number} taskId the id of the task to edit.
- * @param {$Shape<MainTask>} partialMainTask the main task info with every field optional.
+ * @param {PartialMainTask} partialMainTask the main task info with every field optional.
  * @return {EditMainTaskAction} the edit main task action.
  */
 export const editMainTask = (
-  taskId: number, partialMainTask: $Shape<MainTask>,
+  taskId: number, partialMainTask: PartialMainTask,
 ): EditMainTaskAction => ({ type: 'EDIT_MAIN_TASK', taskId, partialMainTask });
 
 /**
@@ -73,7 +73,7 @@ export const editMainTask = (
  *
  * @param {number} taskId the id of the task to edit.
  * @param {number} subtaskId the id of the subtask to edit.
- * @param {$Shape<MainTask>} partialSubTask the subtask info with every field optional.
+ * @param {PartialSubTask} partialSubTask the subtask info with every field optional.
  * @return {EditSubTaskAction} the edit sub-task action.
  */
 export const editSubTask = (

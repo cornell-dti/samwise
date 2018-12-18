@@ -99,7 +99,7 @@ function addTask(prevState: State, newTask: Task): State {
  *
  * @param {Task[]} mainTaskArray the main task array to modify.
  * @param {number} taskId the main task id.
- * @param {$Shape<MainTask>} partialMainTask partial information of main task to edit.
+ * @param {PartialMainTask} partialMainTask partial information of main task to edit.
  * @return {Task[]} the new task array with the specified task edited.
  */
 function editMainTask(

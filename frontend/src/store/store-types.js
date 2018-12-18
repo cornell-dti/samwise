@@ -35,9 +35,9 @@ export type Task = {|
 |};
 
 /**
- * The task type without id and subtask.
+ * The task type without id and subtask, and with all properties as optional.
  */
-export type MainTask = $Diff<Task, {| +id: number; +subtaskArray: SubTask[]; |}>;
+export type PartialMainTask = $Shape<$Diff<Task, {| +id: number; +subtaskArray: SubTask[]; |}>>;
 
 /**
  * The cache that is designed to store the stuff that can be undo.

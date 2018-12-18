@@ -13,7 +13,7 @@
     "react-firebaseui": "^3.1.2",
     "react-live-clock": "^3.0.0",
     "react-redux": "^5.1.1",
-    "react-scripts": "2.1.1",
+    "react-scripts": "^2.1.1",
     "react-toastify": "^4.5.0",
     "redux": "^4.0.1",
     "semantic-ui-react": "^0.84.0"
@@ -27,10 +27,10 @@
   },
   "devDependencies": {
     "@babel/core": "^7.2.2",
-    "@babel/preset-env": "^7.2.0",
-    "@babel/preset-react": "^7.0.0",
-    "@babel/preset-flow": "^7.0.0",
     "@babel/plugin-proposal-optional-chaining": "^7.2.0",
+    "@babel/preset-env": "^7.2.0",
+    "@babel/preset-flow": "^7.0.0",
+    "@babel/preset-react": "^7.0.0",
     "babel-eslint": "^10.0.1",
     "babel-loader": "^8.0.4",
     "babel-plugin-transform-class-properties": "^6.24.1",
@@ -43,6 +43,8 @@
     "eslint-plugin-jsx-a11y": "^6.1.2",
     "eslint-plugin-react": "^7.11.1",
     "flow-bin": "^0.89.0",
+    "stylelint": "^9.9.0",
+    "stylelint-config-recommended": "^2.1.0",
     "webpack": "^4.27.1",
     "webpack-cli": "^3.1.2",
     "webpack-dev-server": "^3.1.10"
