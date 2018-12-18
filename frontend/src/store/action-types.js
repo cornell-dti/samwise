@@ -2,7 +2,7 @@
 
 import type { ActionCreators as ReduxActionCreators, Dispatch as ReduxDispatch } from 'redux';
 import type {
-  PartialMainTask, PartialSubTask, Tag, Task,
+  PartialMainTask, PartialSubTask, SubTask, Tag, Task,
 } from './store-types';
 
 /*
@@ -11,9 +11,12 @@ import type {
  * --------------------------------------------------------------------------------
  */
 
-export type AddNewTaskAction = {| +type: 'ADD_NEW_TASK'; +data: Task; |};
-export type EditTaskAction = {| +type: 'EDIT_TASK'; +task: Task; |};
+export type AddNewTaskAction = {| +type: 'ADD_NEW_TASK'; +task: Task; |};
+export type AddNewSubTaskAction = {|
+  +type: 'ADD_NEW_SUBTASK'; +taskId: number; +subTask: SubTask;
+|};
 
+export type EditTaskAction = {| +type: 'EDIT_TASK'; +task: Task; |};
 export type EditMainTaskAction = {|
   +type: 'EDIT_MAIN_TASK'; +taskId: number; +partialMainTask: PartialMainTask;
 |};
@@ -28,6 +31,7 @@ export type RemoveSubTaskAction = {|
 
 type TaskAction =
   | AddNewTaskAction
+  | AddNewSubTaskAction
   | EditTaskAction
   | EditMainTaskAction
   | EditSubTaskAction
@@ -71,6 +75,9 @@ export type BackendPatchNewTagAction = {|
 export type BackendPatchNewTaskAction = {|
   +type: 'BACKEND_PATCH_NEW_TASK'; +tempNewTaskId: number; +task: Task;
 |};
+export type BackendPatchNewSubTaskAction = {|
+  +type: 'BACKEND_PATCH_NEW_SUBTASK'; +taskId: number; +tempNewSubTaskId: number; +subTask: SubTask;
+|};
 export type BackendPatchExistingTaskAction = {|
   +type: 'BACKEND_PATCH_EXISTING_TASK'; +task: Task;
 |};
@@ -84,6 +91,7 @@ export type BackendPatchLoadedDataAction = {|
 export type BackendPatchAction =
   | BackendPatchNewTagAction
   | BackendPatchNewTaskAction
+  | BackendPatchNewSubTaskAction
   | BackendPatchExistingTaskAction
   | BackendPatchLoadedDataAction
 

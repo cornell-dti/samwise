@@ -5,4 +5,4 @@
  *
  * @return {number} a random id.
  */
-export const randomId = (): number => ((10 * new Date()) + Math.floor(1000 * Math.random()));
+export const randomId = (): number => ((10 * new Date()) + Math.floor(10000 * Math.random()));

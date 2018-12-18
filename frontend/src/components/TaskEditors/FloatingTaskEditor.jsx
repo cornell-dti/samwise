@@ -3,21 +3,26 @@
 import React from 'react';
 import type { Node } from 'react';
 import { connect } from 'react-redux';
-import type { Task } from '../../store/store-types';
+import type {
+  PartialMainTask, PartialSubTask, SubTask, Task,
+} from '../../store/store-types';
 import type { FloatingPosition } from './task-editors-types';
-import { editTask as editTaskAction } from '../../store/actions';
+import { editTask as editTaskAction, removeTask as removeTaskAction } from '../../store/actions';
 import TaskEditor from './TaskEditor';
-import type { EditTaskAction } from '../../store/action-types';
+import type { EditTaskAction, RemoveTaskAction } from '../../store/action-types';
 import styles from './FloatingTaskEditor.css';
+import { TaskEditorFlexiblePadding as flexiblePaddingClass } from './TaskEditor.css';
+import { replaceSubTask } from '../../util/task-util';
 
 type Props = {|
   +position: FloatingPosition;
   +initialTask: Task;
   +trigger: (opener: () => void) => Node;
   +editTask: (task: Task) => EditTaskAction;
+  +removeTask: (taskId: number, undoable?: boolean) => RemoveTaskAction;
 |};
 
-type State = {| +open: boolean; |};
+type State = {| ...Task; +open: boolean; |};
 
 /**
  * FloatingTaskEditor is a component used to edit a task on the fly.
@@ -35,11 +40,22 @@ type State = {| +open: boolean; |};
 class FloatingTaskEditor extends React.PureComponent<Props, State> {
   constructor(props: Props) {
     super(props);
-    this.state = { open: false };
+    this.state = { ...props.initialTask, open: false };
   }
 
   componentDidMount() {
     window.addEventListener('resize', this.updateFloatingEditorPosition);
+  }
+
+  componentWillReceiveProps(nextProps: Props) {
+    // This methods ensure that the stuff inside the editor is always the latest from store.
+    // Since we implement task in an immutable data structure, a shallow equality comparison is
+    // enough.
+    const { initialTask } = this.props;
+    if (initialTask !== nextProps.initialTask) {
+      const nextInitialTask = nextProps.initialTask;
+      this.setState({ ...nextInitialTask });
+    }
   }
 
   componentDidUpdate() {
@@ -93,13 +109,33 @@ class FloatingTaskEditor extends React.PureComponent<Props, State> {
   closePopup = (): void => this.setState({ open: false });
 
   /**
-   * Handle the onSave event.
+   * Check whether a task has a good format.
    *
-   * @param {Task} task task to save.
+   * @param {Task} task the task to check.
+   * @return {boolean} whether the task has a good format.
    */
-  onSave = (task: Task): void => {
+  taskIsGood = (task: Task): boolean => task.name.trim().length > 0;
+
+  /**
+   * Filter the task without all the empty subtasks.
+   *
+   * @param {Task} task the task to filter.
+   * @return {Task} the filtered task.
+   */
+  filterEmptySubTasks = (task: Task): Task => ({
+    ...task, subtaskArray: task.subtaskArray.filter(t => t.name.trim().length > 0),
+  });
+
+  /**
+   * Handle the onSave event.
+   */
+  onSave = (): void => {
     const { editTask } = this.props;
-    editTask(task);
+    const { open, ...task } = this.state;
+    if (!this.taskIsGood(task)) {
+      return;
+    }
+    editTask(this.filterEmptySubTasks(task));
     this.closePopup();
   };
 
@@ -109,9 +145,27 @@ class FloatingTaskEditor extends React.PureComponent<Props, State> {
    */
   editorElement: ?HTMLElement;
 
+  /**
+   * Render the manual submit button component.
+   *
+   * @return {Node} the manual submit button component.
+   */
+  renderSubmitComponent = (): Node => (
+    <div className={styles.FloatingTaskEditorSubmitButtonRow}>
+      <span className={flexiblePaddingClass} />
+      <div
+        role="presentation"
+        className={styles.FloatingTaskEditorSaveButton}
+        onClick={this.onSave}
+      >
+        <span className={styles.FloatingTaskEditorSaveButtonText}>Save</span>
+      </div>
+    </div>
+  );
+
   render(): Node {
-    const { initialTask, trigger } = this.props;
-    const { open } = this.state;
+    const { trigger, removeTask } = this.props;
+    const { open, ...task } = this.state;
     const triggerNode = trigger(this.openPopup);
     const blockerNode = open && (
       <div
@@ -122,14 +176,32 @@ class FloatingTaskEditor extends React.PureComponent<Props, State> {
         onKeyDown={this.closePopup}
       />
     );
+    const taskEditorProps = {
+      ...task,
+      editMainTask: (partialMainTask: PartialMainTask) => this.setState(partialMainTask),
+      editSubTask: (subtaskId: number, partialSubTask: PartialSubTask) => {
+        this.setState(({ subtaskArray }: State) => ({
+          subtaskArray: replaceSubTask(
+            subtaskArray, subtaskId, s => ({ ...s, ...partialSubTask }),
+          ),
+        }));
+      },
+      addSubTask: (subTask: SubTask) => {
+        this.setState(({ subtaskArray }: State) => ({
+          subtaskArray: [...subtaskArray, subTask],
+        }));
+      },
+      removeTask: () => { removeTask(task.id); },
+      removeSubTask: (subtaskId: number) => {
+        this.setState(({ subtaskArray }: State) => ({
+          subtaskArray: subtaskArray.filter(s => s.id !== subtaskId),
+        }));
+      },
+      className: styles.FloatingTaskEditor,
+      refFunction: (e) => { this.editorElement = e; },
+    };
     const editorNode = open && (
-      <TaskEditor
-        initialTask={initialTask}
-        saveImmediately={false}
-        onSave={this.onSave}
-        className={styles.FloatingTaskEditor}
-        refFunction={(e) => { this.editorElement = e; }}
-      />
+      <TaskEditor {...taskEditorProps}>{this.renderSubmitComponent()}</TaskEditor>
     );
     return (
       <React.Fragment>
@@ -141,5 +213,8 @@ class FloatingTaskEditor extends React.PureComponent<Props, State> {
   }
 }
 
-const ConnectedFloatingTaskEditor = connect(null, { editTask: editTaskAction })(FloatingTaskEditor);
+const ConnectedFloatingTaskEditor = connect(
+  null,
+  { editTask: editTaskAction, removeTask: removeTaskAction },
+)(FloatingTaskEditor);
 export default ConnectedFloatingTaskEditor;

@@ -5,18 +5,22 @@ import type {
   EditTagAction,
   RemoveTagAction,
   AddNewTaskAction,
+  AddNewSubTaskAction,
   EditTaskAction,
+  EditMainTaskAction,
+  EditSubTaskAction,
   RemoveTaskAction,
   RemoveSubTaskAction,
   UndoDeleteTaskAction,
   ClearUndoDeleteTaskAction,
   BackendPatchNewTaskAction,
+  BackendPatchNewSubTaskAction,
   BackendPatchExistingTaskAction,
   BackendPatchLoadedDataAction,
-  BackendPatchNewTagAction, EditMainTaskAction, EditSubTaskAction,
+  BackendPatchNewTagAction,
 } from './action-types';
 import type {
-  PartialMainTask, PartialSubTask, Tag, Task,
+  PartialMainTask, PartialSubTask, SubTask, Tag, Task,
 } from './store-types';
 
 /**
@@ -47,7 +51,17 @@ export const removeTag = (tagId: number): RemoveTagAction => ({ type: 'REMOVE_TA
  * @param task the task to add.
  * @return {AddNewTaskAction} the add task action.
  */
-export const addTask = (task: Task): AddNewTaskAction => ({ type: 'ADD_NEW_TASK', data: task });
+export const addTask = (task: Task): AddNewTaskAction => ({ type: 'ADD_NEW_TASK', task });
+/**
+ * Add subtask is an action that can be used to append a subtask to a new task.
+ *
+ * @param {number} taskId the task id of the main task.
+ * @param {AddNewSubTaskAction} subTask the new subtask.
+ * @return {{subTask: SubTask, type: string, taskId: number}}
+ */
+export const addSubTask = (taskId: number, subTask: SubTask): AddNewSubTaskAction => ({
+  type: 'ADD_NEW_SUBTASK', taskId, subTask,
+});
 
 /**
  * Edit task is an action that can be used to edit an existing task.
@@ -133,11 +147,24 @@ export const backendPatchNewTag = (id: number, t: Tag): BackendPatchNewTagAction
  * Let the backend patch a new task.
  *
  * @param {number} id the temp randomly assigned new task id.
- * @param {Task} t the task to patch.
+ * @param {Task} task the task to patch.
  * @return {BackendPatchExistingTaskAction} the backend patch task action.
  */
-export const backendPatchNewTask = (id: number, t: Task): BackendPatchNewTaskAction => ({
-  type: 'BACKEND_PATCH_NEW_TASK', tempNewTaskId: id, task: t,
+export const backendPatchNewTask = (id: number, task: Task): BackendPatchNewTaskAction => ({
+  type: 'BACKEND_PATCH_NEW_TASK', tempNewTaskId: id, task,
+});
+/**
+ * Let the backend patch a new subtask.
+ *
+ * @param {number} taskId the main task id.
+ * @param {number} tempNewSubTaskId the temp randomly assigned new subtask id.
+ * @param {SubTask} subTask the subtask to patch.
+ * @return {BackendPatchExistingTaskAction} the backend patch subtask action.
+ */
+export const backendPatchNewSubTask = (
+  taskId: number, tempNewSubTaskId: number, subTask: SubTask,
+): BackendPatchNewSubTaskAction => ({
+  type: 'BACKEND_PATCH_NEW_SUBTASK', taskId, tempNewSubTaskId, subTask,
 });
 
 /**

@@ -9,161 +9,76 @@ import type {
 } from '../../store/store-types';
 import ClassPicker from '../ClassPicker/ClassPicker';
 import CheckBox from '../UI/CheckBox';
-import type { SimpleMainTask } from './task-editors-types';
 import styles from './TaskEditor.css';
-import { fullConnect } from '../../store/react-redux-util';
+import { simpleConnect } from '../../store/react-redux-util';
 import { getNameByTagId, getColorByTagId } from '../../util/tag-util';
-import type {
-  EditMainTaskAction, EditSubTaskAction, RemoveTaskAction,
-} from '../../store/action-types';
-import {
-  editMainTask as editMainTaskAction,
-  editSubTask as editSubTaskAction,
-  removeTask as removeTaskAction,
-} from '../../store/actions';
 import { randomId } from '../../util/general-util';
-import { replaceSubTask } from '../../util/task-util';
 
+type Actions = {|
+  +editMainTask: (partialMainTask: PartialMainTask) => void;
+  +editSubTask: (subtaskId: number, partialSubTask: PartialSubTask) => void;
+  +addSubTask: (subTask: SubTask) => void;
+  +removeTask: () => void;
+  +removeSubTask: (subtaskId: number) => void;
+|};
+type DefaultProps = {|
+  +className?: string;
+  children?: Node;
+  +disabled?: boolean;
+  +onFocus?: (event: SyntheticFocusEvent<HTMLElement>) => void;
+  +onBlur?: (event: SyntheticFocusEvent<HTMLElement>) => void;
+  +refFunction?: (HTMLElement | null) => void; // used to get the DOM element.
+|};
 type OwnProps = {|
-  +initialTask: Task; // The initial task to edit, as a starting point.
-  isReadOnly?: boolean; // whether the editor is read-only, which defaults to false.
-  +saveImmediately: boolean; // whether to save immediately.
-  +onSave: (Task) => void; // called when the task is saved, either automatically or save by user.
-  className?: string;
-  onFocus?: (event: SyntheticFocusEvent<HTMLElement>) => void;
-  onBlur?: (event: SyntheticFocusEvent<HTMLElement>) => void;
-  refFunction?: (HTMLElement | null) => void; // used to get the div DOM element.
+  ...Task; // The task given to the editor at this point.
+  ...Actions; // Various editor actions.
+  ...DefaultProps; // Props with default values.
 |};
 type SubscribedProps = {| +tags: Tag[]; |};
-type ActionProps = {|
-  +editMainTask: (taskId: number, partialMainTask: PartialMainTask) => EditMainTaskAction;
-  +editSubTask: (
-    taskId: number, subtaskId: number, partialSubTask: PartialSubTask,
-  ) => EditSubTaskAction;
-  +removeTask: (taskId: number, undoable?: boolean) => RemoveTaskAction;
-|};
-type Props = {| ...OwnProps; ...SubscribedProps; ...ActionProps |};
+type Props = {| ...OwnProps; ...SubscribedProps; |};
 
 type State = {|
-  ...SimpleMainTask;
-  +subtaskArray: SubTask[];
-  +backgroundColor: string;
   +doesShowTagEditor: boolean;
-  +doesShowCalendarEditor: boolean;
+  +doesShowDateEditor: boolean;
   +needToSwitchFocus: boolean;
 |};
 
 /**
- * The component of an standalone task editor. It is designed to be wrapped inside another
- * component to extend its functionality.
+ * The component of an standalone task editor.
+ * It is designed to be wrapped inside another component to extend its functionality. The task
+ * editor itself does not remember the state of editing a task, a wrapper component should.
  * You can read the docs for props above.
  */
 class TaskEditor extends React.PureComponent<Props, State> {
-  constructor(props: Props) {
-    super(props);
-    const { initialTask, tags } = props;
-    this.state = {
-      ...initialTask,
-      backgroundColor: getColorByTagId(tags, initialTask.tag),
-      doesShowTagEditor: false,
-      doesShowCalendarEditor: false,
-      needToSwitchFocus: false,
-    };
-  }
-
-  componentWillReceiveProps(nextProps: Props) {
-    // This methods ensure that the stuff inside the editor is always the latest from store.
-    // Since we implement task in an immutable data structure, a shallow equality comparison is
-    // enough.
-    const { initialTask, tags } = this.props;
-    if (initialTask !== nextProps.initialTask || tags !== nextProps.tags) {
-      const nextInitialTask = nextProps.initialTask;
-      const backgroundColor = getColorByTagId(nextProps.tags, nextInitialTask.tag);
-      this.setState({ ...nextInitialTask, backgroundColor });
-    }
-  }
-
-  /**
-   * Report whether the task editor is read only.
-   *
-   * @return {boolean} whether the task editor is read only.
-   */
-  isReadOnly = (): boolean => {
-    const { isReadOnly } = this.props;
-    return isReadOnly != null && isReadOnly;
-  };
-
-  /**
-   * Check whether a task has a good format.
-   *
-   * @param {Task} task the task to check.
-   * @return {boolean} whether the task has a good format.
-   */
-  taskIsGood = (task: Task): boolean => task.name.trim().length > 0;
-
-  /**
-   * Filter the task without all the empty subtasks.
-   *
-   * @param {Task} task the task to filter.
-   * @return {Task} the filtered task.
-   */
-  filterEmptySubTasks = (task: Task): Task => ({
-    ...task, subtaskArray: task.subtaskArray.filter(t => t.name.trim().length > 0),
-  });
-
-  /**
-   * The auto save handler.
-   */
-  autoSave = (): void => {
-    const { saveImmediately } = this.props;
-    if (saveImmediately) {
-      this.submitChanges();
-    }
-  };
-
-  /**
-   * Submit all the changes when clicking submit.
-   *
-   * @param event the event that notifies about clicking 'submit'.
-   */
-  submitChanges = (event: ?Event = null): void => {
-    if (event != null) {
-      event.preventDefault();
-    }
-    const {
-      backgroundColor, doesShowTagEditor, doesShowCalendarEditor, needToSwitchFocus,
-      ...task
-    } = this.state;
-    if (!this.taskIsGood(task)) {
-      return;
-    }
-    const { onSave } = this.props;
-    onSave(this.filterEmptySubTasks(task));
+  state: State = {
+    doesShowTagEditor: false,
+    doesShowDateEditor: false,
+    needToSwitchFocus: false,
   };
 
   /*
    * --------------------------------------------------------------------------------
-   * Part ?: Toggle Methods
+   * Part 1: Toggle Methods
    * --------------------------------------------------------------------------------
    */
 
   /**
    * Toggle the editor for the tag of the task.
    */
-  toggleTagEditor = () => this.setState(({ doesShowTagEditor }: State) => ({
-    doesShowTagEditor: !doesShowTagEditor, doesShowCalendarEditor: false,
+  toggleTagEditor = () => this.setState((state: State) => ({
+    doesShowTagEditor: !state.doesShowTagEditor, doesShowDateEditor: false,
   }));
 
   /**
    * Toggle the editor of the deadline of the task.
    */
-  toggleDateEditor = () => this.setState(({ doesShowCalendarEditor }: State) => ({
-    doesShowTagEditor: false, doesShowCalendarEditor: !doesShowCalendarEditor,
+  toggleDateEditor = () => this.setState((state: State) => ({
+    doesShowTagEditor: false, doesShowDateEditor: !state.doesShowDateEditor,
   }));
 
   /*
    * --------------------------------------------------------------------------------
-   * Part ?: Editor Methods
+   * Part 2: Editor Methods
    * --------------------------------------------------------------------------------
    */
 
@@ -175,14 +90,8 @@ class TaskEditor extends React.PureComponent<Props, State> {
   editTaskName = (event: SyntheticEvent<HTMLInputElement>): void => {
     event.preventDefault();
     const name = event.currentTarget.value;
-    const { saveImmediately } = this.props;
-    if (saveImmediately) {
-      const { editMainTask } = this.props;
-      const { id } = this.state;
-      editMainTask(id, { name });
-    } else {
-      this.setState({ name });
-    }
+    const { editMainTask } = this.props;
+    editMainTask({ name });
   };
 
   /**
@@ -191,20 +100,9 @@ class TaskEditor extends React.PureComponent<Props, State> {
    * @param {number} tag the new tag id.
    */
   editTaskTag = (tag: number): void => {
-    const { saveImmediately } = this.props;
-    if (saveImmediately) {
-      const { editMainTask } = this.props;
-      const { id } = this.state;
-      editMainTask(id, { tag });
-      this.setState({ doesShowTagEditor: false });
-    } else {
-      const { tags } = this.props;
-      this.setState({
-        tag,
-        backgroundColor: getColorByTagId(tags, tag),
-        doesShowTagEditor: false,
-      });
-    }
+    const { editMainTask } = this.props;
+    editMainTask({ tag });
+    this.setState({ doesShowTagEditor: false });
   };
 
   /**
@@ -213,44 +111,26 @@ class TaskEditor extends React.PureComponent<Props, State> {
    * @param {string} dateString the new date in string.
    */
   editTaskDate = (dateString: string): void => {
-    const { saveImmediately } = this.props;
     const date = new Date(dateString);
-    if (saveImmediately) {
-      const { editMainTask } = this.props;
-      const { id } = this.state;
-      editMainTask(id, { date });
-      this.setState({ doesShowCalendarEditor: false });
-    } else {
-      this.setState({ doesShowCalendarEditor: false, date });
-    }
+    const { editMainTask } = this.props;
+    editMainTask({ date });
+    this.setState({ doesShowDateEditor: false });
   };
 
   /**
    * Toggle the completion status of the task.
    */
   editComplete = () => {
-    const { saveImmediately } = this.props;
-    if (saveImmediately) {
-      const { editMainTask } = this.props;
-      const { id, complete } = this.state;
-      editMainTask(id, { complete: !complete });
-    } else {
-      this.setState(({ complete }: State) => ({ complete: !complete }));
-    }
+    const { complete, editMainTask } = this.props;
+    editMainTask({ complete: !complete });
   };
 
   /**
    * Change the in-focus status of the task.
    */
   editInFocus = () => {
-    const { saveImmediately } = this.props;
-    if (saveImmediately) {
-      const { editMainTask } = this.props;
-      const { id, inFocus } = this.state;
-      editMainTask(id, { inFocus: !inFocus });
-    } else {
-      this.setState(({ inFocus }: State) => ({ inFocus: !inFocus }));
-    }
+    const { inFocus, editMainTask } = this.props;
+    editMainTask({ inFocus: !inFocus });
   };
 
   /**
@@ -264,16 +144,8 @@ class TaskEditor extends React.PureComponent<Props, State> {
   editSubTaskName = (subtaskId: number) => (event: SyntheticEvent<HTMLInputElement>): void => {
     event.preventDefault();
     const name = event.currentTarget.value;
-    const { saveImmediately } = this.props;
-    if (saveImmediately) {
-      const { editSubTask } = this.props;
-      const { id } = this.state;
-      editSubTask(id, subtaskId, { name });
-    } else {
-      this.setState(({ subtaskArray }: State) => ({
-        subtaskArray: replaceSubTask(subtaskArray, subtaskId, s => ({ ...s, name })),
-      }));
-    }
+    const { editSubTask } = this.props;
+    editSubTask(subtaskId, { name });
   };
 
   /**
@@ -283,18 +155,8 @@ class TaskEditor extends React.PureComponent<Props, State> {
    * @return {function(): void} the edit completion event handler.
    */
   editSubTaskComplete = (subTask: SubTask) => (): void => {
-    const { saveImmediately } = this.props;
-    if (saveImmediately) {
-      const { editSubTask } = this.props;
-      const { id } = this.state;
-      editSubTask(id, subTask.id, { complete: !subTask.complete });
-    } else {
-      this.setState(({ subtaskArray }: State) => ({
-        subtaskArray: replaceSubTask(
-          subtaskArray, subTask.id, s => ({ ...s, complete: !s.complete }),
-        ),
-      }));
-    }
+    const { editSubTask } = this.props;
+    editSubTask(subTask.id, { complete: !subTask.complete });
   };
 
   /**
@@ -304,49 +166,8 @@ class TaskEditor extends React.PureComponent<Props, State> {
    * @return {function(): void} the edit completion event handler.
    */
   editSubTaskInFocus = (subTask: SubTask) => (): void => {
-    const { saveImmediately } = this.props;
-    if (saveImmediately) {
-      const { editSubTask } = this.props;
-      const { id } = this.state;
-      editSubTask(id, subTask.id, { inFocus: !subTask.inFocus });
-    } else {
-      this.setState(({ subtaskArray }: State) => ({
-        subtaskArray: replaceSubTask(
-          subtaskArray, subTask.id, s => ({ ...s, inFocus: !s.inFocus }),
-        ),
-      }));
-    }
-  };
-
-  /**
-   * Remove the task.
-   */
-  removeTask = (): void => {
-    const { removeTask } = this.props;
-    const { id } = this.state;
-    removeTask(id, true);
-  };
-
-  /**
-   * Remove one particular subtask.
-   *
-   * @param {number} id the id of the subtask.
-   * @return {function(): void} the remove subtask event handler.
-   */
-  removeSubTask = (id: number) => (): void => {
-    const { subtaskArray } = this.state;
-    this.setState({
-      subtaskArray: subtaskArray.filter((subTask: SubTask) => subTask.id !== id),
-    }, this.autoSave);
-  };
-
-  /**
-   * Update the state to contain the given latest edited subtask array.
-   *
-   * @param {SubTask[]} subtaskArray the latest edited subtask array.
-   */
-  editSubTasks = (subtaskArray: SubTask[]): void => {
-    this.setState({ subtaskArray }, this.autoSave);
+    const { editSubTask } = this.props;
+    editSubTask(subTask.id, { inFocus: !subTask.inFocus });
   };
 
   /**
@@ -355,8 +176,8 @@ class TaskEditor extends React.PureComponent<Props, State> {
    * @param {SyntheticEvent<HTMLInputElement>} event the event that notifies about the change and
    * contains the new value.
    */
-  handleNewSubTaskValueChange = (event: SyntheticEvent<HTMLInputElement>): void => {
-    event.preventDefault();
+  handleNewSubTaskValueChange = (event: SyntheticEvent<HTMLInputElement>) => {
+    event.stopPropagation();
     const newSubTaskValue: string = event.currentTarget.value.trim();
     if (newSubTaskValue.length === 0) {
       return;
@@ -367,16 +188,14 @@ class TaskEditor extends React.PureComponent<Props, State> {
       complete: false,
       inFocus: false,
     };
-    const { subtaskArray } = this.state;
-    this.setState({
-      subtaskArray: [...subtaskArray, newSubTask],
-      needToSwitchFocus: true,
-    }, this.autoSave);
+    const { addSubTask } = this.props;
+    addSubTask(newSubTask);
+    this.setState({ needToSwitchFocus: true });
   };
 
   /*
    * --------------------------------------------------------------------------------
-   * Part ?: Render Methods
+   * Part 3: Render Methods
    * --------------------------------------------------------------------------------
    */
 
@@ -386,17 +205,21 @@ class TaskEditor extends React.PureComponent<Props, State> {
    * @return {Node} the rendered header node.
    */
   renderHeader = (): Node => {
-    const { tags } = this.props;
-    const {
-      tag, date, doesShowTagEditor, doesShowCalendarEditor,
-    } = this.state;
-    const headerClassNames = `${styles.TaskEditorFlexibleContainer} ${styles.TaskEditorHeader}`;
-    const tagPickerElementOpt = doesShowTagEditor && (
+    const { tag, date, tags } = this.props;
+    const { doesShowTagEditor, doesShowDateEditor } = this.state;
+    const className = `${styles.TaskEditorFlexibleContainer} ${styles.TaskEditorHeader}`;
+    const tagDisplay = (
+      <button type="button" className={styles.TaskEditorTag} onClick={this.toggleTagEditor}>
+        {getNameByTagId(tags, tag)}
+      </button>
+    );
+    const tagEditor = doesShowTagEditor && (
       <div className={styles.TaskEditorTagEditor}>
         <ClassPicker onTagChange={this.editTaskTag} />
       </div>
     );
-    const calendarElementOpt = doesShowCalendarEditor && (
+    const dateDisplay = (<span>{`${date.getMonth() + 1}/${date.getDate()}`}</span>);
+    const dateEditor = doesShowDateEditor && (
       <Calendar
         value={date}
         className={styles.TaskEditorCalendar}
@@ -405,19 +228,17 @@ class TaskEditor extends React.PureComponent<Props, State> {
       />
     );
     return (
-      <div className={headerClassNames}>
-        <button type="button" className={styles.TaskEditorTag} onClick={this.toggleTagEditor}>
-          {getNameByTagId(tags, tag)}
-        </button>
-        {tagPickerElementOpt}
+      <div className={className}>
+        {tagDisplay}
+        {tagEditor}
         <span className={styles.TaskEditorFlexiblePadding} />
         <Icon
           name="calendar"
           className={styles.TaskEditorIconButton}
           onClick={this.toggleDateEditor}
         />
-        <span>{`${date.getMonth() + 1}/${date.getDate()}`}</span>
-        {calendarElementOpt}
+        {dateDisplay}
+        {dateEditor}
       </div>
     );
   };
@@ -428,7 +249,9 @@ class TaskEditor extends React.PureComponent<Props, State> {
    * @return {Node} the rendered main task edit node.
    */
   renderMainTaskEdit = (): Node => {
-    const { name, complete, inFocus } = this.state;
+    const {
+      name, complete, inFocus, removeTask,
+    } = this.props;
     return (
       <div className={styles.TaskEditorFlexibleContainer}>
         <CheckBox
@@ -447,7 +270,7 @@ class TaskEditor extends React.PureComponent<Props, State> {
           className={styles.TaskEditorIcon}
           onClick={this.editInFocus}
         />
-        <Icon className={styles.TaskEditorIcon} name="delete" onClick={this.removeTask} />
+        <Icon className={styles.TaskEditorIcon} name="delete" onClick={removeTask} />
       </div>
     );
   };
@@ -461,7 +284,8 @@ class TaskEditor extends React.PureComponent<Props, State> {
    * @return {Node} the rendered subtask.
    */
   renderSubTask = (subTask: SubTask, index: number, array: SubTask[]): Node => {
-    const { complete, needToSwitchFocus } = this.state;
+    const { complete, removeSubTask } = this.props;
+    const { needToSwitchFocus } = this.state;
     const refHandler = (inputElementRef) => {
       if (index === array.length - 1 && needToSwitchFocus && inputElementRef != null) {
         inputElementRef.focus();
@@ -491,54 +315,18 @@ class TaskEditor extends React.PureComponent<Props, State> {
         <Icon
           name="delete"
           className={styles.TaskEditorIcon}
-          onClick={this.removeSubTask(subTask.id)}
+          onClick={() => removeSubTask(subTask.id)}
         />
       </div>
     );
   };
 
-  /**
-   * Return the rendered main task text editor element.
-   *
-   * @return {Node} the rendered main task edit node.
-   */
-  renderNewSubTaskEditor = (): Node => (
-    !this.isReadOnly() && (
-      <div className={styles.TaskEditorFlexibleContainer}>
-        <input
-          className={styles.TaskEditorFlexibleInput}
-          placeholder="A new subtask"
-          value=""
-          onChange={this.handleNewSubTaskValueChange}
-        />
-      </div>
-    )
-  );
-
-  /**
-   * Render the manual submit button component.
-   *
-   * @return {Node} the manual submit button component.
-   */
-  renderManualSubmitComponent = (): Node => (
-    <div className={styles.TaskEditorSubmitButtonRow}>
-      <span className={styles.TaskEditorFlexiblePadding} />
-      <div
-        role="presentation"
-        className={styles.TaskEditorSaveButton}
-        onClick={this.submitChanges}
-        onKeyDown={this.submitChanges}
-      >
-        <span className={styles.TaskEditorSaveButtonText}>Save</span>
-      </div>
-    </div>
-  );
-
   render(): Node {
     const {
-      saveImmediately, className, onFocus, onBlur, refFunction,
+      tag, subtaskArray, disabled, children,
+      className, onFocus, onBlur, refFunction, tags,
     } = this.props;
-    const { backgroundColor, subtaskArray } = this.state;
+    const backgroundColor = getColorByTagId(tags, tag);
     const actualClassName = className == null
       ? styles.TaskEditor : `${styles.TaskEditor} ${className}`;
     return (
@@ -557,20 +345,24 @@ class TaskEditor extends React.PureComponent<Props, State> {
         </div>
         <div className={styles.TaskEditorSubTasksIndentedContainer}>
           {subtaskArray.map(this.renderSubTask)}
-          {this.renderNewSubTaskEditor()}
+          {(disabled !== true) && (
+            <div className={styles.TaskEditorFlexibleContainer}>
+              <input
+                className={styles.TaskEditorFlexibleInput}
+                placeholder="A new subtask"
+                value=""
+                onChange={this.handleNewSubTaskValueChange}
+              />
+            </div>
+          )}
         </div>
-        {!saveImmediately && this.renderManualSubmitComponent()}
+        {children}
       </form>
     );
   }
 }
 
-const ConnectedTaskEditor = fullConnect<OwnProps, SubscribedProps, ActionProps>(
+const ConnectedTaskEditor = simpleConnect<OwnProps, SubscribedProps>(
   ({ tags }: StoreState): SubscribedProps => ({ tags }),
-  {
-    editMainTask: editMainTaskAction,
-    editSubTask: editSubTaskAction,
-    removeTask: removeTaskAction,
-  },
 )(TaskEditor);
 export default ConnectedTaskEditor;

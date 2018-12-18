@@ -3,9 +3,10 @@
 import React from 'react';
 import type { Node } from 'react';
 import { List } from 'semantic-ui-react';
-import FocusViewTaskBox from './FocusViewTaskBox';
 import type { State, Task } from '../../store/store-types';
 import { simpleConnect } from '../../store/react-redux-util';
+import styles from './FocusView.css';
+import InlineTaskEditor from '../TaskEditors/InlineTaskEditor';
 
 type Props = {| mainTaskArray: Task[] |};
 
@@ -26,7 +27,9 @@ function FocusView({ mainTaskArray }: Props): Node {
   };
   const listItems = mainTaskArray
     .map(filterMapper)
-    .map((task: Task | null) => task && (<FocusViewTaskBox key={task.id} {...task} />));
+    .map((task: Task | null) => task && (
+      <InlineTaskEditor key={task.id} className={styles.FocusViewTaskBox} task={task} />
+    ));
   return (<List>{listItems}</List>);
 }
 

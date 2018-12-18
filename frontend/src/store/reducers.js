@@ -6,7 +6,7 @@ import type {
   EditSubTaskAction,
   EditTaskAction,
   RemoveTaskAction,
-  RemoveSubTaskAction,
+  RemoveSubTaskAction, AddNewSubTaskAction,
 } from './action-types';
 import type {
   State, SubTask, Tag, Task,
@@ -18,12 +18,12 @@ import {
   httpDeleteTask,
   httpEditSubTask,
   httpEditTag,
-  httpEditTask,
+  httpEditTask, httpNewSubTask,
   httpNewTag,
 } from '../http/http-service';
 import { dispatchAction } from './store';
 import {
-  backendPatchExistingTask as backendPatchExistingTaskAction,
+  backendPatchExistingTask as backendPatchExistingTaskAction, backendPatchNewSubTask,
   backendPatchNewTag,
   backendPatchNewTask as backendPatchNewTaskAction,
 } from './actions';
@@ -82,16 +82,30 @@ function recalculateBearStatus(focusTaskArray) {
 /**
  * Add a new task.
  *
- * @param {State} prevState the previous state.
+ * @param {Task[]} mainTaskArray the main task array to modify.
  * @param {Task} newTask the new task.
- * @return {State} the new state.
+ * @return {Task[]} the new task array.
  */
-function addTask(prevState: State, newTask: Task): State {
+function addTask(mainTaskArray: Task[], newTask: Task): Task[] {
   httpAddTask(newTask).then(t => dispatchAction(backendPatchNewTaskAction(newTask.id, t)));
-  return {
-    ...prevState,
-    mainTaskArray: [...prevState.mainTaskArray, newTask],
-  };
+  return [...mainTaskArray, newTask];
+}
+
+/**
+ * Add a new subtask.
+ *
+ * @param {Task[]} mainTaskArray the main task array to modify.
+ * @param {number} taskId the main task id.
+ * @param {SubTask} subTask the subtask to add.
+ * @return {Task[]} the new task array.
+ */
+function addSubTask(mainTaskArray: Task[], { taskId, subTask }: AddNewSubTaskAction): Task[] {
+  return replaceTask(mainTaskArray, taskId, (task: Task) => {
+    httpNewSubTask(task, subTask).then(backendSubTask => dispatchAction(
+      backendPatchNewSubTask(taskId, subTask.id, backendSubTask),
+    ));
+    return { ...task, subtaskArray: [...task.subtaskArray, subTask] };
+  });
 }
 
 /**
@@ -245,7 +259,9 @@ export default function rootReducer(state: State = initialState, action: Action)
         ...state, tags: state.tags.filter((oldTag: Tag) => (oldTag.id !== action.tagId)),
       };
     case 'ADD_NEW_TASK':
-      return addTask(state, action.data);
+      return { ...state, mainTaskArray: addTask(state.mainTaskArray, action.task) };
+    case 'ADD_NEW_SUBTASK':
+      return { ...state, mainTaskArray: addSubTask(state.mainTaskArray, action) };
     case 'EDIT_TASK':
       return editTask(state, action);
     case 'EDIT_MAIN_TASK':
@@ -266,6 +282,14 @@ export default function rootReducer(state: State = initialState, action: Action)
       return {
         ...state,
         mainTaskArray: replaceTask(state.mainTaskArray, action.tempNewTaskId, action.task),
+      };
+    case 'BACKEND_PATCH_NEW_SUBTASK':
+      return {
+        ...state,
+        mainTaskArray: replaceSubTaskWithinMainTask(
+          state.mainTaskArray, action.taskId, action.tempNewSubTaskId,
+          () => action.subTask,
+        ),
       };
     case 'BACKEND_PATCH_EXISTING_TASK':
       return {
