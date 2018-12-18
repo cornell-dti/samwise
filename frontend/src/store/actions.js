@@ -6,10 +6,6 @@ import type {
   RemoveTagAction,
   AddNewTaskAction,
   EditTaskAction,
-  MarkTaskAction,
-  MarkSubTaskAction,
-  ToggleTaskPinAction,
-  ToggleSubTaskPinAction,
   RemoveTaskAction,
   RemoveSubTaskAction,
   UndoDeleteTaskAction,
@@ -17,9 +13,11 @@ import type {
   BackendPatchNewTaskAction,
   BackendPatchExistingTaskAction,
   BackendPatchLoadedDataAction,
-  BackendPatchNewTagAction,
+  BackendPatchNewTagAction, EditMainTaskAction, EditSubTaskAction,
 } from './action-types';
-import type { Tag, Task } from './store-types';
+import type {
+  MainTask, PartialSubTask, Tag, Task,
+} from './store-types';
 
 /**
  * Edit tag is an action that can be used to edit a tag.
@@ -60,41 +58,28 @@ export const addTask = (task: Task): AddNewTaskAction => ({ type: 'ADD_NEW_TASK'
 export const editTask = (task: Task): EditTaskAction => ({ type: 'EDIT_TASK', task });
 
 /**
- * Mark task is the action that can be used to mark a task as completed or not.
+ * Edit main task is the action to edit various parts of main task except subtasks.
  *
- * @param taskId the id of the task to mark.
- * @return {MarkTaskAction} the mark task action.
+ * @param {number} taskId the id of the task to edit.
+ * @param {$Shape<MainTask>} partialMainTask the main task info with every field optional.
+ * @return {EditMainTaskAction} the edit main task action.
  */
-export const markTask = (taskId: number): MarkTaskAction => ({ type: 'MARK_TASK', id: taskId });
-/**
- * Mark subtask is the action that can be used to mark a subtask as completed or not.
- *
- * @param taskId the id of the parent task of the subtask to mark.
- * @param subtaskId the id of the subtask to mark.
- * @return {MarkSubTaskAction} the mark subtask action.
- */
-export const markSubtask = (taskId: number, subtaskId: number): MarkSubTaskAction => ({
-  type: 'MARK_SUBTASK', id: taskId, subtask: subtaskId,
-});
+export const editMainTask = (
+  taskId: number, partialMainTask: $Shape<MainTask>,
+): EditMainTaskAction => ({ type: 'EDIT_MAIN_TASK', taskId, partialMainTask });
 
 /**
- * Toggle task pin is the action that can be used to mark a task as in focus or not.
+ * Edit sub task is the action to edit various parts of subtask.
  *
- * @param taskId the id of the task to toggle.
- * @return {ToggleTaskPinAction} the toggle task pin action.
+ * @param {number} taskId the id of the task to edit.
+ * @param {number} subtaskId the id of the subtask to edit.
+ * @param {$Shape<MainTask>} partialSubTask the subtask info with every field optional.
+ * @return {EditSubTaskAction} the edit sub-task action.
  */
-export const toggleTaskPin = (taskId: number): ToggleTaskPinAction => ({
-  type: 'TOGGLE_TASK_PIN', taskId,
-});
-/**
- * Toggle subtask pin is the action that can be used to mark a subtask as in focus or not.
- *
- * @param taskId the id of the parent task of the subtask to toggle.
- * @param subtaskId the id of the subtask to toggle.
- * @return {ToggleSubTaskPinAction} the toggle subtask pin  action.
- */
-export const toggleSubTaskPin = (taskId: number, subtaskId: number): ToggleSubTaskPinAction => ({
-  type: 'TOGGLE_SUBTASK_PIN', taskId, subtaskId,
+export const editSubTask = (
+  taskId: number, subtaskId: number, partialSubTask: PartialSubTask,
+): EditSubTaskAction => ({
+  type: 'EDIT_SUB_TASK', taskId, subtaskId, partialSubTask,
 });
 
 /**

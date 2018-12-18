@@ -7,16 +7,13 @@ import { Icon } from 'semantic-ui-react';
 import styles from './BacklogTask.css';
 import type { ColoredTask } from './backlog-types';
 import {
-  markTask as markTaskAction,
+  editMainTask as editMainTaskAction,
   removeTask as removeTaskAction,
-  toggleTaskPin as toggleTaskPinAction,
 } from '../../store/actions';
 import BacklogSubTask from './BacklogSubTask';
 import FloatingTaskEditor from '../TaskEditors/FloatingTaskEditor';
-import type { SubTask } from '../../store/store-types';
-import type {
-  MarkTaskAction, RemoveTaskAction, ToggleTaskPinAction,
-} from '../../store/action-types';
+import type { MainTask, SubTask } from '../../store/store-types';
+import type { EditMainTaskAction, RemoveTaskAction } from '../../store/action-types';
 import CheckBox from '../UI/CheckBox';
 import type { FloatingPosition } from '../TaskEditors/task-editors-types';
 
@@ -25,16 +22,9 @@ type Props = {|
   +inFourDaysView: boolean;
   +doesShowCompletedTasks: boolean;
   +taskEditorPosition: FloatingPosition;
-  +markTask: (taskId: number) => MarkTaskAction;
-  +toggleTaskPin: (taskId: number) => ToggleTaskPinAction;
+  +editMainTask: (taskId: number, partialMainTask: $Shape<MainTask>) => EditMainTaskAction;
   +removeTask: (taskId: number, undoable?: boolean) => RemoveTaskAction;
 |};
-
-const actionCreators = {
-  markTask: markTaskAction,
-  toggleTaskPin: toggleTaskPinAction,
-  removeTask: removeTaskAction,
-};
 
 /**
  * The component used to render one task in backlog day.
@@ -63,12 +53,12 @@ class BacklogTask extends React.PureComponent<Props> {
    * @return {Node} the checkbox element.
    */
   renderCheckBox(): Node {
-    const { id, complete, markTask } = this.props;
+    const { id, complete, editMainTask } = this.props;
     return (
       <CheckBox
         className={styles.BacklogTaskCheckBox}
         checked={complete}
-        onChange={() => markTask(id)}
+        onChange={() => editMainTask(id, { complete: !complete })}
       />
     );
   }
@@ -107,13 +97,12 @@ class BacklogTask extends React.PureComponent<Props> {
    * @return {Node} the rendered bookmark task icon.
    */
   renderBookmarkIcon(): Node {
-    const { id, inFocus, toggleTaskPin } = this.props;
-    const handler = () => toggleTaskPin(id);
+    const { id, inFocus, editMainTask } = this.props;
     return (
       <Icon
         name={inFocus ? 'bookmark' : 'bookmark outline'}
         className={styles.BacklogTaskIcon}
-        onClick={handler}
+        onClick={() => editMainTask(id, { inFocus: !inFocus })}
       />
     );
   }
@@ -141,18 +130,25 @@ class BacklogTask extends React.PureComponent<Props> {
    * @return {Node} the information for subtasks.
    */
   renderSubTasks(): Node {
-    const { id, subtaskArray, doesShowCompletedTasks } = this.props;
+    const {
+      id, complete, subtaskArray, doesShowCompletedTasks,
+    } = this.props;
     return subtaskArray
       .filter((subTask: SubTask) => (doesShowCompletedTasks || !subTask.complete))
       .map((subTask: SubTask) => (
-        <BacklogSubTask key={subTask.id} mainTaskId={id} {...subTask} />
+        <BacklogSubTask
+          key={subTask.id}
+          mainTaskId={id}
+          mainTaskCompleted={complete}
+          {...subTask}
+        />
       ));
   }
 
   render(): Node {
     const {
       inFourDaysView, doesShowCompletedTasks, taskEditorPosition,
-      markTask, toggleTaskPin, removeTask, color, ...task
+      editMainTask, removeTask, color, ...task
     } = this.props;
     if (!inFourDaysView) {
       return (
@@ -184,5 +180,8 @@ class BacklogTask extends React.PureComponent<Props> {
   }
 }
 
-const ConnectedBackLogTask = connect(null, actionCreators)(BacklogTask);
+const ConnectedBackLogTask = connect(
+  null,
+  { editMainTask: editMainTaskAction, removeTask: removeTaskAction },
+)(BacklogTask);
 export default ConnectedBackLogTask;

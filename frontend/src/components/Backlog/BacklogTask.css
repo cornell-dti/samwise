@@ -28,6 +28,12 @@
   margin-right: 5px;
 }
 
+.BacklogTaskCheckBoxPlaceHolder {
+  margin-left: 8px;
+  width: 16px;
+  margin-right: 5px;
+}
+
 .BacklogTaskIcon {
   flex: none;
   cursor: pointer;

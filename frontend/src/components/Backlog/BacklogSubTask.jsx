@@ -6,29 +6,22 @@ import { connect } from 'react-redux';
 import { Icon } from 'semantic-ui-react';
 import styles from './BacklogTask.css';
 import {
-  markSubtask as markSubtaskAction,
+  editSubTask as editSubTaskAction,
   removeSubTask as removeSubTaskAction,
-  toggleSubTaskPin as toggleSubTaskPinAction,
 } from '../../store/actions';
-import type { SubTask } from '../../store/store-types';
-import type {
-  MarkSubTaskAction, RemoveSubTaskAction, ToggleSubTaskPinAction,
-} from '../../store/action-types';
+import type { PartialSubTask, SubTask } from '../../store/store-types';
+import type { EditSubTaskAction, RemoveSubTaskAction } from '../../store/action-types';
 import CheckBox from '../UI/CheckBox';
 
 type Props = {|
   ...SubTask;
   +mainTaskId: number;
-  +markSubtask: (taskId: number, subTaskId: number) => MarkSubTaskAction;
-  +toggleSubTaskPin: (taskId: number, subTaskId: number) => ToggleSubTaskPinAction;
+  +mainTaskCompleted: boolean;
+  +editSubTask: (
+    taskId: number, subtaskId: number, partialSubTask: PartialSubTask,
+  ) => EditSubTaskAction;
   +removeSubTask: (taskId: number, subTaskId: number) => RemoveSubTaskAction;
 |};
-
-const actionCreators = {
-  markSubtask: markSubtaskAction,
-  toggleSubTaskPin: toggleSubTaskPinAction,
-  removeSubTask: removeSubTaskAction,
-};
 
 /**
  * The component used to render one subtask in backlog day.
@@ -40,26 +33,31 @@ const actionCreators = {
 function BacklogSubTask(props: Props): Node {
   const {
     name, id, mainTaskId, complete, inFocus,
-    markSubtask, toggleSubTaskPin, removeSubTask,
+    mainTaskCompleted, editSubTask, removeSubTask,
   } = props;
-  return (
-    <div className={styles.BacklogSubTask}>
+  const checkboxPositionElement = mainTaskCompleted
+    ? (<span className={styles.BacklogTaskCheckBoxPlaceHolder} />)
+    : (
       <CheckBox
         className={styles.BacklogTaskCheckBox}
         checked={complete}
         inverted
-        onChange={() => markSubtask(mainTaskId, id)}
+        onChange={() => editSubTask(mainTaskId, id, { complete: !complete })}
       />
+    );
+  return (
+    <div className={styles.BacklogSubTask}>
+      {checkboxPositionElement}
       <span
         className={styles.BacklogTaskText}
-        style={complete ? { textDecoration: 'line-through' } : {}}
+        style={(mainTaskCompleted || complete) ? { textDecoration: 'line-through' } : {}}
       >
         {name}
       </span>
       <Icon
         name={inFocus ? 'bookmark' : 'bookmark outline'}
         className={styles.BacklogTaskIcon}
-        onClick={() => toggleSubTaskPin(mainTaskId, id)}
+        onClick={() => editSubTask(mainTaskId, id, { inFocus: !inFocus })}
       />
       <Icon
         name="delete"
@@ -70,5 +68,8 @@ function BacklogSubTask(props: Props): Node {
   );
 }
 
-const ConnectedBacklogSubTask = connect(null, actionCreators)(BacklogSubTask);
+const ConnectedBacklogSubTask = connect(
+  null,
+  { editSubTask: editSubTaskAction, removeSubTask: removeSubTaskAction },
+)(BacklogSubTask);
 export default ConnectedBacklogSubTask;

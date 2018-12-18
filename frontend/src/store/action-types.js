@@ -1,7 +1,7 @@
 // @flow strict
 
 import type { ActionCreators as ReduxActionCreators, Dispatch as ReduxDispatch } from 'redux';
-import type { Tag, Task } from './store-types';
+import type { MainTask, PartialSubTask, Tag, Task } from './store-types';
 
 /*
  * --------------------------------------------------------------------------------
@@ -12,12 +12,11 @@ import type { Tag, Task } from './store-types';
 export type AddNewTaskAction = {| +type: 'ADD_NEW_TASK'; +data: Task; |};
 export type EditTaskAction = {| +type: 'EDIT_TASK'; +task: Task; |};
 
-export type MarkTaskAction = {| +type: 'MARK_TASK'; +id: number; |};
-export type MarkSubTaskAction = {| +type: 'MARK_SUBTASK'; +id: number; +subtask: number |};
-
-export type ToggleTaskPinAction = {| +type: 'TOGGLE_TASK_PIN'; +taskId: number; |};
-export type ToggleSubTaskPinAction = {|
-  +type: 'TOGGLE_SUBTASK_PIN'; +taskId: number; +subtaskId: number;
+export type EditMainTaskAction = {|
+  +type: 'EDIT_MAIN_TASK'; +taskId: number; +partialMainTask: $Shape<MainTask>;
+|};
+export type EditSubTaskAction = {|
+  +type: 'EDIT_SUB_TASK'; +taskId: number; +subtaskId: number; +partialSubTask: PartialSubTask;
 |};
 
 export type RemoveTaskAction = {| +type: 'REMOVE_TASK'; +taskId: number; +undoable: boolean; |};
@@ -28,10 +27,8 @@ export type RemoveSubTaskAction = {|
 type TaskAction =
   | AddNewTaskAction
   | EditTaskAction
-  | MarkTaskAction
-  | MarkSubTaskAction
-  | ToggleTaskPinAction
-  | ToggleSubTaskPinAction
+  | EditMainTaskAction
+  | EditSubTaskAction
   | RemoveTaskAction
   | RemoveSubTaskAction;
 

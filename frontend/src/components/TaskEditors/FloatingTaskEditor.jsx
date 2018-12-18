@@ -109,7 +109,7 @@ class FloatingTaskEditor extends React.PureComponent<Props, State> {
     const editorNode = open && (
       <TaskEditor
         initialTask={initialTask}
-        autoSave={false}
+        saveImmediately={false}
         onSave={this.onSave}
         className={styles.FloatingTaskEditor}
         refFunction={(e) => { this.editorElement = e; }}

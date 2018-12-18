@@ -5,7 +5,7 @@ import type { Node } from 'react';
 import { Icon } from 'semantic-ui-react';
 import Calendar from 'react-calendar';
 import type {
-  Tag, State as StoreState, SubTask, Task,
+  Tag, State as StoreState, SubTask, Task, MainTask, PartialSubTask,
 } from '../../store/store-types';
 import ClassPicker from '../ClassPicker/ClassPicker';
 import CheckBox from '../UI/CheckBox';
@@ -13,14 +13,21 @@ import type { SimpleMainTask } from './task-editors-types';
 import styles from './TaskEditor.css';
 import { fullConnect } from '../../store/react-redux-util';
 import { getNameByTagId, getColorByTagId } from '../../util/tag-util';
-import type { RemoveTaskAction } from '../../store/action-types';
-import { removeTask as removeTaskAction } from '../../store/actions';
+import type {
+  EditMainTaskAction, EditSubTaskAction, RemoveTaskAction,
+} from '../../store/action-types';
+import {
+  editMainTask as editMainTaskAction,
+  editSubTask as editSubTaskAction,
+  removeTask as removeTaskAction,
+} from '../../store/actions';
 import { randomId } from '../../util/general-util';
+import { replaceSubTask } from '../../util/task-util';
 
 type OwnProps = {|
   +initialTask: Task; // The initial task to edit, as a starting point.
   isReadOnly?: boolean; // whether the editor is read-only, which defaults to false.
-  +autoSave: boolean; // whether to auto-save changes
+  +saveImmediately: boolean; // whether to save immediately.
   +onSave: (Task) => void; // called when the task is saved, either automatically or save by user.
   className?: string;
   onFocus?: (event: SyntheticFocusEvent<HTMLElement>) => void;
@@ -29,6 +36,10 @@ type OwnProps = {|
 |};
 type SubscribedProps = {| +tags: Tag[]; |};
 type ActionProps = {|
+  +editMainTask: (taskId: number, partialMainTask: $Shape<MainTask>) => EditMainTaskAction;
+  +editSubTask: (
+    taskId: number, subtaskId: number, partialSubTask: PartialSubTask,
+  ) => EditSubTaskAction;
   +removeTask: (taskId: number, undoable?: boolean) => RemoveTaskAction;
 |};
 type Props = {| ...OwnProps; ...SubscribedProps; ...ActionProps |};
@@ -41,8 +52,6 @@ type State = {|
   +doesShowCalendarEditor: boolean;
   +needToSwitchFocus: boolean;
 |};
-
-const mapStateToProps = ({ tags }: StoreState): SubscribedProps => ({ tags });
 
 /**
  * The component of an standalone task editor. It is designed to be wrapped inside another
@@ -106,8 +115,8 @@ class TaskEditor extends React.PureComponent<Props, State> {
    * The auto save handler.
    */
   autoSave = (): void => {
-    const { autoSave } = this.props;
-    if (autoSave) {
+    const { saveImmediately } = this.props;
+    if (saveImmediately) {
       this.submitChanges();
     }
   };
@@ -165,28 +174,19 @@ class TaskEditor extends React.PureComponent<Props, State> {
   /**
    * Change the name of the task.
    *
-   * @param {*} event the event to notify the name change.
+   * @param {SyntheticEvent<HTMLInputElement>} event the event to notify the name change.
    */
   editTaskName = (event: SyntheticEvent<HTMLInputElement>): void => {
     event.preventDefault();
     const name = event.currentTarget.value;
-    this.setState({ name }, this.autoSave);
-  };
-
-  /**
-   * Toggle the completion status of the task.
-   */
-  editComplete = (): void => {
-    const { complete } = this.state;
-    this.setState({ complete: !complete }, this.autoSave);
-  };
-
-  /**
-   * Change the in-focus status of the task.
-   */
-  editInFocus = (): void => {
-    const { inFocus } = this.state;
-    this.setState({ inFocus: !inFocus }, this.autoSave);
+    const { saveImmediately } = this.props;
+    if (saveImmediately) {
+      const { editMainTask } = this.props;
+      const { id } = this.state;
+      editMainTask(id, { name });
+    } else {
+      this.setState({ name });
+    }
   };
 
   /**
@@ -195,12 +195,20 @@ class TaskEditor extends React.PureComponent<Props, State> {
    * @param {number} tag the new tag id.
    */
   editTaskTag = (tag: number): void => {
-    const { tags } = this.props;
-    this.setState({
-      tag,
-      backgroundColor: getColorByTagId(tags, tag),
-      doesShowTagEditor: false,
-    }, this.autoSave);
+    const { saveImmediately } = this.props;
+    if (saveImmediately) {
+      const { editMainTask } = this.props;
+      const { id } = this.state;
+      editMainTask(id, { tag });
+      this.setState({ doesShowTagEditor: false });
+    } else {
+      const { tags } = this.props;
+      this.setState({
+        tag,
+        backgroundColor: getColorByTagId(tags, tag),
+        doesShowTagEditor: false,
+      });
+    }
   };
 
   /**
@@ -209,9 +217,109 @@ class TaskEditor extends React.PureComponent<Props, State> {
    * @param {string} dateString the new date in string.
    */
   editTaskDate = (dateString: string): void => {
-    this.setState({
-      doesShowCalendarEditor: false, date: new Date(dateString),
-    }, this.autoSave);
+    const { saveImmediately } = this.props;
+    const date = new Date(dateString);
+    if (saveImmediately) {
+      const { editMainTask } = this.props;
+      const { id } = this.state;
+      editMainTask(id, { date });
+      this.setState({ doesShowCalendarEditor: false });
+    } else {
+      this.setState({ doesShowCalendarEditor: false, date });
+    }
+  };
+
+  /**
+   * Toggle the completion status of the task.
+   */
+  editComplete = () => {
+    const { saveImmediately } = this.props;
+    if (saveImmediately) {
+      const { editMainTask } = this.props;
+      const { id, complete } = this.state;
+      editMainTask(id, { complete: !complete });
+    } else {
+      this.setState(({ complete }: State) => ({ complete: !complete }));
+    }
+  };
+
+  /**
+   * Change the in-focus status of the task.
+   */
+  editInFocus = () => {
+    const { saveImmediately } = this.props;
+    if (saveImmediately) {
+      const { editMainTask } = this.props;
+      const { id, inFocus } = this.state;
+      editMainTask(id, { inFocus: !inFocus });
+    } else {
+      this.setState(({ inFocus }: State) => ({ inFocus: !inFocus }));
+    }
+  };
+
+  /**
+   * Edit one particular subtask's name.
+   *
+   * @param {number} subtaskId the id of the subtask.
+   * @return {function(SyntheticEvent<HTMLInputElement>): void} the function to handle a edit
+   * subtask event that notifies
+   * about the edit and gives the new value of the subtask.
+   */
+  editSubTaskName = (subtaskId: number) => (event: SyntheticEvent<HTMLInputElement>): void => {
+    event.preventDefault();
+    const name = event.currentTarget.value;
+    const { saveImmediately } = this.props;
+    if (saveImmediately) {
+      const { editSubTask } = this.props;
+      const { id } = this.state;
+      editSubTask(id, subtaskId, { name });
+    } else {
+      this.setState(({ subtaskArray }: State) => ({
+        subtaskArray: replaceSubTask(subtaskArray, subtaskId, s => ({ ...s, name })),
+      }));
+    }
+  };
+
+  /**
+   * Edit one particular subtask's completion.
+   *
+   * @param {SubTask} subTask the subtask.
+   * @return {function(): void} the edit completion event handler.
+   */
+  editSubTaskComplete = (subTask: SubTask) => (): void => {
+    const { saveImmediately } = this.props;
+    if (saveImmediately) {
+      const { editSubTask } = this.props;
+      const { id } = this.state;
+      editSubTask(id, subTask.id, { complete: !subTask.complete });
+    } else {
+      this.setState(({ subtaskArray }: State) => ({
+        subtaskArray: replaceSubTask(
+          subtaskArray, subTask.id, s => ({ ...s, complete: !s.complete }),
+        ),
+      }));
+    }
+  };
+
+  /**
+   * Edit one particular subtask's in focus status.
+   *
+   * @param {SubTask} subTask the subtask.
+   * @return {function(): void} the edit completion event handler.
+   */
+  editSubTaskInFocus = (subTask: SubTask) => (): void => {
+    const { saveImmediately } = this.props;
+    if (saveImmediately) {
+      const { editSubTask } = this.props;
+      const { id } = this.state;
+      editSubTask(id, subTask.id, { inFocus: !subTask.inFocus });
+    } else {
+      this.setState(({ subtaskArray }: State) => ({
+        subtaskArray: replaceSubTask(
+          subtaskArray, subTask.id, s => ({ ...s, inFocus: !s.inFocus }),
+        ),
+      }));
+    }
   };
 
   /**
@@ -221,24 +329,6 @@ class TaskEditor extends React.PureComponent<Props, State> {
     const { removeTask } = this.props;
     const { id } = this.state;
     removeTask(id, true);
-  };
-
-  /**
-   * Edit one particular subtask.
-   *
-   * @param {number} id the id of the subtask.
-   * @return {function(Event): void} the function to handle a edit subtask event that notifies
-   * about the edit and gives the new value of the subtask.
-   */
-  editSubTask = (id: number) => (event: SyntheticEvent<HTMLInputElement>): void => {
-    event.preventDefault();
-    const name = event.currentTarget.value;
-    const { subtaskArray } = this.state;
-    this.setState({
-      subtaskArray: subtaskArray.map((subTask: SubTask) => (
-        subTask.id === id ? { ...subTask, name } : subTask
-      )),
-    }, this.autoSave);
   };
 
   /**
@@ -255,39 +345,9 @@ class TaskEditor extends React.PureComponent<Props, State> {
   };
 
   /**
-   * Edit one particular subtask's completion.
-   *
-   * @param {number} id the id of the subtask.
-   * @return {function(): void} the edit completion event handler.
-   */
-  editSubTaskComplete = (id: number) => (): void => {
-    const { subtaskArray } = this.state;
-    this.setState({
-      subtaskArray: subtaskArray.map((subTask: SubTask) => (
-        subTask.id === id ? { ...subTask, complete: !subTask.complete } : subTask
-      )),
-    }, this.autoSave);
-  };
-
-  /**
-   * Edit one particular subtask's in focus status.
-   *
-   * @param {number} id the id of the subtask.
-   * @return {function(): void} the edit completion event handler.
-   */
-  editSubTaskInFocus = (id: number) => (): void => {
-    const { subtaskArray } = this.state;
-    this.setState({
-      subtaskArray: subtaskArray.map((subTask: SubTask) => (
-        subTask.id === id ? { ...subTask, inFocus: !subTask.inFocus } : subTask
-      )),
-    }, this.autoSave);
-  };
-
-  /**
    * Update the state to contain the given latest edited subtask array.
    *
-   * @param subtaskArray the latest edited subtask array.
+   * @param {SubTask[]} subtaskArray the latest edited subtask array.
    */
   editSubTasks = (subtaskArray: SubTask[]): void => {
     this.setState({ subtaskArray }, this.autoSave);
@@ -296,7 +356,8 @@ class TaskEditor extends React.PureComponent<Props, State> {
   /**
    * Update the state when the new line of subtask name changes.
    *
-   * @param event the event that notifies about the change and contains the new value.
+   * @param {SyntheticEvent<HTMLInputElement>} event the event that notifies about the change and
+   * contains the new value.
    */
   handleNewSubTaskValueChange = (event: SyntheticEvent<HTMLInputElement>): void => {
     event.preventDefault();
@@ -419,19 +480,19 @@ class TaskEditor extends React.PureComponent<Props, State> {
         <CheckBox
           className={styles.TaskEditorCheckBox}
           checked={complete}
-          onChange={this.editSubTaskComplete(id)}
+          onChange={this.editSubTaskComplete(subTask)}
         />
         <input
           className={styles.TaskEditorFlexibleInput}
           placeholder="Your Sub-Task"
           value={name}
           ref={refHandler}
-          onChange={this.editSubTask(id)}
+          onChange={this.editSubTaskName(id)}
         />
         <Icon
           name={inFocus ? 'bookmark' : 'bookmark outline'}
           className={styles.TaskEditorIcon}
-          onClick={this.editSubTaskInFocus(id)}
+          onClick={this.editSubTaskInFocus(subTask)}
         />
         <Icon className={styles.TaskEditorIcon} name="delete" onClick={this.removeSubTask(id)} />
       </div>
@@ -477,7 +538,7 @@ class TaskEditor extends React.PureComponent<Props, State> {
 
   render(): Node {
     const {
-      autoSave, className, onFocus, onBlur, refFunction,
+      saveImmediately, className, onFocus, onBlur, refFunction,
     } = this.props;
     const { backgroundColor, subtaskArray } = this.state;
     const actualClassName = className == null
@@ -500,14 +561,18 @@ class TaskEditor extends React.PureComponent<Props, State> {
           {subtaskArray.map(this.renderSubTask)}
           {this.renderNewSubTaskEditor()}
         </div>
-        {!autoSave && this.renderManualSubmitComponent()}
+        {!saveImmediately && this.renderManualSubmitComponent()}
       </form>
     );
   }
 }
 
 const ConnectedTaskEditor = fullConnect<OwnProps, SubscribedProps, ActionProps>(
-  mapStateToProps,
-  { removeTask: removeTaskAction },
+  ({ tags }: StoreState): SubscribedProps => ({ tags }),
+  {
+    editMainTask: editMainTaskAction,
+    editSubTask: editSubTaskAction,
+    removeTask: removeTaskAction,
+  },
 )(TaskEditor);
 export default ConnectedTaskEditor;

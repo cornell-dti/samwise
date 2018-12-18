@@ -93,7 +93,7 @@ class InlineTaskEditor extends React.Component<Props, State> {
       <TaskEditor
         initialTask={initialTask}
         isReadOnly={isReadOnly}
-        autoSave
+        saveImmediately
         onSave={this.onSave}
         className={className}
         onFocus={this.onFocus}

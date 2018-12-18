@@ -24,32 +24,6 @@ export function fullConnect<OP: Object, SP: Object, MDP: Object>(
   return connect<ComponentType<*>, State, {}, SP, MDP, OP, _>(mapStateToProps, actionCreators);
 }
 
-type ConnectOptions<S: Object, OP: Object, RSP: Object, RMP: Object> = {|
-  pure?: boolean,
-  withRef?: boolean,
-  areStatesEqual?: (next: S, prev: S) => boolean,
-  areOwnPropsEqual?: (next: OP, prev: OP) => boolean,
-  areStatePropsEqual?: (next: RSP, prev: RSP) => boolean,
-  areMergedPropsEqual?: (next: RMP, prev: RMP) => boolean,
-  storeKey?: string
-|};
-
-/**
- * A connect function for react-redux that uses the normal mapStateToProps and connect options.
- *
- * @param mapStateToProps the normal mapStateToProps function.
- * @param options other connect options.
- * @return {*} the connect function that connects a react component.
- */
-export function connectWithOptions<OP: Object, SP: Object>(
-  mapStateToProps: (state: State) => SP,
-  options: ConnectOptions<State, OP, SP, {}>,
-): (ComponentType<*>) => (ComponentType<OP>) {
-  return connect<ComponentType<*>, _, State, _, _, SP, _, _, _, _>(
-    mapStateToProps, null, null, options,
-  );
-}
-
 /**
  * A connect function for react-redux that just uses the normal mapStateToProps.
  *

@@ -9,8 +9,6 @@ import { simpleConnect } from '../../store/react-redux-util';
 
 type Props = {| mainTaskArray: Task[] |};
 
-const mapStateToProps = ({ mainTaskArray }: State): Props => ({ mainTaskArray });
-
 /**
  * The focus view component.
  *
@@ -32,5 +30,7 @@ function FocusView({ mainTaskArray }: Props): Node {
   return (<List>{listItems}</List>);
 }
 
-const ConnectedFocusView = simpleConnect<{}, Props>(mapStateToProps)(FocusView);
+const ConnectedFocusView = simpleConnect<{}, Props>(
+  ({ mainTaskArray }: State): Props => ({ mainTaskArray }),
+)(FocusView);
 export default ConnectedFocusView;
