@@ -2,7 +2,7 @@
 
 import React from 'react';
 import type { Node } from 'react';
-import ReactRedux from 'react-redux';
+import { Provider as ReactReduxProvider } from 'react-redux';
 import styles from './App.css';
 import TaskCreator from './components/TaskCreator/TaskCreator';
 import TaskView from './components/TaskView/TaskView';
@@ -30,13 +30,13 @@ const appRenderer = (appUser: AppUser): Node => {
   const store = initializeApp(appUser);
   httpInitializeData().then(a => dispatchAction(a));
   return (
-    <ReactRedux.Provider store={store}>
+    <ReactReduxProvider store={store}>
       <div className={styles.App}>
         <TitleBar />
         <TaskCreator />
         <TaskView />
       </div>
-    </ReactRedux.Provider>
+    </ReactReduxProvider>
   );
 };
 
