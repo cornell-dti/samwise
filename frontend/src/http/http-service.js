@@ -1,7 +1,9 @@
 // @flow strict
 
 import { get, post, put } from '../util/http-util';
-import type { Tag, SubTask, Task } from '../store/store-types';
+import type {
+  Tag, SubTask, Task, MainTask,
+} from '../store/store-types';
 import type { BackendPatchLoadedDataAction } from '../store/action-types';
 import { backendPatchLoadedData } from '../store/actions';
 
@@ -199,13 +201,37 @@ export async function httpNewSubTask(mainTask: Task, subTask: SubTask): Promise<
 }
 
 /**
+ * Edit an existing task.
+ *
+ * @param {number} taskId id of the task.
+ * @param {Task} mainTask the main task to edit.
+ * @return {Promise<void>} promise when done.
+ */
+export async function httpEditMainTask(taskId: number, mainTask: MainTask): Promise<void> {
+  const {
+    name, tag, date, complete, inFocus,
+  } = mainTask;
+  const data = {
+    task_id: taskId,
+    parent_task: null,
+    content: name,
+    start_date: formatDate(new Date()),
+    end_date: formatDate(date),
+    tag_id: tag,
+    completed: complete,
+    in_focus: inFocus,
+  };
+  await post(`/tasks/${taskId}/edit`, data);
+}
+
+/**
  * Edit an existing subtask.
  *
  * @param {Task} mainTask the main task of the subtask's parent.
  * @param {SubTask} subTask the subtask to edit.
- * @return {Promise<SubTask>} the subtask coming from server with latest information.
+ * @return {Promise<void>} promise when done.
  */
-export async function httpEditSubTask(mainTask: Task, subTask: SubTask): Promise<SubTask> {
+export async function httpEditSubTask(mainTask: Task, subTask: SubTask): Promise<void> {
   const {
     id, name, complete, inFocus,
   } = subTask;
@@ -219,8 +245,7 @@ export async function httpEditSubTask(mainTask: Task, subTask: SubTask): Promise
     completed: complete,
     in_focus: inFocus,
   };
-  const serverSubTask = await post<any>(`/tasks/${id}/edit`, data);
-  return { ...subTask, id: serverSubTask.task.task_id };
+  await post(`/tasks/${id}/edit`, data);
 }
 
 /**
@@ -259,7 +284,7 @@ export async function httpEditTask(oldTask: Task, newTask: Task): Promise<Task> 
   });
   const deletedSubTasks: SubTask[] = newTask.subtaskArray.filter(({ id }) => oldTasksIdSet.has(id));
   const subTasksEditPromises = editedSubTasks.map(
-    (subTask: SubTask) => httpEditSubTask(newTask, subTask),
+    (subTask: SubTask) => httpEditSubTask(newTask, subTask).then(() => subTask),
   );
   const subTasksNewPromises = newSubTasks.map(
     (subTask: SubTask) => httpNewSubTask(newTask, subTask),

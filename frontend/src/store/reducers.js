@@ -15,7 +15,7 @@ import { emitUndoRemoveTaskToast } from '../util/toast-util';
 import {
   httpAddTask,
   httpDeleteTag,
-  httpDeleteTask,
+  httpDeleteTask, httpEditMainTask,
   httpEditSubTask,
   httpEditTag,
   httpEditTask, httpNewSubTask,
@@ -121,7 +121,8 @@ function editMainTask(
 ): Task[] {
   return replaceTask(mainTaskArray, taskId, (task: Task) => {
     const newTask = { ...task, ...partialMainTask };
-    httpEditTask(task, newTask).then(() => {});
+    const { id, subtaskArray, ...mainTask } = newTask;
+    httpEditMainTask(taskId, mainTask).then(() => {});
     return newTask;
   });
 }
