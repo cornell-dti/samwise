@@ -17,7 +17,7 @@ import { replaceSubTask } from '../../../util/task-util';
 type Props = {|
   +position: FloatingPosition;
   +initialTask: Task;
-  +trigger: (opener: () => void) => Node;
+  +trigger: (opened: boolean, opener: () => void) => Node;
   +editTask: (task: Task) => EditTaskAction;
   +removeTask: (taskId: number, undoable?: boolean) => RemoveTaskAction;
 |};
@@ -173,10 +173,10 @@ class FloatingTaskEditor extends React.PureComponent<Props, State> {
   render(): Node {
     const { trigger, removeTask } = this.props;
     const { open, changed, ...task } = this.state;
-    const triggerNode = trigger(this.openPopup);
+    const triggerNode = trigger(open, this.openPopup);
     const blockerNode = open && (
       <div
-        className={styles.FloatingTaskEditorBackgroundBlocker}
+        className={styles.BackgroundBlocker}
         role="button"
         tabIndex={-1}
         onClick={this.closePopup}

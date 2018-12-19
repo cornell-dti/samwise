@@ -158,12 +158,13 @@ class FutureViewTask extends React.PureComponent<Props> {
       );
     }
     // Construct the trigger for the floating task editor.
-    const trigger = (opener: () => void): Node => {
+    const trigger = (opened: boolean, opener: () => void): Node => {
       const onClickHandler = this.getOnClickHandler(opener);
+      const style = opened ? { position: 'relative', zIndex: 8 } : {};
       return (
         <div
           className={styles.Task}
-          style={{ cursor: 'pointer' }}
+          style={style}
           role="button"
           tabIndex={-1}
           onClick={onClickHandler}
