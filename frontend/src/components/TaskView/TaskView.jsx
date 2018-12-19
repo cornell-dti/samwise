@@ -8,8 +8,8 @@ import FutureViewSwitcher from './FutureView/FutureViewSwitcher';
 import FutureView from './FutureView/FutureView';
 import FocusView from './FocusView/FocusView';
 import { date2YearMonth } from '../../util/datetime-util';
-import SquareIconButton from '../UI/SquareIconButton';
-import SquareTextButton from '../UI/SquareTextButton';
+import SquareIconToggle from '../UI/SquareIconToggle';
+import SquareTextToggle from '../UI/SquareTextToggle';
 import styles from './TaskView.css';
 import type { WindowSize } from '../Util/Responsive/window-size-context';
 import windowSizeConnect from '../Util/Responsive/WindowSizeConsumer';
@@ -280,10 +280,10 @@ class TaskView extends React.PureComponent<Props, State> {
         <div className={styles.TaskViewControl}>
           <h3 className={styles.ControlTitle}>Future</h3>
           {backlogOffset !== 0 && (
-            <SquareTextButton text="Today" onClick={this.changeBacklogOffset('TODAY')} />
+            <SquareTextToggle text="Today" onClick={this.changeBacklogOffset('TODAY')} />
           )}
           {this.renderFutureViewNav()}
-          <SquareIconButton
+          <SquareIconToggle
             active={doesShowCompletedTasks}
             iconNames={['eye slash', 'eye']}
             onToggle={this.toggleCompletedTasks}

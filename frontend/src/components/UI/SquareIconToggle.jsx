@@ -20,7 +20,7 @@ type Props = {|
  * @return {Node} the rendered node.
  * @constructor
  */
-export default function SquareIconButton({ active, iconNames, onToggle }: Props): Node {
+export default function SquareIconToggle({ active, iconNames, onToggle }: Props): Node {
   const [activeIconName, inactiveIconName] = iconNames;
   const className = active
     ? `${styles.SquareButton} ${styles.SquareButtonIconButton}`

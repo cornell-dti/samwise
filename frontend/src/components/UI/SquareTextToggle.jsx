@@ -20,7 +20,7 @@ const className = `${styles.SquareButton} ${styles.SquareButtonTextButton}`;
  * @return {Node} the rendered component.
  * @constructor
  */
-export default function SquareTextButton({ text, onClick }: Props): Node {
+export default function SquareTextToggle({ text, onClick }: Props): Node {
   return (
     <button className={className} type="button" onClick={onClick}>
       <span className={styles.SquareButtonText}>{text}</span>
