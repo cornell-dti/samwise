@@ -22,7 +22,7 @@ type Props = {|
   +removeTask: (taskId: number, undoable?: boolean) => RemoveTaskAction;
 |};
 
-type State = {| ...Task; +open: boolean; |};
+type State = {| ...Task; +changed: boolean; +open: boolean; |};
 
 /**
  * FloatingTaskEditor is a component used to edit a task on the fly.
@@ -40,7 +40,7 @@ type State = {| ...Task; +open: boolean; |};
 class FloatingTaskEditor extends React.PureComponent<Props, State> {
   constructor(props: Props) {
     super(props);
-    this.state = { ...props.initialTask, open: false };
+    this.state = { ...props.initialTask, changed: false, open: false };
   }
 
   componentDidMount() {
@@ -54,7 +54,7 @@ class FloatingTaskEditor extends React.PureComponent<Props, State> {
     const { initialTask } = this.props;
     if (initialTask !== nextProps.initialTask) {
       const nextInitialTask = nextProps.initialTask;
-      this.setState({ ...nextInitialTask });
+      this.setState({ ...nextInitialTask, changed: false });
     }
   }
 
@@ -84,7 +84,7 @@ class FloatingTaskEditor extends React.PureComponent<Props, State> {
       throw new Error('Bad taskElementBoundingRect!');
     }
     const { y, left, right } = taskElementBoundingRect;
-    const windowHeight = document.body?.offsetHeight || 0;
+    const windowHeight = document.body?.offsetHeight ?? 0;
     const myHeight = editorPosDiv.offsetHeight;
     const topPos = (y + myHeight) > windowHeight ? windowHeight - myHeight : y;
     editorPosDiv.style.top = `${topPos}px`;
@@ -106,7 +106,7 @@ class FloatingTaskEditor extends React.PureComponent<Props, State> {
   /**
    * Close the popup.
    */
-  closePopup = (): void => this.setState({ open: false });
+  closePopup = (): void => this.setState({ open: false, changed: false });
 
   /**
    * Check whether a task has a good format.
@@ -128,10 +128,17 @@ class FloatingTaskEditor extends React.PureComponent<Props, State> {
 
   /**
    * Handle the onSave event.
+   *
+   * @param {boolean} doSave whether to do the actual save. i.e. It not just quits.
+   * Defaults to true.
    */
-  onSave = (): void => {
+  onSave = (doSave: boolean = true): void => {
+    if (!doSave) {
+      this.closePopup();
+      return;
+    }
     const { editTask } = this.props;
-    const { open, ...task } = this.state;
+    const { open, changed, ...task } = this.state;
     if (!this.taskIsGood(task)) {
       return;
     }
@@ -165,7 +172,7 @@ class FloatingTaskEditor extends React.PureComponent<Props, State> {
 
   render(): Node {
     const { trigger, removeTask } = this.props;
-    const { open, ...task } = this.state;
+    const { open, changed, ...task } = this.state;
     const triggerNode = trigger(this.openPopup);
     const blockerNode = open && (
       <div
@@ -179,27 +186,34 @@ class FloatingTaskEditor extends React.PureComponent<Props, State> {
     const taskEditorProps = {
       ...task,
       editMainTask: (partialMainTask: PartialMainTask, doSave: boolean) => {
-        this.setState(partialMainTask, doSave ? this.onSave : undefined);
+        this.setState(
+          { ...partialMainTask, changed: true },
+          doSave ? this.onSave : undefined,
+        );
       },
       editSubTask: (subtaskId: number, partialSubTask: PartialSubTask, doSave: boolean) => {
         this.setState(({ subtaskArray }: State) => ({
           subtaskArray: replaceSubTask(
             subtaskArray, subtaskId, s => ({ ...s, ...partialSubTask }),
           ),
+          changed: true,
         }), doSave ? this.onSave : undefined);
       },
       addSubTask: (subTask: SubTask) => {
         this.setState(({ subtaskArray }: State) => ({
           subtaskArray: [...subtaskArray, subTask],
+          changed: true,
         }));
       },
       removeTask: () => { removeTask(task.id); },
       removeSubTask: (subtaskId: number) => {
         this.setState(({ subtaskArray }: State) => ({
           subtaskArray: subtaskArray.filter(s => s.id !== subtaskId),
+          changed: true,
         }));
       },
       className: styles.FloatingTaskEditor,
+      onSave: () => this.onSave(changed),
       refFunction: (e) => { this.editorElement = e; },
     };
     const editorNode = open && (

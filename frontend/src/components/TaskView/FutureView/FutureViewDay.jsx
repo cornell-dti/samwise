@@ -8,11 +8,10 @@ import styles from './FutureViewDay.css';
 import FutureViewDayTaskContainer from './FutureViewDayTaskContainer';
 import { countTasks } from './future-view-util';
 import {
-  fourDaysViewHeaderHeight, otherViewsHeightHeader,
-  taskContainerHeightFourDaysView, taskContainerHeightOtherViews,
-  taskHeight,
+  taskContainerHeightFourDaysView, taskContainerHeightOtherViews, taskHeight,
 } from './future-view-css-props';
 import { day2String } from '../../../util/datetime-util';
+import computeFloatingViewStyle from './future-floating-view-util';
 
 type Props = {|
   +date: Date;
@@ -131,17 +130,17 @@ export default class FutureViewDay extends React.PureComponent<Props, State> {
     const {
       tasks, inFourDaysView, doesShowCompletedTasks, taskEditorPosition,
     } = this.props;
-    const headerHeight = inFourDaysView ? fourDaysViewHeaderHeight : otherViewsHeightHeader;
-    const tasksHeight = taskHeight * countTasks(tasks, inFourDaysView, doesShowCompletedTasks);
-    const totalHeight = headerHeight + tasksHeight;
-    const maxAllowedHeight = inFourDaysView ? 400 : 300;
-    const floatingViewHeight = Math.min(totalHeight, maxAllowedHeight);
-    const { width, height } = floatingFlowParentRect;
-    const floatingViewStyle = {
-      left: `${(width - 300) / 2}px`,
-      top: `${(height - floatingViewHeight) / 2}px`,
-      height: `${floatingViewHeight}px`,
-    };
+    const {
+      width, height, top, left,
+    } = floatingFlowParentRect;
+    const floatingViewStyle = computeFloatingViewStyle({
+      tasks,
+      inFourDaysView,
+      doesShowCompletedTasks,
+      mainViewPosition: {
+        width, height, top, left,
+      },
+    });
     return (
       <React.Fragment>
         {toggleButton}

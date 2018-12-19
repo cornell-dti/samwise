@@ -61,11 +61,10 @@
 
 .FloatingView {
   position: absolute;
-  z-index: 5;
+  z-index: 6;
   top: 0;
   left: 0;
   right: 0;
-  width: 300px;
   max-height: 400px;
   overflow-x: hidden;
   overflow-y: scroll;
@@ -79,7 +78,7 @@
   bottom: 0;
   left: 0;
   right: 0;
-  z-index: 4;
+  z-index: 5;
   background-color: rgba(0, 0, 0, 0.05);
 }
 

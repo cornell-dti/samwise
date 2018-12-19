@@ -27,3 +27,9 @@ export const taskContainerHeightOtherViews = 150;
  * @type {number}
  */
 export const taskHeight = 25;
+
+/**
+ * The width of the floating view.
+ * @type {number}
+ */
+export const floatingViewWidth = 300;

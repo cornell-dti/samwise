@@ -74,6 +74,7 @@ input.TaskEditorFlexibleInput:focus-within::placeholder {
  */
 
 .TaskEditorIconButton {
+  cursor: pointer;
   margin-left: 1em !important;
   height: unset !important;
 }
@@ -84,6 +85,7 @@ input.TaskEditorFlexibleInput:focus-within::placeholder {
   padding: 5px;
   border-radius: 2px;
   color: white;
+  cursor: pointer;
   background-color: rgba(255, 255, 255, 0.15);
   border-color: transparent;
 }

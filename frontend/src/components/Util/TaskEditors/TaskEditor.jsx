@@ -20,6 +20,7 @@ type Actions = {|
   +addSubTask: (subTask: SubTask) => void;
   +removeTask: () => void;
   +removeSubTask: (subtaskId: number) => void;
+  +onSave: () => void;
 |};
 type DefaultProps = {|
   +className?: string;
@@ -117,6 +118,9 @@ class TaskEditor extends React.PureComponent<Props, State> {
       const { editSubTask } = this.props;
       editSubTask(subtaskId, { name }, doSave);
       this.setState({ oneSubTaskNameCache: null });
+    } else if (doSave) {
+      const { onSave } = this.props;
+      onSave();
     }
   };
 
@@ -224,7 +228,7 @@ class TaskEditor extends React.PureComponent<Props, State> {
 
   /**
    * The event handler that handles an press enter event.
-   * It turns the enter into a tab event.
+   * It will switch the focus as expected.
    *
    * @param {SyntheticKeyboardEvent<HTMLInputElement>} event the event of a keypress.
    */
@@ -232,7 +236,7 @@ class TaskEditor extends React.PureComponent<Props, State> {
     if (event.key !== 'Enter') {
       return;
     }
-    event.stopPropagation();
+    // event.stopPropagation();
     if (event.shiftKey) {
       this.editTaskName();
       event.currentTarget.blur();
@@ -244,6 +248,19 @@ class TaskEditor extends React.PureComponent<Props, State> {
     }
     const index = Array.prototype.indexOf.call(form, event.target);
     form.elements[index + 1].focus();
+  };
+
+  /**
+   * The event handler that handles an press enter event for adding a new subtask.
+   * It will automatically submit the edited task.
+   *
+   * @param {SyntheticKeyboardEvent<HTMLInputElement>} event the event of a keypress.
+   */
+  newSubTaskPressEnterHandler = (event: SyntheticKeyboardEvent<HTMLInputElement>) => {
+    if (event.key === 'Enter') {
+      const { onSave } = this.props;
+      onSave();
+    }
   };
 
   /*
@@ -413,6 +430,7 @@ class TaskEditor extends React.PureComponent<Props, State> {
                 placeholder="A new subtask"
                 value=""
                 onChange={this.handleNewSubTaskValueChange}
+                onKeyDown={this.newSubTaskPressEnterHandler}
               />
             </div>
           )}
