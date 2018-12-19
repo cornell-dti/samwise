@@ -70,6 +70,6 @@ export function date2YearMonth(date: Date): string {
  */
 export function getTodayAtZero(): Date {
   const d = new Date();
-  d.setHours(0);
+  d.setHours(0, 0, 0, 0);
   return d;
 }

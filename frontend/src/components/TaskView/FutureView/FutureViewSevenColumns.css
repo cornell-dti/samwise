@@ -1,15 +1,13 @@
-.Grid {
-  margin-left: -13px !important;
+.FutureViewSevenColumns {
+  display: grid;
+  grid-gap: 0;
+  grid-template-columns: 14.3% 14.3% 14.3% 14.3% 14.3% 14.3% 14.3%;
+  grid-auto-flow: row;
+  margin-left: -13px;
+  margin-right: -13px;
 }
 
-.Row {
-  padding: 0 !important;
-}
-
-.ColumnOfDayTitle {
-  width: 15vw;
-}
-
-.ColumnOfDay {
-  padding: 0 !important;
+.HeaderWeekday {
+  line-height: 2em;
+  text-align: center;
 }
