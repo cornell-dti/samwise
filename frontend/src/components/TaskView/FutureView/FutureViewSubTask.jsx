@@ -36,28 +36,28 @@ function FutureViewSubTask(props: Props): Node {
     mainTaskCompleted, editSubTask, removeSubTask,
   } = props;
   return (
-    <div className={styles.BacklogSubTask}>
+    <div className={styles.SubTask}>
       <CheckBox
-        className={styles.BacklogTaskCheckBox}
+        className={styles.TaskCheckBox}
         checked={mainTaskCompleted || complete}
         disabled={mainTaskCompleted}
         inverted
         onChange={() => editSubTask(mainTaskId, id, { complete: !complete })}
       />
       <span
-        className={styles.BacklogTaskText}
+        className={styles.TaskText}
         style={(mainTaskCompleted || complete) ? { textDecoration: 'line-through' } : {}}
       >
         {name}
       </span>
       <Icon
         name={inFocus ? 'bookmark' : 'bookmark outline'}
-        className={styles.BacklogTaskIcon}
+        className={styles.TaskIcon}
         onClick={() => editSubTask(mainTaskId, id, { inFocus: !inFocus })}
       />
       <Icon
         name="delete"
-        className={styles.BacklogTaskIcon}
+        className={styles.TaskIcon}
         onClick={() => removeSubTask(mainTaskId, id)}
       />
     </div>

@@ -41,7 +41,7 @@ class FutureViewTask extends React.PureComponent<Props> {
     if (event.target instanceof HTMLElement) {
       const elem: HTMLElement = event.target;
       // only accept click on text.
-      if (elem.className === styles.BacklogTaskText) {
+      if (elem.className === styles.TaskText) {
         opener();
       }
     }
@@ -56,7 +56,7 @@ class FutureViewTask extends React.PureComponent<Props> {
     const { id, complete, editMainTask } = this.props;
     return (
       <CheckBox
-        className={styles.BacklogTaskCheckBox}
+        className={styles.TaskCheckBox}
         checked={complete}
         onChange={() => editMainTask(id, { complete: !complete })}
       />
@@ -72,7 +72,7 @@ class FutureViewTask extends React.PureComponent<Props> {
     const { name, complete } = this.props;
     const tagStyle = complete ? { textDecoration: 'line-through' } : {};
     return (
-      <span className={styles.BacklogTaskText} style={tagStyle}>{name}</span>
+      <span className={styles.TaskText} style={tagStyle}>{name}</span>
     );
   }
 
@@ -87,7 +87,7 @@ class FutureViewTask extends React.PureComponent<Props> {
       removeTask(id, true);
     };
     return (
-      <Icon name="delete" className={styles.BacklogTaskIcon} onClick={handler} />
+      <Icon name="delete" className={styles.TaskIcon} onClick={handler} />
     );
   }
 
@@ -101,7 +101,7 @@ class FutureViewTask extends React.PureComponent<Props> {
     return (
       <Icon
         name={inFocus ? 'bookmark' : 'bookmark outline'}
-        className={styles.BacklogTaskIcon}
+        className={styles.TaskIcon}
         onClick={() => editMainTask(id, { inFocus: !inFocus })}
       />
     );
@@ -115,7 +115,7 @@ class FutureViewTask extends React.PureComponent<Props> {
   renderMainTaskInfo(): Node {
     const { color } = this.props;
     return (
-      <div className={styles.BacklogTaskMainWrapper} style={{ backgroundColor: color }}>
+      <div className={styles.TaskMainWrapper} style={{ backgroundColor: color }}>
         {this.renderCheckBox()}
         {this.renderTaskName()}
         {this.renderBookmarkIcon()}
@@ -152,7 +152,7 @@ class FutureViewTask extends React.PureComponent<Props> {
     } = this.props;
     if (!inFourDaysView) {
       return (
-        <div className={styles.BacklogTask}>
+        <div className={styles.Task}>
           {this.renderMainTaskInfo()}
         </div>
       );
@@ -162,7 +162,7 @@ class FutureViewTask extends React.PureComponent<Props> {
       const onClickHandler = this.getOnClickHandler(opener);
       return (
         <div
-          className={styles.BacklogTask}
+          className={styles.Task}
           style={{ cursor: 'pointer' }}
           role="button"
           tabIndex={-1}

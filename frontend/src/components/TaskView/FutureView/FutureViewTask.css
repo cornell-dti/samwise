@@ -1,11 +1,11 @@
-.BacklogTask {
+.Task {
   color: white;
   margin: 0;
   padding: 0;
   font-weight: 500;
 }
 
-.BacklogTaskMainWrapper {
+.TaskMainWrapper {
   display: flex;
   padding: 3px;
   align-items: center;
@@ -13,7 +13,7 @@
   font-weight: 300;
 }
 
-.BacklogSubTask {
+.SubTask {
   display: flex;
   padding: 3px;
   align-items: center;
@@ -23,25 +23,25 @@
   font-weight: 300;
 }
 
-.BacklogTaskCheckBox {
+.TaskCheckBox {
   margin-left: 8px;
   margin-right: 5px;
 }
 
-.BacklogTaskCheckBoxPlaceHolder {
+.TaskCheckBoxPlaceHolder {
   margin-left: 8px;
   width: 16px;
   margin-right: 5px;
 }
 
-.BacklogTaskIcon {
+.TaskIcon {
   flex: none;
   cursor: pointer;
   margin: 0 4px 0 0 !important;
   height: 16px !important;
 }
 
-.BacklogTaskText {
+.TaskText {
   flex: 1 1 auto;
   margin-left: 3px;
   margin-right: 3px;

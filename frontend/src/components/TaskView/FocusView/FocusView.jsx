@@ -28,7 +28,7 @@ function FocusView({ mainTaskArray }: Props): Node {
   const listItems = mainTaskArray
     .map(filterMapper)
     .map((task: Task | null) => task && (
-      <InlineTaskEditor key={task.id} className={styles.FocusViewTaskBox} task={task} />
+      <InlineTaskEditor key={task.id} className={styles.TaskBox} task={task} />
     ));
   return (<List>{listItems}</List>);
 }

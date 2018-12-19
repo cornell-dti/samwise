@@ -1,4 +1,4 @@
-.BacklogViewSwitcher {
+.ViewSwitcher {
   display: flex;
   flex-direction: row;
   align-content: center;
@@ -9,7 +9,7 @@
   border: solid 1px #5A5A5A;
 }
 
-.BacklogViewSwitcherButton {
+.ViewSwitcherButton {
   display: flex;
   align-items: center;
   cursor: pointer;
@@ -18,12 +18,12 @@
   border: solid 1px #5A5A5A;
 }
 
-.BacklogViewSwitcherButtonText {
+.ViewSwitcherButtonText {
   font-size: 12px;
   margin: 0 auto !important;
 }
 
-.BacklogViewSwitcherActiveButton {
+.ViewSwitcherActiveButton {
   color: white;
   background-color: #5A5A5A;
 }

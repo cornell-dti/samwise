@@ -91,18 +91,16 @@ export default class FutureViewDay extends React.PureComponent<Props, State> {
   renderHeader = (isToday: boolean, inMainList: boolean): Node => {
     const { date, inFourDaysView } = this.props;
     const dateNumCssClass = inFourDaysView
-      ? styles.BacklogDayDateInfoDateNumFourDaysView
-      : styles.BacklogDayDateInfoDateNumOtherViews;
+      ? styles.DateNumFourDaysView
+      : styles.DateNumOtherViews;
     const containerStyle = (inFourDaysView && inMainList) ? { paddingTop: '1em' } : {};
     return (
-      <div className={styles.BacklogDayDateInfo} style={containerStyle}>
-        {
-          inFourDaysView && (
-            <div className={styles.BacklogDayDateInfoDay}>
-              {isToday ? 'TODAY' : day2String(date.getDay())}
-            </div>
-          )
-        }
+      <div className={styles.DateInfo} style={containerStyle}>
+        {inFourDaysView && (
+          <div className={styles.DateInfoDay}>
+            {isToday ? 'TODAY' : day2String(date.getDay())}
+          </div>
+        )}
         <div className={dateNumCssClass}>{date.getDate()}</div>
       </div>
     );
@@ -120,7 +118,7 @@ export default class FutureViewDay extends React.PureComponent<Props, State> {
     const toggleButton = (
       <button
         type="button"
-        className={styles.BacklogDayMoreTasksBar}
+        className={styles.MoreTasksBar}
         onClick={this.toggleFloatingView}
       >
         More Tasks...
@@ -148,13 +146,13 @@ export default class FutureViewDay extends React.PureComponent<Props, State> {
       <React.Fragment>
         {toggleButton}
         <div
-          className={styles.BacklogDayFloatingViewBackgroundBlocker}
+          className={styles.FloatingViewBackgroundBlocker}
           role="button"
           tabIndex={-1}
           onClick={this.toggleFloatingView}
           onKeyDown={this.toggleFloatingView}
         />
-        <div className={styles.BacklogDayFloatingView} style={floatingViewStyle}>
+        <div className={styles.FloatingView} style={floatingViewStyle}>
           {this.renderHeader(this.isToday(), false)}
           <FutureViewDayTaskContainer
             tasks={tasks}
@@ -177,11 +175,9 @@ export default class FutureViewDay extends React.PureComponent<Props, State> {
     const isToday = this.isToday();
     let wrapperCssClass: string;
     if (inFourDaysView) {
-      wrapperCssClass = isToday
-        ? `${styles.BacklogDayFourDaysView} ${styles.BacklogToday}`
-        : styles.BacklogDayFourDaysView;
+      wrapperCssClass = isToday ? `${styles.FourDaysView} ${styles.Today}` : styles.FourDaysView;
     } else {
-      wrapperCssClass = styles.BacklogDayOtherView;
+      wrapperCssClass = styles.OtherViews;
     }
     return (
       <div className={wrapperCssClass} ref={(e) => { this.backlogDayElement = e; }}>

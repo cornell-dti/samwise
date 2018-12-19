@@ -28,20 +28,20 @@ export default class FutureViewSwitcher extends React.PureComponent<Props, State
     );
     const renderButton = (option: FutureViewDisplayOption, text: string) => {
       const className = displayOption === option
-        ? `${styles.BacklogViewSwitcherButton} ${styles.BacklogViewSwitcherActiveButton}`
-        : styles.BacklogViewSwitcherButton;
+        ? `${styles.ViewSwitcherButton} ${styles.ViewSwitcherActiveButton}`
+        : styles.ViewSwitcherButton;
       return (
         <button
           className={className}
           type="button"
           onClick={setDisplayOption(option)}
         >
-          <span className={styles.BacklogViewSwitcherButtonText}>{text}</span>
+          <span className={styles.ViewSwitcherButtonText}>{text}</span>
         </button>
       );
     };
     return (
-      <div className={styles.BacklogViewSwitcher}>
+      <div className={styles.ViewSwitcher}>
         {renderButton('FOUR_DAYS', '4D')}
         {renderButton('BIWEEKLY', '2W')}
         {renderButton('MONTHLY', 'M')}

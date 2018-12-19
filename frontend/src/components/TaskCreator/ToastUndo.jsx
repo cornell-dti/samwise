@@ -2,7 +2,7 @@
 
 import React from 'react';
 import type { Node } from 'react';
-import styles from './UndoBtn.css';
+import styles from './UndoButton.css';
 
 type Props = {|
   +dispText: string;
