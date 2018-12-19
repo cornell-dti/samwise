@@ -11,6 +11,7 @@ import type { AppUser } from './util/firebase-util';
 import LoginBarrier from './components/Util/Login/LoginBarrier';
 import { httpInitializeData } from './http/http-service';
 import { initializeApp, dispatchAction } from './store/store';
+import WindowSizeProvider from './components/Util/Responsive/WindowSizeProvider';
 
 /**
  * Whether to disable login.
@@ -31,11 +32,13 @@ const appRenderer = (appUser: AppUser): Node => {
   httpInitializeData().then(a => dispatchAction(a));
   return (
     <ReactReduxProvider store={store}>
-      <div className={styles.App}>
-        <TitleBar />
-        <TaskCreator />
-        <TaskView />
-      </div>
+      <WindowSizeProvider>
+        <div className={styles.App}>
+          <TitleBar />
+          <TaskCreator />
+          <TaskView />
+        </div>
+      </WindowSizeProvider>
     </ReactReduxProvider>
   );
 };
