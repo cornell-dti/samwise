@@ -295,6 +295,7 @@ class TaskEditor extends React.PureComponent<Props, State> {
       <Calendar
         value={date}
         className={styles.TaskEditorCalendar}
+        minDate={new Date()}
         onChange={this.editTaskDate}
       />
     );

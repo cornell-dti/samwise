@@ -1,10 +1,10 @@
 // @flow strict
 
 /**
- * Header height in four days view.
+ * Header height in n-days view.
  * @type {number}
  */
-export const fourDaysViewHeaderHeight = 66;
+export const nDaysViewHeaderHeight = 66;
 /**
  * Header height in other views.
  * @type {number}
@@ -12,10 +12,10 @@ export const fourDaysViewHeaderHeight = 66;
 export const otherViewsHeightHeader = 47;
 
 /**
- * Height of the task container in four days view.
+ * Height of the task container in n-days view.
  * @type {number}
  */
-export const taskContainerHeightFourDaysView = 300;
+export const taskContainerHeightNDaysView = 300;
 /**
  * Height of the task container in other views.
  * @type {number}

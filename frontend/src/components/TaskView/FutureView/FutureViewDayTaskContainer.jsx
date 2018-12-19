@@ -9,7 +9,7 @@ import styles from './FutureViewDayTaskContainer.css';
 
 type Props = {|
   +tasks: ColoredTask[];
-  +inFourDaysView: boolean;
+  +inNDaysView: boolean;
   +doesShowCompletedTasks: boolean;
   +taskEditorPosition: FloatingPosition;
   +hideOverflow: boolean;
@@ -23,7 +23,7 @@ type Props = {|
  */
 export default function FutureViewDayTaskContainer(props: Props): Node {
   const {
-    tasks, inFourDaysView, doesShowCompletedTasks, taskEditorPosition, hideOverflow,
+    tasks, inNDaysView, doesShowCompletedTasks, taskEditorPosition, hideOverflow,
   } = props;
   const taskListComponent = tasks
     .filter((t: ColoredTask) => (doesShowCompletedTasks || !t.complete))
@@ -32,14 +32,14 @@ export default function FutureViewDayTaskContainer(props: Props): Node {
         // To force rerender
         // eslint-disable-next-line react/no-array-index-key
         key={index}
-        inFourDaysView={inFourDaysView}
+        inNDaysView={inNDaysView}
         doesShowCompletedTasks={doesShowCompletedTasks}
         taskEditorPosition={taskEditorPosition}
         {...t}
       />
     ));
-  const className = inFourDaysView
-    ? styles.FourDaysView
+  const className = inNDaysView
+    ? styles.NDaysView
     : styles.OtherViews;
   if (hideOverflow) {
     return (<div className={className} style={{ overflow: 'hidden' }}>{taskListComponent}</div>);

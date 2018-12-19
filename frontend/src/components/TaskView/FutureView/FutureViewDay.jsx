@@ -9,27 +9,33 @@ import FutureViewDayTaskContainer from './FutureViewDayTaskContainer';
 import { countTasks } from './future-view-util';
 import {
   floatingViewWidth,
-  fourDaysViewHeaderHeight, otherViewsHeightHeader,
-  taskContainerHeightFourDaysView, taskContainerHeightOtherViews, taskHeight,
+  nDaysViewHeaderHeight,
+  otherViewsHeightHeader,
+  taskContainerHeightNDaysView,
+  taskContainerHeightOtherViews, taskHeight,
 } from './future-view-css-props';
 import { day2String } from '../../../util/datetime-util';
+import windowSizeConnect from '../../Util/Responsive/WindowSizeConsumer';
+import type { WindowSize } from '../../Util/Responsive/window-size-context';
 
 type Props = {|
   +date: Date;
   +tasks: ColoredTask[];
-  +inFourDaysView: boolean;
+  +inNDaysView: boolean;
   +doesShowCompletedTasks: boolean;
   +taskEditorPosition: FloatingPosition;
+  +windowSize: WindowSize;
 |};
 
 type State = {|
-  +floatingViewPosition: ?PositionStyle;
+  +floatingViewOpened: boolean;
 |};
 
 type PropsForPositionComputation = {|
   +tasks: ColoredTask[];
-  +inFourDaysView: boolean;
+  +inNDaysView: boolean;
   +doesShowCompletedTasks: boolean;
+  +windowSize: WindowSize;
   +mainViewPosition: {| +width: number; +height: number; +top: number; +left: number; |};
 |};
 export opaque type PositionStyle : Object = {|
@@ -46,33 +52,31 @@ export opaque type PositionStyle : Object = {|
  */
 const computeFloatingViewStyle = (props: PropsForPositionComputation): PositionStyle => {
   const {
-    tasks, inFourDaysView, doesShowCompletedTasks,
+    tasks, inNDaysView, doesShowCompletedTasks, windowSize,
     mainViewPosition: {
       width, height, top, left,
     },
   } = props;
   // Compute the height of inner content
-  const headerHeight = inFourDaysView ? fourDaysViewHeaderHeight : otherViewsHeightHeader;
-  const tasksHeight = taskHeight * countTasks(tasks, inFourDaysView, doesShowCompletedTasks);
+  const headerHeight = inNDaysView ? nDaysViewHeaderHeight : otherViewsHeightHeader;
+  const tasksHeight = taskHeight * countTasks(tasks, inNDaysView, doesShowCompletedTasks);
   const totalHeight = headerHeight + tasksHeight;
   // Decide the maximum allowed height and the actual height
-  const maxAllowedHeight = inFourDaysView ? 400 : 300;
+  const maxAllowedHeight = inNDaysView ? 400 : 300;
   const floatingViewHeight = Math.min(totalHeight, maxAllowedHeight);
   // Compute ideal offset
   let topOffset = (height - floatingViewHeight) / 2;
   let leftOffset = (width - floatingViewWidth) / 2;
   // Correct the offsets if they overflow.
   {
-    if (!document.body) {
-      throw new Error('What? No body?!');
-    }
-    const { offsetWidth, offsetHeight } = document.body;
+    const windowWidth = windowSize.width;
+    const windowHeight = windowSize.height;
     const topAbsolutePosition = top + topOffset;
     if (topAbsolutePosition < 0) {
       topOffset -= topAbsolutePosition;
     } else {
       const bottomAbsolutePosition = topAbsolutePosition + floatingViewHeight;
-      const diff = bottomAbsolutePosition - offsetHeight;
+      const diff = bottomAbsolutePosition - windowHeight;
       if (diff > 0) {
         topOffset -= diff;
       }
@@ -82,7 +86,7 @@ const computeFloatingViewStyle = (props: PropsForPositionComputation): PositionS
       leftOffset -= leftAbsolutePosition;
     } else {
       const rightAbsolutePosition = leftAbsolutePosition + floatingViewWidth;
-      const diff = rightAbsolutePosition - offsetWidth;
+      const diff = rightAbsolutePosition - windowWidth;
       if (diff > 0) {
         leftOffset -= diff;
       }
@@ -99,18 +103,10 @@ const computeFloatingViewStyle = (props: PropsForPositionComputation): PositionS
 /**
  * The component that renders all tasks on a certain day.
  */
-export default class FutureViewDay extends React.PureComponent<Props, State> {
+class FutureViewDay extends React.PureComponent<Props, State> {
   constructor(props: Props) {
     super(props);
-    this.state = { floatingViewPosition: null };
-  }
-
-  componentDidMount() {
-    window.addEventListener('resize', this.updateFloatingViewPosition);
-  }
-
-  componentWillUnmount() {
-    window.removeEventListener('resize', this.updateFloatingViewPosition);
+    this.state = { floatingViewOpened: false };
   }
 
   /**
@@ -132,12 +128,12 @@ export default class FutureViewDay extends React.PureComponent<Props, State> {
    * @return {boolean} whether the container overflows.
    */
   doesOverFlow = (): boolean => {
-    const { tasks, inFourDaysView, doesShowCompletedTasks } = this.props;
+    const { tasks, inNDaysView, doesShowCompletedTasks } = this.props;
     const totalRequiredHeight = taskHeight * countTasks(
-      tasks, inFourDaysView, doesShowCompletedTasks,
+      tasks, inNDaysView, doesShowCompletedTasks,
     );
-    const actualHeight = inFourDaysView
-      ? taskContainerHeightFourDaysView
+    const actualHeight = inNDaysView
+      ? taskContainerHeightNDaysView
       : taskContainerHeightOtherViews;
     return totalRequiredHeight > actualHeight;
   };
@@ -162,34 +158,19 @@ export default class FutureViewDay extends React.PureComponent<Props, State> {
     const mainViewPosition = {
       width, height, top, left,
     };
-    const { tasks, inFourDaysView, doesShowCompletedTasks } = this.props;
-    return computeFloatingViewStyle({
-      tasks, inFourDaysView, doesShowCompletedTasks, mainViewPosition,
-    });
+    const { date, taskEditorPosition, ...positionProps } = this.props;
+    return computeFloatingViewStyle({ ...positionProps, mainViewPosition });
   };
-
-  /**
-   * Update floating view position, if it's opened.
-   */
-  updateFloatingViewPosition = () => this.setState((state: State) => {
-    const { floatingViewPosition } = state;
-    if (floatingViewPosition == null) {
-      return state;
-    }
-    return { floatingViewPosition: this.computeFloatingViewPosition() };
-  });
 
   /**
    * Open the floating view.
    */
-  openFloatingView = () => this.setState({
-    floatingViewPosition: this.computeFloatingViewPosition(),
-  });
+  openFloatingView = () => this.setState({ floatingViewOpened: true });
 
   /**
    * Close the floating view.
    */
-  closeFloatingView = () => this.setState({ floatingViewPosition: null });
+  closeFloatingView = () => this.setState({ floatingViewOpened: false });
 
   /**
    * Render the main content.
@@ -199,17 +180,17 @@ export default class FutureViewDay extends React.PureComponent<Props, State> {
    */
   renderContent = (inMainList: boolean): Node => {
     const {
-      date, tasks, inFourDaysView, doesShowCompletedTasks, taskEditorPosition,
+      date, tasks, inNDaysView, doesShowCompletedTasks, taskEditorPosition,
     } = this.props;
     const isToday = this.isToday();
-    const dateNumCssClass = inFourDaysView
-      ? styles.DateNumFourDaysView
+    const dateNumCssClass = inNDaysView
+      ? styles.DateNumNDaysView
       : styles.DateNumOtherViews;
-    const containerStyle = (inFourDaysView && inMainList) ? { paddingTop: '1em' } : {};
+    const containerStyle = (inNDaysView && inMainList) ? { paddingTop: '1em' } : {};
     return (
       <React.Fragment>
         <div className={styles.DateInfo} style={containerStyle}>
-          {inFourDaysView && (
+          {inNDaysView && (
             <div className={styles.DateInfoDay}>
               {isToday ? 'TODAY' : day2String(date.getDay())}
             </div>
@@ -218,7 +199,7 @@ export default class FutureViewDay extends React.PureComponent<Props, State> {
         </div>
         <FutureViewDayTaskContainer
           tasks={tasks}
-          inFourDaysView={inFourDaysView}
+          inNDaysView={inNDaysView}
           doesShowCompletedTasks={doesShowCompletedTasks}
           taskEditorPosition={taskEditorPosition}
           hideOverflow={inMainList}
@@ -236,8 +217,8 @@ export default class FutureViewDay extends React.PureComponent<Props, State> {
     if (!this.doesOverFlow()) {
       return this.renderContent(true);
     }
-    const { floatingViewPosition } = this.state;
-    if (floatingViewPosition == null) {
+    const { floatingViewOpened } = this.state;
+    if (!floatingViewOpened) {
       return (
         <React.Fragment>
           {this.renderContent(true)}
@@ -255,7 +236,7 @@ export default class FutureViewDay extends React.PureComponent<Props, State> {
           className={styles.FloatingBackgroundBlocker}
           onClick={this.closeFloatingView}
         />
-        <div className={styles.FloatingView} style={floatingViewPosition}>
+        <div className={styles.FloatingView} style={this.computeFloatingViewPosition()}>
           {this.renderContent(false)}
         </div>
       </React.Fragment>
@@ -265,10 +246,11 @@ export default class FutureViewDay extends React.PureComponent<Props, State> {
   backlogDayElement: ?HTMLDivElement;
 
   render(): Node {
-    const { inFourDaysView } = this.props;
+    const { inNDaysView } = this.props;
     let wrapperCssClass: string;
-    if (inFourDaysView) {
-      wrapperCssClass = this.isToday() ? `${styles.FourDaysView} ${styles.Today}` : styles.FourDaysView;
+    if (inNDaysView) {
+      wrapperCssClass = this.isToday()
+        ? `${styles.NDaysView} ${styles.Today}` : styles.NDaysView;
     } else {
       wrapperCssClass = styles.OtherViews;
     }
@@ -279,3 +261,6 @@ export default class FutureViewDay extends React.PureComponent<Props, State> {
     );
   }
 }
+
+const ConnectedFutureViewDay = windowSizeConnect<Props>(FutureViewDay);
+export default ConnectedFutureViewDay;

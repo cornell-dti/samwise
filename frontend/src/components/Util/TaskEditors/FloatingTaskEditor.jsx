@@ -13,11 +13,14 @@ import type { EditTaskAction, RemoveTaskAction } from '../../../store/action-typ
 import styles from './FloatingTaskEditor.css';
 import { TaskEditorFlexiblePadding as flexiblePaddingClass } from './TaskEditor.css';
 import { replaceSubTask } from '../../../util/task-util';
+import windowSizeConnect from '../Responsive/WindowSizeConsumer';
+import type { WindowSize } from '../Responsive/window-size-context';
 
 type Props = {|
   +position: FloatingPosition;
   +initialTask: Task;
   +trigger: (opened: boolean, opener: () => void) => Node;
+  +windowSize: WindowSize;
   +editTask: (task: Task) => EditTaskAction;
   +removeTask: (taskId: number, undoable?: boolean) => RemoveTaskAction;
 |};
@@ -44,7 +47,7 @@ class FloatingTaskEditor extends React.PureComponent<Props, State> {
   }
 
   componentDidMount() {
-    window.addEventListener('resize', this.updateFloatingEditorPosition);
+    this.updateFloatingEditorPosition();
   }
 
   componentWillReceiveProps(nextProps: Props) {
@@ -60,10 +63,6 @@ class FloatingTaskEditor extends React.PureComponent<Props, State> {
 
   componentDidUpdate() {
     this.updateFloatingEditorPosition();
-  }
-
-  componentWillUnmount() {
-    window.removeEventListener('resize', this.updateFloatingEditorPosition);
   }
 
   /**
@@ -232,5 +231,5 @@ class FloatingTaskEditor extends React.PureComponent<Props, State> {
 const ConnectedFloatingTaskEditor = connect(
   null,
   { editTask: editTaskAction, removeTask: removeTaskAction },
-)(FloatingTaskEditor);
+)(windowSizeConnect<Props>(FloatingTaskEditor));
 export default ConnectedFloatingTaskEditor;

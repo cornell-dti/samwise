@@ -10,19 +10,20 @@ export type DateToTaskMap = Map<string, Task[]>;
 /**
  * Compute the start date and end date.
  *
+ * @param {number} nDays number of days in n-days view.
  * @param {FutureViewDisplayOption} displayOption the display option of the backlog days container.
  * @param {number} backlogOffset offset of displaying days.
  * @return {{startDate: Date, endDate: Date}} the start date and end date.
  */
 function computeStartAndEndDay(
-  displayOption: FutureViewDisplayOption, backlogOffset: number,
+  nDays: number, displayOption: FutureViewDisplayOption, backlogOffset: number,
 ): {| +startDate: Date; endDate: Date |} {
   // Compute start date (the first date to display)
   const startDate = new Date();
   let hasAdditionalDays = false;
   switch (displayOption) {
-    case 'FOUR_DAYS':
-      startDate.setDate(startDate.getDate() + backlogOffset * 4);
+    case 'N_DAYS':
+      startDate.setDate(startDate.getDate() + backlogOffset * nDays);
       break;
     case 'BIWEEKLY':
       startDate.setDate(startDate.getDate() - startDate.getDay() + backlogOffset * 14);
@@ -37,8 +38,8 @@ function computeStartAndEndDay(
   // Compute end date (the first date not to display)
   let endDate = new Date(startDate); // the first day not to display.
   switch (displayOption) {
-    case 'FOUR_DAYS':
-      endDate.setDate(endDate.getDate() + 4);
+    case 'N_DAYS':
+      endDate.setDate(endDate.getDate() + nDays);
       break;
     case 'BIWEEKLY':
       endDate.setDate(endDate.getDate() + 14);
@@ -59,15 +60,16 @@ function computeStartAndEndDay(
 /**
  * Returns a suitable title for the backlog header title.
  *
+ * @param {number} nDays number of days in n-days view.
  * @param {FutureViewDisplayOption} displayOption the display option.
  * @param {number} backlogOffset offset of displaying days.
  * @return {string} a suitable title for the backlog header title.
  */
 export function getBacklogHeaderTitle(
-  displayOption: FutureViewDisplayOption, backlogOffset: number,
+  nDays: number, displayOption: FutureViewDisplayOption, backlogOffset: number,
 ): string {
-  if (displayOption === 'FOUR_DAYS' || displayOption === 'BIWEEKLY') {
-    const { startDate, endDate } = computeStartAndEndDay(displayOption, backlogOffset);
+  if (displayOption === 'N_DAYS' || displayOption === 'BIWEEKLY') {
+    const { startDate, endDate } = computeStartAndEndDay(nDays, displayOption, backlogOffset);
     endDate.setDate(endDate.getDate() - 1);
     return `${startDate.toLocaleDateString()} - ${endDate.toLocaleDateString()}`;
   }
@@ -84,15 +86,16 @@ export function getBacklogHeaderTitle(
  *
  * @param {DateToTaskMap} date2TaskMap the map from a date to all the tasks in that day.
  * @param {Tag[]} tags all the color config.
+ * @param {number} nDays number of days in n-days view.
  * @param {FutureViewDisplayOption} displayOption the display option.
  * @param {number} backlogOffset offset of displaying days.
  * @return {OneDayTask[]} an array of backlog days information.
  */
 export function buildDaysInBacklog(
-  date2TaskMap: DateToTaskMap, tags: Tag[],
+  date2TaskMap: DateToTaskMap, tags: Tag[], nDays: number,
   displayOption: FutureViewDisplayOption, backlogOffset: number,
 ): OneDayTask[] {
-  const { startDate, endDate } = computeStartAndEndDay(displayOption, backlogOffset);
+  const { startDate, endDate } = computeStartAndEndDay(nDays, displayOption, backlogOffset);
   // Adding the days to array
   const days: OneDayTask[] = [];
   for (let d = startDate; d < endDate; d.setDate(d.getDate() + 1)) {

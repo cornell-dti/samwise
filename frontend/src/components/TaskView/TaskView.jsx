@@ -11,8 +11,12 @@ import { getBacklogHeaderTitle } from './FutureView/future-view-util';
 import SquareIconButton from '../UI/SquareIconButton';
 import SquareTextButton from '../UI/SquareTextButton';
 import styles from './TaskView.css';
+import type { WindowSize } from '../Util/Responsive/window-size-context';
+import windowSizeConnect from '../Util/Responsive/WindowSizeConsumer';
 
-type Props = {||};
+type Props = {|
+  +windowSize: WindowSize;
+|};
 
 type State = {|
   +doesShowFocusView: boolean;
@@ -21,25 +25,53 @@ type State = {|
   +backlogOffset: number;
 |};
 
-export default class TaskView extends React.PureComponent<Props, State> {
+class TaskView extends React.PureComponent<Props, State> {
   constructor(props: Props) {
     super(props);
     this.state = {
       doesShowFocusView: true,
       doesShowCompletedTasks: true,
-      displayOption: 'FOUR_DAYS',
+      displayOption: 'N_DAYS',
       backlogOffset: 0,
     };
   }
 
+  /*
+   * --------------------------------------------------------------------------------
+   * Part 1: Window Size Responsive Computations
+   * --------------------------------------------------------------------------------
+   */
+
   /**
-   * Handler for toggling the focus view. In four-days mode, it cannot be toggled.
+   * Compute the number of days in n-days mode.
+   *
+   * @return {number} the number of days in n-days mode.
+   */
+  nDays = (): number => {
+    const { windowSize: { width } } = this.props;
+    if (width > 960) {
+      return 5;
+    }
+    if (width > 768) {
+      return 4;
+    }
+    return 1;
+  };
+
+  /*
+   * --------------------------------------------------------------------------------
+   * Part 2: ???
+   * --------------------------------------------------------------------------------
+   */
+
+  /**
+   * Handler for toggling the focus view. In n-days mode, it cannot be toggled.
    */
   toggleFocusView = (): void => {
     this.setState((oldState: State) => {
       const { doesShowFocusView, doesShowCompletedTasks, displayOption } = oldState;
       switch (displayOption) {
-        case 'FOUR_DAYS':
+        case 'N_DAYS':
           return oldState;
         case 'BIWEEKLY':
         case 'MONTHLY':
@@ -89,17 +121,18 @@ export default class TaskView extends React.PureComponent<Props, State> {
   /**
    * Change the current view of the backlog.
    *
-   * @param newDisplayOption the new display option for backlog.
+   * @param {number} nDays number of days in n-days view.
+   * @return {function(FutureViewDisplayOption): void} the handler for view switching.
    */
-  switchBacklogView = (newDisplayOption: FutureViewDisplayOption): void => {
+  switchBacklogView = (nDays: number) => (newDisplayOption: FutureViewDisplayOption): void => {
     this.setState((oldState: State) => {
       const {
         doesShowFocusView, doesShowCompletedTasks, displayOption, backlogOffset,
       } = oldState;
       let dayOffset: number;
       switch (displayOption) {
-        case 'FOUR_DAYS':
-          dayOffset = backlogOffset * 4;
+        case 'N_DAYS':
+          dayOffset = backlogOffset * nDays;
           break;
         case 'BIWEEKLY':
           dayOffset = backlogOffset * 14;
@@ -113,16 +146,16 @@ export default class TaskView extends React.PureComponent<Props, State> {
       let newDoesShowFocusView: boolean;
       let newOffset: number;
       switch (newDisplayOption) {
-        case 'FOUR_DAYS':
+        case 'N_DAYS':
           newDoesShowFocusView = true;
           newOffset = Math.floor(dayOffset / 4);
           break;
         case 'BIWEEKLY':
-          newDoesShowFocusView = displayOption === 'FOUR_DAYS' ? false : doesShowFocusView;
+          newDoesShowFocusView = displayOption === 'N_DAYS' ? false : doesShowFocusView;
           newOffset = Math.floor(dayOffset / 14);
           break;
         case 'MONTHLY':
-          newDoesShowFocusView = displayOption === 'FOUR_DAYS' ? false : doesShowFocusView;
+          newDoesShowFocusView = displayOption === 'N_DAYS' ? false : doesShowFocusView;
           newOffset = Math.floor(dayOffset / 30);
           break;
         default:
@@ -142,9 +175,9 @@ export default class TaskView extends React.PureComponent<Props, State> {
    *
    * @return {Node} the rendered component.
    */
-  renderFocusViewToggleComponent(): Node {
+  renderFocusViewToggleComponent = (): Node => {
     const { doesShowFocusView, displayOption } = this.state;
-    if (displayOption === 'FOUR_DAYS') {
+    if (displayOption === 'N_DAYS') {
       return null;
     }
     const wrapperStyle = doesShowFocusView ? { left: '-5em' } : { left: '-1em' };
@@ -167,21 +200,22 @@ export default class TaskView extends React.PureComponent<Props, State> {
         </div>
       </div>
     );
-  }
+  };
 
   /**
    * Render the backlog component.
    *
    * @return {Node} the rendered component.
    */
-  renderBacklogComponent(): Node {
+  renderBacklogComponent = (): Node => {
     const {
       doesShowCompletedTasks, displayOption, backlogOffset,
     } = this.state;
     const backlogTodayButton = backlogOffset !== 0 && (
       <SquareTextButton text="Today" onClick={this.changeBacklogOffset('TODAY')} />
     );
-    const backlogNav = displayOption === 'FOUR_DAYS' ? (
+    const nDays = this.nDays();
+    const backlogNav = displayOption === 'N_DAYS' ? (
       <React.Fragment>
         {
           backlogOffset >= 1 && (
@@ -212,7 +246,7 @@ export default class TaskView extends React.PureComponent<Props, State> {
           )
         }
         <h3 className={styles.TaskViewControlTitle}>
-          {getBacklogHeaderTitle(displayOption, backlogOffset)}
+          {getBacklogHeaderTitle(nDays, displayOption, backlogOffset)}
         </h3>
         <Icon
           className={styles.TaskViewNavButton}
@@ -238,16 +272,17 @@ export default class TaskView extends React.PureComponent<Props, State> {
           {backlogTodayButton}
           {backlogNav}
           {toggleCompletedTasksButton}
-          <FutureViewSwitcher onChange={this.switchBacklogView} />
+          <FutureViewSwitcher nDays={nDays} onChange={this.switchBacklogView(nDays)} />
         </div>
         <FutureViewDaysContainer
+          nDays={nDays}
           doesShowCompletedTasks={doesShowCompletedTasks}
           displayOption={displayOption}
           backlogOffset={backlogOffset}
         />
       </div>
     );
-  }
+  };
 
   render(): Node {
     const { doesShowFocusView } = this.state;
@@ -265,3 +300,6 @@ export default class TaskView extends React.PureComponent<Props, State> {
     );
   }
 }
+
+const ConnectedTaskView = windowSizeConnect<Props>(TaskView);
+export default ConnectedTaskView;

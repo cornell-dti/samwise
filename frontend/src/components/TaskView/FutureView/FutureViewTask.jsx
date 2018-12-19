@@ -18,11 +18,10 @@ import CheckBox from '../../UI/CheckBox';
 import type { FloatingPosition } from '../../Util/TaskEditors/task-editors-types';
 import { getTodayAtZero } from '../../../util/datetime-util';
 import OverdueAlert from '../../UI/OverdueAlert';
-import { taskHeight } from './future-view-css-props';
 
 type Props = {|
   ...ColoredTask;
-  +inFourDaysView: boolean;
+  +inNDaysView: boolean;
   +doesShowCompletedTasks: boolean;
   +taskEditorPosition: FloatingPosition;
   +editMainTask: (taskId: number, partialMainTask: PartialMainTask) => EditMainTaskAction;
@@ -156,7 +155,7 @@ class FutureViewTask extends React.PureComponent<Props, State> {
 
   render(): Node {
     const {
-      inFourDaysView, doesShowCompletedTasks, taskEditorPosition,
+      inNDaysView, doesShowCompletedTasks, taskEditorPosition,
       editMainTask, removeTask, color, ...task
     } = this.props;
     const { date } = task;
@@ -178,7 +177,7 @@ class FutureViewTask extends React.PureComponent<Props, State> {
         }
       }
     };
-    if (!inFourDaysView) {
+    if (!inNDaysView) {
       return (
         <div className={styles.Task} ref={refHandler}>
           {overdueComponentOpt}

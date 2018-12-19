@@ -1,4 +1,4 @@
-.FourDaysView {
+.NDaysView {
   position: relative;
   margin: -1em 0.5em;
   background-color: #F7F7F7;
@@ -13,7 +13,7 @@
   height: 197px;
 }
 
-.FourDaysView::-webkit-scrollbar, .OtherViews::-webkit-scrollbar {
+.NDaysView::-webkit-scrollbar, .OtherViews::-webkit-scrollbar {
   width: 0;
   height: 0;
 }
@@ -33,7 +33,7 @@
   font-weight: normal;
 }
 
-.DateNumFourDaysView {
+.DateNumNDaysView {
   font-weight: bold;
 }
 

@@ -5,7 +5,7 @@ import type { Task } from '../../../store/store-types';
 /**
  * The different displaying options for backlog.
  */
-export type FutureViewDisplayOption = 'FOUR_DAYS' | 'BIWEEKLY' | 'MONTHLY';
+export type FutureViewDisplayOption = 'N_DAYS' | 'BIWEEKLY' | 'MONTHLY';
 
 /**
  * The type for a task augmented with color information

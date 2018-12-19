@@ -5,20 +5,20 @@ import type { Node } from 'react';
 import type { FutureViewDisplayOption } from './future-view-types';
 import styles from './FutureViewHeaderButtons.css';
 
-type Props = {| +onChange: (option: FutureViewDisplayOption) => void |};
+type Props = {|
+  +nDays: number;
+  +onChange: (option: FutureViewDisplayOption) => void;
+|};
 type State = {| +displayOption: FutureViewDisplayOption |};
 
 /**
  * The component used to render a switcher for different backlog views.
  */
 export default class FutureViewSwitcher extends React.PureComponent<Props, State> {
-  constructor(props: Props) {
-    super(props);
-    this.state = { displayOption: 'FOUR_DAYS' };
-  }
+  state: State = { displayOption: 'N_DAYS' };
 
   render(): Node {
-    const { onChange } = this.props;
+    const { nDays, onChange } = this.props;
     const { displayOption } = this.state;
     const setDisplayOption = (newDisplayOption: FutureViewDisplayOption) => (
       () => {
@@ -42,7 +42,7 @@ export default class FutureViewSwitcher extends React.PureComponent<Props, State
     };
     return (
       <div className={styles.ViewSwitcher}>
-        {renderButton('FOUR_DAYS', '4D')}
+        {renderButton('N_DAYS', `${nDays}D`)}
         {renderButton('BIWEEKLY', '2W')}
         {renderButton('MONTHLY', 'M')}
       </div>

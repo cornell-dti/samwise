@@ -13,6 +13,7 @@ import type { FloatingPosition } from '../../Util/TaskEditors/task-editors-types
 import styles from './FutureViewDayContainer.css';
 
 type OwnProps = {|
+  +nDays: number;
   +doesShowCompletedTasks: boolean;
   +displayOption: FutureViewDisplayOption;
   +backlogOffset: number;
@@ -52,23 +53,23 @@ function buildDate2TaskMap(allTasks: Task[]): DateToTaskMap {
  * Render a component for one day in backlog.
  *
  * @param {OneDayTask} day the day object to display.
- * @param {boolean} inFourDaysView whether it's in four-days view
+ * @param {boolean} inNDaysView whether it's in n-days view
  * @param {boolean} doesShowCompletedTasks whether to show tasks that are completed.
  * @param {FloatingPosition} taskEditorPosition the position to put the task editor for a task.
  * @return {Node} the rendered component.
  */
 const renderDay = (
   day: OneDayTask,
-  inFourDaysView: boolean,
+  inNDaysView: boolean,
   doesShowCompletedTasks: boolean,
   taskEditorPosition: FloatingPosition,
 ): Node => (
   <Grid.Column
     key={day.date.toDateString()}
-    className={inFourDaysView ? '' : styles.ColumnOtherViews}
+    className={inNDaysView ? '' : styles.ColumnOtherViews}
   >
     <FutureViewDay
-      inFourDaysView={inFourDaysView}
+      inNDaysView={inNDaysView}
       doesShowCompletedTasks={doesShowCompletedTasks}
       taskEditorPosition={taskEditorPosition}
       {...day}
@@ -85,16 +86,16 @@ const renderDay = (
  */
 function FutureViewDaysContainer(props: Props): Node {
   const {
-    date2TaskMap, tags, displayOption, backlogOffset, doesShowCompletedTasks,
+    date2TaskMap, tags, nDays, displayOption, backlogOffset, doesShowCompletedTasks,
   } = props;
-  const inFourDaysView = displayOption === 'FOUR_DAYS';
-  const days = buildDaysInBacklog(date2TaskMap, tags, displayOption, backlogOffset);
+  const inNDaysView = displayOption === 'N_DAYS';
+  const days = buildDaysInBacklog(date2TaskMap, tags, nDays, displayOption, backlogOffset);
   const rows = [];
-  const columns = days.length === 4 ? 4 : 7;
+  const columns = days.length === nDays ? nDays : 7;
   const renderRow = (id, row) => (
     <Grid.Row
       key={id}
-      className={inFourDaysView ? '' : styles.RowOtherViews}
+      className={inNDaysView ? '' : styles.RowOtherViews}
       columns={columns}
     >
       {row}
@@ -110,17 +111,17 @@ function FutureViewDaysContainer(props: Props): Node {
       tempRow = [];
     }
     let taskEditorPosition: FloatingPosition;
-    if (days.length === 4) {
-      taskEditorPosition = i < 2 ? 'right' : 'left';
+    if (days.length === nDays) {
+      taskEditorPosition = i < (nDays / 2) ? 'right' : 'left';
     } else {
       taskEditorPosition = i < 4 ? 'right' : 'left';
     }
-    tempRow.push(renderDay(days[i], inFourDaysView, doesShowCompletedTasks, taskEditorPosition));
+    tempRow.push(renderDay(days[i], inNDaysView, doesShowCompletedTasks, taskEditorPosition));
   }
   if (tempRow.length > 0) {
     rows.push(renderRow(rowId, tempRow));
   }
-  if (!inFourDaysView) {
+  if (!inNDaysView) {
     // Add weekday bar
     rows.unshift((
       <Grid.Row key="grid-weekdays-row" columns={7}>
@@ -134,7 +135,7 @@ function FutureViewDaysContainer(props: Props): Node {
       </Grid.Row>
     ));
   }
-  return <Grid className={inFourDaysView ? '' : styles.GridOtherViews} stackable>{rows}</Grid>;
+  return <Grid className={inNDaysView ? '' : styles.GridOtherViews} stackable>{rows}</Grid>;
 }
 
 const ConnectedFutureViewDaysContainer = simpleConnect<OwnProps, SubscribedProps>(
