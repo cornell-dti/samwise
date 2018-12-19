@@ -335,7 +335,7 @@ class TaskCreator extends React.PureComponent<Props, State> {
           onDateChange={this.editDate}
           onPickerOpened={this.openDatePicker}
         />
-        <button type="submit" className={styles.SubmitNewTask}>
+        <button tabIndex={-1} type="submit" className={styles.SubmitNewTask}>
           <Icon name="arrow alternate circle right outline" color="black" />
         </button>
         <div className={styles.NewTaskModal}>
