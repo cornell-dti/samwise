@@ -86,7 +86,7 @@ class InlineTaskEditor extends React.Component<Props, State> {
       addSubTask: (subTask: SubTask) => { addSubTask(id, subTask); },
       removeTask: () => { removeTask(id, true); },
       removeSubTask: (subtaskId: number) => { removeSubTask(id, subtaskId); },
-      onStopEdit: onBlur,
+      onSave: onBlur,
       className,
       disabled,
       onFocus,

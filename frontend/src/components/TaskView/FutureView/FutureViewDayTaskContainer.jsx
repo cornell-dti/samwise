@@ -27,9 +27,11 @@ export default function FutureViewDayTaskContainer(props: Props): Node {
   } = props;
   const taskListComponent = tasks
     .filter((t: ColoredTask) => (doesShowCompletedTasks || !t.complete))
-    .map((t: ColoredTask) => (
+    .map((t: ColoredTask, index: number) => (
       <FutureViewTask
-        key={t.id}
+        // To force rerender
+        // eslint-disable-next-line react/no-array-index-key
+        key={index}
         inFourDaysView={inFourDaysView}
         doesShowCompletedTasks={doesShowCompletedTasks}
         taskEditorPosition={taskEditorPosition}

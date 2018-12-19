@@ -16,6 +16,9 @@ import type { PartialMainTask, SubTask } from '../../../store/store-types';
 import type { EditMainTaskAction, RemoveTaskAction } from '../../../store/action-types';
 import CheckBox from '../../UI/CheckBox';
 import type { FloatingPosition } from '../../Util/TaskEditors/task-editors-types';
+import { getTodayAtZero } from '../../../util/datetime-util';
+import OverdueAlert from '../../UI/OverdueAlert';
+import { taskHeight } from './future-view-css-props';
 
 type Props = {|
   ...ColoredTask;
@@ -26,10 +29,16 @@ type Props = {|
   +removeTask: (taskId: number, undoable?: boolean) => RemoveTaskAction;
 |};
 
+type State = {|
+  +overdueAlertPosition: ?{| +top: number; +left: number; |};
+|};
+
 /**
  * The component used to render one task in backlog day.
  */
-class FutureViewTask extends React.PureComponent<Props> {
+class FutureViewTask extends React.PureComponent<Props, State> {
+  state: State = { overdueAlertPosition: null };
+
   /**
    * Get an onClickHandler when the element is clicked.
    * This methods ensure that only clicking on task text counts.
@@ -150,9 +159,29 @@ class FutureViewTask extends React.PureComponent<Props> {
       inFourDaysView, doesShowCompletedTasks, taskEditorPosition,
       editMainTask, removeTask, color, ...task
     } = this.props;
+    const { date } = task;
+    const { overdueAlertPosition } = this.state;
+    const overdueComponentOpt = overdueAlertPosition && (
+      <OverdueAlert absolutePosition={overdueAlertPosition} />
+    );
+    const refHandler = (divElement: HTMLDivElement | null) => {
+      if (divElement != null) {
+        const { top, right } = divElement.getBoundingClientRect();
+        const isOverdue = date < getTodayAtZero();
+        if (isOverdue && overdueAlertPosition == null) {
+          this.setState({
+            overdueAlertPosition: {
+              top: top - 3,
+              left: right - 5,
+            },
+          });
+        }
+      }
+    };
     if (!inFourDaysView) {
       return (
-        <div className={styles.Task}>
+        <div className={styles.Task} ref={refHandler}>
+          {overdueComponentOpt}
           {this.renderMainTaskInfo()}
         </div>
       );
@@ -160,16 +189,16 @@ class FutureViewTask extends React.PureComponent<Props> {
     // Construct the trigger for the floating task editor.
     const trigger = (opened: boolean, opener: () => void): Node => {
       const onClickHandler = this.getOnClickHandler(opener);
-      const style = opened ? { position: 'relative', zIndex: 8 } : {};
+      const style = opened ? { zIndex: 8 } : {};
       return (
         <div
+          role="presentation"
           className={styles.Task}
           style={style}
-          role="button"
-          tabIndex={-1}
           onClick={onClickHandler}
-          onKeyDown={onClickHandler}
+          ref={refHandler}
         >
+          {overdueComponentOpt}
           {this.renderMainTaskInfo()}
           {this.renderSubTasks()}
         </div>

@@ -1,6 +1,5 @@
 .FourDaysView {
   position: relative;
-  overflow: visible;
   margin: -1em 0.5em;
   background-color: #F7F7F7;
   height: 366px;
@@ -59,6 +58,10 @@
   font-size: 1em;
 }
 
+.FloatingViewPrevPadding {
+  margin: 1em;
+}
+
 .FloatingView {
   position: absolute;
   z-index: 6;
@@ -72,7 +75,7 @@
   box-shadow: 0 5px 12px 0 rgba(164, 164, 164, 0.7);
 }
 
-.FloatingViewBackgroundBlocker {
+.FloatingBackgroundBlocker {
   position: fixed;
   top: 0;
   bottom: 0;

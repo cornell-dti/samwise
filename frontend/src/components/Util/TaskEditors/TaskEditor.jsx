@@ -9,10 +9,12 @@ import type {
 } from '../../../store/store-types';
 import TagListPicker from '../TagListPicker/TagListPicker';
 import CheckBox from '../../UI/CheckBox';
+import OverdueAlert from '../../UI/OverdueAlert';
 import styles from './TaskEditor.css';
 import { simpleConnect } from '../../../store/react-redux-util';
 import { getNameByTagId, getColorByTagId } from '../../../util/tag-util';
 import { randomId } from '../../../util/general-util';
+import { getTodayAtZero } from '../../../util/datetime-util';
 
 type Actions = {|
   +editMainTask: (partialMainTask: PartialMainTask, doSave: boolean) => void;
@@ -293,7 +295,6 @@ class TaskEditor extends React.PureComponent<Props, State> {
       <Calendar
         value={date}
         className={styles.TaskEditorCalendar}
-        minDate={new Date()}
         onChange={this.editTaskDate}
       />
     );
@@ -401,22 +402,27 @@ class TaskEditor extends React.PureComponent<Props, State> {
 
   render(): Node {
     const {
-      tag, subtaskArray, disabled, children,
+      tag, date, subtaskArray, disabled, children,
       className, onFocus, onBlur, refFunction, tags,
     } = this.props;
+    const isOverdue = date < getTodayAtZero();
     const backgroundColor = getColorByTagId(tags, tag);
+    const formStyle = isOverdue
+      ? { backgroundColor, border: '5px solid #D0021B' }
+      : { backgroundColor };
     const actualClassName = className == null
       ? styles.TaskEditor : `${styles.TaskEditor} ${className}`;
     return (
       <form
         className={actualClassName}
-        style={{ backgroundColor }}
+        style={formStyle}
         onMouseEnter={onFocus}
         onMouseLeave={onBlur}
         onFocus={onFocus}
         onBlur={() => {}}
         ref={refFunction}
       >
+        {isOverdue && <OverdueAlert />}
         <div>
           {this.renderHeader()}
           {this.renderMainTaskEdit()}

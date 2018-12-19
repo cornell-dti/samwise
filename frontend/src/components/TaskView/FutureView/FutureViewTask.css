@@ -1,4 +1,5 @@
 .Task {
+  position: relative;
   color: white;
   cursor: pointer;
   margin: 0;

@@ -87,3 +87,14 @@ export function date2StringWithYear(date: Date): string {
     month: 'long', day: 'numeric', year: 'numeric',
   });
 }
+
+/**
+ * Returns today at 0.
+ *
+ * @return {Date} today at 0.
+ */
+export const getTodayAtZero = (): Date => {
+  const d = new Date();
+  d.setHours(0);
+  return d;
+};
