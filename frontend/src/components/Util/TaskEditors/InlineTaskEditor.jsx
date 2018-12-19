@@ -67,19 +67,29 @@ class InlineTaskEditor extends React.Component<Props, State> {
     const { id } = task;
     const { disabled } = this.state;
     // To un-mount the editor when finished editing.
+    const onFocus = () => this.setState({ disabled: false });
+    const onBlur = () => this.setState({ disabled: true });
     const taskEditorProps = {
       ...task,
-      editMainTask: (partialMainTask: PartialMainTask) => { editMainTask(id, partialMainTask); },
-      editSubTask: (subtaskId: number, partialSubTask: PartialSubTask) => {
+      editMainTask: (partialMainTask: PartialMainTask, onSave: boolean) => {
+        editMainTask(id, partialMainTask);
+        if (onSave) {
+          onBlur();
+        }
+      },
+      editSubTask: (subtaskId: number, partialSubTask: PartialSubTask, onSave: boolean) => {
         editSubTask(id, subtaskId, partialSubTask);
+        if (onSave) {
+          onBlur();
+        }
       },
       addSubTask: (subTask: SubTask) => { addSubTask(id, subTask); },
       removeTask: () => { removeTask(id, true); },
       removeSubTask: (subtaskId: number) => { removeSubTask(id, subtaskId); },
       className,
       disabled,
-      onFocus: () => this.setState({ disabled: false }),
-      onBlur: () => this.setState({ disabled: true }),
+      onFocus,
+      onBlur,
     };
     return <TaskEditor {...taskEditorProps} />;
   }

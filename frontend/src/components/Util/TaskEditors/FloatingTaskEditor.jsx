@@ -178,13 +178,15 @@ class FloatingTaskEditor extends React.PureComponent<Props, State> {
     );
     const taskEditorProps = {
       ...task,
-      editMainTask: (partialMainTask: PartialMainTask) => this.setState(partialMainTask),
-      editSubTask: (subtaskId: number, partialSubTask: PartialSubTask) => {
+      editMainTask: (partialMainTask: PartialMainTask, doSave: boolean) => {
+        this.setState(partialMainTask, doSave ? this.onSave : undefined);
+      },
+      editSubTask: (subtaskId: number, partialSubTask: PartialSubTask, doSave: boolean) => {
         this.setState(({ subtaskArray }: State) => ({
           subtaskArray: replaceSubTask(
             subtaskArray, subtaskId, s => ({ ...s, ...partialSubTask }),
           ),
-        }));
+        }), doSave ? this.onSave : undefined);
       },
       addSubTask: (subTask: SubTask) => {
         this.setState(({ subtaskArray }: State) => ({

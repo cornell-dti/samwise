@@ -15,8 +15,8 @@ import { getNameByTagId, getColorByTagId } from '../../../util/tag-util';
 import { randomId } from '../../../util/general-util';
 
 type Actions = {|
-  +editMainTask: (partialMainTask: PartialMainTask) => void;
-  +editSubTask: (subtaskId: number, partialSubTask: PartialSubTask) => void;
+  +editMainTask: (partialMainTask: PartialMainTask, doSave: boolean) => void;
+  +editSubTask: (subtaskId: number, partialSubTask: PartialSubTask, doSave: boolean) => void;
   +addSubTask: (subTask: SubTask) => void;
   +removeTask: () => void;
   +removeSubTask: (subtaskId: number) => void;
@@ -98,19 +98,26 @@ class TaskEditor extends React.PureComponent<Props, State> {
   };
 
   /**
-   * Change the name of the task.
+   * Change the name of a task and clear cache.
    *
    * @param {SyntheticEvent<>} event the event to notify the name change.
    */
-  editTaskName = (event: SyntheticEvent<>): void => {
-    event.stopPropagation();
-    const { mainTaskNameCache } = this.state;
-    if (mainTaskNameCache === null) {
-      return;
+  editTaskName = (event?: SyntheticEvent<>): void => {
+    if (event) {
+      event.stopPropagation();
     }
-    const { editMainTask } = this.props;
-    editMainTask({ name: mainTaskNameCache });
-    this.setState({ mainTaskNameCache: null });
+    const doSave = event == null;
+    const { mainTaskNameCache, oneSubTaskNameCache } = this.state;
+    if (mainTaskNameCache !== null) {
+      const { editMainTask } = this.props;
+      editMainTask({ name: mainTaskNameCache }, doSave);
+      this.setState({ mainTaskNameCache: null });
+    } else if (oneSubTaskNameCache !== null) {
+      const [subtaskId, name] = oneSubTaskNameCache;
+      const { editSubTask } = this.props;
+      editSubTask(subtaskId, { name }, doSave);
+      this.setState({ oneSubTaskNameCache: null });
+    }
   };
 
   /**
@@ -120,7 +127,7 @@ class TaskEditor extends React.PureComponent<Props, State> {
    */
   editTaskTag = (tag: number): void => {
     const { editMainTask } = this.props;
-    editMainTask({ tag });
+    editMainTask({ tag }, false);
     this.setState({ doesShowTagEditor: false });
   };
 
@@ -132,7 +139,7 @@ class TaskEditor extends React.PureComponent<Props, State> {
   editTaskDate = (dateString: string): void => {
     const date = new Date(dateString);
     const { editMainTask } = this.props;
-    editMainTask({ date });
+    editMainTask({ date }, false);
     this.setState({ doesShowDateEditor: false });
   };
 
@@ -141,7 +148,7 @@ class TaskEditor extends React.PureComponent<Props, State> {
    */
   editComplete = () => {
     const { complete, editMainTask } = this.props;
-    editMainTask({ complete: !complete });
+    editMainTask({ complete: !complete }, false);
   };
 
   /**
@@ -149,7 +156,7 @@ class TaskEditor extends React.PureComponent<Props, State> {
    */
   editInFocus = () => {
     const { inFocus, editMainTask } = this.props;
-    editMainTask({ inFocus: !inFocus });
+    editMainTask({ inFocus: !inFocus }, false);
   };
 
   /**
@@ -165,23 +172,6 @@ class TaskEditor extends React.PureComponent<Props, State> {
   };
 
   /**
-   * Edit one particular subtask's name.
-   *
-   * @param {SyntheticEvent<HTMLInputElement>} event the event of editing finished.
-   */
-  editSubTaskName = (event: SyntheticEvent<HTMLInputElement>) => {
-    event.stopPropagation();
-    const { oneSubTaskNameCache } = this.state;
-    if (oneSubTaskNameCache === null) {
-      return;
-    }
-    const [subtaskId, name] = oneSubTaskNameCache;
-    const { editSubTask } = this.props;
-    editSubTask(subtaskId, { name });
-    this.setState({ oneSubTaskNameCache: null });
-  };
-
-  /**
    * Edit one particular subtask's completion.
    *
    * @param {SubTask} subTask the subtask.
@@ -189,7 +179,7 @@ class TaskEditor extends React.PureComponent<Props, State> {
    */
   editSubTaskComplete = (subTask: SubTask) => (): void => {
     const { editSubTask } = this.props;
-    editSubTask(subTask.id, { complete: !subTask.complete });
+    editSubTask(subTask.id, { complete: !subTask.complete }, false);
   };
 
   /**
@@ -200,7 +190,7 @@ class TaskEditor extends React.PureComponent<Props, State> {
    */
   editSubTaskInFocus = (subTask: SubTask) => (): void => {
     const { editSubTask } = this.props;
-    editSubTask(subTask.id, { inFocus: !subTask.inFocus });
+    editSubTask(subTask.id, { inFocus: !subTask.inFocus }, false);
   };
 
   /**
@@ -228,7 +218,37 @@ class TaskEditor extends React.PureComponent<Props, State> {
 
   /*
    * --------------------------------------------------------------------------------
-   * Part 3: Render Methods
+   * Part 3: Keyboard Shortcut Methods
+   * --------------------------------------------------------------------------------
+   */
+
+  /**
+   * The event handler that handles an press enter event.
+   * It turns the enter into a tab event.
+   *
+   * @param {SyntheticKeyboardEvent<HTMLInputElement>} event the event of a keypress.
+   */
+  pressEnterHandler = (event: SyntheticKeyboardEvent<HTMLInputElement>) => {
+    if (event.key !== 'Enter') {
+      return;
+    }
+    event.stopPropagation();
+    if (event.shiftKey) {
+      this.editTaskName();
+      event.currentTarget.blur();
+      return;
+    }
+    const { form } = event.currentTarget;
+    if (form == null) {
+      throw new Error('Form should not be null!');
+    }
+    const index = Array.prototype.indexOf.call(form, event.target);
+    form.elements[index + 1].focus();
+  };
+
+  /*
+   * --------------------------------------------------------------------------------
+   * Part 4: Render Methods
    * --------------------------------------------------------------------------------
    */
 
@@ -298,6 +318,7 @@ class TaskEditor extends React.PureComponent<Props, State> {
           className={styles.TaskEditorFlexibleInput}
           placeholder="Main Task"
           value={taskNameValue}
+          onKeyDown={this.pressEnterHandler}
           onChange={this.editTaskNameCache}
           onBlur={this.editTaskName}
         />
@@ -343,8 +364,9 @@ class TaskEditor extends React.PureComponent<Props, State> {
           placeholder="Your Sub-Task"
           value={subTaskName}
           ref={refHandler}
+          onKeyDown={this.pressEnterHandler}
           onChange={this.editSubTaskNameCache(subTask.id)}
-          onBlur={this.editSubTaskName}
+          onBlur={this.editTaskName}
         />
         <Icon
           name={subTask.inFocus ? 'bookmark' : 'bookmark outline'}

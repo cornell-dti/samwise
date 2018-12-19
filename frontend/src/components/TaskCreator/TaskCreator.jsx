@@ -152,6 +152,9 @@ class TaskCreator extends React.PureComponent<Props, State> {
     // Reset the state.
     this.setState({ ...initialState(), lastDel: id, lastToast: newToast });
     this.closeNewTask();
+    if (this.addTask) {
+      this.addTask.blur();
+    }
   };
 
   /**
