@@ -6,7 +6,6 @@ import type { ColoredTask } from './future-view-types';
 import type { FloatingPosition } from '../../Util/TaskEditors/task-editors-types';
 import styles from './FutureViewDay.css';
 import FutureViewDayTaskContainer from './FutureViewDayTaskContainer';
-import { countTasks } from './future-view-util';
 import {
   floatingViewWidth,
   nDaysViewHeaderHeight,
@@ -17,6 +16,7 @@ import {
 import { day2String } from '../../../util/datetime-util';
 import windowSizeConnect from '../../Util/Responsive/WindowSizeConsumer';
 import type { WindowSize } from '../../Util/Responsive/window-size-context';
+import type { SubTask } from '../../../store/store-types';
 
 type Props = {|
   +date: Date;
@@ -44,6 +44,29 @@ export opaque type PositionStyle : Object = {|
   +top: string;
   +left: string;
 |};
+
+/**
+ * Returns the total number of tasks in the given task array.
+ *
+ * @param {ColoredTask[]} tasks the given task array.
+ * @param {boolean} includeSubTasks whether to include subtasks.
+ * @param {boolean} includeCompletedTasks whether to include completed tasks.
+ * @return {number} total number of tasks, including main task and subtasks.
+ */
+const countTasks = (
+  tasks: ColoredTask[], includeSubTasks: boolean, includeCompletedTasks: boolean,
+): number => {
+  if (!includeSubTasks) {
+    return tasks.length;
+  }
+  const subtaskReducer = (a: number, s: SubTask) => (
+    a + ((includeCompletedTasks || s.complete) ? 1 : 0)
+  );
+  const reducer = (a: number, t: ColoredTask): number => (
+    a + ((includeCompletedTasks || t.complete) ? 1 : 0) + t.subtaskArray.reduce(subtaskReducer, 0)
+  );
+  return tasks.reduce(reducer, 0);
+};
 
 /**
  * Returns the computed floating view style from some properties.

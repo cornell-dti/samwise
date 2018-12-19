@@ -7,27 +7,26 @@ import styles from './SquareButtons.css';
 
 type Props = {|
   +active: boolean;
-  +activeIconName: string;
-  +inactiveIconName: string;
-  +onClick: () => any;
+  +iconNames: [string, string];
+  +onToggle: () => any;
 |};
 
 /**
  * The component used to render a minimalist icon button.
  *
- * @param {Props} props all the props.
+ * @param {boolean} active whether the button is in active state.
+ * @param {[string, string]} iconNames the pair of active icon name and inactive one.
+ * @param {function(): void} onToggle handle when the value is toggled.
  * @return {Node} the rendered node.
  * @constructor
  */
-export default function SquareIconButton(props: Props): Node {
-  const {
-    active, activeIconName, inactiveIconName, onClick,
-  } = props;
+export default function SquareIconButton({ active, iconNames, onToggle }: Props): Node {
+  const [activeIconName, inactiveIconName] = iconNames;
   const className = active
     ? `${styles.SquareButton} ${styles.SquareButtonIconButton}`
     : `${styles.SquareButton} ${styles.SquareButtonIconButton} ${styles.active}`;
   return (
-    <button className={className} type="button" onClick={onClick}>
+    <button className={className} type="button" onClick={onToggle}>
       <Icon
         className={styles.SquareButtonText}
         name={active ? activeIconName : inactiveIconName}

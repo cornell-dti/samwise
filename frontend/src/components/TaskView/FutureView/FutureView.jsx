@@ -1,11 +1,52 @@
 // @flow strict
 
-import type { FutureViewDisplayOption, ColoredTask, OneDayTask } from './future-view-types';
-import type { Tag, SubTask, Task } from '../../../store/store-types';
-import { month2String } from '../../../util/datetime-util';
+import React from 'react';
+import type { Node } from 'react';
+import type { FutureViewDisplayOption, OneDayTask } from './future-view-types';
+import type { State, Tag, Task } from '../../../store/store-types';
+import { simpleConnect } from '../../../store/react-redux-util';
 import { getColorByTagId } from '../../../util/tag-util';
+import FutureViewNDays from './FutureViewNDays';
+import FutureViewSevenColumns from './FutureViewSevenColumns';
 
-export type DateToTaskMap = Map<string, Task[]>;
+type DateToTaskMap = Map<string, Task[]>;
+
+type OwnProps = {|
+  +nDays: number;
+  +doesShowCompletedTasks: boolean;
+  +displayOption: FutureViewDisplayOption;
+  +backlogOffset: number;
+|}
+
+type SubscribedProps = {|
+  +mainTaskArray: Task[];
+  +tags: Tag[];
+|};
+
+type Props = {|
+  ...OwnProps;
+  ...SubscribedProps;
+|};
+
+/**
+ * Compute a map from date to a list of tasks on that day for faster access.
+ *
+ * @param allTasks an array of all tasks. There is no assumption of the order of the tasks.
+ * @return {DateToTaskMap} the built map.
+ */
+function buildDate2TaskMap(allTasks: Task[]): DateToTaskMap {
+  const map: DateToTaskMap = new Map();
+  allTasks.forEach((task) => {
+    const dateString = new Date(task.date).toLocaleDateString();
+    const tasksArrOpt = map.get(dateString);
+    if (tasksArrOpt == null) {
+      map.set(dateString, [task]);
+    } else {
+      tasksArrOpt.push(task);
+    }
+  });
+  return map;
+}
 
 /**
  * Compute the start date and end date.
@@ -15,7 +56,7 @@ export type DateToTaskMap = Map<string, Task[]>;
  * @param {number} backlogOffset offset of displaying days.
  * @return {{startDate: Date, endDate: Date}} the start date and end date.
  */
-function computeStartAndEndDay(
+export function computeStartAndEndDay(
   nDays: number, displayOption: FutureViewDisplayOption, backlogOffset: number,
 ): {| +startDate: Date; endDate: Date |} {
   // Compute start date (the first date to display)
@@ -58,43 +99,20 @@ function computeStartAndEndDay(
 }
 
 /**
- * Returns a suitable title for the backlog header title.
- *
- * @param {number} nDays number of days in n-days view.
- * @param {FutureViewDisplayOption} displayOption the display option.
- * @param {number} backlogOffset offset of displaying days.
- * @return {string} a suitable title for the backlog header title.
- */
-export function getBacklogHeaderTitle(
-  nDays: number, displayOption: FutureViewDisplayOption, backlogOffset: number,
-): string {
-  if (displayOption === 'N_DAYS' || displayOption === 'BIWEEKLY') {
-    const { startDate, endDate } = computeStartAndEndDay(nDays, displayOption, backlogOffset);
-    endDate.setDate(endDate.getDate() - 1);
-    return `${startDate.toLocaleDateString()} - ${endDate.toLocaleDateString()}`;
-  }
-  if (displayOption === 'MONTHLY') {
-    const d = new Date();
-    d.setMonth(d.getMonth() + backlogOffset, 1);
-    return `${month2String(d.getMonth())} ${d.getFullYear()}`;
-  }
-  throw new Error('Bad display option!');
-}
-
-/**
  * Returns an array of backlog days given the current props and the display option.
  *
- * @param {DateToTaskMap} date2TaskMap the map from a date to all the tasks in that day.
+ * @param {Task[]} mainTaskArray the raw main task array.
  * @param {Tag[]} tags all the color config.
  * @param {number} nDays number of days in n-days view.
  * @param {FutureViewDisplayOption} displayOption the display option.
  * @param {number} backlogOffset offset of displaying days.
  * @return {OneDayTask[]} an array of backlog days information.
  */
-export function buildDaysInBacklog(
-  date2TaskMap: DateToTaskMap, tags: Tag[], nDays: number,
+function buildDaysInBacklog(
+  mainTaskArray: Task[], tags: Tag[], nDays: number,
   displayOption: FutureViewDisplayOption, backlogOffset: number,
 ): OneDayTask[] {
+  const date2TaskMap = buildDate2TaskMap(mainTaskArray);
   const { startDate, endDate } = computeStartAndEndDay(nDays, displayOption, backlogOffset);
   // Adding the days to array
   const days: OneDayTask[] = [];
@@ -111,24 +129,31 @@ export function buildDaysInBacklog(
 }
 
 /**
- * Returns the total number of tasks in the given task array.
+ * The component used to contain all the backlog days.
  *
- * @param {ColoredTask[]} tasks the given task array.
- * @param {boolean} includeSubTasks whether to include subtasks.
- * @param {boolean} includeCompletedTasks whether to include completed tasks.
- * @return {number} total number of tasks, including main task and subtasks.
+ * @param {Props} props all of the given props.
+ * @return {Node} the rendered component.
+ * @constructor
  */
-export function countTasks(
-  tasks: ColoredTask[], includeSubTasks: boolean, includeCompletedTasks: boolean,
-): number {
-  if (!includeSubTasks) {
-    return tasks.length;
+function FutureView(props: Props): Node {
+  const {
+    nDays, displayOption, backlogOffset, doesShowCompletedTasks, mainTaskArray, tags,
+  } = props;
+  const inNDaysView = displayOption === 'N_DAYS';
+  const days = buildDaysInBacklog(mainTaskArray, tags, nDays, displayOption, backlogOffset);
+  if (inNDaysView) {
+    return (
+      <FutureViewNDays
+        nDays={nDays}
+        days={days}
+        doesShowCompletedTasks={doesShowCompletedTasks}
+      />
+    );
   }
-  const subtaskReducer = (a: number, s: SubTask) => (
-    a + ((includeCompletedTasks || s.complete) ? 1 : 0)
-  );
-  const reducer = (a: number, t: ColoredTask): number => (
-    a + ((includeCompletedTasks || t.complete) ? 1 : 0) + t.subtaskArray.reduce(subtaskReducer, 0)
-  );
-  return tasks.reduce(reducer, 0);
+  return <FutureViewSevenColumns days={days} doesShowCompletedTasks={doesShowCompletedTasks} />;
 }
+
+const ConnectedFutureView = simpleConnect<OwnProps, SubscribedProps>(
+  ({ mainTaskArray, tags }: State) => ({ mainTaskArray, tags }),
+)(FutureView);
+export default ConnectedFutureView;

@@ -2,7 +2,6 @@
 
 import React from 'react';
 import type { Node } from 'react';
-import { List } from 'semantic-ui-react';
 import type { State, Task } from '../../../store/store-types';
 import { simpleConnect } from '../../../store/react-redux-util';
 import styles from './FocusView.css';
@@ -30,7 +29,7 @@ function FocusView({ mainTaskArray }: Props): Node {
     .map((task: Task | null) => task && (
       <InlineTaskEditor key={task.id} className={styles.TaskBox} task={task} />
     ));
-  return (<List>{listItems}</List>);
+  return (<div>{listItems}</div>);
 }
 
 const ConnectedFocusView = simpleConnect<{}, Props>(

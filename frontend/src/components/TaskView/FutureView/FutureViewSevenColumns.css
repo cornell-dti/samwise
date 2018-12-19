@@ -1,15 +1,15 @@
-.GridOtherViews {
+.Grid {
   margin-left: -13px !important;
 }
 
-.RowOtherViews {
+.Row {
   padding: 0 !important;
 }
 
-.ColumnInWeekdayRow {
+.ColumnOfDayTitle {
   width: 15vw;
 }
 
-.ColumnOtherViews {
+.ColumnOfDay {
   padding: 0 !important;
 }
