@@ -136,11 +136,13 @@ export default class FutureViewDay extends React.PureComponent<Props, State> {
     const headerHeight = inFourDaysView ? fourDaysViewHeaderHeight : otherViewsHeightHeader;
     const tasksHeight = taskHeight * countTasks(tasks, inFourDaysView, doesShowCompletedTasks);
     const totalHeight = headerHeight + tasksHeight;
+    const maxAllowedHeight = inFourDaysView ? 400 : 300;
+    const floatingViewHeight = Math.min(totalHeight, maxAllowedHeight);
     const { width, height } = floatingFlowParentRect;
     const floatingViewStyle = {
       left: `${(width - 300) / 2}px`,
-      top: `${(Math.max(height, 400) - totalHeight) / 2}px`,
-      height: `${totalHeight}px`,
+      top: `${(height - floatingViewHeight) / 2}px`,
+      height: `${floatingViewHeight}px`,
     };
     return (
       <React.Fragment>
