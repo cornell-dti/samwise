@@ -35,13 +35,13 @@
   margin-bottom: 20px;
 }
 
-@media only screen and (min-width: 768px) {
+@media only screen and (min-width: 800px) {
   .NewTaskWrap {
     width: 30vw;
   }
 }
 
-@media only screen and (max-width: 768px) {
+@media only screen and (max-width: 800px) {
   .NewTaskWrap {
     width: 90vw;
   }
@@ -117,13 +117,13 @@
   box-shadow: 0 2px 25px 5px #444;
   text-align: center;
 }
-@media only screen and (min-width: 768px) {
+@media only screen and (min-width: 800px) {
   .NewTaskModal {
     width: calc(30vw + 60px);
   }
 }
 
-@media only screen and (max-width: 768px) {
+@media only screen and (max-width: 800px) {
   .NewTaskModal {
     width: calc(90vw + 60px);
   }

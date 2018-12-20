@@ -2,18 +2,34 @@
 
 import * as React from 'react';
 import type { Node } from 'react';
-import ClassColorConfigItemList from './ClassColorConfigItemList';
-import TagColorConfigItemList from './TagColorConfigItemList';
 import ColorConfigItemAdder from './ColorConfigItemAdder';
 import styles from './ColorConfigEditor.css';
+import ColorConfigItem from './ColorConfigItem';
+import AddNormalTag from './AddNormalTag';
+import { simpleConnect } from '../../../store/react-redux-util';
+import type { State, Tag } from '../../../store/store-types';
+
+type Props = {|
+  tags: Tag[];
+|};
 
 /**
  * The color config editor for settings.
  *
+ * @param {Tag[]} tags all the tags.
  * @return {Node} the rendered editor.
  * @constructor
  */
-export default function ColorConfigEditor(): Node {
+function ColorConfigEditor({ tags }: Props): Node {
+  const classTags = [];
+  const otherTags = [];
+  tags.forEach((tag) => {
+    if (tag.type === 'class') {
+      classTags.push(tag);
+    } else {
+      otherTags.push(tag);
+    }
+  });
   return (
     <div>
       <div className={styles.SettingsSection}>
@@ -26,7 +42,9 @@ export default function ColorConfigEditor(): Node {
       <div className={styles.SettingsSection}>
         <p>Class Tags</p>
         <div>
-          <ClassColorConfigItemList />
+          <ul className={styles.ColorConfigItemList}>
+            {classTags.map(tag => (<ColorConfigItem key={tag.id} tag={tag} />))}
+          </ul>
         </div>
       </div>
       <div className={styles.SettingsSection}>
@@ -41,7 +59,12 @@ export default function ColorConfigEditor(): Node {
       <div className={styles.SettingsSection}>
         <p className={styles.otherTags}>Other Tags</p>
         <div>
-          <TagColorConfigItemList />
+          <ul className={styles.ColorConfigItemList}>
+            {otherTags.filter(tag => tag.name !== 'None').map(
+              tag => (<ColorConfigItem key={tag.id} tag={tag} />),
+            )}
+            <AddNormalTag />
+          </ul>
         </div>
       </div>
       <div className={styles.SettingsSection}>
@@ -49,7 +72,11 @@ export default function ColorConfigEditor(): Node {
           <button type="button" className={styles.SignBtn}>Sign Out</button>
         </div>
       </div>
-
     </div>
   );
 }
+
+const ConnectedColorConfigEditor = simpleConnect<{||}, Props>(
+  ({ tags }: State) => ({ tags }),
+)(ColorConfigEditor);
+export default ConnectedColorConfigEditor;
