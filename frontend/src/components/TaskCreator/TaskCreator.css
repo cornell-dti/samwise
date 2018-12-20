@@ -24,17 +24,29 @@
 }
 
 .NewTaskWrap {
-  width: 30vw;
-  text-align: center;
   position: relative;
   left: 50%;
-  height: initial;
+  text-align: center;
   transform: translateX(-50%);
   z-index: 5;
 
+  height: initial;
   max-height: 44px;
   margin-bottom: 20px;
 }
+
+@media only screen and (min-width: 768px) {
+  .NewTaskWrap {
+    width: 30vw;
+  }
+}
+
+@media only screen and (max-width: 768px) {
+  .NewTaskWrap {
+    width: 90vw;
+  }
+}
+
 
 .NewTaskComponent:focus {
   border-bottom: 2px solid black;
@@ -93,18 +105,28 @@
 
 
 /*
-  Pop Open Modal
-*/
+ * Pop Open Modal
+ */
 .NewTaskModal {
   background: white;
   position: absolute;
   top: -30px;
   right: -30px;
-  width: calc(30vw + 60px);
   padding: 70px 0 10px 0;
   z-index: -1;
   box-shadow: 0 2px 25px 5px #444;
   text-align: center;
+}
+@media only screen and (min-width: 768px) {
+  .NewTaskModal {
+    width: calc(30vw + 60px);
+  }
+}
+
+@media only screen and (max-width: 768px) {
+  .NewTaskModal {
+    width: calc(90vw + 60px);
+  }
 }
 
 .NewTaskModal ul {
