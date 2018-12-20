@@ -5,7 +5,7 @@ import { connect } from 'react-redux';
 import { GithubPicker } from 'react-color';
 import { addTag as addTagAction } from '../../../store/actions';
 import type { AddTagAction } from '../../../store/action-types';
-import styles from './ColorConfigItemAdder.css';
+import styles from './TagAdder.css';
 import type { Tag } from '../../../store/store-types';
 import { randomId } from '../../../util/general-util';
 
@@ -15,7 +15,7 @@ type Props = {|
 
 type State = {| +tagInput: string, +colorInput: string |};
 
-class ColorConfigItemAdder extends React.Component<Props, State> {
+class ClassTagAdder extends React.Component<Props, State> {
   state: State = {
     tagInput: '',
     colorInput: '#56d9c1',
@@ -62,7 +62,5 @@ class ColorConfigItemAdder extends React.Component<Props, State> {
   }
 }
 
-const ConnectedTagColorConfigItemAdder = connect(
-  null, { addTag: addTagAction },
-)(ColorConfigItemAdder);
-export default ConnectedTagColorConfigItemAdder;
+const ConnectedClassTagAdder = connect(null, { addTag: addTagAction })(ClassTagAdder);
+export default ConnectedClassTagAdder;

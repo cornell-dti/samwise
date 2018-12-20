@@ -11,7 +11,7 @@ import { colMap } from './ListColors';
 type Props = {|
   tag: Tag,
   editTag: (tag: Tag) => EditTagAction,
-  changeCallback: Function,
+  changeCallback: () => void,
 |};
 
 const colArray = Object.keys(colMap);
@@ -24,7 +24,12 @@ function ColorEditor(props: Props) {
     changeCallback();
   };
   return (
-    <GithubPicker color={color} onChangeComplete={handleStateComplete} triangle="top-right" colors={colArray} />
+    <GithubPicker
+      color={color}
+      onChangeComplete={handleStateComplete}
+      triangle="top-right"
+      colors={colArray}
+    />
   );
 }
 

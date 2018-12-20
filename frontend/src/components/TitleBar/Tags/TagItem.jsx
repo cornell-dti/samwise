@@ -7,7 +7,7 @@ import type { RemoveTagAction } from '../../../store/action-types';
 import { removeTag as removeTagAction } from '../../../store/actions';
 import ColorEditor from './ColorEditor';
 import type { Tag } from '../../../store/store-types';
-import styles from './ColorConfigItem.css';
+import styles from './TagItem.css';
 import { colMap } from './ListColors';
 
 type Props = {|
@@ -17,7 +17,7 @@ type Props = {|
 
 type State = {| showEditor: boolean |};
 
-class ColorConfigItem extends React.Component<Props, State> {
+class TagItem extends React.Component<Props, State> {
   state: State = { showEditor: false };
 
   removeMe = () => {
@@ -63,5 +63,5 @@ class ColorConfigItem extends React.Component<Props, State> {
   }
 }
 
-const ConnectedTagColorConfigItem = connect(null, { removeTag: removeTagAction })(ColorConfigItem);
-export default ConnectedTagColorConfigItem;
+const ConnectedTagItem = connect(null, { removeTag: removeTagAction })(TagItem);
+export default ConnectedTagItem;

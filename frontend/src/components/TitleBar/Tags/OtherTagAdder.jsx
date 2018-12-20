@@ -5,7 +5,7 @@ import { connect } from 'react-redux';
 import { Icon } from 'semantic-ui-react';
 import { GithubPicker } from 'react-color';
 import type { Tag } from '../../../store/store-types';
-import styles from './ColorConfigItem.css';
+import styles from './TagItem.css';
 import type { AddTagAction } from '../../../store/action-types';
 import { addTag as addTagAction } from '../../../store/actions';
 import { randomId } from '../../../util/general-util';
@@ -24,15 +24,12 @@ type State = {|
 const colArray: string[] = Object.keys(colMap);
 
 class OtherTagAdder extends React.Component<Props, State> {
-  constructor(props) {
-    super(props);
-    this.state = {
-      // whether to show the name editor and color picker
-      showEditor: false,
-      color: '#56d9c1',
-      reset: true,
-    };
-  }
+  state: State = {
+    // whether to show the name editor and color picker
+    showEditor: false,
+    color: '#56d9c1',
+    reset: true,
+  };
 
   toggleEditor = () => {
     this.setState(s => ({ ...s, showEditor: !s.showEditor }));
