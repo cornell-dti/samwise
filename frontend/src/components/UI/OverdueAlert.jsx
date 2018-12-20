@@ -5,15 +5,15 @@ import type { Node } from 'react';
 import styles from './OverdueAlert.css';
 
 type Props = {|
-  +absolutePosition: ?{| +top: number; +left: number; |};
+  +absolutePosition: ?{| +top: number; +right: number; |};
 |};
 
 export default function OverdueAlert({ absolutePosition }: Props): Node {
   if (absolutePosition == null) {
     return <div className={styles.OverdueAlertRelative}>!</div>;
   }
-  const { top, left } = absolutePosition;
-  const style = { top: `${top}px`, left: `${left}px` };
+  const { top, right } = absolutePosition;
+  const style = { top: `${top}px`, right: `${right}px` };
   return <div className={styles.OverdueAlertAbsolute} style={style}>!</div>;
 }
 

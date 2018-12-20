@@ -13,7 +13,7 @@
 }
 
 .OverdueAlertAbsolute {
-  position: fixed;
+  position: absolute;
   z-index: 1;
   width: 1em;
   height: 1em;

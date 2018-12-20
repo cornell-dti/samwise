@@ -19,6 +19,7 @@ import { getTodayAtZero } from '../../../util/datetime-util';
 import OverdueAlert from '../../UI/OverdueAlert';
 import windowSizeConnect from '../../Util/Responsive/WindowSizeConsumer';
 import type { WindowSize } from '../../Util/Responsive/window-size-context';
+import { nDaysViewHeaderHeight, otherViewsHeightHeader } from './future-view-css-props';
 
 type Props = {|
   +originalTask: Task;
@@ -35,7 +36,7 @@ type Props = {|
 |};
 
 type State = {|
-  +overdueAlertPosition: ?{| +top: number; +left: number; |};
+  +overdueAlertPosition: ?{| +top: number; +right: number; |};
 |};
 
 /**
@@ -169,13 +170,19 @@ class FutureViewTask extends React.PureComponent<Props, State> {
     );
     const refHandler = (divElement: HTMLDivElement | null) => {
       if (divElement != null) {
-        const { top, right } = divElement.getBoundingClientRect();
         const isOverdue = date < getTodayAtZero();
         if (isOverdue && overdueAlertPosition == null) {
+          const { top } = divElement.getBoundingClientRect();
+          const parent = divElement.parentElement;
+          if (parent == null) {
+            throw new Error('Corrupted DOM!');
+          }
+          const parentRect = parent.getBoundingClientRect();
+          const headerHeight = inNDaysView ? nDaysViewHeaderHeight : otherViewsHeightHeader;
           this.setState({
             overdueAlertPosition: {
-              top: top - 3,
-              left: right - 5,
+              top: top - parentRect.top + headerHeight - 3,
+              right: -5,
             },
           });
         }
