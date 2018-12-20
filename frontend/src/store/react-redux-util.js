@@ -18,10 +18,10 @@ import type { State } from './store-types';
  * @return {*} the connect function that connects a react component.
  */
 export function fullConnect<OP: Object, SP: Object, MDP: Object>(
-  mapStateToProps: (state: State) => SP,
+  mapStateToProps: (state: State, ownProps: OP) => SP,
   actionCreators: MDP,
 ): (ComponentType<*>) => (ComponentType<OP>) {
-  return connect<ComponentType<*>, State, {}, SP, MDP, OP, _>(mapStateToProps, actionCreators);
+  return connect<ComponentType<*>, State, OP, SP, MDP, OP, _>(mapStateToProps, actionCreators);
 }
 
 /**
@@ -36,7 +36,7 @@ export function fullConnect<OP: Object, SP: Object, MDP: Object>(
  * @return {*} the connect function that connects a react component.
  */
 export function simpleConnect<OP: Object, SP: Object>(
-  mapStateToProps: (state: State) => SP,
+  mapStateToProps: (state: State, ownProps: OP) => SP,
 ): (ComponentType<*>) => (ComponentType<OP>) {
   return fullConnect<OP, SP, {}>(mapStateToProps, {});
 }

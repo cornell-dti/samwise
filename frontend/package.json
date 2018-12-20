@@ -2,14 +2,21 @@
   "name": "samwise",
   "version": "0.1.0",
   "private": true,
+  "scripts": {
+    "start": "webpack-dev-server --open",
+    "build": "webpack --mode development",
+    "test": "react-scripts test --env=jsdom",
+    "eject": "react-scripts eject",
+    "flow": "flow"
+  },
   "dependencies": {
     "css-loader": "^2.0.1",
     "firebase": "^5.7.0",
-    "react": "^16.6.3",
+    "react": "^16.7.0",
     "react-calendar": "^2.17.5",
     "react-color": "^2.14.1",
     "react-dev-utils": "^6.1.1",
-    "react-dom": "^16.6.3",
+    "react-dom": "^16.7.0",
     "react-firebaseui": "^3.1.2",
     "react-live-clock": "^3.0.0",
     "react-redux": "^5.1.1",
@@ -17,13 +24,6 @@
     "react-toastify": "^4.5.0",
     "redux": "^4.0.1",
     "semantic-ui-react": "^0.84.0"
-  },
-  "scripts": {
-    "start": "webpack-dev-server --open",
-    "build": "webpack --mode development",
-    "test": "react-scripts test --env=jsdom",
-    "eject": "react-scripts eject",
-    "flow": "flow"
   },
   "devDependencies": {
     "@babel/core": "^7.2.2",

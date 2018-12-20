@@ -3,9 +3,16 @@
 import type { Task } from '../../../store/store-types';
 
 /**
- * The different displaying options for backlog.
+ * The different container types.
  */
-export type FutureViewDisplayOption = 'N_DAYS' | 'BIWEEKLY' | 'MONTHLY';
+export type FutureViewContainerType = 'N_DAYS' | 'BIWEEKLY' | 'MONTHLY';
+/**
+ * All the display options of future view.
+ */
+export type FutureViewDisplayOption = {|
+  +containerType: FutureViewContainerType;
+  +doesShowCompletedTasks: boolean;
+|};
 
 /**
  * The type for a task augmented with color information
