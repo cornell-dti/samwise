@@ -57,3 +57,15 @@ export const replaceSubTaskWithinMainTask = (
   ...task,
   subtaskArray: replaceSubTask(task.subtaskArray, subTaskID, s => replacer(s, task)),
 }));
+
+/**
+ * Filter all the completed tasks.
+ *
+ * @param {Task[]} tasks the original tasks.
+ * @return {[Task, Task][]} an array of tuple (original task, filtered task).
+ */
+export const filterCompletedTasks = (tasks: Task[]): [Task, Task][] => tasks
+  .filter(t => !t.complete)
+  .map((task: Task) => [
+    task, { ...task, subtaskArray: task.subtaskArray.filter(s => !s.complete) },
+  ]);

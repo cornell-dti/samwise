@@ -9,7 +9,6 @@ import styles from './FutureViewNDays.css';
 type Props = {|
   +nDays: number;
   +days: OneDayTask[];
-  +doesShowCompletedTasks: boolean;
 |};
 
 /**
@@ -20,7 +19,7 @@ type Props = {|
  * @constructor
  */
 export default function FutureViewNDays(props: Props): Node {
-  const { nDays, days, doesShowCompletedTasks } = props;
+  const { nDays, days } = props;
   const containerStyle = { gridTemplateColumns: `${100.0 / nDays}% `.repeat(nDays).trim() };
   return (
     <div className={styles.FutureViewNDays} style={containerStyle}>
@@ -30,7 +29,6 @@ export default function FutureViewNDays(props: Props): Node {
           <div key={day.date.getTime()} className={styles.Column}>
             <FutureViewDay
               inNDaysView
-              doesShowCompletedTasks={doesShowCompletedTasks}
               taskEditorPosition={taskEditorPosition}
               {...day}
             />

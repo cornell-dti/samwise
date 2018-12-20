@@ -12,13 +12,14 @@ import { simpleConnect } from '../../../store/react-redux-util';
 import { getColorByTagId } from '../../../util/tag-util';
 import FutureViewNDays from './FutureViewNDays';
 import FutureViewSevenColumns from './FutureViewSevenColumns';
+import { filterCompletedTasks } from '../../../util/task-util';
 
 type DateToTaskMap = Map<string, Task[]>;
 
 type OwnProps = {|
   +nDays: number;
-  +futureViewDisplayOption: FutureViewDisplayOption;
-  +futureViewOffset: number;
+  +displayOption: FutureViewDisplayOption;
+  +offset: number;
 |}
 
 type SubscribedProps = {|
@@ -58,7 +59,7 @@ function buildDate2TaskMap(allTasks: Task[]): DateToTaskMap {
  * @param {number} offset offset of displaying days.
  * @return {{startDate: Date, endDate: Date}} the start date and end date.
  */
-export function computeStartAndEndDay(
+function computeStartAndEndDay(
   nDays: number, containerType: FutureViewContainerType, offset: number,
 ): {| +startDate: Date; endDate: Date |} {
   // Compute start date (the first date to display)
@@ -107,12 +108,13 @@ export function computeStartAndEndDay(
  * @param {Tag[]} tags all the color config.
  * @param {number} nDays number of days in n-days view.
  * @param {FutureViewContainerType} containerType the container type.
+ * @param {boolean} doesShowCompletedTasks whether to keep completed tasks.
  * @param {number} offset offset of displaying days.
  * @return {OneDayTask[]} an array of backlog days information.
  */
 function buildDaysInBacklog(
   mainTaskArray: Task[], tags: Tag[], nDays: number,
-  containerType: FutureViewContainerType, offset: number,
+  { containerType, doesShowCompletedTasks }: FutureViewDisplayOption, offset: number,
 ): OneDayTask[] {
   const date2TaskMap = buildDate2TaskMap(mainTaskArray);
   const { startDate, endDate } = computeStartAndEndDay(nDays, containerType, offset);
@@ -121,13 +123,27 @@ function buildDaysInBacklog(
   for (let d = startDate; d < endDate; d.setDate(d.getDate() + 1)) {
     const date = new Date(d);
     const tasksOnThisDay = date2TaskMap.get(date.toLocaleDateString()) || [];
-    const tasks = tasksOnThisDay.map((task: Task) => {
-      const { tag } = task;
-      return { ...task, color: getColorByTagId(tags, tag) };
-    });
-    days.push({ date, tasks });
+    if (doesShowCompletedTasks) {
+      const tasks = tasksOnThisDay.map((task: Task) => {
+        const { tag } = task;
+        return { original: task, filtered: task, color: getColorByTagId(tags, tag) };
+      });
+      days.push({ date, tasks });
+    } else {
+      const tasks = filterCompletedTasks(tasksOnThisDay).map(([original, filtered]) => {
+        const { tag } = original;
+        return { original, filtered, color: getColorByTagId(tags, tag) };
+      });
+      days.push({ date, tasks });
+    }
   }
   return days;
+}
+
+function mapStateToProps({ mainTaskArray, tags }: State, ownProps: OwnProps): SubscribedProps {
+  const { nDays, displayOption, offset } = ownProps;
+  const days = buildDaysInBacklog(mainTaskArray, tags, nDays, displayOption, offset);
+  return { days };
 }
 
 /**
@@ -138,29 +154,15 @@ function buildDaysInBacklog(
  * @constructor
  */
 function FutureViewContainer(props: Props): Node {
-  const {
-    nDays,
-    futureViewDisplayOption: { containerType, doesShowCompletedTasks },
-    days,
-  } = props;
+  const { nDays, displayOption: { containerType }, days } = props;
   const inNDaysView = containerType === 'N_DAYS';
   if (inNDaysView) {
-    return (
-      <FutureViewNDays
-        nDays={nDays}
-        days={days}
-        doesShowCompletedTasks={doesShowCompletedTasks}
-      />
-    );
+    return <FutureViewNDays nDays={nDays} days={days} />;
   }
-  return <FutureViewSevenColumns days={days} doesShowCompletedTasks={doesShowCompletedTasks} />;
+  return <FutureViewSevenColumns days={days} />;
 }
 
 const ConnectedFutureViewContainer = simpleConnect<OwnProps, SubscribedProps>(
-  ({ mainTaskArray, tags }: State, ownProps: OwnProps) => {
-    const { nDays, futureViewDisplayOption: { containerType }, futureViewOffset } = ownProps;
-    const days = buildDaysInBacklog(mainTaskArray, tags, nDays, containerType, futureViewOffset);
-    return { days };
-  },
+  mapStateToProps,
 )(FutureViewContainer);
 export default ConnectedFutureViewContainer;

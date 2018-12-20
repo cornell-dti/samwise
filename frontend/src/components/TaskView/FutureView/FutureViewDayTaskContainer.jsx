@@ -2,15 +2,14 @@
 
 import React from 'react';
 import type { Node } from 'react';
-import type { ColoredTask } from './future-view-types';
+import type { CompoundTask } from './future-view-types';
 import type { FloatingPosition } from '../../Util/TaskEditors/task-editors-types';
 import FutureViewTask from './FutureViewTask';
 import styles from './FutureViewDayTaskContainer.css';
 
 type Props = {|
-  +tasks: ColoredTask[];
+  +tasks: CompoundTask[];
   +inNDaysView: boolean;
-  +doesShowCompletedTasks: boolean;
   +taskEditorPosition: FloatingPosition;
   +hideOverflow: boolean;
 |};
@@ -23,21 +22,20 @@ type Props = {|
  */
 export default function FutureViewDayTaskContainer(props: Props): Node {
   const {
-    tasks, inNDaysView, doesShowCompletedTasks, taskEditorPosition, hideOverflow,
+    tasks, inNDaysView, taskEditorPosition, hideOverflow,
   } = props;
-  const taskListComponent = tasks
-    .filter((t: ColoredTask) => (doesShowCompletedTasks || !t.complete))
-    .map((t: ColoredTask, index: number) => (
-      <FutureViewTask
-        // To force rerender
-        // eslint-disable-next-line react/no-array-index-key
-        key={index}
-        inNDaysView={inNDaysView}
-        doesShowCompletedTasks={doesShowCompletedTasks}
-        taskEditorPosition={taskEditorPosition}
-        {...t}
-      />
-    ));
+  const taskListComponent = tasks.map((t: CompoundTask, index: number) => (
+    <FutureViewTask
+      // To force rerender
+      // eslint-disable-next-line react/no-array-index-key
+      key={index}
+      inNDaysView={inNDaysView}
+      taskEditorPosition={taskEditorPosition}
+      originalTask={t.original}
+      filteredTask={t.filtered}
+      taskColor={t.color}
+    />
+  ));
   const className = inNDaysView
     ? styles.NDaysView
     : styles.OtherViews;

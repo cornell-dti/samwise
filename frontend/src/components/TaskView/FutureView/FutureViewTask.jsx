@@ -5,14 +5,13 @@ import type { Node } from 'react';
 import { connect } from 'react-redux';
 import { Icon } from 'semantic-ui-react';
 import styles from './FutureViewTask.css';
-import type { ColoredTask } from './future-view-types';
 import {
   editMainTask as editMainTaskAction,
   removeTask as removeTaskAction,
 } from '../../../store/actions';
 import FutureViewSubTask from './FutureViewSubTask';
 import FloatingTaskEditor from '../../Util/TaskEditors/FloatingTaskEditor';
-import type { PartialMainTask, SubTask } from '../../../store/store-types';
+import type { PartialMainTask, SubTask, Task } from '../../../store/store-types';
 import type { EditMainTaskAction, RemoveTaskAction } from '../../../store/action-types';
 import CheckBox from '../../UI/CheckBox';
 import type { FloatingPosition } from '../../Util/TaskEditors/task-editors-types';
@@ -20,10 +19,12 @@ import { getTodayAtZero } from '../../../util/datetime-util';
 import OverdueAlert from '../../UI/OverdueAlert';
 
 type Props = {|
-  ...ColoredTask;
+  +originalTask: Task;
+  +filteredTask: Task;
+  +taskColor: string;
   +inNDaysView: boolean;
-  +doesShowCompletedTasks: boolean;
   +taskEditorPosition: FloatingPosition;
+  // Subscribed actions
   +editMainTask: (taskId: number, partialMainTask: PartialMainTask) => EditMainTaskAction;
   +removeTask: (taskId: number, undoable?: boolean) => RemoveTaskAction;
 |};
@@ -61,7 +62,7 @@ class FutureViewTask extends React.PureComponent<Props, State> {
    * @return {Node} the checkbox element.
    */
   renderCheckBox(): Node {
-    const { id, complete, editMainTask } = this.props;
+    const { filteredTask: { id, complete }, editMainTask } = this.props;
     return (
       <CheckBox
         className={styles.TaskCheckBox}
@@ -77,7 +78,7 @@ class FutureViewTask extends React.PureComponent<Props, State> {
    * @return {Node} the task name element.
    */
   renderTaskName(): Node {
-    const { name, complete } = this.props;
+    const { filteredTask: { name, complete } } = this.props;
     const tagStyle = complete ? { textDecoration: 'line-through' } : {};
     return (
       <span className={styles.TaskText} style={tagStyle}>{name}</span>
@@ -90,7 +91,7 @@ class FutureViewTask extends React.PureComponent<Props, State> {
    * @return {Node} the rendered remove task icon.
    */
   renderRemoveTaskIcon(): Node {
-    const { id, removeTask } = this.props;
+    const { filteredTask: { id }, removeTask } = this.props;
     const handler = () => {
       removeTask(id, true);
     };
@@ -105,7 +106,7 @@ class FutureViewTask extends React.PureComponent<Props, State> {
    * @return {Node} the rendered bookmark task icon.
    */
   renderBookmarkIcon(): Node {
-    const { id, inFocus, editMainTask } = this.props;
+    const { filteredTask: { id, inFocus }, editMainTask } = this.props;
     return (
       <Icon
         name={inFocus ? 'bookmark' : 'bookmark outline'}
@@ -121,9 +122,9 @@ class FutureViewTask extends React.PureComponent<Props, State> {
    * @return {Node} the information for main task.
    */
   renderMainTaskInfo(): Node {
-    const { color } = this.props;
+    const { taskColor } = this.props;
     return (
-      <div className={styles.TaskMainWrapper} style={{ backgroundColor: color }}>
+      <div className={styles.TaskMainWrapper} style={{ backgroundColor: taskColor }}>
         {this.renderCheckBox()}
         {this.renderTaskName()}
         {this.renderBookmarkIcon()}
@@ -138,27 +139,20 @@ class FutureViewTask extends React.PureComponent<Props, State> {
    * @return {Node} the information for subtasks.
    */
   renderSubTasks(): Node {
-    const {
-      id, complete, subtaskArray, doesShowCompletedTasks,
-    } = this.props;
-    return subtaskArray
-      .filter((subTask: SubTask) => (doesShowCompletedTasks || !subTask.complete))
-      .map((subTask: SubTask) => (
-        <FutureViewSubTask
-          key={subTask.id}
-          mainTaskId={id}
-          mainTaskCompleted={complete}
-          {...subTask}
-        />
-      ));
+    const { filteredTask: { id, complete, subtaskArray } } = this.props;
+    return subtaskArray.map((subTask: SubTask) => (
+      <FutureViewSubTask
+        key={subTask.id}
+        mainTaskId={id}
+        mainTaskCompleted={complete}
+        {...subTask}
+      />
+    ));
   }
 
   render(): Node {
-    const {
-      inNDaysView, doesShowCompletedTasks, taskEditorPosition,
-      editMainTask, removeTask, color, ...task
-    } = this.props;
-    const { date } = task;
+    const { inNDaysView, taskEditorPosition, originalTask } = this.props;
+    const { date } = originalTask;
     const { overdueAlertPosition } = this.state;
     const overdueComponentOpt = overdueAlertPosition && (
       <OverdueAlert absolutePosition={overdueAlertPosition} />
@@ -204,7 +198,11 @@ class FutureViewTask extends React.PureComponent<Props, State> {
       );
     };
     return (
-      <FloatingTaskEditor position={taskEditorPosition} initialTask={task} trigger={trigger} />
+      <FloatingTaskEditor
+        position={taskEditorPosition}
+        initialTask={originalTask}
+        trigger={trigger}
+      />
     );
   }
 }

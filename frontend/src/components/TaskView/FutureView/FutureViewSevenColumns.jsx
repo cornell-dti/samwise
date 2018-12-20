@@ -9,18 +9,16 @@ import styles from './FutureViewSevenColumns.css';
 
 type Props = {|
   +days: OneDayTask[];
-  +doesShowCompletedTasks: boolean;
 |};
 
 /**
  * The component used to contain all the backlog days in 7 columns..
  *
- * @param {Props} props all of the given props.
+ * @param {OneDayTask[]} days all the days.
  * @return {Node} the rendered component.
  * @constructor
  */
-export default function FutureViewSevenColumns(props: Props): Node {
-  const { days, doesShowCompletedTasks } = props;
+export default function FutureViewSevenColumns({ days }: Props): Node {
   // Start building items
   const items = days.map((day: OneDayTask, i: number) => {
     const taskEditorPosition: FloatingPosition = (i % 7) < 4 ? 'right' : 'left';
@@ -28,7 +26,6 @@ export default function FutureViewSevenColumns(props: Props): Node {
       <FutureViewDay
         key={day.date.getTime()}
         inNDaysView={false}
-        doesShowCompletedTasks={doesShowCompletedTasks}
         taskEditorPosition={taskEditorPosition}
         {...day}
       />

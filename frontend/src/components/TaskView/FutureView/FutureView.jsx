@@ -68,8 +68,8 @@ class FutureView extends React.PureComponent<Props> {
         />
         <FutureViewContainer
           nDays={nDays}
-          futureViewDisplayOption={displayOption}
-          futureViewOffset={offset}
+          displayOption={displayOption}
+          offset={offset}
         />
       </div>
     );

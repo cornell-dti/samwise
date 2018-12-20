@@ -15,11 +15,15 @@ export type FutureViewDisplayOption = {|
 |};
 
 /**
- * The type for a task augmented with color information
+ * The type for a task augmented with color information and filtered task.
  */
-export type ColoredTask = {| ...Task; +color: string; |};
+export type CompoundTask = {|
+  +original: Task;
+  +filtered: Task;
+  +color: string;
+|};
 
 /**
  * All the tasks for one day.
  */
-export type OneDayTask = {| +date: Date; +tasks: ColoredTask[]; |};
+export type OneDayTask = {| +date: Date; +tasks: CompoundTask[]; |};

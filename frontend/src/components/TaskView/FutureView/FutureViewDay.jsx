@@ -2,7 +2,7 @@
 
 import React from 'react';
 import type { Node } from 'react';
-import type { ColoredTask } from './future-view-types';
+import type { CompoundTask } from './future-view-types';
 import type { FloatingPosition } from '../../Util/TaskEditors/task-editors-types';
 import styles from './FutureViewDay.css';
 import FutureViewDayTaskContainer from './FutureViewDayTaskContainer';
@@ -16,13 +16,11 @@ import {
 import { day2String } from '../../../util/datetime-util';
 import windowSizeConnect from '../../Util/Responsive/WindowSizeConsumer';
 import type { WindowSize } from '../../Util/Responsive/window-size-context';
-import type { SubTask } from '../../../store/store-types';
 
 type Props = {|
   +date: Date;
-  +tasks: ColoredTask[];
+  +tasks: CompoundTask[];
   +inNDaysView: boolean;
-  +doesShowCompletedTasks: boolean;
   +taskEditorPosition: FloatingPosition;
   +windowSize: WindowSize;
 |};
@@ -32,9 +30,8 @@ type State = {|
 |};
 
 type PropsForPositionComputation = {|
-  +tasks: ColoredTask[];
+  +tasks: CompoundTask[];
   +inNDaysView: boolean;
-  +doesShowCompletedTasks: boolean;
   +windowSize: WindowSize;
   +mainViewPosition: {| +width: number; +height: number; +top: number; +left: number; |};
 |};
@@ -48,22 +45,17 @@ export opaque type PositionStyle : Object = {|
 /**
  * Returns the total number of tasks in the given task array.
  *
- * @param {ColoredTask[]} tasks the given task array.
+ * @param {CompoundTask[]} tasks the given task array.
  * @param {boolean} includeSubTasks whether to include subtasks.
- * @param {boolean} includeCompletedTasks whether to include completed tasks.
  * @return {number} total number of tasks, including main task and subtasks.
  */
-const countTasks = (
-  tasks: ColoredTask[], includeSubTasks: boolean, includeCompletedTasks: boolean,
-): number => {
+const countTasks = (tasks: CompoundTask[], includeSubTasks: boolean): number => {
   if (!includeSubTasks) {
     return tasks.length;
   }
-  const subtaskReducer = (a: number, s: SubTask) => (
-    a + ((includeCompletedTasks || s.complete) ? 1 : 0)
-  );
-  const reducer = (a: number, t: ColoredTask): number => (
-    a + ((includeCompletedTasks || t.complete) ? 1 : 0) + t.subtaskArray.reduce(subtaskReducer, 0)
+  const subtaskReducer = v => v + 1;
+  const reducer = (a: number, t: CompoundTask): number => (
+    a + 1 + t.filtered.subtaskArray.reduce(subtaskReducer, 0)
   );
   return tasks.reduce(reducer, 0);
 };
@@ -75,14 +67,14 @@ const countTasks = (
  */
 const computeFloatingViewStyle = (props: PropsForPositionComputation): PositionStyle => {
   const {
-    tasks, inNDaysView, doesShowCompletedTasks, windowSize,
+    tasks, inNDaysView, windowSize,
     mainViewPosition: {
       width, height, top, left,
     },
   } = props;
   // Compute the height of inner content
   const headerHeight = inNDaysView ? nDaysViewHeaderHeight : otherViewsHeightHeader;
-  const tasksHeight = taskHeight * countTasks(tasks, inNDaysView, doesShowCompletedTasks);
+  const tasksHeight = taskHeight * countTasks(tasks, inNDaysView);
   const totalHeight = headerHeight + tasksHeight;
   // Decide the maximum allowed height and the actual height
   const maxAllowedHeight = inNDaysView ? 400 : 300;
@@ -151,10 +143,8 @@ class FutureViewDay extends React.PureComponent<Props, State> {
    * @return {boolean} whether the container overflows.
    */
   doesOverFlow = (): boolean => {
-    const { tasks, inNDaysView, doesShowCompletedTasks } = this.props;
-    const totalRequiredHeight = taskHeight * countTasks(
-      tasks, inNDaysView, doesShowCompletedTasks,
-    );
+    const { tasks, inNDaysView } = this.props;
+    const totalRequiredHeight = taskHeight * countTasks(tasks, inNDaysView);
     const actualHeight = inNDaysView
       ? taskContainerHeightNDaysView
       : taskContainerHeightOtherViews;
@@ -203,7 +193,7 @@ class FutureViewDay extends React.PureComponent<Props, State> {
    */
   renderContent = (inMainList: boolean): Node => {
     const {
-      date, tasks, inNDaysView, doesShowCompletedTasks, taskEditorPosition,
+      date, tasks, inNDaysView, taskEditorPosition,
     } = this.props;
     const isToday = this.isToday();
     const dateNumCssClass = inNDaysView
@@ -223,7 +213,6 @@ class FutureViewDay extends React.PureComponent<Props, State> {
         <FutureViewDayTaskContainer
           tasks={tasks}
           inNDaysView={inNDaysView}
-          doesShowCompletedTasks={doesShowCompletedTasks}
           taskEditorPosition={taskEditorPosition}
           hideOverflow={inMainList}
         />
