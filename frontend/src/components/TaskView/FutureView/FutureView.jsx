@@ -167,7 +167,7 @@ class FutureView extends React.PureComponent<Props> {
     const { windowSize: { width } } = this.props;
     if (width > 960) { return 5; }
     if (width > 768) { return 4; }
-    if (width > 640) { return 3; }
+    if (width > 500) { return 2; }
     return 1;
   };
 
@@ -182,7 +182,9 @@ class FutureView extends React.PureComponent<Props> {
   };
 
   render(): Node {
-    const { config: { displayOption, offset }, mainTaskArray, tags } = this.props;
+    const {
+      windowSize, config: { displayOption, offset }, mainTaskArray, tags,
+    } = this.props;
     const nDays = this.nDays();
     const days = buildDaysInFutureView(mainTaskArray, tags, nDays, displayOption, offset);
     const inNDaysView = displayOption.containerType === 'N_DAYS';
@@ -192,6 +194,7 @@ class FutureView extends React.PureComponent<Props> {
     return (
       <div>
         <FutureViewControl
+          windowSize={windowSize}
           nDays={nDays}
           displayOption={displayOption}
           offset={offset}

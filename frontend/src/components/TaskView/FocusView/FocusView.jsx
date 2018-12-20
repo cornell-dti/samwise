@@ -29,7 +29,7 @@ function FocusView({ mainTaskArray }: Props): Node {
     .map((task: Task | null) => task && (
       <InlineTaskEditor key={task.id} className={styles.TaskBox} task={task} />
     ));
-  return (<div>{listItems}</div>);
+  return (<div className={styles.FocusView}>{listItems}</div>);
 }
 
 const ConnectedFocusView = simpleConnect<{}, Props>(

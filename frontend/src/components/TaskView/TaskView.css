@@ -1,11 +1,20 @@
 .TaskView {
+  position: relative;
   display: flex;
   flex-direction: row;
-  padding: 1em;
 }
 
-.FocusPanel {
-  width: 250px;
+@media only screen and (min-width: 768px) {
+  .FocusPanel {
+    min-width: 250px;
+    max-width: 250px;
+  }
+}
+
+@media only screen and (max-width: 768px) {
+  .FocusPanel {
+    width: 100%;
+  }
 }
 
 .FuturePanel {
@@ -54,4 +63,13 @@
 
 .ControlButton {
   margin-left: 0.5em;
+}
+
+.ViewSwitcher {
+  position: fixed;
+  cursor: pointer;
+  bottom: 0.5em;
+  right: 0.5em;
+  font-size: 2em !important;
+  color: #84BCF6;
 }

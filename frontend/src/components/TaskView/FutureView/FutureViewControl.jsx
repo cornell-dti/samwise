@@ -8,6 +8,7 @@ import SquareTextToggle from '../../UI/SquareTextToggle';
 import SquareIconToggle from '../../UI/SquareIconToggle';
 import { date2YearMonth } from '../../../util/datetime-util';
 import styles from './FutureViewControl.css';
+import type { WindowSize } from '../../Util/Responsive/window-size-context';
 
 /*
  * --------------------------------------------------------------------------------
@@ -21,6 +22,7 @@ type ChangeableProps = {|
   +offset: number;
 |};
 type Props = {|
+  +windowSize: WindowSize;
   +nDays: number;
   ...ChangeableProps;
   +onChange: ($Shape<ChangeableProps>) => void;
@@ -84,9 +86,6 @@ function getMonthlyViewHeaderTitle(monthOffset: number): string {
  */
 function NavControl(props: NavControlProps): Node {
   const { containerType, futureViewOffset, changeOffset } = props;
-  const today = futureViewOffset !== 0 && (
-    <SquareTextToggle text="Today" onClick={changeOffset('TODAY')} />
-  );
   const prevHandler = changeOffset(-1);
   const nextHandler = changeOffset(+1);
   if (containerType === 'N_DAYS') {
@@ -99,8 +98,6 @@ function NavControl(props: NavControlProps): Node {
           <Icon className={className} style={prevStyle} name="chevron left" onClick={prevHandler} />
         )}
         <Icon className={className} style={nextStyle} name="chevron right" onClick={nextHandler} />
-        <Padding />
-        {today}
       </React.Fragment>
     );
   }
@@ -111,8 +108,6 @@ function NavControl(props: NavControlProps): Node {
       <React.Fragment>
         {futureViewOffset >= 0 && prev}
         {next}
-        <Padding />
-        {today}
       </React.Fragment>
     );
   }
@@ -123,8 +118,6 @@ function NavControl(props: NavControlProps): Node {
         {futureViewOffset >= 1 && prev}
         <Title text={getMonthlyViewHeaderTitle(futureViewOffset)} />
         {next}
-        <Padding />
-        {today}
       </React.Fragment>
     );
   }
@@ -137,14 +130,16 @@ function NavControl(props: NavControlProps): Node {
  * --------------------------------------------------------------------------------
  */
 
+type DisplayOptionControlProps = $Diff<Props, {| +windowSize: WindowSize; |}>;
+
 /**
  * The component to control display options.
  *
- * @param {Props} props all the props.
+ * @param {DisplayOptionControlProps} props all the props.
  * @return {Node} the rendered component.
  * @constructor
  */
-function DisplayOptionControl(props: Props): Node {
+function DisplayOptionControl(props: DisplayOptionControlProps): Node {
   const {
     nDays, displayOption, offset, onChange,
   } = props;
@@ -227,27 +222,55 @@ function DisplayOptionControl(props: Props): Node {
  */
 export default function FutureViewControl(props: Props): Node {
   const {
-    nDays, displayOption, offset, onChange,
+    windowSize: { width }, nDays, displayOption, offset, onChange,
   } = props;
   const { containerType } = displayOption;
   const changeOffset = (instruction: ChangeOffsetInstruction) => () => {
     const newOffset = instruction === 'TODAY' ? 0 : (offset + instruction);
     onChange({ offset: newOffset });
   };
+  const today = offset !== 0 && (
+    <SquareTextToggle text="Today" onClick={changeOffset('TODAY')} />
+  );
+  const navControl = (
+    <NavControl
+      containerType={containerType}
+      futureViewOffset={offset}
+      changeOffset={changeOffset}
+    />
+  );
+  const displayOptionControl = (
+    <DisplayOptionControl
+      nDays={nDays}
+      displayOption={displayOption}
+      offset={offset}
+      onChange={onChange}
+    />
+  );
+  if (width <= 600) {
+    return (
+      <div>
+        <div className={styles.FutureViewControl}>
+          <Title text="Future" />
+          <Padding />
+          {today}
+          {displayOptionControl}
+        </div>
+        <div className={styles.FutureViewControl}>
+          <Padding />
+          {navControl}
+          <Padding />
+        </div>
+      </div>
+    );
+  }
   return (
     <div className={styles.FutureViewControl}>
       <Title text="Future" />
-      <NavControl
-        containerType={containerType}
-        futureViewOffset={offset}
-        changeOffset={changeOffset}
-      />
-      <DisplayOptionControl
-        nDays={nDays}
-        displayOption={displayOption}
-        offset={offset}
-        onChange={onChange}
-      />
+      {navControl}
+      <Padding />
+      {today}
+      {displayOptionControl}
     </div>
   );
 }

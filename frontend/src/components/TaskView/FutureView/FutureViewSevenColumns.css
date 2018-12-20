@@ -3,8 +3,6 @@
   grid-gap: 0;
   grid-template-columns: 14.3% 14.3% 14.3% 14.3% 14.3% 14.3% 14.3%;
   grid-auto-flow: row;
-  margin-left: -13px;
-  margin-right: -13px;
 }
 
 .HeaderWeekday {
