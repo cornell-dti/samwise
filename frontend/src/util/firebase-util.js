@@ -52,3 +52,10 @@ export async function toAppUser(firebaseUser: ?FirebaseUser): Promise<AppUser | 
 export async function firebaseUserPromise(): Promise<AppUser | null> {
   return toAppUser(firebase.auth().currentUser);
 }
+
+/**
+ * Sign out.
+ */
+export function firebaseSignOut(): void {
+  firebase.auth().signOut().then(() => {});
+}

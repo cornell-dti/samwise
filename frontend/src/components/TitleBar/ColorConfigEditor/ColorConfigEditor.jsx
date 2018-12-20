@@ -8,6 +8,7 @@ import ColorConfigItem from './ColorConfigItem';
 import OtherTagAdder from './OtherTagAdder';
 import { simpleConnect } from '../../../store/react-redux-util';
 import type { State, Tag } from '../../../store/store-types';
+import { firebaseSignOut } from '../../../util/firebase-util';
 
 type Props = {| +tags: Tag[]; |};
 
@@ -68,7 +69,9 @@ function ColorConfigEditor({ tags }: Props): Node {
       </div>
       <div className={styles.SettingsSection}>
         <div className={styles.SettingsButton} style={{ paddingTop: '15px' }}>
-          <button type="button" className={styles.SignButton}>Sign Out</button>
+          <button type="button" className={styles.SignButton} onClick={firebaseSignOut}>
+            Sign Out
+          </button>
         </div>
       </div>
     </div>
