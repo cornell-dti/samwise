@@ -60,7 +60,7 @@ const Title = ({ text }: {| +text: string |}): Node => (
 type NavControlProps = {|
   +containerType: FutureViewContainerType;
   +futureViewOffset: number;
-  +changeOffset: (ChangeOffsetInstruction) => void;
+  +changeOffset: (ChangeOffsetInstruction) => () => void;
 |};
 
 /**
@@ -84,39 +84,51 @@ function getMonthlyViewHeaderTitle(monthOffset: number): string {
  */
 function NavControl(props: NavControlProps): Node {
   const { containerType, futureViewOffset, changeOffset } = props;
-  const changer = offset => () => changeOffset(offset);
-  const prev = <Icon className={styles.NavButton} name="chevron left" onClick={changer(-1)} />;
-  const next = <Icon className={styles.NavButton} name="chevron right" onClick={changer(1)} />;
-  switch (containerType) {
-    case 'N_DAYS':
-      return (
-        <React.Fragment>
-          {futureViewOffset >= 1 && prev}
-          {next}
-          <Padding />
-        </React.Fragment>
-      );
-    case 'BIWEEKLY':
-      return (
-        <React.Fragment>
-          {futureViewOffset >= 0 && prev}
-          {next}
-          <Padding />
-        </React.Fragment>
-      );
-    case 'MONTHLY':
-      return (
-        <React.Fragment>
-          <Padding />
-          {futureViewOffset >= 1 && prev}
-          <Title text={getMonthlyViewHeaderTitle(futureViewOffset)} />
-          {next}
-          <Padding />
-        </React.Fragment>
-      );
-    default:
-      throw new Error('Bad display option.');
+  const today = futureViewOffset !== 0 && (
+    <SquareTextToggle text="Today" onClick={changeOffset('TODAY')} />
+  );
+  const prevHandler = changeOffset(-1);
+  const nextHandler = changeOffset(+1);
+  if (containerType === 'N_DAYS') {
+    const className = `${styles.NavButton} ${styles.NavButtonNDays}`;
+    const prevStyle = { left: 0 };
+    const nextStyle = { right: 0 };
+    return (
+      <React.Fragment>
+        {futureViewOffset >= 1 && (
+          <Icon className={className} style={prevStyle} name="chevron left" onClick={prevHandler} />
+        )}
+        <Icon className={className} style={nextStyle} name="chevron right" onClick={nextHandler} />
+        <Padding />
+        {today}
+      </React.Fragment>
+    );
   }
+  const prev = <Icon className={styles.NavButton} name="chevron left" onClick={prevHandler} />;
+  const next = <Icon className={styles.NavButton} name="chevron right" onClick={nextHandler} />;
+  if (containerType === 'BIWEEKLY') {
+    return (
+      <React.Fragment>
+        {futureViewOffset >= 0 && prev}
+        {next}
+        <Padding />
+        {today}
+      </React.Fragment>
+    );
+  }
+  if (containerType === 'MONTHLY') {
+    return (
+      <React.Fragment>
+        <Padding />
+        {futureViewOffset >= 1 && prev}
+        <Title text={getMonthlyViewHeaderTitle(futureViewOffset)} />
+        {next}
+        <Padding />
+        {today}
+      </React.Fragment>
+    );
+  }
+  throw new Error('Bad display option.');
 }
 
 /*
@@ -218,16 +230,13 @@ export default function FutureViewControl(props: Props): Node {
     nDays, displayOption, offset, onChange,
   } = props;
   const { containerType } = displayOption;
-  const changeOffset = (instruction: ChangeOffsetInstruction) => {
+  const changeOffset = (instruction: ChangeOffsetInstruction) => () => {
     const newOffset = instruction === 'TODAY' ? 0 : (offset + instruction);
     onChange({ offset: newOffset });
   };
   return (
     <div className={styles.FutureViewControl}>
       <Title text="Future" />
-      {offset !== 0 && (
-        <SquareTextToggle text="Today" onClick={() => changeOffset('TODAY')} />
-      )}
       <NavControl
         containerType={containerType}
         futureViewOffset={offset}
