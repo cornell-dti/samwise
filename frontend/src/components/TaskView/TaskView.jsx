@@ -70,7 +70,7 @@ class TaskView extends React.PureComponent<Props, State> {
     if (futureViewConfigProvider.isInNDaysView(futureViewConfig)) {
       return null;
     }
-    const wrapperStyle = doesShowFocusViewInWideScreen ? { left: '-5em' } : { left: '-1em' };
+    const wrapperStyle = doesShowFocusViewInWideScreen ? { left: '-4em' } : { left: '-1em' };
     const buttonStyle = doesShowFocusViewInWideScreen ? { left: '2em' } : {};
     const iconName = doesShowFocusViewInWideScreen ? 'chevron left' : 'chevron right';
     const iconClass = doesShowFocusViewInWideScreen

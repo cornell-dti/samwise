@@ -17,13 +17,18 @@ import CheckBox from '../../UI/CheckBox';
 import type { FloatingPosition } from '../../Util/TaskEditors/task-editors-types';
 import { getTodayAtZero } from '../../../util/datetime-util';
 import OverdueAlert from '../../UI/OverdueAlert';
+import windowSizeConnect from '../../Util/Responsive/WindowSizeConsumer';
+import type { WindowSize } from '../../Util/Responsive/window-size-context';
 
 type Props = {|
   +originalTask: Task;
   +filteredTask: Task;
   +taskColor: string;
   +inNDaysView: boolean;
+  +isInMainList: boolean;
   +taskEditorPosition: FloatingPosition;
+  // Subscribed window size
+  +windowSize: WindowSize;
   // Subscribed actions
   +editMainTask: (taskId: number, partialMainTask: PartialMainTask) => EditMainTaskAction;
   +removeTask: (taskId: number, undoable?: boolean) => RemoveTaskAction;
@@ -119,10 +124,15 @@ class FutureViewTask extends React.PureComponent<Props, State> {
   /**
    * Render the information for main task.
    *
+   * @param {boolean} simplified whether to render the simplifies task.
    * @return {Node} the information for main task.
    */
-  renderMainTaskInfo(): Node {
-    const { taskColor } = this.props;
+  renderMainTaskInfo(simplified: boolean = false): Node {
+    const { taskColor, isInMainList } = this.props;
+    if (simplified && isInMainList) {
+      const style = { backgroundColor: taskColor, height: '25px' };
+      return <div className={styles.TaskMainWrapper} style={style} />;
+    }
     return (
       <div className={styles.TaskMainWrapper} style={{ backgroundColor: taskColor }}>
         {this.renderCheckBox()}
@@ -172,10 +182,11 @@ class FutureViewTask extends React.PureComponent<Props, State> {
       }
     };
     if (!inNDaysView) {
+      const { windowSize: { width } } = this.props;
       return (
         <div className={styles.Task} ref={refHandler}>
           {overdueComponentOpt}
-          {this.renderMainTaskInfo()}
+          {this.renderMainTaskInfo(width <= 768)}
         </div>
       );
     }
@@ -210,5 +221,5 @@ class FutureViewTask extends React.PureComponent<Props, State> {
 const ConnectedFutureViewTask = connect(
   null,
   { editMainTask: editMainTaskAction, removeTask: removeTaskAction },
-)(FutureViewTask);
+)(windowSizeConnect<Props>(FutureViewTask));
 export default ConnectedFutureViewTask;

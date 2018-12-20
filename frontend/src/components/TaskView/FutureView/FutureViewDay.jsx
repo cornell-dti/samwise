@@ -214,7 +214,7 @@ class FutureViewDay extends React.PureComponent<Props, State> {
           tasks={tasks}
           inNDaysView={inNDaysView}
           taskEditorPosition={taskEditorPosition}
-          hideOverflow={inMainList}
+          isInMainList={inMainList}
         />
       </React.Fragment>
     );

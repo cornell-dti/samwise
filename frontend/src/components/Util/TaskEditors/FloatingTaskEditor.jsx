@@ -82,9 +82,17 @@ class FloatingTaskEditor extends React.PureComponent<Props, State> {
     if (!(taskElementBoundingRect instanceof DOMRect)) {
       throw new Error('Bad taskElementBoundingRect!');
     }
-    const { y, left, right } = taskElementBoundingRect;
-    const windowHeight = document.body?.offsetHeight ?? 0;
+    const { windowSize } = this.props;
+    const myWidth = editorPosDiv.offsetWidth;
     const myHeight = editorPosDiv.offsetHeight;
+    const windowWidth = windowSize.width;
+    const windowHeight = windowSize.height;
+    if (windowWidth <= 768) {
+      editorPosDiv.style.top = `${(windowHeight - myHeight) / 2}px`;
+      editorPosDiv.style.left = `${(windowWidth - myWidth) / 2}px`;
+      return;
+    }
+    const { y, left, right } = taskElementBoundingRect;
     const topPos = (y + myHeight) > windowHeight ? windowHeight - myHeight : y;
     editorPosDiv.style.top = `${topPos}px`;
     const { position } = this.props;
