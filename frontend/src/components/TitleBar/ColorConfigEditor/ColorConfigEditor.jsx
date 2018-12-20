@@ -5,13 +5,11 @@ import type { Node } from 'react';
 import ColorConfigItemAdder from './ColorConfigItemAdder';
 import styles from './ColorConfigEditor.css';
 import ColorConfigItem from './ColorConfigItem';
-import AddNormalTag from './AddNormalTag';
+import OtherTagAdder from './OtherTagAdder';
 import { simpleConnect } from '../../../store/react-redux-util';
 import type { State, Tag } from '../../../store/store-types';
 
-type Props = {|
-  tags: Tag[];
-|};
+type Props = {| +tags: Tag[]; |};
 
 /**
  * The color config editor for settings.
@@ -26,30 +24,33 @@ function ColorConfigEditor({ tags }: Props): Node {
   tags.forEach((tag) => {
     if (tag.type === 'class') {
       classTags.push(tag);
-    } else {
+    } else if (tag.name !== 'None') {
       otherTags.push(tag);
     }
   });
+  const renderTags = (arr: Tag[]) => arr.map(tag => (
+    <ColorConfigItem key={tag.id} tag={tag} />
+  ));
   return (
     <div>
       <div className={styles.SettingsSection}>
-        <p>Add Classes</p>
-        <div>
+        <p className={styles.SettingsSectionTitle}>Add Classes</p>
+        <div className={styles.SettingsSectionContent}>
           <ColorConfigItemAdder />
-          <small>Add classes to get upcoming prelims automatically added to your planner</small>
+          <small>Add classes to get upcoming prelims automatically added to your planner.</small>
         </div>
       </div>
       <div className={styles.SettingsSection}>
-        <p>Class Tags</p>
-        <div>
+        <p className={styles.SettingsSectionTitle}>Class Tags</p>
+        <div className={styles.SettingsSectionContent}>
           <ul className={styles.ColorConfigItemList}>
-            {classTags.map(tag => (<ColorConfigItem key={tag.id} tag={tag} />))}
+            {renderTags(classTags)}
           </ul>
         </div>
       </div>
       <div className={styles.SettingsSection}>
-        <p>Auto Import Exams</p>
-        <div className={styles.ImportBtn}>
+        <p className={styles.SettingsSectionTitle}>Auto Import Exams</p>
+        <div className={`${styles.SettingsButton} ${styles.SettingsSectionContent}`}>
           Click the following button to automatically import the prelims and finals
           from your registered classes into your planner.
           <br />
@@ -57,19 +58,17 @@ function ColorConfigEditor({ tags }: Props): Node {
         </div>
       </div>
       <div className={styles.SettingsSection}>
-        <p className={styles.otherTags}>Other Tags</p>
-        <div>
+        <p className={styles.SettingsSectionTitle}>Other Tags</p>
+        <div className={styles.SettingsSectionContent}>
           <ul className={styles.ColorConfigItemList}>
-            {otherTags.filter(tag => tag.name !== 'None').map(
-              tag => (<ColorConfigItem key={tag.id} tag={tag} />),
-            )}
-            <AddNormalTag />
+            {renderTags(otherTags)}
+            <OtherTagAdder />
           </ul>
         </div>
       </div>
       <div className={styles.SettingsSection}>
-        <div className={styles.ImportBtn} style={{ paddingTop: '15px' }}>
-          <button type="button" className={styles.SignBtn}>Sign Out</button>
+        <div className={styles.SettingsButton} style={{ paddingTop: '15px' }}>
+          <button type="button" className={styles.SignButton}>Sign Out</button>
         </div>
       </div>
     </div>

@@ -51,7 +51,7 @@ const initialState: State = {
       id: 1, type: 'other', name: 'Project Team', color: '#FF8A8A',
     },
     {
-      id: 2, type: 'class', name: 'CS1110', color: 'red',
+      id: 2, type: 'class', name: 'CS1110', color: '#B92424',
     },
   ],
   bearStatus: 'neutral',

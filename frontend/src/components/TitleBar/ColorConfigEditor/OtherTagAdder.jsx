@@ -5,7 +5,7 @@ import { connect } from 'react-redux';
 import { Icon } from 'semantic-ui-react';
 import { GithubPicker } from 'react-color';
 import type { Tag } from '../../../store/store-types';
-import styles from './IndividualItem.css';
+import styles from './ColorConfigItem.css';
 import type { AddTagAction } from '../../../store/action-types';
 import { addTag as addTagAction } from '../../../store/actions';
 import { randomId } from '../../../util/general-util';
@@ -21,9 +21,9 @@ type State = {|
   +reset: boolean;
 |};
 
-const colArray = Object.keys(colMap);
+const colArray: string[] = Object.keys(colMap);
 
-class AddNormalTag extends React.Component<Props, State> {
+class OtherTagAdder extends React.Component<Props, State> {
   constructor(props) {
     super(props);
     this.state = {
@@ -33,7 +33,6 @@ class AddNormalTag extends React.Component<Props, State> {
       reset: true,
     };
   }
-
 
   toggleEditor = () => {
     this.setState(s => ({ ...s, showEditor: !s.showEditor }));
@@ -66,34 +65,32 @@ class AddNormalTag extends React.Component<Props, State> {
   render() {
     const { showEditor, reset, color } = this.state;
     return (
-      <li style={{ width: '100%', margin: 0 }} className={styles.Main}>
+      <li className={styles.ColorConfigItem}>
         <input
-          className={`${styles.TagName} ${styles.AddTagName}`}
           type="text"
+          className={`${styles.TagName} ${styles.AddTagName}`}
           placeholder="New Tag"
           onKeyDown={this.handleSave}
         />
         <button type="button" className={styles.ColorEdit} onClick={this.toggleEditor}>
-          {reset ? 'Select' : colMap[color]}
+          {reset ? 'Select' : colMap[color.toLowerCase()]}
           <span className={styles.ColorEditDisp} style={{ backgroundColor: color }} />
           <Icon className={styles.ColorEditArrow} name="angle down" />
         </button>
-        {
-          showEditor && (
-            <div className={styles.OpenPicker}>
-              <GithubPicker
-                color={color}
-                onChangeComplete={this.handleColor}
-                triangle="top-right"
-                colors={colArray}
-              />
-            </div>
-          )
-        }
+        {showEditor && (
+          <div className={styles.OpenPicker}>
+            <GithubPicker
+              color={color}
+              onChangeComplete={this.handleColor}
+              triangle="top-right"
+              colors={colArray}
+            />
+          </div>
+        )}
       </li>
     );
   }
 }
 
-const ConnectedAddNormalTag = connect(null, { addTag: addTagAction })(AddNormalTag);
-export default ConnectedAddNormalTag;
+const ConnectedOtherTagAdder = connect(null, { addTag: addTagAction })(OtherTagAdder);
+export default ConnectedOtherTagAdder;

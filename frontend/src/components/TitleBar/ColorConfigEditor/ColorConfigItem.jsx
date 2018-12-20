@@ -7,7 +7,7 @@ import type { RemoveTagAction } from '../../../store/action-types';
 import { removeTag as removeTagAction } from '../../../store/actions';
 import ColorEditor from './ColorEditor';
 import type { Tag } from '../../../store/store-types';
-import styles from './IndividualItem.css';
+import styles from './ColorConfigItem.css';
 import { colMap } from './ListColors';
 
 type Props = {|
@@ -25,8 +25,8 @@ class ColorConfigItem extends React.Component<Props, State> {
     if (!confirm('Do you want to remove this config?')) {
       return;
     }
-    const { tag, removeTag } = this.props;
-    removeTag(tag.id);
+    const { tag: { id }, removeTag } = this.props;
+    removeTag(id);
   };
 
   toggleEditor = () => this.setState(s => ({ showEditor: !s.showEditor }));
@@ -37,21 +37,16 @@ class ColorConfigItem extends React.Component<Props, State> {
     const { showEditor } = this.state;
     const isClass = type === 'class';
     return (
-      <li style={{ width: '100%', margin: 0 }} className={styles.Main}>
+      <li className={styles.ColorConfigItem}>
         <span
           className={styles.TagName}
           style={{ width: isClass ? '100px' : 'calc(100% - 150px)' }}
         >
           {name}
         </span>
-        <span
-          className={styles.ClassExpandedTitle}
-          style={{ display: isClass ? 'inline-block' : 'none' }}
-        >
-          Class Name Goes Here
-        </span>
+        {isClass && <span className={styles.ClassExpandedTitle}>Class Name Goes Here</span>}
         <button type="button" className={styles.ColorEdit} onClick={this.toggleEditor}>
-          {colMap[color]}
+          {colMap[color.toLowerCase()]}
           <span className={styles.ColorEditDisp} style={{ backgroundColor: color }} />
           <Icon className={styles.ColorEditArrow} name="angle down" />
         </button>

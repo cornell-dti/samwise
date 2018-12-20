@@ -19,7 +19,7 @@ import WindowSizeProvider from './components/Util/Responsive/WindowSizeProvider'
  * It can be set to true in development to speed up loading time.
  * @type {boolean}
  */
-const disableLogin: boolean = false;
+const disableLogin: boolean = true;
 
 /**
  * The function to render the entire app given a user.

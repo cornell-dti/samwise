@@ -10,25 +10,20 @@ import type { Tag } from '../../../store/store-types';
 import { randomId } from '../../../util/general-util';
 
 type Props = {|
-  addTag: (tag: Tag) => AddTagAction
+  +addTag: (tag: Tag) => AddTagAction
 |};
 
-type State = {| tagInput: string, colorInput: string |};
-
-const actionCreators = { addTag: addTagAction };
+type State = {| +tagInput: string, +colorInput: string |};
 
 class ColorConfigItemAdder extends React.Component<Props, State> {
-  constructor(props: Props) {
-    super(props);
-    this.state = {
-      tagInput: '',
-      colorInput: '#56d9c1',
-    };
-  }
+  state: State = {
+    tagInput: '',
+    colorInput: '#56d9c1',
+  };
 
-  changeTagName = (event) => {
-    event.persist();
-    this.setState(state => ({ ...state, tagInput: event.target.value }));
+  changeTagName = (event: SyntheticEvent<HTMLInputElement>) => {
+    event.stopPropagation();
+    this.setState(state => ({ ...state, tagInput: event.currentTarget.value }));
   };
 
   changeColor = () => this.setState(state => ({ ...state, colorInput: '#B80000' }));
@@ -46,7 +41,7 @@ class ColorConfigItemAdder extends React.Component<Props, State> {
       addTag({
         id: randomId(), type: 'class', name: tagInput, color: colorInput,
       });
-    this.setState(state => ({ ...state, tagInput: '', colorInput: '#56d9c1' }));
+      this.setState(state => ({ ...state, tagInput: '', colorInput: '#56d9c1' }));
     }
   };
 
@@ -67,5 +62,7 @@ class ColorConfigItemAdder extends React.Component<Props, State> {
   }
 }
 
-const ConnectedTagColorConfigItemAdder = connect(null, actionCreators)(ColorConfigItemAdder);
+const ConnectedTagColorConfigItemAdder = connect(
+  null, { addTag: addTagAction },
+)(ColorConfigItemAdder);
 export default ConnectedTagColorConfigItemAdder;
