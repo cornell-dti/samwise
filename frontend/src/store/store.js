@@ -6,6 +6,7 @@ import rootReducer from './reducers';
 import type { State } from './store-types';
 import type { Action } from './action-types';
 import type { AppUser } from '../util/firebase-util';
+import { error } from '../util/general-util';
 
 export type GlobalStore = Store<State, $Subtype<Action>>;
 
@@ -28,12 +29,7 @@ export function initializeApp(user: AppUser): GlobalStore {
  *
  * @return {AppUser} the global app user.
  */
-export const getAppUser = (): AppUser => {
-  if (appUser != null) {
-    return appUser;
-  }
-  throw new Error('App is not initialized.');
-};
+export const getAppUser = (): AppUser => appUser ?? error('App is not initialized.');
 
 /**
  * Dispatch an action and returns the dispatched action.

@@ -6,6 +6,7 @@ import type {
 } from '../store/store-types';
 import type { BackendPatchLoadedDataAction } from '../store/action-types';
 import { backendPatchLoadedData } from '../store/actions';
+import { error } from '../util/general-util';
 
 /**
  * Format date for backend.
@@ -102,10 +103,7 @@ export async function httpGetTasks(): Promise<Task[]> {
     }
   });
   serverSubTasks.forEach((subTasks: SubTask[], parentId: number) => {
-    const mainTask = mainTasks.get(parentId);
-    if (mainTask == null) {
-      throw new Error('Corrupted backend!');
-    }
+    const mainTask = mainTasks.get(parentId) ?? error('Corrupted backend!');
     mainTasks.set(parentId, { ...mainTask, subtaskArray: subTasks });
   });
   const assembledTasks: Task[] = [];

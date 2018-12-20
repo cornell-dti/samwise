@@ -32,19 +32,19 @@ const appRenderer = (appUser: AppUser): Node => {
   httpInitializeData().then(a => dispatchAction(a));
   return (
     <ReactReduxProvider store={store}>
-      <WindowSizeProvider>
-        <div className={styles.App}>
-          <TitleBar />
-          <TaskCreator />
-          <TaskView />
-        </div>
-      </WindowSizeProvider>
+      <div className={styles.App}>
+        <TitleBar />
+        <TaskCreator />
+        <TaskView />
+      </div>
     </ReactReduxProvider>
   );
 };
 
+const dummyUser: AppUser = { displayName: 'BAD_USER', email: 'BAD_EMAIL', token: 'BAD_TOKEN' };
+
 export default (): Node => (
-  disableLogin
-    ? appRenderer({ displayName: 'BAD_USER', email: 'BAD_EMAIL', token: 'BAD_TOKEN' })
-    : (<LoginBarrier appRenderer={appRenderer} />)
+  <WindowSizeProvider>
+    {disableLogin ? appRenderer(dummyUser) : <LoginBarrier appRenderer={appRenderer} />}
+  </WindowSizeProvider>
 );

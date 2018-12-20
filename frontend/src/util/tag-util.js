@@ -1,6 +1,7 @@
 // @flow strict
 
 import type { Tag } from '../store/store-types';
+import { error } from './general-util';
 
 /**
  * Returns the tag from a list of tags given the name.
@@ -9,13 +10,8 @@ import type { Tag } from '../store/store-types';
  * @param {number} id the tag id to find.
  * @return {string} the tag.
  */
-export const getTagById = (tags: Tag[], id: number): Tag => {
-  const tagOpt = tags.find(t => t.id === id);
-  if (tagOpt == null) {
-    throw new Error('Color not found! Corrupted store.');
-  }
-  return tagOpt;
-};
+export const getTagById = (tags: Tag[], id: number): Tag => tags
+  .find(t => t.id === id) ?? error('Color not found! Corrupted store.');
 
 /**
  * Returns the color by tag from a list of tags given the name.

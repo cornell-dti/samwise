@@ -6,3 +6,10 @@
  * @return {number} a random id.
  */
 export const randomId = (): number => ((10 * new Date()) + Math.floor(10000 * Math.random()));
+
+/**
+ * Throw an error. Useful when want to use this as an expression.
+ *
+ * @param {?string} message an optional message.
+ */
+export function error<T>(message?: string): T { throw new Error(message); }

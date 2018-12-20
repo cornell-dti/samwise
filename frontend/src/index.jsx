@@ -4,18 +4,10 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
 import App from './App';
-import { firebaseUserPromise, firebaseInit } from './util/firebase-util';
-import Loading from './components/UI/Loading';
+import { firebaseInit } from './util/firebase-util';
+import { error } from './util/general-util';
 
 firebaseInit();
 
-const root = document.getElementById('root');
-if (root == null) {
-  throw new Error('The root node is not found!');
-}
-
-ReactDOM.render(<Loading />, root);
-(async () => {
-  const user = await firebaseUserPromise();
-  ReactDOM.render(<App />, root);
-})();
+const root = document.getElementById('root') ?? error('The root node is not found!');
+ReactDOM.render(<App />, root);

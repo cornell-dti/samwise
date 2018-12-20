@@ -16,6 +16,7 @@ import {
 import { day2String } from '../../../util/datetime-util';
 import windowSizeConnect from '../../Util/Responsive/WindowSizeConsumer';
 import type { WindowSize } from '../../Util/Responsive/window-size-context';
+import { error } from '../../../util/general-util';
 
 type Props = {|
   +date: Date;
@@ -157,10 +158,7 @@ class FutureViewDay extends React.PureComponent<Props, State> {
    * @return {PositionStyle} the floating view position.
    */
   computeFloatingViewPosition = (): PositionStyle => {
-    const componentDiv = this.backlogDayElement;
-    if (componentDiv == null) {
-      throw new Error('Impossible Case!');
-    }
+    const componentDiv = this.backlogDayElement ?? error('Impossible Case!');
     const boundingRect = componentDiv.getBoundingClientRect();
     if (!(boundingRect instanceof DOMRect)) {
       throw new Error('Bad boundingRect!');
