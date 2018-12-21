@@ -15,7 +15,8 @@ import { tasksConnect } from '../../util/task-util';
 
 type Props = {|
   +windowSize: WindowSize;
-  +tasks: Task[];
+  +fullTasks: Task[];
+  +inFocusTasks: Task[];
 |};
 type State = {|
   +doesShowFocusViewInWideScreen: boolean;
@@ -116,7 +117,7 @@ class TaskView extends React.PureComponent<Props, State> {
   };
 
   render(): Node {
-    const { windowSize, tasks } = this.props;
+    const { windowSize, fullTasks, inFocusTasks } = this.props;
     const {
       doesShowFocusViewInWideScreen, doesShowFutureViewInSmallScreen, futureViewConfig,
     } = this.state;
@@ -128,7 +129,7 @@ class TaskView extends React.PureComponent<Props, State> {
           {showFocusView && (
             <div className={styles.FocusPanel}>
               <h3 className={styles.ControlTitle}>Focus</h3>
-              <FocusView tasks={tasks} />
+              <FocusView tasks={inFocusTasks} />
             </div>
           )}
           <div className={styles.FuturePanel}>
@@ -136,7 +137,7 @@ class TaskView extends React.PureComponent<Props, State> {
             <FutureView
               windowSize={windowSize}
               config={futureViewConfig}
-              tasks={tasks}
+              tasks={fullTasks}
               onConfigChange={this.futureViewConfigOnChange}
             />
           </div>
@@ -149,14 +150,14 @@ class TaskView extends React.PureComponent<Props, State> {
           <FutureView
             windowSize={windowSize}
             config={futureViewConfig}
-            tasks={tasks}
+            tasks={fullTasks}
             onConfigChange={this.futureViewConfigOnChange}
           />
         </div>
       ) : (
         <div className={styles.FocusPanel}>
           <h3 className={styles.ControlTitle}>Focus</h3>
-          <FocusView tasks={tasks} />
+          <FocusView tasks={inFocusTasks} />
         </div>
       );
     return (
@@ -168,7 +169,5 @@ class TaskView extends React.PureComponent<Props, State> {
   }
 }
 
-const ConnectedTaskView = tasksConnect<PropsWithoutWindowSize<Props>>(
-  windowSizeConnect(TaskView),
-);
+const ConnectedTaskView = windowSizeConnect<Props>(TaskView);
 export default ConnectedTaskView;

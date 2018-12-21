@@ -2,19 +2,31 @@
 
 import React from 'react';
 import type { Node } from 'react';
-import type { TasksProgressProps } from '../../util/task-util';
-import { tasksProgressConnect } from '../../util/task-util';
+import type { TasksProgress } from '../../util/task-util';
+import windowSizeConnect from '../Util/Responsive/WindowSizeConsumer';
+import type { WindowSize } from '../Util/Responsive/window-size-context';
+import ProgressIndicator from './ProgressIndicator';
+
+type Props = {|
+  +windowSize: WindowSize;
+  +progress: TasksProgress;
+|};
 
 /**
  * The progress tracker component.
+ * It is a wrapper component designed to pass down the progress object.
  *
- * @param progress progressed provided by the connector function.
+ * @param {WindowSize} windowSize the current window size.
+ * @param {TasksProgress} progress the current progress.
  * @constructor
  */
-function ProgressTracker({ progress }: TasksProgressProps): Node {
-  console.log(progress);
-  return null;
+function ProgressTracker({ windowSize, progress }: Props): Node {
+  return (
+    <div>
+      <ProgressIndicator progress={progress} />
+    </div>
+  );
 }
 
-const Connected = tasksProgressConnect<TasksProgressProps>(ProgressTracker);
+const Connected = windowSizeConnect<Props>(ProgressTracker);
 export default Connected;

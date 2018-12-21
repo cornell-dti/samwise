@@ -1,6 +1,6 @@
 .NDaysView {
   position: relative;
-  margin: -1em 4px;
+  margin: -1em 4px 0 4px;
   background-color: #F7F7F7;
   height: 366px;
 }
