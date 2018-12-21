@@ -46,7 +46,7 @@ export default function ProgressIndicator({ progress }: TasksProgressProps): Nod
   return (
     <div className={styles.ProgressIndicator}>
       <div className={styles.ProgressText}>
-        <div>{`${completed}/${all}`}</div>
+        <div className={styles.ProgressCountText}>{`${completed}/${all}`}</div>
         <div className={styles.ProgressOtherText}>tasks complete</div>
       </div>
       <ProgressBar progress={progress} />
