@@ -2,7 +2,7 @@
 
 import React from 'react';
 import type { Node } from 'react';
-import styles from './UndoButton.css';
+import styles from './ToastUndo.css';
 
 type Props = {|
   +dispText: string;
@@ -23,7 +23,7 @@ export default function ToastUndo({ dispText, changeCallback }: Props): Node {
     <span className={styles.Wrap}>
       {dispText}
       {' '}
-      <button type="button" onClick={changeCallback} className={styles.Main}>Undo</button>
+      <button type="button" onClick={changeCallback} className={styles.UndoButton}>Undo</button>
     </span>
   );
 }

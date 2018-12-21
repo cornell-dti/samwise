@@ -6,9 +6,9 @@ import TagItem from '../Tags/TagItem';
 import ClassTagAdder from '../Tags/ClassTagAdder';
 import OtherTagAdder from '../Tags/OtherTagAdder';
 import styles from './SettingsPage.css';
-import type { State, Tag } from '../../../store/store-types';
+import type { Tag } from '../../../store/store-types';
 import { firebaseSignOut } from '../../../util/firebase-util';
-import { simpleConnect } from '../../../store/react-redux-util';
+import { stateConnect } from '../../../store/react-redux-util';
 
 type Props = {| +classTags: Tag[]; +otherTags: Tag[] |};
 
@@ -82,14 +82,6 @@ const TagsContainer = ({ title, children }: {| +title: string; +children: Node |
 );
 
 /**
- * Render an array of tags.
- *
- * @param {Tag[]} tags an array of tags.
- * @return {Node} rendered tags.
- */
-const renderTags = (tags: Tag[]): Node => tags.map(t => <TagItem key={t.id} tag={t} />);
-
-/**
  * The settings page.
  *
  * @param {Tag[]} classTags all the class tags.
@@ -98,6 +90,9 @@ const renderTags = (tags: Tag[]): Node => tags.map(t => <TagItem key={t.id} tag=
  * @constructor
  */
 function SettingsPage({ classTags, otherTags }: Props): Node {
+  const renderTags = (tags: Tag[]): Node => tags.map((tag: Tag) => (
+    <TagItem key={tag.id} tag={tag} />
+  ));
   return (
     <div>
       <ClassAdder />
@@ -114,10 +109,10 @@ function SettingsPage({ classTags, otherTags }: Props): Node {
   );
 }
 
-const ConnectedSettingsPage = simpleConnect<{||}, Props>(
-  ({ tags }: State) => {
-    const classTags = [];
-    const otherTags = [];
+const ConnectedSettingsPage = stateConnect<Props, Props>(
+  ({ tags }): Props => {
+    const classTags: Tag[] = [];
+    const otherTags: Tag[] = [];
     tags.forEach((tag) => {
       if (tag.type === 'class') {
         classTags.push(tag);

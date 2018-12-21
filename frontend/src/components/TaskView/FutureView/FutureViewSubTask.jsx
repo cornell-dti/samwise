@@ -2,7 +2,6 @@
 
 import React from 'react';
 import type { Node } from 'react';
-import { connect } from 'react-redux';
 import { Icon } from 'semantic-ui-react';
 import styles from './FutureViewTask.css';
 import {
@@ -12,11 +11,13 @@ import {
 import type { PartialSubTask, SubTask } from '../../../store/store-types';
 import type { EditSubTaskAction, RemoveSubTaskAction } from '../../../store/action-types';
 import CheckBox from '../../UI/CheckBox';
+import { dispatchConnect } from '../../../store/react-redux-util';
 
 type Props = {|
   ...SubTask;
   +mainTaskId: number;
   +mainTaskCompleted: boolean;
+  // subscribed from dispatchers.
   +editSubTask: (
     taskId: number, subtaskId: number, partialSubTask: PartialSubTask,
   ) => EditSubTaskAction;
@@ -64,8 +65,8 @@ function FutureViewSubTask(props: Props): Node {
   );
 }
 
-const ConnectedFutureViewSubTask = connect(
-  null,
-  { editSubTask: editSubTaskAction, removeSubTask: removeSubTaskAction },
+const actionsCreators = { editSubTask: editSubTaskAction, removeSubTask: removeSubTaskAction };
+const Connected = dispatchConnect<Props, typeof actionsCreators>(
+  actionsCreators,
 )(FutureViewSubTask);
-export default ConnectedFutureViewSubTask;
+export default Connected;

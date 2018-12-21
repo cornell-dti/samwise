@@ -2,37 +2,29 @@
 
 import React from 'react';
 import type { Node } from 'react';
-import type { State, Task } from '../../../store/store-types';
-import { simpleConnect } from '../../../store/react-redux-util';
+import type { Task } from '../../../store/store-types';
 import styles from './FocusView.css';
 import InlineTaskEditor from '../../Util/TaskEditors/InlineTaskEditor';
-
-type Props = {| mainTaskArray: Task[] |};
 
 /**
  * The focus view component.
  *
- * @param {Task[]} mainTaskArray the main task array from redux store.
+ * @param {Task[]} tasks the main task array.
  * @return {Node} the rendered focus view component.
  * @constructor
  */
-function FocusView({ mainTaskArray }: Props): Node {
-  const filterMapper: (Task) => (Task | null) = (task) => {
+export default function FocusView({ tasks }: {| tasks: Task[] |}): Node {
+  const filterMapper = (task: Task): (Task | null) => {
     if (task.inFocus) {
       return task;
     }
     const subtaskArray = task.subtaskArray.filter(subTask => subTask.inFocus);
     return subtaskArray.length === 0 ? null : { ...task, subtaskArray };
   };
-  const listItems = mainTaskArray
+  const listItems = tasks
     .map(filterMapper)
-    .map((task: Task | null) => task && (
+    .map((task: Task | null): Node => task && (
       <InlineTaskEditor key={task.id} className={styles.TaskBox} task={task} />
     ));
   return (<div className={styles.FocusView}>{listItems}</div>);
 }
-
-const ConnectedFocusView = simpleConnect<{||}, Props>(
-  ({ mainTaskArray }: State): Props => ({ mainTaskArray }),
-)(FocusView);
-export default ConnectedFocusView;

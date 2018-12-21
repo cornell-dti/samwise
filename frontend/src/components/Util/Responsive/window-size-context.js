@@ -3,6 +3,7 @@
 import React from 'react';
 
 export type WindowSize = {| +width: number; +height: number; |};
+export type WindowSizeProps = {| +windowSize: WindowSize; |};
 
 /**
  * Returns the current window size.

@@ -9,9 +9,13 @@ import styles from './TaskView.css';
 import windowSizeConnect from '../Util/Responsive/WindowSizeConsumer';
 import type { WindowSize } from '../Util/Responsive/window-size-context';
 import type { FutureViewConfig } from './FutureView/FutureView';
+import { stateConnect } from '../../store/react-redux-util';
+import type { Task } from '../../store/store-types';
+import type { PropsWithoutWindowSize } from '../Util/Responsive/WindowSizeConsumer';
 
 type Props = {|
   +windowSize: WindowSize;
+  +tasks: Task[];
 |};
 type State = {|
   +doesShowFocusViewInWideScreen: boolean;
@@ -112,7 +116,7 @@ class TaskView extends React.PureComponent<Props, State> {
   };
 
   render(): Node {
-    const { windowSize } = this.props;
+    const { windowSize, tasks } = this.props;
     const {
       doesShowFocusViewInWideScreen, doesShowFutureViewInSmallScreen, futureViewConfig,
     } = this.state;
@@ -124,7 +128,7 @@ class TaskView extends React.PureComponent<Props, State> {
           {showFocusView && (
             <div className={styles.FocusPanel}>
               <h3 className={styles.ControlTitle}>Focus</h3>
-              <FocusView />
+              <FocusView tasks={tasks} />
             </div>
           )}
           <div className={styles.FuturePanel}>
@@ -132,6 +136,7 @@ class TaskView extends React.PureComponent<Props, State> {
             <FutureView
               windowSize={windowSize}
               config={futureViewConfig}
+              tasks={tasks}
               onConfigChange={this.futureViewConfigOnChange}
             />
           </div>
@@ -144,13 +149,14 @@ class TaskView extends React.PureComponent<Props, State> {
           <FutureView
             windowSize={windowSize}
             config={futureViewConfig}
+            tasks={tasks}
             onConfigChange={this.futureViewConfigOnChange}
           />
         </div>
       ) : (
         <div className={styles.FocusPanel}>
           <h3 className={styles.ControlTitle}>Focus</h3>
-          <FocusView />
+          <FocusView tasks={tasks} />
         </div>
       );
     return (
@@ -162,5 +168,7 @@ class TaskView extends React.PureComponent<Props, State> {
   }
 }
 
-const ConnectedTaskView = windowSizeConnect<Props>(TaskView);
+const ConnectedTaskView = stateConnect<PropsWithoutWindowSize<Props>, {| +tasks: Task[] |}>(
+  ({ mainTaskArray }) => ({ tasks: mainTaskArray }),
+)(windowSizeConnect<Props>(TaskView));
 export default ConnectedTaskView;

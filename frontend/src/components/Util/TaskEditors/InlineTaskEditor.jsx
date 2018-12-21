@@ -2,7 +2,6 @@
 
 import React from 'react';
 import type { Node } from 'react';
-import { connect } from 'react-redux';
 import type {
   PartialMainTask, PartialSubTask, SubTask, Task,
 } from '../../../store/store-types';
@@ -21,11 +20,12 @@ import {
   removeSubTask as removeSubTaskAction,
 } from '../../../store/actions';
 import TaskEditor from './TaskEditor';
+import { dispatchConnect } from '../../../store/react-redux-util';
 
-type OwnProps = {|
+type Props = {|
   +task: Task; // the initial task given to the editor.
-|};
-type ActionProps = {|
+  className?: string; // additional class names applied to the editor.
+  // subscribed actions.
   +editMainTask: (taskId: number, partialMainTask: PartialMainTask) => EditMainTaskAction;
   +editSubTask: (
     taskId: number, subtaskId: number, partialSubTask: PartialSubTask,
@@ -33,14 +33,6 @@ type ActionProps = {|
   +addSubTask: (taskId: number, subTask: SubTask) => AddNewSubTaskAction;
   +removeTask: (taskId: number, undoable?: boolean) => RemoveTaskAction;
   +removeSubTask: (taskId: number, subtaskId: number) => RemoveSubTaskAction;
-|};
-type DefaultProps = {|
-  +className?: string; // additional class names applied to the editor.
-|};
-type Props = {|
-  ...OwnProps;
-  ...ActionProps;
-  ...DefaultProps;
 |};
 
 type State = {|
@@ -53,7 +45,7 @@ type State = {|
  * The task editor used to edit task inline, activated on focus.
  */
 class InlineTaskEditor extends React.Component<Props, State> {
-  static defaultProps: DefaultProps = {
+  static defaultProps = {
     className: undefined,
   };
 
@@ -96,14 +88,15 @@ class InlineTaskEditor extends React.Component<Props, State> {
   }
 }
 
-const ConnectedInlineTaskEditor = connect(
-  null,
-  {
-    editMainTask: editMainTaskAction,
-    editSubTask: editSubTaskAction,
-    addSubTask: addSubTaskAction,
-    removeTask: removeTaskAction,
-    removeSubTask: removeSubTaskAction,
-  },
+const actionCreators = {
+  editMainTask: editMainTaskAction,
+  editSubTask: editSubTaskAction,
+  addSubTask: addSubTaskAction,
+  removeTask: removeTaskAction,
+  removeSubTask: removeSubTaskAction,
+};
+
+const ConnectedInlineTaskEditor = dispatchConnect<Props, typeof actionCreators>(
+  actionCreators,
 )(InlineTaskEditor);
 export default ConnectedInlineTaskEditor;

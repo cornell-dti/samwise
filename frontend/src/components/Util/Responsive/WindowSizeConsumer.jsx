@@ -1,12 +1,11 @@
 // @flow strict
 
 import React from 'react';
-import type { Node, ComponentType } from 'react';
+import type { Node, AbstractComponent } from 'react';
 import { WindowSizeContext } from './window-size-context';
-import type { WindowSize } from './window-size-context';
+import type { WindowSize, WindowSizeProps } from './window-size-context';
 
-type WindowSizeProp = {| windowSize: WindowSize |};
-type PropsWithoutWindowSize<Props> = $Diff<Props, WindowSizeProp>;
+export type PropsWithoutWindowSize<Props> = $Diff<Props, WindowSizeProps>;
 
 /**
  * The connect function to create a component that automatically subscribed to the latest window
@@ -16,16 +15,16 @@ type PropsWithoutWindowSize<Props> = $Diff<Props, WindowSizeProp>;
  * const ConnectedDialog = windowSizeConnect(Dialog);
  * <ConnectedDialog {...props} />
  * ```
- * Type Param: Props. The original props.
+ * Type Param: Config. The original component's config.
  *
  * @param {ComponentType<Props>} UnconnectedComponent the unconnected component.
  * @return {ComponentType<PropsWithoutWindowSize<Props>>} the connected component.
  */
 // flowlint-next-line unclear-type:off
-export default function windowSizeConnect<Props: Object>(
-  UnconnectedComponent: ComponentType<Props>,
-): ComponentType<PropsWithoutWindowSize<Props>> {
-  return (props: PropsWithoutWindowSize<Props>): Node => (
+export default function windowSizeConnect<Config: Object>(
+  UnconnectedComponent: AbstractComponent<Config>,
+): AbstractComponent<PropsWithoutWindowSize<Config>, void> {
+  return (props: PropsWithoutWindowSize<Config>): Node => (
     <WindowSizeContext.Consumer>
       {(windowSize: WindowSize) => {
         const allProps = { ...props, windowSize };

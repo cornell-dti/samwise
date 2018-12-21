@@ -11,25 +11,22 @@ import type {
   OneDayTask,
 } from './future-view-types';
 import type { WindowSize } from '../../Util/Responsive/window-size-context';
-import { simpleConnect } from '../../../store/react-redux-util';
-import type { Tag, Task, State as StoreState } from '../../../store/store-types';
-import { getColorByTagId } from '../../../util/tag-util';
+import type { Tag, Task } from '../../../store/store-types';
+import { getTagConnect } from '../../../util/tag-util';
 import { filterCompletedTasks } from '../../../util/task-util';
 
 export opaque type FutureViewConfig = {|
   +displayOption: FutureViewDisplayOption;
   +offset: number;
 |};
-type OwnProps = {|
+type Props = {|
   +windowSize: WindowSize;
   +config: FutureViewConfig;
+  +tasks: Task[];
   +onConfigChange: (FutureViewConfig) => void;
+  // subscribed from redux store.
+  +getTag: (id: number) => Tag;
 |};
-type SubscribedProps = {|
-  +mainTaskArray: Task[];
-  +tags: Tag[];
-|};
-type Props = {| ...OwnProps; ...SubscribedProps; |};
 
 export type FutureViewConfigProvider = {|
   +initialValue: FutureViewConfig;
@@ -51,12 +48,12 @@ type DateToTaskMap = Map<string, Task[]>;
 /**
  * Compute a map from date to a list of tasks on that day for faster access.
  *
- * @param allTasks an array of all tasks. There is no assumption of the order of the tasks.
+ * @param {Task[]} tasks an array of all tasks. There is no assumption of the order of the tasks.
  * @return {DateToTaskMap} the built map.
  */
-function buildDate2TaskMap(allTasks: Task[]): DateToTaskMap {
+function buildDate2TaskMap(tasks: Task[]): DateToTaskMap {
   const map: DateToTaskMap = new Map();
-  allTasks.forEach((task) => {
+  tasks.forEach((task) => {
     const dateString = new Date(task.date).toLocaleDateString();
     const tasksArrOpt = map.get(dateString);
     if (tasksArrOpt == null) {
@@ -121,38 +118,35 @@ function computeStartAndEndDay(
 /**
  * Returns an array of future view days given the current props and the display option.
  *
- * @param {Task[]} mainTaskArray the raw main task array.
- * @param {Tag[]} tags all the color config.
  * @param {number} nDays number of days in n-days view.
- * @param {FutureViewContainerType} containerType the container type.
- * @param {boolean} doesShowCompletedTasks whether to keep completed tasks.
- * @param {number} offset offset of displaying days.
+ * @param {DateToTaskMap} date2TaskMap the built date to tasks map.
+ * @param {FutureViewConfig} config the display config.
+ * @param {function(number): Tag} getTag the function used to get tags from id.
  * @return {OneDayTask[]} an array of backlog days information.
  */
 function buildDaysInFutureView(
-  mainTaskArray: Task[], tags: Tag[], nDays: number,
-  { containerType, doesShowCompletedTasks }: FutureViewDisplayOption, offset: number,
+  nDays: number, date2TaskMap: DateToTaskMap, config: FutureViewConfig,
+  getTag: (number) => Tag,
 ): OneDayTask[] {
-  const date2TaskMap = buildDate2TaskMap(mainTaskArray);
+  const { displayOption: { containerType, doesShowCompletedTasks }, offset } = config;
   const { startDate, endDate } = computeStartAndEndDay(nDays, containerType, offset);
   // Adding the days to array
   const days: OneDayTask[] = [];
   for (let d = startDate; d < endDate; d.setDate(d.getDate() + 1)) {
     const date = new Date(d);
     const tasksOnThisDay = date2TaskMap.get(date.toLocaleDateString()) || [];
-    if (doesShowCompletedTasks) {
-      const tasks = tasksOnThisDay.map((task: Task) => {
-        const { tag } = task;
-        return { original: task, filtered: task, color: getColorByTagId(tags, tag) };
-      });
-      days.push({ date, tasks });
-    } else {
-      const tasks = filterCompletedTasks(tasksOnThisDay).map(([original, filtered]) => {
-        const { tag } = original;
-        return { original, filtered, color: getColorByTagId(tags, tag) };
-      });
-      days.push({ date, tasks });
-    }
+    const compoundTasks = doesShowCompletedTasks
+      ? tasksOnThisDay.map((task: Task) => ({
+        original: task,
+        filtered: task,
+        color: getTag(task.tag).color,
+      }))
+      : filterCompletedTasks(tasksOnThisDay).map(([original, filtered]) => ({
+        original,
+        filtered,
+        color: getTag(original.tag).color,
+      }));
+    days.push({ date, tasks: compoundTasks });
   }
   return days;
 }
@@ -183,10 +177,11 @@ class FutureView extends React.PureComponent<Props> {
 
   render(): Node {
     const {
-      windowSize, config: { displayOption, offset }, mainTaskArray, tags,
+      windowSize, config, tasks, getTag,
     } = this.props;
     const nDays = this.nDays();
-    const days = buildDaysInFutureView(mainTaskArray, tags, nDays, displayOption, offset);
+    const days = buildDaysInFutureView(nDays, buildDate2TaskMap(tasks), config, getTag);
+    const { displayOption, offset } = config;
     const inNDaysView = displayOption.containerType === 'N_DAYS';
     const daysContainer = inNDaysView
       ? <FutureViewNDays nDays={nDays} days={days} />
@@ -206,7 +201,5 @@ class FutureView extends React.PureComponent<Props> {
   }
 }
 
-const ConnectedFutureView = simpleConnect<OwnProps, SubscribedProps>(
-  ({ mainTaskArray, tags }: StoreState) => ({ mainTaskArray, tags }),
-)(FutureView);
+const ConnectedFutureView = getTagConnect<Props>(FutureView);
 export default ConnectedFutureView;

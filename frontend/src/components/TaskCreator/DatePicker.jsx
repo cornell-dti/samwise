@@ -5,7 +5,7 @@ import { Calendar } from 'react-calendar';
 import { Icon } from 'semantic-ui-react';
 import styles from './Picker.css';
 import { date2String } from '../../util/datetime-util';
-import { getColorByTagId } from '../../util/tag-util';
+import { NONE_TAG } from '../../util/tag-util';
 
 type Props = {|
   +onDateChange: (date: Date) => void;
@@ -24,7 +24,7 @@ export default function DatePicker(props: Props) {
   const reset = () => onDateChange(new Date());
   // Nodes
   const displayedNode = (isDefault: boolean) => {
-    const style = isDefault ? {} : { background: '#9b9b9b' };
+    const style = isDefault ? {} : { background: NONE_TAG.color };
     const internal = isDefault
       ? (<Icon name="calendar outline" className={styles.CenterIcon} />)
       : (

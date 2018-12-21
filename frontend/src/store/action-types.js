@@ -1,6 +1,5 @@
 // @flow strict
 
-import type { ActionCreators as ReduxActionCreators, Dispatch as ReduxDispatch } from 'redux';
 import type {
   PartialMainTask, PartialSubTask, SubTask, Tag, Task,
 } from './store-types';

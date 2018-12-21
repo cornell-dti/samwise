@@ -27,12 +27,8 @@ import {
   backendPatchNewTag,
   backendPatchNewTask as backendPatchNewTaskAction,
 } from './actions';
-import { NONE_TAG_ID } from '../util/constants';
 import { replaceTask, replaceSubTaskWithinMainTask } from '../util/task-util';
-
-const defaultNoneTag: Tag = {
-  id: NONE_TAG_ID, type: 'other', name: 'None', color: 'gray',
-};
+import { NONE_TAG } from '../util/tag-util';
 
 /**
  * Returns the initial state given an app user.
@@ -43,7 +39,7 @@ const defaultNoneTag: Tag = {
 const initialState: State = {
   mainTaskArray: [],
   tags: [
-    defaultNoneTag,
+    NONE_TAG,
     {
       id: 0, type: 'other', name: 'Personal', color: '#9D4AA9',
     },
@@ -298,7 +294,7 @@ export default function rootReducer(state: State = initialState, action: Action)
         mainTaskArray: replaceTask(state.mainTaskArray, action.task.id, action.task),
       };
     case 'BACKEND_PATCH_LOADED_DATA':
-      return { ...state, tags: [defaultNoneTag, ...action.tags], mainTaskArray: action.tasks };
+      return { ...state, tags: [NONE_TAG, ...action.tags], mainTaskArray: action.tasks };
     default:
       return state;
   }

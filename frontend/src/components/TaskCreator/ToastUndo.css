@@ -1,4 +1,8 @@
-.Main {
+.ToastUndo {
+  padding-left: 20px;
+}
+
+.UndoButton {
   background: none;
   float: right;
   color: #70a7ff;
@@ -7,14 +11,10 @@
   cursor: pointer;
 }
 
-.Main:hover {
+.UndoButton:hover {
   color: white;
 }
 
-.Main:active {
+.UndoButton:active {
   color: #70a7ff;
-}
-
-.Wrap {
-  padding-left: 20px;
 }

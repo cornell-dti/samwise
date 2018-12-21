@@ -1,13 +1,13 @@
 // @flow strict
 
 import React from 'react';
-import { connect } from 'react-redux';
 import { GithubPicker } from 'react-color';
 import { addTag as addTagAction } from '../../../store/actions';
 import type { AddTagAction } from '../../../store/action-types';
 import styles from './TagAdder.css';
 import type { Tag } from '../../../store/store-types';
 import { randomId } from '../../../util/general-util';
+import { dispatchConnect } from '../../../store/react-redux-util';
 
 type Props = {|
   +addTag: (tag: Tag) => AddTagAction
@@ -62,5 +62,9 @@ class ClassTagAdder extends React.Component<Props, State> {
   }
 }
 
-const ConnectedClassTagAdder = connect(null, { addTag: addTagAction })(ClassTagAdder);
+const ConnectedClassTagAdder = dispatchConnect<Props, Props>(
+  { addTag: addTagAction },
+)(ClassTagAdder);
 export default ConnectedClassTagAdder;
+
+// TODO figure out what this is doing...

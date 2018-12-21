@@ -7,6 +7,11 @@ import { date2FullDateString } from '../../util/datetime-util';
 import styles from './TitleBar.css';
 import SettingsButton from './Settings/SettingsButton';
 
+/**
+ * The title bar.
+ *
+ * @type {function(): Node}
+ */
 export default (): Node => (
   <header className={styles.Main}>
     <span className={styles.Time}><Clock format="h:mm A" ticking /></span>

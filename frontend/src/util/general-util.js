@@ -12,4 +12,4 @@ export const randomId = (): number => ((10 * new Date()) + Math.floor(10000 * Ma
  *
  * @param {?string} message an optional message.
  */
-export function error<T>(message?: string): T { throw new Error(message); }
+export function error(message?: string): empty { throw new Error(message); }

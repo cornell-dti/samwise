@@ -2,7 +2,6 @@
 
 import React from 'react';
 import type { Node } from 'react';
-import { connect } from 'react-redux';
 import { Icon } from 'semantic-ui-react';
 import styles from './FutureViewTask.css';
 import {
@@ -21,6 +20,8 @@ import windowSizeConnect from '../../Util/Responsive/WindowSizeConsumer';
 import type { WindowSize } from '../../Util/Responsive/window-size-context';
 import { nDaysViewHeaderHeight, otherViewsHeightHeader } from './future-view-css-props';
 import { error } from '../../../util/general-util';
+import { dispatchConnect } from '../../../store/react-redux-util';
+import type { PropsWithoutWindowSize } from '../../Util/Responsive/WindowSizeConsumer';
 
 type Props = {|
   +originalTask: Task;
@@ -31,7 +32,7 @@ type Props = {|
   +taskEditorPosition: FloatingPosition;
   // Subscribed window size
   +windowSize: WindowSize;
-  // Subscribed actions
+  // Subscribed from dispatchers.
   +editMainTask: (taskId: number, partialMainTask: PartialMainTask) => EditMainTaskAction;
   +removeTask: (taskId: number, undoable?: boolean) => RemoveTaskAction;
 |};
@@ -223,8 +224,8 @@ class FutureViewTask extends React.PureComponent<Props, State> {
   }
 }
 
-const ConnectedFutureViewTask = connect(
-  null,
-  { editMainTask: editMainTaskAction, removeTask: removeTaskAction },
+const actionsCreators = { editMainTask: editMainTaskAction, removeTask: removeTaskAction };
+const Connected = dispatchConnect<PropsWithoutWindowSize<Props>, typeof actionsCreators>(
+  actionsCreators,
 )(windowSizeConnect<Props>(FutureViewTask));
-export default ConnectedFutureViewTask;
+export default Connected;

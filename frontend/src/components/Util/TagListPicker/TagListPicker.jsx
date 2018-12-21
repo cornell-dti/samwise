@@ -4,8 +4,8 @@ import * as React from 'react';
 import type { Node } from 'react';
 import TagPickerItem from './TagPickerItem';
 import styles from './TagListPicker.css';
-import type { State, Tag } from '../../../store/store-types';
-import { simpleConnect } from '../../../store/react-redux-util';
+import type { Tag } from '../../../store/store-types';
+import { tagsConnect } from '../../../util/tag-util';
 
 type OwnProps = {| +onTagChange: (number) => void |};
 type SubscribedProps = {| +tags: Tag[]; |};
@@ -34,7 +34,5 @@ function TagListPicker({ onTagChange, tags }: Props): Node {
   );
 }
 
-const ConnectedTagListPicker = simpleConnect<OwnProps, SubscribedProps>(
-  ({ tags }: State) => ({ tags }),
-)(TagListPicker);
+const ConnectedTagListPicker = tagsConnect<Props>(TagListPicker);
 export default ConnectedTagListPicker;

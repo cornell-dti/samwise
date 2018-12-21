@@ -1,25 +1,22 @@
 // @flow strict
 
 import React from 'react';
-import { connect } from 'react-redux';
+import type { Node } from 'react';
 import { Icon } from 'semantic-ui-react';
-import type { RemoveTagAction } from '../../../store/action-types';
-import { removeTag as removeTagAction } from '../../../store/actions';
-import ColorEditor from './ColorEditor';
+import type { EditTagAction, RemoveTagAction } from '../../../store/action-types';
+import { editTag as editTagAction, removeTag as removeTagAction } from '../../../store/actions';
 import type { Tag } from '../../../store/store-types';
 import styles from './TagItem.css';
-import { colMap } from './ListColors';
+import { dispatchConnect } from '../../../store/react-redux-util';
+import ColorEditor from './ColorEditor';
 
 type Props = {|
   +tag: Tag;
+  +editTag: (tag: Tag) => EditTagAction;
   +removeTag: (tagId: number) => RemoveTagAction
 |};
 
-type State = {| showEditor: boolean |};
-
-class TagItem extends React.Component<Props, State> {
-  state: State = { showEditor: false };
-
+class TagItem extends React.Component<Props, void> {
   removeMe = () => {
     // eslint-disable-next-line
     if (!confirm('Do you want to remove this config?')) {
@@ -29,12 +26,19 @@ class TagItem extends React.Component<Props, State> {
     removeTag(id);
   };
 
-  toggleEditor = () => this.setState(s => ({ showEditor: !s.showEditor }));
+  /**
+   * Edit the color.
+   *
+   * @param {string} color the color from the editor.
+   */
+  editColor = (color: string) => {
+    const { tag, editTag } = this.props;
+    editTag({ ...tag, color });
+  };
 
-  render() {
+  render(): Node {
     const { tag } = this.props;
     const { name, color, type } = tag;
-    const { showEditor } = this.state;
     const isClass = type === 'class';
     return (
       <li className={styles.ColorConfigItem}>
@@ -45,23 +49,15 @@ class TagItem extends React.Component<Props, State> {
           {name}
         </span>
         {isClass && <span className={styles.ClassExpandedTitle}>Class Name Goes Here</span>}
-        <button type="button" className={styles.ColorEdit} onClick={this.toggleEditor}>
-          {colMap[color.toLowerCase()]}
-          <span className={styles.ColorEditDisp} style={{ backgroundColor: color }} />
-          <Icon className={styles.ColorEditArrow} name="angle down" />
-        </button>
+        <ColorEditor color={color} onChange={this.editColor} />
         <button type="button" className={styles.DeleteTag} onClick={this.removeMe}>
           <Icon name="close" />
         </button>
-        {showEditor && (
-          <div className={styles.OpenPicker}>
-            <ColorEditor tag={tag} changeCallback={this.toggleEditor} />
-          </div>
-        )}
       </li>
     );
   }
 }
 
-const ConnectedTagItem = connect(null, { removeTag: removeTagAction })(TagItem);
-export default ConnectedTagItem;
+const actionCreators = { editTag: editTagAction, removeTag: removeTagAction };
+const Connected = dispatchConnect<Props, typeof actionCreators>(actionCreators)(TagItem);
+export default Connected;

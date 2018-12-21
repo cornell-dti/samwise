@@ -6,7 +6,6 @@ import firebase from 'firebase/app';
 import 'firebase/auth';
 // $FlowFixMe
 import { FirebaseAuth } from 'react-firebaseui';
-import { APP_NAME } from '../../../util/constants';
 import styles from './Login.css';
 import type { AppUser } from '../../../util/firebase-util';
 import { toAppUser } from '../../../util/firebase-util';
@@ -65,7 +64,7 @@ export default class LoginBarrier extends React.Component<Props, State> {
     return (
       <div className={styles.Login}>
         <div className={styles.LoginWrapper}>
-          <h1 className={styles.LoginText}>{APP_NAME}</h1>
+          <h1 className={styles.LoginText}>Samwise</h1>
           {loadingOrLogin}
           <h4>Made by D&TI</h4>
           <h4>Cornell Design & Tech Initiative</h4>

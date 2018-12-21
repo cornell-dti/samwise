@@ -1,37 +1,58 @@
 // @flow strict
 
-import * as React from 'react';
-import { connect } from 'react-redux';
+import React from 'react';
+import type { Node } from 'react';
 import { GithubPicker } from 'react-color';
-import { editTag as editTagAction } from '../../../store/actions';
-import type { EditTagAction } from '../../../store/action-types';
-import type { Tag } from '../../../store/store-types';
+import { Icon } from 'semantic-ui-react';
 import { colMap } from './ListColors';
+import styles from './ColorEditor.css';
 
 type Props = {|
-  tag: Tag,
-  editTag: (tag: Tag) => EditTagAction,
-  changeCallback: () => void,
+  +color: string,
+  +onChange: (color: string) => void;
 |};
+type State = {| +doesShowEditor: boolean |};
 
-const colArray = Object.keys(colMap);
+const colArray: string[] = Object.keys(colMap);
 
-function ColorEditor(props: Props) {
-  const { tag, editTag, changeCallback } = props;
-  const { color } = tag;
-  const handleStateComplete = (c) => {
-    editTag({ ...tag, color: c.hex });
-    changeCallback();
+export default class ColorEditor extends React.Component<Props, State> {
+  /**
+   * Toggle the editor.
+   */
+  toggleEditor = () => this.setState(s => ({ doesShowEditor: !s.doesShowEditor }));
+
+  /**
+   * Edit the color.
+   *
+   * @param {{hex: string}} e the color object from color picker.
+   */
+  onChangeComplete = (e: { hex: string }) => {
+    const { onChange } = this.props;
+    onChange(e.hex);
+    this.setState({ doesShowEditor: false });
   };
-  return (
-    <GithubPicker
-      color={color}
-      onChangeComplete={handleStateComplete}
-      triangle="top-right"
-      colors={colArray}
-    />
-  );
-}
 
-const ConnectedColorEditor = connect(null, { editTag: editTagAction })(ColorEditor);
-export default ConnectedColorEditor;
+  render(): Node {
+    const { color } = this.props;
+    const { doesShowEditor } = this.state;
+    return (
+      <React.Fragment>
+        <button type="button" className={styles.ColorEdit} onClick={this.toggleEditor}>
+          {colMap[color.toLowerCase()]}
+          <span className={styles.ColorDisplay} style={{ backgroundColor: color }} />
+          <Icon className={styles.Arrow} name="angle down" />
+        </button>
+        {doesShowEditor && (
+          <div className={styles.ColorPicker}>
+            <GithubPicker
+              color={color}
+              onChangeComplete={this.onChangeComplete}
+              triangle="top-right"
+              colors={colArray}
+            />
+          </div>
+        )}
+      </React.Fragment>
+    );
+  }
+}

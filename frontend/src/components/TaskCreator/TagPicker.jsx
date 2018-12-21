@@ -1,38 +1,38 @@
 // @flow strict
 
 import React from 'react';
+import type { Node } from 'react';
 import { Icon } from 'semantic-ui-react';
 import TagListPicker from '../Util/TagListPicker/TagListPicker';
 import styles from './Picker.css';
-import type { State as StoreState, Tag } from '../../store/store-types';
-import { getColorByTagId, getNameByTagId } from '../../util/tag-util';
-import { simpleConnect } from '../../store/react-redux-util';
-import { NONE_TAG_ID } from '../../util/constants';
+import { getTagConnect, NONE_TAG_ID } from '../../util/tag-util';
+import type { Tag } from '../../store/store-types';
 
-type OwnProps = {|
+type Props = {|
   +tag: number;
   +opened: boolean;
   +onTagChange: (tag: number) => void;
   +onPickerOpened: () => void;
+  // subscribed from redux store.
+  +getTag: (id: number) => Tag;
 |};
-type SubscribedProps = {| +tags: Tag[] |};
-type Props = {| ...OwnProps; ...SubscribedProps |};
 
-function TagPicker(props: Props) {
+function TagPicker(props: Props): Node {
   const {
-    tag, opened, tags, onTagChange, onPickerOpened,
+    tag, opened, onTagChange, onPickerOpened, getTag,
   } = props;
   // Controllers
   const clickPicker = () => { if (!opened) { onPickerOpened(); } };
   const reset = () => onTagChange(NONE_TAG_ID);
   // Nodes
   const displayedNode = (isDefault: boolean) => {
-    const style = isDefault ? {} : { background: getColorByTagId(tags, tag) };
+    const { name, color } = getTag(tag);
+    const style = isDefault ? {} : { background: color };
     const internal = isDefault
       ? (<Icon name="tag" className={styles.CenterIcon} />)
       : (
         <React.Fragment>
-          <span className={styles.TagDisplay}>{getNameByTagId(tags, tag)}</span>
+          <span className={styles.TagDisplay}>{name}</span>
           <button type="button" className={styles.ResetButton} onClick={reset}>&times;</button>
         </React.Fragment>
       );
@@ -54,7 +54,5 @@ function TagPicker(props: Props) {
   );
 }
 
-const ConnectedTagPicker = simpleConnect<OwnProps, SubscribedProps>(
-  ({ tags }: StoreState) => ({ tags }),
-)(TagPicker);
+const ConnectedTagPicker = getTagConnect<Props>(TagPicker);
 export default ConnectedTagPicker;

@@ -5,14 +5,13 @@ import type { Node } from 'react';
 import { Icon } from 'semantic-ui-react';
 import Calendar from 'react-calendar';
 import type {
-  Tag, State as StoreState, SubTask, Task, PartialMainTask, PartialSubTask,
+  Tag, SubTask, Task, PartialMainTask, PartialSubTask,
 } from '../../../store/store-types';
 import TagListPicker from '../TagListPicker/TagListPicker';
 import CheckBox from '../../UI/CheckBox';
 import OverdueAlert from '../../UI/OverdueAlert';
 import styles from './TaskEditor.css';
-import { simpleConnect } from '../../../store/react-redux-util';
-import { getNameByTagId, getColorByTagId } from '../../../util/tag-util';
+import { getTagConnect } from '../../../util/tag-util';
 import { randomId } from '../../../util/general-util';
 import { getTodayAtZero } from '../../../util/datetime-util';
 
@@ -32,13 +31,13 @@ type DefaultProps = {|
   +onBlur?: (event: SyntheticFocusEvent<HTMLElement>) => void;
   +refFunction?: (HTMLElement | null) => void; // used to get the DOM element.
 |};
-type OwnProps = {|
+type Props = {|
   ...Task; // The task given to the editor at this point.
   ...Actions; // Various editor actions.
   ...DefaultProps; // Props with default values.
+  // subscribed from redux store.
+  +getTag: (id: number) => Tag;
 |};
-type SubscribedProps = {| +tags: Tag[]; |};
-type Props = {| ...OwnProps; ...SubscribedProps; |};
 
 type State = {|
   +mainTaskNameCache: string | null;
@@ -277,12 +276,12 @@ class TaskEditor extends React.PureComponent<Props, State> {
    * @return {Node} the rendered header node.
    */
   renderHeader = (): Node => {
-    const { tag, date, tags } = this.props;
+    const { tag, date, getTag } = this.props;
     const { doesShowTagEditor, doesShowDateEditor } = this.state;
     const className = `${styles.TaskEditorFlexibleContainer} ${styles.TaskEditorHeader}`;
     const tagDisplay = (
       <button type="button" className={styles.TaskEditorTag} onClick={this.toggleTagEditor}>
-        {getNameByTagId(tags, tag)}
+        {getTag(tag).name}
       </button>
     );
     const tagEditor = doesShowTagEditor && (
@@ -404,10 +403,10 @@ class TaskEditor extends React.PureComponent<Props, State> {
   render(): Node {
     const {
       tag, date, subtaskArray, disabled, children,
-      className, onFocus, onBlur, refFunction, tags,
+      className, onFocus, onBlur, refFunction, getTag,
     } = this.props;
     const isOverdue = date < getTodayAtZero();
-    const backgroundColor = getColorByTagId(tags, tag);
+    const backgroundColor = getTag(tag);
     const formStyle = isOverdue
       ? { backgroundColor, border: '5px solid #D0021B' }
       : { backgroundColor };
@@ -448,7 +447,5 @@ class TaskEditor extends React.PureComponent<Props, State> {
   }
 }
 
-const ConnectedTaskEditor = simpleConnect<OwnProps, SubscribedProps>(
-  ({ tags }: StoreState): SubscribedProps => ({ tags }),
-)(TaskEditor);
+const ConnectedTaskEditor = getTagConnect<Props>(TaskEditor);
 export default ConnectedTaskEditor;

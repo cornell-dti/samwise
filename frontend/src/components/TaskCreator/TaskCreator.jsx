@@ -16,7 +16,7 @@ import type { Task, State as StoreState, SubTask } from '../../store/store-types
 import { addTask as addTaskAction, removeTask as removeTaskAction } from '../../store/actions';
 import type { AddNewTaskAction, RemoveTaskAction } from '../../store/action-types';
 import { date2String } from '../../util/datetime-util';
-import { NONE_TAG_ID } from '../../util/constants';
+import { NONE_TAG_ID } from '../../util/tag-util';
 
 type OwnProps = {||};
 type SubscribedProps = {| +mainTaskArray: Task[]; |};
@@ -391,3 +391,5 @@ const ConnectedTaskCreator = fullConnect<OwnProps, SubscribedProps, ActionProps>
   { addTask: addTaskAction, removeTask: removeTaskAction },
 )(TaskCreator);
 export default ConnectedTaskCreator;
+
+// TODO
