@@ -24,11 +24,9 @@ export default function FutureViewDayTaskContainer(props: Props): Node {
   const {
     tasks, inNDaysView, taskEditorPosition, isInMainList,
   } = props;
-  const taskListComponent = tasks.map((t: CompoundTask, index: number) => (
+  const taskListComponent = tasks.map((t: CompoundTask) => (
     <FutureViewTask
-      // To force rerender
-      // eslint-disable-next-line react/no-array-index-key
-      key={index}
+      key={t.original.id}
       originalTask={t.original}
       filteredTask={t.filtered}
       taskColor={t.color}

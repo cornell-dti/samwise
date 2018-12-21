@@ -80,7 +80,7 @@ class InlineTaskEditor extends React.Component<Props, State> {
       removeSubTask: (subtaskId: number) => { removeSubTask(id, subtaskId); },
       onSave: onBlur,
       className,
-      disabled,
+      newSubTaskDisabled: disabled || !task.inFocus,
       onFocus,
       onBlur,
     };

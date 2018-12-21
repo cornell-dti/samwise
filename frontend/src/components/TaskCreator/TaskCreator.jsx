@@ -111,7 +111,7 @@ class TaskCreator extends React.PureComponent<Props, State> {
    */
   handleSave = (e?: SyntheticEvent<HTMLElement>) => {
     if (e != null) {
-      e.stopPropagation();
+      e.preventDefault();
     }
     const {
       id, name, tag, date, complete, inFocus, subtasks,

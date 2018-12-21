@@ -15,26 +15,24 @@ import { getTagConnect } from '../../../util/tag-util';
 import { randomId } from '../../../util/general-util';
 import { getTodayAtZero } from '../../../util/datetime-util';
 
-type Actions = {|
-  +editMainTask: (partialMainTask: PartialMainTask, doSave: boolean) => void;
-  +editSubTask: (subtaskId: number, partialSubTask: PartialSubTask, doSave: boolean) => void;
-  +addSubTask: (subTask: SubTask) => void;
-  +removeTask: () => void;
-  +removeSubTask: (subtaskId: number) => void;
-  +onSave: () => void;
-|};
 type DefaultProps = {|
   +className?: string;
   children?: Node;
-  +disabled?: boolean;
+  +newSubTaskDisabled?: boolean;
   +onFocus?: (event: SyntheticFocusEvent<HTMLElement>) => void;
   +onBlur?: (event: SyntheticFocusEvent<HTMLElement>) => void;
   +refFunction?: (HTMLElement | null) => void; // used to get the DOM element.
 |};
 type Props = {|
   ...Task; // The task given to the editor at this point.
-  ...Actions; // Various editor actions.
   ...DefaultProps; // Props with default values.
+  // actions
+  +editMainTask: (partialMainTask: PartialMainTask, doSave: boolean) => void;
+  +editSubTask: (subtaskId: number, partialSubTask: PartialSubTask, doSave: boolean) => void;
+  +addSubTask: (subTask: SubTask) => void;
+  +removeTask: () => void;
+  +removeSubTask: (subtaskId: number) => void;
+  +onSave: () => void;
   // subscribed from redux store.
   +getTag: (id: number) => Tag;
 |};
@@ -402,7 +400,7 @@ class TaskEditor extends React.PureComponent<Props, State> {
 
   render(): Node {
     const {
-      tag, date, subtasks, disabled, children,
+      tag, date, subtasks, newSubTaskDisabled, children,
       className, onFocus, onBlur, refFunction, getTag,
     } = this.props;
     const isOverdue = date < getTodayAtZero();
@@ -429,7 +427,7 @@ class TaskEditor extends React.PureComponent<Props, State> {
         </div>
         <div className={styles.TaskEditorSubTasksIndentedContainer}>
           {subtasks.map(this.renderSubTask)}
-          {(disabled !== true) && (
+          {(newSubTaskDisabled !== true) && (
             <div className={styles.TaskEditorFlexibleContainer}>
               <input
                 className={styles.TaskEditorFlexibleInput}
