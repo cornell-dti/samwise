@@ -11,7 +11,7 @@
   },
   "dependencies": {
     "css-loader": "^2.0.1",
-    "firebase": "^5.7.0",
+    "firebase": "^5.7.1",
     "react": "^16.7.0",
     "react-calendar": "^2.17.5",
     "react-color": "^2.14.1",

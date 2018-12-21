@@ -32,7 +32,7 @@ function FocusView({ mainTaskArray }: Props): Node {
   return (<div className={styles.FocusView}>{listItems}</div>);
 }
 
-const ConnectedFocusView = simpleConnect<{}, Props>(
+const ConnectedFocusView = simpleConnect<{||}, Props>(
   ({ mainTaskArray }: State): Props => ({ mainTaskArray }),
 )(FocusView);
 export default ConnectedFocusView;

@@ -8,7 +8,7 @@ import styles from './SquareButtons.css';
 type Props = {|
   +active: boolean;
   +iconNames: [string, string];
-  +onToggle: () => any;
+  +onToggle: () => void;
 |};
 
 /**

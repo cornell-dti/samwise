@@ -36,7 +36,7 @@ type PropsForPositionComputation = {|
   +windowSize: WindowSize;
   +mainViewPosition: {| +width: number; +height: number; +top: number; +left: number; |};
 |};
-export opaque type PositionStyle : Object = {|
+type PositionStyle = {|
   +width: string;
   +height: string;
   +top: string;

@@ -41,7 +41,7 @@ class OtherTagAdder extends React.Component<Props, State> {
   };
 
   handleSave = (saveEvent: SyntheticKeyboardEvent<HTMLInputElement>) => {
-    if (saveEvent.keyCode !== 13) {
+    if (saveEvent.key !== 'Enter') {
       return;
     }
     const currName = saveEvent.currentTarget.value;

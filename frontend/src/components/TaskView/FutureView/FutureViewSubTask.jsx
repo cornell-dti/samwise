@@ -42,7 +42,7 @@ function FutureViewSubTask(props: Props): Node {
         checked={mainTaskCompleted || complete}
         disabled={mainTaskCompleted}
         inverted
-        onChange={() => editSubTask(mainTaskId, id, { complete: !complete })}
+        onChange={() => { editSubTask(mainTaskId, id, { complete: !complete }); }}
       />
       <span
         className={styles.TaskText}

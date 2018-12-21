@@ -8,7 +8,7 @@ import type { Action } from './action-types';
 import type { AppUser } from '../util/firebase-util';
 import { error } from '../util/general-util';
 
-export type GlobalStore = Store<State, $Subtype<Action>>;
+export type GlobalStore = Store<State, Action>;
 
 const store: GlobalStore = createStore(rootReducer);
 let appUser: AppUser | null = null;

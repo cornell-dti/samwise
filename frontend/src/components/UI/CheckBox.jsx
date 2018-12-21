@@ -7,7 +7,7 @@ import styles from './CheckBox.css';
 
 type Props = {|
   +checked: boolean; // whether the box is initially checked
-  +onChange: (checked: boolean) => any; // called when the value changed.
+  +onChange: (checked: boolean) => void; // called when the value changed.
   +disabled: boolean; // whether the checkbox is disabled.
   +inverted: boolean; // whether the color is inverted.
   +className: string | null; // additional className to apply

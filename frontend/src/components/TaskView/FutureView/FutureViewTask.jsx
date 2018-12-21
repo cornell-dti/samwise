@@ -74,7 +74,7 @@ class FutureViewTask extends React.PureComponent<Props, State> {
       <CheckBox
         className={styles.TaskCheckBox}
         checked={complete}
-        onChange={() => editMainTask(id, { complete: !complete })}
+        onChange={() => { editMainTask(id, { complete: !complete }); }}
       />
     );
   }

@@ -16,7 +16,7 @@ import type { Tag, Task, State as StoreState } from '../../../store/store-types'
 import { getColorByTagId } from '../../../util/tag-util';
 import { filterCompletedTasks } from '../../../util/task-util';
 
-export opaque type FutureViewConfig: Object = {|
+export opaque type FutureViewConfig = {|
   +displayOption: FutureViewDisplayOption;
   +offset: number;
 |};

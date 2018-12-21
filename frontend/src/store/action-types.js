@@ -11,22 +11,22 @@ import type {
  * --------------------------------------------------------------------------------
  */
 
-export type AddNewTaskAction = {| +type: 'ADD_NEW_TASK'; +task: Task; |};
+export type AddNewTaskAction = {| type: 'ADD_NEW_TASK'; +task: Task; |};
 export type AddNewSubTaskAction = {|
-  +type: 'ADD_NEW_SUBTASK'; +taskId: number; +subTask: SubTask;
+  type: 'ADD_NEW_SUBTASK'; +taskId: number; +subTask: SubTask;
 |};
 
-export type EditTaskAction = {| +type: 'EDIT_TASK'; +task: Task; |};
+export type EditTaskAction = {| type: 'EDIT_TASK'; +task: Task; |};
 export type EditMainTaskAction = {|
-  +type: 'EDIT_MAIN_TASK'; +taskId: number; +partialMainTask: PartialMainTask;
+  type: 'EDIT_MAIN_TASK'; +taskId: number; +partialMainTask: PartialMainTask;
 |};
 export type EditSubTaskAction = {|
-  +type: 'EDIT_SUB_TASK'; +taskId: number; +subtaskId: number; +partialSubTask: PartialSubTask;
+  type: 'EDIT_SUB_TASK'; +taskId: number; +subtaskId: number; +partialSubTask: PartialSubTask;
 |};
 
-export type RemoveTaskAction = {| +type: 'REMOVE_TASK'; +taskId: number; +undoable: boolean; |};
+export type RemoveTaskAction = {| type: 'REMOVE_TASK'; +taskId: number; +undoable: boolean; |};
 export type RemoveSubTaskAction = {|
-  +type: 'REMOVE_SUBTASK'; +taskId: number; +subtaskId: number;
+  type: 'REMOVE_SUBTASK'; +taskId: number; +subtaskId: number;
 |};
 
 type TaskAction =
@@ -44,9 +44,9 @@ type TaskAction =
  * --------------------------------------------------------------------------------
  */
 
-export type AddTagAction = {| +type: 'ADD_TAG'; +tag: Tag; |};
-export type EditTagAction = {| +type: 'EDIT_TAG'; +tag: Tag; |};
-export type RemoveTagAction = {| +type: 'REMOVE_TAG'; +tagId: number; |};
+export type AddTagAction = {| type: 'ADD_TAG'; +tag: Tag; |};
+export type EditTagAction = {| type: 'EDIT_TAG'; +tag: Tag; |};
+export type RemoveTagAction = {| type: 'REMOVE_TAG'; +tagId: number; |};
 
 export type TagAction = AddTagAction | EditTagAction | RemoveTagAction;
 
@@ -56,8 +56,8 @@ export type TagAction = AddTagAction | EditTagAction | RemoveTagAction;
  * --------------------------------------------------------------------------------
  */
 
-export type UndoDeleteTaskAction = {| +type: 'UNDO_DELETE_TASK' |};
-export type ClearUndoDeleteTaskAction = {| +type: 'CLEAR_UNDO_DELETE_TASK' |};
+export type UndoDeleteTaskAction = {| type: 'UNDO_DELETE_TASK' |};
+export type ClearUndoDeleteTaskAction = {| type: 'CLEAR_UNDO_DELETE_TASK' |};
 
 export type UndoAction =
   | UndoDeleteTaskAction
@@ -70,19 +70,19 @@ export type UndoAction =
  */
 
 export type BackendPatchNewTagAction = {|
-  +type: 'BACKEND_PATCH_NEW_TAG'; +tempNewTagId: number; +tag: Tag;
+  type: 'BACKEND_PATCH_NEW_TAG'; +tempNewTagId: number; +tag: Tag;
 |};
 export type BackendPatchNewTaskAction = {|
-  +type: 'BACKEND_PATCH_NEW_TASK'; +tempNewTaskId: number; +task: Task;
+  type: 'BACKEND_PATCH_NEW_TASK'; +tempNewTaskId: number; +task: Task;
 |};
 export type BackendPatchNewSubTaskAction = {|
-  +type: 'BACKEND_PATCH_NEW_SUBTASK'; +taskId: number; +tempNewSubTaskId: number; +subTask: SubTask;
+  type: 'BACKEND_PATCH_NEW_SUBTASK'; +taskId: number; +tempNewSubTaskId: number; +subTask: SubTask;
 |};
 export type BackendPatchExistingTaskAction = {|
-  +type: 'BACKEND_PATCH_EXISTING_TASK'; +task: Task;
+  type: 'BACKEND_PATCH_EXISTING_TASK'; +task: Task;
 |};
 export type BackendPatchLoadedDataAction = {|
-  +type: 'BACKEND_PATCH_LOADED_DATA'; +tags: Tag[]; +tasks: Task[];
+  type: 'BACKEND_PATCH_LOADED_DATA'; +tags: Tag[]; +tasks: Task[];
 |};
 
 /**
@@ -102,8 +102,3 @@ export type BackendPatchAction =
  */
 
 export type Action = TagAction | TaskAction | UndoAction | BackendPatchAction;
-
-export type ActionProps = { [actionName: string]: (...args: Array<any>) => Action };
-export type Dispatch = ReduxDispatch<Action>;
-export type ActionCreators = ReduxActionCreators<string, Action>;
-export type MapDispatchToProps<OP> = (d: Dispatch, op: OP) => { ...OP, ...ActionProps };

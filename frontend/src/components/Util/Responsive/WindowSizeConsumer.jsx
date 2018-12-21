@@ -21,6 +21,7 @@ type PropsWithoutWindowSize<Props> = $Diff<Props, WindowSizeProp>;
  * @param {ComponentType<Props>} UnconnectedComponent the unconnected component.
  * @return {ComponentType<PropsWithoutWindowSize<Props>>} the connected component.
  */
+// flowlint-next-line unclear-type:off
 export default function windowSizeConnect<Props: Object>(
   UnconnectedComponent: ComponentType<Props>,
 ): ComponentType<PropsWithoutWindowSize<Props>> {

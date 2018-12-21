@@ -24,14 +24,28 @@ function formatDate(date: Date): string {
   return `${dateString} ${timeString}`;
 }
 
+type ServerTag = {
+  +tag_id: number; +tag_name: string; +color: string;
+};
+type ServerTask = {
+  +task_id: number;
+  +content: string;
+  +tag_id: number;
+  +start_date: string;
+  +end_date: string;
+  +completed: boolean;
+  +in_focus: boolean;
+  +parent_task: ?number;
+};
+
 /**
  * Returns the promise of a ColorConfig.
  *
  * @return {Promise<Tag[]>} the promise of a ColorConfig.
  */
 export async function httpGetTags(): Promise<Tag[]> {
-  const rawTagList = await get<any[]>('/tags/all');
-  return rawTagList.map((e: any): Tag => ({
+  const rawTagList = await get<ServerTag[]>('/tags/all');
+  return rawTagList.map((e): Tag => ({
     id: e.tag_id,
     type: 'other',
     name: e.tag_name,
@@ -46,7 +60,9 @@ export async function httpGetTags(): Promise<Tag[]> {
  * @return {Promise<Tag>} promise of the tag returned by the server.
  */
 export async function httpNewTag(tag: Tag): Promise<Tag> {
-  const serverTag = await post<any>('/tags/new', { name: tag.name, color: tag.color });
+  const serverTag = await post<ServerTag>('/tags/new', {
+    name: tag.name, color: tag.color,
+  });
   return { ...tag, id: serverTag.tag_id };
 }
 
@@ -77,15 +93,16 @@ export async function httpDeleteTag(tagId: number): Promise<void> {
  * @return {Promise<Task[]>}
  */
 export async function httpGetTasks(): Promise<Task[]> {
-  const serverTasks = await get<any[]>('/tasks/all');
+  const serverTasks = await get<ServerTask[]>('/tasks/all');
   const mainTasks = new Map<number, Task>();
   const serverSubTasks = new Map<number, SubTask[]>(); // key is parent id
-  serverTasks.forEach((serverTask: any) => {
-    const id: number = serverTask.task_id;
-    const name: string = serverTask.content;
-    const complete: boolean = serverTask.completed;
-    const inFocus: boolean = serverTask.in_focus;
-    if (serverTask.parent_task == null) {
+  serverTasks.forEach((serverTask: ServerTask) => {
+    const id = serverTask.task_id;
+    const name = serverTask.content;
+    const complete = serverTask.completed;
+    const inFocus = serverTask.in_focus;
+    const parentTaskId = serverTask.parent_task;
+    if (parentTaskId == null) {
       const tag: number = serverTask.tag_id;
       const date = new Date(serverTask.end_date);
       const subtaskArray = [];
@@ -97,9 +114,9 @@ export async function httpGetTasks(): Promise<Task[]> {
       const subTask: SubTask = {
         id, name, complete, inFocus,
       };
-      const arr = serverSubTasks.get(serverTask.parent_task) || [];
+      const arr = serverSubTasks.get(parentTaskId) ?? [];
       arr.push(subTask);
-      serverSubTasks.set(serverTask.parent_task, arr);
+      serverSubTasks.set(parentTaskId, arr);
     }
   });
   serverSubTasks.forEach((subTasks: SubTask[], parentId: number) => {
@@ -158,7 +175,7 @@ export async function httpAddTask(task: Task): Promise<Task> {
     start_date: formatDate(new Date()),
     end_date: formatDate(task.date),
   };
-  const serverTask = await post<any>('/tasks/new', data);
+  const serverTask = await post<{ +created: ServerTask }>('/tasks/new', data);
   return { ...task, id: serverTask.created.task_id };
 }
 
@@ -194,7 +211,7 @@ export async function httpNewSubTask(mainTask: Task, subTask: SubTask): Promise<
     completed: complete,
     in_focus: inFocus,
   };
-  const serverSubTask = await post<any>('/tasks/new', data);
+  const serverSubTask = await post<{ +created: ServerTask }>('/tasks/new', data);
   return { ...subTask, id: serverSubTask.created.task_id };
 }
 
@@ -266,7 +283,7 @@ export async function httpEditTask(oldTask: Task, newTask: Task): Promise<Task> 
     completed: newTask.complete,
     in_focus: newTask.inFocus,
   };
-  await post<any>(`/tasks/${newTask.id}/edit`, mainTaskData);
+  await post(`/tasks/${newTask.id}/edit`, mainTaskData);
   // Deal with subtasks
   const oldTasksIdSet = new Set(oldTask.subtaskArray.map(({ id }: SubTask) => id));
   const editedSubTasks: SubTask[] = [];
