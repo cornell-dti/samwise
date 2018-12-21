@@ -57,13 +57,13 @@ export async function httpGetTags(): Promise<Tag[]> {
  * Create a new tag.
  *
  * @param {Tag} tag tag to create.
- * @return {Promise<Tag>} promise of the tag returned by the server.
+ * @return {Promise<number>} promise of the tag id returned by the server.
  */
-export async function httpNewTag(tag: Tag): Promise<Tag> {
+export async function httpNewTag(tag: Tag): Promise<number> {
   const serverTag = await post<ServerTag>('/tags/new', {
     name: tag.name, color: tag.color,
   });
-  return { ...tag, id: serverTag.tag_id };
+  return serverTag.tag_id;
 }
 
 /**
@@ -105,9 +105,9 @@ export async function httpGetTasks(): Promise<Task[]> {
     if (parentTaskId == null) {
       const tag: number = serverTask.tag_id;
       const date = new Date(serverTask.end_date);
-      const subtaskArray = [];
+      const subtasks = [];
       const mainTask: Task = {
-        id, name, tag, date, complete, inFocus, subtaskArray,
+        id, name, tag, date, complete, inFocus, subtasks,
       };
       mainTasks.set(id, mainTask);
     } else {
@@ -121,7 +121,7 @@ export async function httpGetTasks(): Promise<Task[]> {
   });
   serverSubTasks.forEach((subTasks: SubTask[], parentId: number) => {
     const mainTask = mainTasks.get(parentId) ?? error('Corrupted backend!');
-    mainTasks.set(parentId, { ...mainTask, subtaskArray: subTasks });
+    mainTasks.set(parentId, { ...mainTask, subtasks: subTasks });
   });
   const assembledTasks: Task[] = [];
   mainTasks.forEach((task: Task) => {
@@ -166,9 +166,9 @@ export async function httpPinTask(taskId: number, inFocus: boolean): Promise<voi
  * Add a new task.
  *
  * @param {Task} task the new task to add.
- * @return {Promise<Task>} promise of the task with new information.
+ * @return {Promise<number>} promise of the task id from server.
  */
-export async function httpAddTask(task: Task): Promise<Task> {
+export async function httpAddTask(task: Task): Promise<number> {
   const data = {
     content: task.name,
     tag_id: task.tag,
@@ -176,7 +176,7 @@ export async function httpAddTask(task: Task): Promise<Task> {
     end_date: formatDate(task.date),
   };
   const serverTask = await post<{ +created: ServerTask }>('/tasks/new', data);
-  return { ...task, id: serverTask.created.task_id };
+  return serverTask.created.task_id;
 }
 
 /**
@@ -285,10 +285,10 @@ export async function httpEditTask(oldTask: Task, newTask: Task): Promise<Task> 
   };
   await post(`/tasks/${newTask.id}/edit`, mainTaskData);
   // Deal with subtasks
-  const oldTasksIdSet = new Set(oldTask.subtaskArray.map(({ id }: SubTask) => id));
+  const oldTasksIdSet = new Set(oldTask.subtasks.map(({ id }: SubTask) => id));
   const editedSubTasks: SubTask[] = [];
   const newSubTasks: SubTask[] = [];
-  newTask.subtaskArray.forEach((subTask: SubTask) => {
+  newTask.subtasks.forEach((subTask: SubTask) => {
     const { id } = subTask;
     if (oldTasksIdSet.has(id)) {
       editedSubTasks.push(subTask);
@@ -297,7 +297,7 @@ export async function httpEditTask(oldTask: Task, newTask: Task): Promise<Task> 
       newSubTasks.push(subTask);
     }
   });
-  const deletedSubTasks: SubTask[] = newTask.subtaskArray.filter(({ id }) => oldTasksIdSet.has(id));
+  const deletedSubTasks: SubTask[] = newTask.subtasks.filter(({ id }) => oldTasksIdSet.has(id));
   const subTasksEditPromises = editedSubTasks.map(
     (subTask: SubTask) => httpEditSubTask(newTask, subTask).then(() => subTask),
   );
@@ -310,11 +310,11 @@ export async function httpEditTask(oldTask: Task, newTask: Task): Promise<Task> 
   const allDone = await Promise.all([
     ...subTasksNewPromises, ...subTasksEditPromises, ...subTasksDeletePromises,
   ]);
-  const subtaskArray: SubTask[] = [];
+  const subtasks: SubTask[] = [];
   allDone.forEach((subtask: SubTask | void) => {
     if (subtask !== undefined) {
-      subtaskArray.push(subtask);
+      subtasks.push(subtask);
     }
   });
-  return { ...newTask, subtaskArray };
+  return { ...newTask, subtasks };
 }

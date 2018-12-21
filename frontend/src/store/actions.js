@@ -135,36 +135,37 @@ export const clearUndoDeleteTask = (): ClearUndoDeleteTaskAction => ({
 /**
  * Let the backend patch a new task.
  *
- * @param {number} id the temp randomly assigned new tag id.
- * @param {Tag} t the task to patch.
+ * @param {number} tempId the temp randomly assigned new tag id.
+ * @param {number} serverId the tag id from server.
  * @return {BackendPatchExistingTaskAction} the backend patch task action.
  */
-export const backendPatchNewTag = (id: number, t: Tag): BackendPatchNewTagAction => ({
-  type: 'BACKEND_PATCH_NEW_TAG', tempNewTagId: id, tag: t,
-});
+export const backendPatchNewTag = (
+  tempId: number, serverId: number,
+): BackendPatchNewTagAction => ({ type: 'BACKEND_PATCH_NEW_TAG', tempId, serverId });
 
 /**
  * Let the backend patch a new task.
  *
- * @param {number} id the temp randomly assigned new task id.
- * @param {Task} task the task to patch.
+ * @param {number} tempId the temp randomly assigned new tag id.
+ * @param {number} serverId the task id from server.
  * @return {BackendPatchExistingTaskAction} the backend patch task action.
  */
-export const backendPatchNewTask = (id: number, task: Task): BackendPatchNewTaskAction => ({
-  type: 'BACKEND_PATCH_NEW_TASK', tempNewTaskId: id, task,
-});
+export const backendPatchNewTask = (
+  tempId: number, serverId: number,
+): BackendPatchNewTaskAction => ({ type: 'BACKEND_PATCH_NEW_TASK', tempId, serverId });
+
 /**
  * Let the backend patch a new subtask.
  *
  * @param {number} taskId the main task id.
- * @param {number} tempNewSubTaskId the temp randomly assigned new subtask id.
- * @param {SubTask} subTask the subtask to patch.
+ * @param {number} tempSubTaskId the temp randomly assigned new subtask id.
+ * @param {number} serverSubTaskId the subtask id from server.
  * @return {BackendPatchExistingTaskAction} the backend patch subtask action.
  */
 export const backendPatchNewSubTask = (
-  taskId: number, tempNewSubTaskId: number, subTask: SubTask,
+  taskId: number, tempSubTaskId: number, serverSubTaskId: number,
 ): BackendPatchNewSubTaskAction => ({
-  type: 'BACKEND_PATCH_NEW_SUBTASK', taskId, tempNewSubTaskId, subTask,
+  type: 'BACKEND_PATCH_NEW_SUBTASK', taskId, tempSubTaskId, serverSubTaskId,
 });
 
 /**
@@ -182,7 +183,7 @@ export const backendPatchExistingTask = (task: Task): BackendPatchExistingTaskAc
  *
  * @param {Tag[]} tags tags from the backend.
  * @param {Task[]} tasks tasks from the backend.
- * @return {{type: string, tags: Tag[], tasks: Task[]}}
+ * @return {BackendPatchLoadedDataAction}
  */
 export const backendPatchLoadedData = (
   tags: Tag[], tasks: Task[],

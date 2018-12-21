@@ -56,7 +56,7 @@ const countTasks = (tasks: CompoundTask[], includeSubTasks: boolean): number => 
   }
   const subtaskReducer = v => v + 1;
   const reducer = (a: number, t: CompoundTask): number => (
-    a + 1 + t.filtered.subtaskArray.reduce(subtaskReducer, 0)
+    a + 1 + t.filtered.subtasks.reduce(subtaskReducer, 0)
   );
   return tasks.reduce(reducer, 0);
 };

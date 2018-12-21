@@ -152,8 +152,8 @@ class FutureViewTask extends React.PureComponent<Props, State> {
    * @return {Node} the information for subtasks.
    */
   renderSubTasks(): Node {
-    const { filteredTask: { id, complete, subtaskArray } } = this.props;
-    return subtaskArray.map((subTask: SubTask) => (
+    const { filteredTask: { id, complete, subtasks } } = this.props;
+    return subtasks.map((subTask: SubTask) => (
       <FutureViewSubTask
         key={subTask.id}
         mainTaskId={id}

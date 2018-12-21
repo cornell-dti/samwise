@@ -12,14 +12,14 @@ import DatePicker from './DatePicker';
 import FocusPicker from './FocusPicker';
 import { randomId } from '../../util/general-util';
 import { fullConnect } from '../../store/react-redux-util';
-import type { Task, State as StoreState, SubTask } from '../../store/store-types';
+import type { Task, SubTask } from '../../store/store-types';
 import { addTask as addTaskAction, removeTask as removeTaskAction } from '../../store/actions';
 import type { AddNewTaskAction, RemoveTaskAction } from '../../store/action-types';
 import { date2String } from '../../util/datetime-util';
 import { NONE_TAG_ID } from '../../util/tag-util';
 
 type OwnProps = {||};
-type SubscribedProps = {| +mainTaskArray: Task[]; |};
+type SubscribedProps = {| +tasks: Task[]; |};
 type ActionProps = {|
   +addTask: (task: Task) => AddNewTaskAction;
   +removeTask: (taskId: number) => RemoveTaskAction;
@@ -53,7 +53,7 @@ const initialState = (): State => ({
   date: new Date(),
   complete: false,
   inFocus: false,
-  subtaskArray: [],
+  subtasks: [],
   opened: false,
   tagPickerOpened: false,
   datePickerOpened: false,
@@ -117,7 +117,7 @@ class TaskCreator extends React.PureComponent<Props, State> {
       e.preventDefault();
     }
     const {
-      id, name, tag, date, complete, inFocus, subtaskArray, lastToast,
+      id, name, tag, date, complete, inFocus, subtasks, lastToast,
     } = this.state;
     const { addTask } = this.props;
     if (name === '') {
@@ -130,7 +130,7 @@ class TaskCreator extends React.PureComponent<Props, State> {
       date,
       complete,
       inFocus,
-      subtaskArray: subtaskArray
+      subtasks: subtasks
         .filter(subTask => subTask.name !== '')
         .map((subTask, index) => ({ ...subTask, id: index })),
     };
@@ -165,12 +165,12 @@ class TaskCreator extends React.PureComponent<Props, State> {
   handleUndo = (e: SyntheticMouseEvent<HTMLButtonElement>) => {
     e.stopPropagation();
     const { lastDel, lastToast } = this.state;
-    const { mainTaskArray, removeTask } = this.props;
+    const { tasks, removeTask } = this.props;
     toast.dismiss(lastToast);
     if (lastDel === -1) {
       return;
     }
-    const lastTask = mainTaskArray.find(task => task.id === lastDel);
+    const lastTask = tasks.find(task => task.id === lastDel);
     removeTask(lastDel);
     this.setState({ ...lastTask, lastDel: -1 });
     this.focusTaskName();
@@ -225,9 +225,9 @@ class TaskCreator extends React.PureComponent<Props, State> {
     if (newSubTaskName === '') {
       return;
     }
-    this.setState(({ subtaskArray }: State) => ({
-      subtaskArray: [...subtaskArray, {
-        id: subtaskArray.length,
+    this.setState(({ subtasks }: State) => ({
+      subtasks: [...subtasks, {
+        id: subtasks.length,
         name: newSubTaskName,
         complete: false,
         inFocus: false,
@@ -244,9 +244,9 @@ class TaskCreator extends React.PureComponent<Props, State> {
    */
   editSubTask = (subtaskId: number) => (e: SyntheticEvent<HTMLInputElement>) => {
     const name = e.currentTarget.value;
-    const { subtaskArray } = this.state;
+    const { subtasks } = this.state;
     this.setState({
-      subtaskArray: subtaskArray.map(s => (s.id === subtaskId ? { ...s, name } : s)),
+      subtasks: subtasks.map(s => (s.id === subtaskId ? { ...s, name } : s)),
     });
   };
 
@@ -269,8 +269,9 @@ class TaskCreator extends React.PureComponent<Props, State> {
    */
   deleteSubTask = (subtaskId: number) => (e: SyntheticEvent<HTMLButtonElement>) => {
     e.preventDefault();
-    const { subtaskArray } = this.state;
-    this.setState({ subtaskArray: subtaskArray.filter(el => el.id !== subtaskId) });
+    this.setState(({ subtasks }: State) => ({
+      subtasks: subtasks.filter(el => el.id !== subtaskId),
+    }));
   };
 
   /**
@@ -294,7 +295,7 @@ class TaskCreator extends React.PureComponent<Props, State> {
       return null;
     }
     const {
-      tag, date, inFocus, subtaskArray,
+      tag, date, inFocus, subtasks,
       tagPickerOpened, datePickerOpened, datePicked, needToSwitchFocus,
     } = this.state;
     const existingSubTaskEditor = ({ id, name }: SubTask, i: number, arr: SubTask[]) => {
@@ -339,7 +340,7 @@ class TaskCreator extends React.PureComponent<Props, State> {
           <Icon name="arrow alternate circle right outline" color="black" />
         </button>
         <div className={styles.NewTaskModal}>
-          <ul>{subtaskArray.map(existingSubTaskEditor)}</ul>
+          <ul>{subtasks.map(existingSubTaskEditor)}</ul>
           <Icon name="plus" />
           <input type="text" placeholder="Add a Subtask" value="" onChange={this.addNewSubTask} />
           <button type="button" className={styles.ResetButton} onClick={this.resetTask}>
@@ -387,7 +388,7 @@ class TaskCreator extends React.PureComponent<Props, State> {
 }
 
 const ConnectedTaskCreator = fullConnect<OwnProps, SubscribedProps, ActionProps>(
-  ({ mainTaskArray }: StoreState) => ({ mainTaskArray }),
+  ({ tasks }) => ({ tasks }),
   { addTask: addTaskAction, removeTask: removeTaskAction },
 )(TaskCreator);
 export default ConnectedTaskCreator;

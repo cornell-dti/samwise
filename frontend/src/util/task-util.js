@@ -6,8 +6,6 @@ import type { SubTask, Task } from '../store/store-types';
  * This is the utility module for array of tasks and subtasks.
  * This module implements many common functional operations on an array of tasks or subtasks.
  * Other modules should try to call functions in this module instead of implementing their own.
- *
- * @author Sam Zhou
  */
 
 /**
@@ -55,7 +53,7 @@ export const replaceSubTaskWithinMainTask = (
   replacer: ((SubTask, Task) => SubTask),
 ): Task[] => replaceTask(tasks, mainTaskID, (task: Task) => ({
   ...task,
-  subtaskArray: replaceSubTask(task.subtaskArray, subTaskID, s => replacer(s, task)),
+  subtasks: replaceSubTask(task.subtasks, subTaskID, s => replacer(s, task)),
 }));
 
 /**
@@ -67,5 +65,5 @@ export const replaceSubTaskWithinMainTask = (
 export const filterCompletedTasks = (tasks: Task[]): [Task, Task][] => tasks
   .filter(t => !t.complete)
   .map((task: Task) => [
-    task, { ...task, subtaskArray: task.subtaskArray.filter(s => !s.complete) },
+    task, { ...task, subtasks: task.subtasks.filter(s => !s.complete) },
   ]);

@@ -169,6 +169,6 @@ class TaskView extends React.PureComponent<Props, State> {
 }
 
 const ConnectedTaskView = stateConnect<PropsWithoutWindowSize<Props>, {| +tasks: Task[] |}>(
-  ({ mainTaskArray }) => ({ tasks: mainTaskArray }),
+  ({ tasks }) => ({ tasks }),
 )(windowSizeConnect<Props>(TaskView));
 export default ConnectedTaskView;

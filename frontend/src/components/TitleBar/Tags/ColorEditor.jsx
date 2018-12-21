@@ -16,6 +16,8 @@ type State = {| +doesShowEditor: boolean |};
 const colArray: string[] = Object.keys(colMap);
 
 export default class ColorEditor extends React.Component<Props, State> {
+  state: State = { doesShowEditor: false };
+
   /**
    * Toggle the editor.
    */

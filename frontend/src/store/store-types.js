@@ -31,13 +31,13 @@ export type Task = {|
   +date: Date; // Example: new Date()
   +complete: boolean;
   +inFocus: boolean; // Whether the task is in focus
-  +subtaskArray: SubTask[];
+  +subtasks: SubTask[];
 |};
 
 /**
  * The task type without id and subtask.
  */
-export type MainTask = $Diff<Task, {| +id: number; +subtaskArray: SubTask[]; |}>;
+export type MainTask = $Diff<Task, {| +id: number; +subtasks: SubTask[]; |}>;
 /**
  * The task type without id and subtask, and with all properties as optional.
  */
@@ -54,8 +54,7 @@ export type UndoCache = {|
  * The type of the entire redux state.
  */
 export type State = {|
-  +mainTaskArray: Task[];
+  +tasks: Task[];
   +tags: Tag[];
-  +bearStatus: string;
   +undoCache: UndoCache;
 |};

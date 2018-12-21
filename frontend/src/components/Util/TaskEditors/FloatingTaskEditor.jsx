@@ -130,7 +130,7 @@ class FloatingTaskEditor extends React.PureComponent<Props, State> {
    * @return {Task} the filtered task.
    */
   filterEmptySubTasks = (task: Task): Task => ({
-    ...task, subtaskArray: task.subtaskArray.filter(t => t.name.trim().length > 0),
+    ...task, subtasks: task.subtasks.filter(t => t.name.trim().length > 0),
   });
 
   /**
@@ -199,23 +199,23 @@ class FloatingTaskEditor extends React.PureComponent<Props, State> {
         );
       },
       editSubTask: (subtaskId: number, partialSubTask: PartialSubTask, doSave: boolean) => {
-        this.setState(({ subtaskArray }: State) => ({
-          subtaskArray: replaceSubTask(
-            subtaskArray, subtaskId, s => ({ ...s, ...partialSubTask }),
+        this.setState(({ subtasks }: State) => ({
+          subtasks: replaceSubTask(
+            subtasks, subtaskId, s => ({ ...s, ...partialSubTask }),
           ),
           changed: true,
         }), doSave ? this.onSave : undefined);
       },
       addSubTask: (subTask: SubTask) => {
-        this.setState(({ subtaskArray }: State) => ({
-          subtaskArray: [...subtaskArray, subTask],
+        this.setState(({ subtasks }: State) => ({
+          subtasks: [...subtasks, subTask],
           changed: true,
         }));
       },
       removeTask: () => { removeTask(task.id); },
       removeSubTask: (subtaskId: number) => {
-        this.setState(({ subtaskArray }: State) => ({
-          subtaskArray: subtaskArray.filter(s => s.id !== subtaskId),
+        this.setState(({ subtasks }: State) => ({
+          subtasks: subtasks.filter(s => s.id !== subtaskId),
           changed: true,
         }));
       },

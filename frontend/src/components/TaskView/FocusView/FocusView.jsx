@@ -18,8 +18,8 @@ export default function FocusView({ tasks }: {| tasks: Task[] |}): Node {
     if (task.inFocus) {
       return task;
     }
-    const subtaskArray = task.subtaskArray.filter(subTask => subTask.inFocus);
-    return subtaskArray.length === 0 ? null : { ...task, subtaskArray };
+    const subtasks = task.subtasks.filter(subTask => subTask.inFocus);
+    return subtasks.length === 0 ? null : { ...task, subtasks };
   };
   const listItems = tasks
     .map(filterMapper)

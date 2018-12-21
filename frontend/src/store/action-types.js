@@ -69,13 +69,16 @@ export type UndoAction =
  */
 
 export type BackendPatchNewTagAction = {|
-  type: 'BACKEND_PATCH_NEW_TAG'; +tempNewTagId: number; +tag: Tag;
+  type: 'BACKEND_PATCH_NEW_TAG'; +tempId: number; +serverId: number;
 |};
 export type BackendPatchNewTaskAction = {|
-  type: 'BACKEND_PATCH_NEW_TASK'; +tempNewTaskId: number; +task: Task;
+  type: 'BACKEND_PATCH_NEW_TASK'; +tempId: number; +serverId: number;
 |};
 export type BackendPatchNewSubTaskAction = {|
-  type: 'BACKEND_PATCH_NEW_SUBTASK'; +taskId: number; +tempNewSubTaskId: number; +subTask: SubTask;
+  type: 'BACKEND_PATCH_NEW_SUBTASK';
+  +taskId: number;
+  +tempSubTaskId: number;
+  +serverSubTaskId: number;
 |};
 export type BackendPatchExistingTaskAction = {|
   type: 'BACKEND_PATCH_EXISTING_TASK'; +task: Task;

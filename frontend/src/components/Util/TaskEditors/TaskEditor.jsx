@@ -402,11 +402,11 @@ class TaskEditor extends React.PureComponent<Props, State> {
 
   render(): Node {
     const {
-      tag, date, subtaskArray, disabled, children,
+      tag, date, subtasks, disabled, children,
       className, onFocus, onBlur, refFunction, getTag,
     } = this.props;
     const isOverdue = date < getTodayAtZero();
-    const backgroundColor = getTag(tag);
+    const backgroundColor = getTag(tag).color;
     const formStyle = isOverdue
       ? { backgroundColor, border: '5px solid #D0021B' }
       : { backgroundColor };
@@ -428,7 +428,7 @@ class TaskEditor extends React.PureComponent<Props, State> {
           {this.renderMainTaskEdit()}
         </div>
         <div className={styles.TaskEditorSubTasksIndentedContainer}>
-          {subtaskArray.map(this.renderSubTask)}
+          {subtasks.map(this.renderSubTask)}
           {(disabled !== true) && (
             <div className={styles.TaskEditorFlexibleContainer}>
               <input
