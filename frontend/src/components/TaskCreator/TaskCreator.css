@@ -210,9 +210,3 @@
 .ResetButton:active {
   background: none;
 }
-
-
-.Toast div {
-  background: #676767;
-  border-radius: 5px;
-}

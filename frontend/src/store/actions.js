@@ -11,6 +11,8 @@ import type {
   EditSubTaskAction,
   RemoveTaskAction,
   RemoveSubTaskAction,
+  UndoAddTaskAction,
+  ClearUndoAddTaskAction,
   UndoDeleteTaskAction,
   ClearUndoDeleteTaskAction,
   BackendPatchNewTaskAction,
@@ -48,7 +50,7 @@ export const removeTag = (tagId: number): RemoveTagAction => ({ type: 'REMOVE_TA
 /**
  * Add task is an action that can be used to add a new task.
  *
- * @param task the task to add.
+ * @param {Task} task the task to add.
  * @return {AddNewTaskAction} the add task action.
  */
 export const addTask = (task: Task): AddNewTaskAction => ({ type: 'ADD_NEW_TASK', task });
@@ -100,11 +102,10 @@ export const editSubTask = (
  * Remove task is the action that can be used to remove a task.
  *
  * @param {number} taskId the id of the task to remove.
- * @param {boolean} undoable whether the removal can be undone, which defaults to false.
  * @return {RemoveTaskAction} the remove task action.
  */
-export const removeTask = (taskId: number, undoable: boolean = false): RemoveTaskAction => ({
-  type: 'REMOVE_TASK', taskId, undoable,
+export const removeTask = (taskId: number): RemoveTaskAction => ({
+  type: 'REMOVE_TASK', taskId,
 });
 /**
  * Remove subtask is the action that can be used to remove a subtask.
@@ -117,6 +118,18 @@ export const removeSubTask = (taskId: number, subtaskId: number): RemoveSubTaskA
   type: 'REMOVE_SUBTASK', taskId, subtaskId,
 });
 
+/**
+ * Undo the previous add task operation.
+ *
+ * @return {UndoDeleteTaskAction} the undo add task action.
+ */
+export const undoAddTask = (): UndoAddTaskAction => ({ type: 'UNDO_ADD_TASK' });
+/**
+ * Undo the previous add task operation.
+ *
+ * @return {UndoDeleteTaskAction} the undo add task action.
+ */
+export const clearUndoAddTask = (): ClearUndoAddTaskAction => ({ type: 'CLEAR_UNDO_ADD_TASK' });
 /**
  * Undo the previous delete task operation.
  *

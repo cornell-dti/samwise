@@ -1,0 +1,23 @@
+.UndoToast {
+  display: flex;
+  margin: 1em 0.5em;
+}
+
+.UndoToastPadding {
+  flex: auto;
+}
+
+.UndoToastButton {
+  background: none;
+  color: #70a7ff;
+  border: none;
+  cursor: pointer;
+}
+
+.UndoToastButton:hover {
+  color: white;
+}
+
+.UndoToastButton:active {
+  color: #70a7ff;
+}

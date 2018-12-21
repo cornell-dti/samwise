@@ -69,7 +69,7 @@ class FutureViewTask extends React.PureComponent<Props, State> {
    *
    * @return {Node} the checkbox element.
    */
-  renderCheckBox(): Node {
+  renderCheckBox = (): Node => {
     const { filteredTask: { id, complete }, editMainTask } = this.props;
     return (
       <CheckBox
@@ -78,27 +78,27 @@ class FutureViewTask extends React.PureComponent<Props, State> {
         onChange={() => { editMainTask(id, { complete: !complete }); }}
       />
     );
-  }
+  };
 
   /**
    * Render the task name.
    *
    * @return {Node} the task name element.
    */
-  renderTaskName(): Node {
+  renderTaskName = (): Node => {
     const { filteredTask: { name, complete } } = this.props;
     const tagStyle = complete ? { textDecoration: 'line-through' } : {};
     return (
       <span className={styles.TaskText} style={tagStyle}>{name}</span>
     );
-  }
+  };
 
   /**
    * Render the remove task icon.
    *
    * @return {Node} the rendered remove task icon.
    */
-  renderRemoveTaskIcon(): Node {
+  renderRemoveTaskIcon = (): Node => {
     const { filteredTask: { id }, removeTask } = this.props;
     const handler = () => {
       removeTask(id, true);
@@ -106,14 +106,14 @@ class FutureViewTask extends React.PureComponent<Props, State> {
     return (
       <Icon name="delete" className={styles.TaskIcon} onClick={handler} />
     );
-  }
+  };
 
   /**
    * Render the bookmark task icon.
    *
    * @return {Node} the rendered bookmark task icon.
    */
-  renderBookmarkIcon(): Node {
+  renderBookmarkIcon = (): Node => {
     const { filteredTask: { id, inFocus }, editMainTask } = this.props;
     return (
       <Icon
@@ -122,7 +122,7 @@ class FutureViewTask extends React.PureComponent<Props, State> {
         onClick={() => editMainTask(id, { inFocus: !inFocus })}
       />
     );
-  }
+  };
 
   /**
    * Render the information for main task.
@@ -130,7 +130,7 @@ class FutureViewTask extends React.PureComponent<Props, State> {
    * @param {boolean} simplified whether to render the simplifies task.
    * @return {Node} the information for main task.
    */
-  renderMainTaskInfo(simplified: boolean = false): Node {
+  renderMainTaskInfo = (simplified: boolean = false): Node => {
     const { taskColor, isInMainList } = this.props;
     if (simplified && isInMainList) {
       const style = { backgroundColor: taskColor, height: '25px' };
@@ -144,14 +144,14 @@ class FutureViewTask extends React.PureComponent<Props, State> {
         {this.renderRemoveTaskIcon()}
       </div>
     );
-  }
+  };
 
   /**
    * Render the information for subtasks.
    *
    * @return {Node} the information for subtasks.
    */
-  renderSubTasks(): Node {
+  renderSubTasks = (): Node => {
     const { filteredTask: { id, complete, subtasks } } = this.props;
     return subtasks.map((subTask: SubTask) => (
       <FutureViewSubTask
@@ -161,7 +161,7 @@ class FutureViewTask extends React.PureComponent<Props, State> {
         {...subTask}
       />
     ));
-  }
+  };
 
   render(): Node {
     const { inNDaysView, taskEditorPosition, originalTask } = this.props;

@@ -3,28 +3,29 @@
 import React from 'react';
 import type { Node } from 'react';
 import { Icon } from 'semantic-ui-react';
-import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import styles from './TaskCreator.css';
-import ToastUndo from './ToastUndo';
 import TagPicker from './TagPicker';
 import DatePicker from './DatePicker';
 import FocusPicker from './FocusPicker';
 import { randomId } from '../../util/general-util';
 import { fullConnect } from '../../store/react-redux-util';
 import type { Task, SubTask } from '../../store/store-types';
-import { addTask as addTaskAction, removeTask as removeTaskAction } from '../../store/actions';
+import {
+  addTask as addTaskAction,
+  removeTask as removeTaskAction,
+} from '../../store/actions';
 import type { AddNewTaskAction, RemoveTaskAction } from '../../store/action-types';
-import { date2String } from '../../util/datetime-util';
 import { NONE_TAG_ID } from '../../util/tag-util';
+import { replaceSubTask } from '../../util/task-util';
 
-type OwnProps = {||};
-type SubscribedProps = {| +tasks: Task[]; |};
-type ActionProps = {|
+type Props = {|
+  // subscribed from redux store.
+  +tasks: Task[];
+  // subscribed from dispatcher.
   +addTask: (task: Task) => AddNewTaskAction;
   +removeTask: (taskId: number) => RemoveTaskAction;
-|}
-type Props = {| ...OwnProps; ...SubscribedProps; ...ActionProps |};
+|};
 
 type State = {|
   ...Task;
@@ -33,8 +34,6 @@ type State = {|
   +datePickerOpened: boolean;
   +datePicked: boolean;
   +needToSwitchFocus: boolean;
-  +lastDel: number;
-  +lastToast: number;
 |};
 
 /**
@@ -59,8 +58,6 @@ const initialState = (): State => ({
   datePickerOpened: false,
   datePicked: false,
   needToSwitchFocus: false,
-  lastDel: -1,
-  lastToast: -1,
 });
 
 class TaskCreator extends React.PureComponent<Props, State> {
@@ -114,66 +111,27 @@ class TaskCreator extends React.PureComponent<Props, State> {
    */
   handleSave = (e?: SyntheticEvent<HTMLElement>) => {
     if (e != null) {
-      e.preventDefault();
+      e.stopPropagation();
     }
     const {
-      id, name, tag, date, complete, inFocus, subtasks, lastToast,
+      id, name, tag, date, complete, inFocus, subtasks,
     } = this.state;
     const { addTask } = this.props;
     if (name === '') {
       return;
     }
+    const newSubTasks = subtasks.filter(subTask => subTask.name !== '');
     const newTask = {
-      id,
-      name,
-      tag,
-      date,
-      complete,
-      inFocus,
-      subtasks: subtasks
-        .filter(subTask => subTask.name !== '')
-        .map((subTask, index) => ({ ...subTask, id: index })),
+      id, name, tag, date, complete, inFocus, subtasks: newSubTasks,
     };
     // Add the task to the store.
     addTask(newTask);
-    // Emit a new toast.
-    const taskMsg = `Added "${name}" (${date2String(date)})`;
-    toast.dismiss(lastToast);
-    const newToast = toast.success(
-      <ToastUndo dispText={taskMsg} changeCallback={this.handleUndo} />, {
-        position: 'top-right',
-        autoClose: 5000,
-        hideProgressBar: true,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-      },
-    );
     // Reset the state.
-    this.setState({ ...initialState(), lastDel: id, lastToast: newToast });
+    this.setState({ ...initialState() });
     this.closeNewTask();
     if (this.addTask) {
       this.addTask.blur();
     }
-  };
-
-  /**
-   * Handle on undoing an operation.
-   *
-   * @param {SyntheticMouseEvent<HTMLButtonElement>} e the event signaling an undo.
-   */
-  handleUndo = (e: SyntheticMouseEvent<HTMLButtonElement>) => {
-    e.stopPropagation();
-    const { lastDel, lastToast } = this.state;
-    const { tasks, removeTask } = this.props;
-    toast.dismiss(lastToast);
-    if (lastDel === -1) {
-      return;
-    }
-    const lastTask = tasks.find(task => task.id === lastDel);
-    removeTask(lastDel);
-    this.setState({ ...lastTask, lastDel: -1 });
-    this.focusTaskName();
   };
 
   /*
@@ -244,10 +202,9 @@ class TaskCreator extends React.PureComponent<Props, State> {
    */
   editSubTask = (subtaskId: number) => (e: SyntheticEvent<HTMLInputElement>) => {
     const name = e.currentTarget.value;
-    const { subtasks } = this.state;
-    this.setState({
-      subtasks: subtasks.map(s => (s.id === subtaskId ? { ...s, name } : s)),
-    });
+    this.setState(({ subtasks }: State) => ({
+      subtasks: replaceSubTask(subtasks, subtaskId, s => ({ ...s, name })),
+    }));
   };
 
   /**
@@ -270,17 +227,14 @@ class TaskCreator extends React.PureComponent<Props, State> {
   deleteSubTask = (subtaskId: number) => (e: SyntheticEvent<HTMLButtonElement>) => {
     e.preventDefault();
     this.setState(({ subtasks }: State) => ({
-      subtasks: subtasks.filter(el => el.id !== subtaskId),
+      subtasks: subtasks.filter(s => s.id !== subtaskId),
     }));
   };
 
   /**
    * Reset the task.
    */
-  resetTask = () => {
-    const { lastDel, lastToast } = this.state;
-    this.setState({ ...initialState(), lastDel, lastToast }, this.focusTaskName);
-  };
+  resetTask = () => this.setState({ ...initialState() }, this.focusTaskName);
 
   addTask: ?HTMLInputElement;
 
@@ -381,16 +335,13 @@ class TaskCreator extends React.PureComponent<Props, State> {
           {mainTaskNameEditor}
           {this.renderOtherInfoEditor()}
         </form>
-        <ToastContainer className={styles.Toast} />
       </div>
     );
   }
 }
 
-const ConnectedTaskCreator = fullConnect<OwnProps, SubscribedProps, ActionProps>(
-  ({ tasks }) => ({ tasks }),
-  { addTask: addTaskAction, removeTask: removeTaskAction },
+const actionCreators = { addTask: addTaskAction, removeTask: removeTaskAction };
+const ConnectedTaskCreator = fullConnect<{||}, {| +tasks: Task[]; |}, typeof actionCreators>(
+  ({ tasks }) => ({ tasks }), actionCreators,
 )(TaskCreator);
 export default ConnectedTaskCreator;
-
-// TODO

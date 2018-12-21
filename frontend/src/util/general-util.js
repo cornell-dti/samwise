@@ -5,7 +5,7 @@
  *
  * @return {number} a random id.
  */
-export const randomId = (): number => ((10 * new Date()) + Math.floor(10000 * Math.random()));
+export const randomId = (): number => -100 - Math.floor(10000 * Math.random());
 
 /**
  * Throw an error. Useful when want to use this as an expression.

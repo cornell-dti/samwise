@@ -47,6 +47,7 @@ export type PartialMainTask = $Shape<MainTask>;
  * The cache that is designed to store the stuff that can be undo.
  */
 export type UndoCache = {|
+  +lastAddedTaskId: number | null;
   +lastDeletedTask: Task | null;
 |};
 

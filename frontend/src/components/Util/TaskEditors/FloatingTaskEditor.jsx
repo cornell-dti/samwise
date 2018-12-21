@@ -22,7 +22,7 @@ type Props = {|
   +trigger: (opened: boolean, opener: () => void) => Node;
   +windowSize: WindowSize;
   +editTask: (task: Task) => EditTaskAction;
-  +removeTask: (taskId: number, undoable?: boolean) => RemoveTaskAction;
+  +removeTask: (taskId: number) => RemoveTaskAction;
 |};
 
 type State = {| ...Task; +changed: boolean; +open: boolean; |};

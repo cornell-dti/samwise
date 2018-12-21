@@ -31,7 +31,7 @@ type Props = {|
     taskId: number, subtaskId: number, partialSubTask: PartialSubTask,
   ) => EditSubTaskAction;
   +addSubTask: (taskId: number, subTask: SubTask) => AddNewSubTaskAction;
-  +removeTask: (taskId: number, undoable?: boolean) => RemoveTaskAction;
+  +removeTask: (taskId: number) => RemoveTaskAction;
   +removeSubTask: (taskId: number, subtaskId: number) => RemoveSubTaskAction;
 |};
 
@@ -76,7 +76,7 @@ class InlineTaskEditor extends React.Component<Props, State> {
         }
       },
       addSubTask: (subTask: SubTask) => { addSubTask(id, subTask); },
-      removeTask: () => { removeTask(id, true); },
+      removeTask: () => { removeTask(id); },
       removeSubTask: (subtaskId: number) => { removeSubTask(id, subtaskId); },
       onSave: onBlur,
       className,

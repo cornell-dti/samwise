@@ -3,6 +3,7 @@
 import React from 'react';
 import type { Node } from 'react';
 import { Provider as ReactReduxProvider } from 'react-redux';
+import { ToastContainer } from 'react-toastify';
 import styles from './App.css';
 import TaskCreator from './components/TaskCreator/TaskCreator';
 import TaskView from './components/TaskView/TaskView';
@@ -33,6 +34,7 @@ const appRenderer = (appUser: AppUser): Node => {
   return (
     <ReactReduxProvider store={store}>
       <div className={styles.App}>
+        <ToastContainer className={styles.Toast} />
         <TitleBar />
         <TaskCreator />
         <TaskView />

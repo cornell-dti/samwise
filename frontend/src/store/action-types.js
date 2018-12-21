@@ -23,7 +23,7 @@ export type EditSubTaskAction = {|
   type: 'EDIT_SUB_TASK'; +taskId: number; +subtaskId: number; +partialSubTask: PartialSubTask;
 |};
 
-export type RemoveTaskAction = {| type: 'REMOVE_TASK'; +taskId: number; +undoable: boolean; |};
+export type RemoveTaskAction = {| type: 'REMOVE_TASK'; +taskId: number; |};
 export type RemoveSubTaskAction = {|
   type: 'REMOVE_SUBTASK'; +taskId: number; +subtaskId: number;
 |};
@@ -55,10 +55,14 @@ export type TagAction = AddTagAction | EditTagAction | RemoveTagAction;
  * --------------------------------------------------------------------------------
  */
 
+export type UndoAddTaskAction = {| type: 'UNDO_ADD_TASK' |};
+export type ClearUndoAddTaskAction = {| type: 'CLEAR_UNDO_ADD_TASK' |};
 export type UndoDeleteTaskAction = {| type: 'UNDO_DELETE_TASK' |};
 export type ClearUndoDeleteTaskAction = {| type: 'CLEAR_UNDO_DELETE_TASK' |};
 
 export type UndoAction =
+  | UndoAddTaskAction
+  | ClearUndoAddTaskAction
   | UndoDeleteTaskAction
   | ClearUndoDeleteTaskAction;
 

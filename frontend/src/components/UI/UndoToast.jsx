@@ -3,6 +3,7 @@
 import React from 'react';
 import type { Node } from 'react';
 import { toast } from 'react-toastify';
+import styles from './UndoToast.css';
 
 export type Props = {|
   +toastId: string;
@@ -22,20 +23,21 @@ function UndoToast(props: Props): Node {
   const {
     toastId, message, onUndo, onDismiss,
   } = props;
-  const handleUndo = () => {
-    onUndo();
-    toast.dismiss(toastId);
-  };
-  const handleDismiss = () => {
-    onDismiss();
-    toast.dismiss(toastId);
+  const handleToastClick = (e: SyntheticMouseEvent<HTMLSpanElement>) => {
+    e.stopPropagation();
+    if (e.target instanceof HTMLButtonElement) {
+      onUndo();
+      toast.dismiss(toastId);
+    } else {
+      onDismiss();
+      toast.dismiss(toastId);
+    }
   };
   return (
-    <span>
+    <span role="presentation" className={styles.UndoToast} onClick={handleToastClick}>
       {message}
-      {' '}
-      <button type="button" onClick={handleUndo}>Undo</button>
-      <button type="button" onClick={handleDismiss}>Dismiss</button>
+      <span className={styles.UndoToastPadding} />
+      <button type="button" className={styles.UndoToastButton}>Undo</button>
     </span>
   );
 }

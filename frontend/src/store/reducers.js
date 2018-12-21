@@ -8,18 +8,21 @@ import type {
   RemoveTaskAction,
   AddNewSubTaskAction,
   RemoveSubTaskAction,
+  BackendPatchNewTaskAction, AddNewTaskAction,
 } from './action-types';
 import type {
   State, SubTask, Tag, Task,
 } from './store-types';
-import { emitUndoRemoveTaskToast } from '../util/toast-util';
+import { emitUndoAddTaskToast, emitUndoRemoveTaskToast } from '../util/toast-util';
 import {
   httpAddTask,
   httpDeleteTag,
-  httpDeleteTask, httpEditMainTask,
+  httpDeleteTask,
+  httpEditMainTask,
+  httpNewSubTask,
   httpEditSubTask,
   httpEditTag,
-  httpEditTask, httpNewSubTask,
+  httpEditTask,
   httpNewTag,
 } from '../http/http-service';
 import { dispatchAction } from './store';
@@ -51,31 +54,36 @@ const initialState: State = {
       id: 2, type: 'class', name: 'CS1110', color: '#B92424',
     },
   ],
-  undoCache: { lastDeletedTask: null },
+  undoCache: { lastAddedTaskId: null, lastDeletedTask: null },
 };
 
 /**
  * Add a new task.
  *
- * @param {Task[]} mainTaskArray the main task array to modify.
- * @param {Task} newTask the new task.
- * @return {Task[]} the new task array.
+ * @param {State} state the old state.
+ * @param {Task} task the new task.
+ * @return {Task[]} the new state.
  */
-function addTask(mainTaskArray: Task[], newTask: Task): Task[] {
-  httpAddTask(newTask).then(id => dispatchAction(backendPatchNewTaskAction(newTask.id, id)));
-  return [...mainTaskArray, newTask];
+function addTask(state: State, { task }: AddNewTaskAction): State {
+  emitUndoAddTaskToast(task);
+  httpAddTask(task).then(id => dispatchAction(backendPatchNewTaskAction(task.id, id)));
+  return {
+    ...state,
+    tasks: [...state.tasks, task],
+    undoCache: { ...state.undoCache, lastAddedTaskId: task.id },
+  };
 }
 
 /**
  * Add a new subtask.
  *
- * @param {Task[]} mainTaskArray the main task array to modify.
+ * @param {Task[]} tasks the task array to modify.
  * @param {number} taskId the main task id.
  * @param {SubTask} subTask the subtask to add.
  * @return {Task[]} the new task array.
  */
-function addSubTask(mainTaskArray: Task[], { taskId, subTask }: AddNewSubTaskAction): Task[] {
-  return replaceTask(mainTaskArray, taskId, (task: Task) => {
+function addSubTask(tasks: Task[], { taskId, subTask }: AddNewSubTaskAction): Task[] {
+  return replaceTask(tasks, taskId, (task: Task) => {
     httpNewSubTask(task, subTask).then(backendSubTask => dispatchAction(
       backendPatchNewSubTask(taskId, subTask.id, backendSubTask.id),
     ));
@@ -86,15 +94,15 @@ function addSubTask(mainTaskArray: Task[], { taskId, subTask }: AddNewSubTaskAct
 /**
  * Edit the main task.
  *
- * @param {Task[]} mainTaskArray the main task array to modify.
+ * @param {Task[]} tasks the task array to modify.
  * @param {number} taskId the main task id.
  * @param {PartialMainTask} partialMainTask partial information of main task to edit.
  * @return {Task[]} the new task array with the specified task edited.
  */
 function editMainTask(
-  mainTaskArray: Task[], { taskId, partialMainTask }: EditMainTaskAction,
+  tasks: Task[], { taskId, partialMainTask }: EditMainTaskAction,
 ): Task[] {
-  return replaceTask(mainTaskArray, taskId, (task: Task) => {
+  return replaceTask(tasks, taskId, (task: Task) => {
     const newTask = { ...task, ...partialMainTask };
     const { id, subtasks, ...mainTask } = newTask;
     httpEditMainTask(taskId, mainTask).then(() => {});
@@ -105,16 +113,16 @@ function editMainTask(
 /**
  * Edit the subtask.
  *
- * @param {Task[]} mainTaskArray the main task array to modify.
+ * @param {Task[]} tasks the main task array to modify.
  * @param {number} taskId the main task id.
  * @param {number} subtaskId the subtask id.
  * @param {PartialSubTask} partialMainTask partial information of main task to edit.
  * @return {Task[]} the new task array with the specified task edited.
  */
 function editSubTask(
-  mainTaskArray: Task[], { taskId, subtaskId, partialSubTask }: EditSubTaskAction,
+  tasks: Task[], { taskId, subtaskId, partialSubTask }: EditSubTaskAction,
 ): Task[] {
-  return replaceSubTaskWithinMainTask(mainTaskArray, taskId, subtaskId, (subTask, mainTask) => {
+  return replaceSubTaskWithinMainTask(tasks, taskId, subtaskId, (subTask, mainTask) => {
     const newSubTask = { ...subTask, ...partialSubTask };
     httpEditSubTask(mainTask, subTask).then(() => {});
     return newSubTask;
@@ -122,44 +130,39 @@ function editSubTask(
 }
 
 /**
- * The reducer for remove a main task.
+ * Remove a main task.
  *
- * @param {State} prevState the previous state.
- * @param {RemoveTaskAction} action the action of removing task.
+ * @param {State} state the previous state.
+ * @param {number} taskId the removed task id.
  * @return {[Task[], Task | null]} the new task array with the specified task remove.
  */
-function removeTaskReducer(prevState: State, action: RemoveTaskAction): State {
+function removeTask(state: State, { taskId }: RemoveTaskAction): State {
   let lastDeletedTask: Task | null = null;
-  const { taskId, undoable } = action;
   httpDeleteTask(taskId).then(() => {});
-  const tasks = prevState.tasks.filter((task: Task) => {
+  const tasks = state.tasks.filter((task: Task) => {
     if (task.id !== taskId) {
       return true;
     }
     lastDeletedTask = task;
     return false;
   });
-  if (undoable) {
-    const undoCache = { ...prevState.undoCache, lastDeletedTask };
-    if (lastDeletedTask != null) {
-      emitUndoRemoveTaskToast(lastDeletedTask);
-    }
-    return { ...prevState, tasks, undoCache };
+  const undoCache = { ...state.undoCache, lastDeletedTask };
+  if (lastDeletedTask != null) {
+    emitUndoRemoveTaskToast(lastDeletedTask);
   }
-  const undoCache = { ...prevState.undoCache, lastDeletedTask: null };
-  return { ...prevState, tasks, undoCache };
+  return { ...state, tasks, undoCache };
 }
 
 /**
  * Remove a subtask.
  *
- * @param {Task[]} mainTaskArray the main task array to modify.
+ * @param {Task[]} tasks the task array to modify.
  * @param {number} taskId id of the parent task of the subtask.
  * @param {number} subtaskId the id of the subtask.
  * @return {Task[]} the new task array with the specified subtask removed.
  */
-function removeSubtask(mainTaskArray: Task[], { taskId, subtaskId }: RemoveSubTaskAction): Task[] {
-  return replaceTask(mainTaskArray, taskId, (task: Task) => ({
+function removeSubtask(tasks: Task[], { taskId, subtaskId }: RemoveSubTaskAction): Task[] {
+  return replaceTask(tasks, taskId, (task: Task) => ({
     ...task,
     subtasks: task.subtasks.filter((subTask: SubTask) => {
       if (subTask.id !== subtaskId) {
@@ -195,6 +198,30 @@ function editTask(state: State, action: EditTaskAction): State {
 }
 
 /**
+ * Undo the operation of add task.
+ *
+ * @param {State} state the old state.
+ * @return {State} the new state after the undo.
+ */
+function undoAddTask(state: State): State {
+  const { tasks, undoCache } = state;
+  const { lastAddedTaskId } = undoCache;
+  if (lastAddedTaskId === null) {
+    return state;
+  }
+  const newState = {
+    ...state,
+    tasks: tasks.filter(t => t.id !== lastAddedTaskId),
+    undoCache: { ...undoCache, lastAddedTaskId: null },
+  };
+  if (lastAddedTaskId < -50) {
+    return newState;
+  }
+  httpDeleteTask(lastAddedTaskId).then(() => {});
+  return newState;
+}
+
+/**
  * Undo the operation of delete task.
  *
  * @param {State} state the old state.
@@ -213,6 +240,26 @@ function undoDeleteTask(state: State): State {
     ...state,
     tasks: [...tasks, lastDeletedTask],
     undoCache: { ...undoCache, lastDeletedTask: null },
+  };
+}
+
+/**
+ * Patch a new task with backend info.
+ *
+ * @param {State} state the old state.
+ * @param {BackendPatchNewTaskAction} action the patch action.
+ * @return {State} the new state.
+ */
+function backendPatchNewTask(state: State, action: BackendPatchNewTaskAction): State {
+  const { tasks, undoCache } = state;
+  const newTasks = replaceTask(tasks, action.tempId, t => ({ ...t, id: action.serverId }));
+  if (undoCache.lastAddedTaskId !== action.tempId) {
+    return { ...state, tasks: newTasks };
+  }
+  return {
+    ...state,
+    tasks: newTasks,
+    undoCache: { ...undoCache, lastAddedTaskId: action.serverId },
   };
 }
 
@@ -235,7 +282,7 @@ export default function rootReducer(state: State = initialState, action: Action)
         ...state, tags: state.tags.filter((oldTag: Tag) => (oldTag.id !== action.tagId)),
       };
     case 'ADD_NEW_TASK':
-      return { ...state, tasks: addTask(state.tasks, action.task) };
+      return addTask(state, action);
     case 'ADD_NEW_SUBTASK':
       return { ...state, tasks: addSubTask(state.tasks, action) };
     case 'EDIT_TASK':
@@ -245,9 +292,13 @@ export default function rootReducer(state: State = initialState, action: Action)
     case 'EDIT_SUB_TASK':
       return { ...state, tasks: editSubTask(state.tasks, action) };
     case 'REMOVE_TASK':
-      return removeTaskReducer(state, action);
+      return removeTask(state, action);
     case 'REMOVE_SUBTASK':
       return { ...state, tasks: removeSubtask(state.tasks, action) };
+    case 'UNDO_ADD_TASK':
+      return undoAddTask(state);
+    case 'CLEAR_UNDO_ADD_TASK':
+      return { ...state, undoCache: { ...state.undoCache, lastAddedTaskId: null } };
     case 'UNDO_DELETE_TASK':
       return undoDeleteTask(state);
     case 'CLEAR_UNDO_DELETE_TASK':
@@ -259,10 +310,7 @@ export default function rootReducer(state: State = initialState, action: Action)
           .map(t => (t.id === action.tempId ? ({ ...t, id: action.serverId }) : t)),
       };
     case 'BACKEND_PATCH_NEW_TASK':
-      return {
-        ...state,
-        tasks: replaceTask(state.tasks, action.tempId, t => ({ ...t, id: action.serverId })),
-      };
+      return backendPatchNewTask(state, action);
     case 'BACKEND_PATCH_NEW_SUBTASK':
       return {
         ...state,
