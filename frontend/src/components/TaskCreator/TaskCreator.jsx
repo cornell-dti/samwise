@@ -9,7 +9,7 @@ import TagPicker from './TagPicker';
 import DatePicker from './DatePicker';
 import FocusPicker from './FocusPicker';
 import { randomId } from '../../util/general-util';
-import { fullConnect } from '../../store/react-redux-util';
+import { dispatchConnect } from '../../store/react-redux-util';
 import type { Task, SubTask } from '../../store/store-types';
 import {
   addTask as addTaskAction,
@@ -20,8 +20,6 @@ import { NONE_TAG_ID } from '../../util/tag-util';
 import { replaceSubTask } from '../../util/task-util';
 
 type Props = {|
-  // subscribed from redux store.
-  +tasks: Task[];
   // subscribed from dispatcher.
   +addTask: (task: Task) => AddNewTaskAction;
   +removeTask: (taskId: number) => RemoveTaskAction;
@@ -341,7 +339,7 @@ class TaskCreator extends React.PureComponent<Props, State> {
 }
 
 const actionCreators = { addTask: addTaskAction, removeTask: removeTaskAction };
-const ConnectedTaskCreator = fullConnect<{||}, {| +tasks: Task[]; |}, typeof actionCreators>(
-  ({ tasks }) => ({ tasks }), actionCreators,
+const ConnectedTaskCreator = dispatchConnect<Props, typeof actionCreators>(
+  actionCreators,
 )(TaskCreator);
 export default ConnectedTaskCreator;

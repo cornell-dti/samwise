@@ -5,6 +5,7 @@ import type { Node } from 'react';
 import type { Task } from '../../../store/store-types';
 import styles from './FocusView.css';
 import InlineTaskEditor from '../../Util/TaskEditors/InlineTaskEditor';
+import { filterInFocusTasks } from '../../../util/task-util';
 
 /**
  * The focus view component.
@@ -14,17 +15,11 @@ import InlineTaskEditor from '../../Util/TaskEditors/InlineTaskEditor';
  * @constructor
  */
 export default function FocusView({ tasks }: {| tasks: Task[] |}): Node {
-  const filterMapper = (task: Task): (Task | null) => {
-    if (task.inFocus) {
-      return task;
-    }
-    const subtasks = task.subtasks.filter(subTask => subTask.inFocus);
-    return subtasks.length === 0 ? null : { ...task, subtasks };
-  };
-  const listItems = tasks
-    .map(filterMapper)
-    .map((task: Task | null): Node => task && (
-      <InlineTaskEditor key={task.id} className={styles.TaskBox} task={task} />
-    ));
-  return (<div className={styles.FocusView}>{listItems}</div>);
+  return (
+    <div className={styles.FocusView}>
+      {filterInFocusTasks(tasks).map((task: Task): Node => (
+        <InlineTaskEditor key={task.id} className={styles.TaskBox} task={task} />
+      ))}
+    </div>
+  );
 }

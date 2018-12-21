@@ -9,9 +9,9 @@ import styles from './TaskView.css';
 import windowSizeConnect from '../Util/Responsive/WindowSizeConsumer';
 import type { WindowSize } from '../Util/Responsive/window-size-context';
 import type { FutureViewConfig } from './FutureView/FutureView';
-import { stateConnect } from '../../store/react-redux-util';
 import type { Task } from '../../store/store-types';
 import type { PropsWithoutWindowSize } from '../Util/Responsive/WindowSizeConsumer';
+import { tasksConnect } from '../../util/task-util';
 
 type Props = {|
   +windowSize: WindowSize;
@@ -168,7 +168,7 @@ class TaskView extends React.PureComponent<Props, State> {
   }
 }
 
-const ConnectedTaskView = stateConnect<PropsWithoutWindowSize<Props>, {| +tasks: Task[] |}>(
-  ({ tasks }) => ({ tasks }),
-)(windowSizeConnect<Props>(TaskView));
+const ConnectedTaskView = tasksConnect<PropsWithoutWindowSize<Props>>(
+  windowSizeConnect(TaskView),
+);
 export default ConnectedTaskView;

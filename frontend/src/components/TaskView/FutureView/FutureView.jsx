@@ -201,5 +201,5 @@ class FutureView extends React.PureComponent<Props> {
   }
 }
 
-const ConnectedFutureView = getTagConnect<Props>(FutureView);
-export default ConnectedFutureView;
+const Connected = getTagConnect<Props>(FutureView);
+export default Connected;
