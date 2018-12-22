@@ -3,6 +3,7 @@
 import type {
   PartialMainTask, PartialSubTask, SubTask, Tag, Task,
 } from './store-types';
+import type { TaskDiff } from '../util/task-util';
 
 /*
  * --------------------------------------------------------------------------------
@@ -15,7 +16,7 @@ export type AddNewSubTaskAction = {|
   type: 'ADD_NEW_SUBTASK'; +taskId: number; +subTask: SubTask;
 |};
 
-export type EditTaskAction = {| type: 'EDIT_TASK'; +task: Task; |};
+export type EditTaskAction = {| type: 'EDIT_TASK'; +task: Task; +diff: TaskDiff;|};
 export type EditMainTaskAction = {|
   type: 'EDIT_MAIN_TASK'; +taskId: number; +partialMainTask: PartialMainTask;
 |};

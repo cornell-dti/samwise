@@ -267,6 +267,10 @@ def new_task():
                          _order=order, completed=False)
     db.session.add(new_main_task)
 
+    db.session.commit()
+    # necessary to get the task id
+    new_main_task_id = new_main_task.task_id
+
     subtasks = data.get('subtasks')
     new_subtasks = []
     if subtasks:
@@ -287,7 +291,7 @@ def new_task():
             end_date = subtask.get('end_date')
             new_subtask = Task(user_id=user_id, content=content,
                                start_date=start_date, end_date=end_date,
-                               tag_id=tag_id, parent_task=new_main_task.task_id,
+                               tag_id=tag_id, parent_task=new_main_task_id,
                                _order=i, completed=False)
             db.session.add(new_subtask)
             new_subtasks.append(new_subtask)

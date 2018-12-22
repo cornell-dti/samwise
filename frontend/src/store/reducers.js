@@ -36,6 +36,7 @@ import {
 } from './actions';
 import { replaceTask, replaceSubTaskWithinMainTask } from '../util/task-util';
 import { DUMMY_TAGS, NONE_TAG } from '../util/tag-util';
+import { ignore } from '../util/general-util';
 
 /**
  * Returns the initial state given an app user.
@@ -127,7 +128,7 @@ function editSubTask(
  */
 function removeTask(state: State, { taskId }: RemoveTaskAction): State {
   let lastDeletedTask: Task | null = null;
-  httpDeleteTask(taskId);
+  httpDeleteTask(taskId).then(ignore);
   const tasks = state.tasks.filter((task: Task) => {
     if (task.id !== taskId) {
       return true;
@@ -157,7 +158,7 @@ function removeSubtask(tasks: Task[], { taskId, subtaskId }: RemoveSubTaskAction
       if (subTask.id !== subtaskId) {
         return true;
       }
-      httpDeleteTask(subtaskId);
+      httpDeleteTask(subtaskId).then(ignore);
       return false;
     }),
   }));
@@ -167,21 +168,15 @@ function removeSubtask(tasks: Task[], { taskId, subtaskId }: RemoveSubTaskAction
  * Reducer from an old state with old task to a new state with one task edited.
  *
  * @param {State} state the old state.
+ * @param {Task} task the edited task.
+ * @param {TaskDiff} diff diff between the old task and this task.
  * @param {EditTaskAction} action the reduce action to edit a task.
  * @return {State} the new state.
  */
-function editTask(state: State, action: EditTaskAction): State {
-  const t = action.task;
-  const newTask = {
-    ...t,
-    subtasks: t.subtasks.map((subTask: SubTask) => ({
-      ...subTask,
-      complete: t.complete || subTask.complete,
-    })),
-  };
-  const tasks = replaceTask(state.tasks, newTask.id, (task: Task) => {
-    httpEditTask(task, newTask).then(st => dispatchAction(backendPatchExistingTaskAction(st)));
-    return newTask;
+function editTask(state: State, { task, diff }: EditTaskAction): State {
+  const tasks = replaceTask(state.tasks, task.id, (oldTask: Task) => {
+    httpEditTask(oldTask, diff).then(t => dispatchAction(backendPatchExistingTaskAction(t)));
+    return task;
   });
   return { ...state, tasks };
 }
@@ -206,7 +201,7 @@ function undoAddTask(state: State): State {
   if (lastAddedTaskId < -50) {
     return newState;
   }
-  httpDeleteTask(lastAddedTaskId);
+  httpDeleteTask(lastAddedTaskId).then(ignore);
   return newState;
 }
 

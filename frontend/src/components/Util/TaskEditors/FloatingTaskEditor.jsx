@@ -2,7 +2,6 @@
 
 import React from 'react';
 import type { Node } from 'react';
-import { connect } from 'react-redux';
 import type {
   PartialMainTask, PartialSubTask, SubTask, Task,
 } from '../../../store/store-types';
@@ -12,20 +11,27 @@ import TaskEditor from './TaskEditor';
 import type { EditTaskAction, RemoveTaskAction } from '../../../store/action-types';
 import styles from './FloatingTaskEditor.css';
 import { TaskEditorFlexiblePadding as flexiblePaddingClass } from './TaskEditor.css';
-import { replaceSubTask } from '../../../util/task-util';
+import { replaceSubTask, EMPTY_TASK_DIFF, taskDiffIsEmpty } from '../../../util/task-util';
 import windowSizeConnect from '../Responsive/WindowSizeConsumer';
 import type { WindowSize } from '../Responsive/window-size-context';
+import type { TaskDiff } from '../../../util/task-util';
+import { dispatchConnect } from '../../../store/react-redux-util';
+import type { PropsWithoutWindowSize } from '../Responsive/WindowSizeConsumer';
 
 type Props = {|
   +position: FloatingPosition;
   +initialTask: Task;
   +trigger: (opened: boolean, opener: () => void) => Node;
   +windowSize: WindowSize;
-  +editTask: (task: Task) => EditTaskAction;
+  +editTask: (task: Task, diff: TaskDiff) => EditTaskAction;
   +removeTask: (taskId: number) => RemoveTaskAction;
 |};
 
-type State = {| ...Task; +changed: boolean; +open: boolean; |};
+type State = {|
+  +task: Task;
+  +diff: TaskDiff;
+  +open: boolean;
+|};
 
 /**
  * FloatingTaskEditor is a component used to edit a task on the fly.
@@ -43,7 +49,7 @@ type State = {| ...Task; +changed: boolean; +open: boolean; |};
 class FloatingTaskEditor extends React.PureComponent<Props, State> {
   constructor(props: Props) {
     super(props);
-    this.state = { ...props.initialTask, changed: false, open: false };
+    this.state = { task: props.initialTask, diff: EMPTY_TASK_DIFF, open: false };
   }
 
   componentDidMount() {
@@ -57,7 +63,7 @@ class FloatingTaskEditor extends React.PureComponent<Props, State> {
     const { initialTask } = this.props;
     if (initialTask !== nextProps.initialTask) {
       const nextInitialTask = nextProps.initialTask;
-      this.setState({ ...nextInitialTask, changed: false });
+      this.setState({ task: nextInitialTask, diff: EMPTY_TASK_DIFF });
     }
   }
 
@@ -113,7 +119,7 @@ class FloatingTaskEditor extends React.PureComponent<Props, State> {
   /**
    * Close the popup.
    */
-  closePopup = (): void => this.setState({ open: false, changed: false });
+  closePopup = (): void => this.setState({ open: false, diff: EMPTY_TASK_DIFF });
 
   /**
    * Check whether a task has a good format.
@@ -134,23 +140,121 @@ class FloatingTaskEditor extends React.PureComponent<Props, State> {
   });
 
   /**
-   * Handle the onSave event.
-   *
-   * @param {boolean} doSave whether to do the actual save. i.e. It not just quits.
-   * Defaults to true.
+   * Handle the saveEditedTask event.
    */
-  onSave = (doSave: boolean = true): void => {
-    if (!doSave) {
-      this.closePopup();
-      return;
-    }
+  saveEditedTask = (): void => {
     const { editTask } = this.props;
-    const { open, changed, ...task } = this.state;
+    const { task, diff } = this.state;
     if (!this.taskIsGood(task)) {
       return;
     }
-    editTask(this.filterEmptySubTasks(task));
+    if (taskDiffIsEmpty(diff)) {
+      return;
+    }
+    editTask(this.filterEmptySubTasks(task), diff);
     this.closePopup();
+  };
+
+  /**
+   * Edit main task.
+   *
+   * @param {PartialMainTask} partialMainTask partial main task.
+   * @param {boolean} doSave whether to save.
+   */
+  editMainTask = (partialMainTask: PartialMainTask, doSave: boolean) => {
+    this.setState(
+      ({ task, diff }: State) => ({
+        task: { ...task, ...partialMainTask },
+        diff: { ...diff, mainTaskDiff: { ...diff.mainTaskDiff, ...partialMainTask } },
+      }),
+      doSave ? this.saveEditedTask : undefined,
+    );
+  };
+
+  /**
+   * Edit subtask.
+   *
+   * @param {number} subtaskId id of the subtask.
+   * @param {PartialSubTask} partialSubTask partial subtask.
+   * @param {boolean} doSave whether to save.
+   */
+  editSubTask = (subtaskId: number, partialSubTask: PartialSubTask, doSave: boolean) => {
+    this.setState(({ task, diff }: State) => {
+      const newTask = {
+        ...task,
+        subtasks: replaceSubTask(task.subtasks, subtaskId, s => ({ ...s, ...partialSubTask })),
+      };
+      let foundInPreviousEdits = false;
+      const subtasksCreations = replaceSubTask(diff.subtasksCreations, subtaskId, (s) => {
+        if (s.id === subtaskId) {
+          foundInPreviousEdits = true;
+        }
+        return { ...s, ...partialSubTask };
+      });
+      const subtasksEdits = [];
+      for (let i = 0; i < diff.subtasksEdits.length; i += 1) {
+        const pair = diff.subtasksEdits[i];
+        const [id, edit] = pair;
+        if (id === subtaskId) {
+          foundInPreviousEdits = true;
+          subtasksEdits.push([i, { ...edit, ...partialSubTask }]);
+        } else {
+          subtasksEdits.push([id, edit]);
+        }
+      }
+      if (!foundInPreviousEdits) {
+        subtasksEdits.push([subtaskId, partialSubTask]);
+      }
+      return {
+        task: newTask,
+        diff: { ...diff, subtasksCreations, subtasksEdits },
+      };
+    }, doSave ? this.saveEditedTask : undefined);
+  };
+
+  /**
+   * Add subtask.
+   *
+   * @param {SubTask} subTask subtask to add.
+   */
+  addSubTask = (subTask: SubTask) => {
+    this.setState((state: State) => ({
+      task: {
+        ...state.task,
+        subtasks: [...state.task.subtasks, subTask],
+      },
+      diff: {
+        ...state.diff,
+        subtasksCreations: [...state.diff.subtasksCreations, subTask],
+      },
+    }));
+  };
+
+  /**
+   * Handle remove task.
+   */
+  removeTask = () => {
+    const { removeTask } = this.props;
+    const { task: { id } } = this.state;
+    removeTask(id);
+  };
+
+  /**
+   * Remove subtask with given id.
+   *
+   * @param {number} subtaskId id of the subtask to remove.
+   */
+  removeSubTask = (subtaskId: number) => {
+    this.setState((state: State) => ({
+      task: {
+        ...state.task,
+        subtasks: state.task.subtasks.filter(s => s.id !== subtaskId),
+      },
+      diff: {
+        ...state.diff,
+        subtasksDeletions: [...state.diff.subtasksDeletions, subtaskId],
+      },
+    }));
   };
 
   /**
@@ -170,74 +274,59 @@ class FloatingTaskEditor extends React.PureComponent<Props, State> {
       <div
         role="presentation"
         className={styles.FloatingTaskEditorSaveButton}
-        onClick={this.onSave}
+        onClick={this.saveEditedTask}
       >
         <span className={styles.FloatingTaskEditorSaveButtonText}>Save</span>
       </div>
     </div>
   );
 
-  render(): Node {
-    const { trigger, removeTask } = this.props;
-    const { open, changed, ...task } = this.state;
-    const triggerNode = trigger(open, this.openPopup);
-    const blockerNode = open && (
-      <div
-        className={styles.BackgroundBlocker}
-        role="button"
-        tabIndex={-1}
-        onClick={this.closePopup}
-        onKeyDown={this.closePopup}
-      />
-    );
+  /**
+   * Render the editor node.
+   *
+   * @return {Node} the rendered node.
+   */
+  renderEditorNode = (): Node => {
+    const { task } = this.state;
     const taskEditorProps = {
       ...task,
-      editMainTask: (partialMainTask: PartialMainTask, doSave: boolean) => {
-        this.setState(
-          { ...partialMainTask, changed: true },
-          doSave ? this.onSave : undefined,
-        );
-      },
-      editSubTask: (subtaskId: number, partialSubTask: PartialSubTask, doSave: boolean) => {
-        this.setState(({ subtasks }: State) => ({
-          subtasks: replaceSubTask(
-            subtasks, subtaskId, s => ({ ...s, ...partialSubTask }),
-          ),
-          changed: true,
-        }), doSave ? this.onSave : undefined);
-      },
-      addSubTask: (subTask: SubTask) => {
-        this.setState(({ subtasks }: State) => ({
-          subtasks: [...subtasks, subTask],
-          changed: true,
-        }));
-      },
-      removeTask: () => { removeTask(task.id); },
-      removeSubTask: (subtaskId: number) => {
-        this.setState(({ subtasks }: State) => ({
-          subtasks: subtasks.filter(s => s.id !== subtaskId),
-          changed: true,
-        }));
-      },
+      editMainTask: this.editMainTask,
+      editSubTask: this.editSubTask,
+      addSubTask: this.addSubTask,
+      removeTask: this.removeTask,
+      removeSubTask: this.removeSubTask,
       className: styles.FloatingTaskEditor,
-      onSave: () => this.onSave(changed),
+      onSave: this.saveEditedTask,
       refFunction: (e) => { this.editorElement = e; },
     };
-    const editorNode = open && (
+    return (
       <TaskEditor {...taskEditorProps}>{this.renderSubmitComponent()}</TaskEditor>
     );
+  };
+
+  render(): Node {
+    const { trigger } = this.props;
+    const { open } = this.state;
     return (
       <React.Fragment>
-        {triggerNode}
-        {blockerNode}
-        {editorNode}
+        {trigger(open, this.openPopup)}
+        {open && (
+          <div
+            className={styles.BackgroundBlocker}
+            role="button"
+            tabIndex={-1}
+            onClick={this.closePopup}
+            onKeyDown={this.closePopup}
+          />
+        )}
+        {open && this.renderEditorNode()}
       </React.Fragment>
     );
   }
 }
 
-const ConnectedFloatingTaskEditor = connect(
-  null,
-  { editTask: editTaskAction, removeTask: removeTaskAction },
+const actionCreators = { editTask: editTaskAction, removeTask: removeTaskAction };
+const Connected = dispatchConnect<PropsWithoutWindowSize<Props>, typeof actionCreators>(
+  actionCreators,
 )(windowSizeConnect<Props>(FloatingTaskEditor));
-export default ConnectedFloatingTaskEditor;
+export default Connected;

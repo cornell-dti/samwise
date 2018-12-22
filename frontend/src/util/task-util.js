@@ -1,7 +1,7 @@
 // @flow strict
 
 import type { ComponentType } from 'react';
-import type { SubTask, Task } from '../store/store-types';
+import type { PartialMainTask, PartialSubTask, SubTask, Task } from '../store/store-types';
 import type { ConnectedComponent } from '../store/react-redux-util';
 import { stateConnect } from '../store/react-redux-util';
 
@@ -53,6 +53,49 @@ export const replaceSubTaskWithinMainTask = (
   ...task,
   subtasks: replaceSubTask(task.subtasks, subTaskID, s => replacer(s, task)),
 }));
+
+
+/**
+ * Used to keep track of the task diff to optimize edit speed.
+ */
+export type TaskDiff = {|
+  +mainTaskDiff: PartialMainTask,
+  +subtasksCreations: SubTask[];
+  +subtasksEdits: [number, PartialSubTask][];
+  +subtasksDeletions: number[];
+|};
+
+/**
+ * The empty task diff.
+ * @type {TaskDiff}
+ */
+export const EMPTY_TASK_DIFF: TaskDiff = {
+  mainTaskDiff: Object.freeze({}),
+  subtasksEdits: [],
+  subtasksCreations: [],
+  subtasksDeletions: [],
+};
+
+/**
+ * Detect whether diff is empty.
+ *
+ * @param {TaskDiff} diff the diff to check.
+ * @return {boolean} whether diff is empty.
+ */
+export const taskDiffIsEmpty = (diff: TaskDiff): boolean => {
+  const {
+    mainTaskDiff, subtasksCreations, subtasksEdits, subtasksDeletions,
+  } = diff;
+  const {
+    name, tag, date, complete, inFocus,
+  } = mainTaskDiff;
+  const mainTaskEmpty = name == null
+    && tag == null && date == null && complete == null && inFocus == null;
+  if (!mainTaskEmpty) {
+    return false;
+  }
+  return subtasksCreations.length === 0 && subtasksEdits.length === 0 && subtasksDeletions === 0;
+};
 
 /**
  * Filter away all the completed tasks.

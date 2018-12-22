@@ -24,6 +24,7 @@ import type {
 import type {
   PartialMainTask, PartialSubTask, SubTask, Tag, Task,
 } from './store-types';
+import type { TaskDiff } from '../util/task-util';
 
 /**
  * Edit tag is an action that can be used to edit a tag.
@@ -68,10 +69,13 @@ export const addSubTask = (taskId: number, subTask: SubTask): AddNewSubTaskActio
 /**
  * Edit task is an action that can be used to edit an existing task.
  *
- * @param task the task to edit.
- * @return {AddNewTaskAction} the edit task action.
+ * @param {Task} task the edited task.
+ * @param {TaskDiff} diff diff between the old task and this task.
+ * @return {EditTaskAction} the edit task action.
  */
-export const editTask = (task: Task): EditTaskAction => ({ type: 'EDIT_TASK', task });
+export const editTask = (task: Task, diff: TaskDiff): EditTaskAction => ({
+  type: 'EDIT_TASK', task, diff,
+});
 
 /**
  * Edit main task is the action to edit various parts of main task except subtasks.

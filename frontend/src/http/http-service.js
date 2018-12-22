@@ -12,6 +12,7 @@ import {
   createEditTagRequest, createNewSubTaskRequest, createNewTaskRequest, createEditBackendTaskRequest,
   backendTagToFrontendTag, backendTaskWithSubTasksToFrontendTask, reorganizeBackendTasks,
 } from './backend-adapter';
+import type { TaskDiff } from '../util/task-util';
 
 /**
  * Initialize the data from the backend.
@@ -83,9 +84,10 @@ export function httpAddSubTask(mainTask: Task, subTask: SubTask): Promise<number
  * Currently, it does not differentiate between main tasks and subtasks.
  *
  * @param {number} taskId the id of the task.
+ * @return {Promise<void>} promise when done.
  */
-export function httpDeleteTask(taskId: number) {
-  put(`/tasks/${taskId}/delete`).then(ignore);
+export function httpDeleteTask(taskId: number): Promise<void> {
+  return put(`/tasks/${taskId}/delete`).then(ignore);
 }
 
 /**
@@ -98,6 +100,9 @@ export function httpDeleteTask(taskId: number) {
 export async function httpEditBackendTask(
   id: number, partialTask: PartialMainTask | PartialSubTask,
 ): Promise<void> {
+  if (Object.keys(partialTask).length === 0) {
+    return;
+  }
   await post(`/tasks/${id}/edit`, createEditBackendTaskRequest(partialTask));
 }
 
@@ -105,44 +110,39 @@ export async function httpEditBackendTask(
  * Edit an existing task.
  *
  * @param {Task} oldTask the old task used as a reference.
- * @param {Task} newTask the new task to replace the old task.
+ * @param {TaskDiff} diff diff between the old task and new task.
  * @return {Promise<Task>} the edited task with the latest information from the server.
  */
-export async function httpEditTask(oldTask: Task, newTask: Task): Promise<Task> {
-  if (oldTask.id !== newTask.id) {
-    throw new Error('Inconsistent id of old task and new task.');
-  }
-  const { id, subtasks, ...partialNewMainTask } = newTask;
-  await httpEditBackendTask(id, partialNewMainTask);
-  // Deal with subtasks
-  const oldTasksIdSet = new Set(oldTask.subtasks.map(s => s.id));
-  const editedSubTasks: SubTask[] = [];
-  const newSubTasks: SubTask[] = [];
-  subtasks.forEach((subTask: SubTask) => {
-    if (oldTasksIdSet.has(subTask.id)) {
-      editedSubTasks.push(subTask);
-      oldTasksIdSet.delete(subTask.id);
-    } else {
-      newSubTasks.push(subTask);
-    }
+export async function httpEditTask(oldTask: Task, diff: TaskDiff): Promise<Task> {
+  const editedMainTask = { ...oldTask, ...diff.mainTaskDiff };
+  const addedSubTasks = [];
+  const subTasksEditsMap = new Map<number, PartialSubTask>();
+  const subtaskIdsToRemove = new Set(diff.subtasksDeletions);
+  const editMainTaskPromise = httpEditBackendTask(oldTask.id, diff.mainTaskDiff);
+  const addSubTasksPromises = diff.subtasksCreations
+    .map(s => httpAddSubTask(editedMainTask, s).then((id: number) => {
+      addedSubTasks.push({ ...s, id });
+    }));
+  const editSubTasksPromises = diff.subtasksEdits.map(([id, s]) => {
+    subTasksEditsMap.set(id, s);
+    return httpEditBackendTask(id, s);
   });
-  const deletedSubTasks: SubTask[] = newTask.subtasks.filter(s => oldTasksIdSet.has(s.id));
-  const subTasksEditPromises = editedSubTasks.map((subTask: SubTask) => {
-    const { id, ...rest } = subTask;
-    return httpEditBackendTask(id, rest).then(() => subTask);
-  });
-  const subTasksNewPromises = newSubTasks.map(
-    (subTask: SubTask) => httpAddSubTask(newTask, subTask).then(i => ({ ...subTask, id: i })),
-  );
-  const subTasksDeletePromises = deletedSubTasks.map(s => httpDeleteTask(s.id));
-  const allDone = await Promise.all([
-    ...subTasksNewPromises, ...subTasksEditPromises, ...subTasksDeletePromises,
+  const deleteSubTasksPromises = diff.subtasksDeletions.map(httpDeleteTask);
+  await Promise.all([
+    editMainTaskPromise, ...addSubTasksPromises, ...editSubTasksPromises, deleteSubTasksPromises,
   ]);
-  const newSubtasks: SubTask[] = [];
-  allDone.forEach((subtask: SubTask | void) => {
-    if (subtask != null) {
-      newSubtasks.push(subtask);
+  const changedSubTasks = [];
+  for (let i = 0; i < oldTask.subtasks.length; i += 1) {
+    const oldSubTask = oldTask.subtasks[i];
+    if (!subtaskIdsToRemove.has(oldSubTask.id)) {
+      const diffOpt = subTasksEditsMap.get(oldSubTask.id);
+      if (diffOpt == null) {
+        changedSubTasks.push(oldSubTask); // no change
+      } else {
+        changedSubTasks.push({ ...oldSubTask, ...diffOpt }); // apply change
+      }
     }
-  });
-  return { ...newTask, subtasks: newSubtasks };
+  }
+  changedSubTasks.push(...addedSubTasks);
+  return { ...editedMainTask, subtasks: changedSubTasks };
 }
