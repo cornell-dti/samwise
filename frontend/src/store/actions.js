@@ -149,36 +149,36 @@ export const clearUndoDeleteTask = (): ClearUndoDeleteTaskAction => ({
  * Let the backend patch a new task.
  *
  * @param {number} tempId the temp randomly assigned new tag id.
- * @param {number} serverId the tag id from server.
+ * @param {number} backendId the tag id from backend.
  * @return {BackendPatchExistingTaskAction} the backend patch task action.
  */
 export const backendPatchNewTag = (
-  tempId: number, serverId: number,
-): BackendPatchNewTagAction => ({ type: 'BACKEND_PATCH_NEW_TAG', tempId, serverId });
+  tempId: number, backendId: number,
+): BackendPatchNewTagAction => ({ type: 'BACKEND_PATCH_NEW_TAG', tempId, backendId });
 
 /**
  * Let the backend patch a new task.
  *
- * @param {number} tempId the temp randomly assigned new tag id.
- * @param {number} serverId the task id from server.
+ * @param {number} tempId the temp randomly assigned new task id.
+ * @param {Task} backendTask the task from backend.
  * @return {BackendPatchExistingTaskAction} the backend patch task action.
  */
 export const backendPatchNewTask = (
-  tempId: number, serverId: number,
-): BackendPatchNewTaskAction => ({ type: 'BACKEND_PATCH_NEW_TASK', tempId, serverId });
+  tempId: number, backendTask: Task,
+): BackendPatchNewTaskAction => ({ type: 'BACKEND_PATCH_NEW_TASK', tempId, backendTask });
 
 /**
  * Let the backend patch a new subtask.
  *
  * @param {number} taskId the main task id.
  * @param {number} tempSubTaskId the temp randomly assigned new subtask id.
- * @param {number} serverSubTaskId the subtask id from server.
+ * @param {number} backendSubTaskId the subtask id from backend.
  * @return {BackendPatchExistingTaskAction} the backend patch subtask action.
  */
 export const backendPatchNewSubTask = (
-  taskId: number, tempSubTaskId: number, serverSubTaskId: number,
+  taskId: number, tempSubTaskId: number, backendSubTaskId: number,
 ): BackendPatchNewSubTaskAction => ({
-  type: 'BACKEND_PATCH_NEW_SUBTASK', taskId, tempSubTaskId, serverSubTaskId,
+  type: 'BACKEND_PATCH_NEW_SUBTASK', taskId, tempSubTaskId, backendSubTaskId,
 });
 
 /**

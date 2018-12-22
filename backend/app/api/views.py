@@ -13,20 +13,35 @@ api = Blueprint('api', __name__, url_prefix='/api')
 
 
 def get_user_id(firebase_id_token):
+    # The flag to allow bad users.
+    # It can be set to true only during development.
+    ALLOW_BAD_USER = False
+    if ALLOW_BAD_USER:
+        return 'bad_user'
     try:
         decoded_token = auth.auth.verify_id_token(firebase_id_token)
         return decoded_token['uid']
     except ValueError:
-        return
+        return None
 
 
 @api.route('/', methods=['GET'])
 def index():
+    """
+    Used for sanity check or potential health check.
+
+    :return: a simple success message.
+    """
     return jsonify(status='success')
 
 
 @api.route('/login', methods=['GET'])
 def login():
+    """
+    TODO This method is not used.
+    The frontend can use firebase UI directly and does not need this.
+    :return:
+    """
     token = request.args.get('token')
     user_id = get_user_id(token)
     if user_id:
@@ -36,8 +51,7 @@ def login():
         if param_prefix == '&':
             import pdb
             pdb.set_trace()
-        return redirect(
-            '{}{}token={}'.format(redirect_url, param_prefix, token))
+        return redirect(f'{redirect_url}{param_prefix}token={token}')
     else:
         return auth.html
 
@@ -49,9 +63,9 @@ def new_tag():
 
     Input format:
     {
+        "is_class": True | False,
         "name": "Tag name",
         "color": "#ffffff"
-        "isClass": True | False
     }
 
     Output format:
@@ -71,16 +85,18 @@ def new_tag():
         return redirect(url_for('api.login', redirect=request.path))
     tag_name = data.get('name')
     color = data.get('color')
-    if not(type(tag_name) == str or type(tag_name) == 'unicode') \
-            or not(type(color) == str or type(color) == 'unicode'):
-        return jsonify(error='tag name and color must be strings. Current color type is '
-                             + type(color) + '. Current tag name types is ' + type(tag_name)), 400
-    isClass = data.get('class')
+    if not (type(tag_name) == str or type(tag_name) == 'unicode') \
+            or not (type(color) == str or type(color) == 'unicode'):
+        return jsonify(
+            error='tag name and color must be strings. Current color type is '
+                  + type(color) + '. Current tag name types is '
+                  + type(tag_name)), 400
+    is_class = data.get('is_class')
     last_tag = Tag.query.filter(Tag.user_id == user_id).order_by(
         Tag._order.desc()).first()
     order = last_tag._order + 1 if last_tag else 0
-    tag = Tag(user_id=user_id, tag_name=tag_name, color=color, _order=order, isClass=isClass,
-              completed=False)
+    tag = Tag(user_id=user_id, is_class=is_class,
+              tag_name=tag_name, color=color, _order=order)
     db.session.add(tag)
     db.session.commit()
     return jsonify(created=util.sqlalchemy_object_to_dict(tag))
@@ -104,9 +120,13 @@ def get_tags():
     user_id = get_user_id(request.args.get('token'))
     if not user_id:
         return redirect(url_for('api.login', redirect=request.path))
-    tags = Tag.query.filter(Tag.user_id == user_id).all()
+    tags = Tag.query \
+        .filter(Tag.user_id == user_id) \
+        .filter(Tag.deleted == False) \
+        .all()
     tags_json = util.table_to_json(tags)
     return jsonify(tags_json)
+
 
 @api.route('/tags/classes', methods=['GET'])
 def get_classes():
@@ -126,7 +146,7 @@ def get_classes():
     user_id = get_user_id(request.args.get('token'))
     if not user_id:
         return redirect(url_for('api.login', redirect=request.path))
-    tags = Tag.query.filter(Tag.isClass is True).all()
+    tags = Tag.query.filter(Tag.is_class is True).all()
     tags_json = util.table_to_json(tags)
     return jsonify(tags_json)
 
@@ -143,8 +163,7 @@ def delete_tag(tag_id):
         Tag.user_id == user_id).first()
     if tag is None:
         return jsonify(
-            error='error. no tag with id {} exists for this user.'.format(
-                tag_id)), 404
+            error=f'error. no tag with id {tag_id} exists for this user.'), 404
     tag.deleted = True
     return jsonify(status='success')
 
@@ -157,7 +176,8 @@ def edit_tag(tag_id):
 
     Input format:
     {
-        "tag_name": "ABC",
+        "is_class": True | False,
+        "name": "ABC",
         "color": "#ffffff",
     }
 
@@ -176,16 +196,20 @@ def edit_tag(tag_id):
     user_id = get_user_id(data['token'])
     if not user_id:
         return redirect(url_for('api.login', redirect=request.path))
-    tag_name = data.get('tag_name')
+    is_class = data.get('is_class')
+    tag_name = data.get('name')
     color = data.get('color')
     tag = Tag.query.filter(Tag.user_id == user_id).filter(
         Tag.tag_id == tag_id).first()
     if tag is None:
         return jsonify(status='error. tag not found.')
+    if is_class is None:
+        return jsonify(status='error. key "is_class" is required')
     if tag_name is None:
         return jsonify(status='error. key "tag_name" is required.')
     if color is None:
         return jsonify(status='error. key "color" is required.')
+    tag.is_class = is_class
     tag.tag_name = tag_name
     tag.color = color
     db.session.commit()
@@ -228,20 +252,23 @@ def new_task():
     start_date = data.get('start_date')
     end_date = data.get('end_date')
     if None in (content, tag_id, start_date, end_date):
-        return jsonify(error='Parameters content, tag_id, start_date, and end_date are required!')
+        return jsonify(
+            error='Parameters content, tag_id, start_date, and '
+                  'end_date are required!')
 
     parent_task = data.get('parent_task')
     last_task = Task.query.filter(
         Task.tag_id == tag_id).filter(
         Task.user_id == user_id).order_by(Task._order.desc()).first()
     order = last_task._order + 1 if last_task else 0
-    new_task = Task(user_id=user_id, content=content,
-                    start_date=start_date, end_date=end_date,
-                    tag_id=tag_id, parent_task=parent_task,
-                    _order=order, completed=False)
-    db.session.add(new_task)
+    new_main_task = Task(user_id=user_id, content=content,
+                         start_date=start_date, end_date=end_date,
+                         tag_id=tag_id, parent_task=parent_task,
+                         _order=order, completed=False)
+    db.session.add(new_main_task)
 
     subtasks = data.get('subtasks')
+    new_subtasks = []
     if subtasks:
         # Validate subtasks
         for i, subtask in enumerate(subtasks):
@@ -249,7 +276,9 @@ def new_task():
             start_date = subtask.get('start_date')
             end_date = subtask.get('end_date')
             if None in (content, start_date, end_date):
-                return jsonify(error='subtask {} is missing content, start_date, and/or end_date.'.format(i))
+                return jsonify(
+                    error=f'subtask {i} is missing content, start_date, '
+                          + 'and/or end_date.')
 
         # Add subtasks
         for i, subtask in enumerate(subtasks):
@@ -258,11 +287,17 @@ def new_task():
             end_date = subtask.get('end_date')
             new_subtask = Task(user_id=user_id, content=content,
                                start_date=start_date, end_date=end_date,
-                               tag_id=tag_id, parent_task=new_task.task_id,
+                               tag_id=tag_id, parent_task=new_main_task.task_id,
                                _order=i, completed=False)
             db.session.add(new_subtask)
+            new_subtasks.append(new_subtask)
     db.session.commit()
-    return jsonify(created=util.sqlalchemy_object_to_dict(new_task))
+
+    new_task_json = util.sqlalchemy_object_to_dict(new_main_task)
+    subtasks_json = [util.sqlalchemy_object_to_dict(s) for s in new_subtasks]
+    new_task_json['subtasks'] = subtasks_json
+
+    return jsonify(created=new_task_json)
 
 
 @api.route('/tasks/all', methods=['GET'])
@@ -291,72 +326,10 @@ def get_all_tasks():
     if not user_id:
         return redirect(url_for('api.login', redirect=request.path))
     tasks = Task.query \
-        .filter(Task.user_id == user_id).filter(Task.deleted == False) \
+        .filter(Task.user_id == user_id) \
+        .filter(Task.deleted == False) \
         .all()
     return jsonify(util.table_to_json(tasks))
-
-
-
-
-"""
-# Not used now
-
-@api.route('/tags/<tag_id>/tasks/all', methods=['GET'])
-def get_tasks(tag_id):
-    ""
-    Returns all tasks.
-
-    Output format:
-
-    List of tags in form:
-
-    {
-        "content": content,
-        "start_date": yyyy-mm-dd hh:mm:ss,
-        "end_date": yyyy-mm-dd hh:mm:ss,
-        "tag_id": id,
-        "parent_task": parent id,
-        "in_focus": True,
-        "_order": order,
-        "completed": False
-    }
-    ""
-    user_id = get_user_id(request.args.get('token'))
-    if not user_id:
-        return redirect(url_for('api.login', redirect=request.path))
-    tasks = Task.query.filter(Task.tag_id == Tag.tag_id).filter(
-        Tag.user_id == user_id).filter(
-        Tag.tag_id == tag_id).all()
-    return jsonify(util.table_to_json(tasks))
-
-@api.route('/tasks/focus', methods=['GET'])
-def get_tasks_in_focus():
-    ""
-    Returns all tasks with in_focus == true.
-
-    Output format:
-
-    List of tags in form:
-
-    {
-        "content": content,
-        "start_date": yyyy-mm-dd hh:mm:ss,
-        "end_date": yyyy-mm-dd hh:mm:ss,
-        "tag_id": id,
-        "parent_task": parent id,
-        "in_focus": True,
-        "_order": order,
-        "completed": False
-    }
-    ""
-    user_id = get_user_id(request.args.get('token'))
-    if not user_id:
-        return redirect(url_for('api.login', redirect=request.path))
-    tasks = Task.query.filter(Task.user_id == user_id).filter(
-        Task.in_focus == True).all()
-    tasks_json = util.table_to_json(tasks)
-    return jsonify(tasks_json)
-"""
 
 
 @api.route('/tasks/<task_id>/mark', methods=['PUT'])
@@ -370,7 +343,6 @@ def mark_task_complete(task_id):
     Output format:
     {"status": "success"} if succeeded.
     {"error": error message} if failed.
-    {"
     """
     data = request.get_json(force=True)
     if not data or 'token' not in data:

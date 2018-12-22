@@ -16,17 +16,12 @@ import { stateConnect } from '../store/react-redux-util';
  *
  * @param {Task[]} tasks the task array to perform the replace operation.
  * @param {number} id the id of the task to be replaced.
- * @param {function(Task): Task | Task} replacer the replacer function or replacement task.
+ * @param {function(Task): Task} replacer the replacer function.
  * @return {Task[]} the new task array.
  */
 export const replaceTask = (
-  tasks: Task[], id: number, replacer: ((Task) => Task) | Task,
-): Task[] => tasks.map((task: Task) => {
-  if (task.id !== id) {
-    return task;
-  }
-  return typeof replacer === 'function' ? replacer(task) : replacer;
-});
+  tasks: Task[], id: number, replacer: (Task) => Task,
+): Task[] => tasks.map((task: Task) => (task.id !== id ? task : replacer(task)));
 
 /**
  * Replace a subtask with given id in an array of task.
@@ -102,18 +97,11 @@ export const computeTaskProgress = (inFocusTasks: Task[]): TasksProgress => {
   let all = 0;
   for (let i = 0; i < inFocusTasks.length; i += 1) {
     const task = inFocusTasks[i];
-    if (task.subtasks.length === 0) {
-      if (task.complete) {
-        completed += 1;
-      }
-      all += 1;
+    all += task.subtasks.length + 1;
+    if (task.complete) {
+      completed += task.subtasks.length + 1;
     } else {
-      all += task.subtasks.length;
-      if (task.complete) {
-        completed += task.subtasks.length;
-      } else {
-        completed += task.subtasks.reduce((a, s) => a + (s.complete ? 1 : 0), 0);
-      }
+      completed += task.subtasks.reduce((a, s) => a + (s.complete ? 1 : 0), 0);
     }
   }
   return { completed, all };
