@@ -6,6 +6,7 @@ import type { TasksProgress } from '../../util/task-util';
 import windowSizeConnect from '../Util/Responsive/WindowSizeConsumer';
 import type { WindowSize } from '../Util/Responsive/window-size-context';
 import ProgressIndicator from './ProgressIndicator';
+import styles from './ProgressTracker.css';
 
 type Props = {|
   +windowSize: WindowSize;
@@ -22,7 +23,7 @@ type Props = {|
  */
 function ProgressTracker({ windowSize, progress }: Props): Node {
   return (
-    <div>
+    <div className={styles.ProgressTracker}>
       <ProgressIndicator progress={progress} />
     </div>
   );

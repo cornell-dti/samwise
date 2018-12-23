@@ -98,13 +98,13 @@ export function httpDeleteTask(taskId: number): Promise<void> {
  * @param {PartialMainTask | PartialSubTask} partialTask the partial task info.
  * @return {Promise<void>} promise when done.
  */
-export async function httpEditBackendTask(
+export function httpEditBackendTask(
   id: number, partialTask: PartialMainTask | PartialSubTask,
 ): Promise<void> {
   if (Object.keys(partialTask).length === 0) {
-    return;
+    return new Promise<void>(ignore);
   }
-  await post(`/tasks/${id}/edit`, createEditBackendTaskRequest(partialTask));
+  return post(`/tasks/${id}/edit`, createEditBackendTaskRequest(partialTask)).then(ignore);
 }
 
 /**
@@ -114,7 +114,7 @@ export async function httpEditBackendTask(
  * @param {TaskDiff} diff diff between the old task and new task.
  * @return {Promise<Task>} the edited task with the latest information from the server.
  */
-export async function httpEditTask(oldTask: Task, diff: TaskDiff): Promise<Task> {
+export function httpEditTask(oldTask: Task, diff: TaskDiff): Promise<Task> {
   const editedMainTask = { ...oldTask, ...diff.mainTaskDiff };
   const addedSubTasks = [];
   const subTasksEditsMap = new Map<number, PartialSubTask>();
@@ -129,21 +129,22 @@ export async function httpEditTask(oldTask: Task, diff: TaskDiff): Promise<Task>
     return httpEditBackendTask(id, s);
   });
   const deleteSubTasksPromises = diff.subtasksDeletions.map(httpDeleteTask);
-  await Promise.all([
+  return Promise.all([
     editMainTaskPromise, ...addSubTasksPromises, ...editSubTasksPromises, deleteSubTasksPromises,
-  ]);
-  const changedSubTasks = [];
-  for (let i = 0; i < oldTask.subtasks.length; i += 1) {
-    const oldSubTask = oldTask.subtasks[i];
-    if (!subtaskIdsToRemove.has(oldSubTask.id)) {
-      const diffOpt = subTasksEditsMap.get(oldSubTask.id);
-      if (diffOpt == null) {
-        changedSubTasks.push(oldSubTask); // no change
-      } else {
-        changedSubTasks.push({ ...oldSubTask, ...diffOpt }); // apply change
+  ]).then(() => {
+    const changedSubTasks = [];
+    for (let i = 0; i < oldTask.subtasks.length; i += 1) {
+      const oldSubTask = oldTask.subtasks[i];
+      if (!subtaskIdsToRemove.has(oldSubTask.id)) {
+        const diffOpt = subTasksEditsMap.get(oldSubTask.id);
+        if (diffOpt == null) {
+          changedSubTasks.push(oldSubTask); // no change
+        } else {
+          changedSubTasks.push({ ...oldSubTask, ...diffOpt }); // apply change
+        }
       }
     }
-  }
-  changedSubTasks.push(...addedSubTasks);
-  return { ...editedMainTask, subtasks: changedSubTasks };
+    changedSubTasks.push(...addedSubTasks);
+    return { ...editedMainTask, subtasks: changedSubTasks };
+  });
 }

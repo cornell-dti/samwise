@@ -20,16 +20,13 @@ export type Props = {|
  * @constructor
  */
 function UndoToast(props: Props): Node {
-  const {
-    toastId, message, onUndo, onDismiss,
-  } = props;
+  const { toastId, message, onUndo } = props;
   const handleToastClick = (e: SyntheticMouseEvent<HTMLSpanElement>) => {
     e.stopPropagation();
     if (e.target instanceof HTMLButtonElement) {
       onUndo();
       toast.dismiss(toastId);
     } else {
-      onDismiss();
       toast.dismiss(toastId);
     }
   };
@@ -63,6 +60,7 @@ export default function emitToast(
     position: 'top-right',
     autoClose: 5000,
     closeOnClick: false,
+    onClose: onDismiss,
     closeButton: false,
     hideProgressBar: true,
     draggable: false,
