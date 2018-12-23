@@ -20,10 +20,11 @@ import type { TaskDiff } from '../util/task-util';
  * @return {Promise<BackendPatchLoadedDataAction>} the promise of the backend patch loaded action.
  */
 export function httpInitializeData(): Promise<BackendPatchLoadedDataAction> {
-  return Promise.all([
-    get<BackendTag[]>('/tags/all').then(l => l.map(backendTagToFrontendTag)),
-    get<BackendTask[]>('/tasks/all').then(reorganizeBackendTasks),
-  ]).then(([tags, tasks]) => backendPatchLoadedData(tags, tasks));
+  type LoadedData = {| +tags: BackendTag[]; +tasks: BackendTask[]; |};
+  return get<LoadedData>('/load').then(({ tags, tasks }) => backendPatchLoadedData(
+    tags.map(backendTagToFrontendTag),
+    reorganizeBackendTasks(tasks),
+  ));
 }
 
 /**
@@ -83,7 +84,7 @@ export function httpAddSubTask(mainTask: Task, subTask: SubTask): Promise<number
  * Delete a task with a task id.
  * Currently, it does not differentiate between main tasks and subtasks.
  *
- * @param {number} taskId the id of the task.
+ * @param {number} taskId the id of the task or subtask.
  * @return {Promise<void>} promise when done.
  */
 export function httpDeleteTask(taskId: number): Promise<void> {

@@ -1,6 +1,8 @@
 // @flow strict
 
-import type { PartialMainTask, PartialSubTask, SubTask, Tag, Task } from '../store/store-types';
+import type {
+  PartialMainTask, PartialSubTask, SubTask, Tag, Task,
+} from '../store/store-types';
 import { error } from '../util/general-util';
 
 /**
@@ -77,7 +79,6 @@ type NewTaskRequest = {|
 |};
 
 type NewSubTaskRequest = {|
-  +task_id: number;
   +parent_task: number;
   +content: string;
   +start_date: string;
@@ -89,8 +90,8 @@ type NewSubTaskRequest = {|
 
 type EditBackendTaskRequest = $Shape<{|
   +content: string;
-  +end_date: string;
   +tag_id: number;
+  +end_date: string;
   +completed: boolean;
   +in_focus: boolean;
 |}>;
@@ -159,7 +160,6 @@ export const createNewTaskRequest = (task: Task): NewTaskRequest => {
  * @return {NewSubTaskRequest} the create new subtask request.
  */
 export const createNewSubTaskRequest = (mainTask: Task, subTask: SubTask): NewSubTaskRequest => ({
-  task_id: subTask.id,
   parent_task: mainTask.id,
   content: subTask.name,
   start_date: formatDate(new Date()),
@@ -187,8 +187,8 @@ export const createEditBackendTaskRequest = (
   const { date, tag } = (partialTask: PartialMainTask); // flow is not smart enough
   return {
     content: name,
-    end_date: formatDate(date),
     tag_id: tag,
+    end_date: formatDate(date),
     completed: complete,
     in_focus: inFocus,
   };
