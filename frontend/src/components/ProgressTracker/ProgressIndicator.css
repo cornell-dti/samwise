@@ -1,4 +1,5 @@
 .ProgressIndicator {
+  flex: auto;
   display: flex;
   align-content: center;
   margin: 1em;
