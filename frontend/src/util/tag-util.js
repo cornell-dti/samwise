@@ -1,6 +1,40 @@
 // @flow strict
 
+import type { ComponentType } from 'react';
 import type { Tag } from '../store/store-types';
+import { error } from './general-util';
+import { stateConnect } from '../store/react-redux-util';
+import type { ConnectedComponent } from '../store/react-redux-util';
+
+/**
+ * ID of the none tag.
+ * @type {number}
+ */
+export const NONE_TAG_ID = -1;
+
+/**
+ * The none tag.
+ * @type {Tag}
+ */
+export const NONE_TAG: Tag = {
+  id: NONE_TAG_ID, type: 'other', name: 'None', color: 'gray',
+};
+
+/**
+ * Some other dummy tags used to demo the app.
+ * @type {Tag[]}
+ */
+export const DUMMY_TAGS: Tag[] = [
+  {
+    id: 0, type: 'other', name: 'Personal', color: '#9D4AA9',
+  },
+  {
+    id: 1, type: 'other', name: 'Project Team', color: '#FF8A8A',
+  },
+  {
+    id: 2, type: 'class', name: 'CS1110', color: '#B92424',
+  },
+];
 
 /**
  * Returns the tag from a list of tags given the name.
@@ -9,28 +43,37 @@ import type { Tag } from '../store/store-types';
  * @param {number} id the tag id to find.
  * @return {string} the tag.
  */
-export const getTagById = (tags: Tag[], id: number): Tag => {
-  const tagOpt = tags.find(t => t.id === id);
-  if (tagOpt == null) {
-    throw new Error('Color not found! Corrupted store.');
-  }
-  return tagOpt;
-};
+const getTagById = (tags: Tag[], id: number): Tag => tags
+  .find(t => t.id === id) ?? error('Color not found! Corrupted store.');
+
+type TagsProps = {| +tags: Tag[] |};
 
 /**
- * Returns the color by tag from a list of tags given the name.
+ * A function to connect a component with just tags in redux store.
  *
- * @param {Tag[]} tags the tags to search.
- * @param {number} id the tag id to find.
- * @return {string} the tag name.
+ * @param component the component to connect.
+ * @return {ConnectedComponent<Config, TagsProps>} the connected component.
  */
-export const getNameByTagId = (tags: Tag[], id: number): string => getTagById(tags, id).name;
+export function tagsConnect<Config: Object>( // flowlint-line unclear-type:off
+  component: ComponentType<Config>,
+): ConnectedComponent<Config, TagsProps> {
+  return stateConnect<Config, TagsProps>(
+    ({ tags }): TagsProps => ({ tags }),
+  )(component);
+}
+
+type TagColorProps = {| +getTag: (id: number) => Tag; |};
 
 /**
- * Returns the color by tag from a list of tags given the id.
+ * A function to connect a component with a function to find the color of a tag.
  *
- * @param {Tag[]} tags the tags to search.
- * @param {number} id the tag id to find.
- * @return {string} the color.
+ * @param component the component to connect.
+ * @return {ConnectedComponent<Config, TagColorProps>} the connected component.
  */
-export const getColorByTagId = (tags: Tag[], id: number): string => getTagById(tags, id).color;
+export function getTagConnect<Config: Object>( // flowlint-line unclear-type:off
+  component: ComponentType<Config>,
+): ConnectedComponent<Config, TagColorProps> {
+  return stateConnect<Config, TagColorProps>(
+    ({ tags }): TagColorProps => ({ getTag: id => getTagById(tags, id) }),
+  )(component);
+}

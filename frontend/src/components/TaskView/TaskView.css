@@ -1,20 +1,28 @@
 .TaskView {
+  position: relative;
   display: flex;
   flex-direction: row;
-  padding: 1em;
 }
 
-.TaskViewFocusPanel {
-  min-width: 320px;
-  max-width: 320px;
+@media only screen and (min-width: 768px) {
+  .FocusPanel {
+    min-width: 250px;
+    max-width: 250px;
+  }
 }
 
-.TaskViewFuturePanel {
+@media only screen and (max-width: 768px) {
+  .FocusPanel {
+    width: 100%;
+  }
+}
+
+.FuturePanel {
   position: relative;
   flex: auto;
 }
 
-.TaskViewFocusViewToggleWrapper {
+.FocusViewToggleWrapper {
   position: absolute;
   z-index: 1;
   bottom: 0.5em;
@@ -24,14 +32,14 @@
   overflow-y: visible;
 }
 
-.TaskViewFocusViewToggle {
+.FocusViewToggle {
   position: absolute;
   display: flex;
   align-items: center;
   align-content: center;
   cursor: pointer;
   top: 0;
-  left: -2em;
+  left: -1em;
   width: 4em;
   height: 4em;
   color: white;
@@ -40,35 +48,28 @@
   box-shadow: 0 1px 5px 0 rgba(0, 0, 0, 0.5);
 }
 
-.TaskViewFocusViewToggleIconFocusViewShow {
+.FocusViewToggleIconFocusViewShow {
   margin: 0 0 3px 6px !important;
 }
 
-.TaskViewFocusViewToggleIconFocusViewHide {
+.FocusViewToggleIconFocusViewHide {
   margin: 0 0 3px 31px !important;
 }
 
-.TaskViewControl {
-  display: flex;
-  width: calc(100% - 6px);
-  align-items: center;
-}
-
-.TaskViewControlTitle {
+.ControlTitle {
   font-size: 24px;
   margin: 1em 0.5em !important;
 }
 
-.TaskViewControlButton {
+.ControlButton {
   margin-left: 0.5em;
 }
 
-.TaskViewNavButton {
+.ViewSwitcher {
+  position: fixed;
   cursor: pointer;
-  margin-left: 0.5em !important;
-  font-size: 1.5em !important;
-}
-
-.TaskViewControlPadding {
-  flex: auto;
+  bottom: 0.5em;
+  right: 0.5em;
+  font-size: 2em !important;
+  color: #84BCF6;
 }

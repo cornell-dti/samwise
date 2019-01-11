@@ -1,0 +1,8 @@
+.FutureViewNDays {
+  display: grid;
+  grid-gap: 0;
+}
+
+.Column {
+  margin: 0;
+}

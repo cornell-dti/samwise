@@ -1,42 +1,54 @@
 // @flow strict
 
 import { connect } from 'react-redux';
-import type { ComponentType } from 'react';
+import type { ComponentType, AbstractComponent } from 'react';
 import type { State } from './store-types';
 
 /**
- * A connect function for react-redux that just uses the normal mapStateToProps.
- *
- * Type Parameters:
- * P: all the props.
- * OP: own props. The props that the user of the component must give.
- * SP: subscribed props. The props that are derived from redux store state.
- * MDP: the props of a collection of actions to be dispatched.
+ * The connected component type.
+ */
+export type ConnectedComponent<-C, -RP = {||}> =
+  AbstractComponent<$Diff<C, RP>, void>;
+
+/**
+ * The utility type to obtain own props in fullConnect.
+ */
+type OwnProp<-C, -RSP, -MDP> = $Diff<C, {| ...RSP; ...MDP |}>;
+
+/**
+ * A connect function for react-redux that uses the normal mapStateToProps and actionCreators.
  *
  * @param mapStateToProps the normal mapStateToProps function.
  * @param actionCreators the action creator used to bind actions.
  * @return {*} the connect function that connects a react component.
  */
-export function fullConnect<OP: Object, SP: Object, MDP: Object>(
-  mapStateToProps: (state: State) => SP,
+export function fullConnect<-C, -RSP, -MDP>(
+  mapStateToProps: (state: State, ownProps: OwnProp<C, RSP, MDP>) => RSP,
   actionCreators: MDP,
-): (ComponentType<*>) => (ComponentType<OP>) {
-  return connect<ComponentType<*>, State, {}, SP, MDP, OP, _>(mapStateToProps, actionCreators);
+): (ComponentType<C>) => (ConnectedComponent<OwnProp<C, RSP, MDP>>) {
+  return connect(mapStateToProps, actionCreators);
 }
 
 /**
  * A connect function for react-redux that just uses the normal mapStateToProps.
  *
- * Type Parameters:
- * P: all the props.
- * OP: own props. The props that the user of the component must give.
- * SP: subscribed props. The props that are derived from redux store state.
- *
  * @param mapStateToProps the normal mapStateToProps function.
  * @return {*} the connect function that connects a react component.
  */
-export function simpleConnect<OP: Object, SP: Object>(
-  mapStateToProps: (state: State) => SP,
-): (ComponentType<*>) => (ComponentType<OP>) {
-  return fullConnect<OP, SP, {}>(mapStateToProps, {});
+export function stateConnect<-C, -RSP>(
+  mapStateToProps: (state: State, ownProps: $Diff<C, RSP>) => RSP,
+): (ComponentType<C>) => ConnectedComponent<C, RSP> {
+  return connect(mapStateToProps, null);
+}
+
+/**
+ * A connect function for react-redux that just uses the action creators.
+ *
+ * @param actionCreators the action creator used to bind actions.
+ * @return {*} the connect function that connects a react component.
+ */
+export function dispatchConnect<-C, -MDP>(
+  actionCreators: MDP,
+): (ComponentType<C>) => ConnectedComponent<C, MDP> {
+  return connect(null, actionCreators);
 }

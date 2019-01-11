@@ -5,21 +5,26 @@ import type {
   EditTagAction,
   RemoveTagAction,
   AddNewTaskAction,
+  AddNewSubTaskAction,
   EditTaskAction,
-  MarkTaskAction,
-  MarkSubTaskAction,
-  ToggleTaskPinAction,
-  ToggleSubTaskPinAction,
+  EditMainTaskAction,
+  EditSubTaskAction,
   RemoveTaskAction,
   RemoveSubTaskAction,
+  UndoAddTaskAction,
+  ClearUndoAddTaskAction,
   UndoDeleteTaskAction,
   ClearUndoDeleteTaskAction,
   BackendPatchNewTaskAction,
+  BackendPatchNewSubTaskAction,
   BackendPatchExistingTaskAction,
   BackendPatchLoadedDataAction,
   BackendPatchNewTagAction,
 } from './action-types';
-import type { Tag, Task } from './store-types';
+import type {
+  PartialMainTask, PartialSubTask, SubTask, Tag, Task,
+} from './store-types';
+import type { TaskDiff } from '../util/task-util';
 
 /**
  * Edit tag is an action that can be used to edit a tag.
@@ -46,66 +51,65 @@ export const removeTag = (tagId: number): RemoveTagAction => ({ type: 'REMOVE_TA
 /**
  * Add task is an action that can be used to add a new task.
  *
- * @param task the task to add.
+ * @param {Task} task the task to add.
  * @return {AddNewTaskAction} the add task action.
  */
-export const addTask = (task: Task): AddNewTaskAction => ({ type: 'ADD_NEW_TASK', data: task });
+export const addTask = (task: Task): AddNewTaskAction => ({ type: 'ADD_NEW_TASK', task });
+/**
+ * Add subtask is an action that can be used to append a subtask to a new task.
+ *
+ * @param {number} taskId the task id of the main task.
+ * @param {AddNewSubTaskAction} subTask the new subtask.
+ * @return {{subTask: SubTask, type: string, taskId: number}}
+ */
+export const addSubTask = (taskId: number, subTask: SubTask): AddNewSubTaskAction => ({
+  type: 'ADD_NEW_SUBTASK', taskId, subTask,
+});
 
 /**
  * Edit task is an action that can be used to edit an existing task.
  *
- * @param task the task to edit.
- * @return {AddNewTaskAction} the edit task action.
+ * @param {Task} task the edited task.
+ * @param {TaskDiff} diff diff between the old task and this task.
+ * @return {EditTaskAction} the edit task action.
  */
-export const editTask = (task: Task): EditTaskAction => ({ type: 'EDIT_TASK', task });
-
-/**
- * Mark task is the action that can be used to mark a task as completed or not.
- *
- * @param taskId the id of the task to mark.
- * @return {MarkTaskAction} the mark task action.
- */
-export const markTask = (taskId: number): MarkTaskAction => ({ type: 'MARK_TASK', id: taskId });
-/**
- * Mark subtask is the action that can be used to mark a subtask as completed or not.
- *
- * @param taskId the id of the parent task of the subtask to mark.
- * @param subtaskId the id of the subtask to mark.
- * @return {MarkSubTaskAction} the mark subtask action.
- */
-export const markSubtask = (taskId: number, subtaskId: number): MarkSubTaskAction => ({
-  type: 'MARK_SUBTASK', id: taskId, subtask: subtaskId,
+export const editTask = (task: Task, diff: TaskDiff): EditTaskAction => ({
+  type: 'EDIT_TASK', task, diff,
 });
 
 /**
- * Toggle task pin is the action that can be used to mark a task as in focus or not.
+ * Edit main task is the action to edit various parts of main task except subtasks.
  *
- * @param taskId the id of the task to toggle.
- * @return {ToggleTaskPinAction} the toggle task pin action.
+ * @param {number} taskId the id of the task to edit.
+ * @param {PartialMainTask} partialMainTask the main task info with every field optional.
+ * @return {EditMainTaskAction} the edit main task action.
  */
-export const toggleTaskPin = (taskId: number): ToggleTaskPinAction => ({
-  type: 'TOGGLE_TASK_PIN', taskId,
-});
+export const editMainTask = (
+  taskId: number, partialMainTask: PartialMainTask,
+): EditMainTaskAction => ({ type: 'EDIT_MAIN_TASK', taskId, partialMainTask });
+
 /**
- * Toggle subtask pin is the action that can be used to mark a subtask as in focus or not.
+ * Edit sub task is the action to edit various parts of subtask.
  *
- * @param taskId the id of the parent task of the subtask to toggle.
- * @param subtaskId the id of the subtask to toggle.
- * @return {ToggleSubTaskPinAction} the toggle subtask pin  action.
+ * @param {number} taskId the id of the task to edit.
+ * @param {number} subtaskId the id of the subtask to edit.
+ * @param {PartialSubTask} partialSubTask the subtask info with every field optional.
+ * @return {EditSubTaskAction} the edit sub-task action.
  */
-export const toggleSubTaskPin = (taskId: number, subtaskId: number): ToggleSubTaskPinAction => ({
-  type: 'TOGGLE_SUBTASK_PIN', taskId, subtaskId,
+export const editSubTask = (
+  taskId: number, subtaskId: number, partialSubTask: PartialSubTask,
+): EditSubTaskAction => ({
+  type: 'EDIT_SUB_TASK', taskId, subtaskId, partialSubTask,
 });
 
 /**
  * Remove task is the action that can be used to remove a task.
  *
  * @param {number} taskId the id of the task to remove.
- * @param {boolean} undoable whether the removal can be undone, which defaults to false.
  * @return {RemoveTaskAction} the remove task action.
  */
-export const removeTask = (taskId: number, undoable: boolean = false): RemoveTaskAction => ({
-  type: 'REMOVE_TASK', taskId, undoable,
+export const removeTask = (taskId: number): RemoveTaskAction => ({
+  type: 'REMOVE_TASK', taskId,
 });
 /**
  * Remove subtask is the action that can be used to remove a subtask.
@@ -118,6 +122,18 @@ export const removeSubTask = (taskId: number, subtaskId: number): RemoveSubTaskA
   type: 'REMOVE_SUBTASK', taskId, subtaskId,
 });
 
+/**
+ * Undo the previous add task operation.
+ *
+ * @return {UndoDeleteTaskAction} the undo add task action.
+ */
+export const undoAddTask = (): UndoAddTaskAction => ({ type: 'UNDO_ADD_TASK' });
+/**
+ * Undo the previous add task operation.
+ *
+ * @return {UndoDeleteTaskAction} the undo add task action.
+ */
+export const clearUndoAddTask = (): ClearUndoAddTaskAction => ({ type: 'CLEAR_UNDO_ADD_TASK' });
 /**
  * Undo the previous delete task operation.
  *
@@ -136,23 +152,37 @@ export const clearUndoDeleteTask = (): ClearUndoDeleteTaskAction => ({
 /**
  * Let the backend patch a new task.
  *
- * @param {number} id the temp randomly assigned new tag id.
- * @param {Tag} t the task to patch.
+ * @param {number} tempId the temp randomly assigned new tag id.
+ * @param {number} backendId the tag id from backend.
  * @return {BackendPatchExistingTaskAction} the backend patch task action.
  */
-export const backendPatchNewTag = (id: number, t: Tag): BackendPatchNewTagAction => ({
-  type: 'BACKEND_PATCH_NEW_TAG', tempNewTagId: id, tag: t,
-});
+export const backendPatchNewTag = (
+  tempId: number, backendId: number,
+): BackendPatchNewTagAction => ({ type: 'BACKEND_PATCH_NEW_TAG', tempId, backendId });
 
 /**
  * Let the backend patch a new task.
  *
- * @param {number} id the temp randomly assigned new task id.
- * @param {Task} t the task to patch.
+ * @param {number} tempId the temp randomly assigned new task id.
+ * @param {Task} backendTask the task from backend.
  * @return {BackendPatchExistingTaskAction} the backend patch task action.
  */
-export const backendPatchNewTask = (id: number, t: Task): BackendPatchNewTaskAction => ({
-  type: 'BACKEND_PATCH_NEW_TASK', tempNewTaskId: id, task: t,
+export const backendPatchNewTask = (
+  tempId: number, backendTask: Task,
+): BackendPatchNewTaskAction => ({ type: 'BACKEND_PATCH_NEW_TASK', tempId, backendTask });
+
+/**
+ * Let the backend patch a new subtask.
+ *
+ * @param {number} taskId the main task id.
+ * @param {number} tempSubTaskId the temp randomly assigned new subtask id.
+ * @param {number} backendSubTaskId the subtask id from backend.
+ * @return {BackendPatchExistingTaskAction} the backend patch subtask action.
+ */
+export const backendPatchNewSubTask = (
+  taskId: number, tempSubTaskId: number, backendSubTaskId: number,
+): BackendPatchNewSubTaskAction => ({
+  type: 'BACKEND_PATCH_NEW_SUBTASK', taskId, tempSubTaskId, backendSubTaskId,
 });
 
 /**
@@ -170,7 +200,7 @@ export const backendPatchExistingTask = (task: Task): BackendPatchExistingTaskAc
  *
  * @param {Tag[]} tags tags from the backend.
  * @param {Task[]} tasks tasks from the backend.
- * @return {{type: string, tags: Tag[], tasks: Task[]}}
+ * @return {BackendPatchLoadedDataAction}
  */
 export const backendPatchLoadedData = (
   tags: Tag[], tasks: Task[],

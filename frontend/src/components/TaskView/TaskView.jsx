@@ -3,265 +3,171 @@
 import React from 'react';
 import type { Node } from 'react';
 import { Icon } from 'semantic-ui-react';
-import type { BacklogDisplayOption } from '../Backlog/backlog-types';
-import BacklogViewSwitcher from '../Backlog/BacklogViewSwitcher';
-import BacklogDaysContainer from '../Backlog/BacklogDaysContainer';
-import FocusView from '../FocusView/FocusView';
-import { getBacklogHeaderTitle } from '../Backlog/backlog-util';
-import SquareIconButton from '../UI/SquareIconButton';
-import SquareTextButton from '../UI/SquareTextButton';
+import FocusView from './FocusView/FocusView';
+import FutureView, { futureViewConfigProvider } from './FutureView/FutureView';
 import styles from './TaskView.css';
+import windowSizeConnect from '../Util/Responsive/WindowSizeConsumer';
+import type { WindowSize } from '../Util/Responsive/window-size-context';
+import type { FutureViewConfig } from './FutureView/FutureView';
+import type { Task } from '../../store/store-types';
+import type { PropsWithoutWindowSize } from '../Util/Responsive/WindowSizeConsumer';
+import { tasksConnect } from '../../util/task-util';
 
-type Props = {||};
-
+type Props = {|
+  +windowSize: WindowSize;
+  +fullTasks: Task[];
+  +inFocusTasks: Task[];
+|};
 type State = {|
-  +doesShowFocusView: boolean;
-  +doesShowCompletedTasks: boolean;
-  +displayOption: BacklogDisplayOption;
-  +backlogOffset: number;
+  +doesShowFocusViewInWideScreen: boolean;
+  +doesShowFutureViewInSmallScreen: boolean;
+  +futureViewConfig: FutureViewConfig;
 |};
 
-export default class TaskView extends React.PureComponent<Props, State> {
-  constructor(props: Props) {
-    super(props);
-    this.state = {
-      doesShowFocusView: true,
-      doesShowCompletedTasks: true,
-      displayOption: 'FOUR_DAYS',
-      backlogOffset: 0,
-    };
-  }
-
-  /**
-   * Handler for toggling the focus view. In four-days mode, it cannot be toggled.
-   */
-  toggleFocusView = (): void => {
-    this.setState((oldState: State) => {
-      const { doesShowFocusView, doesShowCompletedTasks, displayOption } = oldState;
-      switch (displayOption) {
-        case 'FOUR_DAYS':
-          return oldState;
-        case 'BIWEEKLY':
-        case 'MONTHLY':
-          return { doesShowFocusView: !doesShowFocusView, doesShowCompletedTasks, displayOption };
-        default:
-          return oldState;
-      }
-    });
+class TaskView extends React.PureComponent<Props, State> {
+  state: State = {
+    doesShowFocusViewInWideScreen: false,
+    doesShowFutureViewInSmallScreen: false,
+    futureViewConfig: futureViewConfigProvider.initialValue,
   };
 
   /**
-   * Change the current offset in backlog.
+   * Report whether the screen is small.
    *
-   * @param newOffsetInstruction 'TODAY' to reset, 'PREV' to go back, 'NEXT' to move forward.
-   * @return {function(): void} the handler for changing offset.
+   * @return {boolean} whether the screen is small.
    */
-  changeBacklogOffset = (newOffsetInstruction: 'TODAY' | 'PREV' | 'NEXT') => (): void => {
-    this.setState((oldState: State) => {
-      const { backlogOffset } = oldState;
-      let newOffset: number;
-      switch (newOffsetInstruction) {
-        case 'TODAY':
-          newOffset = 0;
-          break;
-        case 'PREV':
-          newOffset = backlogOffset - 1;
-          break;
-        case 'NEXT':
-          newOffset = backlogOffset + 1;
-          break;
-        default:
-          throw new Error('Bad offset instruction!');
-      }
-      return { ...oldState, backlogOffset: newOffset };
-    });
+  screenIsSmall = (): boolean => {
+    const { windowSize: { width } } = this.props;
+    return width <= 768;
   };
 
   /**
-   * Handler for toggling completed tasks.
+   * Handler for toggling the focus view. In n-days mode, it cannot be toggled.
    */
-  toggleCompletedTasks = (): void => {
-    this.setState((oldState: State) => ({
-      ...oldState, doesShowCompletedTasks: !oldState.doesShowCompletedTasks,
-    }));
-  };
+  toggleFocusViewInWideScreen = () => this.setState((state: State) => ({
+    doesShowFocusViewInWideScreen: !state.doesShowFocusViewInWideScreen,
+  }));
 
   /**
-   * Change the current view of the backlog.
+   * Switch the view.
+   */
+  switchView = () => this.setState((state: State) => {
+    const { doesShowFutureViewInSmallScreen } = state;
+    return { doesShowFutureViewInSmallScreen: !doesShowFutureViewInSmallScreen };
+  });
+
+  /**
+   * Handle when future view config changes.
    *
-   * @param newDisplayOption the new display option for backlog.
+   * @param {FutureViewConfig} futureViewConfig the new future view config.
    */
-  switchBacklogView = (newDisplayOption: BacklogDisplayOption): void => {
-    this.setState((oldState: State) => {
-      const {
-        doesShowFocusView, doesShowCompletedTasks, displayOption, backlogOffset,
-      } = oldState;
-      let dayOffset: number;
-      switch (displayOption) {
-        case 'FOUR_DAYS':
-          dayOffset = backlogOffset * 4;
-          break;
-        case 'BIWEEKLY':
-          dayOffset = backlogOffset * 14;
-          break;
-        case 'MONTHLY':
-          dayOffset = backlogOffset * 30;
-          break;
-        default:
-          throw new Error('Bad display option');
-      }
-      let newDoesShowFocusView: boolean;
-      let newOffset: number;
-      switch (newDisplayOption) {
-        case 'FOUR_DAYS':
-          newDoesShowFocusView = true;
-          newOffset = Math.floor(dayOffset / 4);
-          break;
-        case 'BIWEEKLY':
-          newDoesShowFocusView = displayOption === 'FOUR_DAYS' ? false : doesShowFocusView;
-          newOffset = Math.floor(dayOffset / 14);
-          break;
-        case 'MONTHLY':
-          newDoesShowFocusView = displayOption === 'FOUR_DAYS' ? false : doesShowFocusView;
-          newOffset = Math.floor(dayOffset / 30);
-          break;
-        default:
-          throw new Error('Bad display option');
-      }
-      return {
-        doesShowFocusView: newDoesShowFocusView,
-        doesShowCompletedTasks,
-        displayOption: newDisplayOption,
-        backlogOffset: newOffset,
-      };
-    });
-  };
+  futureViewConfigOnChange = (futureViewConfig: FutureViewConfig) => this.setState({
+    futureViewConfig,
+  });
 
   /**
-   * Render the toggle for focus view.
+   * Render the toggle for focus view, for wide screen.
    *
    * @return {Node} the rendered component.
    */
-  renderFocusViewToggleComponent(): Node {
-    const { doesShowFocusView, displayOption } = this.state;
-    if (displayOption === 'FOUR_DAYS') {
+  renderWideScreenFocusViewToggleComponent = (): Node => {
+    const { doesShowFocusViewInWideScreen, futureViewConfig } = this.state;
+    if (futureViewConfigProvider.isInNDaysView(futureViewConfig)) {
       return null;
     }
-    const wrapperStyle = doesShowFocusView ? { left: '-5em' } : { left: '-1em' };
-    const buttonStyle = doesShowFocusView ? { left: '2em' } : {};
-    const iconName = doesShowFocusView ? 'chevron left' : 'chevron right';
-    const iconClass = doesShowFocusView
-      ? styles.TaskViewFocusViewToggleIconFocusViewShow
-      : styles.TaskViewFocusViewToggleIconFocusViewHide;
+    const wrapperStyle = doesShowFocusViewInWideScreen ? { left: '-4em' } : { left: '-1em' };
+    const buttonStyle = doesShowFocusViewInWideScreen ? { left: '2em' } : {};
+    const iconName = doesShowFocusViewInWideScreen ? 'chevron left' : 'chevron right';
+    const iconClass = doesShowFocusViewInWideScreen
+      ? styles.FocusViewToggleIconFocusViewShow
+      : styles.FocusViewToggleIconFocusViewHide;
     return (
-      <div className={styles.TaskViewFocusViewToggleWrapper} style={wrapperStyle}>
+      <div className={styles.FocusViewToggleWrapper} style={wrapperStyle}>
         <div
           role="button"
           tabIndex={-1}
-          className={styles.TaskViewFocusViewToggle}
+          className={styles.FocusViewToggle}
           style={buttonStyle}
-          onClick={this.toggleFocusView}
-          onKeyDown={this.toggleFocusView}
+          onClick={this.toggleFocusViewInWideScreen}
+          onKeyDown={this.toggleFocusViewInWideScreen}
         >
           <Icon name={iconName} className={iconClass} />
         </div>
       </div>
     );
-  }
+  };
 
   /**
-   * Render the backlog component.
+   * Render the toggle for focus view, for small screen.
    *
    * @return {Node} the rendered component.
    */
-  renderBacklogComponent(): Node {
-    const {
-      doesShowCompletedTasks, displayOption, backlogOffset,
-    } = this.state;
-    const backlogTodayButton = backlogOffset !== 0 && (
-      <SquareTextButton text="Today" onClick={this.changeBacklogOffset('TODAY')} />
-    );
-    const backlogNav = displayOption === 'FOUR_DAYS' ? (
-      <React.Fragment>
-        {
-          backlogOffset >= 1 && (
-            <Icon
-              className={styles.TaskViewNavButton}
-              name="chevron left"
-              onClick={this.changeBacklogOffset('PREV')}
-            />
-          )
-        }
-        <Icon
-          className={styles.TaskViewNavButton}
-          name="chevron right"
-          onClick={this.changeBacklogOffset('NEXT')}
-        />
-        <span className={styles.TaskViewControlPadding} />
-      </React.Fragment>
-    ) : (
-      <React.Fragment>
-        <span className={styles.TaskViewControlPadding} />
-        {
-          (backlogOffset >= 1 || (backlogOffset >= 0 && displayOption === 'BIWEEKLY')) && (
-            <Icon
-              className={styles.TaskViewNavButton}
-              name="chevron left"
-              onClick={this.changeBacklogOffset('PREV')}
-            />
-          )
-        }
-        <h3 className={styles.TaskViewControlTitle}>
-          {getBacklogHeaderTitle(displayOption, backlogOffset)}
-        </h3>
-        <Icon
-          className={styles.TaskViewNavButton}
-          name="chevron right"
-          onClick={this.changeBacklogOffset('NEXT')}
-        />
-        <span className={styles.TaskViewControlPadding} />
-      </React.Fragment>
-    );
-    const toggleCompletedTasksButton = (
-      <SquareIconButton
-        active={doesShowCompletedTasks}
-        activeIconName="eye slash"
-        inactiveIconName="eye"
-        onClick={this.toggleCompletedTasks}
+  renderSmallScreenViewSwitcherComponent = (): Node => {
+    if (!this.screenIsSmall()) {
+      return null;
+    }
+    const { doesShowFutureViewInSmallScreen } = this.state;
+    return (
+      <Icon
+        name={doesShowFutureViewInSmallScreen ? 'bookmark' : 'calendar'}
+        className={styles.ViewSwitcher}
+        onClick={this.switchView}
       />
     );
-    return (
-      <div className={styles.TaskViewFuturePanel}>
-        {this.renderFocusViewToggleComponent()}
-        <div className={styles.TaskViewControl}>
-          <h3 className={styles.TaskViewControlTitle}>Future</h3>
-          {backlogTodayButton}
-          {backlogNav}
-          {toggleCompletedTasksButton}
-          <BacklogViewSwitcher onChange={this.switchBacklogView} />
-        </div>
-        <BacklogDaysContainer
-          doesShowCompletedTasks={doesShowCompletedTasks}
-          displayOption={displayOption}
-          backlogOffset={backlogOffset}
-        />
-      </div>
-    );
-  }
+  };
 
   render(): Node {
-    const { doesShowFocusView } = this.state;
-    const focusViewComponent = doesShowFocusView && (
-      <div className={styles.TaskViewFocusPanel}>
-        <h3 className={styles.TaskViewControlTitle}>Focus</h3>
-        <FocusView />
-      </div>
-    );
+    const { windowSize, fullTasks, inFocusTasks } = this.props;
+    const {
+      doesShowFocusViewInWideScreen, doesShowFutureViewInSmallScreen, futureViewConfig,
+    } = this.state;
+    if (!this.screenIsSmall()) {
+      const showFocusView = futureViewConfigProvider.isInNDaysView(futureViewConfig)
+        || doesShowFocusViewInWideScreen;
+      return (
+        <div className={styles.TaskView}>
+          {showFocusView && (
+            <div className={styles.FocusPanel}>
+              <h3 className={styles.ControlTitle}>Focus</h3>
+              <FocusView tasks={inFocusTasks} />
+            </div>
+          )}
+          <div className={styles.FuturePanel}>
+            {this.renderWideScreenFocusViewToggleComponent()}
+            <FutureView
+              windowSize={windowSize}
+              config={futureViewConfig}
+              tasks={fullTasks}
+              onConfigChange={this.futureViewConfigOnChange}
+            />
+          </div>
+        </div>
+      );
+    }
+    const renderedView = doesShowFutureViewInSmallScreen
+      ? (
+        <div className={styles.FuturePanel}>
+          <FutureView
+            windowSize={windowSize}
+            config={futureViewConfig}
+            tasks={fullTasks}
+            onConfigChange={this.futureViewConfigOnChange}
+          />
+        </div>
+      ) : (
+        <div className={styles.FocusPanel}>
+          <h3 className={styles.ControlTitle}>Focus</h3>
+          <FocusView tasks={inFocusTasks} />
+        </div>
+      );
     return (
       <div className={styles.TaskView}>
-        {focusViewComponent}
-        {this.renderBacklogComponent()}
+        {renderedView}
+        {this.renderSmallScreenViewSwitcherComponent()}
       </div>
     );
   }
 }
+
+const ConnectedTaskView = windowSizeConnect<Props>(TaskView);
+export default ConnectedTaskView;

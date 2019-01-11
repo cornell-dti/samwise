@@ -5,11 +5,14 @@
 [libs]
 
 [lints]
-all=warn
+all=error
+deprecated-utility=warn
 [options]
 esproposal.class_instance_fields=enable
 esproposal.class_static_fields=enable
 esproposal.optional_chaining=enable
+esproposal.nullish_coalescing=enable
+experimental.const_params=true
 munge_underscores=true
 [strict]
 nonstrict-import

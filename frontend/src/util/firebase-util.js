@@ -1,13 +1,13 @@
 // @flow strict
-// $FlowFixMe
+
 import firebase from 'firebase/app';
+import type { FirebaseUser } from 'firebase';
 import 'firebase/auth';
 
-export type FirebaseUser = {|
+export type AppUser = {|
   +displayName: string;
   +email: string;
   +token: string;
-  +isDummy: boolean;
 |};
 
 /**
@@ -26,23 +26,36 @@ export function firebaseInit(): void {
 }
 
 /**
+ * Returns the promise of an app user from the given raw firebase user.
+ *
+ * @param firebaseUser a raw firebase user or null.
+ * @return {Promise<AppUser | null>} the promise of an app user.
+ */
+export async function toAppUser(firebaseUser: ?FirebaseUser): Promise<AppUser | null> {
+  if (firebaseUser == null) {
+    return null;
+  }
+  const { displayName, email } = firebaseUser;
+  if (typeof displayName !== 'string' || typeof email !== 'string') {
+    throw new Error('Bad user!');
+  }
+  const token: string = await firebaseUser.getIdToken(true);
+  return { displayName, email, token };
+}
+
+/**
  * Returns the promise of firebase user or null if there is no signed-in user.
  *
  * @return {Promise<FirebaseUser | null>} the promise of firebase user or promise of null if
  * there is no signed-in user.
  */
-export async function firebaseUserPromise(): Promise<FirebaseUser | null> {
-  const rawUser = await new Promise<firebase.User>(
-    (resolve, reject) => firebase.auth().onAuthStateChanged(resolve, reject),
-  );
-  if (rawUser == null) {
-    return null;
-  }
-  // eslint-disable-next-line prefer-destructuring
-  const currentUser = firebase.auth().currentUser;
-  const { displayName, email } = currentUser;
-  const token: string = await currentUser.getIdToken(true);
-  return {
-    displayName, email, token, isDummy: false,
-  };
+export async function firebaseUserPromise(): Promise<AppUser | null> {
+  return toAppUser(firebase.auth().currentUser);
+}
+
+/**
+ * Sign out.
+ */
+export function firebaseSignOut(): void {
+  firebase.auth().signOut().then(() => {});
 }

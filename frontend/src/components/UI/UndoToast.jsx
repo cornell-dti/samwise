@@ -3,6 +3,7 @@
 import React from 'react';
 import type { Node } from 'react';
 import { toast } from 'react-toastify';
+import styles from './UndoToast.css';
 
 export type Props = {|
   +toastId: string;
@@ -19,23 +20,21 @@ export type Props = {|
  * @constructor
  */
 function UndoToast(props: Props): Node {
-  const {
-    toastId, message, onUndo, onDismiss,
-  } = props;
-  const handleUndo = () => {
-    onUndo();
-    toast.dismiss(toastId);
-  };
-  const handleDismiss = () => {
-    onDismiss();
-    toast.dismiss(toastId);
+  const { toastId, message, onUndo } = props;
+  const handleToastClick = (e: SyntheticMouseEvent<HTMLSpanElement>) => {
+    e.stopPropagation();
+    if (e.target instanceof HTMLButtonElement) {
+      onUndo();
+      toast.dismiss(toastId);
+    } else {
+      toast.dismiss(toastId);
+    }
   };
   return (
-    <span>
+    <span role="presentation" className={styles.UndoToast} onClick={handleToastClick}>
       {message}
-      {' '}
-      <button type="button" onClick={handleUndo}>Undo</button>
-      <button type="button" onClick={handleDismiss}>Dismiss</button>
+      <span className={styles.UndoToastPadding} />
+      <button type="button" className={styles.UndoToastButton}>Undo</button>
     </span>
   );
 }
@@ -61,6 +60,7 @@ export default function emitToast(
     position: 'top-right',
     autoClose: 5000,
     closeOnClick: false,
+    onClose: onDismiss,
     closeButton: false,
     hideProgressBar: true,
     draggable: false,

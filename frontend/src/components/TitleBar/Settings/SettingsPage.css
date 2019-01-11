@@ -1,0 +1,55 @@
+.SettingsSection {
+  margin-top: 10px;
+}
+
+p.SettingsSectionTitle {
+  vertical-align: top;
+  font-size: 16px;
+  padding-top: 20px;
+}
+
+.SettingsSectionContent {
+  vertical-align: top;
+}
+
+@media only screen and (min-width: 768px) {
+  p.SettingsSectionTitle {
+    width: 200px;
+    display: inline-block;
+  }
+
+  .SettingsSectionContent {
+    display: inline-block;
+    width: calc(100% - 200px);
+  }
+}
+
+.SettingsButton {
+  padding-top: 15px;
+}
+
+.SettingsButton button {
+  color: white;
+  border: 1px white solid;
+  border-radius: 5px;
+  padding: 5px 10px;
+  line-height: 14px;
+
+  margin-top: 5px;
+}
+
+.SignButton {
+  background: #e93838 !important;
+  border: none !important;
+  border-radius: 20px !important;
+  font-size: 16px !important;
+  padding: 10px 20px !important;
+}
+
+.ColorConfigItemList {
+  display: inline-block;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}

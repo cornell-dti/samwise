@@ -1,0 +1,11 @@
+.FutureViewSevenColumns {
+  display: grid;
+  grid-gap: 0;
+  grid-template-columns: 14.3% 14.3% 14.3% 14.3% 14.3% 14.3% 14.3%;
+  grid-auto-flow: row;
+}
+
+.HeaderWeekday {
+  line-height: 2em;
+  text-align: center;
+}

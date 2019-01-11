@@ -1,0 +1,5 @@
+.ProgressTracker {
+  display: flex;
+  align-content: center;
+  margin-top: 2em;
+}

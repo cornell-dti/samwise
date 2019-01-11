@@ -1,7 +1,9 @@
 // @flow strict
 
-import type { ActionCreators as ReduxActionCreators, Dispatch as ReduxDispatch } from 'redux';
-import type { Tag, Task } from './store-types';
+import type {
+  PartialMainTask, PartialSubTask, SubTask, Tag, Task,
+} from './store-types';
+import type { TaskDiff } from '../util/task-util';
 
 /*
  * --------------------------------------------------------------------------------
@@ -9,29 +11,30 @@ import type { Tag, Task } from './store-types';
  * --------------------------------------------------------------------------------
  */
 
-export type AddNewTaskAction = {| +type: 'ADD_NEW_TASK'; +data: Task; |};
-export type EditTaskAction = {| +type: 'EDIT_TASK'; +task: Task; |};
-
-export type MarkTaskAction = {| +type: 'MARK_TASK'; +id: number; |};
-export type MarkSubTaskAction = {| +type: 'MARK_SUBTASK'; +id: number; +subtask: number |};
-
-export type ToggleTaskPinAction = {| +type: 'TOGGLE_TASK_PIN'; +taskId: number; |};
-export type ToggleSubTaskPinAction = {|
-  +type: 'TOGGLE_SUBTASK_PIN'; +taskId: number; +subtaskId: number;
+export type AddNewTaskAction = {| type: 'ADD_NEW_TASK'; +task: Task; |};
+export type AddNewSubTaskAction = {|
+  type: 'ADD_NEW_SUBTASK'; +taskId: number; +subTask: SubTask;
 |};
 
-export type RemoveTaskAction = {| +type: 'REMOVE_TASK'; +taskId: number; +undoable: boolean; |};
+export type EditTaskAction = {| type: 'EDIT_TASK'; +task: Task; +diff: TaskDiff;|};
+export type EditMainTaskAction = {|
+  type: 'EDIT_MAIN_TASK'; +taskId: number; +partialMainTask: PartialMainTask;
+|};
+export type EditSubTaskAction = {|
+  type: 'EDIT_SUB_TASK'; +taskId: number; +subtaskId: number; +partialSubTask: PartialSubTask;
+|};
+
+export type RemoveTaskAction = {| type: 'REMOVE_TASK'; +taskId: number; |};
 export type RemoveSubTaskAction = {|
-  +type: 'REMOVE_SUBTASK'; +taskId: number; +subtaskId: number;
+  type: 'REMOVE_SUBTASK'; +taskId: number; +subtaskId: number;
 |};
 
 type TaskAction =
   | AddNewTaskAction
+  | AddNewSubTaskAction
   | EditTaskAction
-  | MarkTaskAction
-  | MarkSubTaskAction
-  | ToggleTaskPinAction
-  | ToggleSubTaskPinAction
+  | EditMainTaskAction
+  | EditSubTaskAction
   | RemoveTaskAction
   | RemoveSubTaskAction;
 
@@ -41,9 +44,9 @@ type TaskAction =
  * --------------------------------------------------------------------------------
  */
 
-export type AddTagAction = {| +type: 'ADD_TAG'; +tag: Tag; |};
-export type EditTagAction = {| +type: 'EDIT_TAG'; +tag: Tag; |};
-export type RemoveTagAction = {| +type: 'REMOVE_TAG'; +tagId: number; |};
+export type AddTagAction = {| type: 'ADD_TAG'; +tag: Tag; |};
+export type EditTagAction = {| type: 'EDIT_TAG'; +tag: Tag; |};
+export type RemoveTagAction = {| type: 'REMOVE_TAG'; +tagId: number; |};
 
 export type TagAction = AddTagAction | EditTagAction | RemoveTagAction;
 
@@ -53,10 +56,14 @@ export type TagAction = AddTagAction | EditTagAction | RemoveTagAction;
  * --------------------------------------------------------------------------------
  */
 
-export type UndoDeleteTaskAction = {| +type: 'UNDO_DELETE_TASK' |};
-export type ClearUndoDeleteTaskAction = {| +type: 'CLEAR_UNDO_DELETE_TASK' |};
+export type UndoAddTaskAction = {| type: 'UNDO_ADD_TASK' |};
+export type ClearUndoAddTaskAction = {| type: 'CLEAR_UNDO_ADD_TASK' |};
+export type UndoDeleteTaskAction = {| type: 'UNDO_DELETE_TASK' |};
+export type ClearUndoDeleteTaskAction = {| type: 'CLEAR_UNDO_DELETE_TASK' |};
 
 export type UndoAction =
+  | UndoAddTaskAction
+  | ClearUndoAddTaskAction
   | UndoDeleteTaskAction
   | ClearUndoDeleteTaskAction;
 
@@ -67,16 +74,22 @@ export type UndoAction =
  */
 
 export type BackendPatchNewTagAction = {|
-  +type: 'BACKEND_PATCH_NEW_TAG'; +tempNewTagId: number; +tag: Tag;
+  type: 'BACKEND_PATCH_NEW_TAG'; +tempId: number; +backendId: number;
 |};
 export type BackendPatchNewTaskAction = {|
-  +type: 'BACKEND_PATCH_NEW_TASK'; +tempNewTaskId: number; +task: Task;
+  type: 'BACKEND_PATCH_NEW_TASK'; +tempId: number; +backendTask: Task;
+|};
+export type BackendPatchNewSubTaskAction = {|
+  type: 'BACKEND_PATCH_NEW_SUBTASK';
+  +taskId: number;
+  +tempSubTaskId: number;
+  +backendSubTaskId: number;
 |};
 export type BackendPatchExistingTaskAction = {|
-  +type: 'BACKEND_PATCH_EXISTING_TASK'; +task: Task;
+  type: 'BACKEND_PATCH_EXISTING_TASK'; +task: Task;
 |};
 export type BackendPatchLoadedDataAction = {|
-  +type: 'BACKEND_PATCH_LOADED_DATA'; +tags: Tag[]; +tasks: Task[];
+  type: 'BACKEND_PATCH_LOADED_DATA'; +tags: Tag[]; +tasks: Task[];
 |};
 
 /**
@@ -85,6 +98,7 @@ export type BackendPatchLoadedDataAction = {|
 export type BackendPatchAction =
   | BackendPatchNewTagAction
   | BackendPatchNewTaskAction
+  | BackendPatchNewSubTaskAction
   | BackendPatchExistingTaskAction
   | BackendPatchLoadedDataAction
 
@@ -95,8 +109,3 @@ export type BackendPatchAction =
  */
 
 export type Action = TagAction | TaskAction | UndoAction | BackendPatchAction;
-
-export type ActionProps = { [actionName: string]: (...args: Array<any>) => Action };
-export type Dispatch = ReduxDispatch<Action>;
-export type ActionCreators = ReduxActionCreators<string, Action>;
-export type MapDispatchToProps<OP> = (d: Dispatch, op: OP) => { ...OP, ...ActionProps };

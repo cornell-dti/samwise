@@ -1,0 +1,11 @@
+.FocusView {
+  padding: 0.5em;
+}
+
+.TaskBox {
+  width: 100%;
+  font-size: 12px;
+  margin-bottom: 1em;
+  padding: 3px;
+  color: white;
+}

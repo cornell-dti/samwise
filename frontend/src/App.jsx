@@ -1,29 +1,36 @@
 // @flow strict
 
 import React from 'react';
+import type { Node } from 'react';
+import { ToastContainer } from 'react-toastify';
 import styles from './App.css';
-// $FlowFixMe
-import NewTaskComponent from './components/NewTask/NewTaskComponent';
+import TaskCreator from './components/TaskCreator/TaskCreator';
 import TaskView from './components/TaskView/TaskView';
-// $FlowFixMe
 import TitleBar from './components/TitleBar/TitleBar';
-import type { FirebaseUser } from './util/firebase-util';
-import Login from './components/Login/Login';
-import { httpInitializeData } from './http/http-service';
-import store from './store';
+import ProgressTracker from './components/ProgressTracker/ProgressTracker';
+import type { TasksProps } from './util/task-util';
+import { computeTaskProgress, filterInFocusTasks, tasksConnect } from './util/task-util';
 
-type Props = {| +user: FirebaseUser | null |};
-
-export default function App({ user }: Props) {
-  if (user == null) {
-    return (<Login />);
-  }
-  httpInitializeData().then(a => store.dispatch(a));
+/**
+ * The top level app component.
+ *
+ * @param tasks all tasks.
+ * @return {Node} the rendered app.
+ * @constructor
+ */
+function App({ tasks }: TasksProps): Node {
+  const inFocusTasks = filterInFocusTasks(tasks);
+  const progress = computeTaskProgress(inFocusTasks);
   return (
-    <div className={styles.App}>
+    <div>
+      <ToastContainer className={styles.Toast} />
       <TitleBar />
-      <NewTaskComponent />
-      <TaskView />
+      <TaskCreator />
+      <TaskView fullTasks={tasks} inFocusTasks={inFocusTasks} />
+      <ProgressTracker progress={progress} />
     </div>
   );
 }
+
+const ConnectedApp = tasksConnect<TasksProps>(App);
+export default ConnectedApp;
