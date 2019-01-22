@@ -9,6 +9,7 @@ import type { Tag } from '../../../store/store-types';
 import styles from './TagItem.css';
 import { dispatchConnect } from '../../../store/react-redux-util';
 import ColorEditor from './ColorEditor';
+import { disableBackend } from '../../../util/config';
 
 type Props = {|
   +tag: Tag;
@@ -16,46 +17,42 @@ type Props = {|
   +removeTag: (tagId: number) => RemoveTagAction
 |};
 
-class TagItem extends React.Component<Props, void> {
-  removeMe = () => {
+/**
+ * The tag item component.
+ *
+ * @param {Tag} tag the tag to render.
+ * @param {function(Tag): EditTagAction} editTag the edit tag action.
+ * @param {function(number): RemoveTagAction} removeTag the remove tag action.
+ * @return {Node} the rendered node.
+ * @constructor
+ */
+function TagItem({ tag, editTag, removeTag }: Props): Node {
+  const canBeEdited = disableBackend || tag.id >= 0;
+  const onRemove = () => {
     // eslint-disable-next-line
-    if (!confirm('Do you want to remove this config?')) {
-      return;
+    if (canBeEdited && confirm('Do you want to remove this config?')) {
+      removeTag(tag.id);
     }
-    const { tag: { id }, removeTag } = this.props;
-    removeTag(id);
   };
-
-  /**
-   * Edit the color.
-   *
-   * @param {string} color the color from the editor.
-   */
-  editColor = (color: string) => {
-    const { tag, editTag } = this.props;
-    editTag({ ...tag, color });
+  const editColor = (color: string) => {
+    if (canBeEdited) {
+      editTag({ ...tag, color });
+    }
   };
-
-  render(): Node {
-    const { tag } = this.props;
-    const { name, color, type } = tag;
-    const isClass = type === 'class';
-    return (
-      <li className={styles.ColorConfigItem}>
-        <span
-          className={styles.TagName}
-          style={{ width: isClass ? '100px' : 'calc(100% - 150px)' }}
-        >
-          {name}
-        </span>
-        {isClass && <span className={styles.ClassExpandedTitle}>Class Name Goes Here</span>}
-        <ColorEditor color={color} onChange={this.editColor} />
-        <button type="button" className={styles.DeleteTag} onClick={this.removeMe}>
-          <Icon name="close" />
-        </button>
-      </li>
-    );
-  }
+  const { name, color, type } = tag;
+  const isClass = type === 'class';
+  return (
+    <li className={styles.ColorConfigItem}>
+      <span className={styles.TagName} style={{ width: isClass ? '100px' : 'calc(100% - 150px)' }}>
+        {name}
+      </span>
+      {isClass && <span className={styles.ClassExpandedTitle}>Class Name Goes Here</span>}
+      <ColorEditor color={color} onChange={editColor} />
+      <button type="button" className={styles.DeleteTag} onClick={onRemove}>
+        <Icon name="close" />
+      </button>
+    </li>
+  );
 }
 
 const actionCreators = { editTag: editTagAction, removeTag: removeTagAction };

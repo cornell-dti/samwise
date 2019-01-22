@@ -13,6 +13,7 @@ import { dispatchAction, initializeApp } from './store/store';
 import { httpInitializeData } from './http/http-service';
 import LoginBarrier from './components/Util/Login/LoginBarrier';
 import WindowSizeProvider from './components/Util/Responsive/WindowSizeProvider';
+import { disableBackend } from './util/config';
 
 firebaseInit();
 
@@ -34,17 +35,9 @@ const appRenderer = (appUser: AppUser): Node => {
 
 const dummyUser: AppUser = { displayName: 'BAD_USER', email: 'BAD_EMAIL', token: 'BAD_TOKEN' };
 
-/**
- * Whether to disable login.
- * In production, this must be set to false.
- * It can be set to true in development to speed up loading time.
- * @type {boolean}
- */
-const disableLogin: boolean = false;
-
 const root = document.getElementById('root') ?? error('The root node is not found!');
 ReactDOM.render((
   <WindowSizeProvider>
-    {disableLogin ? appRenderer(dummyUser) : <LoginBarrier appRenderer={appRenderer} />}
+    {disableBackend ? appRenderer(dummyUser) : <LoginBarrier appRenderer={appRenderer} />}
   </WindowSizeProvider>
 ), root);

@@ -10,8 +10,6 @@ import windowSizeConnect from '../Util/Responsive/WindowSizeConsumer';
 import type { WindowSize } from '../Util/Responsive/window-size-context';
 import type { FutureViewConfig } from './FutureView/FutureView';
 import type { Task } from '../../store/store-types';
-import type { PropsWithoutWindowSize } from '../Util/Responsive/WindowSizeConsumer';
-import { tasksConnect } from '../../util/task-util';
 
 type Props = {|
   +windowSize: WindowSize;

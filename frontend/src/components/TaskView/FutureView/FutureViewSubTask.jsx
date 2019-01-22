@@ -12,6 +12,7 @@ import type { PartialSubTask, SubTask } from '../../../store/store-types';
 import type { EditSubTaskAction, RemoveSubTaskAction } from '../../../store/action-types';
 import CheckBox from '../../UI/CheckBox';
 import { dispatchConnect } from '../../../store/react-redux-util';
+import { disableBackend } from '../../../util/config';
 
 type Props = {|
   ...SubTask;
@@ -36,6 +37,22 @@ function FutureViewSubTask(props: Props): Node {
     name, id, mainTaskId, complete, inFocus,
     mainTaskCompleted, editSubTask, removeSubTask,
   } = props;
+  const canBeEdited = disableBackend || (mainTaskId >= 0 && id >= 0);
+  const onCompleteChange = () => {
+    if (canBeEdited) {
+      editSubTask(mainTaskId, id, { complete: !complete });
+    }
+  };
+  const onFocusChange = () => {
+    if (canBeEdited) {
+      editSubTask(mainTaskId, id, { inFocus: !inFocus });
+    }
+  };
+  const onRemove = () => {
+    if (canBeEdited) {
+      removeSubTask(mainTaskId, id);
+    }
+  };
   return (
     <div className={styles.SubTask}>
       <CheckBox
@@ -43,7 +60,7 @@ function FutureViewSubTask(props: Props): Node {
         checked={mainTaskCompleted || complete}
         disabled={mainTaskCompleted}
         inverted
-        onChange={() => { editSubTask(mainTaskId, id, { complete: !complete }); }}
+        onChange={onCompleteChange}
       />
       <span
         className={styles.TaskText}
@@ -54,13 +71,9 @@ function FutureViewSubTask(props: Props): Node {
       <Icon
         name={inFocus ? 'bookmark' : 'bookmark outline'}
         className={styles.TaskIcon}
-        onClick={() => editSubTask(mainTaskId, id, { inFocus: !inFocus })}
+        onClick={onFocusChange}
       />
-      <Icon
-        name="delete"
-        className={styles.TaskIcon}
-        onClick={() => removeSubTask(mainTaskId, id)}
-      />
+      <Icon name="delete" className={styles.TaskIcon} onClick={onRemove} />
     </div>
   );
 }

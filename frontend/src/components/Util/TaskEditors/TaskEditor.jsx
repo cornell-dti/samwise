@@ -14,10 +14,12 @@ import styles from './TaskEditor.css';
 import { getTagConnect } from '../../../util/tag-util';
 import { randomId } from '../../../util/general-util';
 import { getTodayAtZero } from '../../../util/datetime-util';
+import { disableBackend } from '../../../util/config';
 
 type DefaultProps = {|
   +className?: string;
   children?: Node;
+  +allowEditTemporarySubTasks?: boolean;
   +newSubTaskDisabled?: boolean;
   +onFocus?: (event: SyntheticFocusEvent<HTMLElement>) => void;
   +onBlur?: (event: SyntheticFocusEvent<HTMLElement>) => void;
@@ -87,6 +89,32 @@ class TaskEditor extends React.PureComponent<Props, State> {
    */
 
   /**
+   * Whether the task can be edited.
+   *
+   * @return {boolean} whether the task can be edited.
+   */
+  canBeEdited = (): boolean => {
+    if (disableBackend) {
+      return true;
+    }
+    const { id } = this.props;
+    return id >= 0;
+  };
+
+  /**
+   * Whether a specific subtask can be edited.
+   * @param {number} subtaskId id of that specific subtask.
+   * @return {boolean} whether a specific subtask can be edited.
+   */
+  subTaskCanBeEdited = (subtaskId: number): boolean => {
+    if (disableBackend) {
+      return true;
+    }
+    const { id, allowEditTemporarySubTasks } = this.props;
+    return id >= 0 && (allowEditTemporarySubTasks !== false || subtaskId >= 0);
+  };
+
+  /**
    * Edit the cache for task name.
    *
    * @param {SyntheticEvent<HTMLInputElement>} event the event to notify the name change.
@@ -129,6 +157,9 @@ class TaskEditor extends React.PureComponent<Props, State> {
    * @param {number} tag the new tag id.
    */
   editTaskTag = (tag: number): void => {
+    if (!this.canBeEdited()) {
+      return;
+    }
     const { editMainTask } = this.props;
     editMainTask({ tag }, false);
     this.setState({ doesShowTagEditor: false });
@@ -140,6 +171,9 @@ class TaskEditor extends React.PureComponent<Props, State> {
    * @param {string} dateString the new date in string.
    */
   editTaskDate = (dateString: string): void => {
+    if (!this.canBeEdited()) {
+      return;
+    }
     const date = new Date(dateString);
     const { editMainTask } = this.props;
     editMainTask({ date }, false);
@@ -150,6 +184,9 @@ class TaskEditor extends React.PureComponent<Props, State> {
    * Toggle the completion status of the task.
    */
   editComplete = () => {
+    if (!this.canBeEdited()) {
+      return;
+    }
     const { complete, editMainTask } = this.props;
     editMainTask({ complete: !complete }, false);
   };
@@ -158,6 +195,9 @@ class TaskEditor extends React.PureComponent<Props, State> {
    * Change the in-focus status of the task.
    */
   editInFocus = () => {
+    if (!this.canBeEdited()) {
+      return;
+    }
     const { inFocus, editMainTask } = this.props;
     editMainTask({ inFocus: !inFocus }, false);
   };
@@ -170,6 +210,9 @@ class TaskEditor extends React.PureComponent<Props, State> {
    */
   editSubTaskNameCache = (subtaskId: number) => (event: SyntheticEvent<HTMLInputElement>) => {
     event.stopPropagation();
+    if (!this.subTaskCanBeEdited(subtaskId)) {
+      return;
+    }
     const oneSubTaskNameCache = [subtaskId, event.currentTarget.value];
     this.setState({ oneSubTaskNameCache });
   };
@@ -181,6 +224,9 @@ class TaskEditor extends React.PureComponent<Props, State> {
    * @return {function(): void} the edit completion event handler.
    */
   editSubTaskComplete = (subTask: SubTask) => (): void => {
+    if (!this.subTaskCanBeEdited(subTask.id)) {
+      return;
+    }
     const { editSubTask } = this.props;
     editSubTask(subTask.id, { complete: !subTask.complete }, false);
   };
@@ -192,6 +238,9 @@ class TaskEditor extends React.PureComponent<Props, State> {
    * @return {function(): void} the edit completion event handler.
    */
   editSubTaskInFocus = (subTask: SubTask) => (): void => {
+    if (!this.subTaskCanBeEdited(subTask.id)) {
+      return;
+    }
     const { editSubTask } = this.props;
     editSubTask(subTask.id, { inFocus: !subTask.inFocus }, false);
   };
@@ -204,6 +253,9 @@ class TaskEditor extends React.PureComponent<Props, State> {
    */
   handleNewSubTaskValueChange = (event: SyntheticEvent<HTMLInputElement>) => {
     event.stopPropagation();
+    if (!this.canBeEdited()) {
+      return;
+    }
     const newSubTaskValue: string = event.currentTarget.value.trim();
     if (newSubTaskValue.length === 0) {
       return;
@@ -323,17 +375,25 @@ class TaskEditor extends React.PureComponent<Props, State> {
     } = this.props;
     const { mainTaskNameCache } = this.state;
     const taskNameValue = mainTaskNameCache === null ? name : mainTaskNameCache;
+    const disabled = !this.canBeEdited();
+    const onRemove = () => {
+      if (!disabled) {
+        removeTask();
+      }
+    };
     return (
       <div className={styles.TaskEditorFlexibleContainer}>
         <CheckBox
           className={styles.TaskEditorCheckBox}
           checked={complete}
+          disabled={disabled}
           onChange={this.editComplete}
         />
         <input
           className={styles.TaskEditorFlexibleInput}
           placeholder="Main Task"
           value={taskNameValue}
+          disabled={disabled}
           onKeyDown={this.pressEnterHandler}
           onChange={this.editTaskNameCache}
           onBlur={this.editTaskName}
@@ -343,7 +403,7 @@ class TaskEditor extends React.PureComponent<Props, State> {
           className={styles.TaskEditorIcon}
           onClick={this.editInFocus}
         />
-        <Icon className={styles.TaskEditorIcon} name="delete" onClick={removeTask} />
+        <Icon className={styles.TaskEditorIcon} name="delete" onClick={onRemove} />
       </div>
     );
   };
@@ -359,10 +419,16 @@ class TaskEditor extends React.PureComponent<Props, State> {
   renderSubTask = (subTask: SubTask, index: number, array: SubTask[]): Node => {
     const { complete, removeSubTask } = this.props;
     const { oneSubTaskNameCache, needToSwitchFocus } = this.state;
+    const disabled = !this.canBeEdited();
     const refHandler = (inputElementRef) => {
       if (index === array.length - 1 && needToSwitchFocus && inputElementRef != null) {
         inputElementRef.focus();
         this.setState({ needToSwitchFocus: false });
+      }
+    };
+    const onRemoveSubTask = () => {
+      if (this.subTaskCanBeEdited(subTask.id)) {
+        removeSubTask(subTask.id);
       }
     };
     const subTaskName = (oneSubTaskNameCache === null || oneSubTaskNameCache[0] !== subTask.id)
@@ -372,13 +438,14 @@ class TaskEditor extends React.PureComponent<Props, State> {
         <CheckBox
           className={styles.TaskEditorCheckBox}
           checked={complete || subTask.complete}
-          disabled={complete}
+          disabled={disabled || complete}
           onChange={this.editSubTaskComplete(subTask)}
         />
         <input
           className={styles.TaskEditorFlexibleInput}
           placeholder="Your Sub-Task"
           value={subTaskName}
+          disabled={disabled}
           ref={refHandler}
           onKeyDown={this.pressEnterHandler}
           onChange={this.editSubTaskNameCache(subTask.id)}
@@ -389,11 +456,7 @@ class TaskEditor extends React.PureComponent<Props, State> {
           className={styles.TaskEditorIcon}
           onClick={this.editSubTaskInFocus(subTask)}
         />
-        <Icon
-          name="delete"
-          className={styles.TaskEditorIcon}
-          onClick={() => removeSubTask(subTask.id)}
-        />
+        <Icon name="delete" className={styles.TaskEditorIcon} onClick={onRemoveSubTask} />
       </div>
     );
   };
@@ -433,6 +496,7 @@ class TaskEditor extends React.PureComponent<Props, State> {
                 className={styles.TaskEditorFlexibleInput}
                 placeholder="A new subtask"
                 value=""
+                disabled={!this.canBeEdited()}
                 onChange={this.handleNewSubTaskValueChange}
                 onKeyDown={this.newSubTaskPressEnterHandler}
               />
