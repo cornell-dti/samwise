@@ -6,7 +6,7 @@
  * It can be set to true in development to speed up coding.
  * @type {boolean}
  */
-export const disableBackend = true;
+export const disableBackend = false;
 
 /**
  * The firebase config.

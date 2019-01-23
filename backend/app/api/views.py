@@ -1,7 +1,7 @@
 from flask import request, Blueprint, jsonify, redirect, url_for
 from sqlalchemy import or_
 
-from app import db, util
+from app import db, util, courses
 from app.api.models import Tag, Task
 from app import auth
 
@@ -77,7 +77,11 @@ def load():
         .all()
     tasks_json = util.table_to_json(tasks)
 
-    return jsonify(tags=tags_json, tasks=tasks_json)
+    return jsonify(
+        tags=tags_json,
+        tasks=tasks_json,
+        courses=courses.courses_json
+    )
 
 
 @api.route('/tags/new', methods=['POST'])
