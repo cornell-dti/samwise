@@ -47,6 +47,7 @@ import { ignore } from '../util/general-util';
 const initialState: State = {
   tasks: [],
   tags: [NONE_TAG, ...DUMMY_TAGS],
+  courses: [],
   undoCache: { lastAddedTaskId: null, lastDeletedTask: null },
 };
 
@@ -336,7 +337,9 @@ export default function rootReducer(state: State = initialState, action: Action)
     case 'BACKEND_PATCH_EXISTING_TASK':
       return { ...state, tasks: replaceTask(state.tasks, action.task.id, () => action.task) };
     case 'BACKEND_PATCH_LOADED_DATA':
-      return { ...state, tags: [NONE_TAG, ...action.tags], tasks: action.tasks };
+      return {
+        ...state, tags: [NONE_TAG, ...action.tags], tasks: action.tasks, courses: action.courses,
+      };
     default:
       return state;
   }

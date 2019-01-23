@@ -22,6 +22,7 @@ import type {
   BackendPatchNewTagAction,
 } from './action-types';
 import type {
+  Course,
   PartialMainTask, PartialSubTask, SubTask, Tag, Task,
 } from './store-types';
 import type { TaskDiff } from '../util/task-util';
@@ -200,10 +201,11 @@ export const backendPatchExistingTask = (task: Task): BackendPatchExistingTaskAc
  *
  * @param {Tag[]} tags tags from the backend.
  * @param {Task[]} tasks tasks from the backend.
+ * @param {Course[]} courses courses from the backend.
  * @return {BackendPatchLoadedDataAction}
  */
 export const backendPatchLoadedData = (
-  tags: Tag[], tasks: Task[],
+  tags: Tag[], tasks: Task[], courses: Course[],
 ): BackendPatchLoadedDataAction => ({
-  type: 'BACKEND_PATCH_LOADED_DATA', tags, tasks,
+  type: 'BACKEND_PATCH_LOADED_DATA', tags, tasks, courses,
 });

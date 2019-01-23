@@ -2,7 +2,7 @@
 
 import { get, post, put } from '../util/http-util';
 import type {
-  Tag, SubTask, Task, PartialSubTask, PartialMainTask,
+  Tag, SubTask, Task, PartialSubTask, PartialMainTask, Course,
 } from '../store/store-types';
 import type { BackendPatchLoadedDataAction } from '../store/action-types';
 import { backendPatchLoadedData } from '../store/actions';
@@ -20,10 +20,11 @@ import type { TaskDiff } from '../util/task-util';
  * @return {Promise<BackendPatchLoadedDataAction>} the promise of the backend patch loaded action.
  */
 export function httpInitializeData(): Promise<BackendPatchLoadedDataAction> {
-  type LoadedData = {| +tags: BackendTag[]; +tasks: BackendTask[]; |};
-  return get<LoadedData>('/load').then(({ tags, tasks }) => backendPatchLoadedData(
+  type LoadedData = {| +tags: BackendTag[]; +tasks: BackendTask[]; +courses: Course[]; |};
+  return get<LoadedData>('/load').then(({ tags, tasks, courses }) => backendPatchLoadedData(
     tags.map(backendTagToFrontendTag),
     reorganizeBackendTasks(tasks),
+    courses,
   ));
 }
 

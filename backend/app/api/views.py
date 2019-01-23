@@ -333,6 +333,8 @@ def new_task():
 
         subtasks_json = [util.sqlalchemy_obj_to_dict(s) for s in new_subtasks]
         new_task_json['subtasks'] = subtasks_json
+    else:
+        new_task_json['subtasks'] = []
 
     return jsonify(created=new_task_json)
 

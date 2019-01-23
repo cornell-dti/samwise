@@ -7,7 +7,7 @@ class Info(object):
     subject: str
     course_number: str
     title: str
-    time: Set[str]
+    exam_times: Set[str]
 
     def __init__(self, course_id: int, subject: str, course_number: str,
                  title: str):
@@ -15,7 +15,7 @@ class Info(object):
         self.subject = subject
         self.course_number = course_number
         self.title = title
-        self.time = set()
+        self.exam_times = set()
 
     def identifier(self) -> str:
         return f'{self.subject}{self.course_number}'
@@ -26,7 +26,7 @@ class Info(object):
             subject=self.subject,
             courseNumber=self.course_number,
             title=self.title,
-            times=[t for t in self.time]
+            examTimes=[t for t in self.exam_times]
         )
 
 
@@ -52,7 +52,7 @@ def process_exam_info_json(dictionary: Dict[str, Info], exam_info_json):
             print(f'Warning: the exam at {time} for {identifier} is not found '
                   f'in course info!')
             continue
-        info.time.add(time)
+        info.exam_times.add(time)
 
 
 if __name__ == '__main__':

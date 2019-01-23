@@ -1,7 +1,7 @@
 // @flow strict
 
 import type {
-  PartialMainTask, PartialSubTask, SubTask, Tag, Task,
+  PartialMainTask, PartialSubTask, SubTask, Tag, Task, Course,
 } from './store-types';
 import type { TaskDiff } from '../util/task-util';
 
@@ -89,7 +89,7 @@ export type BackendPatchExistingTaskAction = {|
   type: 'BACKEND_PATCH_EXISTING_TASK'; +task: Task;
 |};
 export type BackendPatchLoadedDataAction = {|
-  type: 'BACKEND_PATCH_LOADED_DATA'; +tags: Tag[]; +tasks: Task[];
+  type: 'BACKEND_PATCH_LOADED_DATA'; +tags: Tag[]; +tasks: Task[]; +courses: Course[];
 |};
 
 /**
