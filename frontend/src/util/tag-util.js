@@ -17,7 +17,7 @@ export const NONE_TAG_ID = -1;
  * @type {Tag}
  */
 export const NONE_TAG: Tag = {
-  id: NONE_TAG_ID, type: 'other', name: 'None', color: 'gray',
+  id: NONE_TAG_ID, name: 'None', color: 'gray', classId: null,
 };
 
 /**
@@ -26,13 +26,10 @@ export const NONE_TAG: Tag = {
  */
 export const DUMMY_TAGS: Tag[] = [
   {
-    id: 0, type: 'other', name: 'Personal', color: '#9D4AA9',
+    id: 0, name: 'Personal', color: '#9D4AA9', classId: null,
   },
   {
-    id: 1, type: 'other', name: 'Project Team', color: '#FF8A8A',
-  },
-  {
-    id: 2, type: 'class', name: 'CS1110', color: '#B92424',
+    id: 1, name: 'Project Team', color: '#FF8A8A', classId: null,
   },
 ];
 

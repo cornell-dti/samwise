@@ -91,7 +91,7 @@ def new_tag():
 
     Input format:
     {
-        "is_class": True | False,
+        "class_id": 444 | null,
         "name": "Tag name",
         "color": "#ffffff"
     }
@@ -119,13 +119,13 @@ def new_tag():
             error='tag name and color must be strings. Current color type is '
                   + type(color) + '. Current tag name types is '
                   + type(tag_name)), 400
-    is_class = data.get('is_class')
+    class_id = data.get('class_id')
     last_tag = Tag.query \
         .filter(Tag.user_id == user_id) \
         .order_by(Tag._order.desc()) \
         .first()
     order = last_tag._order + 1 if last_tag else 0
-    tag = Tag(user_id=user_id, is_class=is_class,
+    tag = Tag(user_id=user_id, class_id=class_id,
               tag_name=tag_name, color=color, _order=order)
     db.session.add(tag)
     db.session.commit()
@@ -226,20 +226,18 @@ def edit_tag(tag_id):
     user_id = get_user_id(data['token'])
     if not user_id:
         return redirect(url_for('api.login', redirect=request.path))
-    is_class = data.get('is_class')
+    class_id = data.get('class_id')
     tag_name = data.get('name')
     color = data.get('color')
     tag = Tag.query.filter(Tag.user_id == user_id).filter(
         Tag.tag_id == tag_id).first()
     if tag is None:
         return jsonify(status='error. tag not found.')
-    if is_class is None:
-        return jsonify(status='error. key "is_class" is required')
     if tag_name is None:
         return jsonify(status='error. key "tag_name" is required.')
     if color is None:
         return jsonify(status='error. key "color" is required.')
-    tag.is_class = is_class
+    tag.class_id = class_id
     tag.tag_name = tag_name
     tag.color = color
     db.session.commit()

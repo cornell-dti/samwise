@@ -92,7 +92,7 @@ function SettingsPage({ tags }: Props): Node {
   const classTags: Tag[] = [];
   const otherTags: Tag[] = [];
   tags.forEach((tag) => {
-    if (tag.type === 'class') {
+    if (tag.classId !== null) {
       classTags.push(tag);
     } else if (tag.name !== 'None') {
       otherTags.push(tag);

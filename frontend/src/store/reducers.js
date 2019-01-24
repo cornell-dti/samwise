@@ -47,7 +47,7 @@ import { ignore } from '../util/general-util';
 const initialState: State = {
   tasks: [],
   tags: [NONE_TAG, ...DUMMY_TAGS],
-  courses: [],
+  courses: new Map(),
   undoCache: { lastAddedTaskId: null, lastDeletedTask: null },
 };
 

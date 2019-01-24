@@ -1,12 +1,10 @@
 // @flow strict
 
-export type TagType = 'class' | 'other';
-
 export type Tag = {|
   +id: number;
-  +type: TagType;
   +name: string;
   +color: string;
+  +classId: number | null;
 |};
 
 export type SubTask = {|
@@ -68,6 +66,6 @@ export type UndoCache = {|
 export type State = {|
   +tasks: Task[];
   +tags: Tag[];
-  +courses: Course[];
+  +courses: Map<number, Course>;
   +undoCache: UndoCache;
 |};

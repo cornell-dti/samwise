@@ -2,15 +2,18 @@
 
 import { get, post, put } from '../util/http-util';
 import type {
-  Tag, SubTask, Task, PartialSubTask, PartialMainTask, Course,
+  Tag, SubTask, Task, PartialSubTask, PartialMainTask,
 } from '../store/store-types';
 import type { BackendPatchLoadedDataAction } from '../store/action-types';
-import { backendPatchLoadedData } from '../store/actions';
 import { ignore } from '../util/general-util';
-import type { BackendTag, BackendTask, BackendTaskWithSubTasks } from './backend-adapter';
+import type {
+  BackendTag,
+  BackendTask,
+  BackendTaskWithSubTasks,
+} from './backend-adapter';
 import {
   createEditTagRequest, createNewSubTaskRequest, createNewTaskRequest, createEditBackendTaskRequest,
-  backendTagToFrontendTag, backendTaskWithSubTasksToFrontendTask, reorganizeBackendTasks,
+  backendTaskWithSubTasksToFrontendTask, createPatchLoadedDataAction,
 } from './backend-adapter';
 import type { TaskDiff } from '../util/task-util';
 
@@ -20,12 +23,7 @@ import type { TaskDiff } from '../util/task-util';
  * @return {Promise<BackendPatchLoadedDataAction>} the promise of the backend patch loaded action.
  */
 export function httpInitializeData(): Promise<BackendPatchLoadedDataAction> {
-  type LoadedData = {| +tags: BackendTag[]; +tasks: BackendTask[]; +courses: Course[]; |};
-  return get<LoadedData>('/load').then(({ tags, tasks, courses }) => backendPatchLoadedData(
-    tags.map(backendTagToFrontendTag),
-    reorganizeBackendTasks(tasks),
-    courses,
-  ));
+  return get('/load').then(createPatchLoadedDataAction);
 }
 
 /**

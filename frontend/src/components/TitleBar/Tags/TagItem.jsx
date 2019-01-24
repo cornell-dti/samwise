@@ -30,7 +30,7 @@ function TagItem({ tag, editTag, removeTag }: Props): Node {
   const canBeEdited = disableBackend || tag.id >= 0;
   const onRemove = () => {
     // eslint-disable-next-line
-    if (canBeEdited && confirm('Do you want to remove this config?')) {
+    if (canBeEdited && confirm('Do you want to remove this tag?')) {
       removeTag(tag.id);
     }
   };
@@ -39,14 +39,14 @@ function TagItem({ tag, editTag, removeTag }: Props): Node {
       editTag({ ...tag, color });
     }
   };
-  const { name, color, type } = tag;
-  const isClass = type === 'class';
+  const { name, color, classId } = tag;
+  const isClass = classId !== null;
+  const nameNode = isClass
+    ? <span className={styles.ClassExpandedTitle}>{name}</span>
+    : <span className={styles.TagName} style={{ width: 'calc(100% - 150px)' }}>{name}</span>;
   return (
     <li className={styles.ColorConfigItem}>
-      <span className={styles.TagName} style={{ width: isClass ? '100px' : 'calc(100% - 150px)' }}>
-        {name}
-      </span>
-      {isClass && <span className={styles.ClassExpandedTitle}>Class Name Goes Here</span>}
+      {nameNode}
       <ColorEditor color={color} onChange={editColor} />
       <button type="button" className={styles.DeleteTag} onClick={onRemove}>
         <Icon name="close" />
