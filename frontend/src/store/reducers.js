@@ -36,7 +36,7 @@ import {
 } from './actions';
 import { replaceTask, replaceSubTaskWithinMainTask } from '../util/task-util';
 import { DUMMY_TAGS, NONE_TAG } from '../util/tag-util';
-import { ignore } from '../util/general-util';
+import { error, ignore, randomId } from '../util/general-util';
 
 /**
  * Returns the initial state given an app user.
@@ -183,6 +183,51 @@ function editTask(state: State, { task, diff }: EditTaskAction): State {
 }
 
 /**
+ * Import all the course exams.
+ *
+ * @param {State} state the old state.
+ * @return {State} the new state.
+ */
+function importCourseExams(state: State): State {
+  const { tags, tasks, courses } = state;
+  const newTasks = [];
+  tags.forEach((tag) => {
+    if (tag.classId === null) {
+      return;
+    }
+    const course = courses.get(tag.classId);
+    if (course == null) {
+      return; // not an error because it may be courses in previous semesters.
+    }
+    course.examTimes.forEach((examTime) => {
+      const t = new Date(examTime);
+      const filter = (task: Task) => {
+        const { name, date } = task;
+        return task.tag === tag.id && name === 'Exam'
+          && date.getFullYear() === t.getFullYear()
+          && date.getMonth() === t.getMonth()
+          && date.getDate() === t.getDate()
+          && date.getHours() === t.getHours();
+      };
+      if (!tasks.some(filter)) {
+        const newTask: Task = {
+          id: randomId(),
+          name: 'Exam',
+          tag: tag.id,
+          date: t,
+          complete: false,
+          inFocus: false,
+          subtasks: [],
+        };
+        newTasks.push(newTask);
+      }
+    });
+  });
+  // TODO patch id
+  return { ...state, tasks: [...tasks, ...newTasks] };
+}
+
+/**
  * Undo the operation of add task.
  *
  * @param {State} state the old state.
@@ -320,6 +365,8 @@ export default function rootReducer(state: State = initialState, action: Action)
       return removeTask(state, action);
     case 'REMOVE_SUBTASK':
       return { ...state, tasks: removeSubtask(state.tasks, action) };
+    case 'IMPORT_COURSE_EXAMS':
+      return importCourseExams(state);
     case 'UNDO_ADD_TASK':
       return undoAddTask(state);
     case 'CLEAR_UNDO_ADD_TASK':

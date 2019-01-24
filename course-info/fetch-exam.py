@@ -74,7 +74,7 @@ class ExamInfo(object):
             subject=segments[0],
             course_number=segments[1],
             section_number=segments[2],
-            time=datetime_in_utc.__str__().split('+')[0]
+            time=datetime_in_utc.__str__()
         )
 
 

@@ -16,7 +16,7 @@ export type AddNewSubTaskAction = {|
   type: 'ADD_NEW_SUBTASK'; +taskId: number; +subTask: SubTask;
 |};
 
-export type EditTaskAction = {| type: 'EDIT_TASK'; +task: Task; +diff: TaskDiff;|};
+export type EditTaskAction = {| type: 'EDIT_TASK'; +task: Task; +diff: TaskDiff; |};
 export type EditMainTaskAction = {|
   type: 'EDIT_MAIN_TASK'; +taskId: number; +partialMainTask: PartialMainTask;
 |};
@@ -29,6 +29,8 @@ export type RemoveSubTaskAction = {|
   type: 'REMOVE_SUBTASK'; +taskId: number; +subtaskId: number;
 |};
 
+export type ImportCourseExamsAction = {| type: 'IMPORT_COURSE_EXAMS' |};
+
 type TaskAction =
   | AddNewTaskAction
   | AddNewSubTaskAction
@@ -36,7 +38,8 @@ type TaskAction =
   | EditMainTaskAction
   | EditSubTaskAction
   | RemoveTaskAction
-  | RemoveSubTaskAction;
+  | RemoveSubTaskAction
+  | ImportCourseExamsAction;
 
 /*
  * --------------------------------------------------------------------------------

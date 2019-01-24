@@ -11,6 +11,7 @@ import type {
   EditSubTaskAction,
   RemoveTaskAction,
   RemoveSubTaskAction,
+  ImportCourseExamsAction,
   UndoAddTaskAction,
   ClearUndoAddTaskAction,
   UndoDeleteTaskAction,
@@ -121,6 +122,15 @@ export const removeTask = (taskId: number): RemoveTaskAction => ({
  */
 export const removeSubTask = (taskId: number, subtaskId: number): RemoveSubTaskAction => ({
   type: 'REMOVE_SUBTASK', taskId, subtaskId,
+});
+
+/**
+ * Import course exams.
+ *
+ * @return {ImportCourseExamsAction} the import course exams action.
+ */
+export const importCourseExams = (): ImportCourseExamsAction => ({
+  type: 'IMPORT_COURSE_EXAMS',
 });
 
 /**
