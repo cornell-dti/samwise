@@ -64,5 +64,3 @@ const ConnectedClassTagAdder = dispatchConnect<Props, Props>(
   { addTag: addTagAction },
 )(ClassTagAdder);
 export default ConnectedClassTagAdder;
-
-// TODO figure out what this is doing...

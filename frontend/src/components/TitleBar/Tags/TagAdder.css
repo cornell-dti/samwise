@@ -3,10 +3,19 @@
 }
 
 .SearchClasses {
-  padding: 10px 20px;
   width: 100%;
-  border-radius:10px;
-  border:2px #979797 solid;
-  position:relative;
-  margin-top:15px;
+  border-radius: 12px;
+  border: 2px #979797 solid;
+  position: relative;
+  margin-top: 15px;
+  overflow: hidden;
+}
+
+div.SearchClasses > div > input {
+  width: 100% !important;
+}
+
+div.SearchClasses > div > div {
+  margin: 0 !important;
+  border-radius: 0 0 10px 10px;
 }
