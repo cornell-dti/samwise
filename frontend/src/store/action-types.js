@@ -82,6 +82,9 @@ export type BackendPatchNewTagAction = {|
 export type BackendPatchNewTaskAction = {|
   type: 'BACKEND_PATCH_NEW_TASK'; +tempId: number; +backendTask: Task;
 |};
+export type BackendPatchBatchNewTasksAction = {|
+  type: 'BACKEND_PATCH_BATCH_NEW_TASKS'; +tempIds: number[]; +backendTasks: Task[];
+|};
 export type BackendPatchNewSubTaskAction = {|
   type: 'BACKEND_PATCH_NEW_SUBTASK';
   +taskId: number;
@@ -101,6 +104,7 @@ export type BackendPatchLoadedDataAction = {|
 export type BackendPatchAction =
   | BackendPatchNewTagAction
   | BackendPatchNewTaskAction
+  | BackendPatchBatchNewTasksAction
   | BackendPatchNewSubTaskAction
   | BackendPatchExistingTaskAction
   | BackendPatchLoadedDataAction

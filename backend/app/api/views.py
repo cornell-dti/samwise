@@ -339,6 +339,80 @@ def new_task():
     return jsonify(created=new_task_json)
 
 
+@api.route('/tasks/batch_new', methods=['POST'])
+def batch_new_tasks():
+    """
+    Creates new tasks.
+    {
+        "token": auth_token,
+        "tasks": [{
+            "content": content,
+            "start_date": yyyy-mm-dd hh:mm:ss,
+            "end_date": yyyy-mm-dd hh:mm:ss,
+            "parent_task": parent id,
+            "tag_id": tag_id
+        }]
+    }
+
+    Output format:
+    {
+        "created": [{
+            "content": content,
+            "start_date": yyyy-mm-dd hh:mm:ss,
+            "end_date": yyyy-mm-dd hh:mm:ss,
+            "tag_id": id,
+            "parent_task": parent id,
+            "_order": order,
+            "completed": False
+        }]
+    }
+    """
+    data = request.get_json(force=True)
+    if not data or 'token' not in data:
+        return jsonify(error='token not passed in')
+    user_id = get_user_id(data['token'])
+    if not user_id:
+        return redirect(url_for('api.login', redirect=request.path))
+
+    last_task = Task.query.filter(
+        Task.user_id == user_id).order_by(Task._order.desc()).first()
+    last_task_order = last_task._order + 1 if last_task else 0
+
+    order_acc = last_task_order
+
+    new_tasks = []
+
+    for task_data in data.get('tasks'):
+        content = task_data.get('content')
+        tag_id = task_data.get('tag_id')
+        start_date = task_data.get('start_date')
+        end_date = task_data.get('end_date')
+        if None in (content, tag_id, start_date, end_date):
+            return jsonify(
+                error='Parameters content, tag_id, start_date, and '
+                      'end_date are required!')
+
+        parent_task = task_data.get('parent_task')
+
+        order = order_acc
+        order_acc += 1
+
+        completed = task_data.get('completed', False)
+        in_focus = task_data.get('in_focus', False)
+
+        new_task = Task(user_id=user_id, content=content,
+                        start_date=start_date, end_date=end_date,
+                        tag_id=tag_id, parent_task=parent_task,
+                        _order=order, completed=completed, in_focus=in_focus)
+        new_tasks.append(new_task)
+        db.session.add(new_task)
+
+    db.session.commit()  # necessary to get the task id
+    new_tasks_json = [util.sqlalchemy_obj_to_dict(t) for t in new_tasks]
+
+    return jsonify(created=new_tasks_json)
+
+
 @api.route('/tasks/all', methods=['GET'])
 def get_all_tasks():
     """

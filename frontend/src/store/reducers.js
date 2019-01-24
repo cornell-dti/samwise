@@ -8,8 +8,9 @@ import type {
   RemoveTaskAction,
   AddNewSubTaskAction,
   RemoveSubTaskAction,
-  BackendPatchNewTaskAction,
   AddNewTaskAction,
+  BackendPatchNewTaskAction,
+  BackendPatchBatchNewTasksAction,
   BackendPatchNewSubTaskAction,
   BackendPatchNewTagAction,
 } from './action-types';
@@ -26,17 +27,19 @@ import {
   httpEditTag,
   httpEditTask,
   httpNewTag,
+  httpBatchAddTasks,
 } from '../http/http-service';
 import { dispatchAction } from './store';
 import {
   backendPatchNewTag as backendPatchNewTagAction,
   backendPatchExistingTask as backendPatchExistingTaskAction,
   backendPatchNewTask as backendPatchNewTaskAction,
+  backendPatchBatchNewTasks as backendPatchBatchNewTasksAction,
   backendPatchNewSubTask as backendPatchNewSubTaskAction,
 } from './actions';
 import { replaceTask, replaceSubTaskWithinMainTask } from '../util/task-util';
 import { DUMMY_TAGS, NONE_TAG } from '../util/tag-util';
-import { error, ignore, randomId } from '../util/general-util';
+import { ignore, randomId } from '../util/general-util';
 
 /**
  * Returns the initial state given an app user.
@@ -223,7 +226,10 @@ function importCourseExams(state: State): State {
       }
     });
   });
-  // TODO patch id
+  httpBatchAddTasks(newTasks).then((backendNewTasks) => {
+    const tempIds = newTasks.map(t => t.id);
+    dispatchAction(backendPatchBatchNewTasksAction(tempIds, backendNewTasks));
+  });
   return { ...state, tasks: [...tasks, ...newTasks] };
 }
 
@@ -313,6 +319,34 @@ function backendPatchNewTask(
 }
 
 /**
+ * Patch batch new task addition with backend info.
+ *
+ * @param {State} state the old state.
+ * @param {number[]} tempIds temp ids.
+ * @param {Task[]} backendTasks backend tasks.
+ * @return {State} the new state.
+ */
+function backendBatchPatchNewTasks(
+  state: State,
+  { tempIds, backendTasks }: BackendPatchBatchNewTasksAction,
+): State {
+  const { tasks } = state;
+  const map = new Map();
+  for (let i = 0; i < tempIds.length; i += 1) {
+    map.set(tempIds[i], backendTasks[i]);
+  }
+  const newTasks = [...tasks];
+  for (let i = 0; i < newTasks.length; i += 1) {
+    const t = newTasks[i];
+    const replacement = map.get(t.id);
+    if (replacement != null) {
+      newTasks[i] = replacement;
+    }
+  }
+  return { ...state, tasks: newTasks };
+}
+
+/**
  * Patch a new subtask with backend info.
  *
  * @param {State} state the old state.
@@ -379,6 +413,8 @@ export default function rootReducer(state: State = initialState, action: Action)
       return backendPatchNewTag(state, action);
     case 'BACKEND_PATCH_NEW_TASK':
       return backendPatchNewTask(state, action);
+    case 'BACKEND_PATCH_BATCH_NEW_TASKS':
+      return backendBatchPatchNewTasks(state, action);
     case 'BACKEND_PATCH_NEW_SUBTASK':
       return backendPatchNewSubTask(state, action);
     case 'BACKEND_PATCH_EXISTING_TASK':

@@ -12,8 +12,10 @@ import type {
   BackendTaskWithSubTasks,
 } from './backend-adapter';
 import {
-  createEditTagRequest, createNewSubTaskRequest, createNewTaskRequest, createEditBackendTaskRequest,
-  backendTaskWithSubTasksToFrontendTask, createPatchLoadedDataAction,
+  createEditTagRequest, createNewSubTaskRequest, createNewTaskRequest, createBatchNewTasksRequest,
+  createEditBackendTaskRequest,
+  backendTaskToPartialFrontendMainTask, backendTaskWithSubTasksToFrontendTask,
+  createPatchLoadedDataAction,
 } from './backend-adapter';
 import type { TaskDiff } from '../util/task-util';
 
@@ -64,6 +66,18 @@ export function httpAddTask(task: Task): Promise<Task> {
   return post<{| +created: BackendTaskWithSubTasks |}>(
     '/tasks/new', createNewTaskRequest(task),
   ).then(resp => backendTaskWithSubTasksToFrontendTask(resp.created));
+}
+
+/**
+ * Batch add new tasks.
+ *
+ * @param {Task[]} tasks the new tasks to add.
+ * @return {Promise<Task[]>} promise of the tasks from backend.
+ */
+export function httpBatchAddTasks(tasks: Task[]): Promise<Task[]> {
+  return post<{| +created: BackendTask[] |}>(
+    '/tasks/batch_new', createBatchNewTasksRequest(tasks),
+  ).then(resp => resp.created.map(backendTaskToPartialFrontendMainTask));
 }
 
 /**

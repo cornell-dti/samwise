@@ -17,6 +17,7 @@ import type {
   UndoDeleteTaskAction,
   ClearUndoDeleteTaskAction,
   BackendPatchNewTaskAction,
+  BackendPatchBatchNewTasksAction,
   BackendPatchNewSubTaskAction,
   BackendPatchExistingTaskAction,
   BackendPatchLoadedDataAction,
@@ -181,6 +182,19 @@ export const backendPatchNewTag = (
 export const backendPatchNewTask = (
   tempId: number, backendTask: Task,
 ): BackendPatchNewTaskAction => ({ type: 'BACKEND_PATCH_NEW_TASK', tempId, backendTask });
+
+/**
+ * Let the backend patch a batch new tasks.
+ *
+ * @param {number[]} tempIds the temp randomly assigned new task ids.
+ * @param {Task[]} backendTasks the tasks from backend.
+ * @return {BackendPatchBatchNewTasksAction} the backend patch batch new tasks action.
+ */
+export const backendPatchBatchNewTasks = (
+  tempIds: number[], backendTasks: Task[],
+): BackendPatchBatchNewTasksAction => ({
+  type: 'BACKEND_PATCH_BATCH_NEW_TASKS', tempIds, backendTasks,
+});
 
 /**
  * Let the backend patch a new subtask.

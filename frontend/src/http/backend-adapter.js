@@ -86,6 +86,15 @@ type NewTaskRequest = {|
   +subtasks: {| +content: string; +start_date: string; +end_date: string |}[];
 |};
 
+type BatchNewTasksRequest = {|
+  +tasks: {|
+    +content: string;
+    +tag_id: number;
+    +start_date: string;
+    +end_date: string;
+  |}[];
+|};
+
 type NewSubTaskRequest = {|
   +parent_task: number;
   +content: string;
@@ -160,6 +169,20 @@ export const createNewTaskRequest = (task: Task): NewTaskRequest => {
   };
 };
 
+export const createBatchNewTasksRequest = (tasks: Task[]): BatchNewTasksRequest => {
+  const requestTasks = tasks.map((task) => {
+    const startDate = formatDate(new Date());
+    const endDate = formatDate(task.date);
+    return {
+      content: task.name,
+      tag_id: task.tag,
+      start_date: startDate,
+      end_date: endDate,
+    };
+  });
+  return { tasks: requestTasks };
+};
+
 /**
  * Create a new subtask request.
  *
@@ -221,7 +244,7 @@ const backendTagToFrontendTag = (tag: BackendTag): Tag => ({
  * @param {BackendTask} backendTask backend task.
  * @return {Task} partial frontend task
  */
-const backendTaskToPartialFrontendMainTask = (backendTask: BackendTask): Task => ({
+export const backendTaskToPartialFrontendMainTask = (backendTask: BackendTask): Task => ({
   id: backendTask.task_id,
   name: backendTask.content,
   tag: backendTask.tag_id,
