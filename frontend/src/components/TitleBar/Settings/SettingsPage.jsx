@@ -7,8 +7,10 @@ import ClassTagAdder from '../Tags/ClassTagAdder';
 import OtherTagAdder from '../Tags/OtherTagAdder';
 import styles from './SettingsPage.css';
 import type { Tag } from '../../../store/store-types';
+import { importCourseExams } from '../../../store/actions';
 import { firebaseSignOut } from '../../../util/firebase-util';
 import { tagsConnect } from '../../../util/tag-util';
+import { dispatchConnect } from '../../../store/react-redux-util';
 
 /**
  * The class adder component.
@@ -32,17 +34,17 @@ const ClassAdder = (): Node => (
  * @return {Node} rendered component.
  * @constructor
  */
-const ExamImporter = (): Node => (
+const ExamImporter = dispatchConnect({ onClick: importCourseExams })(({ onClick }) => (
   <div className={styles.SettingsSection}>
     <p className={styles.SettingsSectionTitle}>Auto Import Exams</p>
     <div className={`${styles.SettingsButton} ${styles.SettingsSectionContent}`}>
       Click the following button to automatically import the prelims and finals
       from your registered classes into your planner.
       <br />
-      <button type="button">Import</button>
+      <button type="button" onClick={onClick}>Import</button>
     </div>
   </div>
-);
+));
 
 /**
  * The sign out component.
@@ -92,7 +94,7 @@ function SettingsPage({ tags }: Props): Node {
   const classTags: Tag[] = [];
   const otherTags: Tag[] = [];
   tags.forEach((tag) => {
-    if (tag.type === 'class') {
+    if (tag.classId !== null) {
       classTags.push(tag);
     } else if (tag.name !== 'None') {
       otherTags.push(tag);

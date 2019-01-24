@@ -1,9 +1,12 @@
 // @flow strict
 
 import type {
+  Course,
   PartialMainTask, PartialSubTask, SubTask, Tag, Task,
 } from '../store/store-types';
 import { error } from '../util/general-util';
+import type { BackendPatchLoadedDataAction } from '../store/action-types';
+import { backendPatchLoadedData } from '../store/actions';
 
 /**
  * ================================================================================
@@ -29,7 +32,7 @@ type CommonProps = {| +time_created: string; +time_modified: string |};
 export type BackendTag = {|
   +tag_id: number;
   +user_id: string;
-  +is_class: boolean;
+  +class_id?: number;
   +tag_name: string;
   +color: string;
   +_order: number;
@@ -66,9 +69,14 @@ export type BackendTaskWithSubTasks = {|
   +subtasks: BackendTask[];
 |};
 
+/**
+ * The type of loaded data.
+ */
+export type LoadedData = {| +tags: BackendTag[]; +tasks: BackendTask[]; +courses: Course[]; |};
+
 // Section 1.2: Request Types
 
-type EditTagRequest = {| +is_class: boolean; +name: string; +color: string |};
+type EditTagRequest = {| +class_id?: number; +name: string; +color: string |};
 
 type NewTaskRequest = {|
   +content: string;
@@ -76,6 +84,15 @@ type NewTaskRequest = {|
   +start_date: string;
   +end_date: string;
   +subtasks: {| +content: string; +start_date: string; +end_date: string |}[];
+|};
+
+type BatchNewTasksRequest = {|
+  +tasks: {|
+    +content: string;
+    +tag_id: number;
+    +start_date: string;
+    +end_date: string;
+  |}[];
 |};
 
 type NewSubTaskRequest = {|
@@ -107,14 +124,14 @@ type EditBackendTaskRequest = $Shape<{|
 /**
  * Create tag request.
  *
- * @param type type of the tag.
- * @param name name of the tag.
- * @param color color of the tag.
+ * @param {string} name name of the tag.
+ * @param {string} color color of the tag.
+ * @param {number | null} classId class id of the tag.
  * @return {EditTagRequest} the created request.
  */
-export const createEditTagRequest = ({ type, name, color }: Tag): EditTagRequest => ({
-  is_class: type === 'class', name, color,
-});
+export function createEditTagRequest({ name, color, classId }: Tag): EditTagRequest {
+  return classId === null ? { name, color } : { class_id: classId, name, color };
+}
 
 /**
  * Format date for backend.
@@ -150,6 +167,20 @@ export const createNewTaskRequest = (task: Task): NewTaskRequest => {
       content: subTask.name, start_date: startDate, end_date: endDate,
     })),
   };
+};
+
+export const createBatchNewTasksRequest = (tasks: Task[]): BatchNewTasksRequest => {
+  const requestTasks = tasks.map((task) => {
+    const startDate = formatDate(new Date());
+    const endDate = formatDate(task.date);
+    return {
+      content: task.name,
+      tag_id: task.tag,
+      start_date: startDate,
+      end_date: endDate,
+    };
+  });
+  return { tasks: requestTasks };
 };
 
 /**
@@ -200,11 +231,11 @@ export const createEditBackendTaskRequest = (
  *
  * @return {Tag} frontend tag.
  */
-export const backendTagToFrontendTag = (tag: BackendTag): Tag => ({
+const backendTagToFrontendTag = (tag: BackendTag): Tag => ({
   id: tag.tag_id,
-  type: tag.is_class ? 'class' : 'other',
   name: tag.tag_name,
   color: tag.color,
+  classId: tag.class_id == null ? null : tag.class_id,
 });
 
 /**
@@ -213,7 +244,7 @@ export const backendTagToFrontendTag = (tag: BackendTag): Tag => ({
  * @param {BackendTask} backendTask backend task.
  * @return {Task} partial frontend task
  */
-const backendTaskToPartialFrontendMainTask = (backendTask: BackendTask): Task => ({
+export const backendTaskToPartialFrontendMainTask = (backendTask: BackendTask): Task => ({
   id: backendTask.task_id,
   name: backendTask.content,
   tag: backendTask.tag_id,
@@ -257,7 +288,7 @@ export const backendTaskWithSubTasksToFrontendTask = (
  * @param {BackendTask[]} backendTasks unorganized backend tasks.
  * @return {Task[]} organized frontend tasks.
  */
-export function reorganizeBackendTasks(backendTasks: BackendTask[]): Task[] {
+function reorganizeBackendTasks(backendTasks: BackendTask[]): Task[] {
   const mainTasks = new Map<number, Task>();
   const serverSubTasks = new Map<number, SubTask[]>(); // key is parent id
   for (let i = 0; i < backendTasks.length; i += 1) {
@@ -279,4 +310,34 @@ export function reorganizeBackendTasks(backendTasks: BackendTask[]): Task[] {
   const assembledTasks: Task[] = [];
   mainTasks.forEach((task: Task) => { assembledTasks.push(task); });
   return assembledTasks;
+}
+
+/**
+ * Build a map from course id to courses.
+ *
+ * @param {Course[]} courses an array of courses.
+ * @return {Map<number, Course>} the map from course id to courses.
+ */
+function buildCoursesMap(courses: Course[]): Map<number, Course> {
+  const map = new Map();
+  for (let i = 0; i < courses.length; i += 1) {
+    const course = courses[i];
+    map.set(course.courseId, course);
+  }
+  return map;
+}
+
+/**
+ * Create a constructed BackendPatchLoadedDataAction from loaded data
+ *
+ * @param {LoadedData} loadedData the loaded data.
+ * @return {BackendPatchLoadedDataAction} the constructed action.
+ */
+export function createPatchLoadedDataAction(loadedData: LoadedData): BackendPatchLoadedDataAction {
+  const { tags, tasks, courses } = loadedData;
+  return backendPatchLoadedData(
+    tags.map(backendTagToFrontendTag),
+    reorganizeBackendTasks(tasks),
+    buildCoursesMap(courses),
+  );
 }

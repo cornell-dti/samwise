@@ -47,7 +47,7 @@ class OtherTagAdder extends React.Component<Props, State> {
     const { name, color } = this.state;
     const { addTag } = this.props;
     addTag({
-      id: randomId(), type: 'other', name, color,
+      id: randomId(), name, color, classId: null,
     });
     this.setState(initialState);
   };

@@ -8,8 +8,9 @@ import type {
   RemoveTaskAction,
   AddNewSubTaskAction,
   RemoveSubTaskAction,
-  BackendPatchNewTaskAction,
   AddNewTaskAction,
+  BackendPatchNewTaskAction,
+  BackendPatchBatchNewTasksAction,
   BackendPatchNewSubTaskAction,
   BackendPatchNewTagAction,
 } from './action-types';
@@ -26,17 +27,19 @@ import {
   httpEditTag,
   httpEditTask,
   httpNewTag,
+  httpBatchAddTasks,
 } from '../http/http-service';
 import { dispatchAction } from './store';
 import {
   backendPatchNewTag as backendPatchNewTagAction,
   backendPatchExistingTask as backendPatchExistingTaskAction,
   backendPatchNewTask as backendPatchNewTaskAction,
+  backendPatchBatchNewTasks as backendPatchBatchNewTasksAction,
   backendPatchNewSubTask as backendPatchNewSubTaskAction,
 } from './actions';
 import { replaceTask, replaceSubTaskWithinMainTask } from '../util/task-util';
 import { DUMMY_TAGS, NONE_TAG } from '../util/tag-util';
-import { ignore } from '../util/general-util';
+import { ignore, randomId } from '../util/general-util';
 
 /**
  * Returns the initial state given an app user.
@@ -47,6 +50,7 @@ import { ignore } from '../util/general-util';
 const initialState: State = {
   tasks: [],
   tags: [NONE_TAG, ...DUMMY_TAGS],
+  courses: new Map(),
   undoCache: { lastAddedTaskId: null, lastDeletedTask: null },
 };
 
@@ -182,6 +186,54 @@ function editTask(state: State, { task, diff }: EditTaskAction): State {
 }
 
 /**
+ * Import all the course exams.
+ *
+ * @param {State} state the old state.
+ * @return {State} the new state.
+ */
+function importCourseExams(state: State): State {
+  const { tags, tasks, courses } = state;
+  const newTasks = [];
+  tags.forEach((tag) => {
+    if (tag.classId === null) {
+      return;
+    }
+    const course = courses.get(tag.classId);
+    if (course == null) {
+      return; // not an error because it may be courses in previous semesters.
+    }
+    course.examTimes.forEach((examTime) => {
+      const t = new Date(examTime);
+      const filter = (task: Task) => {
+        const { name, date } = task;
+        return task.tag === tag.id && name === 'Exam'
+          && date.getFullYear() === t.getFullYear()
+          && date.getMonth() === t.getMonth()
+          && date.getDate() === t.getDate()
+          && date.getHours() === t.getHours();
+      };
+      if (!tasks.some(filter)) {
+        const newTask: Task = {
+          id: randomId(),
+          name: 'Exam',
+          tag: tag.id,
+          date: t,
+          complete: false,
+          inFocus: false,
+          subtasks: [],
+        };
+        newTasks.push(newTask);
+      }
+    });
+  });
+  httpBatchAddTasks(newTasks).then((backendNewTasks) => {
+    const tempIds = newTasks.map(t => t.id);
+    dispatchAction(backendPatchBatchNewTasksAction(tempIds, backendNewTasks));
+  });
+  return { ...state, tasks: [...tasks, ...newTasks] };
+}
+
+/**
  * Undo the operation of add task.
  *
  * @param {State} state the old state.
@@ -267,6 +319,34 @@ function backendPatchNewTask(
 }
 
 /**
+ * Patch batch new task addition with backend info.
+ *
+ * @param {State} state the old state.
+ * @param {number[]} tempIds temp ids.
+ * @param {Task[]} backendTasks backend tasks.
+ * @return {State} the new state.
+ */
+function backendBatchPatchNewTasks(
+  state: State,
+  { tempIds, backendTasks }: BackendPatchBatchNewTasksAction,
+): State {
+  const { tasks } = state;
+  const map = new Map();
+  for (let i = 0; i < tempIds.length; i += 1) {
+    map.set(tempIds[i], backendTasks[i]);
+  }
+  const newTasks = [...tasks];
+  for (let i = 0; i < newTasks.length; i += 1) {
+    const t = newTasks[i];
+    const replacement = map.get(t.id);
+    if (replacement != null) {
+      newTasks[i] = replacement;
+    }
+  }
+  return { ...state, tasks: newTasks };
+}
+
+/**
  * Patch a new subtask with backend info.
  *
  * @param {State} state the old state.
@@ -319,6 +399,8 @@ export default function rootReducer(state: State = initialState, action: Action)
       return removeTask(state, action);
     case 'REMOVE_SUBTASK':
       return { ...state, tasks: removeSubtask(state.tasks, action) };
+    case 'IMPORT_COURSE_EXAMS':
+      return importCourseExams(state);
     case 'UNDO_ADD_TASK':
       return undoAddTask(state);
     case 'CLEAR_UNDO_ADD_TASK':
@@ -331,12 +413,16 @@ export default function rootReducer(state: State = initialState, action: Action)
       return backendPatchNewTag(state, action);
     case 'BACKEND_PATCH_NEW_TASK':
       return backendPatchNewTask(state, action);
+    case 'BACKEND_PATCH_BATCH_NEW_TASKS':
+      return backendBatchPatchNewTasks(state, action);
     case 'BACKEND_PATCH_NEW_SUBTASK':
       return backendPatchNewSubTask(state, action);
     case 'BACKEND_PATCH_EXISTING_TASK':
       return { ...state, tasks: replaceTask(state.tasks, action.task.id, () => action.task) };
     case 'BACKEND_PATCH_LOADED_DATA':
-      return { ...state, tags: [NONE_TAG, ...action.tags], tasks: action.tasks };
+      return {
+        ...state, tags: [NONE_TAG, ...action.tags], tasks: action.tasks, courses: action.courses,
+      };
     default:
       return state;
   }

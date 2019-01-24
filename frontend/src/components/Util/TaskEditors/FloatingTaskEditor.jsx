@@ -36,15 +36,6 @@ type State = {|
 /**
  * FloatingTaskEditor is a component used to edit a task on the fly.
  * It is triggered from a click on a specified element.
- *
- * Usage:
- * ```jsx
- * <FloatingTaskEditor
- *   position="left"
- *   initialTask={task}
- *   trigger={opener => <span onClick={opener}>Ha</span>}
- * />
- * ```
  */
 class FloatingTaskEditor extends React.PureComponent<Props, State> {
   constructor(props: Props) {

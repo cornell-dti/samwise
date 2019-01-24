@@ -1,7 +1,7 @@
 from flask import request, Blueprint, jsonify, redirect, url_for
 from sqlalchemy import or_
 
-from app import db, util
+from app import db, util, courses
 from app.api.models import Tag, Task
 from app import auth
 
@@ -77,7 +77,11 @@ def load():
         .all()
     tasks_json = util.table_to_json(tasks)
 
-    return jsonify(tags=tags_json, tasks=tasks_json)
+    return jsonify(
+        tags=tags_json,
+        tasks=tasks_json,
+        courses=courses.courses_json
+    )
 
 
 @api.route('/tags/new', methods=['POST'])
@@ -87,7 +91,7 @@ def new_tag():
 
     Input format:
     {
-        "is_class": True | False,
+        "class_id": 444 | null,
         "name": "Tag name",
         "color": "#ffffff"
     }
@@ -115,13 +119,13 @@ def new_tag():
             error='tag name and color must be strings. Current color type is '
                   + type(color) + '. Current tag name types is '
                   + type(tag_name)), 400
-    is_class = data.get('is_class')
+    class_id = data.get('class_id')
     last_tag = Tag.query \
         .filter(Tag.user_id == user_id) \
         .order_by(Tag._order.desc()) \
         .first()
     order = last_tag._order + 1 if last_tag else 0
-    tag = Tag(user_id=user_id, is_class=is_class,
+    tag = Tag(user_id=user_id, class_id=class_id,
               tag_name=tag_name, color=color, _order=order)
     db.session.add(tag)
     db.session.commit()
@@ -191,6 +195,8 @@ def delete_tag(tag_id):
         return jsonify(
             error=f'error. no tag with id {tag_id} exists for this user.'), 404
     tag.deleted = True
+    # TODO also delete associated tasks
+    db.session.commit()
     return jsonify(status='success')
 
 
@@ -222,20 +228,18 @@ def edit_tag(tag_id):
     user_id = get_user_id(data['token'])
     if not user_id:
         return redirect(url_for('api.login', redirect=request.path))
-    is_class = data.get('is_class')
+    class_id = data.get('class_id')
     tag_name = data.get('name')
     color = data.get('color')
     tag = Tag.query.filter(Tag.user_id == user_id).filter(
         Tag.tag_id == tag_id).first()
     if tag is None:
         return jsonify(status='error. tag not found.')
-    if is_class is None:
-        return jsonify(status='error. key "is_class" is required')
     if tag_name is None:
         return jsonify(status='error. key "tag_name" is required.')
     if color is None:
         return jsonify(status='error. key "color" is required.')
-    tag.is_class = is_class
+    tag.class_id = class_id
     tag.tag_name = tag_name
     tag.color = color
     db.session.commit()
@@ -329,8 +333,84 @@ def new_task():
 
         subtasks_json = [util.sqlalchemy_obj_to_dict(s) for s in new_subtasks]
         new_task_json['subtasks'] = subtasks_json
+    else:
+        new_task_json['subtasks'] = []
 
     return jsonify(created=new_task_json)
+
+
+@api.route('/tasks/batch_new', methods=['POST'])
+def batch_new_tasks():
+    """
+    Creates new tasks.
+    {
+        "token": auth_token,
+        "tasks": [{
+            "content": content,
+            "start_date": yyyy-mm-dd hh:mm:ss,
+            "end_date": yyyy-mm-dd hh:mm:ss,
+            "parent_task": parent id,
+            "tag_id": tag_id
+        }]
+    }
+
+    Output format:
+    {
+        "created": [{
+            "content": content,
+            "start_date": yyyy-mm-dd hh:mm:ss,
+            "end_date": yyyy-mm-dd hh:mm:ss,
+            "tag_id": id,
+            "parent_task": parent id,
+            "_order": order,
+            "completed": False
+        }]
+    }
+    """
+    data = request.get_json(force=True)
+    if not data or 'token' not in data:
+        return jsonify(error='token not passed in')
+    user_id = get_user_id(data['token'])
+    if not user_id:
+        return redirect(url_for('api.login', redirect=request.path))
+
+    last_task = Task.query.filter(
+        Task.user_id == user_id).order_by(Task._order.desc()).first()
+    last_task_order = last_task._order + 1 if last_task else 0
+
+    order_acc = last_task_order
+
+    new_tasks = []
+
+    for task_data in data.get('tasks'):
+        content = task_data.get('content')
+        tag_id = task_data.get('tag_id')
+        start_date = task_data.get('start_date')
+        end_date = task_data.get('end_date')
+        if None in (content, tag_id, start_date, end_date):
+            return jsonify(
+                error='Parameters content, tag_id, start_date, and '
+                      'end_date are required!')
+
+        parent_task = task_data.get('parent_task')
+
+        order = order_acc
+        order_acc += 1
+
+        completed = task_data.get('completed', False)
+        in_focus = task_data.get('in_focus', False)
+
+        new_task = Task(user_id=user_id, content=content,
+                        start_date=start_date, end_date=end_date,
+                        tag_id=tag_id, parent_task=parent_task,
+                        _order=order, completed=completed, in_focus=in_focus)
+        new_tasks.append(new_task)
+        db.session.add(new_task)
+
+    db.session.commit()  # necessary to get the task id
+    new_tasks_json = [util.sqlalchemy_obj_to_dict(t) for t in new_tasks]
+
+    return jsonify(created=new_tasks_json)
 
 
 @api.route('/tasks/all', methods=['GET'])

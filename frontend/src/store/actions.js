@@ -11,17 +11,20 @@ import type {
   EditSubTaskAction,
   RemoveTaskAction,
   RemoveSubTaskAction,
+  ImportCourseExamsAction,
   UndoAddTaskAction,
   ClearUndoAddTaskAction,
   UndoDeleteTaskAction,
   ClearUndoDeleteTaskAction,
   BackendPatchNewTaskAction,
+  BackendPatchBatchNewTasksAction,
   BackendPatchNewSubTaskAction,
   BackendPatchExistingTaskAction,
   BackendPatchLoadedDataAction,
   BackendPatchNewTagAction,
 } from './action-types';
 import type {
+  Course,
   PartialMainTask, PartialSubTask, SubTask, Tag, Task,
 } from './store-types';
 import type { TaskDiff } from '../util/task-util';
@@ -123,6 +126,15 @@ export const removeSubTask = (taskId: number, subtaskId: number): RemoveSubTaskA
 });
 
 /**
+ * Import course exams.
+ *
+ * @return {ImportCourseExamsAction} the import course exams action.
+ */
+export const importCourseExams = (): ImportCourseExamsAction => ({
+  type: 'IMPORT_COURSE_EXAMS',
+});
+
+/**
  * Undo the previous add task operation.
  *
  * @return {UndoDeleteTaskAction} the undo add task action.
@@ -172,6 +184,19 @@ export const backendPatchNewTask = (
 ): BackendPatchNewTaskAction => ({ type: 'BACKEND_PATCH_NEW_TASK', tempId, backendTask });
 
 /**
+ * Let the backend patch a batch new tasks.
+ *
+ * @param {number[]} tempIds the temp randomly assigned new task ids.
+ * @param {Task[]} backendTasks the tasks from backend.
+ * @return {BackendPatchBatchNewTasksAction} the backend patch batch new tasks action.
+ */
+export const backendPatchBatchNewTasks = (
+  tempIds: number[], backendTasks: Task[],
+): BackendPatchBatchNewTasksAction => ({
+  type: 'BACKEND_PATCH_BATCH_NEW_TASKS', tempIds, backendTasks,
+});
+
+/**
  * Let the backend patch a new subtask.
  *
  * @param {number} taskId the main task id.
@@ -200,10 +225,11 @@ export const backendPatchExistingTask = (task: Task): BackendPatchExistingTaskAc
  *
  * @param {Tag[]} tags tags from the backend.
  * @param {Task[]} tasks tasks from the backend.
+ * @param {Map<number, Course>} courses courses from the backend.
  * @return {BackendPatchLoadedDataAction}
  */
 export const backendPatchLoadedData = (
-  tags: Tag[], tasks: Task[],
+  tags: Tag[], tasks: Task[], courses: Map<number, Course>,
 ): BackendPatchLoadedDataAction => ({
-  type: 'BACKEND_PATCH_LOADED_DATA', tags, tasks,
+  type: 'BACKEND_PATCH_LOADED_DATA', tags, tasks, courses,
 });

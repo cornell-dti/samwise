@@ -26,16 +26,16 @@ class Tag(Base):
 
     tag_id = db.Column(db.BigInteger, primary_key=True)
     user_id = db.Column(db.String, nullable=False)
-    is_class = db.Column(db.Boolean, nullable=False)
+    class_id = db.Column(db.Integer, nullable=True)
     tag_name = db.Column(db.String, nullable=False)
     color = db.Column(db.String, nullable=False)
     _order = db.Column(db.Integer, nullable=False)
     deleted = db.Column(db.Boolean, nullable=False)
 
-    def __init__(self, user_id=None, is_class=False, tag_name=None, color=None,
+    def __init__(self, user_id=None, class_id=None, tag_name=None, color=None,
                  _order=None, deleted=False):
         self.user_id = user_id
-        self.is_class = is_class
+        self.class_id = class_id
         self.tag_name = tag_name
         self.color = color
         self._order = _order

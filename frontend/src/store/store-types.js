@@ -1,12 +1,10 @@
 // @flow strict
 
-export type TagType = 'class' | 'other';
-
 export type Tag = {|
   +id: number;
-  +type: TagType;
   +name: string;
   +color: string;
+  +classId: number | null;
 |};
 
 export type SubTask = {|
@@ -44,6 +42,17 @@ export type MainTask = $Diff<Task, {| +id: number; +subtasks: SubTask[]; |}>;
 export type PartialMainTask = $Shape<MainTask>;
 
 /**
+ * The type of a course info entry.
+ */
+export type Course = {|
+  +courseId: number;
+  +subject: string;
+  +courseNumber: string;
+  +title: string;
+  +examTimes: string[];
+|};
+
+/**
  * The cache that is designed to store the stuff that can be undo.
  */
 export type UndoCache = {|
@@ -57,5 +66,6 @@ export type UndoCache = {|
 export type State = {|
   +tasks: Task[];
   +tags: Tag[];
+  +courses: Map<number, Course>;
   +undoCache: UndoCache;
 |};

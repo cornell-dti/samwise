@@ -5,12 +5,17 @@ import type {
   Tag, SubTask, Task, PartialSubTask, PartialMainTask,
 } from '../store/store-types';
 import type { BackendPatchLoadedDataAction } from '../store/action-types';
-import { backendPatchLoadedData } from '../store/actions';
 import { ignore } from '../util/general-util';
-import type { BackendTag, BackendTask, BackendTaskWithSubTasks } from './backend-adapter';
+import type {
+  BackendTag,
+  BackendTask,
+  BackendTaskWithSubTasks,
+} from './backend-adapter';
 import {
-  createEditTagRequest, createNewSubTaskRequest, createNewTaskRequest, createEditBackendTaskRequest,
-  backendTagToFrontendTag, backendTaskWithSubTasksToFrontendTask, reorganizeBackendTasks,
+  createEditTagRequest, createNewSubTaskRequest, createNewTaskRequest, createBatchNewTasksRequest,
+  createEditBackendTaskRequest,
+  backendTaskToPartialFrontendMainTask, backendTaskWithSubTasksToFrontendTask,
+  createPatchLoadedDataAction,
 } from './backend-adapter';
 import type { TaskDiff } from '../util/task-util';
 
@@ -20,11 +25,7 @@ import type { TaskDiff } from '../util/task-util';
  * @return {Promise<BackendPatchLoadedDataAction>} the promise of the backend patch loaded action.
  */
 export function httpInitializeData(): Promise<BackendPatchLoadedDataAction> {
-  type LoadedData = {| +tags: BackendTag[]; +tasks: BackendTask[]; |};
-  return get<LoadedData>('/load').then(({ tags, tasks }) => backendPatchLoadedData(
-    tags.map(backendTagToFrontendTag),
-    reorganizeBackendTasks(tasks),
-  ));
+  return get('/load').then(createPatchLoadedDataAction);
 }
 
 /**
@@ -65,6 +66,18 @@ export function httpAddTask(task: Task): Promise<Task> {
   return post<{| +created: BackendTaskWithSubTasks |}>(
     '/tasks/new', createNewTaskRequest(task),
   ).then(resp => backendTaskWithSubTasksToFrontendTask(resp.created));
+}
+
+/**
+ * Batch add new tasks.
+ *
+ * @param {Task[]} tasks the new tasks to add.
+ * @return {Promise<Task[]>} promise of the tasks from backend.
+ */
+export function httpBatchAddTasks(tasks: Task[]): Promise<Task[]> {
+  return post<{| +created: BackendTask[] |}>(
+    '/tasks/batch_new', createBatchNewTasksRequest(tasks),
+  ).then(resp => resp.created.map(backendTaskToPartialFrontendMainTask));
 }
 
 /**

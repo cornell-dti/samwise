@@ -22,6 +22,7 @@ import { nDaysViewHeaderHeight, otherViewsHeightHeader } from './future-view-css
 import { error } from '../../../util/general-util';
 import { dispatchConnect } from '../../../store/react-redux-util';
 import type { PropsWithoutWindowSize } from '../../Util/Responsive/WindowSizeConsumer';
+import { disableBackend } from '../../../util/config';
 
 type Props = {|
   +originalTask: Task;
@@ -58,10 +59,23 @@ class FutureViewTask extends React.PureComponent<Props, State> {
     if (event.target instanceof HTMLElement) {
       const elem: HTMLElement = event.target;
       // only accept click on text.
-      if (elem.className === styles.TaskText) {
+      if (elem.className === styles.TaskText && this.canBeEdited()) {
         opener();
       }
     }
+  };
+
+  /**
+   * Whether a task can be edited.
+   *
+   * @return {boolean} Whether a task can be edited.
+   */
+  canBeEdited = (): boolean => {
+    if (disableBackend) {
+      return true;
+    }
+    const { originalTask: { id } } = this.props;
+    return id >= 0;
   };
 
   /**
@@ -71,13 +85,12 @@ class FutureViewTask extends React.PureComponent<Props, State> {
    */
   renderCheckBox = (): Node => {
     const { filteredTask: { id, complete }, editMainTask } = this.props;
-    return (
-      <CheckBox
-        className={styles.TaskCheckBox}
-        checked={complete}
-        onChange={() => { editMainTask(id, { complete: !complete }); }}
-      />
-    );
+    const onChange = () => {
+      if (this.canBeEdited()) {
+        editMainTask(id, { complete: !complete });
+      }
+    };
+    return <CheckBox className={styles.TaskCheckBox} checked={complete} onChange={onChange} />;
   };
 
   /**
@@ -88,9 +101,7 @@ class FutureViewTask extends React.PureComponent<Props, State> {
   renderTaskName = (): Node => {
     const { filteredTask: { name, complete } } = this.props;
     const tagStyle = complete ? { textDecoration: 'line-through' } : {};
-    return (
-      <span className={styles.TaskText} style={tagStyle}>{name}</span>
-    );
+    return <span className={styles.TaskText} style={tagStyle}>{name}</span>;
   };
 
   /**
@@ -101,11 +112,11 @@ class FutureViewTask extends React.PureComponent<Props, State> {
   renderRemoveTaskIcon = (): Node => {
     const { filteredTask: { id }, removeTask } = this.props;
     const handler = () => {
-      removeTask(id, true);
+      if (this.canBeEdited()) {
+        removeTask(id, true);
+      }
     };
-    return (
-      <Icon name="delete" className={styles.TaskIcon} onClick={handler} />
-    );
+    return <Icon name="delete" className={styles.TaskIcon} onClick={handler} />;
   };
 
   /**
@@ -115,13 +126,13 @@ class FutureViewTask extends React.PureComponent<Props, State> {
    */
   renderBookmarkIcon = (): Node => {
     const { filteredTask: { id, inFocus }, editMainTask } = this.props;
-    return (
-      <Icon
-        name={inFocus ? 'bookmark' : 'bookmark outline'}
-        className={styles.TaskIcon}
-        onClick={() => editMainTask(id, { inFocus: !inFocus })}
-      />
-    );
+    const iconName = inFocus ? 'bookmark' : 'bookmark outline';
+    const handler = () => {
+      if (this.canBeEdited()) {
+        editMainTask(id, { inFocus: !inFocus });
+      }
+    };
+    return <Icon name={iconName} className={styles.TaskIcon} onClick={handler} />;
   };
 
   /**

@@ -18,4 +18,4 @@ export const ignore = () => {};
  *
  * @param {?string} message an optional message.
  */
-export function error(message?: string): empty { throw new Error(message); }
+export const error = (message?: string): empty => { throw new Error(message); };

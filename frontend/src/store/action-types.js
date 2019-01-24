@@ -1,7 +1,7 @@
 // @flow strict
 
 import type {
-  PartialMainTask, PartialSubTask, SubTask, Tag, Task,
+  PartialMainTask, PartialSubTask, SubTask, Tag, Task, Course,
 } from './store-types';
 import type { TaskDiff } from '../util/task-util';
 
@@ -16,7 +16,7 @@ export type AddNewSubTaskAction = {|
   type: 'ADD_NEW_SUBTASK'; +taskId: number; +subTask: SubTask;
 |};
 
-export type EditTaskAction = {| type: 'EDIT_TASK'; +task: Task; +diff: TaskDiff;|};
+export type EditTaskAction = {| type: 'EDIT_TASK'; +task: Task; +diff: TaskDiff; |};
 export type EditMainTaskAction = {|
   type: 'EDIT_MAIN_TASK'; +taskId: number; +partialMainTask: PartialMainTask;
 |};
@@ -29,6 +29,8 @@ export type RemoveSubTaskAction = {|
   type: 'REMOVE_SUBTASK'; +taskId: number; +subtaskId: number;
 |};
 
+export type ImportCourseExamsAction = {| type: 'IMPORT_COURSE_EXAMS' |};
+
 type TaskAction =
   | AddNewTaskAction
   | AddNewSubTaskAction
@@ -36,7 +38,8 @@ type TaskAction =
   | EditMainTaskAction
   | EditSubTaskAction
   | RemoveTaskAction
-  | RemoveSubTaskAction;
+  | RemoveSubTaskAction
+  | ImportCourseExamsAction;
 
 /*
  * --------------------------------------------------------------------------------
@@ -79,6 +82,9 @@ export type BackendPatchNewTagAction = {|
 export type BackendPatchNewTaskAction = {|
   type: 'BACKEND_PATCH_NEW_TASK'; +tempId: number; +backendTask: Task;
 |};
+export type BackendPatchBatchNewTasksAction = {|
+  type: 'BACKEND_PATCH_BATCH_NEW_TASKS'; +tempIds: number[]; +backendTasks: Task[];
+|};
 export type BackendPatchNewSubTaskAction = {|
   type: 'BACKEND_PATCH_NEW_SUBTASK';
   +taskId: number;
@@ -89,7 +95,7 @@ export type BackendPatchExistingTaskAction = {|
   type: 'BACKEND_PATCH_EXISTING_TASK'; +task: Task;
 |};
 export type BackendPatchLoadedDataAction = {|
-  type: 'BACKEND_PATCH_LOADED_DATA'; +tags: Tag[]; +tasks: Task[];
+  type: 'BACKEND_PATCH_LOADED_DATA'; +tags: Tag[]; +tasks: Task[]; +courses: Map<number, Course>;
 |};
 
 /**
@@ -98,6 +104,7 @@ export type BackendPatchLoadedDataAction = {|
 export type BackendPatchAction =
   | BackendPatchNewTagAction
   | BackendPatchNewTaskAction
+  | BackendPatchBatchNewTasksAction
   | BackendPatchNewSubTaskAction
   | BackendPatchExistingTaskAction
   | BackendPatchLoadedDataAction
