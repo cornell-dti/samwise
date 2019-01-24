@@ -195,6 +195,7 @@ def delete_tag(tag_id):
         return jsonify(
             error=f'error. no tag with id {tag_id} exists for this user.'), 404
     tag.deleted = True
+    # TODO also delete associated tasks
     db.session.commit()
     return jsonify(status='success')
 
