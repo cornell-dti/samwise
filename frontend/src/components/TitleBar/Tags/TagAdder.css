@@ -8,7 +8,7 @@
   border: 2px #979797 solid;
   position: relative;
   margin-top: 15px;
-  overflow: hidden;
+  overflow: hidden !important;
 }
 
 div.SearchClasses > div > input {
@@ -17,5 +17,20 @@ div.SearchClasses > div > input {
 
 div.SearchClasses > div > div {
   margin: 0 !important;
-  border-radius: 0 0 10px 10px;
+  border-radius: 0 0 10px 10px !important;
+}
+
+div.SearchClasses li{
+  background: #aaa !important;
+  transition: background 0.1s ease-in-out;
+}
+div.SearchClasses li:hover{
+  background: #bbb !important;
+}
+div.SearchClasses li:first-child{
+  border-radius:0 !important;
+}
+div.SearchClasses input:focus{
+  border-bottom-left-radius:0 !important;
+  border-bottom-right-radius:0 !important;
 }
