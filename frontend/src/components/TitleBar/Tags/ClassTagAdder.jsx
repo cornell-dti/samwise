@@ -31,9 +31,11 @@ function getCourseOptions(): SimpleCourse[] {
   if (courseOptions.length === 0) {
     const courseMap = getCourses();
     courseOptions = [];
-    courseMap.forEach((course: Course) => {
-      courseOptions.push({
-        key: course.courseId, value: `${course.subject} ${course.courseNumber}: ${course.title}`,
+    courseMap.forEach((courses: Course[]) => {
+      courses.forEach((course: Course) => {
+        courseOptions.push({
+          key: course.courseId, value: `${course.subject} ${course.courseNumber}: ${course.title}`,
+        });
       });
     });
   }

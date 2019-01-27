@@ -34,9 +34,9 @@ export const getAppUser = (): AppUser => appUser ?? error('App is not initialize
 /**
  * Returns all courses.
  *
- * @return {Map<number, Course>} all courses.
+ * @return {Map<number, Course[]>} all courses.
  */
-export const getCourses = (): Map<number, Course> => store.getState().courses;
+export const getCourses = (): Map<number, Course[]> => store.getState().courses;
 
 /**
  * Dispatch an action and returns the dispatched action.

@@ -15,6 +15,7 @@ import type {
   BackendPatchNewTagAction,
 } from './action-types';
 import type {
+  Course,
   State, SubTask, Tag, Task,
 } from './store-types';
 import { emitUndoAddTaskToast, emitUndoRemoveTaskToast } from '../util/toast-util';
@@ -198,32 +199,34 @@ function importCourseExams(state: State): State {
     if (tag.classId === null) {
       return;
     }
-    const course = courses.get(tag.classId);
-    if (course == null) {
+    const allCoursesWithId = courses.get(tag.classId);
+    if (allCoursesWithId == null) {
       return; // not an error because it may be courses in previous semesters.
     }
-    course.examTimes.forEach((examTime) => {
-      const t = new Date(examTime);
-      const filter = (task: Task) => {
-        const { name, date } = task;
-        return task.tag === tag.id && name === 'Exam'
-          && date.getFullYear() === t.getFullYear()
-          && date.getMonth() === t.getMonth()
-          && date.getDate() === t.getDate()
-          && date.getHours() === t.getHours();
-      };
-      if (!tasks.some(filter)) {
-        const newTask: Task = {
-          id: randomId(),
-          name: 'Exam',
-          tag: tag.id,
-          date: t,
-          complete: false,
-          inFocus: false,
-          subtasks: [],
+    allCoursesWithId.forEach((course: Course) => {
+      course.examTimes.forEach((examTime) => {
+        const t = new Date(examTime);
+        const filter = (task: Task) => {
+          const { name, date } = task;
+          return task.tag === tag.id && name === 'Exam'
+            && date.getFullYear() === t.getFullYear()
+            && date.getMonth() === t.getMonth()
+            && date.getDate() === t.getDate()
+            && date.getHours() === t.getHours();
         };
-        newTasks.push(newTask);
-      }
+        if (!tasks.some(filter)) {
+          const newTask: Task = {
+            id: randomId(),
+            name: 'Exam',
+            tag: tag.id,
+            date: t,
+            complete: false,
+            inFocus: false,
+            subtasks: [],
+          };
+          newTasks.push(newTask);
+        }
+      });
     });
   });
   httpBatchAddTasks(newTasks).then((backendNewTasks) => {

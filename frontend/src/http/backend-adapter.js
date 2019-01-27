@@ -316,13 +316,18 @@ function reorganizeBackendTasks(backendTasks: BackendTask[]): Task[] {
  * Build a map from course id to courses.
  *
  * @param {Course[]} courses an array of courses.
- * @return {Map<number, Course>} the map from course id to courses.
+ * @return {Map<number, Course[]>} the map from course id to courses.
  */
-function buildCoursesMap(courses: Course[]): Map<number, Course> {
+function buildCoursesMap(courses: Course[]): Map<number, Course[]> {
   const map = new Map();
   for (let i = 0; i < courses.length; i += 1) {
     const course = courses[i];
-    map.set(course.courseId, course);
+    const existingCourses = map.get(course.courseId);
+    if (existingCourses == null) {
+      map.set(course.courseId, [course]);
+    } else {
+      existingCourses.push(course);
+    }
   }
   return map;
 }
