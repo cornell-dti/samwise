@@ -41,7 +41,7 @@ export const DUMMY_TAGS: Tag[] = [
  * @return {string} the tag.
  */
 const getTagById = (tags: Tag[], id: number): Tag => tags
-  .find(t => t.id === id) ?? error('Color not found! Corrupted store.');
+  .find(t => t.id === id) ?? error(`Tag ${id} not found! Corrupted store.`);
 
 type TagsProps = {| +tags: Tag[] |};
 

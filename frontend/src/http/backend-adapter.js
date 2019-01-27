@@ -219,7 +219,7 @@ export const createEditBackendTaskRequest = (
   return {
     content: name,
     tag_id: tag,
-    end_date: formatDate(date),
+    end_date: date == null ? undefined : formatDate(date),
     completed: complete,
     in_focus: inFocus,
   };
