@@ -38,6 +38,7 @@ function getCourseOptions(): SimpleCourse[] {
         });
       });
     });
+    courseOptions.sort((a, b) => a.value.localeCompare(b.value));
   }
   return courseOptions;
 }
