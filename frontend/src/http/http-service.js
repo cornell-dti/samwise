@@ -14,8 +14,9 @@ import type {
 } from './backend-adapter';
 import {
   createEditTagRequest, createNewSubTaskRequest, createNewTaskRequest, createEditBackendTaskRequest,
-  createBatchNewTasksRequest, createBatchEditTasksRequest,
+  createBatchNewTasksRequest, createBatchNewSubTasksRequest, createBatchEditTasksRequest,
   backendTaskToPartialFrontendMainTask, backendTaskWithSubTasksToFrontendTask,
+  backendTaskToFrontendSubTask,
   createPatchLoadedDataAction,
 } from './backend-adapter';
 import type { TaskDiff } from '../util/task-util';
@@ -79,6 +80,19 @@ export function httpBatchAddTasks(tasks: Task[]): Promise<Task[]> {
   return post<{| +created: BackendTask[] |}>(
     '/tasks/batch_new', createBatchNewTasksRequest(tasks),
   ).then(resp => resp.created.map(backendTaskToPartialFrontendMainTask));
+}
+
+/**
+ * Batch add new subtasks.
+ *
+ * @param {Task} mainTask the main task as a reference.
+ * @param {SubTask[]} subtasks a list of subtasks to add.
+ * @return {Promise<SubTask[]>} promise of the tasks from backend.
+ */
+function httpBatchAddSubTasks(mainTask: Task, subtasks: SubTask[]): Promise<SubTask[]> {
+  return post<{| +created: BackendTask[] |}>(
+    '/tasks/batch_new', createBatchNewSubTasksRequest(mainTask, subtasks),
+  ).then(resp => resp.created.map(backendTaskToFrontendSubTask));
 }
 
 /**
@@ -153,13 +167,12 @@ export function httpEditTask(oldTask: Task, diff: TaskDiff): Promise<Task> {
     mainTaskDiff, subtasksCreations, subtasksEdits, subtasksDeletions,
   } = diff;
   const editedMainTask = { ...oldTask, ...mainTaskDiff };
-  const addedSubTasks = [];
+  let addedSubTasks = [];
   const subTasksEditsMap = new Map<number, PartialSubTask>();
   const subtaskIdsToRemove = new Set(subtasksDeletions);
-  const addSubTasksPromises = subtasksCreations
-    .map(s => httpAddSubTask(editedMainTask, s).then((id: number) => {
-      addedSubTasks.push({ ...s, id });
-    }));
+  const addSubTasksPromise = subtasksCreations.length === 0
+    ? null
+    : httpBatchAddSubTasks(editedMainTask, subtasksCreations).then((s) => { addedSubTasks = s; });
   subtasksEdits.forEach(([id, s]) => subTasksEditsMap.set(id, s));
   const editTasksPromise = httpBatchEditTasks([
     { id: oldTask.id, ...mainTaskDiff },
@@ -168,7 +181,7 @@ export function httpEditTask(oldTask: Task, diff: TaskDiff): Promise<Task> {
   const deleteSubTasksPromise = subtasksDeletions.length === 0
     ? null : httpBatchDeleteTasks(subtasksDeletions);
   return Promise.all([
-    editTasksPromise, ...addSubTasksPromises, deleteSubTasksPromise,
+    editTasksPromise, addSubTasksPromise, deleteSubTasksPromise,
   ]).then(() => {
     const changedSubTasks = [];
     for (let i = 0; i < oldTask.subtasks.length; i += 1) {

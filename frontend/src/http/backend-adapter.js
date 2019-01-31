@@ -92,6 +92,9 @@ type BatchNewTasksRequest = {|
     +tag_id: number;
     +start_date: string;
     +end_date: string;
+    +completed?: boolean;
+    +in_focus?: boolean;
+    +parent_task?: number;
   |}[];
 |};
 
@@ -201,9 +204,37 @@ export const createBatchNewTasksRequest = (tasks: Task[]): BatchNewTasksRequest 
       tag_id: task.tag,
       start_date: startDate,
       end_date: endDate,
+      completed: task.complete,
+      in_focus: task.inFocus,
     };
   });
   return { tasks: requestTasks };
+};
+
+/**
+ * Create a batch new tasks request.
+ *
+ * @param {Task} mainTask the main task as a reference.
+ * @param {SubTask[]} subtasks the list of subtasks to create.
+ * @return {BatchNewTasksRequest} the created request.
+ */
+export const createBatchNewSubTasksRequest = (
+  mainTask: Task, subtasks: SubTask[],
+): BatchNewTasksRequest => {
+  const tasks = subtasks.map((subtask: SubTask) => {
+    const startDate = formatDate(new Date());
+    const endDate = formatDate(mainTask.date);
+    return {
+      content: subtask.name,
+      tag_id: mainTask.tag,
+      start_date: startDate,
+      end_date: endDate,
+      completed: subtask.complete,
+      in_focus: subtask.inFocus,
+      parent_task: mainTask.id,
+    };
+  });
+  return { tasks };
 };
 
 /**
@@ -308,7 +339,7 @@ export const backendTaskToPartialFrontendMainTask = (backendTask: BackendTask): 
  * @param {BackendTask} backendTask backend task.
  * @return {SubTask} frontend subtask.
  */
-const backendTaskToFrontendSubTask = (backendTask: BackendTask): SubTask => ({
+export const backendTaskToFrontendSubTask = (backendTask: BackendTask): SubTask => ({
   id: backendTask.task_id,
   name: backendTask.content,
   complete: backendTask.completed,

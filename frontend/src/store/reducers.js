@@ -248,6 +248,8 @@ function importCourseExams(state: State): State {
   });
   httpBatchAddTasks(newTasks).then((backendNewTasks) => {
     const tempIds = newTasks.map(t => t.id);
+    // eslint-disable-next-line no-alert
+    alert('Exams Added!');
     dispatchAction(backendPatchBatchNewTasksAction(tempIds, backendNewTasks));
   });
   return { ...state, tasks: [...tasks, ...newTasks] };

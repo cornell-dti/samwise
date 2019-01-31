@@ -12,6 +12,9 @@ api = Blueprint('api', __name__, url_prefix='/api')
 # - GET requests: pass token as a url parameter
 # - POST/PUT requests: pass token in the JSON body.
 
+# Endpoints Documentation
+# - Read: https://samwise.docs.apiary.io/
+# - Edit: https://app.apiary.io/samwise
 
 def get_user_id(firebase_id_token):
     # The flag to allow bad users.
@@ -58,9 +61,6 @@ def login():
 
 @api.route('/load', methods=['GET'])
 def load():
-    """
-    Load tags and data.
-    """
     user_id = get_user_id(request.args.get('token'))
     if not user_id:
         return redirect(url_for('api.login', redirect=request.path))
@@ -86,25 +86,6 @@ def load():
 
 @api.route('/tags/new', methods=['POST'])
 def new_tag():
-    """
-    Creates a new tag.
-
-    Input format:
-    {
-        "class_id": 444 | null,
-        "name": "Tag name",
-        "color": "#ffffff"
-    }
-
-    Output format:
-    {
-        "user_id": id number,
-        "tag_name": "name",
-        "color": "#ffffff",
-        "_order": order,
-        "isClass": True | False
-    }
-    """
     data = request.get_json(force=True)
     if not data or 'token' not in data:
         return jsonify(error='token not passed in')
@@ -134,19 +115,6 @@ def new_tag():
 
 @api.route('/tags/all', methods=['GET'])
 def get_tags():
-    """
-    Returns all tags.
-
-    Output format:
-    List of tags in form:
-
-    {
-        "user_id": id number,
-        "tag_name": "name",
-        "color": "#ffffff",
-        "_order": order,
-    }
-    """
     user_id = get_user_id(request.args.get('token'))
     if not user_id:
         return redirect(url_for('api.login', redirect=request.path))
@@ -160,19 +128,6 @@ def get_tags():
 
 @api.route('/tags/classes', methods=['GET'])
 def get_classes():
-    """
-    Returns all classes.
-
-    Output format:
-    List of tags in form:
-
-    {
-        "user_id": id number,
-        "tag_name": "name",
-        "color": "#ffffff",
-        "_order": order,
-    }
-    """
     user_id = get_user_id(request.args.get('token'))
     if not user_id:
         return redirect(url_for('api.login', redirect=request.path))
@@ -210,26 +165,6 @@ def delete_tag(tag_id):
 
 @api.route('/tags/<tag_id>/edit', methods=['POST'])
 def edit_tag(tag_id):
-    """
-
-    Edit or add a color to a specific tag.
-
-    Input format:
-    {
-        "is_class": True | False,
-        "name": "ABC",
-        "color": "#ffffff",
-    }
-
-    Output format:
-    {
-        "user_id": id number,
-        "tag_name": "name",
-        "color": "#ffffff",
-        "_order": order,
-        "completed": False,
-    }
-    """
     data = request.get_json(force=True)
     if not data or 'token' not in data:
         return jsonify(error='token not passed in')
@@ -256,29 +191,6 @@ def edit_tag(tag_id):
 
 @api.route('/tasks/new', methods=['POST'])
 def new_task():
-    """
-    Creates a new task.
-    {
-        "token": auth_token,
-        "content": content,
-        "start_date": yyyy-mm-dd hh:mm:ss,
-        "end_date": yyyy-mm-dd hh:mm:ss,
-        "parent_task": parent id,
-        "tag_id": tag_id,
-        "subtasks": [same format as above but without parent_task or tag_id]
-    }
-
-    Output format:
-    {
-        "content": content,
-        "start_date": yyyy-mm-dd hh:mm:ss,
-        "end_date": yyyy-mm-dd hh:mm:ss,
-        "tag_id": id,
-        "parent_task": parent id,
-        "_order": order,
-        "completed": False
-    }
-    """
     data = request.get_json(force=True)
     if not data or 'token' not in data:
         return jsonify(error='token not passed in')
@@ -349,34 +261,6 @@ def new_task():
 
 @api.route('/tasks/batch_new', methods=['POST'])
 def batch_new_tasks():
-    """
-    Creates new tasks.
-
-    Input format:
-    {
-        "token": auth_token,
-        "tasks": [{
-            "content": content,
-            "start_date": yyyy-mm-dd hh:mm:ss,
-            "end_date": yyyy-mm-dd hh:mm:ss,
-            "parent_task": parent id,
-            "tag_id": tag_id
-        }]
-    }
-
-    Output format:
-    {
-        "created": [{
-            "content": content,
-            "start_date": yyyy-mm-dd hh:mm:ss,
-            "end_date": yyyy-mm-dd hh:mm:ss,
-            "tag_id": id,
-            "parent_task": parent id,
-            "_order": order,
-            "completed": False
-        }]
-    }
-    """
     data = request.get_json(force=True)
     if not data or 'token' not in data:
         return jsonify(error='token not passed in')
@@ -425,26 +309,6 @@ def batch_new_tasks():
 
 @api.route('/tasks/all', methods=['GET'])
 def get_all_tasks():
-    """
-    Return all tasks.
-
-    :return: a list of all tasks.
-
-    Output format:
-
-    List of tags in form:
-
-    {
-        "content": content,
-        "start_date": yyyy-mm-dd hh:mm:ss,
-        "end_date": yyyy-mm-dd hh:mm:ss,
-        "tag_id": id,
-        "parent_task": parent id,
-        "in_focus": True,
-        "_order": order,
-        "completed": False
-    }
-    """
     user_id = get_user_id(request.args.get('token'))
     if not user_id:
         return redirect(url_for('api.login', redirect=request.path))
@@ -459,14 +323,6 @@ def get_all_tasks():
 def mark_task_complete(task_id):
     """
     TODO this is unused. Frontend can directly use edit_task.
-
-    Mark the given task as complete/incomplete.
-
-    Input format: {"complete": True | False }
-
-    Output format:
-    {"status": "success"} if succeeded.
-    {"error": error message} if failed.
     """
     data = request.get_json(force=True)
     if not data or 'token' not in data:
@@ -492,21 +348,6 @@ def mark_task_complete(task_id):
 def set_task_focus(task_id):
     """
     TODO this is unused. Frontend can directly use edit_task.
-    Set the focus of a tag. True means in focus, false means not in focus.
-
-    Input format: { "focus": True | False }
-
-    Output format:
-    {
-        "content": content,
-        "start_date": yyyy-mm-dd hh:mm:ss,
-        "end_date": yyyy-mm-dd hh:mm:ss,
-        "tag_id": id,
-        "parent_task": parent id,
-        "in_focus": focus,
-        "_order": order,
-        "completed": False
-    }
     """
     data = request.get_json(force=True)
     if not data or 'token' not in data:
@@ -528,13 +369,6 @@ def set_task_focus(task_id):
 
 @api.route('/tasks/<task_id>/delete', methods=['PUT'])
 def delete_task(task_id):
-    """
-    Delete the given task.
-
-    Output format:
-    {"status": "success"} if succeeded.
-    {"error": error message} if failed.
-    """
     data = request.get_json(force=True)
     if not data or 'token' not in data:
         return jsonify(error='token not passed in')
@@ -554,15 +388,6 @@ def delete_task(task_id):
 
 @api.route('/tasks/batch_delete', methods=['PUT'])
 def delete_tasks():
-    """
-    Delete a list of tasks.
-
-    Input format: { "deleted": [1, 2, 42, 65536, ...] }
-
-    Output format:
-    {"status": "success"} if succeeded.
-    {"error": error message} if failed.
-    """
     data = request.get_json(force=True)
     if not data or 'token' not in data:
         return jsonify(error='token not passed in')
@@ -581,36 +406,6 @@ def delete_tasks():
 
 @api.route('/tasks/<task_id>/edit', methods=['POST'])
 def edit_task(task_id):
-    """
-    Edit any feature of a task.
-
-    Input format:
-
-    {
-        "content": content,
-        "start_date": yyyy-mm-dd hh:mm:ss,
-        "end_date": yyyy-mm-dd hh:mm:ss,
-        "tag_id": id,
-        "parent_task": parent id,
-        "in_focus": True,
-        "_order": order,
-        "completed": False
-    }
-
-    Output format:
-
-
-    {
-        "content": content,
-        "start_date": yyyy-mm-dd hh:mm:ss,
-        "end_date": yyyy-mm-dd hh:mm:ss,
-        "tag_id": id,
-        "parent_task": parent id,
-        "in_focus": True,
-        "_order": order,
-        "completed": False
-    }
-    """
     data = request.get_json(force=True)
     if not data or 'token' not in data:
         return jsonify(error='token not passed in')
@@ -636,30 +431,6 @@ def edit_task(task_id):
 
 @api.route('/tasks/batch_edit', methods=['POST'])
 def edit_tasks():
-    """
-    Edit a list of tasks.
-
-    Input format:
-    {
-        "token": auth_token,
-        "tasks": [{
-            "id": 42,
-            "content": content,
-            "start_date": yyyy-mm-dd hh:mm:ss,
-            "end_date": yyyy-mm-dd hh:mm:ss,
-            "parent_task": parent id,
-            "tag_id": tag_id,
-            "completed": completed,
-            "in_focus": in_focus
-            "parent_task": parent_task,
-            "_order": order,
-        }]
-    }
-
-    Output format:
-    {"status": "success"} if succeeded.
-    {"error": error message} if failed.
-    """
     data = request.get_json(force=True)
     if not data or 'token' not in data:
         return jsonify(error='token not passed in')
