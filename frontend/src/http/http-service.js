@@ -10,10 +10,11 @@ import type {
   BackendTag,
   BackendTask,
   BackendTaskWithSubTasks,
+  TaskToBeBatchEdited,
 } from './backend-adapter';
 import {
-  createEditTagRequest, createNewSubTaskRequest, createNewTaskRequest, createBatchNewTasksRequest,
-  createEditBackendTaskRequest,
+  createEditTagRequest, createNewSubTaskRequest, createNewTaskRequest, createEditBackendTaskRequest,
+  createBatchNewTasksRequest, createBatchEditTasksRequest,
   backendTaskToPartialFrontendMainTask, backendTaskWithSubTasksToFrontendTask,
   createPatchLoadedDataAction,
 } from './backend-adapter';
@@ -100,9 +101,19 @@ export function httpAddSubTask(mainTask: Task, subTask: SubTask): Promise<number
  * @param {number} taskId the id of the task or subtask.
  * @return {Promise<void>} promise when done.
  */
-export function httpDeleteTask(taskId: number): Promise<void> {
-  return put(`/tasks/${taskId}/delete`).then(ignore);
-}
+export const httpDeleteTask = (taskId: number): Promise<void> => put(
+  `/tasks/${taskId}/delete`,
+).then(ignore);
+
+/**
+ * Batch delete tasks.
+ *
+ * @param {number[]} taskIds a list of ids to delete.
+ * @return {Promise<void>} promise when done.
+ */
+export const httpBatchDeleteTasks = (taskIds: number[]): Promise<void> => put(
+  '/tasks/batch_delete', { deleted: taskIds },
+).then(ignore);
 
 /**
  * Edit an existing task or subtask.
@@ -121,6 +132,16 @@ export function httpEditBackendTask(
 }
 
 /**
+ * Edit a list of tasks in batch.
+ *
+ * @param {TaskToBeBatchEdited[]} tasks the tasks to edit.
+ * @return {Promise<void>} promise when done.
+ */
+export const httpBatchEditTasks = (tasks: TaskToBeBatchEdited[]): Promise<void> => post(
+  '/tasks/batch_edit', createBatchEditTasksRequest(tasks),
+).then(ignore);
+
+/**
  * Edit an existing task.
  *
  * @param {Task} oldTask the old task used as a reference.
@@ -128,22 +149,26 @@ export function httpEditBackendTask(
  * @return {Promise<Task>} the edited task with the latest information from the server.
  */
 export function httpEditTask(oldTask: Task, diff: TaskDiff): Promise<Task> {
-  const editedMainTask = { ...oldTask, ...diff.mainTaskDiff };
+  const {
+    mainTaskDiff, subtasksCreations, subtasksEdits, subtasksDeletions,
+  } = diff;
+  const editedMainTask = { ...oldTask, ...mainTaskDiff };
   const addedSubTasks = [];
   const subTasksEditsMap = new Map<number, PartialSubTask>();
-  const subtaskIdsToRemove = new Set(diff.subtasksDeletions);
-  const editMainTaskPromise = httpEditBackendTask(oldTask.id, diff.mainTaskDiff);
-  const addSubTasksPromises = diff.subtasksCreations
+  const subtaskIdsToRemove = new Set(subtasksDeletions);
+  const addSubTasksPromises = subtasksCreations
     .map(s => httpAddSubTask(editedMainTask, s).then((id: number) => {
       addedSubTasks.push({ ...s, id });
     }));
-  const editSubTasksPromises = diff.subtasksEdits.map(([id, s]) => {
-    subTasksEditsMap.set(id, s);
-    return httpEditBackendTask(id, s);
-  });
-  const deleteSubTasksPromises = diff.subtasksDeletions.map(httpDeleteTask);
+  subtasksEdits.forEach(([id, s]) => subTasksEditsMap.set(id, s));
+  const editTasksPromise = httpBatchEditTasks([
+    { id: oldTask.id, ...mainTaskDiff },
+    ...subtasksEdits.map(([id, s]) => ({ id, ...s })),
+  ]);
+  const deleteSubTasksPromise = subtasksDeletions.length === 0
+    ? null : httpBatchDeleteTasks(subtasksDeletions);
   return Promise.all([
-    editMainTaskPromise, ...addSubTasksPromises, ...editSubTasksPromises, deleteSubTasksPromises,
+    editTasksPromise, ...addSubTasksPromises, deleteSubTasksPromise,
   ]).then(() => {
     const changedSubTasks = [];
     for (let i = 0; i < oldTask.subtasks.length; i += 1) {

@@ -95,6 +95,23 @@ type BatchNewTasksRequest = {|
   |}[];
 |};
 
+export type TaskToBeBatchEdited =
+  | {| ...PartialMainTask; +id: number; |}
+  | {| ...PartialSubTask; +id: number; |};
+
+type BatchEditTasksRequest = {|
+  +tasks: {|
+    +id: number;
+    +content?: string;
+    +tag_id?: number;
+    +start_date?: string;
+    +end_date?: string;
+    +parent_task?: number;
+    +completed?: boolean;
+    +in_focus?: boolean;
+  |}[];
+|};
+
 type NewSubTaskRequest = {|
   +parent_task: number;
   +content: string;
@@ -169,6 +186,12 @@ export const createNewTaskRequest = (task: Task): NewTaskRequest => {
   };
 };
 
+/**
+ * Create a batch new tasks request.
+ *
+ * @param {Task[]} tasks the list of tasks to create.
+ * @return {BatchNewTasksRequest} the created request.
+ */
 export const createBatchNewTasksRequest = (tasks: Task[]): BatchNewTasksRequest => {
   const requestTasks = tasks.map((task) => {
     const startDate = formatDate(new Date());
@@ -178,6 +201,31 @@ export const createBatchNewTasksRequest = (tasks: Task[]): BatchNewTasksRequest 
       tag_id: task.tag,
       start_date: startDate,
       end_date: endDate,
+    };
+  });
+  return { tasks: requestTasks };
+};
+
+/**
+ * Create a batch edit tasks request.
+ *
+ * @param {TaskToBeBatchEdited[]} tasks the list of tasks to edit.
+ * @return {BatchNewTasksRequest} the created request.
+ */
+export const createBatchEditTasksRequest = (
+  tasks: TaskToBeBatchEdited[],
+): BatchEditTasksRequest => {
+  const requestTasks = tasks.map((task: TaskToBeBatchEdited) => {
+    const startDate = formatDate(new Date());
+    const endDate = task.date == null ? undefined : formatDate(task.date);
+    return {
+      id: task.id,
+      content: task.name,
+      tag_id: task.tag == null ? undefined : task.tag,
+      start_date: startDate,
+      end_date: endDate,
+      completed: task.complete,
+      in_focus: task.inFocus,
     };
   });
   return { tasks: requestTasks };

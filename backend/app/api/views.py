@@ -195,7 +195,15 @@ def delete_tag(tag_id):
         return jsonify(
             error=f'error. no tag with id {tag_id} exists for this user.'), 404
     tag.deleted = True
-    # TODO also delete associated tasks
+
+    # Set tasks with that tag's tag to None
+    tasks = Task.query \
+        .filter(Task.tag_id == tag_id) \
+        .filter(Task.user_id == user_id) \
+        .all()
+    for task in tasks:
+        task.tag_id = -1  # -1 is None
+
     db.session.commit()
     return jsonify(status='success')
 
@@ -612,7 +620,7 @@ def edit_task(task_id):
     task = Task.query.filter(Task.user_id == user_id).filter(
         Task.task_id == task_id).first()
     if task is None:
-        return jsonify(status='error. tag not found.')
+        return jsonify(status='error. task not found.')
 
     task.content = data.get('content', task.content)
     task.tag_id = data.get('tag_id', task.tag_id)
@@ -635,7 +643,7 @@ def edit_tasks():
     {
         "token": auth_token,
         "tasks": [{
-            "task_id": 42,
+            "id": 42,
             "content": content,
             "start_date": yyyy-mm-dd hh:mm:ss,
             "end_date": yyyy-mm-dd hh:mm:ss,
@@ -661,12 +669,12 @@ def edit_tasks():
 
     tasks_json = data['tasks']
     for task_json in tasks_json:
-        task_id = task_json.get('task_id')
+        task_id = task_json.get('id')
 
         task = Task.query.filter(Task.user_id == user_id).filter(
             Task.task_id == task_id).first()
         if task is None:
-            return jsonify(status='error. tag not found.')
+            return jsonify(status=f'error. task {task_id} not found.')
 
         task.content = task_json.get('content', task.content)
         task.tag_id = task_json.get('tag_id', task.tag_id)

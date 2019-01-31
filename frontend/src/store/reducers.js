@@ -2,6 +2,7 @@
 
 import type {
   Action,
+  RemoveTagAction,
   EditMainTaskAction,
   EditSubTaskAction,
   EditTaskAction,
@@ -39,7 +40,7 @@ import {
   backendPatchNewSubTask as backendPatchNewSubTaskAction,
 } from './actions';
 import { replaceTask, replaceSubTaskWithinMainTask } from '../util/task-util';
-import { DUMMY_TAGS, NONE_TAG } from '../util/tag-util';
+import { DUMMY_TAGS, NONE_TAG, NONE_TAG_ID } from '../util/tag-util';
 import { ignore, randomId } from '../util/general-util';
 
 /**
@@ -54,6 +55,22 @@ const initialState: State = {
   courses: new Map(),
   undoCache: { lastAddedTaskId: null, lastDeletedTask: null },
 };
+
+/**
+ * Remove a tag.
+ *
+ * @param {State} state the old state.
+ * @param {number} tagId id of the tag to remove.
+ * @return {State} the new state.
+ */
+function removeTag(state: State, { tagId }: RemoveTagAction): State {
+  httpDeleteTag(tagId);
+  const tags = state.tags.filter((oldTag: Tag) => (oldTag.id !== tagId));
+  const tasks = state.tasks.map(
+    (task: Task) => (task.tag === tagId ? { ...task, tag: NONE_TAG_ID } : task),
+  );
+  return { ...state, tags, tasks };
+}
 
 /**
  * Add a new task.
@@ -384,10 +401,7 @@ export default function rootReducer(state: State = initialState, action: Action)
         )),
       };
     case 'REMOVE_TAG':
-      httpDeleteTag(action.tagId);
-      return {
-        ...state, tags: state.tags.filter((oldTag: Tag) => (oldTag.id !== action.tagId)),
-      };
+      return removeTag(state, action);
     case 'ADD_NEW_TASK':
       return addTask(state, action);
     case 'ADD_NEW_SUBTASK':
