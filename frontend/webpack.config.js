@@ -4,7 +4,7 @@ module.exports = {
     extensions: ['.js', '.jsx'],
   },
   devServer: {
-    contentBase: './dist',
+    contentBase: './public',
     port: 3000,
     proxy: {
       '/api': 'http://localhost:5000',
