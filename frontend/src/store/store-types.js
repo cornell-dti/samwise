@@ -66,6 +66,6 @@ export type UndoCache = {|
 export type State = {|
   +tasks: Task[];
   +tags: Tag[];
-  +courses: Map<number, Course>;
+  +courses: Map<number, Course[]>;
   +undoCache: UndoCache;
 |};

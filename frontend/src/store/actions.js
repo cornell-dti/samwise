@@ -225,11 +225,11 @@ export const backendPatchExistingTask = (task: Task): BackendPatchExistingTaskAc
  *
  * @param {Tag[]} tags tags from the backend.
  * @param {Task[]} tasks tasks from the backend.
- * @param {Map<number, Course>} courses courses from the backend.
+ * @param {Map<number, Course[]>} courses courses from the backend.
  * @return {BackendPatchLoadedDataAction}
  */
 export const backendPatchLoadedData = (
-  tags: Tag[], tasks: Task[], courses: Map<number, Course>,
+  tags: Tag[], tasks: Task[], courses: Map<number, Course[]>,
 ): BackendPatchLoadedDataAction => ({
   type: 'BACKEND_PATCH_LOADED_DATA', tags, tasks, courses,
 });

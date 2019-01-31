@@ -92,6 +92,26 @@ type BatchNewTasksRequest = {|
     +tag_id: number;
     +start_date: string;
     +end_date: string;
+    +completed?: boolean;
+    +in_focus?: boolean;
+    +parent_task?: number;
+  |}[];
+|};
+
+export type TaskToBeBatchEdited =
+  | {| ...PartialMainTask; +id: number; |}
+  | {| ...PartialSubTask; +id: number; |};
+
+type BatchEditTasksRequest = {|
+  +tasks: {|
+    +id: number;
+    +content?: string;
+    +tag_id?: number;
+    +start_date?: string;
+    +end_date?: string;
+    +parent_task?: number;
+    +completed?: boolean;
+    +in_focus?: boolean;
   |}[];
 |};
 
@@ -169,6 +189,12 @@ export const createNewTaskRequest = (task: Task): NewTaskRequest => {
   };
 };
 
+/**
+ * Create a batch new tasks request.
+ *
+ * @param {Task[]} tasks the list of tasks to create.
+ * @return {BatchNewTasksRequest} the created request.
+ */
 export const createBatchNewTasksRequest = (tasks: Task[]): BatchNewTasksRequest => {
   const requestTasks = tasks.map((task) => {
     const startDate = formatDate(new Date());
@@ -178,6 +204,59 @@ export const createBatchNewTasksRequest = (tasks: Task[]): BatchNewTasksRequest 
       tag_id: task.tag,
       start_date: startDate,
       end_date: endDate,
+      completed: task.complete,
+      in_focus: task.inFocus,
+    };
+  });
+  return { tasks: requestTasks };
+};
+
+/**
+ * Create a batch new tasks request.
+ *
+ * @param {Task} mainTask the main task as a reference.
+ * @param {SubTask[]} subtasks the list of subtasks to create.
+ * @return {BatchNewTasksRequest} the created request.
+ */
+export const createBatchNewSubTasksRequest = (
+  mainTask: Task, subtasks: SubTask[],
+): BatchNewTasksRequest => {
+  const tasks = subtasks.map((subtask: SubTask) => {
+    const startDate = formatDate(new Date());
+    const endDate = formatDate(mainTask.date);
+    return {
+      content: subtask.name,
+      tag_id: mainTask.tag,
+      start_date: startDate,
+      end_date: endDate,
+      completed: subtask.complete,
+      in_focus: subtask.inFocus,
+      parent_task: mainTask.id,
+    };
+  });
+  return { tasks };
+};
+
+/**
+ * Create a batch edit tasks request.
+ *
+ * @param {TaskToBeBatchEdited[]} tasks the list of tasks to edit.
+ * @return {BatchNewTasksRequest} the created request.
+ */
+export const createBatchEditTasksRequest = (
+  tasks: TaskToBeBatchEdited[],
+): BatchEditTasksRequest => {
+  const requestTasks = tasks.map((task: TaskToBeBatchEdited) => {
+    const startDate = formatDate(new Date());
+    const endDate = task.date == null ? undefined : formatDate(task.date);
+    return {
+      id: task.id,
+      content: task.name,
+      tag_id: task.tag == null ? undefined : task.tag,
+      start_date: startDate,
+      end_date: endDate,
+      completed: task.complete,
+      in_focus: task.inFocus,
     };
   });
   return { tasks: requestTasks };
@@ -219,7 +298,7 @@ export const createEditBackendTaskRequest = (
   return {
     content: name,
     tag_id: tag,
-    end_date: formatDate(date),
+    end_date: date == null ? undefined : formatDate(date),
     completed: complete,
     in_focus: inFocus,
   };
@@ -260,7 +339,7 @@ export const backendTaskToPartialFrontendMainTask = (backendTask: BackendTask): 
  * @param {BackendTask} backendTask backend task.
  * @return {SubTask} frontend subtask.
  */
-const backendTaskToFrontendSubTask = (backendTask: BackendTask): SubTask => ({
+export const backendTaskToFrontendSubTask = (backendTask: BackendTask): SubTask => ({
   id: backendTask.task_id,
   name: backendTask.content,
   complete: backendTask.completed,
@@ -316,13 +395,18 @@ function reorganizeBackendTasks(backendTasks: BackendTask[]): Task[] {
  * Build a map from course id to courses.
  *
  * @param {Course[]} courses an array of courses.
- * @return {Map<number, Course>} the map from course id to courses.
+ * @return {Map<number, Course[]>} the map from course id to courses.
  */
-function buildCoursesMap(courses: Course[]): Map<number, Course> {
+function buildCoursesMap(courses: Course[]): Map<number, Course[]> {
   const map = new Map();
   for (let i = 0; i < courses.length; i += 1) {
     const course = courses[i];
-    map.set(course.courseId, course);
+    const existingCourses = map.get(course.courseId);
+    if (existingCourses == null) {
+      map.set(course.courseId, [course]);
+    } else {
+      existingCourses.push(course);
+    }
   }
   return map;
 }

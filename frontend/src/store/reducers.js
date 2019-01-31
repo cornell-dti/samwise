@@ -2,6 +2,7 @@
 
 import type {
   Action,
+  RemoveTagAction,
   EditMainTaskAction,
   EditSubTaskAction,
   EditTaskAction,
@@ -15,6 +16,7 @@ import type {
   BackendPatchNewTagAction,
 } from './action-types';
 import type {
+  Course,
   State, SubTask, Tag, Task,
 } from './store-types';
 import { emitUndoAddTaskToast, emitUndoRemoveTaskToast } from '../util/toast-util';
@@ -38,7 +40,7 @@ import {
   backendPatchNewSubTask as backendPatchNewSubTaskAction,
 } from './actions';
 import { replaceTask, replaceSubTaskWithinMainTask } from '../util/task-util';
-import { DUMMY_TAGS, NONE_TAG } from '../util/tag-util';
+import { DUMMY_TAGS, NONE_TAG, NONE_TAG_ID } from '../util/tag-util';
 import { ignore, randomId } from '../util/general-util';
 
 /**
@@ -53,6 +55,22 @@ const initialState: State = {
   courses: new Map(),
   undoCache: { lastAddedTaskId: null, lastDeletedTask: null },
 };
+
+/**
+ * Remove a tag.
+ *
+ * @param {State} state the old state.
+ * @param {number} tagId id of the tag to remove.
+ * @return {State} the new state.
+ */
+function removeTag(state: State, { tagId }: RemoveTagAction): State {
+  httpDeleteTag(tagId);
+  const tags = state.tags.filter((oldTag: Tag) => (oldTag.id !== tagId));
+  const tasks = state.tasks.map(
+    (task: Task) => (task.tag === tagId ? { ...task, tag: NONE_TAG_ID } : task),
+  );
+  return { ...state, tags, tasks };
+}
 
 /**
  * Add a new task.
@@ -198,36 +216,40 @@ function importCourseExams(state: State): State {
     if (tag.classId === null) {
       return;
     }
-    const course = courses.get(tag.classId);
-    if (course == null) {
+    const allCoursesWithId = courses.get(tag.classId);
+    if (allCoursesWithId == null) {
       return; // not an error because it may be courses in previous semesters.
     }
-    course.examTimes.forEach((examTime) => {
-      const t = new Date(examTime);
-      const filter = (task: Task) => {
-        const { name, date } = task;
-        return task.tag === tag.id && name === 'Exam'
-          && date.getFullYear() === t.getFullYear()
-          && date.getMonth() === t.getMonth()
-          && date.getDate() === t.getDate()
-          && date.getHours() === t.getHours();
-      };
-      if (!tasks.some(filter)) {
-        const newTask: Task = {
-          id: randomId(),
-          name: 'Exam',
-          tag: tag.id,
-          date: t,
-          complete: false,
-          inFocus: false,
-          subtasks: [],
+    allCoursesWithId.forEach((course: Course) => {
+      course.examTimes.forEach((examTime) => {
+        const t = new Date(examTime);
+        const filter = (task: Task) => {
+          const { name, date } = task;
+          return task.tag === tag.id && name === 'Exam'
+            && date.getFullYear() === t.getFullYear()
+            && date.getMonth() === t.getMonth()
+            && date.getDate() === t.getDate()
+            && date.getHours() === t.getHours();
         };
-        newTasks.push(newTask);
-      }
+        if (!tasks.some(filter)) {
+          const newTask: Task = {
+            id: randomId(),
+            name: 'Exam',
+            tag: tag.id,
+            date: t,
+            complete: false,
+            inFocus: false,
+            subtasks: [],
+          };
+          newTasks.push(newTask);
+        }
+      });
     });
   });
   httpBatchAddTasks(newTasks).then((backendNewTasks) => {
     const tempIds = newTasks.map(t => t.id);
+    // eslint-disable-next-line no-alert
+    alert('Exams Added!');
     dispatchAction(backendPatchBatchNewTasksAction(tempIds, backendNewTasks));
   });
   return { ...state, tasks: [...tasks, ...newTasks] };
@@ -381,10 +403,7 @@ export default function rootReducer(state: State = initialState, action: Action)
         )),
       };
     case 'REMOVE_TAG':
-      httpDeleteTag(action.tagId);
-      return {
-        ...state, tags: state.tags.filter((oldTag: Tag) => (oldTag.id !== action.tagId)),
-      };
+      return removeTag(state, action);
     case 'ADD_NEW_TASK':
       return addTask(state, action);
     case 'ADD_NEW_SUBTASK':

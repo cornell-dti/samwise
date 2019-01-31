@@ -95,7 +95,7 @@ export type BackendPatchExistingTaskAction = {|
   type: 'BACKEND_PATCH_EXISTING_TASK'; +task: Task;
 |};
 export type BackendPatchLoadedDataAction = {|
-  type: 'BACKEND_PATCH_LOADED_DATA'; +tags: Tag[]; +tasks: Task[]; +courses: Map<number, Course>;
+  type: 'BACKEND_PATCH_LOADED_DATA'; +tags: Tag[]; +tasks: Task[]; +courses: Map<number, Course[]>;
 |};
 
 /**

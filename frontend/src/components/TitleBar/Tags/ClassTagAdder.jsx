@@ -14,7 +14,14 @@ type Props = {|
   +addTag: (tag: Tag) => AddTagAction
 |};
 
-type SimpleCourse = {| +key: number; +value: string; |};
+type SimpleCourse = {|
+  +key: number;
+  +value: string;
+  +subject: string;
+  +courseNumber: string;
+  +title: string;
+  +classId: number;
+|};
 
 /**
  * Course options cache.
@@ -31,21 +38,46 @@ function getCourseOptions(): SimpleCourse[] {
   if (courseOptions.length === 0) {
     const courseMap = getCourses();
     courseOptions = [];
-    courseMap.forEach((course: Course) => {
-      courseOptions.push({
-        key: course.courseId, value: `${course.subject} ${course.courseNumber}: ${course.title}`,
+    let i = 0;
+    courseMap.forEach((courses: Course[]) => {
+      courses.forEach((course: Course) => {
+        const {
+          subject, courseNumber, title, courseId: classId,
+        } = course;
+        const name = `${subject} ${courseNumber}: ${title}`;
+        courseOptions.push({
+          key: i, value: name, subject, courseNumber, title, classId,
+        });
+        i += 1;
       });
     });
   }
   return courseOptions;
 }
 
+/**
+ * The configs for fuse searcher. Essential for fuzzy search.
+ * You may need to tune this further, but it's usable right now.
+ *
+ * @type {{keys: string[], threshold: number}}
+ */
+const fuseConfigs = {
+  keys: [
+    'value', // useful for search the full name as we display
+    'subject', // useful for finding a list of all [subject] classes
+    'courseNumber', // useful if the student just type the course number
+    'title', // useful if the student just type the name
+  ],
+  location: 0, // since we have customized the stuff to search, we can just start at beginning.
+  threshold: 0.2, // higher the threshold, more stuff will be matched.
+};
+
 function ClassTagAdder(props: Props) {
   const changeClass = (option: SimpleCourse) => {
-    const { key, value } = option;
+    const { value, classId } = option;
     const { addTag } = props;
     addTag({
-      id: randomId(), name: value, color: '#56d9c1', classId: key,
+      id: randomId(), name: value, color: '#56d9c1', classId,
     });
   };
   return (
@@ -53,7 +85,8 @@ function ClassTagAdder(props: Props) {
       <ReactSearchBox
         data={getCourseOptions()}
         value=""
-        callback={changeClass}
+        fuseConfigs={fuseConfigs}
+        onSelect={changeClass}
         placeholder="Search for classes (e.g. CS 2110, Introduction to Creative Writing)"
       />
     </div>
