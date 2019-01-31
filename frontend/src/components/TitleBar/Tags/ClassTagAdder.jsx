@@ -51,7 +51,6 @@ function getCourseOptions(): SimpleCourse[] {
         i += 1;
       });
     });
-    // courseOptions.sort((a, b) => a.value.localeCompare(b.value));
   }
   return courseOptions;
 }
