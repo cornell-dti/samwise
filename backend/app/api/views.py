@@ -343,6 +343,8 @@ def new_task():
 def batch_new_tasks():
     """
     Creates new tasks.
+
+    Input format:
     {
         "token": auth_token,
         "tasks": [{
@@ -542,6 +544,33 @@ def delete_task(task_id):
     return jsonify(status='success')
 
 
+@api.route('/tasks/batch_delete', methods=['PUT'])
+def delete_tasks():
+    """
+    Delete a list of tasks.
+
+    Input format: { "deleted": [1, 2, 42, 65536, ...] }
+
+    Output format:
+    {"status": "success"} if succeeded.
+    {"error": error message} if failed.
+    """
+    data = request.get_json(force=True)
+    if not data or 'token' not in data:
+        return jsonify(error='token not passed in')
+    user_id = get_user_id(data['token'])
+    task_ids = data['deleted']
+    for task_id in task_ids:
+        tasks = Task.query \
+            .filter(Task.user_id == user_id) \
+            .filter(or_(Task.task_id == task_id, Task.parent_task == task_id)) \
+            .all()
+        for task in tasks:
+            task.deleted = True
+    db.session.commit()
+    return jsonify(status='success')
+
+
 @api.route('/tasks/<task_id>/edit', methods=['POST'])
 def edit_task(task_id):
     """
@@ -595,3 +624,58 @@ def edit_task(task_id):
     task._order = data.get('_order', task._order)
     db.session.commit()
     return jsonify(task=util.sqlalchemy_obj_to_dict(task))
+
+
+@api.route('/tasks/batch_edit', methods=['POST'])
+def edit_tasks():
+    """
+    Edit a list of tasks.
+
+    Input format:
+    {
+        "token": auth_token,
+        "tasks": [{
+            "task_id": 42,
+            "content": content,
+            "start_date": yyyy-mm-dd hh:mm:ss,
+            "end_date": yyyy-mm-dd hh:mm:ss,
+            "parent_task": parent id,
+            "tag_id": tag_id,
+            "completed": completed,
+            "in_focus": in_focus
+            "parent_task": parent_task,
+            "_order": order,
+        }]
+    }
+
+    Output format:
+    {"status": "success"} if succeeded.
+    {"error": error message} if failed.
+    """
+    data = request.get_json(force=True)
+    if not data or 'token' not in data:
+        return jsonify(error='token not passed in')
+    user_id = get_user_id(data['token'])
+    if not user_id:
+        return redirect(url_for('api.login', redirect=request.path))
+
+    tasks_json = data['tasks']
+    for task_json in tasks_json:
+        task_id = task_json.get('task_id')
+
+        task = Task.query.filter(Task.user_id == user_id).filter(
+            Task.task_id == task_id).first()
+        if task is None:
+            return jsonify(status='error. tag not found.')
+
+        task.content = task_json.get('content', task.content)
+        task.tag_id = task_json.get('tag_id', task.tag_id)
+        task.start_date = task_json.get('start_date', task.start_date)
+        task.end_date = task_json.get('end_date', task.end_date)
+        task.completed = task_json.get('completed', task.completed)
+        task.in_focus = task_json.get('in_focus', task.in_focus)
+        task.parent_task = task_json.get('parent_task', task.parent_task)
+        task._order = task_json.get('_order', task._order)
+    db.session.commit()
+
+    return jsonify(status='success')
