@@ -73,7 +73,7 @@ type Props = {| +tags: Tag[]; |};
  * @constructor
  */
 class Onboard extends React.PureComponent<Props, State> {
-  state: State = { progress: 1 };
+  state: State = { progress: 0 };
   
   
   showNext = () => {
