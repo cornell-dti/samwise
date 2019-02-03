@@ -176,14 +176,14 @@ class FutureViewTask extends React.PureComponent<Props, State> {
 
   render(): Node {
     const { inNDaysView, taskEditorPosition, originalTask } = this.props;
-    const { date } = originalTask;
+    const { date, complete } = originalTask;
     const { overdueAlertPosition } = this.state;
     const overdueComponentOpt = overdueAlertPosition && (
       <OverdueAlert absolutePosition={overdueAlertPosition} />
     );
     const refHandler = (divElement: HTMLDivElement | null) => {
       if (divElement != null) {
-        const isOverdue = date < getTodayAtZero();
+        const isOverdue = date < getTodayAtZero() && !complete;
         if (isOverdue && overdueAlertPosition == null) {
           const { top } = divElement.getBoundingClientRect();
           const parent = divElement.parentElement ?? error('Corrupted DOM!');
