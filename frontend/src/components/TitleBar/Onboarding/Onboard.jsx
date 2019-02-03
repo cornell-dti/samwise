@@ -2,6 +2,7 @@
 
 import * as React from 'react';
 import type { Node } from 'react';
+import { connect } from 'react-redux';
 import TagItem from '../Tags/TagItem';
 import ClassTagAdder from '../Tags/ClassTagAdder';
 import OtherTagAdder from '../Tags/OtherTagAdder';
@@ -103,7 +104,7 @@ class Onboard extends React.PureComponent<Props, State> {
       }
     });
     
-    if(classTags.length == 0 & otherTags.length == 0){
+    if(classTags.length == 0 & otherTags.length == 0 && this.props.tasks.length == 0){
       this.setState((state) => {return {...state, shouldDisp: true};});
     }
     const renderTags = (arr: Tag[]): Node => arr.map((tag: Tag) => (
@@ -154,5 +155,7 @@ class Onboard extends React.PureComponent<Props, State> {
   }
 }
 
-const Connected = tagsConnect<Props>(Onboard);
+const Connected = connect(
+  ({ tags, tasks }) => ({ tags, tasks }), null,
+)(Onboard);
 export default Connected;
