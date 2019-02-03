@@ -39,26 +39,6 @@ def index():
     return jsonify(status='success')
 
 
-@api.route('/login', methods=['GET'])
-def login():
-    """
-    TODO This method is not used. The frontend can use firebase UI directly.
-    :return:
-    """
-    token = request.args.get('token')
-    user_id = get_user_id(token)
-    if user_id:
-        redirect_url = request.args.get('redirect', url_for('api.index'))
-
-        param_prefix = '?' if '?' not in redirect_url else '&'
-        if param_prefix == '&':
-            import pdb
-            pdb.set_trace()
-        return redirect(f'{redirect_url}{param_prefix}token={token}')
-    else:
-        return auth.html
-
-
 @api.route('/load', methods=['GET'])
 def load():
     user_id = get_user_id(request.args.get('token'))
@@ -317,54 +297,6 @@ def get_all_tasks():
         .filter(Task.deleted == False) \
         .all()
     return jsonify(util.table_to_json(tasks))
-
-
-@api.route('/tasks/<task_id>/mark', methods=['PUT'])
-def mark_task_complete(task_id):
-    """
-    TODO this is unused. Frontend can directly use edit_task.
-    """
-    data = request.get_json(force=True)
-    if not data or 'token' not in data:
-        return jsonify(error='token not passed in')
-    user_id = get_user_id(data['token'])
-    if not user_id:
-        return redirect(url_for('api.login', redirect=request.path))
-    if 'completed' not in data or type(data['completed']) != bool:
-        return jsonify(error='param completed missing or of wrong type'), 400
-    completed = data['completed']
-    task = Task.query.filter(Task.task_id == task_id).filter(
-        Task.user_id == user_id).first()
-    if task is None:
-        return jsonify(
-            error='error. no task with id {} exists for this user.'.format(
-                task_id)), 404
-    task.completed = completed
-    db.session.commit()
-    return jsonify(status='success')
-
-
-@api.route('/tasks/<task_id>/focus', methods=['POST'])
-def set_task_focus(task_id):
-    """
-    TODO this is unused. Frontend can directly use edit_task.
-    """
-    data = request.get_json(force=True)
-    if not data or 'token' not in data:
-        return jsonify(error='token not passed in')
-    user_id = get_user_id(data['token'])
-    if not user_id:
-        return redirect(url_for('api.login', redirect=request.path))
-    focus = data.get('focus')
-    task = Task.query.filter(Task.user_id == user_id).filter(
-        Task.task_id == task_id).first()
-    if task is None:
-        return jsonify(status='error. task not found.')
-    if focus is None:
-        return jsonify(status='error. key "focus" is required.')
-    task.in_focus = focus
-    db.session.commit()
-    return jsonify(task=util.sqlalchemy_obj_to_dict(task))
 
 
 @api.route('/tasks/<task_id>/delete', methods=['PUT'])
