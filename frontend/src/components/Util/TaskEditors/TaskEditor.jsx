@@ -463,10 +463,10 @@ class TaskEditor extends React.PureComponent<Props, State> {
 
   render(): Node {
     const {
-      tag, date, subtasks, newSubTaskDisabled, children,
+      tag, complete, date, subtasks, newSubTaskDisabled, children,
       className, onFocus, onBlur, refFunction, getTag,
     } = this.props;
-    const isOverdue = date < getTodayAtZero();
+    const isOverdue = date < getTodayAtZero() && !complete;
     const backgroundColor = getTag(tag).color;
     const formStyle = isOverdue
       ? { backgroundColor, border: '5px solid #D0021B' }
