@@ -73,19 +73,24 @@ type Props = {| +tags: Tag[]; |};
  * @constructor
  */
 class Onboard extends React.PureComponent<Props, State> {
-  state: State = { progress: 0 };
+  state: State = { progress: 0, shouldDisp: false };
   
+  /*componentDidMount = () => {
+    const y = this.props.tags.length == 0;
+    console.log(this.props.tags);
+    this.setState((state) => {return { ...state, shouldDisp: y }});
+  }*/
   
   showNext = () => {
-    this.setState((state) => {return {progress: state.progress + 1};});
+    this.setState((state) => {return {...state, progress: state.progress + 1};});
   }
   goBack = () => {
     if(this.state.progress > 1){
-      this.setState((state) => {return {progress: state.progress - 1};});
+      this.setState((state) => {return {...state, progress: state.progress - 1};});
     }
   }
   skipTutorial = () => {
-    this.setState((state) => {return {progress: 100};});
+    this.setState((state) => {return {...state, progress: 100};});
   }
   render(){
     const classTags: Tag[] = [];
@@ -97,10 +102,13 @@ class Onboard extends React.PureComponent<Props, State> {
         otherTags.push(tag);
       }
     });
+    
+    if(classTags.length == 0 & otherTags.length == 0){
+      this.setState((state) => {return {...state, shouldDisp: true};});
+    }
     const renderTags = (arr: Tag[]): Node => arr.map((tag: Tag) => (
       <TagItem key={tag.id} tag={tag} />
     ));
-    
     
     const importAll = (r) => {
       let images = {};
@@ -110,10 +118,11 @@ class Onboard extends React.PureComponent<Props, State> {
     
     const images = importAll(require.context('../../../assets/tutorial', false, /\.(png|jpe?g|svg)$/));
     
-    const shouldDisp = classTags.length == 0 && otherTags.length == 0;
+    //const shouldDisp = classTags.length == 0 && otherTags.length == 0;
+    //this.setState((state) => {return { ...state, shouldDisp: shouldDisp }});
     
     return (
-      <div className={styles.Hero} style={{ display: shouldDisp && this.state.progress < 7 ? "block" : "none", overflowY: this.state.progress > 0 ? "hidden" : "", background: this.state.progress > 0 ? "rgba(0,0,0,0.8)" : "" }} >
+      <div className={styles.Hero} style={{ display: this.state.shouldDisp && this.state.progress < 7 ? "block" : "none", overflowY: this.state.progress > 0 ? "hidden" : "", background: this.state.progress > 0 ? "rgba(0,0,0,0.8)" : "" }} >
         <div style={{ display: this.state.progress == 0 ? "block" : "none", padding: "40px 20px" }}>
           <p>Hi! Help us boost your productivity by creating some tags.<br />Search and add the classes you are currently enrolled in to tag them.</p>
           <ClassAdder />
