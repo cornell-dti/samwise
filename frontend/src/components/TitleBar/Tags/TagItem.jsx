@@ -39,11 +39,17 @@ function TagItem({ tag, editTag, removeTag }: Props): Node {
       editTag({ ...tag, color });
     }
   };
+  const editName = (name: string) => {
+    if (canBeEdited) {
+      editTag({ ...tag, name: name.target.value });
+    }
+  };
   const { name, color, classId } = tag;
   const isClass = classId !== null;
+  const nameSplit = name.split(":");
   const nameNode = isClass
-    ? <span className={styles.ClassExpandedTitle}>{name}</span>
-    : <span className={styles.TagName} style={{ width: 'calc(100% - 150px)' }}>{name}</span>;
+    ? <span style={{ width: 'calc(100% - 150px)', display: 'inline-block' }}><span className={styles.TagName}>{nameSplit[0]}</span><span className={styles.ClassExpandedTitle}>{nameSplit[1].trim()}</span></span>
+    : <span className={styles.TagName} style={{ width: 'calc(100% - 150px)' }}><input type="text" value={name} onChange={editName} className={styles.TagEdit} /></span>;
   return (
     <li className={styles.ColorConfigItem}>
       {nameNode}
