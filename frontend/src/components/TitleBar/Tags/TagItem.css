@@ -9,6 +9,7 @@
 .TagName {
   display: inline-block;
   font-weight: bold;
+  width:150px;
 }
 
 .ClassExpandedTitle {
@@ -32,4 +33,12 @@
 
 .AddTagName::placeholder {
   color: rgb(188, 188, 188);
+}
+
+.TagEdit{
+  width: calc(100% - 150px);
+  background: none;
+  border: none;
+  color: white;
+  font-weight:bold;
 }
