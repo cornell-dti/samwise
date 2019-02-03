@@ -72,3 +72,39 @@ p.SettingsSectionTitle {
   object-fit:contain;
   object-position:center center;
 }
+
+
+.TutorialModal{
+  width: 80%;
+  height:calc(100vh - 100px);
+  margin:0 auto;
+}
+
+.ModalWrap{
+  text-align:center;
+}
+.ModalWrap h2{
+  margin-top:10px;
+}
+
+.ModalOptions{
+  text-align:right;
+  margin-right:20vw;
+}
+.ModalOptions button{
+  background:white;
+  color:black;
+  border:1px solid black;
+  padding:5px;
+  margin: 10px 10px 0 0;
+  cursor:pointer;
+  transition: background 0.1s ease-in-out;
+  
+  border-radius:40px;
+}
+.ModalOptions button:hover{
+  background:rgba(255,255,255,0.8);
+}
+.ModalOptions button:active{
+  background:rgba(255,255,255,0.9)
+}

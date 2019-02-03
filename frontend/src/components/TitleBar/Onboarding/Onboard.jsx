@@ -73,11 +73,19 @@ type Props = {| +tags: Tag[]; |};
  * @constructor
  */
 class Onboard extends React.PureComponent<Props, State> {
-  state: State = { progress: 0 };
+  state: State = { progress: 1 };
   
   
   showNext = () => {
     this.setState((state) => {return {progress: state.progress + 1};});
+  }
+  goBack = () => {
+    if(this.state.progress > 1){
+      this.setState((state) => {return {progress: state.progress - 1};});
+    }
+  }
+  skipTutorial = () => {
+    this.setState((state) => {return {progress: 100};});
   }
   render(){
     const classTags: Tag[] = [];
@@ -105,7 +113,7 @@ class Onboard extends React.PureComponent<Props, State> {
     const shouldDisp = classTags.length == 0 && otherTags.length == 0;
     
     return (
-      <div className={styles.Hero} style={{ display: shouldDisp && this.state.progress < 7 ? "block" : "none", overflowY: this.state.progress > 0 ? "hidden" : "", backgroundColor: this.state.progress > 0 ? "white" : "" }} >
+      <div className={styles.Hero} style={{ display: shouldDisp && this.state.progress < 7 ? "block" : "none", overflowY: this.state.progress > 0 ? "hidden" : "", background: this.state.progress > 0 ? "rgba(0,0,0,0.8)" : "" }} >
         <div style={{ display: this.state.progress == 0 ? "block" : "none", padding: "40px 20px" }}>
           <p>Hi! Help us boost your productivity by creating some tags.<br />Search and add the classes you are currently enrolled in to tag them.</p>
           <ClassAdder />
@@ -121,8 +129,16 @@ class Onboard extends React.PureComponent<Props, State> {
             Done
           </button>
         </div>
-        <div style={{ display: this.state.progress > 0 ? "block" : "none" }} onClick={this.showNext}>
-          <img className={styles.TutorialImg} src={this.state.progress > 0 && this.state.progress < 7 ? images['t' + this.state.progress + ".png"] : ""} />
+        <div style={{ display: this.state.progress > 0 ? "block" : "none" }} className={styles.ModalWrap}>
+          <h2>Welcome to Samwise</h2>
+          <div className={styles.TutorialModal}>
+            <img className={styles.TutorialImg} src={this.state.progress > 0 && this.state.progress < 7 ? images['t' + this.state.progress + ".png"] : ""} />
+          </div>
+          <p className={styles.ModalOptions}>
+            <button onClick={this.skipTutorial} style={{ marginRight: "30px" }}>Skip</button>
+            <button onClick={this.goBack}>Back</button>
+            <button onClick={this.showNext}>Next</button>
+          </p>
         </div>
       </div>
     );
