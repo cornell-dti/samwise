@@ -31,7 +31,7 @@ export default class SettingsButton extends React.PureComponent<{||}, State> {
         </button>
         {showSettings && (
           <div className={styles.settingsModal}>
-            <span className={styles.changesSaved}>All changes saved</span>
+            { /*<span className={styles.changesSaved}>All changes saved</span>*/ }
             <button className={styles.closeButton} type="submit" onClick={this.closeModal}>
               <Icon name="close" />
             </button>

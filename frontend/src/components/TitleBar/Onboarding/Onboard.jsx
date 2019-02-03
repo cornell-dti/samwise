@@ -93,10 +93,7 @@ class Onboard extends React.PureComponent<Props, State> {
       <TagItem key={tag.id} tag={tag} />
     ));
     
-    /*let req = require.context("../../../assets/tutorial/", false, /.*\.png/);
-    req.keys().forEach(function(key){
-      req(key);
-    });*/
+    
     const importAll = (r) => {
       let images = {};
       r.keys().map((item, index) => { images[item.replace('./', '')] = r(item); });
@@ -105,11 +102,10 @@ class Onboard extends React.PureComponent<Props, State> {
     
     const images = importAll(require.context('../../../assets/tutorial', false, /\.(png|jpe?g|svg)$/));
     
-    //<img src={images['doggy.png']} />
     const shouldDisp = classTags.length == 0 && otherTags.length == 0;
     
     return (
-      <div className={styles.Hero} style={{ display: shouldDisp && this.state.progress < 7 ? "block" : "none" }} >
+      <div className={styles.Hero} style={{ display: shouldDisp && this.state.progress < 7 ? "block" : "none", overflowY: this.state.progress > 0 ? "hidden" : "", backgroundColor: this.state.progress > 0 ? "white" : "" }} >
         <div style={{ display: this.state.progress == 0 ? "block" : "none", padding: "40px 20px" }}>
           <p>Hi! Help us boost your productivity by creating some tags.<br />Search and add the classes you are currently enrolled in to tag them.</p>
           <ClassAdder />
