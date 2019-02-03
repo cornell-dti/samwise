@@ -7,10 +7,10 @@ import type { AddTagAction } from '../../../store/action-types';
 import styles from './TagAdder.css';
 import type { Course, Tag } from '../../../store/store-types';
 import { randomId } from '../../../util/general-util';
-import { dispatchConnect } from '../../../store/react-redux-util';
-import { getCourses } from '../../../store/store';
+import { fullConnect } from '../../../store/react-redux-util';
 
 type Props = {|
+  +courses: Map<number, Course[]>;
   +addTag: (tag: Tag) => AddTagAction
 |};
 
@@ -24,34 +24,26 @@ type SimpleCourse = {|
 |};
 
 /**
- * Course options cache.
- * @type {SimpleCourse[]}
- */
-let courseOptions: SimpleCourse[] = [];
-
-/**
  * Returns the computed course options.
  *
+ * @param {Map<number, Course[]>} courseMap new courses.
  * @return {SimpleCourse[]} course options.
  */
-function getCourseOptions(): SimpleCourse[] {
-  if (courseOptions.length === 0) {
-    const courseMap = getCourses();
-    courseOptions = [];
-    let i = 0;
-    courseMap.forEach((courses: Course[]) => {
-      courses.forEach((course: Course) => {
-        const {
-          subject, courseNumber, title, courseId: classId,
-        } = course;
-        const name = `${subject} ${courseNumber}: ${title}`;
-        courseOptions.push({
-          key: i, value: name, subject, courseNumber, title, classId,
-        });
-        i += 1;
+function getCourseOptions(courseMap: Map<number, Course[]>): SimpleCourse[] {
+  const courseOptions = [];
+  let i = 0;
+  courseMap.forEach((courses: Course[]) => {
+    courses.forEach((course: Course) => {
+      const {
+        subject, courseNumber, title, courseId: classId,
+      } = course;
+      const name = `${subject} ${courseNumber}: ${title}`;
+      courseOptions.push({
+        key: i, value: name, subject, courseNumber, title, classId,
       });
+      i += 1;
     });
-  }
+  });
   return courseOptions;
 }
 
@@ -72,10 +64,17 @@ const fuseConfigs = {
   threshold: 0.2, // higher the threshold, more stuff will be matched.
 };
 
-function ClassTagAdder(props: Props) {
+/**
+ * The class tag adder.
+ *
+ * @param {Map<number, Course[]>} courses all courses.
+ * @param {function(Tag): AddTagAction} addTag the action to add tags.
+ * @return {Node} the rendered node.
+ * @constructor
+ */
+function ClassTagAdder({ courses, addTag }: Props) {
   const changeClass = (option: SimpleCourse) => {
     const { value, classId } = option;
-    const { addTag } = props;
     addTag({
       id: randomId(), name: value, color: '#56d9c1', classId,
     });
@@ -83,7 +82,7 @@ function ClassTagAdder(props: Props) {
   return (
     <div className={`${styles.TagColorConfigItemAdder} ${styles.SearchClasses}`}>
       <ReactSearchBox
-        data={getCourseOptions()}
+        data={getCourseOptions(courses)}
         value=""
         fuseConfigs={fuseConfigs}
         onSelect={changeClass}
@@ -93,7 +92,11 @@ function ClassTagAdder(props: Props) {
   );
 }
 
-const ConnectedClassTagAdder = dispatchConnect<Props, Props>(
-  { addTag: addTagAction },
-)(ClassTagAdder);
+const actionCreators = { addTag: addTagAction };
+type CoursesProps = {| +courses: Map<number, Course[]>; |};
+const MemoizedClassTagAdder = React.memo<Props>(ClassTagAdder);
+const ConnectedClassTagAdder = fullConnect<Props, CoursesProps, typeof actionCreators>(
+  ({ courses }) => ({ courses }),
+  actionCreators,
+)(MemoizedClassTagAdder);
 export default ConnectedClassTagAdder;
