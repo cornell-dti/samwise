@@ -7,8 +7,9 @@ https://www.digitalocean.com/community/tutorials/how-to-structure-large-flask-ap
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from app import config
+import os
 
-app = Flask(__name__)
+app = Flask(__name__, static_folder=os.path.abspath('static'))
 app.config.from_object(config)
 db = SQLAlchemy(app)
 
