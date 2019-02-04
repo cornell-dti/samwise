@@ -26,13 +26,11 @@ below
 ```bash
 # In file backend/.env
 export DATABASE_URL=the-secret-postgres-url-for-development
-GOOGLE_APPLICATION_CREDENTIALS=app/serviceAccount.json
+FIREBASE_CONFIG=app/serviceAccount.json
 DEBUG=true
-
-# In file backend/.env.production
-DATABASE_URL=the-secret-postgres-url-for-production
-GOOGLE_APPLICATION_CREDENTIALS=app/serviceAccount.json
 ```
+
+You need to get `serviceAccount.json` from a team member.
 
 You need to ask a team member about the the value of the secret `DATABASE_URL`. If you are not a
 team member, you can get one on your own in some cloud services.
