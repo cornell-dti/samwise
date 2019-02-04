@@ -1,5 +1,11 @@
 import os
+from dotenv import load_dotenv
 
-DEBUG = True
+load_dotenv(override=True)
+
+PORT = os.environ.get('PORT', 5000)
+DEBUG = os.environ.get('DEBUG', '').lower() == 'true'
 SQLALCHEMY_DATABASE_URI = os.environ['DATABASE_URL']
+SQLALCHEMY_TRACK_MODIFICATIONS = False
 SECRET_KEY = os.environ.get('SECRET_KEY', os.urandom(24))
+FIREBASE_CONFIG = os.environ['FIREBASE_SERVICE_CONFIG']

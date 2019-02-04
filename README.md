@@ -1,26 +1,41 @@
 # Project Samwise v1.0
-​
-#### Contents
-  - [About](#about)
-  - [Getting Started](#getting-started)
-  - [Dependencies & Libraries](#dependencies--libraries)
-  - [External Documentation](#external-documentation)
-  - [Screenshots](#screenshots)
-  - [Contributors](#contributors)
+
+## Contents
+
+- [About](#about)
+- [Getting Started](#getting-started)
+- [Dependencies & Libraries](#dependencies--libraries)
+- [External Documentation](#external-documentation)
+- [Screenshots](#screenshots)
+- [Contributors](#contributors)
 ​
 ## About
+
 A web application designed to help Cornell students plan their semesters.
 ​
 ## Getting Started
-You will need the latest npm (at least 5.6.0) to run the latest version of this app. The app makes use of the following technologies:
-​
- * React (16.6.0)
- * Redux (4.0.1)
- * React-Redux (5.1.0)
 
-To start the app, navigate to the frontend folder, then run `npm install` first followed by `npm start`.
+You will need the latest npm or yarn to run the frontend and at least python 3.6 to run the backend.
 
-_Last updated **11/05/2018**_.
+To run the frontend, go to the frontend folder and run `npm run start` or `yarn start`. To build the
+frontend, run `npm run build` or `yarn build`.
+
+Before running the backend, you also need to setup some environment variables. The format is shown
+below
+
+```bash
+# In file backend/.env
+export DATABASE_URL=the-secret-postgres-url-for-development
+FIREBASE_CONFIG=app/serviceAccount.json
+DEBUG=true
+```
+
+You need to get `serviceAccount.json` from a team member.
+
+You need to ask a team member about the the value of the secret `DATABASE_URL`. If you are not a
+team member, you can get one on your own in some cloud services.
+
+_Last updated **02/03/2019**_.
 ​
 ## Dependencies & Libraries
  * [React (16.7.0)](https://reactjs.org/) - a Facebook library for frontend. We use it for frontend UI.
@@ -31,7 +46,7 @@ _Last updated **11/05/2018**_.
  * [Semantic UI React](https://react.semantic-ui.com/) - a library of pre-styled components in Semantic UI for React.
  * [React Calendar (2.14.1)](https://www.npmjs.com/package/react-calendar) - A calendar component for React.
  * [React Color (2.14.1)](https://casesandberg.github.io/react-color/) - a collection of React components for picking colors.
- * [React Search Box (2.0.0)](https://ghoshnirmalya.github.io/react-search-box/) - a search box component for React.
+ * [React Search Box (2.0.1)](https://ghoshnirmalya.github.io/react-search-box/) - a search box component for React.
  * [React Toastify (4.5.0)](https://fkhadra.github.io/react-toastify/) - a library for emitting toasts in React.
 ​
 ## External Documentation
