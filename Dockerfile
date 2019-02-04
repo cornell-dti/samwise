@@ -6,17 +6,18 @@ RUN yarn && yarn build
 CMD ['echo', 'OK']
 
 # Step 2: Copy code from backend and frontend and RUN!
-FROM python:3.7-alpine
+FROM python:3.7-stretch
 COPY --from=frontend-builder /app/dist /app/static
 COPY backend /app
 
 WORKDIR /app
 
-RUN \
- apk add --no-cache postgresql-libs && \
- apk add --no-cache --virtual .build-deps gcc musl-dev postgresql-dev && \
- pip install -r requirements.txt --no-cache-dir && \
- apk --purge del .build-deps
+RUN pip install -r requirements.txt --no-cache-dir
+# RUN \
+#  apk add --no-cache postgresql-libs && \
+#  apk add --no-cache --virtual .build-deps gcc g++ musl-dev postgresql-dev && \
+#  pip install -r requirements.txt --no-cache-dir && \
+#  apk --purge del .build-deps
 
 EXPOSE 5000
 
