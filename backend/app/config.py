@@ -1,7 +1,7 @@
 import os
 from dotenv import load_dotenv
 
-load_dotenv()
+load_dotenv(override=True)
 
 DEBUG = os.environ.get('DEBUG', '').lower() == 'true'
 SQLALCHEMY_DATABASE_URI = os.environ['DATABASE_URL']

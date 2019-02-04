@@ -43,7 +43,7 @@ def index():
 def load():
     user_id = get_user_id(request.args.get('token'))
     if not user_id:
-        return redirect(url_for('api.login', redirect=request.path))
+        return jsonify(error='token not passed in')
 
     tags = Tag.query \
         .filter(Tag.user_id == user_id) \
