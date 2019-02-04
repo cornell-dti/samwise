@@ -11,6 +11,7 @@ import os
 
 app = Flask(__name__, static_folder=os.path.abspath('static'))
 app.config.from_object(config)
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
 
 from app.api.views import api
