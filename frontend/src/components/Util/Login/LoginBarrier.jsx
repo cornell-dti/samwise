@@ -34,7 +34,20 @@ export default class LoginBarrier extends React.Component<Props, State> {
   componentDidMount() {
     // Listen to the Firebase Auth state and set the local state.
     this.unregisterAuthObserver = firebase.auth().onAuthStateChanged((user) => {
-      toAppUser(user).then(currentUser => this.setState({ currentUser }));
+      toAppUser(user).then((currentUser) => {
+        if (currentUser === null) {
+          this.setState({ currentUser: null });
+          return;
+        }
+        const { email } = currentUser;
+        if (email.endsWith('@cornell.edu')) {
+          this.setState({ currentUser });
+        } else {
+          const alertMessage = 'You should sign in with your Cornell email!';
+          // eslint-disable-next-line
+          firebase.auth().signOut().then(() => alert(alertMessage));
+        }
+      });
     });
   }
 
@@ -66,7 +79,7 @@ export default class LoginBarrier extends React.Component<Props, State> {
         <div className={styles.LoginWrapper}>
           <h1 className={styles.LoginText}>Samwise</h1>
           {loadingOrLogin}
-          <h4>Made by D&TI</h4>
+          <h4>Made by Cornell DTI</h4>
           <h4>Cornell Design & Tech Initiative</h4>
         </div>
       </div>

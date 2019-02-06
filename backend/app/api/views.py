@@ -1,4 +1,6 @@
-from flask import request, Blueprint, jsonify, redirect, url_for
+from typing import Any, Dict, Optional, Tuple
+
+from flask import abort, request, Blueprint, jsonify
 from sqlalchemy import or_
 
 from app import db, util, courses
@@ -16,7 +18,15 @@ api = Blueprint('api', __name__, url_prefix='/api')
 # - Read: https://samwise.docs.apiary.io/
 # - Edit: https://app.apiary.io/samwise
 
-def get_user_id(firebase_id_token):
+def get_user_id(firebase_id_token: str) -> str:
+    """
+    Obtain the user id.
+    If verification fails, it directly causes a 403 error.
+
+    :param firebase_id_token: the firebase auth token from the client.
+    :return: the user id.
+    """
+
     # The flag to allow bad users.
     # It can be set to true only during development.
     ALLOW_BAD_USER = False
@@ -24,9 +34,30 @@ def get_user_id(firebase_id_token):
         return 'bad_user'
     try:
         decoded_token = auth.auth.verify_id_token(firebase_id_token)
-        return decoded_token['uid']
+        email = decoded_token['email']
+        if email.endswith('@cornell.edu'):
+            return decoded_token['uid']
+        else:
+            abort(403, description='No auth token or bad auth token.')
     except ValueError:
-        return None
+        abort(403, description='No auth token or bad auth token.')
+
+
+def get_data_and_verified_user_id() -> Tuple[Dict[str, Any], str]:
+    """
+    Verify the token from the json data and return both the json and
+    the user id.
+    If verification fails, it directly causes a 403 error.
+
+    :return: data, user_id
+    """
+    data = request.get_json(force=True)
+    if not data or 'token' not in data:
+        abort(403, description='Auth token not passed in or bad auth token!')
+    user_id = get_user_id(data['token'])
+    if not user_id:
+        abort(403, description='Auth token not passed in or bad auth token!')
+    return data, user_id
 
 
 @api.route('/', methods=['GET'])
@@ -42,38 +73,29 @@ def index():
 @api.route('/load', methods=['GET'])
 def load():
     user_id = get_user_id(request.args.get('token'))
-    if not user_id:
-        return jsonify(error='token not passed in')
 
     tags = Tag.query \
         .filter(Tag.user_id == user_id) \
         .filter(Tag.deleted == False) \
         .all()
-    tags_json = util.table_to_json(tags)
-
     tasks = Task.query \
         .filter(Task.user_id == user_id) \
         .filter(Task.deleted == False) \
         .all()
-    tasks_json = util.table_to_json(tasks)
 
     return jsonify(
-        tags=tags_json,
-        tasks=tasks_json,
+        tags=util.table_to_json(tags),
+        tasks=util.table_to_json(tasks),
         courses=courses.courses_json
     )
 
 
 @api.route('/tags/new', methods=['POST'])
 def new_tag():
-    data = request.get_json(force=True)
-    if not data or 'token' not in data:
-        return jsonify(error='token not passed in')
-    user_id = get_user_id(data['token'])
-    if not user_id:
-        return redirect(url_for('api.login', redirect=request.path))
-    tag_name = data.get('name')
-    color = data.get('color')
+    data, user_id = get_data_and_verified_user_id()
+
+    tag_name = data['name']
+    color = data['color']
     if not (type(tag_name) == str or type(tag_name) == 'unicode') \
             or not (type(color) == str or type(color) == 'unicode'):
         return jsonify(
@@ -93,37 +115,10 @@ def new_tag():
     return jsonify(created=util.sqlalchemy_obj_to_dict(tag))
 
 
-@api.route('/tags/all', methods=['GET'])
-def get_tags():
-    user_id = get_user_id(request.args.get('token'))
-    if not user_id:
-        return redirect(url_for('api.login', redirect=request.path))
-    tags = Tag.query \
-        .filter(Tag.user_id == user_id) \
-        .filter(Tag.deleted == False) \
-        .all()
-    tags_json = util.table_to_json(tags)
-    return jsonify(tags_json)
-
-
-@api.route('/tags/classes', methods=['GET'])
-def get_classes():
-    user_id = get_user_id(request.args.get('token'))
-    if not user_id:
-        return redirect(url_for('api.login', redirect=request.path))
-    tags = Tag.query.filter(Tag.is_class == True).all()
-    tags_json = util.table_to_json(tags)
-    return jsonify(tags_json)
-
-
 @api.route('/tags/<tag_id>/delete', methods=['PUT'])
 def delete_tag(tag_id):
-    data = request.get_json(force=True)
-    if not data or 'token' not in data:
-        return jsonify(error='token not passed in')
-    user_id = get_user_id(data['token'])
-    if not user_id:
-        return redirect(url_for('api.login', redirect=request.path))
+    data, user_id = get_data_and_verified_user_id()
+
     tag = Tag.query.filter(Tag.tag_id == tag_id).filter(
         Tag.user_id == user_id).first()
     if tag is None:
@@ -145,23 +140,15 @@ def delete_tag(tag_id):
 
 @api.route('/tags/<tag_id>/edit', methods=['POST'])
 def edit_tag(tag_id):
-    data = request.get_json(force=True)
-    if not data or 'token' not in data:
-        return jsonify(error='token not passed in')
-    user_id = get_user_id(data['token'])
-    if not user_id:
-        return redirect(url_for('api.login', redirect=request.path))
+    data, user_id = get_data_and_verified_user_id()
+
     class_id = data.get('class_id')
     tag_name = data.get('name')
     color = data.get('color')
     tag = Tag.query.filter(Tag.user_id == user_id).filter(
         Tag.tag_id == tag_id).first()
-    if tag is None:
-        return jsonify(status='error. tag not found.')
-    if tag_name is None:
-        return jsonify(status='error. key "tag_name" is required.')
-    if color is None:
-        return jsonify(status='error. key "color" is required.')
+    if None in (tag, tag_name, color):
+        return jsonify(status='Parameters tag, tag_name, color are required!')
     tag.class_id = class_id
     tag.tag_name = tag_name
     tag.color = color
@@ -171,12 +158,8 @@ def edit_tag(tag_id):
 
 @api.route('/tasks/new', methods=['POST'])
 def new_task():
-    data = request.get_json(force=True)
-    if not data or 'token' not in data:
-        return jsonify(error='token not passed in')
-    user_id = get_user_id(data['token'])
-    if not user_id:
-        return redirect(url_for('api.login', redirect=request.path))
+    data, user_id = get_data_and_verified_user_id()
+
     content = data.get('content')
     tag_id = data.get('tag_id')
     start_date = data.get('start_date')
@@ -241,12 +224,7 @@ def new_task():
 
 @api.route('/tasks/batch_new', methods=['POST'])
 def batch_new_tasks():
-    data = request.get_json(force=True)
-    if not data or 'token' not in data:
-        return jsonify(error='token not passed in')
-    user_id = get_user_id(data['token'])
-    if not user_id:
-        return redirect(url_for('api.login', redirect=request.path))
+    data, user_id = get_data_and_verified_user_id()
 
     last_task = Task.query.filter(
         Task.user_id == user_id).order_by(Task._order.desc()).first()
@@ -287,26 +265,10 @@ def batch_new_tasks():
     return jsonify(created=new_tasks_json)
 
 
-@api.route('/tasks/all', methods=['GET'])
-def get_all_tasks():
-    user_id = get_user_id(request.args.get('token'))
-    if not user_id:
-        return redirect(url_for('api.login', redirect=request.path))
-    tasks = Task.query \
-        .filter(Task.user_id == user_id) \
-        .filter(Task.deleted == False) \
-        .all()
-    return jsonify(util.table_to_json(tasks))
-
-
 @api.route('/tasks/<task_id>/delete', methods=['PUT'])
 def delete_task(task_id):
-    data = request.get_json(force=True)
-    if not data or 'token' not in data:
-        return jsonify(error='token not passed in')
-    user_id = get_user_id(data['token'])
-    if not user_id:
-        return redirect(url_for('api.login', redirect=request.path))
+    data, user_id = get_data_and_verified_user_id()
+
     # delete all subtasks within a task
     tasks = Task.query \
         .filter(Task.user_id == user_id) \
@@ -320,10 +282,8 @@ def delete_task(task_id):
 
 @api.route('/tasks/batch_delete', methods=['PUT'])
 def delete_tasks():
-    data = request.get_json(force=True)
-    if not data or 'token' not in data:
-        return jsonify(error='token not passed in')
-    user_id = get_user_id(data['token'])
+    data, user_id = get_data_and_verified_user_id()
+
     task_ids = data['deleted']
     for task_id in task_ids:
         tasks = Task.query \
@@ -336,39 +296,40 @@ def delete_tasks():
     return jsonify(status='success')
 
 
+def edit_task_from_json(task: Task, json: Dict[str, Any]):
+    """
+    Edit a task object with new data in json.
+
+    :param task: task from DB.
+    :param json: new json edit data.
+    """
+    task.content = json.get('content', task.content)
+    task.tag_id = json.get('tag_id', task.tag_id)
+    task.start_date = json.get('start_date', task.start_date)
+    task.end_date = json.get('end_date', task.end_date)
+    task.completed = json.get('completed', task.completed)
+    task.in_focus = json.get('in_focus', task.in_focus)
+    task.parent_task = json.get('parent_task', task.parent_task)
+    task._order = json.get('_order', task._order)
+
+
 @api.route('/tasks/<task_id>/edit', methods=['POST'])
 def edit_task(task_id):
-    data = request.get_json(force=True)
-    if not data or 'token' not in data:
-        return jsonify(error='token not passed in')
-    user_id = get_user_id(data['token'])
-    if not user_id:
-        return redirect(url_for('api.login', redirect=request.path))
-    task = Task.query.filter(Task.user_id == user_id).filter(
+    data, user_id = get_data_and_verified_user_id()
+
+    task: Optional[Task] = Task.query.filter(Task.user_id == user_id).filter(
         Task.task_id == task_id).first()
     if task is None:
         return jsonify(status='error. task not found.')
 
-    task.content = data.get('content', task.content)
-    task.tag_id = data.get('tag_id', task.tag_id)
-    task.start_date = data.get('start_date', task.start_date)
-    task.end_date = data.get('end_date', task.end_date)
-    task.completed = data.get('completed', task.completed)
-    task.in_focus = data.get('in_focus', task.in_focus)
-    task.parent_task = data.get('parent_task', task.parent_task)
-    task._order = data.get('_order', task._order)
+    edit_task_from_json(task, data)
     db.session.commit()
     return jsonify(task=util.sqlalchemy_obj_to_dict(task))
 
 
 @api.route('/tasks/batch_edit', methods=['POST'])
 def edit_tasks():
-    data = request.get_json(force=True)
-    if not data or 'token' not in data:
-        return jsonify(error='token not passed in')
-    user_id = get_user_id(data['token'])
-    if not user_id:
-        return redirect(url_for('api.login', redirect=request.path))
+    data, user_id = get_data_and_verified_user_id()
 
     tasks_json = data['tasks']
     for task_json in tasks_json:
@@ -379,14 +340,7 @@ def edit_tasks():
         if task is None:
             return jsonify(status=f'error. task {task_id} not found.')
 
-        task.content = task_json.get('content', task.content)
-        task.tag_id = task_json.get('tag_id', task.tag_id)
-        task.start_date = task_json.get('start_date', task.start_date)
-        task.end_date = task_json.get('end_date', task.end_date)
-        task.completed = task_json.get('completed', task.completed)
-        task.in_focus = task_json.get('in_focus', task.in_focus)
-        task.parent_task = task_json.get('parent_task', task.parent_task)
-        task._order = task_json.get('_order', task._order)
+        edit_task_from_json(task, task_json)
     db.session.commit()
 
     return jsonify(status='success')
