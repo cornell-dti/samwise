@@ -16,6 +16,11 @@ export type AppUser = {|
  */
 export function firebaseInit(): void {
   firebase.initializeApp(firebaseConfig);
+  const provider = new firebase.auth.GoogleAuthProvider();
+  provider.setCustomParameters({
+    login_hint: 'your-email@cornell.edu',
+    hd: 'cornell.edu',
+  });
 }
 
 /**
