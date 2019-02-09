@@ -51,7 +51,7 @@ type TagsProps = {| +tags: Tag[] |};
  * @param component the component to connect.
  * @return {ConnectedComponent<Config, TagsProps>} the connected component.
  */
-export function tagsConnect<Config: Object>( // flowlint-line unclear-type:off
+export function tagsConnect<-Config>(
   component: ComponentType<Config>,
 ): ConnectedComponent<Config, TagsProps> {
   return stateConnect<Config, TagsProps>(
@@ -67,7 +67,7 @@ type TagColorProps = {| +getTag: (id: number) => Tag; |};
  * @param component the component to connect.
  * @return {ConnectedComponent<Config, TagColorProps>} the connected component.
  */
-export function getTagConnect<Config: Object>( // flowlint-line unclear-type:off
+export function getTagConnect<Config: Object>(
   component: ComponentType<Config>,
 ): ConnectedComponent<Config, TagColorProps> {
   return stateConnect<Config, TagColorProps>(

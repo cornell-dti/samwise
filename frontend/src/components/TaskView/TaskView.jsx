@@ -29,45 +29,24 @@ class TaskView extends React.PureComponent<Props, State> {
     futureViewConfig: futureViewConfigProvider.initialValue,
   };
 
-  /**
-   * Report whether the screen is small.
-   *
-   * @return {boolean} whether the screen is small.
-   */
   screenIsSmall = (): boolean => {
     const { windowSize: { width } } = this.props;
     return width <= 768;
   };
 
-  /**
-   * Handler for toggling the focus view. In n-days mode, it cannot be toggled.
-   */
   toggleFocusViewInWideScreen = () => this.setState((state: State) => ({
     doesShowFocusViewInWideScreen: !state.doesShowFocusViewInWideScreen,
   }));
 
-  /**
-   * Switch the view.
-   */
   switchView = () => this.setState((state: State) => {
     const { doesShowFutureViewInSmallScreen } = state;
     return { doesShowFutureViewInSmallScreen: !doesShowFutureViewInSmallScreen };
   });
 
-  /**
-   * Handle when future view config changes.
-   *
-   * @param {FutureViewConfig} futureViewConfig the new future view config.
-   */
   futureViewConfigOnChange = (futureViewConfig: FutureViewConfig) => this.setState({
     futureViewConfig,
   });
 
-  /**
-   * Render the toggle for focus view, for wide screen.
-   *
-   * @return {Node} the rendered component.
-   */
   renderWideScreenFocusViewToggleComponent = (): Node => {
     const { doesShowFocusViewInWideScreen, futureViewConfig } = this.state;
     if (futureViewConfigProvider.isInNDaysView(futureViewConfig)) {
@@ -95,11 +74,6 @@ class TaskView extends React.PureComponent<Props, State> {
     );
   };
 
-  /**
-   * Render the toggle for focus view, for small screen.
-   *
-   * @return {Node} the rendered component.
-   */
   renderSmallScreenViewSwitcherComponent = (): Node => {
     if (!this.screenIsSmall()) {
       return null;

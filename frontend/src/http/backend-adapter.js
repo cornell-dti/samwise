@@ -306,8 +306,8 @@ export const createEditBackendTaskRequest = (
 
 /**
  * Convert backend to frontend tag.
- * @param {BackendTag} tag backend tag to convert.
  *
+ * @param {BackendTag} tag backend tag to convert.
  * @return {Tag} frontend tag.
  */
 const backendTagToFrontendTag = (tag: BackendTag): Tag => ({
