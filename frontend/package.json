@@ -10,6 +10,7 @@
     "flow": "flow"
   },
   "dependencies": {
+    "@babel/polyfill": "^7.2.5",
     "firebase": "^5.8.0",
     "react": "^16.7.0",
     "react-calendar": "^2.17.5",
