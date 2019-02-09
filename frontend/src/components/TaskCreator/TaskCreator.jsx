@@ -296,9 +296,8 @@ class TaskCreator extends React.PureComponent<Props, State> {
           <Icon name="plus" />
           <input type="text" placeholder="Add a Subtask" value="" onChange={this.addNewSubTask} />
           <button type="button" className={styles.ResetButton} onClick={this.resetTask}>
-
-            Clear
-</button>
+            {'Clear'}
+          </button>
         </div>
       </div>
     );
