@@ -1,6 +1,6 @@
 // @flow strict
 
-export const colMap: { [colorHex: string]: string } = {
+const colMap: { [colorHex: string]: string } = {
   '#7ed321': 'green     ',
   '#b92424': 'red       ',
   '#5ed3e9': 'light blue',
@@ -9,6 +9,8 @@ export const colMap: { [colorHex: string]: string } = {
   '#ff8a8a': 'pink      ',
   '#56d9c1': 'seafoam   ',
 };
+
+export { colMap as default };
 
 /*
 

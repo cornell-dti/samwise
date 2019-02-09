@@ -4,7 +4,7 @@ import React from 'react';
 import type { Node } from 'react';
 import { GithubPicker } from 'react-color';
 import { Icon } from 'semantic-ui-react';
-import { colMap } from './ListColors';
+import colMap from './ListColors';
 import styles from './ColorEditor.css';
 
 type Props = {|
