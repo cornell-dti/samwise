@@ -4,6 +4,10 @@
       "@babel/preset-env",
       {
         "targets": {
+          "browsers": [
+            "last 1 version",
+            "not dead"
+          ],
           "node": "current"
         }
       }

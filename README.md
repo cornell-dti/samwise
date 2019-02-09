@@ -30,20 +30,19 @@ FIREBASE_CONFIG=app/serviceAccount.json
 DEBUG=true
 ```
 
-You need to get `serviceAccount.json` from a team member.
+You need to ask a team member about the the value of the secret `DATABASE_URL` and 
+`FIREBASE_CONFIG`. If you are not a team member, you can get those on your own in some cloud 
+services.
 
-You need to ask a team member about the the value of the secret `DATABASE_URL`. If you are not a
-team member, you can get one on your own in some cloud services.
+_Last updated **02/04/2019**_.
 
-_Last updated **02/03/2019**_.
-​
 ## Dependencies & Libraries
- * [React (16.7.0)](https://reactjs.org/) - a Facebook library for frontend. We use it for frontend UI.
+ * [React (16.8.1)](https://reactjs.org/) - a Facebook library for frontend. We use it for frontend UI.
  * [Redux (4.0.1)](https://redux.js.org/) - a predictable state container for JavaScript apps. We used it for state management.
- * [React-Redux (5.1.0)](https://github.com/reduxjs/react-redux) - a library for bindings between React and Redux.
+ * [React-Redux (5.1.1)](https://github.com/reduxjs/react-redux) - a library for bindings between React and Redux.
  * [Firebase (5.8.0)](https://firebase.google.com) - a serverless service for auth, database, etc. We used it for auth.
  * [React FirebaseUI (3.1.2)](https://github.com/firebase/firebaseui-web-react) - a simple sign-in component library for firebase auth.
- * [Semantic UI React](https://react.semantic-ui.com/) - a library of pre-styled components in Semantic UI for React.
+ * [Semantic UI React (0.85.0)](https://react.semantic-ui.com/) - a library of pre-styled components in Semantic UI for React.
  * [React Calendar (2.14.1)](https://www.npmjs.com/package/react-calendar) - A calendar component for React.
  * [React Color (2.14.1)](https://casesandberg.github.io/react-color/) - a collection of React components for picking colors.
  * [React Search Box (2.0.1)](https://ghoshnirmalya.github.io/react-search-box/) - a search box component for React.
