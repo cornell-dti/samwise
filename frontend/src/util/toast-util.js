@@ -13,8 +13,6 @@ import { date2String } from './datetime-util';
 
 /**
  * Emit a toast for undoing removing task.
- *
- * @param {string} task the removed task.
  */
 export function emitUndoAddTaskToast(task: Task): void {
   const message = `Added Task "${task.name}" on ${date2String(task.date)}.`;
@@ -28,8 +26,6 @@ export function emitUndoAddTaskToast(task: Task): void {
 
 /**
  * Emit a toast for undoing removing task.
- *
- * @param {string} task the removed task.
  */
 export function emitUndoRemoveTaskToast(task: Task): void {
   const message = `Removed Task "${task.name}" on ${date2String(task.date)}.`;

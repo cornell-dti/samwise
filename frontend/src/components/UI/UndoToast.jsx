@@ -5,19 +5,16 @@ import type { Node } from 'react';
 import { toast } from 'react-toastify';
 import styles from './UndoToast.css';
 
-export type Props = {|
+type Props = {|
   +toastId: string;
   +message: string;
   +onUndo: () => void;
-  +onDismiss: () => void;
 |};
+
+type Config = {| ...Props; +onDismiss: () => void; |};
 
 /**
  * The component for the undo toast.
- *
- * @param {Props} props all the props.
- * @return {Node} the rendered UNDO toast.
- * @constructor
  */
 function UndoToast(props: Props): Node {
   const { toastId, message, onUndo } = props;
@@ -50,11 +47,9 @@ function UndoToast(props: Props): Node {
 export default function emitToast(
   {
     toastId, message, onUndo, onDismiss,
-  }: Props,
+  }: Config,
 ): void {
-  const props = {
-    toastId, message, onUndo, onDismiss,
-  };
+  const props = { toastId, message, onUndo };
   toast.success((<UndoToast {...props} />), {
     toastId,
     position: 'top-right',

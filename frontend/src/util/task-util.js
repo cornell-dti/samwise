@@ -156,7 +156,7 @@ export const computeTaskProgress = (inFocusTasks: Task[]): TasksProgress => {
  * @param component the component to connect.
  * @return {ConnectedComponent<Config, TagsProps>} the connected component.
  */
-export function tasksConnect<Config: Object>( // flowlint-line unclear-type:off
+export function tasksConnect<-Config>(
   component: ComponentType<Config>,
 ): ConnectedComponent<Config, TasksProps> {
   return stateConnect<Config, TasksProps>(

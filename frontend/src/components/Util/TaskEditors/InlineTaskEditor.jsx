@@ -44,7 +44,7 @@ type State = {|
 /**
  * The task editor used to edit task inline, activated on focus.
  */
-class InlineTaskEditor extends React.Component<Props, State> {
+class InlineTaskEditor extends React.PureComponent<Props, State> {
   static defaultProps = {
     className: undefined,
   };

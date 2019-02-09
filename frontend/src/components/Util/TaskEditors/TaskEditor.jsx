@@ -13,7 +13,7 @@ import OverdueAlert from '../../UI/OverdueAlert';
 import styles from './TaskEditor.css';
 import { getTagConnect } from '../../../util/tag-util';
 import { randomId } from '../../../util/general-util';
-import { getTodayAtZero } from '../../../util/datetime-util';
+import { getTodayAtZeroAM } from '../../../util/datetime-util';
 import { disableBackend } from '../../../util/config';
 
 type DefaultProps = {|
@@ -466,7 +466,7 @@ class TaskEditor extends React.PureComponent<Props, State> {
       tag, complete, date, subtasks, newSubTaskDisabled, children,
       className, onFocus, onBlur, refFunction, getTag,
     } = this.props;
-    const isOverdue = date < getTodayAtZero() && !complete;
+    const isOverdue = date < getTodayAtZeroAM() && !complete;
     const backgroundColor = getTag(tag).color;
     const formStyle = isOverdue
       ? { backgroundColor, border: '5px solid #D0021B' }
