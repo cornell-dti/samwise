@@ -75,4 +75,6 @@
   right: 0.5em;
   font-size: 2em !important;
   color: #84BCF6;
+
+  z-index:2;
 }
