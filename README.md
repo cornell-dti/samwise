@@ -126,6 +126,7 @@ To know about the specific versions of these dependencies, go to [package.json](
 - **Michael Xing** - Front-end Developer
 - **Michelle Park** - Designer
 - **Sam Zhou** - Front-end Developer
+- **Megan Yin** - Front-end Developer
 
 We are a team within **Cornell Design & Tech Initiative**. For more information, see our website [here](https://cornelldti.org/).
 
