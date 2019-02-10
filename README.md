@@ -128,7 +128,8 @@ To know about the specific versions of these dependencies, go to [package.json](
 - **Sam Zhou** - Front-end Developer
 
 ### Since 2019
-- **William Evans** - Back-end Developer
+- **Megan Yin** - Front-end Developer
+- **William Evans** - Backend Developer
 
 We are a team within **Cornell Design & Tech Initiative**. For more information, see our website [here](https://cornelldti.org/).
 
