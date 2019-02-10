@@ -108,7 +108,14 @@ class Onboard extends React.PureComponent<Props, State> {
     const images = importAll(require.context('../../../assets/tutorial', false, /\.(png|jpe?g|svg)$/));
 
     return (
-      <div className={styles.Hero} style={{ display: shouldDisp && progress < 7 ? 'block' : 'none', overflowY: progress > 0 ? 'hidden' : '', background: progress > 0 ? 'rgba(0,0,0,0.8)' : '' }}>
+      <div
+        className={styles.Hero}
+        style={{
+          display: shouldDisp && progress < 7 ? 'block' : 'none',
+          overflowY: progress > 0 ? 'hidden' : '',
+          background: progress > 0 ? 'rgba(0,0,0,0.8)' : '',
+        }}
+      >
         <div style={{ display: progress === 0 ? 'block' : 'none', padding: '60px 40px' }}>
           <p className={styles.HeroIntroText}>
             Hi! Help us boost your productivity by creating some tags.
@@ -122,7 +129,12 @@ class Onboard extends React.PureComponent<Props, State> {
           </TagsContainer>
           <div>
             <ExamImporter />
-            <button type="button" className={styles.SignButton} onClick={this.showNext} style={{ display: classTags.length !== 0 ? 'block' : 'none' }}>
+            <button
+              type="button"
+              className={styles.SignButton}
+              onClick={this.showNext}
+              style={{ display: classTags.length !== 0 ? 'block' : 'none' }}
+            >
               Done
             </button>
           </div>
@@ -131,11 +143,17 @@ class Onboard extends React.PureComponent<Props, State> {
           <h2>Tutorial</h2>
           <div className={styles.TutorialModal}>
             <button type="button" onClick={this.goBack}>&lsaquo;</button>
-            <img className={styles.TutorialImg} src={progress > 0 && progress < 7 ? images[`t${progress}.png`] : ''} alt="Tutorial" />
+            <img
+              className={styles.TutorialImg}
+              src={progress > 0 && progress < 7 ? images[`t${progress}.png`] : ''}
+              alt="Tutorial"
+            />
             <button type="button" onClick={this.showNext}>&rsaquo;</button>
           </div>
           <p className={styles.ModalOptions}>
-            <button type="button" onClick={this.skipTutorial} style={{ marginRight: '30px' }}>Start using Samwise now &rarr;</button>
+            <button type="button" onClick={this.skipTutorial} style={{ marginRight: '30px' }}>
+              Start using Samwise now &rarr;
+            </button>
           </p>
         </div>
       </div>
