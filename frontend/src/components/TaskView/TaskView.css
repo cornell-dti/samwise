@@ -2,6 +2,9 @@
   position: relative;
   display: flex;
   flex-direction: row;
+
+  /* Proposed change for fixed progress bar */
+  padding-bottom:80px;
 }
 
 @media only screen and (min-width: 768px) {
@@ -72,4 +75,6 @@
   right: 0.5em;
   font-size: 2em !important;
   color: #84BCF6;
+
+  z-index:2;
 }

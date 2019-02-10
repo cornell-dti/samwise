@@ -10,14 +10,26 @@
   color:white;
 }
 
+.HeroIntroText{
+  font-size:16px;
+}
+
+.Hero button{
+  background:none;
+  border:none;
+  cursor:pointer;
+}
+
 .SettingsSection {
   margin-top: 10px;
 }
 
 p.SettingsSectionTitle {
-  vertical-align: top;
-  font-size: 16px;
-  padding-top: 20px;
+  display:none !important;
+}
+
+.SettingsSectionContent{
+  width:100% !important;
 }
 
 .SettingsSectionContent {
@@ -38,6 +50,7 @@ p.SettingsSectionTitle {
 
 .SettingsButton button {
   color: black;
+  background:white;
   border: 1px white solid;
   border-radius: 5px;
   padding: 5px 10px;
@@ -55,6 +68,11 @@ p.SettingsSectionTitle {
   padding: 10px 20px !important;
   
   cursor:pointer;
+  display:inline-block !important;
+  margin-top:40px;
+}
+.SignButton:first-child{
+  margin-right:calc(100vw - 320px);
 }
 
 .ColorConfigItemList {
@@ -65,8 +83,20 @@ p.SettingsSectionTitle {
   list-style: none;
 }
 
+
+
+/*
+
+    TUTORIAL
+
+*/
+
+
+
+
+
 .TutorialImg{
-  width:100%;
+  width:calc(100% - 120px);
   height:100%;
   max-height:100vh;
   object-fit:contain;
@@ -75,16 +105,42 @@ p.SettingsSectionTitle {
 
 
 .TutorialModal{
-  width: 80%;
-  height:calc(100vh - 100px);
+  width: 100%;
+  height: calc(100% - 110px);
   margin:0 auto;
+  overflow:hidden;
+}
+
+.TutorialModal button{
+  background:white;
+  color:#459ae5;
+  padding:0;
+  width:50px;
+  margin: 0;
+  cursor:pointer;
+  transition: background 0.1s ease-in-out;
+  display:inline-block;
+  height: 100%;
+  vertical-align:top;
+  line-height:100%;
+  font-size:500%;
 }
 
 .ModalWrap{
   text-align:center;
+  
+  margin: 50px 150px;
+
+  background:white;
+  color:black;
+  
+  width:calc(100% - 300px);
+  height:calc(100% - 100px);
+
+  border-radius:5px;
 }
 .ModalWrap h2{
-  margin-top:10px;
+  padding-top:20px;
 }
 
 .ModalOptions{
@@ -92,19 +148,9 @@ p.SettingsSectionTitle {
   margin-right:20vw;
 }
 .ModalOptions button{
-  background:white;
-  color:black;
-  border:1px solid black;
+  white-space:nowrap;
+  color:#459ae5;
   padding:5px;
   margin: 10px 10px 0 0;
   cursor:pointer;
-  transition: background 0.1s ease-in-out;
-  
-  border-radius:40px;
-}
-.ModalOptions button:hover{
-  background:rgba(255,255,255,0.8);
-}
-.ModalOptions button:active{
-  background:rgba(255,255,255,0.9)
 }

@@ -4,7 +4,6 @@ import * as React from 'react';
 import type { Node } from 'react';
 import TagItem from '../Tags/TagItem';
 import ClassTagAdder from '../Tags/ClassTagAdder';
-import OtherTagAdder from '../Tags/OtherTagAdder';
 import styles from './Onboard.css';
 import type { Tag, Task } from '../../../store/store-types';
 import { importCourseExams } from '../../../store/actions';
@@ -18,7 +17,6 @@ import { dispatchConnect, stateConnect } from '../../../store/react-redux-util';
  */
 const ClassAdder = (): Node => (
   <div className={styles.SettingsSection}>
-    <p className={styles.SettingsSectionTitle}>Add Classes</p>
     <div className={styles.SettingsSectionContent}>
       <ClassTagAdder />
     </div>
@@ -32,15 +30,7 @@ const ClassAdder = (): Node => (
  * @constructor
  */
 const ExamImporter = dispatchConnect({ onClick: importCourseExams })(({ onClick }) => (
-  <div className={styles.SettingsSection}>
-    <p className={styles.SettingsSectionTitle}>Auto Import Exams</p>
-    <div className={`${styles.SettingsButton} ${styles.SettingsSectionContent}`}>
-      Click the following button to automatically import the prelims and finals
-      from your registered classes into your planner.
-      <br />
-      <button type="button" onClick={onClick}>Import</button>
-    </div>
-  </div>
+  <button type="button" onClick={onClick} className={styles.SignButton}>Import Exams</button>
 ));
 
 /**
@@ -75,14 +65,6 @@ type State = {| +progress: number; +shouldDisp: boolean; |};
 class Onboard extends React.PureComponent<Props, State> {
   state: State = { progress: 0, shouldDisp: false };
 
-  /*
-  componentDidMount = () => {
-    const y = this.props.tags.length == 0;
-    console.log(this.props.tags);
-    this.setState((state) => {return { ...state, shouldDisp: y }});
-  }
-  */
-
   showNext = () => this.setState((state: State) => ({ ...state, progress: state.progress + 1 }));
 
   goBack = () => this.setState((state: State) => {
@@ -98,10 +80,8 @@ class Onboard extends React.PureComponent<Props, State> {
   render() {
     const classTags: Tag[] = [];
     const otherTags: Tag[] = [];
-
     const { tags, tasks } = this.props;
     const { shouldDisp, progress } = this.state;
-
     tags.forEach((tag) => {
       if (tag.classId !== null) {
         classTags.push(tag);
@@ -111,7 +91,9 @@ class Onboard extends React.PureComponent<Props, State> {
     });
 
     if (classTags.length === 0 && otherTags.length === 0 && tasks.length === 0) {
-      this.setState({ shouldDisp: true });
+      // Using an if statement here b/c we want shouldDisp's value to persist
+      // even after a couple of tags have been added
+      this.setState(state => ({ ...state, shouldDisp: true }));
     }
     const renderTags = (arr: Tag[]): Node => arr.map((tag: Tag) => (
       <TagItem key={tag.id} tag={tag} />
@@ -125,9 +107,6 @@ class Onboard extends React.PureComponent<Props, State> {
 
     const images = importAll(require.context('../../../assets/tutorial', false, /\.(png|jpe?g|svg)$/));
 
-    //const shouldDisp = classTags.length == 0 && otherTags.length == 0;
-    //this.setState((state) => {return { ...state, shouldDisp: shouldDisp }});
-
     return (
       <div
         className={styles.Hero}
@@ -137,47 +116,44 @@ class Onboard extends React.PureComponent<Props, State> {
           background: progress > 0 ? 'rgba(0,0,0,0.8)' : '',
         }}
       >
-        <div style={{ display: progress === 0 ? 'block' : 'none', padding: '40px 20px' }}>
-          <p>
+        <div style={{ display: progress === 0 ? 'block' : 'none', padding: '60px 40px' }}>
+          <p className={styles.HeroIntroText}>
             Hi! Help us boost your productivity by creating some tags.
             <br />
             Search and add the classes you are currently enrolled in to tag them.
           </p>
           <ClassAdder />
+          <h2>Class Tags</h2>
           <TagsContainer title="Class Tags">
             {renderTags(classTags)}
           </TagsContainer>
-          <ExamImporter />
-          { /*<TagsContainer title="Other Tags">
-            {renderTags(otherTags)}
-            <OtherTagAdder />
-          </TagsContainer>*/}
-          <button
-            type="button"
-            className={styles.SignButton}
-            onClick={this.showNext}
-            style={{ display: classTags.length !== 0 ? 'block' : 'none' }}
-          >
-            Done
-          </button>
+          <div>
+            <ExamImporter />
+            <button
+              type="button"
+              className={styles.SignButton}
+              onClick={this.showNext}
+              style={{ display: classTags.length !== 0 ? 'block' : 'none' }}
+            >
+              Done
+            </button>
+          </div>
         </div>
-        <div
-          style={{ display: progress > 0 ? 'block' : 'none' }}
-          className={styles.ModalWrap}
-        >
-          <h2>Welcome to Samwise</h2>
+        <div style={{ display: progress > 0 ? 'block' : 'none' }} className={styles.ModalWrap}>
+          <h2>Tutorial</h2>
           <div className={styles.TutorialModal}>
+            <button type="button" onClick={this.goBack}>&lsaquo;</button>
             <img
-              src={progress > 0 && progress < 7 ? images[`t${progress}.png`] : ''}
               className={styles.TutorialImg}
+              src={progress > 0 && progress < 7 ? images[`t${progress}.png`] : ''}
+              alt="Tutorial"
             />
+            <button type="button" onClick={this.showNext}>&rsaquo;</button>
           </div>
           <p className={styles.ModalOptions}>
             <button type="button" onClick={this.skipTutorial} style={{ marginRight: '30px' }}>
-              Skip
+              Start using Samwise now &rarr;
             </button>
-            <button type="button" onClick={this.goBack}>Back</button>
-            <button type="button" onClick={this.showNext}>Next</button>
           </p>
         </div>
       </div>

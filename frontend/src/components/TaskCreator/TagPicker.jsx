@@ -26,13 +26,13 @@ function TagPicker(props: Props): Node {
   const reset = () => onTagChange(NONE_TAG_ID);
   // Nodes
   const displayedNode = (isDefault: boolean) => {
-    const { name, color } = getTag(tag);
+    const { name, color, classId } = getTag(tag);
     const style = isDefault ? {} : { background: color };
     const internal = isDefault
       ? (<Icon name="tag" className={styles.CenterIcon} />)
       : (
         <React.Fragment>
-          <span className={styles.TagDisplay}>{name}</span>
+          <span className={styles.TagDisplay}>{classId ? name.split(':')[0] : name}</span>
           <button type="button" className={styles.ResetButton} onClick={reset}>&times;</button>
         </React.Fragment>
       );
