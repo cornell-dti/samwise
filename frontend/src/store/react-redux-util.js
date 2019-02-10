@@ -22,7 +22,7 @@ type OwnProp<-C, -RSP, -MDP> = $Diff<C, {| ...RSP; ...MDP |}>;
  * @param actionCreators the action creator used to bind actions.
  * @return {*} the connect function that connects a react component.
  */
-export function fullConnect<-C, -RSP, -MDP>(
+export function fullConnect<-C, -RSP, -MDP: Object>(
   mapStateToProps: (state: State, ownProps: OwnProp<C, RSP, MDP>) => RSP,
   actionCreators: MDP,
 ): (ComponentType<C>) => (ConnectedComponent<OwnProp<C, RSP, MDP>>) {
@@ -47,7 +47,7 @@ export function stateConnect<-C, -RSP>(
  * @param actionCreators the action creator used to bind actions.
  * @return {*} the connect function that connects a react component.
  */
-export function dispatchConnect<-C, -MDP>(
+export function dispatchConnect<-C, -MDP: Object>(
   actionCreators: MDP,
 ): (ComponentType<C>) => ConnectedComponent<C, MDP> {
   return connect(null, actionCreators);

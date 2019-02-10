@@ -2,13 +2,12 @@
 
 import * as React from 'react';
 import type { Node } from 'react';
-import { connect } from 'react-redux';
 import TagItem from '../Tags/TagItem';
 import ClassTagAdder from '../Tags/ClassTagAdder';
 import styles from './Onboard.css';
-import type { Tag } from '../../../store/store-types';
+import type { Tag, Task } from '../../../store/store-types';
 import { importCourseExams } from '../../../store/actions';
-import { dispatchConnect } from '../../../store/react-redux-util';
+import { dispatchConnect, stateConnect } from '../../../store/react-redux-util';
 
 /**
  * The class adder component.
@@ -53,10 +52,8 @@ const TagsContainer = ({ title, children }: {| +title: string; +children: Node |
   </div>
 );
 
-type Props = {|
-  +tags: Tag[];
-  +tasks: Task[];
-|};
+type Props = {| +tags: Tag[]; +tasks: Task[]; |};
+type State = {| +progress: number; +shouldDisp: boolean; |};
 
 /**
  * The settings page.
@@ -68,20 +65,17 @@ type Props = {|
 class Onboard extends React.PureComponent<Props, State> {
   state: State = { progress: 0, shouldDisp: false };
 
-  showNext = () => {
-    this.setState(state => ({ ...state, progress: state.progress + 1 }));
-  }
+  showNext = () => this.setState((state: State) => ({ ...state, progress: state.progress + 1 }));
 
-  goBack = () => {
-    const { progress } = this.state;
+  goBack = () => this.setState((state: State) => {
+    const { progress } = state;
     if (progress > 1) {
-      this.setState(state => ({ ...state, progress: state.progress - 1 }));
+      return { progress: progress - 1 };
     }
-  }
+    return {};
+  });
 
-  skipTutorial = () => {
-    this.setState(state => ({ ...state, progress: 100 }));
-  }
+  skipTutorial = () => this.setState(state => ({ ...state, progress: 100 }));
 
   render() {
     const classTags: Tag[] = [];
@@ -149,7 +143,7 @@ class Onboard extends React.PureComponent<Props, State> {
   }
 }
 
-const Connected = connect(
-  ({ tags, tasks }) => ({ tags, tasks }), null,
+const Connected = stateConnect<Props, Props>(
+  ({ tags, tasks }) => ({ tags, tasks }),
 )(Onboard);
 export default Connected;

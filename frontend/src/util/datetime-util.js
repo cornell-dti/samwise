@@ -1,10 +1,8 @@
 // @flow strict
 
 /**
- * Convert a day to a string.
- *
  * @param {number} day the day to convert, which must be between 0 to 6.
- * @return {string} the converted day string.
+ * @return {string} the converted day string. e.g. 0 ==> 'SUN', 3 ==> 'WED'.
  */
 export function day2String(day: number): string {
   switch (day) {
@@ -28,10 +26,8 @@ export function day2String(day: number): string {
 }
 
 /**
- * Returns the formatted string of date.
- *
  * @param {Date} date the date to convert.
- * @return {string} the formatted date.
+ * @return {string} the formatted string of date.
  */
 export function date2String(date: Date): string {
   return date.toLocaleDateString('en-US', {
@@ -40,10 +36,8 @@ export function date2String(date: Date): string {
 }
 
 /**
- * Returns the formatted string of date with year.
- *
  * @param {Date} date the date to convert.
- * @return {string} the formatted date.
+ * @return {string} the formatted string of date with year.
  */
 export function date2FullDateString(date: Date): string {
   return date.toLocaleDateString('en-US', {
@@ -52,10 +46,8 @@ export function date2FullDateString(date: Date): string {
 }
 
 /**
- * Returns the formatted string of date with year and month.
- *
  * @param {Date} date the date to convert.
- * @return {string} the formatted date.
+ * @return {string} formatted string of date with year and month.
  */
 export function date2YearMonth(date: Date): string {
   return date.toLocaleDateString('en-US', {
@@ -64,11 +56,9 @@ export function date2YearMonth(date: Date): string {
 }
 
 /**
- * Returns today at 0.
- *
- * @return {Date} today at 0.
+ * @return {Date} today at 0 AM.
  */
-export function getTodayAtZero(): Date {
+export function getTodayAtZeroAM(): Date {
   const d = new Date();
   d.setHours(0, 0, 0, 0);
   return d;

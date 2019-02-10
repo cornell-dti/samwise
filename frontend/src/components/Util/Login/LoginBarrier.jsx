@@ -28,7 +28,7 @@ type State = {| +currentUser: AppUser | null | 'UNDECIDED'; |};
  * This component will stop non-logged-in user from accessing other parts of the application.
  * It will only render the app given in a function is the user is signed in.
  */
-export default class LoginBarrier extends React.Component<Props, State> {
+export default class LoginBarrier extends React.PureComponent<Props, State> {
   state: State = { currentUser: 'UNDECIDED' };
 
   componentDidMount() {

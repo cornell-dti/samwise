@@ -48,7 +48,7 @@ type DateToTaskMap = Map<string, Task[]>;
 /**
  * Compute a map from date to a list of tasks on that day for faster access.
  *
- * @param {Task[]} tasks an array of all tasks. There is no assumption of the order of the tasks.
+ * @param {Task[]} tasks all tasks. There is no assumption of the order of the tasks.
  * @return {DateToTaskMap} the built map.
  */
 function buildDate2TaskMap(tasks: Task[]): DateToTaskMap {

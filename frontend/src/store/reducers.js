@@ -14,6 +14,7 @@ import type {
   BackendPatchBatchNewTasksAction,
   BackendPatchNewSubTaskAction,
   BackendPatchNewTagAction,
+  BackendPatchLoadedDataAction,
 } from './action-types';
 import type {
   Course,
@@ -44,10 +45,9 @@ import { DUMMY_TAGS, NONE_TAG, NONE_TAG_ID } from '../util/tag-util';
 import { ignore, randomId } from '../util/general-util';
 
 /**
- * Returns the initial state given an app user.
- *
- * @param {AppUser} appUser the user of the app.
- * @return {State} the initial state of the application.
+ * The initial state of the app.
+ * This state is dummy. It needs to be patched by the data from the backend ASAP.
+ * @type {State}
  */
 const initialState: State = {
   tasks: [],
@@ -59,9 +59,7 @@ const initialState: State = {
 /**
  * Remove a tag.
  *
- * @param {State} state the old state.
- * @param {number} tagId id of the tag to remove.
- * @return {State} the new state.
+ * @see RemoveTagAction
  */
 function removeTag(state: State, { tagId }: RemoveTagAction): State {
   httpDeleteTag(tagId);
@@ -75,9 +73,7 @@ function removeTag(state: State, { tagId }: RemoveTagAction): State {
 /**
  * Add a new task.
  *
- * @param {State} state the old state.
- * @param {Task} task the new task.
- * @return {Task[]} the new state.
+ * @see AddNewTaskAction
  */
 function addTask(state: State, { task }: AddNewTaskAction): State {
   emitUndoAddTaskToast(task);
@@ -92,10 +88,7 @@ function addTask(state: State, { task }: AddNewTaskAction): State {
 /**
  * Add a new subtask.
  *
- * @param {Task[]} tasks the task array to modify.
- * @param {number} taskId the main task id.
- * @param {SubTask} subTask the subtask to add.
- * @return {Task[]} the new task array.
+ * @see AddNewSubTaskAction
  */
 function addSubTask(tasks: Task[], { taskId, subTask }: AddNewSubTaskAction): Task[] {
   return replaceTask(tasks, taskId, (task: Task) => {
@@ -109,10 +102,7 @@ function addSubTask(tasks: Task[], { taskId, subTask }: AddNewSubTaskAction): Ta
 /**
  * Edit the main task.
  *
- * @param {Task[]} tasks the task array to modify.
- * @param {number} taskId the main task id.
- * @param {PartialMainTask} partialMainTask partial information of main task to edit.
- * @return {Task[]} the new task array with the specified task edited.
+ * @see EditMainTaskAction
  */
 function editMainTask(
   tasks: Task[], { taskId, partialMainTask }: EditMainTaskAction,
@@ -126,11 +116,7 @@ function editMainTask(
 /**
  * Edit the subtask.
  *
- * @param {Task[]} tasks the main task array to modify.
- * @param {number} taskId the main task id.
- * @param {number} subtaskId the subtask id.
- * @param {PartialSubTask} partialMainTask partial information of main task to edit.
- * @return {Task[]} the new task array with the specified task edited.
+ * @see EditSubTaskAction
  */
 function editSubTask(
   tasks: Task[], { taskId, subtaskId, partialSubTask }: EditSubTaskAction,
@@ -144,9 +130,7 @@ function editSubTask(
 /**
  * Remove a main task.
  *
- * @param {State} state the previous state.
- * @param {number} taskId the removed task id.
- * @return {[Task[], Task | null]} the new task array with the specified task remove.
+ * @see RemoveTaskAction
  */
 function removeTask(state: State, { taskId }: RemoveTaskAction): State {
   let lastDeletedTask: Task | null = null;
@@ -168,10 +152,7 @@ function removeTask(state: State, { taskId }: RemoveTaskAction): State {
 /**
  * Remove a subtask.
  *
- * @param {Task[]} tasks the task array to modify.
- * @param {number} taskId id of the parent task of the subtask.
- * @param {number} subtaskId the id of the subtask.
- * @return {Task[]} the new task array with the specified subtask removed.
+ * @see RemoveSubTaskAction
  */
 function removeSubtask(tasks: Task[], { taskId, subtaskId }: RemoveSubTaskAction): Task[] {
   return replaceTask(tasks, taskId, (task: Task) => ({
@@ -189,11 +170,7 @@ function removeSubtask(tasks: Task[], { taskId, subtaskId }: RemoveSubTaskAction
 /**
  * Reducer from an old state with old task to a new state with one task edited.
  *
- * @param {State} state the old state.
- * @param {Task} task the edited task.
- * @param {TaskDiff} diff diff between the old task and this task.
- * @param {EditTaskAction} action the reduce action to edit a task.
- * @return {State} the new state.
+ * @see EditTaskAction
  */
 function editTask(state: State, { task, diff }: EditTaskAction): State {
   const tasks = replaceTask(state.tasks, task.id, (oldTask: Task) => {
@@ -205,9 +182,6 @@ function editTask(state: State, { task, diff }: EditTaskAction): State {
 
 /**
  * Import all the course exams.
- *
- * @param {State} state the old state.
- * @return {State} the new state.
  */
 function importCourseExams(state: State): State {
   const { tags, tasks, courses } = state;
@@ -257,9 +231,6 @@ function importCourseExams(state: State): State {
 
 /**
  * Undo the operation of add task.
- *
- * @param {State} state the old state.
- * @return {State} the new state after the undo.
  */
 function undoAddTask(state: State): State {
   const { tasks, undoCache } = state;
@@ -281,9 +252,6 @@ function undoAddTask(state: State): State {
 
 /**
  * Undo the operation of delete task.
- *
- * @param {State} state the old state.
- * @return {State} the new state after the undo.
  */
 function undoDeleteTask(state: State): State {
   const { tasks, undoCache } = state;
@@ -304,10 +272,7 @@ function undoDeleteTask(state: State): State {
 /**
  * Patch a new tag with backend info.
  *
- * @param {State} state the old state.
- * @param {number} tempId the temp randomly assigned new tag id.
- * @param {number} backendId the tag id from backend.
- * @return {State} the new state.
+ * @see BackendPatchNewTagAction
  */
 function backendPatchNewTag(state: State, { tempId, backendId }: BackendPatchNewTagAction): State {
   return {
@@ -319,10 +284,7 @@ function backendPatchNewTag(state: State, { tempId, backendId }: BackendPatchNew
 /**
  * Patch a new task with backend info.
  *
- * @param {State} state the old state.
- * @param {number} tempId the temp randomly assigned new task id.
- * @param {number} serverId the task from backend.
- * @return {State} the new state.
+ * @see BackendPatchNewTaskAction
  */
 function backendPatchNewTask(
   state: State,
@@ -343,10 +305,7 @@ function backendPatchNewTask(
 /**
  * Patch batch new task addition with backend info.
  *
- * @param {State} state the old state.
- * @param {number[]} tempIds temp ids.
- * @param {Task[]} backendTasks backend tasks.
- * @return {State} the new state.
+ * @see BackendPatchBatchNewTasksAction
  */
 function backendBatchPatchNewTasks(
   state: State,
@@ -371,11 +330,7 @@ function backendBatchPatchNewTasks(
 /**
  * Patch a new subtask with backend info.
  *
- * @param {State} state the old state.
- * @param {number} taskId the main task id.
- * @param {number} tempSubTaskId the temp randomly assigned new subtask id.
- * @param {number} backendSubTaskId the subtask id from backend.
- * @return {State} the new state.
+ * @see BackendPatchNewSubTaskAction
  */
 function backendPatchNewSubTask(
   state: State, { taskId, tempSubTaskId, backendSubTaskId }: BackendPatchNewSubTaskAction,
@@ -385,6 +340,19 @@ function backendPatchNewSubTask(
     tasks: replaceSubTaskWithinMainTask(
       state.tasks, taskId, tempSubTaskId, s => ({ ...s, id: backendSubTaskId }),
     ),
+  };
+}
+
+/**
+ * Patch the entire redux store with the loaded data from the backend.
+ *
+ * @see BackendPatchLoadedDataAction
+ */
+function backendPatchLoadedData(
+  state: State, { tags, tasks, courses }: BackendPatchLoadedDataAction,
+): State {
+  return {
+    ...state, tags: [NONE_TAG, ...tags], tasks, courses,
   };
 }
 
@@ -439,9 +407,7 @@ export default function rootReducer(state: State = initialState, action: Action)
     case 'BACKEND_PATCH_EXISTING_TASK':
       return { ...state, tasks: replaceTask(state.tasks, action.task.id, () => action.task) };
     case 'BACKEND_PATCH_LOADED_DATA':
-      return {
-        ...state, tags: [NONE_TAG, ...action.tags], tasks: action.tasks, courses: action.courses,
-      };
+      return backendPatchLoadedData(state, action);
     default:
       return state;
   }

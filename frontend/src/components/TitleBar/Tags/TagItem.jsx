@@ -19,12 +19,6 @@ type Props = {|
 
 /**
  * The tag item component.
- *
- * @param {Tag} tag the tag to render.
- * @param {function(Tag): EditTagAction} editTag the edit tag action.
- * @param {function(number): RemoveTagAction} removeTag the remove tag action.
- * @return {Node} the rendered node.
- * @constructor
  */
 function TagItem({ tag, editTag, removeTag }: Props): Node {
   const canBeEdited = disableBackend || tag.id >= 0;
@@ -39,14 +33,14 @@ function TagItem({ tag, editTag, removeTag }: Props): Node {
       editTag({ ...tag, color });
     }
   };
-  const editName = (name: string) => {
+  const editName = (name: SyntheticInputEvent<HTMLInputElement>) => {
     if (canBeEdited) {
-      editTag({ ...tag, name: name.target.value });
+      editTag({ ...tag, name: name.currentTarget.value });
     }
   };
   const { name, color, classId } = tag;
   const isClass = classId !== null;
-  const nameSplit = name.split(":");
+  const nameSplit = name.split(':');
   const nameNode = isClass
     ? <span style={{ width: 'calc(100% - 150px)', display: 'inline-block' }}><span className={styles.TagName}>{nameSplit[0]}</span><span className={styles.ClassExpandedTitle}>{nameSplit[1].trim()}</span></span>
     : <span className={styles.TagName} style={{ width: 'calc(100% - 150px)' }}><input type="text" value={name} onChange={editName} className={styles.TagEdit} /></span>;

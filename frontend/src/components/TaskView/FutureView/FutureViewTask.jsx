@@ -14,7 +14,7 @@ import type { PartialMainTask, SubTask, Task } from '../../../store/store-types'
 import type { EditMainTaskAction, RemoveTaskAction } from '../../../store/action-types';
 import CheckBox from '../../UI/CheckBox';
 import type { FloatingPosition } from '../../Util/TaskEditors/task-editors-types';
-import { getTodayAtZero } from '../../../util/datetime-util';
+import { getTodayAtZeroAM } from '../../../util/datetime-util';
 import OverdueAlert from '../../UI/OverdueAlert';
 import windowSizeConnect from '../../Util/Responsive/WindowSizeConsumer';
 import type { WindowSize } from '../../Util/Responsive/window-size-context';
@@ -183,7 +183,7 @@ class FutureViewTask extends React.PureComponent<Props, State> {
     );
     const refHandler = (divElement: HTMLDivElement | null) => {
       if (divElement != null) {
-        const isOverdue = date < getTodayAtZero() && !complete;
+        const isOverdue = date < getTodayAtZeroAM() && !complete;
         if (isOverdue && overdueAlertPosition == null) {
           const { top } = divElement.getBoundingClientRect();
           const parent = divElement.parentElement ?? error('Corrupted DOM!');

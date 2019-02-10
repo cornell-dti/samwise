@@ -12,15 +12,12 @@ type Props = {|
 
 /**
  * One item in the class picker.
- *
- * @param {Props} props all the props.
- * @return {Node} the rendered item.
- * @constructor
  */
-export default function TagPickerItem(props: Props): Node {
-  const {
+export default function TagPickerItem(
+  {
     id, color, title, onChange,
-  } = props;
+  }: Props,
+): Node {
   return (
     <li style={{ '--custom-color': color }}>
       <input

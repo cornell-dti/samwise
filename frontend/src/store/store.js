@@ -15,9 +15,10 @@ let appUser: AppUser | null = null;
 
 /**
  * Initialize the app and record a global user and returns the initialized store.
+ * This function should be called in the entry point of the app.
  *
- * @param {AppUser} user the user of the app.
- * @return {GlobalStore} the newly initialized store.
+ * @param {AppUser} user the user of the app, coming from Firebase.
+ * @return {GlobalStore} the newly initialized global store.
  */
 export function initializeApp(user: AppUser): GlobalStore {
   appUser = user;
@@ -26,15 +27,10 @@ export function initializeApp(user: AppUser): GlobalStore {
 
 /**
  * Returns the global app user.
- *
- * @return {AppUser} the global app user.
  */
 export const getAppUser = (): AppUser => appUser ?? error('App is not initialized.');
 
 /**
- * Dispatch an action and returns the dispatched action.
- *
- * @param {Action} action the action to dispatch.
- * @return {Action} the action to dispatch.
+ * Dispatch an action and returns the same dispatched action.
  */
 export const dispatchAction = (action: Action): Action => store.dispatch(action);
