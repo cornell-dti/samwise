@@ -9,10 +9,7 @@ module.exports = {
     extensions: ['.js', '.jsx'],
   },
   optimization: {
-    splitChunks: {
-      chunks: 'all',
-      name: false,
-    },
+    splitChunks: { chunks: 'all', name: false },
     runtimeChunk: true,
   },
   module: {
@@ -20,17 +17,13 @@ module.exports = {
       {
         test: /\.jsx?$/,
         exclude: /node_modules/,
-        use: {
-          loader: 'babel-loader',
-        },
+        use: { loader: 'babel-loader' },
       },
       {
         test: /\.css$/,
-        exclude: /node_modules/,
+        exclude: /node_modules|src\/index.css/,
         use: [
-          {
-            loader: 'style-loader',
-          },
+          { loader: 'style-loader' },
           {
             loader: 'css-loader',
             options: {
@@ -43,7 +36,7 @@ module.exports = {
       },
       {
         test: /\.css$/,
-        include: /node_modules/,
+        include: /node_modules|src\/index.css/,
         use: [
           {
             loader: 'style-loader',
@@ -69,9 +62,7 @@ module.exports = {
       },
       {
         test: /\.(eot|woff|woff2|ttf)$/,
-        use: {
-          loader: 'file-loader',
-        },
+        use: { loader: 'file-loader' },
       },
     ],
   },
@@ -81,8 +72,6 @@ module.exports = {
   },
   plugins: [
     new CleanWebpackPlugin(['dist']),
-    new HtmlWebpackPlugin({
-      template: './public/index.html',
-    }),
+    new HtmlWebpackPlugin({ template: './public/index.html' }),
   ],
 };

@@ -4,7 +4,7 @@ import React from 'react';
 import type { Node } from 'react';
 import { ToastContainer } from 'react-toastify';
 import styles from './App.css';
-import Onboard from './components/TitleBar/Onboarding/Onboard.jsx';
+import Onboard from './components/TitleBar/Onboarding/Onboard';
 import TaskCreator from './components/TaskCreator/TaskCreator';
 import TaskView from './components/TaskView/TaskView';
 import TitleBar from './components/TitleBar/TitleBar';

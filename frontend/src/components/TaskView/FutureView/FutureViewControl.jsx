@@ -165,7 +165,7 @@ function DisplayOptionControl(props: DisplayOptionControlProps): Node {
     let newOffset: number;
     switch (newContainerType) {
       case 'N_DAYS':
-        newOffset = Math.floor(dayOffset / 4);
+        newOffset = Math.floor(dayOffset / nDays);
         break;
       case 'BIWEEKLY':
         newOffset = Math.floor(dayOffset / 14);

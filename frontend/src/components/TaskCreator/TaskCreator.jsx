@@ -18,6 +18,7 @@ import {
 import type { AddNewTaskAction, RemoveTaskAction } from '../../store/action-types';
 import { NONE_TAG_ID } from '../../util/tag-util';
 import { replaceSubTask } from '../../util/task-util';
+import { isToday } from '../../util/datetime-util';
 
 type Props = {|
   // subscribed from dispatcher.
@@ -119,8 +120,9 @@ class TaskCreator extends React.PureComponent<Props, State> {
       return;
     }
     const newSubTasks = subtasks.filter(subTask => subTask.name !== '');
+    const autoInFocus = inFocus || isToday(date); // Put task in focus is the due date is today.
     const newTask = {
-      id, name, tag, date, complete, inFocus, subtasks: newSubTasks,
+      id, name, tag, date, complete, inFocus: autoInFocus, subtasks: newSubTasks,
     };
     // Add the task to the store.
     addTask(newTask);
