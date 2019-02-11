@@ -18,6 +18,23 @@ import { disableBackend } from './util/config';
 
 firebaseInit();
 
+const refreshDataTimeInterval = 60 * 1000;
+let refreshDataTimeIntervalID: IntervalID | null = null;
+
+function refreshData() {
+  httpInitializeData().then(a => dispatchAction(a));
+}
+
+/**
+ * Refresh all the data with some intervals.
+ * It will only initialize the repeating task if it's not initialized yet.
+ */
+function initRefreshDataTask() {
+  if (refreshDataTimeIntervalID === null) {
+    refreshDataTimeIntervalID = setInterval(refreshData, refreshDataTimeInterval);
+  }
+}
+
 /**
  * The function to render the entire app given a user.
  *
@@ -26,7 +43,8 @@ firebaseInit();
  */
 const appRenderer = (appUser: AppUser): Node => {
   const store = initializeApp(appUser);
-  httpInitializeData().then(a => dispatchAction(a));
+  refreshData();
+  initRefreshDataTask();
   return (
     <ReactReduxProvider store={store}>
       <App />
