@@ -3,3 +3,12 @@ body {
   padding: 0;
   font-family: sans-serif;
 }
+
+
+.react-calendar__month-view__weekdays__weekday {
+  color: #333333;
+}
+
+.react-calendar__month-view__weekdays__weekday abbr[title] {
+  text-decoration: none;
+}
