@@ -27,7 +27,7 @@
 .TaskEditorFlexibleContainer {
   position: relative;
   display: flex;
-  margin: 1em 0.5em;
+  margin: 16px 8px;
   align-content: center;
   align-items: center;
 }
@@ -103,8 +103,7 @@ input.TaskEditorFlexibleInput:focus-within::placeholder {
 
 .TaskEditorCalendar {
   position: absolute;
-  right: 0;
-  left: calc(100% - 282px);
+  right: -8px;
   top: 36px;
   z-index: 4;
 }
