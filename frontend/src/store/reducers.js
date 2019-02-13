@@ -41,7 +41,7 @@ import {
   backendPatchNewSubTask as backendPatchNewSubTaskAction,
 } from './actions';
 import { replaceTask, replaceSubTaskWithinMainTask } from '../util/task-util';
-import { DUMMY_TAGS, NONE_TAG, NONE_TAG_ID } from '../util/tag-util';
+import { NONE_TAG, NONE_TAG_ID } from '../util/tag-util';
 import { ignore, randomId } from '../util/general-util';
 
 /**
@@ -51,7 +51,7 @@ import { ignore, randomId } from '../util/general-util';
  */
 const initialState: State = {
   tasks: [],
-  tags: [NONE_TAG, ...DUMMY_TAGS],
+  tags: [],
   courses: new Map(),
   undoCache: { lastAddedTaskId: null, lastDeletedTask: null },
 };

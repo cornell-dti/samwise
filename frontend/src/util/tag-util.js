@@ -21,19 +21,6 @@ export const NONE_TAG: Tag = {
 };
 
 /**
- * Some other dummy tags used to demo the app.
- * @type {Tag[]}
- */
-export const DUMMY_TAGS: Tag[] = [
-  {
-    id: 0, name: 'Personal', color: '#9D4AA9', classId: null,
-  },
-  {
-    id: 1, name: 'Project Team', color: '#FF8A8A', classId: null,
-  },
-];
-
-/**
  * Returns the tag from a list of tags given the name.
  *
  * @param {Tag[]} tags the tags to search.

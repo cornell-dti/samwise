@@ -15,7 +15,7 @@ import { computeTaskProgress, filterInFocusTasks, tasksConnect } from './util/ta
 /**
  * The top level app component.
  *
- * @param tasks all tasks.
+ * @param tasks all the tasks.
  * @return {Node} the rendered app.
  * @constructor
  */
