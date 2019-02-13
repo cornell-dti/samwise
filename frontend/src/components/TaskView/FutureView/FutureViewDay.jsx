@@ -122,7 +122,9 @@ const computeFloatingViewStyle = (props: PropsForPositionComputation): PositionS
 class FutureViewDay extends React.PureComponent<Props, State> {
   state: State = { floatingViewOpened: false, doesOverflow: false };
 
-  onOverflowChange = (doesOverflow: boolean) => this.setState({ doesOverflow });
+  onOverflowChange = (doesOverflow: boolean) => {
+    this.setState(state => (!state.floatingViewOpened ? { doesOverflow } : {}));
+  };
 
   isToday = (): boolean => {
     const { date } = this.props;

@@ -2,7 +2,7 @@
   position: relative;
   margin: -1em 4px 0 4px;
   background-color: #F7F7F7;
-  height: 366px;
+  height: 100%;
 }
 
 .OtherViews {
@@ -10,7 +10,7 @@
   margin: -1px 0 0 -1px;
   background-color: white;
   border: 1px solid #CCC;
-  height: 197px;
+  height: 100%;
 }
 
 .NDaysView::-webkit-scrollbar, .OtherViews::-webkit-scrollbar {
@@ -68,7 +68,7 @@
   top: 0;
   left: 0;
   right: 0;
-  max-height: 400px;
+  max-height: 80vh;
   overflow-x: hidden;
   overflow-y: scroll;
   background-color: white;

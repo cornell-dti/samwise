@@ -1,9 +1,5 @@
 .TaskView {
-  position: fixed;
-  top: 144px;
-  bottom: 76px;
-  left: 0;
-  right: 0;
+  height: calc(100vh - 260px);
   padding: 0.5em;
   display: flex;
   flex-direction: row;

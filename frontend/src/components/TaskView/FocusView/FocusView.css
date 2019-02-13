@@ -1,6 +1,6 @@
 .FocusView {
-  padding: 0 0.5em;
-  height: calc(100% - 44px);
+  padding: 0 8px -8px 0;
+  height: calc(100% - 54px);
   overflow-y: scroll;
 }
 
