@@ -79,7 +79,7 @@
 .ViewSwitcher {
   position: fixed;
   cursor: pointer;
-  bottom: 0.5em;
+  bottom: 90px;
   right: 0.5em;
   font-size: 2em !important;
   color: #84BCF6;
