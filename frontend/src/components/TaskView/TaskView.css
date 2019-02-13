@@ -1,10 +1,18 @@
 .TaskView {
-  position: relative;
+  position: fixed;
+  top: 144px;
+  bottom: 76px;
+  left: 0;
+  right: 0;
+  padding: 0.5em;
   display: flex;
   flex-direction: row;
+}
 
-  /* Proposed change for fixed progress bar */
-  padding-bottom:80px;
+.FocusPanel {
+  height: 100%;
+  max-height: 100%;
+  overflow-y: scroll;
 }
 
 @media only screen and (min-width: 768px) {
@@ -76,5 +84,5 @@
   font-size: 2em !important;
   color: #84BCF6;
 
-  z-index:2;
+  z-index: 2;
 }

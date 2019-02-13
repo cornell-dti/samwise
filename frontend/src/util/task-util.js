@@ -159,8 +159,9 @@ export const computeTaskProgress = (inFocusTasks: Task[]): TasksProgress => {
 export function tasksConnect<-Config>(
   component: ComponentType<Config>,
 ): ConnectedComponent<Config, TasksProps> {
-  const today = new Date();
+  const yesterday = new Date();
+  yesterday.setDate(yesterday.getDate() - 1);
   return stateConnect<Config, TasksProps>(({ tasks }): TasksProps => ({
-    tasks: tasks.filter(t => (!t.complete || t.date > today)),
+    tasks: tasks.filter(t => (!t.complete || t.date > yesterday)),
   }))(component);
 }
