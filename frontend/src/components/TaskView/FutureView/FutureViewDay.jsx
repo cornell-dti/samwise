@@ -10,8 +10,7 @@ import {
   floatingViewWidth,
   nDaysViewHeaderHeight,
   otherViewsHeightHeader,
-  taskContainerHeightNDaysView,
-  taskContainerHeightOtherViews, taskHeight,
+  taskHeight,
 } from './future-view-css-props';
 import { day2String } from '../../../util/datetime-util';
 import windowSizeConnect from '../../Util/Responsive/WindowSizeConsumer';
@@ -28,6 +27,7 @@ type Props = {|
 
 type State = {|
   +floatingViewOpened: boolean;
+  +doesOverflow: boolean;
 |};
 
 type PropsForPositionComputation = {|
@@ -120,7 +120,9 @@ const computeFloatingViewStyle = (props: PropsForPositionComputation): PositionS
  * The component that renders all tasks on a certain day.
  */
 class FutureViewDay extends React.PureComponent<Props, State> {
-  state: State = { floatingViewOpened: false };
+  state: State = { floatingViewOpened: false, doesOverflow: false };
+
+  onOverflowChange = (doesOverflow: boolean) => this.setState({ doesOverflow });
 
   isToday = (): boolean => {
     const { date } = this.props;
@@ -128,15 +130,6 @@ class FutureViewDay extends React.PureComponent<Props, State> {
     return date.getFullYear() === today.getFullYear()
       && date.getMonth() === today.getMonth()
       && date.getDate() === today.getDate();
-  };
-
-  doesContainerOverFlow = (): boolean => {
-    const { tasks, inNDaysView } = this.props;
-    const totalRequiredHeight = taskHeight * countTasks(tasks, inNDaysView);
-    const actualHeight = inNDaysView
-      ? taskContainerHeightNDaysView
-      : taskContainerHeightOtherViews;
-    return totalRequiredHeight > actualHeight;
   };
 
   /**
@@ -192,16 +185,17 @@ class FutureViewDay extends React.PureComponent<Props, State> {
           inNDaysView={inNDaysView}
           taskEditorPosition={taskEditorPosition}
           isInMainList={inMainList}
+          onOverflowChange={this.onOverflowChange}
         />
       </React.Fragment>
     );
   };
 
   renderBody = (): Node => {
-    if (!this.doesContainerOverFlow()) {
+    const { floatingViewOpened, doesOverflow } = this.state;
+    if (!doesOverflow) {
       return this.renderContent(true);
     }
-    const { floatingViewOpened } = this.state;
     if (!floatingViewOpened) {
       return (
         <React.Fragment>
