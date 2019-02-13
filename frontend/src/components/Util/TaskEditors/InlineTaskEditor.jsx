@@ -35,59 +35,50 @@ type Props = {|
   +removeSubTask: (taskId: number, subtaskId: number) => RemoveSubTaskAction;
 |};
 
-type State = {|
-  +disabled: boolean; // whether editing is disabled
-  +savedTask?: Task; // has a value only when there is some unsaved state.
-  +intervalId?: IntervalID; // used for regular saving
-|};
-
 /**
  * The task editor used to edit task inline, activated on focus.
  */
-class InlineTaskEditor extends React.PureComponent<Props, State> {
-  static defaultProps = {
-    className: undefined,
+function InlineTaskEditor(
+  {
+    task, className,
+    editMainTask, editSubTask, addSubTask, removeTask, removeSubTask,
+  }: Props,
+): Node {
+  const [disabled, setDisabled] = React.useState(true);
+
+  const { id } = task;
+  // To un-mount the editor when finished editing.
+  const onFocus = () => setDisabled(false);
+  const onBlur = () => setDisabled(true);
+  const taskEditorProps = {
+    ...task,
+    editMainTask: (partialMainTask: PartialMainTask, onSave: boolean) => {
+      editMainTask(id, partialMainTask);
+      if (onSave) {
+        onBlur();
+      }
+    },
+    editSubTask: (subtaskId: number, partialSubTask: PartialSubTask, onSave: boolean) => {
+      editSubTask(id, subtaskId, partialSubTask);
+      if (onSave) {
+        onBlur();
+      }
+    },
+    addSubTask: (subTask: SubTask) => { addSubTask(id, subTask); },
+    removeTask: () => { removeTask(id); },
+    removeSubTask: (subtaskId: number) => { removeSubTask(id, subtaskId); },
+    onSave: onBlur,
+    className,
+    allowEditTemporarySubTasks: false,
+    newSubTaskDisabled: disabled || !task.inFocus,
+    onFocus,
+    onBlur,
   };
 
-  state: State = { disabled: true };
-
-  render(): Node {
-    const {
-      task, className,
-      editMainTask, editSubTask, addSubTask, removeTask, removeSubTask,
-    } = this.props;
-    const { id } = task;
-    const { disabled } = this.state;
-    // To un-mount the editor when finished editing.
-    const onFocus = () => this.setState({ disabled: false });
-    const onBlur = () => this.setState({ disabled: true });
-    const taskEditorProps = {
-      ...task,
-      editMainTask: (partialMainTask: PartialMainTask, onSave: boolean) => {
-        editMainTask(id, partialMainTask);
-        if (onSave) {
-          onBlur();
-        }
-      },
-      editSubTask: (subtaskId: number, partialSubTask: PartialSubTask, onSave: boolean) => {
-        editSubTask(id, subtaskId, partialSubTask);
-        if (onSave) {
-          onBlur();
-        }
-      },
-      addSubTask: (subTask: SubTask) => { addSubTask(id, subTask); },
-      removeTask: () => { removeTask(id); },
-      removeSubTask: (subtaskId: number) => { removeSubTask(id, subtaskId); },
-      onSave: onBlur,
-      className,
-      allowEditTemporarySubTasks: false,
-      newSubTaskDisabled: disabled || !task.inFocus,
-      onFocus,
-      onBlur,
-    };
-    return <TaskEditor {...taskEditorProps} />;
-  }
+  return <TaskEditor {...taskEditorProps} />;
 }
+
+InlineTaskEditor.defaultProps = { className: undefined };
 
 const actionCreators = {
   editMainTask: editMainTaskAction,

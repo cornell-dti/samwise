@@ -102,14 +102,8 @@ class FloatingTaskEditor extends React.PureComponent<Props, State> {
     }
   };
 
-  /**
-   * Open the popup.
-   */
   openPopup = () => this.setState({ open: true });
 
-  /**
-   * Close the popup.
-   */
   closePopup = (): void => this.setState({ open: false, diff: EMPTY_TASK_DIFF });
 
   /**
