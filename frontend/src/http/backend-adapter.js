@@ -200,8 +200,8 @@ export const createNewTaskRequest = (task: Task): NewTaskRequest => {
  * @return {BatchNewTasksRequest} the created request.
  */
 export const createBatchNewTasksRequest = (tasks: Task[]): BatchNewTasksRequest => {
+  const startDate = formatDate(new Date());
   const requestTasks = tasks.map((task) => {
-    const startDate = formatDate(new Date());
     const endDate = formatDate(task.date);
     return {
       content: task.name,
@@ -225,8 +225,8 @@ export const createBatchNewTasksRequest = (tasks: Task[]): BatchNewTasksRequest 
 export const createBatchNewSubTasksRequest = (
   mainTask: Task, subtasks: SubTask[],
 ): BatchNewTasksRequest => {
+  const startDate = formatDate(new Date());
   const tasks = subtasks.map((subtask: SubTask) => {
-    const startDate = formatDate(new Date());
     const endDate = formatDate(mainTask.date);
     return {
       content: subtask.name,
@@ -251,13 +251,11 @@ export const createBatchEditTasksRequest = (
   tasks: TaskToBeBatchEdited[],
 ): BatchEditTasksRequest => {
   const requestTasks = tasks.map((task: TaskToBeBatchEdited) => {
-    const startDate = formatDate(new Date());
     const endDate = task.date == null ? undefined : formatDate(task.date);
     return {
       id: task.id,
       content: task.name,
       tag_id: task.tag == null ? undefined : task.tag,
-      start_date: startDate,
       end_date: endDate,
       completed: task.complete,
       in_focus: task.inFocus,

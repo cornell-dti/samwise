@@ -22,7 +22,6 @@ import { nDaysViewHeaderHeight, otherViewsHeightHeader } from './future-view-css
 import { error } from '../../../util/general-util';
 import { dispatchConnect } from '../../../store/react-redux-util';
 import type { PropsWithoutWindowSize } from '../../Util/Responsive/WindowSizeConsumer';
-import { disableBackend } from '../../../util/config';
 
 type Props = {|
   +originalTask: Task;
@@ -66,9 +65,6 @@ class FutureViewTask extends React.PureComponent<Props, State> {
   };
 
   canBeEdited = (): boolean => {
-    if (disableBackend) {
-      return true;
-    }
     const { originalTask: { id } } = this.props;
     return id >= 0;
   };

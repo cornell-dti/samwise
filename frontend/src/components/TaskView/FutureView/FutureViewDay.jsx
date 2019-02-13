@@ -10,8 +10,7 @@ import {
   floatingViewWidth,
   nDaysViewHeaderHeight,
   otherViewsHeightHeader,
-  taskContainerHeightNDaysView,
-  taskContainerHeightOtherViews, taskHeight,
+  taskHeight,
 } from './future-view-css-props';
 import { day2String } from '../../../util/datetime-util';
 import windowSizeConnect from '../../Util/Responsive/WindowSizeConsumer';
@@ -28,6 +27,7 @@ type Props = {|
 
 type State = {|
   +floatingViewOpened: boolean;
+  +doesOverflow: boolean;
 |};
 
 type PropsForPositionComputation = {|
@@ -120,16 +120,12 @@ const computeFloatingViewStyle = (props: PropsForPositionComputation): PositionS
  * The component that renders all tasks on a certain day.
  */
 class FutureViewDay extends React.PureComponent<Props, State> {
-  constructor(props: Props) {
-    super(props);
-    this.state = { floatingViewOpened: false };
-  }
+  state: State = { floatingViewOpened: false, doesOverflow: false };
 
-  /**
-   * Report whether the day is today.
-   *
-   * @return {boolean} whether the day is today.
-   */
+  onOverflowChange = (doesOverflow: boolean) => {
+    this.setState(state => (!state.floatingViewOpened ? { doesOverflow } : {}));
+  };
+
   isToday = (): boolean => {
     const { date } = this.props;
     const today = new Date();
@@ -139,23 +135,7 @@ class FutureViewDay extends React.PureComponent<Props, State> {
   };
 
   /**
-   * Report whether the container will overflow.
-   *
-   * @return {boolean} whether the container overflows.
-   */
-  doesOverFlow = (): boolean => {
-    const { tasks, inNDaysView } = this.props;
-    const totalRequiredHeight = taskHeight * countTasks(tasks, inNDaysView);
-    const actualHeight = inNDaysView
-      ? taskContainerHeightNDaysView
-      : taskContainerHeightOtherViews;
-    return totalRequiredHeight > actualHeight;
-  };
-
-  /**
    * Compute the floating view position.
-   *
-   * @return {PositionStyle} the floating view position.
    */
   computeFloatingViewPosition = (): PositionStyle => {
     const componentDiv = this.backlogDayElement ?? error('Impossible Case!');
@@ -173,14 +153,8 @@ class FutureViewDay extends React.PureComponent<Props, State> {
     return computeFloatingViewStyle({ ...positionProps, mainViewPosition });
   };
 
-  /**
-   * Open the floating view.
-   */
   openFloatingView = () => this.setState({ floatingViewOpened: true });
 
-  /**
-   * Close the floating view.
-   */
   closeFloatingView = () => this.setState({ floatingViewOpened: false });
 
   /**
@@ -213,21 +187,17 @@ class FutureViewDay extends React.PureComponent<Props, State> {
           inNDaysView={inNDaysView}
           taskEditorPosition={taskEditorPosition}
           isInMainList={inMainList}
+          onOverflowChange={this.onOverflowChange}
         />
       </React.Fragment>
     );
   };
 
-  /**
-   * Render the body inside the day wrapper.
-   *
-   * @return {Node} the rendered body.
-   */
   renderBody = (): Node => {
-    if (!this.doesOverFlow()) {
+    const { floatingViewOpened, doesOverflow } = this.state;
+    if (!doesOverflow) {
       return this.renderContent(true);
     }
-    const { floatingViewOpened } = this.state;
     if (!floatingViewOpened) {
       return (
         <React.Fragment>

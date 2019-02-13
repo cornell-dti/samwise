@@ -24,8 +24,7 @@ import type {
   BackendPatchNewTagAction,
 } from './action-types';
 import type {
-  Course,
-  PartialMainTask, PartialSubTask, SubTask, Tag, Task,
+  Course, PartialMainTask, PartialSubTask, SubTask, Tag, Task,
 } from './store-types';
 import type { TaskDiff } from '../util/task-util';
 

@@ -12,7 +12,6 @@ import type { PartialSubTask, SubTask } from '../../../store/store-types';
 import type { EditSubTaskAction, RemoveSubTaskAction } from '../../../store/action-types';
 import CheckBox from '../../UI/CheckBox';
 import { dispatchConnect } from '../../../store/react-redux-util';
-import { disableBackend } from '../../../util/config';
 
 type Props = {|
   ...SubTask;
@@ -37,7 +36,7 @@ function FutureViewSubTask(props: Props): Node {
     name, id, mainTaskId, complete, inFocus,
     mainTaskCompleted, editSubTask, removeSubTask,
   } = props;
-  const canBeEdited = disableBackend || (mainTaskId >= 0 && id >= 0);
+  const canBeEdited = mainTaskId >= 0 && id >= 0;
   const onCompleteChange = () => {
     if (canBeEdited) {
       editSubTask(mainTaskId, id, { complete: !complete });

@@ -3,7 +3,7 @@
 import firebase from 'firebase/app';
 import type { FirebaseUser } from 'firebase';
 import 'firebase/auth';
-import { firebaseConfig } from './config';
+import { error } from './general-util';
 
 export type AppUser = {|
   +displayName: string;
@@ -15,7 +15,14 @@ export type AppUser = {|
  * Initialize the firebase app.
  */
 export function firebaseInit(): void {
-  firebase.initializeApp(firebaseConfig);
+  firebase.initializeApp({
+    apiKey: 'AIzaSyBrnR-ai3ZQrr3aYnezDZTZdw9e2TWTRtc',
+    authDomain: 'dti-samwise.firebaseapp.com',
+    databaseURL: 'https://dti-samwise.firebaseio.com',
+    projectId: 'dti-samwise',
+    storageBucket: 'dti-samwise.appspot.com',
+    messagingSenderId: '114434220691',
+  });
   const provider = new firebase.auth.GoogleAuthProvider();
   provider.setCustomParameters({
     login_hint: 'your-email@cornell.edu',
@@ -43,16 +50,30 @@ export async function toAppUser(firebaseUser: ?FirebaseUser): Promise<AppUser | 
 
 /**
  * Returns the promise of firebase user or null if there is no signed-in user.
- *
- * @return {Promise<FirebaseUser | null>} the promise of firebase user or promise of null if
- * there is no signed-in user.
  */
 export async function firebaseUserPromise(): Promise<AppUser | null> {
   return toAppUser(firebase.auth().currentUser);
 }
 
+let appUser: AppUser | null = null;
+
 /**
- * Sign out.
+ * Cache the given user in the memory.
+ */
+export function cacheAppUser(user: AppUser) {
+  appUser = user;
+}
+
+/**
+ * Returns the global app user.
+ *
+ * If the user is not cached yet, it will not try to get one from firebase.
+ * Instead, it will throw an error.
+ */
+export const getAppUser = (): AppUser => appUser ?? error('App is not initialized.');
+
+/**
+ * Sign out from firebase auth.
  */
 export function firebaseSignOut(): void {
   firebase.auth().signOut().then(() => {});

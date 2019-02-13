@@ -102,14 +102,8 @@ class FloatingTaskEditor extends React.PureComponent<Props, State> {
     }
   };
 
-  /**
-   * Open the popup.
-   */
   openPopup = () => this.setState({ open: true });
 
-  /**
-   * Close the popup.
-   */
   closePopup = (): void => this.setState({ open: false, diff: EMPTY_TASK_DIFF });
 
   /**
@@ -304,10 +298,8 @@ class FloatingTaskEditor extends React.PureComponent<Props, State> {
         {open && (
           <div
             className={styles.BackgroundBlocker}
-            role="button"
-            tabIndex={-1}
-            onClick={this.closePopup}
-            onKeyDown={this.closePopup}
+            role="presentation"
+            onClick={this.saveEditedTask}
           />
         )}
         {open && this.renderEditorNode()}
