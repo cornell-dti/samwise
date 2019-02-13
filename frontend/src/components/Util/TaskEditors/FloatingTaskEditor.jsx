@@ -298,10 +298,8 @@ class FloatingTaskEditor extends React.PureComponent<Props, State> {
         {open && (
           <div
             className={styles.BackgroundBlocker}
-            role="button"
-            tabIndex={-1}
-            onClick={this.closePopup}
-            onKeyDown={this.closePopup}
+            role="presentation"
+            onClick={this.saveEditedTask}
           />
         )}
         {open && this.renderEditorNode()}
