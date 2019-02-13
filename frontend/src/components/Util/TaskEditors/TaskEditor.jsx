@@ -52,7 +52,7 @@ type State = {|
  * editor itself does not remember the state of editing a task, a wrapper component should.
  * You can read the docs for props above.
  */
-class TaskEditor extends React.PureComponent<Props, State> {
+class TaskEditor extends React.Component<Props, State> {
   state: State = {
     mainTaskNameCache: null,
     oneSubTaskNameCache: null,
@@ -60,6 +60,13 @@ class TaskEditor extends React.PureComponent<Props, State> {
     doesShowDateEditor: false,
     needToSwitchFocus: false,
   };
+
+  shouldComponentUpdate(nextProps: Props, { needToSwitchFocus: nextNeed }: State): boolean {
+    const { needToSwitchFocus: currNeed } = this.state;
+    // Previously need to switch focus, now we don't need any more.
+    // In this case, we don't need to re-render.
+    return !(currNeed && !nextNeed);
+  }
 
   /*
    * --------------------------------------------------------------------------------
@@ -406,8 +413,9 @@ class TaskEditor extends React.PureComponent<Props, State> {
     };
     const subTaskName = (oneSubTaskNameCache === null || oneSubTaskNameCache[0] !== subTask.id)
       ? subTask.name : oneSubTaskNameCache[1];
+    // Using index as the key to make the element persistent even if it gets a new id
     return (
-      <div key={subTask.id} className={styles.TaskEditorFlexibleContainer}>
+      <div key={index} className={styles.TaskEditorFlexibleContainer}>
         <CheckBox
           className={styles.TaskEditorCheckBox}
           checked={complete || subTask.complete}
