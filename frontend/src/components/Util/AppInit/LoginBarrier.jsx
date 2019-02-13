@@ -22,6 +22,12 @@ const uiConfig = {
   },
 };
 
+/*
+TODO
+  I disabled this because it may destroy some state in the React component.
+  Unless we go through a major code review to fix the state persistence problem,
+  we should not try to ship this auto refresh feature.
+
 const refreshDataTimeInterval = 60 * 1000;
 let refreshDataTimeIntervalID: IntervalID | null = null;
 
@@ -29,15 +35,12 @@ function refreshData() {
   httpInitializeData().then(a => dispatchAction(a));
 }
 
-/**
- * Refresh all the data with some intervals.
- * It will only initialize the repeating task if it's not initialized yet.
- */
 function initRefreshDataTask() {
   if (refreshDataTimeIntervalID === null) {
     refreshDataTimeIntervalID = setInterval(refreshData, refreshDataTimeInterval);
   }
 }
+*/
 
 type Props = {| +appRenderer: () => Node; |}
 type CurrentUser = AppUser | null | 'UNDECIDED';
@@ -93,7 +96,7 @@ export default function LoginBarrier({ appRenderer }: Props): Node {
         setLoaded(true);
       });
     } else {
-      initRefreshDataTask();
+      // initRefreshDataTask();
     }
   });
 

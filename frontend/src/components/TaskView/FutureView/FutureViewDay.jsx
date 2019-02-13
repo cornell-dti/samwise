@@ -120,16 +120,8 @@ const computeFloatingViewStyle = (props: PropsForPositionComputation): PositionS
  * The component that renders all tasks on a certain day.
  */
 class FutureViewDay extends React.PureComponent<Props, State> {
-  constructor(props: Props) {
-    super(props);
-    this.state = { floatingViewOpened: false };
-  }
+  state: State = { floatingViewOpened: false };
 
-  /**
-   * Report whether the day is today.
-   *
-   * @return {boolean} whether the day is today.
-   */
   isToday = (): boolean => {
     const { date } = this.props;
     const today = new Date();
@@ -138,12 +130,7 @@ class FutureViewDay extends React.PureComponent<Props, State> {
       && date.getDate() === today.getDate();
   };
 
-  /**
-   * Report whether the container will overflow.
-   *
-   * @return {boolean} whether the container overflows.
-   */
-  doesOverFlow = (): boolean => {
+  doesContainerOverFlow = (): boolean => {
     const { tasks, inNDaysView } = this.props;
     const totalRequiredHeight = taskHeight * countTasks(tasks, inNDaysView);
     const actualHeight = inNDaysView
@@ -154,8 +141,6 @@ class FutureViewDay extends React.PureComponent<Props, State> {
 
   /**
    * Compute the floating view position.
-   *
-   * @return {PositionStyle} the floating view position.
    */
   computeFloatingViewPosition = (): PositionStyle => {
     const componentDiv = this.backlogDayElement ?? error('Impossible Case!');
@@ -173,14 +158,8 @@ class FutureViewDay extends React.PureComponent<Props, State> {
     return computeFloatingViewStyle({ ...positionProps, mainViewPosition });
   };
 
-  /**
-   * Open the floating view.
-   */
   openFloatingView = () => this.setState({ floatingViewOpened: true });
 
-  /**
-   * Close the floating view.
-   */
   closeFloatingView = () => this.setState({ floatingViewOpened: false });
 
   /**
@@ -218,13 +197,8 @@ class FutureViewDay extends React.PureComponent<Props, State> {
     );
   };
 
-  /**
-   * Render the body inside the day wrapper.
-   *
-   * @return {Node} the rendered body.
-   */
   renderBody = (): Node => {
-    if (!this.doesOverFlow()) {
+    if (!this.doesContainerOverFlow()) {
       return this.renderContent(true);
     }
     const { floatingViewOpened } = this.state;
