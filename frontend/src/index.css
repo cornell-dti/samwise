@@ -1,5 +1,22 @@
+/**
+ * Note:
+ * Webpack is configured in a way so that this file won't have CSS module.
+ */
+
 body {
   margin: 0;
   padding: 0;
   font-family: sans-serif;
+}
+
+body ::-webkit-scrollbar {
+  width: 5px;
+}
+
+.react-calendar__month-view__weekdays__weekday {
+  color: #333333;
+}
+
+.react-calendar__month-view__weekdays__weekday abbr[title] {
+  text-decoration: none;
 }

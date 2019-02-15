@@ -1,6 +1,8 @@
 .FutureViewNDays {
   display: grid;
   grid-gap: 0;
+  height: calc(100vh - 330px);
+  grid-auto-rows: minmax(0, 1fr);
 }
 
 .Column {

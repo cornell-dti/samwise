@@ -22,7 +22,6 @@ import { nDaysViewHeaderHeight, otherViewsHeightHeader } from './future-view-css
 import { error } from '../../../util/general-util';
 import { dispatchConnect } from '../../../store/react-redux-util';
 import type { PropsWithoutWindowSize } from '../../Util/Responsive/WindowSizeConsumer';
-import { disableBackend } from '../../../util/config';
 
 type Props = {|
   +originalTask: Task;
@@ -65,24 +64,11 @@ class FutureViewTask extends React.PureComponent<Props, State> {
     }
   };
 
-  /**
-   * Whether a task can be edited.
-   *
-   * @return {boolean} Whether a task can be edited.
-   */
   canBeEdited = (): boolean => {
-    if (disableBackend) {
-      return true;
-    }
     const { originalTask: { id } } = this.props;
     return id >= 0;
   };
 
-  /**
-   * Render the checkbox element.
-   *
-   * @return {Node} the checkbox element.
-   */
   renderCheckBox = (): Node => {
     const { filteredTask: { id, complete }, editMainTask } = this.props;
     const onChange = () => {
@@ -93,22 +79,12 @@ class FutureViewTask extends React.PureComponent<Props, State> {
     return <CheckBox className={styles.TaskCheckBox} checked={complete} onChange={onChange} />;
   };
 
-  /**
-   * Render the task name.
-   *
-   * @return {Node} the task name element.
-   */
   renderTaskName = (): Node => {
     const { filteredTask: { name, complete } } = this.props;
     const tagStyle = complete ? { textDecoration: 'line-through' } : {};
     return <span className={styles.TaskText} style={tagStyle}>{name}</span>;
   };
 
-  /**
-   * Render the remove task icon.
-   *
-   * @return {Node} the rendered remove task icon.
-   */
   renderRemoveTaskIcon = (): Node => {
     const { filteredTask: { id }, removeTask } = this.props;
     const handler = () => {
@@ -119,11 +95,6 @@ class FutureViewTask extends React.PureComponent<Props, State> {
     return <Icon name="delete" className={styles.TaskIcon} onClick={handler} />;
   };
 
-  /**
-   * Render the bookmark task icon.
-   *
-   * @return {Node} the rendered bookmark task icon.
-   */
   renderBookmarkIcon = (): Node => {
     const { filteredTask: { id, inFocus }, editMainTask } = this.props;
     const iconName = inFocus ? 'bookmark' : 'bookmark outline';
@@ -135,12 +106,6 @@ class FutureViewTask extends React.PureComponent<Props, State> {
     return <Icon name={iconName} className={styles.TaskIcon} onClick={handler} />;
   };
 
-  /**
-   * Render the information for main task.
-   *
-   * @param {boolean} simplified whether to render the simplifies task.
-   * @return {Node} the information for main task.
-   */
   renderMainTaskInfo = (simplified: boolean = false): Node => {
     const { taskColor, isInMainList } = this.props;
     if (simplified && isInMainList) {
@@ -157,11 +122,6 @@ class FutureViewTask extends React.PureComponent<Props, State> {
     );
   };
 
-  /**
-   * Render the information for subtasks.
-   *
-   * @return {Node} the information for subtasks.
-   */
   renderSubTasks = (): Node => {
     const { filteredTask: { id, complete, subtasks } } = this.props;
     return subtasks.map((subTask: SubTask) => (
@@ -198,19 +158,15 @@ class FutureViewTask extends React.PureComponent<Props, State> {
         }
       }
     };
-    if (!inNDaysView) {
-      const { windowSize: { width } } = this.props;
-      return (
-        <div className={styles.Task} ref={refHandler}>
-          {overdueComponentOpt}
-          {this.renderMainTaskInfo(width <= 768)}
-        </div>
-      );
-    }
     // Construct the trigger for the floating task editor.
     const trigger = (opened: boolean, opener: () => void): Node => {
       const onClickHandler = this.getOnClickHandler(opener);
       const style = opened ? { zIndex: 8 } : {};
+      const { windowSize: { width } } = this.props;
+      const mainTasks = inNDaysView
+        ? this.renderMainTaskInfo()
+        : this.renderMainTaskInfo(width <= 768);
+      const subtasks = inNDaysView ? this.renderSubTasks() : null;
       return (
         <div
           role="presentation"
@@ -220,8 +176,8 @@ class FutureViewTask extends React.PureComponent<Props, State> {
           ref={refHandler}
         >
           {overdueComponentOpt}
-          {this.renderMainTaskInfo()}
-          {this.renderSubTasks()}
+          {mainTasks}
+          {subtasks}
         </div>
       );
     };

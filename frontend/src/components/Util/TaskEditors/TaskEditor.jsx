@@ -14,7 +14,6 @@ import styles from './TaskEditor.css';
 import { getTagConnect } from '../../../util/tag-util';
 import { randomId } from '../../../util/general-util';
 import { getTodayAtZeroAM } from '../../../util/datetime-util';
-import { disableBackend } from '../../../util/config';
 
 type DefaultProps = {|
   +className?: string;
@@ -53,7 +52,7 @@ type State = {|
  * editor itself does not remember the state of editing a task, a wrapper component should.
  * You can read the docs for props above.
  */
-class TaskEditor extends React.PureComponent<Props, State> {
+class TaskEditor extends React.Component<Props, State> {
   state: State = {
     mainTaskNameCache: null,
     oneSubTaskNameCache: null,
@@ -61,6 +60,13 @@ class TaskEditor extends React.PureComponent<Props, State> {
     doesShowDateEditor: false,
     needToSwitchFocus: false,
   };
+
+  shouldComponentUpdate(nextProps: Props, { needToSwitchFocus: nextNeed }: State): boolean {
+    const { needToSwitchFocus: currNeed } = this.state;
+    // Previously need to switch focus, now we don't need any more.
+    // In this case, we don't need to re-render.
+    return !(currNeed && !nextNeed);
+  }
 
   /*
    * --------------------------------------------------------------------------------
@@ -88,28 +94,12 @@ class TaskEditor extends React.PureComponent<Props, State> {
    * --------------------------------------------------------------------------------
    */
 
-  /**
-   * Whether the task can be edited.
-   *
-   * @return {boolean} whether the task can be edited.
-   */
   canBeEdited = (): boolean => {
-    if (disableBackend) {
-      return true;
-    }
     const { id } = this.props;
     return id >= 0;
   };
 
-  /**
-   * Whether a specific subtask can be edited.
-   * @param {number} subtaskId id of that specific subtask.
-   * @return {boolean} whether a specific subtask can be edited.
-   */
   subTaskCanBeEdited = (subtaskId: number): boolean => {
-    if (disableBackend) {
-      return true;
-    }
     const { id, allowEditTemporarySubTasks } = this.props;
     return id >= 0 && (allowEditTemporarySubTasks !== false || subtaskId >= 0);
   };
@@ -151,11 +141,6 @@ class TaskEditor extends React.PureComponent<Props, State> {
     }
   };
 
-  /**
-   * Edit the tag of the task.
-   *
-   * @param {number} tag the new tag id.
-   */
   editTaskTag = (tag: number): void => {
     if (!this.canBeEdited()) {
       return;
@@ -165,11 +150,6 @@ class TaskEditor extends React.PureComponent<Props, State> {
     this.setState({ doesShowTagEditor: false });
   };
 
-  /**
-   * Edit the new date of the task.
-   *
-   * @param {string} dateString the new date in string.
-   */
   editTaskDate = (dateString: string): void => {
     if (!this.canBeEdited()) {
       return;
@@ -218,7 +198,7 @@ class TaskEditor extends React.PureComponent<Props, State> {
   };
 
   /**
-   * Edit one particular subtask's completion.
+   * Toggle one particular subtask's completion.
    *
    * @param {SubTask} subTask the subtask.
    * @return {function(): void} the edit completion event handler.
@@ -232,7 +212,7 @@ class TaskEditor extends React.PureComponent<Props, State> {
   };
 
   /**
-   * Edit one particular subtask's in focus status.
+   * Toggle one particular subtask's in focus status.
    *
    * @param {SubTask} subTask the subtask.
    * @return {function(): void} the edit completion event handler.
@@ -433,8 +413,9 @@ class TaskEditor extends React.PureComponent<Props, State> {
     };
     const subTaskName = (oneSubTaskNameCache === null || oneSubTaskNameCache[0] !== subTask.id)
       ? subTask.name : oneSubTaskNameCache[1];
+    // Using index as the key to make the element persistent even if it gets a new id
     return (
-      <div key={subTask.id} className={[styles.TaskEditorFlexibleContainer, styles.TaskEditorSubtaskCheckBox]}>
+      <div key={index} className={[styles.TaskEditorFlexibleContainer, styles.TaskEditorSubtaskCheckBox]}>
         <CheckBox
           className={styles.TaskEditorCheckBox}
           checked={complete || subTask.complete}

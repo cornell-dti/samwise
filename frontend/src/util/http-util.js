@@ -1,6 +1,6 @@
 // @flow strict
 
-import { getAppUser } from '../store/store';
+import { getAppUser } from './firebase-util';
 
 /**
  * Send a GET request to the given endPoint and returns the promise of response.

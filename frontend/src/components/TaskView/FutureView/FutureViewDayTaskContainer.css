@@ -1,7 +1,7 @@
 .NDaysView {
-  height: 300px;
+  height: calc(100% - 66px);
 }
 
 .OtherViews {
-  height: 150px;
+  height: calc(100% - 47px);
 }

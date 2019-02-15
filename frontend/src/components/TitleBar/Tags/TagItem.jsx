@@ -9,7 +9,6 @@ import type { Tag } from '../../../store/store-types';
 import styles from './TagItem.css';
 import { dispatchConnect } from '../../../store/react-redux-util';
 import ColorEditor from './ColorEditor';
-import { disableBackend } from '../../../util/config';
 
 type Props = {|
   +tag: Tag;
@@ -21,7 +20,7 @@ type Props = {|
  * The tag item component.
  */
 function TagItem({ tag, editTag, removeTag }: Props): Node {
-  const canBeEdited = disableBackend || tag.id >= 0;
+  const canBeEdited = tag.id >= 0;
   const onRemove = () => {
     // eslint-disable-next-line
     if (canBeEdited && confirm('Do you want to remove this tag?')) {
@@ -42,8 +41,16 @@ function TagItem({ tag, editTag, removeTag }: Props): Node {
   const isClass = classId !== null;
   const nameSplit = name.split(':');
   const nameNode = isClass
-    ? <span style={{ width: 'calc(100% - 150px)', display: 'inline-block' }}><span className={styles.TagName}>{nameSplit[0]}</span><span className={styles.ClassExpandedTitle}>{nameSplit[1].trim()}</span></span>
-    : <span className={styles.TagName} style={{ width: 'calc(100% - 150px)' }}><input type="text" value={name} onChange={editName} className={styles.TagEdit} /></span>;
+    ? (
+      <span style={{ width: 'calc(100% - 150px)', display: 'inline-block' }}>
+        <span className={styles.TagName}>{nameSplit[0]}</span>
+        <span className={styles.ClassExpandedTitle}>{nameSplit[1].trim()}</span>
+      </span>
+    ) : (
+      <span className={styles.TagName} style={{ width: 'calc(100% - 150px)' }}>
+        <input type="text" value={name} onChange={editName} className={styles.TagEdit} />
+      </span>
+    );
   return (
     <li className={styles.ColorConfigItem}>
       {nameNode}

@@ -63,3 +63,13 @@ export function getTodayAtZeroAM(): Date {
   d.setHours(0, 0, 0, 0);
   return d;
 }
+
+/**
+ * Check whether a given date is today.
+ */
+export function isToday(date: Date): boolean {
+  const today = new Date();
+  return today.getFullYear() === date.getFullYear()
+    && today.getMonth() === date.getMonth()
+    && today.getDate() === date.getDate();
+}
