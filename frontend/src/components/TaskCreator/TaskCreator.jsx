@@ -15,7 +15,7 @@ import {
   addTask as addTaskAction,
   removeTask as removeTaskAction,
 } from '../../store/actions';
-import type { AddNewTaskAction, RemoveTaskAction } from '../../store/action-types';
+import type { AddNewTaskAction } from '../../store/action-types';
 import { NONE_TAG_ID } from '../../util/tag-util';
 import { replaceSubTask } from '../../util/task-util';
 import { isToday } from '../../util/datetime-util';
@@ -23,7 +23,6 @@ import { isToday } from '../../util/datetime-util';
 type Props = {|
   // subscribed from dispatcher.
   +addTask: (task: Task) => AddNewTaskAction;
-  +removeTask: (taskId: number) => RemoveTaskAction;
 |};
 
 type State = {|
