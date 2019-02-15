@@ -415,7 +415,10 @@ class TaskEditor extends React.Component<Props, State> {
       ? subTask.name : oneSubTaskNameCache[1];
     // Using index as the key to make the element persistent even if it gets a new id
     return (
-      <div key={index} className={[styles.TaskEditorFlexibleContainer, styles.TaskEditorSubtaskCheckBox]}>
+      <div
+        key={index}
+        className={[styles.TaskEditorFlexibleContainer, styles.TaskEditorSubtaskCheckBox]}
+      >
         <CheckBox
           className={styles.TaskEditorCheckBox}
           checked={complete || subTask.complete}

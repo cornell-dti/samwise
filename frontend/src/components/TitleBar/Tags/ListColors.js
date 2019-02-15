@@ -1,6 +1,25 @@
 // @flow strict
 
 const colMap: { [colorHex: string]: string } = {
+  '#bb5769': 'Dark Rose',
+  '#ff8a8a': 'Peachy Pink',
+  '#ea5e3d': 'Dusty Orange',
+  '#fcab10': 'Goldfish',
+  '#83ba9a': 'Sage',
+  '#00a346': 'Emerald',
+  '#009c8a': 'Teal',
+  '#00c0d7': 'Aqua',
+  '#289de9': 'Blue',
+  '#4742b7': 'Blueberry',
+  '#20639b': 'Cobalt',
+  '#5a7e8c': 'Blue Grey',
+  '#740794': 'Grape',
+  '#ab8bb6': 'Lilac',
+};
+
+export { colMap as default };
+
+/*
   '#7ed321': 'green     ',
   '#b92424': 'red       ',
   '#5ed3e9': 'light blue',
@@ -8,9 +27,7 @@ const colMap: { [colorHex: string]: string } = {
   '#9d4aa9': 'purple    ',
   '#ff8a8a': 'pink      ',
   '#56d9c1': 'seafoam   ',
-};
-
-export { colMap as default };
+*/
 
 /*
 

@@ -13,7 +13,7 @@ import ColorEditor from './ColorEditor';
 type Props = {| +addTag: (tag: Tag) => AddTagAction |};
 type State = {| +name: string; +color: string; |};
 
-const defaultColor = '#56d9c1';
+const defaultColor = '#289de9';
 const initialState: State = { name: '', color: defaultColor };
 
 class OtherTagAdder extends React.Component<Props, State> {
@@ -64,7 +64,7 @@ class OtherTagAdder extends React.Component<Props, State> {
           onChange={this.editName}
           onKeyDown={this.onSubmit}
         />
-        <ColorEditor color={color} onChange={this.editColor} />
+        <ColorEditor color={color} onChange={this.editColor} styles={{ marginRight: '10px' }} />
       </li>
     );
   }
