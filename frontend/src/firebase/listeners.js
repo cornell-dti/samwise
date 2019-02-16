@@ -58,8 +58,10 @@ export default (listeners: Listeners): (() => void) => {
       const firestoreTaskOrSubTask: FirestoreTask | FirestoreSubTask = doc.data();
       if (firestoreTaskOrSubTask.type === 'TASK') {
         const {
-          type, owner, date, ...rest
+          type, owner, date: timestamp, ...rest
         }: FirestoreTask = firestoreTaskOrSubTask;
+        // hack to enable timestamp->date transformation
+        const date = (timestamp: any).toDate();
         const task: Task = {
           id, date, subtasks: [], ...rest,
         };
