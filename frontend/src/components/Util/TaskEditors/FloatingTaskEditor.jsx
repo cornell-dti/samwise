@@ -1,7 +1,8 @@
 // @flow strict
 
 import React from 'react';
-import type { Node } from 'react';
+import type { ComponentType, Node } from 'react';
+import { connect } from 'react-redux';
 import type {
   PartialMainTask, PartialSubTask, SubTask, Task,
 } from '../../../store/store-types';
@@ -15,13 +16,15 @@ import { replaceSubTask, EMPTY_TASK_DIFF, taskDiffIsEmpty } from '../../../util/
 import windowSizeConnect from '../Responsive/WindowSizeConsumer';
 import type { WindowSize } from '../Responsive/window-size-context';
 import type { TaskDiff } from '../../../util/task-util';
-import { dispatchConnect } from '../../../store/react-redux-util';
-import type { PropsWithoutWindowSize } from '../Responsive/WindowSizeConsumer';
 
-type Props = {|
+type OwnProps = {|
   +position: FloatingPosition;
   +initialTask: Task;
   +trigger: (opened: boolean, opener: () => void) => Node;
+|};
+
+type Props = {|
+  ...OwnProps;
   +windowSize: WindowSize;
   +editTask: (task: Task, diff: TaskDiff) => EditTaskAction;
   +removeTask: (taskId: number) => RemoveTaskAction;
@@ -308,8 +311,7 @@ class FloatingTaskEditor extends React.PureComponent<Props, State> {
   }
 }
 
-const actionCreators = { editTask: editTaskAction, removeTask: removeTaskAction };
-const Connected = dispatchConnect<PropsWithoutWindowSize<Props>, typeof actionCreators>(
-  actionCreators,
-)(windowSizeConnect<Props>(FloatingTaskEditor));
+const Connected: ComponentType<OwnProps> = connect(
+  null, { editTask: editTaskAction, removeTask: removeTaskAction },
+)(windowSizeConnect(FloatingTaskEditor));
 export default Connected;

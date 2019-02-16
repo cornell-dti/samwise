@@ -1,13 +1,13 @@
 // @flow strict
 
 import React from 'react';
-import type { Node } from 'react';
+import type { ComponentType, Node } from 'react';
 import { Icon } from 'semantic-ui-react';
+import { connect } from 'react-redux';
 import type { EditTagAction, RemoveTagAction } from '../../../store/action-types';
 import { editTag as editTagAction, removeTag as removeTagAction } from '../../../store/actions';
 import type { Tag } from '../../../store/store-types';
 import styles from './TagItem.css';
-import { dispatchConnect } from '../../../store/react-redux-util';
 import ColorEditor from './ColorEditor';
 
 type Props = {|
@@ -62,6 +62,7 @@ function TagItem({ tag, editTag, removeTag }: Props): Node {
   );
 }
 
-const actionCreators = { editTag: editTagAction, removeTag: removeTagAction };
-const Connected = dispatchConnect<Props, typeof actionCreators>(actionCreators)(TagItem);
+const Connected: ComponentType<{| +tag: Tag |}> = connect(
+  null, { editTag: editTagAction, removeTag: removeTagAction },
+)(TagItem);
 export default Connected;

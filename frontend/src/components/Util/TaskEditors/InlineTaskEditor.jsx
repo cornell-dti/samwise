@@ -1,7 +1,8 @@
 // @flow strict
 
 import React from 'react';
-import type { Node } from 'react';
+import type { ComponentType, Config, Node } from 'react';
+import { connect } from 'react-redux';
 import type {
   PartialMainTask, PartialSubTask, SubTask, Task,
 } from '../../../store/store-types';
@@ -20,11 +21,19 @@ import {
   removeSubTask as removeSubTaskAction,
 } from '../../../store/actions';
 import TaskEditor from './TaskEditor';
-import { dispatchConnect } from '../../../store/react-redux-util';
 
-type Props = {|
+type OwnProps = {|
   +task: Task; // the initial task given to the editor.
   className?: string; // additional class names applied to the editor.
+|};
+
+type DefaultProps = {|
+  className?: string; // additional class names applied to the editor.
+|};
+
+type Props = {|
+  ...OwnProps;
+  ...DefaultProps;
   // subscribed actions.
   +editMainTask: (taskId: number, partialMainTask: PartialMainTask) => EditMainTaskAction;
   +editSubTask: (
@@ -88,7 +97,7 @@ const actionCreators = {
   removeSubTask: removeSubTaskAction,
 };
 
-const ConnectedInlineTaskEditor = dispatchConnect<Props, typeof actionCreators>(
-  actionCreators,
+const Connected: ComponentType<Config<OwnProps, DefaultProps>> = connect(
+  null, actionCreators,
 )(InlineTaskEditor);
-export default ConnectedInlineTaskEditor;
+export default Connected;

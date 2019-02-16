@@ -1,13 +1,14 @@
 // @flow strict
 
 import React from 'react';
+import type { ComponentType } from 'react';
 import ReactSearchBox from 'react-search-box';
+import { connect } from 'react-redux';
 import { addTag as addTagAction } from '../../../store/actions';
 import type { AddTagAction } from '../../../store/action-types';
 import styles from './TagAdder.css';
 import type { Course, Tag } from '../../../store/store-types';
 import { randomId } from '../../../util/general-util';
-import { fullConnect } from '../../../store/react-redux-util';
 
 type Props = {|
   +courses: Map<number, Course[]>;
@@ -95,11 +96,9 @@ function ClassTagAdder({ courses, addTag }: Props) {
   );
 }
 
-const actionCreators = { addTag: addTagAction };
-type CoursesProps = {| +courses: Map<number, Course[]>; |};
-const MemoizedClassTagAdder = React.memo<Props>(ClassTagAdder);
-const ConnectedClassTagAdder = fullConnect<Props, CoursesProps, typeof actionCreators>(
+const MemoizedClassTagAdder = React.memo(ClassTagAdder);
+const ConnectedClassTagAdder: ComponentType<{||}> = connect(
   ({ courses }) => ({ courses }),
-  actionCreators,
+  { addTag: addTagAction },
 )(MemoizedClassTagAdder);
 export default ConnectedClassTagAdder;

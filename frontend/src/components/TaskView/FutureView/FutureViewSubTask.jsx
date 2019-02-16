@@ -1,8 +1,9 @@
 // @flow strict
 
 import React from 'react';
-import type { Node } from 'react';
+import type { ComponentType, Node } from 'react';
 import { Icon } from 'semantic-ui-react';
+import { connect } from 'react-redux';
 import styles from './FutureViewTask.css';
 import {
   editSubTask as editSubTaskAction,
@@ -11,31 +12,31 @@ import {
 import type { PartialSubTask, SubTask } from '../../../store/store-types';
 import type { EditSubTaskAction, RemoveSubTaskAction } from '../../../store/action-types';
 import CheckBox from '../../UI/CheckBox';
-import { dispatchConnect } from '../../../store/react-redux-util';
 
-type Props = {|
+type OwnProps = {|
   ...SubTask;
   +mainTaskId: number;
   +mainTaskCompleted: boolean;
-  // subscribed from dispatchers.
+|};
+
+type DispatchProps = {|
   +editSubTask: (
     taskId: number, subtaskId: number, partialSubTask: PartialSubTask,
   ) => EditSubTaskAction;
   +removeSubTask: (taskId: number, subTaskId: number) => RemoveSubTaskAction;
 |};
 
+type Props = {| ...OwnProps; ...DispatchProps; |};
+
 /**
- * The component used to render one subtask in backlog day.
- *
- * @param props the props to render.
- * @return {Node} the rendered element.
- * @constructor
+ * The component used to render one subtask in future view day.
  */
-function FutureViewSubTask(props: Props): Node {
-  const {
+function FutureViewSubTask(
+  {
     name, id, mainTaskId, complete, inFocus,
     mainTaskCompleted, editSubTask, removeSubTask,
-  } = props;
+  }: Props,
+): Node {
   const canBeEdited = mainTaskId >= 0 && id >= 0;
   const onCompleteChange = () => {
     if (canBeEdited) {
@@ -77,8 +78,6 @@ function FutureViewSubTask(props: Props): Node {
   );
 }
 
-const actionsCreators = { editSubTask: editSubTaskAction, removeSubTask: removeSubTaskAction };
-const Connected = dispatchConnect<Props, typeof actionsCreators>(
-  actionsCreators,
-)(FutureViewSubTask);
+const actionCreators = { editSubTask: editSubTaskAction, removeSubTask: removeSubTaskAction };
+const Connected: ComponentType<OwnProps> = connect(null, actionCreators)(FutureViewSubTask);
 export default Connected;

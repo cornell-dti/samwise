@@ -1,9 +1,10 @@
 // @flow strict
 
+import { connect } from 'react-redux';
 import type { ComponentType } from 'react';
-import type { PartialMainTask, PartialSubTask, SubTask, Task } from '../store/store-types';
-import type { ConnectedComponent } from '../store/react-redux-util';
-import { stateConnect } from '../store/react-redux-util';
+import type {
+  PartialMainTask, PartialSubTask, SubTask, Task,
+} from '../store/store-types';
 
 /**
  * This is the utility module for array of tasks and subtasks.
@@ -127,7 +128,6 @@ export const filterInFocusTasks = (tasks: Task[]): Task[] => tasks
 
 export type TasksProgress = {| +completed: number; +all: number |};
 export type TasksProgressProps = {| +progress: TasksProgress; |};
-export type TasksProps = {| +tasks: Task[] |};
 
 /**
  * Compute the progress given a list of filtered tasks.
@@ -151,17 +151,15 @@ export const computeTaskProgress = (inFocusTasks: Task[]): TasksProgress => {
 };
 
 /**
- * A function to connect a component with just tasks in redux store.
- *
- * @param component the component to connect.
- * @return {ConnectedComponent<Config, TagsProps>} the connected component.
+ * A function to connect a component with just displayable tasks in redux store.
  */
 export function tasksConnect<-Config>(
   component: ComponentType<Config>,
-): ConnectedComponent<Config, TasksProps> {
+): ComponentType<$Diff<Config, {| +tasks: Task[] |}>> {
   const yesterday = new Date();
   yesterday.setDate(yesterday.getDate() - 1);
-  return stateConnect<Config, TasksProps>(({ tasks }): TasksProps => ({
-    tasks: tasks.filter(t => (!t.complete || t.date > yesterday)),
-  }))(component);
+  return connect(
+    ({ tasks }) => ({ tasks: tasks.filter(t => (!t.complete || t.date > yesterday)) }),
+    null,
+  )(component);
 }

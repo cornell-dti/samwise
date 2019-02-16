@@ -1,13 +1,21 @@
 // @flow strict
 
 import * as React from 'react';
-import type { Node } from 'react';
+import type { ComponentType, Node } from 'react';
+import { connect } from 'react-redux';
 import TagItem from '../Tags/TagItem';
 import ClassTagAdder from '../Tags/ClassTagAdder';
 import styles from './Onboard.css';
 import type { Tag, Task } from '../../../store/store-types';
 import { importCourseExams } from '../../../store/actions';
-import { dispatchConnect, stateConnect } from '../../../store/react-redux-util';
+import Tutorial1 from '../../../assets/tutorial/t1.png';
+import Tutorial2 from '../../../assets/tutorial/t2.png';
+import Tutorial3 from '../../../assets/tutorial/t3.png';
+import Tutorial4 from '../../../assets/tutorial/t4.png';
+import Tutorial5 from '../../../assets/tutorial/t5.png';
+import Tutorial6 from '../../../assets/tutorial/t6.png';
+
+const images = [Tutorial1, Tutorial2, Tutorial3, Tutorial4, Tutorial5, Tutorial6];
 
 /**
  * The class adder component.
@@ -29,7 +37,7 @@ const ClassAdder = (): Node => (
  * @return {Node} rendered component.
  * @constructor
  */
-const ExamImporter = dispatchConnect({ onClick: importCourseExams })(({ onClick }) => (
+const ExamImporter = connect(null, { onClick: importCourseExams })(({ onClick }) => (
   <button type="button" onClick={onClick} className={styles.SignButton}>Import Exams</button>
 ));
 
@@ -99,13 +107,6 @@ class Onboard extends React.PureComponent<Props, State> {
       <TagItem key={tag.id} tag={tag} />
     ));
 
-    const importAll = (r) => {
-      const images = {};
-      r.keys().forEach((item) => { images[item.replace('./', '')] = r(item); });
-      return images;
-    };
-
-    const images = importAll(require.context('../../../assets/tutorial', false, /\.(png|jpe?g|svg)$/));
 
     return (
       <div
@@ -145,7 +146,7 @@ class Onboard extends React.PureComponent<Props, State> {
             <button type="button" onClick={this.goBack}>&lsaquo;</button>
             <img
               className={styles.TutorialImg}
-              src={progress > 0 && progress < 7 ? images[`t${progress}.png`] : ''}
+              src={progress > 0 && progress < 7 ? images[progress - 1] : ''}
               alt="Tutorial"
             />
             <button type="button" onClick={this.showNext}>&rsaquo;</button>
@@ -161,7 +162,5 @@ class Onboard extends React.PureComponent<Props, State> {
   }
 }
 
-const Connected = stateConnect<Props, Props>(
-  ({ tags, tasks }) => ({ tags, tasks }),
-)(Onboard);
+const Connected: ComponentType<{||}> = connect(({ tags, tasks }) => ({ tags, tasks }))(Onboard);
 export default Connected;

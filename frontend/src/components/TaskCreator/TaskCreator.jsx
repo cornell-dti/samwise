@@ -1,7 +1,7 @@
 // @flow strict
 
 import React from 'react';
-import type { Node } from 'react';
+import type { ComponentType, Node } from 'react';
 import { Icon } from 'semantic-ui-react';
 import 'react-toastify/dist/ReactToastify.css';
 import styles from './TaskCreator.css';
@@ -9,7 +9,6 @@ import TagPicker from './TagPicker';
 import DatePicker from './DatePicker';
 import FocusPicker from './FocusPicker';
 import { randomId } from '../../util/general-util';
-import { dispatchConnect } from '../../store/react-redux-util';
 import type { Task, SubTask } from '../../store/store-types';
 import {
   addTask as addTaskAction,
@@ -19,6 +18,7 @@ import type { AddNewTaskAction, RemoveTaskAction } from '../../store/action-type
 import { NONE_TAG_ID } from '../../util/tag-util';
 import { replaceSubTask } from '../../util/task-util';
 import { isToday } from '../../util/datetime-util';
+import { connect } from 'react-redux';
 
 type Props = {|
   // subscribed from dispatcher.
@@ -340,8 +340,7 @@ class TaskCreator extends React.PureComponent<Props, State> {
   }
 }
 
-const actionCreators = { addTask: addTaskAction, removeTask: removeTaskAction };
-const ConnectedTaskCreator = dispatchConnect<Props, typeof actionCreators>(
-  actionCreators,
+const ConnectedTaskCreator: ComponentType<{||}> = connect(
+  null, { addTask: addTaskAction, removeTask: removeTaskAction },
 )(TaskCreator);
 export default ConnectedTaskCreator;

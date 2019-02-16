@@ -2,15 +2,15 @@
 
 import * as React from 'react';
 import type { Node } from 'react';
+import { connect } from 'react-redux';
 import TagItem from '../Tags/TagItem';
 import ClassTagAdder from '../Tags/ClassTagAdder';
 import OtherTagAdder from '../Tags/OtherTagAdder';
 import styles from './SettingsPage.css';
 import type { Tag } from '../../../store/store-types';
 import { importCourseExams } from '../../../store/actions';
-import { firebaseSignOut } from '../../../util/firebase-util';
 import { tagsConnect } from '../../../util/tag-util';
-import { dispatchConnect } from '../../../store/react-redux-util';
+import SignOut from '../Gadgets/SignOut';
 
 /**
  * The class adder component.
@@ -34,7 +34,7 @@ const ClassAdder = (): Node => (
  * @return {Node} rendered component.
  * @constructor
  */
-const ExamImporter = dispatchConnect({ onClick: importCourseExams })(({ onClick }) => (
+const ExamImporter = connect(null, { onClick: importCourseExams })(({ onClick }) => (
   <div className={styles.SettingsSection}>
     <p className={styles.SettingsSectionTitle}>Auto Import Exams</p>
     <div className={`${styles.SettingsButton} ${styles.SettingsSectionContent}`}>
@@ -45,22 +45,6 @@ const ExamImporter = dispatchConnect({ onClick: importCourseExams })(({ onClick 
     </div>
   </div>
 ));
-
-/**
- * The sign out component.
- *
- * @return {Node} rendered component.
- * @constructor
- */
-const SignOut = (): Node => (
-  <div className={styles.SettingsSection}>
-    <div className={styles.SettingsButton}>
-      <button type="button" className={styles.SignButton} onClick={firebaseSignOut}>
-        Sign Out
-      </button>
-    </div>
-  </div>
-);
 
 /**
  * The tags container component.
