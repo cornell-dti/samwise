@@ -4,16 +4,11 @@ import React from 'react';
 import type { ComponentType } from 'react';
 import ReactSearchBox from 'react-search-box';
 import { connect } from 'react-redux';
-import { addTag as addTagAction } from '../../../store/actions';
-import type { AddTagAction } from '../../../store/action-types';
 import styles from './TagAdder.css';
-import type { Course, Tag } from '../../../store/store-types';
-import { randomId } from '../../../util/general-util';
+import type { Course } from '../../../store/store-types';
+import { addTag } from '../../../firebase/actions';
 
-type Props = {|
-  +courses: Map<number, Course[]>;
-  +addTag: (tag: Tag) => AddTagAction
-|};
+type Props = {| +courses: Map<number, Course[]>; |};
 
 type SimpleCourse = {|
   +key: number;
@@ -69,18 +64,17 @@ const fuseConfigs = {
  * The class tag adder.
  *
  * @param {Map<number, Course[]>} courses all courses.
- * @param {function(Tag): AddTagAction} addTag the action to add tags.
  * @return {Node} the rendered node.
  * @constructor
  */
-function ClassTagAdder({ courses, addTag }: Props) {
-  if (courses.size == 0) {
+function ClassTagAdder({ courses }: Props) {
+  if (courses.size === 0) {
     return null;
   }
   const changeClass = (option: SimpleCourse) => {
     const { value, classId } = option;
     addTag({
-      id: randomId(), name: value, color: '#56d9c1', classId,
+      name: value, color: '#56d9c1', classId,
     });
   };
   return (
@@ -96,9 +90,7 @@ function ClassTagAdder({ courses, addTag }: Props) {
   );
 }
 
-const MemoizedClassTagAdder = React.memo(ClassTagAdder);
 const ConnectedClassTagAdder: ComponentType<{||}> = connect(
-  ({ courses }) => ({ courses }),
-  { addTag: addTagAction },
-)(MemoizedClassTagAdder);
+  ({ courses }) => ({ courses }), null,
+)(React.memo(ClassTagAdder));
 export default ConnectedClassTagAdder;

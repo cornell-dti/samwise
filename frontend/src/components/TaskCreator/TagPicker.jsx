@@ -9,12 +9,12 @@ import { getTagConnect, NONE_TAG_ID } from '../../util/tag-util';
 import type { Tag } from '../../store/store-types';
 
 type Props = {|
-  +tag: number;
+  +tag: string;
   +opened: boolean;
-  +onTagChange: (tag: number) => void;
+  +onTagChange: (tag: string) => void;
   +onPickerOpened: () => void;
   // subscribed from redux store.
-  +getTag: (id: number) => Tag;
+  +getTag: (id: string) => Tag;
 |};
 
 function TagPicker(props: Props): Node {

@@ -1,58 +1,29 @@
 // @flow strict
 
 import React from 'react';
-import type { ComponentType, Node } from 'react';
+import type { Node } from 'react';
 import { Icon } from 'semantic-ui-react';
-import { connect } from 'react-redux';
 import styles from './FutureViewTask.css';
-import {
-  editSubTask as editSubTaskAction,
-  removeSubTask as removeSubTaskAction,
-} from '../../../store/actions';
 import type { PartialSubTask, SubTask } from '../../../store/store-types';
-import type { EditSubTaskAction, RemoveSubTaskAction } from '../../../store/action-types';
 import CheckBox from '../../UI/CheckBox';
+import { editSubTask, removeSubTask } from '../../../firebase/actions';
 
-type OwnProps = {|
+type Props = {|
   ...SubTask;
-  +mainTaskId: number;
   +mainTaskCompleted: boolean;
 |};
-
-type DispatchProps = {|
-  +editSubTask: (
-    taskId: number, subtaskId: number, partialSubTask: PartialSubTask,
-  ) => EditSubTaskAction;
-  +removeSubTask: (taskId: number, subTaskId: number) => RemoveSubTaskAction;
-|};
-
-type Props = {| ...OwnProps; ...DispatchProps; |};
 
 /**
  * The component used to render one subtask in future view day.
  */
-function FutureViewSubTask(
+export default function FutureViewSubTask(
   {
-    name, id, mainTaskId, complete, inFocus,
-    mainTaskCompleted, editSubTask, removeSubTask,
+    name, id, complete, inFocus, mainTaskCompleted,
   }: Props,
 ): Node {
-  const canBeEdited = mainTaskId >= 0 && id >= 0;
-  const onCompleteChange = () => {
-    if (canBeEdited) {
-      editSubTask(mainTaskId, id, { complete: !complete });
-    }
-  };
-  const onFocusChange = () => {
-    if (canBeEdited) {
-      editSubTask(mainTaskId, id, { inFocus: !inFocus });
-    }
-  };
-  const onRemove = () => {
-    if (canBeEdited) {
-      removeSubTask(mainTaskId, id);
-    }
-  };
+  const onCompleteChange = () => editSubTask(id, { complete: !complete });
+  const onFocusChange = () => editSubTask(id, { inFocus: !inFocus });
+  const onRemove = () => removeSubTask(id);
   return (
     <div className={styles.SubTask}>
       <CheckBox
@@ -77,7 +48,3 @@ function FutureViewSubTask(
     </div>
   );
 }
-
-const actionCreators = { editSubTask: editSubTaskAction, removeSubTask: removeSubTaskAction };
-const Connected: ComponentType<OwnProps> = connect(null, actionCreators)(FutureViewSubTask);
-export default Connected;

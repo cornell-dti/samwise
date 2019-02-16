@@ -26,11 +26,7 @@ module.exports = {
           { loader: 'style-loader' },
           {
             loader: 'css-loader',
-            options: {
-              modules: true,
-              camelCase: true,
-              sourceMap: true,
-            },
+            options: { modules: true, camelCase: true, sourceMap: true },
           },
         ],
       },
@@ -38,31 +34,24 @@ module.exports = {
         test: /\.css$/,
         include: /node_modules|src\/index.css/,
         use: [
-          {
-            loader: 'style-loader',
-          },
+          { loader: 'style-loader' },
           {
             loader: 'css-loader',
-            options: {
-              modules: false,
-              camelCase: true,
-              sourceMap: true,
-            },
+            options: { modules: false, camelCase: true, sourceMap: true },
           },
         ],
       },
       {
         test: /\.(png|jpg|gif|svg)$/i,
-        use: [
-          {
-            loader: 'url-loader',
-            options: { limit: 8192 },
-          },
-        ],
+        use: { loader: 'url-loader', options: { limit: 8192 } },
       },
       {
         test: /\.(eot|woff|woff2|ttf)$/,
         use: { loader: 'file-loader' },
+      },
+      {
+        test: /\.json$/,
+        use: { loader: 'json-loader' },
       },
     ],
   },

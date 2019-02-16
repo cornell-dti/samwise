@@ -7,7 +7,7 @@ import styles from './TagListPicker.css';
 import type { Tag } from '../../../store/store-types';
 import { tagsConnect } from '../../../util/tag-util';
 
-type OwnProps = {| +onTagChange: (number) => void |};
+type OwnProps = {| +onTagChange: (string) => void |};
 type SubscribedProps = {| +tags: Tag[]; |};
 type Props = {| ...OwnProps; ...SubscribedProps; |};
 
@@ -20,12 +20,8 @@ type Props = {| ...OwnProps; ...SubscribedProps; |};
  * @constructor
  */
 function TagListPicker({ onTagChange, tags }: Props): Node {
-  const handleClassChange = (e) => {
-    const newTag = parseInt(e.currentTarget.getAttribute('data-id') || -1, 10);
-    onTagChange(newTag);
-  };
   const items = tags.map(({ id, name, color }: Tag) => (
-    <TagPickerItem key={id} id={id} title={name} color={color} onChange={handleClassChange} />
+    <TagPickerItem key={id} id={id} title={name} color={color} onChange={onTagChange} />
   ));
   return (
     <ul className={styles.NewTaskClass}>

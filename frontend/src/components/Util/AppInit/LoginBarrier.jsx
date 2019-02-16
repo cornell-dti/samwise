@@ -6,9 +6,13 @@ import firebase from 'firebase/app';
 // $FlowFixMe
 import { FirebaseAuth } from 'react-firebaseui';
 import styles from './Login.css';
-import { cacheAppUser, toAppUser } from '../../../util/firebase-util';
-import { httpInitializeData } from '../../../http/http-service';
+import { cacheAppUser, toAppUser } from '../../../firebase/auth';
+import initListeners from '../../../firebase/listeners';
 import { dispatchAction } from '../../../store/store';
+import { patchStoreAction } from '../../../store/actions';
+// $FlowFixMe
+import coursesJson from '../../../assets/json/sp19-courses-with-exams-min';
+import buildCoursesMap from '../../../util/courses-util';
 
 const uiConfig = {
   signInFlow: 'popup',
@@ -64,6 +68,7 @@ export default function LoginBarrier({ appRenderer }: Props): Node {
       toAppUser(user).then((currentUserFromFirebase) => {
         if (currentUserFromFirebase === null) {
           setLoginStatus(false);
+          setLoaded(false);
           return;
         }
         const { email } = currentUserFromFirebase;
@@ -86,17 +91,26 @@ export default function LoginBarrier({ appRenderer }: Props): Node {
   // The effect of loading data when login finishes
   React.useEffect(() => {
     if (loginStatus !== true) {
-      return;
+      return () => {};
     }
     if (!loaded) {
-      httpInitializeData().then((action) => {
-        dispatchAction(action);
-        setLoaded(true);
+      return initListeners({
+        onTagsUpdate: (tags) => {
+          dispatchAction(patchStoreAction(tags, null, null));
+        },
+        onTasksUpdate: (tasks) => {
+          dispatchAction(patchStoreAction(null, tasks, null));
+        },
+        onFirstFetched: () => {
+          const courseMap = buildCoursesMap(coursesJson);
+          dispatchAction(patchStoreAction(null, null, courseMap));
+          setLoaded(true);
+        },
       });
-    } else {
-      // initRefreshDataTask();
     }
-  });
+    // initRefreshDataTask();
+    return () => {};
+  }, [loaded]);
 
   if (loaded) {
     // It will be loaded only if the user is signed in, so we can render!

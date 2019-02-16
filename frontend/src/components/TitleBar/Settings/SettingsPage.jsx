@@ -8,9 +8,9 @@ import ClassTagAdder from '../Tags/ClassTagAdder';
 import OtherTagAdder from '../Tags/OtherTagAdder';
 import styles from './SettingsPage.css';
 import type { Tag } from '../../../store/store-types';
-import { importCourseExams } from '../../../store/actions';
 import { tagsConnect } from '../../../util/tag-util';
 import SignOut from '../Gadgets/SignOut';
+import { importCourseExams } from '../../../firebase/actions';
 
 /**
  * The class adder component.
@@ -28,23 +28,17 @@ const ClassAdder = (): Node => (
   </div>
 );
 
-/**
- * The exam exporter component.
- *
- * @return {Node} rendered component.
- * @constructor
- */
-const ExamImporter = connect(null, { onClick: importCourseExams })(({ onClick }) => (
+const ExamImporter = () => (
   <div className={styles.SettingsSection}>
     <p className={styles.SettingsSectionTitle}>Auto Import Exams</p>
     <div className={`${styles.SettingsButton} ${styles.SettingsSectionContent}`}>
       Click the following button to automatically import the prelims and finals
       from your registered classes into your planner.
       <br />
-      <button type="button" onClick={onClick}>Import</button>
+      <button type="button" onClick={importCourseExams}>Import</button>
     </div>
   </div>
-));
+);
 
 /**
  * The tags container component.

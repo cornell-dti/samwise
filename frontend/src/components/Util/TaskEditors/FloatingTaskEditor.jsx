@@ -2,20 +2,18 @@
 
 import React from 'react';
 import type { ComponentType, Node } from 'react';
-import { connect } from 'react-redux';
 import type {
   PartialMainTask, PartialSubTask, SubTask, Task,
 } from '../../../store/store-types';
 import type { FloatingPosition } from './task-editors-types';
-import { editTask as editTaskAction, removeTask as removeTaskAction } from '../../../store/actions';
 import TaskEditor from './TaskEditor';
-import type { EditTaskAction, RemoveTaskAction } from '../../../store/action-types';
 import styles from './FloatingTaskEditor.css';
 import { TaskEditorFlexiblePadding as flexiblePaddingClass } from './TaskEditor.css';
 import { replaceSubTask, EMPTY_TASK_DIFF, taskDiffIsEmpty } from '../../../util/task-util';
 import windowSizeConnect from '../Responsive/WindowSizeConsumer';
 import type { WindowSize } from '../Responsive/window-size-context';
 import type { TaskDiff } from '../../../util/task-util';
+import { editTask, removeTask } from '../../../firebase/actions';
 
 type OwnProps = {|
   +position: FloatingPosition;
@@ -26,8 +24,6 @@ type OwnProps = {|
 type Props = {|
   ...OwnProps;
   +windowSize: WindowSize;
-  +editTask: (task: Task, diff: TaskDiff) => EditTaskAction;
-  +removeTask: (taskId: number) => RemoveTaskAction;
 |};
 
 type State = {|
@@ -131,7 +127,6 @@ class FloatingTaskEditor extends React.PureComponent<Props, State> {
    * Handle the saveEditedTask event.
    */
   saveEditedTask = (): void => {
-    const { editTask } = this.props;
     const { task, diff } = this.state;
     if (!this.taskIsGood(task)) {
       return;
@@ -162,11 +157,11 @@ class FloatingTaskEditor extends React.PureComponent<Props, State> {
   /**
    * Edit subtask.
    *
-   * @param {number} subtaskId id of the subtask.
+   * @param {string} subtaskId id of the subtask.
    * @param {PartialSubTask} partialSubTask partial subtask.
    * @param {boolean} doSave whether to save.
    */
-  editSubTask = (subtaskId: number, partialSubTask: PartialSubTask, doSave: boolean) => {
+  editSubTask = (subtaskId: string, partialSubTask: PartialSubTask, doSave: boolean) => {
     this.setState(({ task, diff }: State) => {
       const newTask = {
         ...task,
@@ -185,7 +180,7 @@ class FloatingTaskEditor extends React.PureComponent<Props, State> {
         const [id, edit] = pair;
         if (id === subtaskId) {
           foundInPreviousEdits = true;
-          subtasksEdits.push([i, { ...edit, ...partialSubTask }]);
+          subtasksEdits.push([id, { ...edit, ...partialSubTask }]);
         } else {
           subtasksEdits.push([id, edit]);
         }
@@ -222,17 +217,16 @@ class FloatingTaskEditor extends React.PureComponent<Props, State> {
    * Handle remove task.
    */
   removeTask = () => {
-    const { removeTask } = this.props;
-    const { task: { id } } = this.state;
-    removeTask(id);
+    const { task } = this.state;
+    removeTask(task);
   };
 
   /**
    * Remove subtask with given id.
    *
-   * @param {number} subtaskId id of the subtask to remove.
+   * @param {string} subtaskId id of the subtask to remove.
    */
-  removeSubTask = (subtaskId: number) => {
+  removeSubTask = (subtaskId: string) => {
     this.setState((state: State) => ({
       task: {
         ...state.task,
@@ -311,7 +305,5 @@ class FloatingTaskEditor extends React.PureComponent<Props, State> {
   }
 }
 
-const Connected: ComponentType<OwnProps> = connect(
-  null, { editTask: editTaskAction, removeTask: removeTaskAction },
-)(windowSizeConnect(FloatingTaskEditor));
+const Connected: ComponentType<OwnProps> = windowSizeConnect(FloatingTaskEditor);
 export default Connected;

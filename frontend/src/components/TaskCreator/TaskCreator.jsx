@@ -1,7 +1,7 @@
 // @flow strict
 
 import React from 'react';
-import type { ComponentType, Node } from 'react';
+import type { Node } from 'react';
 import { Icon } from 'semantic-ui-react';
 import 'react-toastify/dist/ReactToastify.css';
 import styles from './TaskCreator.css';
@@ -10,24 +10,13 @@ import DatePicker from './DatePicker';
 import FocusPicker from './FocusPicker';
 import { randomId } from '../../util/general-util';
 import type { Task, SubTask } from '../../store/store-types';
-import {
-  addTask as addTaskAction,
-  removeTask as removeTaskAction,
-} from '../../store/actions';
-import type { AddNewTaskAction, RemoveTaskAction } from '../../store/action-types';
 import { NONE_TAG_ID } from '../../util/tag-util';
 import { replaceSubTask } from '../../util/task-util';
 import { isToday } from '../../util/datetime-util';
-import { connect } from 'react-redux';
-
-type Props = {|
-  // subscribed from dispatcher.
-  +addTask: (task: Task) => AddNewTaskAction;
-  +removeTask: (taskId: number) => RemoveTaskAction;
-|};
+import { addTask } from '../../firebase/actions';
 
 type State = {|
-  ...Task;
+  ...$Diff<Task, {| +order: number |}>;
   +opened: boolean;
   +tagPickerOpened: boolean;
   +datePickerOpened: boolean;
@@ -59,7 +48,7 @@ const initialState = (): State => ({
   needToSwitchFocus: false,
 });
 
-class TaskCreator extends React.PureComponent<Props, State> {
+export default class TaskCreator extends React.PureComponent<{||}, State> {
   state: State = initialState();
 
   /*
@@ -113,16 +102,17 @@ class TaskCreator extends React.PureComponent<Props, State> {
       e.preventDefault();
     }
     const {
-      id, name, tag, date, complete, inFocus, subtasks,
+      name, tag, date, complete, inFocus, subtasks,
     } = this.state;
-    const { addTask } = this.props;
     if (name === '') {
       return;
     }
-    const newSubTasks = subtasks.filter(subTask => subTask.name !== '');
+    const newSubTasks = subtasks
+      .filter(subTask => subTask.name !== '') // remove empty subtasks
+      .map((s, order) => ({ ...s, order })); // normalize orders: use current sequence as order;
     const autoInFocus = inFocus || isToday(date); // Put task in focus is the due date is today.
     const newTask = {
-      id, name, tag, date, complete, inFocus: autoInFocus, subtasks: newSubTasks,
+      name, tag, date, complete, inFocus: autoInFocus, subtasks: newSubTasks,
     };
     // Add the task to the store.
     addTask(newTask);
@@ -153,9 +143,9 @@ class TaskCreator extends React.PureComponent<Props, State> {
   /**
    * Edit the tag.
    *
-   * @param {number} tag the new tag.
+   * @param {string} tag the new tag.
    */
-  editTag = (tag: number) => this.setState({ tag, tagPickerOpened: false }, this.focusTaskName);
+  editTag = (tag: string) => this.setState({ tag, tagPickerOpened: false }, this.focusTaskName);
 
   /**
    * Edit the date.
@@ -185,7 +175,8 @@ class TaskCreator extends React.PureComponent<Props, State> {
     }
     this.setState(({ subtasks }: State) => ({
       subtasks: [...subtasks, {
-        id: subtasks.length,
+        id: String(subtasks.length),
+        order: 0, // some random order, will be ignored anyway
         name: newSubTaskName,
         complete: false,
         inFocus: false,
@@ -197,10 +188,10 @@ class TaskCreator extends React.PureComponent<Props, State> {
   /**
    * Edit a subtask.
    *
-   * @param {number} subtaskId id of the subtask to edit.
+   * @param {string} subtaskId id of the subtask to edit.
    * @return {Function<SyntheticEvent<HTMLInputElement>, void>} the event handler.
    */
-  editSubTask = (subtaskId: number) => (e: SyntheticEvent<HTMLInputElement>) => {
+  editSubTask = (subtaskId: string) => (e: SyntheticEvent<HTMLInputElement>) => {
     const name = e.currentTarget.value;
     this.setState(({ subtasks }: State) => ({
       subtasks: replaceSubTask(subtasks, subtaskId, s => ({ ...s, name })),
@@ -221,10 +212,10 @@ class TaskCreator extends React.PureComponent<Props, State> {
   /**
    * Delete a subtask.
    *
-   * @param {number} subtaskId id of the subtask to delete.
+   * @param {string} subtaskId id of the subtask to delete.
    * @return {Function<SyntheticEvent<HTMLInputElement>, void>} the event handler.
    */
-  deleteSubTask = (subtaskId: number) => (e: SyntheticEvent<HTMLButtonElement>) => {
+  deleteSubTask = (subtaskId: string) => (e: SyntheticEvent<HTMLButtonElement>) => {
     e.preventDefault();
     this.setState(({ subtasks }: State) => ({
       subtasks: subtasks.filter(s => s.id !== subtaskId),
@@ -339,8 +330,3 @@ class TaskCreator extends React.PureComponent<Props, State> {
     );
   }
 }
-
-const ConnectedTaskCreator: ComponentType<{||}> = connect(
-  null, { addTask: addTaskAction, removeTask: removeTaskAction },
-)(TaskCreator);
-export default ConnectedTaskCreator;

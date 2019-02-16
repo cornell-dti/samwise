@@ -9,20 +9,20 @@ import { error } from './general-util';
  * ID of the none tag.
  * @type {number}
  */
-export const NONE_TAG_ID = -1;
+export const NONE_TAG_ID = 'THE_GLORIOUS_NONE_TAG';
 
 /**
  * The none tag.
  * @type {Tag}
  */
 export const NONE_TAG: Tag = {
-  id: NONE_TAG_ID, name: 'None', color: 'gray', classId: null,
+  id: NONE_TAG_ID, order: 0, name: 'None', color: 'gray', classId: null,
 };
 
 /**
  * Returns the tag from a list of tags given the id.
  */
-const getTagById = (tags: Tag[], id: number): Tag => tags
+const getTagById = (tags: Tag[], id: string): Tag => tags
   .find(t => t.id === id) ?? error(`Tag ${id} not found! Corrupted store.`);
 
 /**
@@ -39,7 +39,7 @@ export function tagsConnect<-Config>(
  */
 export function getTagConnect<Config: Object>(
   component: ComponentType<Config>,
-): ComponentType<$Diff<Config, {| +getTag: (id: number) => Tag; |}>> {
+): ComponentType<$Diff<Config, {| +getTag: (id: string) => Tag; |}>> {
   return connect(
     ({ tags }) => ({ getTag: id => getTagById(tags, id) }), null,
   )(component);

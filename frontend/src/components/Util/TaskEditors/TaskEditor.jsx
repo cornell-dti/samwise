@@ -29,18 +29,18 @@ type Props = {|
   ...DefaultProps; // Props with default values.
   // actions
   +editMainTask: (partialMainTask: PartialMainTask, doSave: boolean) => void;
-  +editSubTask: (subtaskId: number, partialSubTask: PartialSubTask, doSave: boolean) => void;
+  +editSubTask: (subtaskId: string, partialSubTask: PartialSubTask, doSave: boolean) => void;
   +addSubTask: (subTask: SubTask) => void;
   +removeTask: () => void;
-  +removeSubTask: (subtaskId: number) => void;
+  +removeSubTask: (subtaskId: string) => void;
   +onSave: () => void;
   // subscribed from redux store.
-  +getTag: (id: number) => Tag;
+  +getTag: (id: string) => Tag;
 |};
 
 type State = {|
   +mainTaskNameCache: string | null;
-  +oneSubTaskNameCache: [number, string] | null;
+  +oneSubTaskNameCache: [string, string] | null;
   +doesShowTagEditor: boolean;
   +doesShowDateEditor: boolean;
   +needToSwitchFocus: boolean;
@@ -94,14 +94,9 @@ class TaskEditor extends React.Component<Props, State> {
    * --------------------------------------------------------------------------------
    */
 
-  canBeEdited = (): boolean => {
-    const { id } = this.props;
-    return id >= 0;
-  };
-
-  subTaskCanBeEdited = (subtaskId: number): boolean => {
-    const { id, allowEditTemporarySubTasks } = this.props;
-    return id >= 0 && (allowEditTemporarySubTasks !== false || subtaskId >= 0);
+  subTaskCanBeEdited = (): boolean => {
+    const { allowEditTemporarySubTasks } = this.props;
+    return allowEditTemporarySubTasks !== false;
   };
 
   /**
@@ -141,19 +136,13 @@ class TaskEditor extends React.Component<Props, State> {
     }
   };
 
-  editTaskTag = (tag: number): void => {
-    if (!this.canBeEdited()) {
-      return;
-    }
+  editTaskTag = (tag: string): void => {
     const { editMainTask } = this.props;
     editMainTask({ tag }, false);
     this.setState({ doesShowTagEditor: false });
   };
 
   editTaskDate = (dateString: string): void => {
-    if (!this.canBeEdited()) {
-      return;
-    }
     const date = new Date(dateString);
     const { editMainTask } = this.props;
     editMainTask({ date }, false);
@@ -164,9 +153,6 @@ class TaskEditor extends React.Component<Props, State> {
    * Toggle the completion status of the task.
    */
   editComplete = () => {
-    if (!this.canBeEdited()) {
-      return;
-    }
     const { complete, editMainTask } = this.props;
     editMainTask({ complete: !complete }, false);
   };
@@ -175,9 +161,6 @@ class TaskEditor extends React.Component<Props, State> {
    * Change the in-focus status of the task.
    */
   editInFocus = () => {
-    if (!this.canBeEdited()) {
-      return;
-    }
     const { inFocus, editMainTask } = this.props;
     editMainTask({ inFocus: !inFocus }, false);
   };
@@ -185,12 +168,12 @@ class TaskEditor extends React.Component<Props, State> {
   /**
    * Edit the cache for task name.
    *
-   * @param {number} subtaskId id of the subtask.
+   * @param {string} subtaskId id of the subtask.
    * @return {function(SyntheticEvent<HTMLInputElement>): void} event handler.
    */
-  editSubTaskNameCache = (subtaskId: number) => (event: SyntheticEvent<HTMLInputElement>) => {
+  editSubTaskNameCache = (subtaskId: string) => (event: SyntheticEvent<HTMLInputElement>) => {
     event.stopPropagation();
-    if (!this.subTaskCanBeEdited(subtaskId)) {
+    if (!this.subTaskCanBeEdited()) {
       return;
     }
     const oneSubTaskNameCache = [subtaskId, event.currentTarget.value];
@@ -204,7 +187,7 @@ class TaskEditor extends React.Component<Props, State> {
    * @return {function(): void} the edit completion event handler.
    */
   editSubTaskComplete = (subTask: SubTask) => (): void => {
-    if (!this.subTaskCanBeEdited(subTask.id)) {
+    if (!this.subTaskCanBeEdited()) {
       return;
     }
     const { editSubTask } = this.props;
@@ -218,7 +201,7 @@ class TaskEditor extends React.Component<Props, State> {
    * @return {function(): void} the edit completion event handler.
    */
   editSubTaskInFocus = (subTask: SubTask) => (): void => {
-    if (!this.subTaskCanBeEdited(subTask.id)) {
+    if (!this.subTaskCanBeEdited()) {
       return;
     }
     const { editSubTask } = this.props;
@@ -233,16 +216,16 @@ class TaskEditor extends React.Component<Props, State> {
    */
   handleNewSubTaskValueChange = (event: SyntheticEvent<HTMLInputElement>) => {
     event.stopPropagation();
-    if (!this.canBeEdited()) {
-      return;
-    }
     const newSubTaskValue: string = event.currentTarget.value.trim();
     if (newSubTaskValue.length === 0) {
       return;
     }
+    const { subtasks } = this.props;
+    const maxOrder = subtasks.reduce((acc, s) => Math.max(acc, s.order), 0);
     const newSubTask: SubTask = {
       name: newSubTaskValue,
       id: randomId(),
+      order: maxOrder + 1,
       complete: false,
       inFocus: false,
     };
@@ -355,25 +338,20 @@ class TaskEditor extends React.Component<Props, State> {
     } = this.props;
     const { mainTaskNameCache } = this.state;
     const taskNameValue = mainTaskNameCache === null ? name : mainTaskNameCache;
-    const disabled = !this.canBeEdited();
     const onRemove = () => {
-      if (!disabled) {
-        removeTask();
-      }
+      removeTask();
     };
     return (
       <div className={styles.TaskEditorFlexibleContainer}>
         <CheckBox
           className={styles.TaskEditorCheckBox}
           checked={complete}
-          disabled={disabled}
           onChange={this.editComplete}
         />
         <input
           className={styles.TaskEditorFlexibleInput}
           placeholder="Main Task"
           value={taskNameValue}
-          disabled={disabled}
           onKeyDown={this.pressEnterHandler}
           onChange={this.editTaskNameCache}
           onBlur={this.editTaskName}
@@ -399,7 +377,6 @@ class TaskEditor extends React.Component<Props, State> {
   renderSubTask = (subTask: SubTask, index: number, array: SubTask[]): Node => {
     const { complete, removeSubTask } = this.props;
     const { oneSubTaskNameCache, needToSwitchFocus } = this.state;
-    const disabled = !this.canBeEdited();
     const refHandler = (inputElementRef) => {
       if (index === array.length - 1 && needToSwitchFocus && inputElementRef != null) {
         inputElementRef.focus();
@@ -407,7 +384,7 @@ class TaskEditor extends React.Component<Props, State> {
       }
     };
     const onRemoveSubTask = () => {
-      if (this.subTaskCanBeEdited(subTask.id)) {
+      if (this.subTaskCanBeEdited()) {
         removeSubTask(subTask.id);
       }
     };
@@ -419,14 +396,13 @@ class TaskEditor extends React.Component<Props, State> {
         <CheckBox
           className={styles.TaskEditorCheckBox}
           checked={complete || subTask.complete}
-          disabled={disabled || complete}
+          disabled={complete}
           onChange={this.editSubTaskComplete(subTask)}
         />
         <input
           className={styles.TaskEditorFlexibleInput}
           placeholder="Your Sub-Task"
           value={subTaskName}
-          disabled={disabled}
           ref={refHandler}
           onKeyDown={this.pressEnterHandler}
           onChange={this.editSubTaskNameCache(subTask.id)}
@@ -477,7 +453,6 @@ class TaskEditor extends React.Component<Props, State> {
                 className={styles.TaskEditorFlexibleInput}
                 placeholder="A new subtask"
                 value=""
-                disabled={!this.canBeEdited()}
                 onChange={this.handleNewSubTaskValueChange}
                 onKeyDown={this.newSubTaskPressEnterHandler}
               />

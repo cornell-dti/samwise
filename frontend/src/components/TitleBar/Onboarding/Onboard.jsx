@@ -7,13 +7,13 @@ import TagItem from '../Tags/TagItem';
 import ClassTagAdder from '../Tags/ClassTagAdder';
 import styles from './Onboard.css';
 import type { Tag, Task } from '../../../store/store-types';
-import { importCourseExams } from '../../../store/actions';
 import Tutorial1 from '../../../assets/tutorial/t1.png';
 import Tutorial2 from '../../../assets/tutorial/t2.png';
 import Tutorial3 from '../../../assets/tutorial/t3.png';
 import Tutorial4 from '../../../assets/tutorial/t4.png';
 import Tutorial5 from '../../../assets/tutorial/t5.png';
 import Tutorial6 from '../../../assets/tutorial/t6.png';
+import { importCourseExams } from '../../../firebase/actions';
 
 const images = [Tutorial1, Tutorial2, Tutorial3, Tutorial4, Tutorial5, Tutorial6];
 
@@ -31,15 +31,11 @@ const ClassAdder = (): Node => (
   </div>
 );
 
-/**
- * The exam exporter component.
- *
- * @return {Node} rendered component.
- * @constructor
- */
-const ExamImporter = connect(null, { onClick: importCourseExams })(({ onClick }) => (
-  <button type="button" onClick={onClick} className={styles.SignButton}>Import Exams</button>
-));
+const ExamImporter = () => (
+  <button type="button" onClick={importCourseExams} className={styles.SignButton}>
+    Import Exams
+  </button>
+);
 
 /**
  * The tags container component.

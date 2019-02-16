@@ -3,7 +3,7 @@
 import React from 'react';
 
 import styles from '../Settings/SettingsPage.css';
-import { firebaseSignOut } from '../../../util/firebase-util';
+import { firebaseSignOut } from '../../../firebase/auth';
 
 /**
  * The sign out component.
