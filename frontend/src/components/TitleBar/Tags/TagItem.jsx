@@ -31,12 +31,12 @@ export default function TagItem({ tag }: Props): Node {
   const nameSplit = name.split(':');
   const nameNode = isClass
     ? (
-      <span style={{ width: 'calc(100% - 150px)', display: 'inline-block' }}>
+      <span style={{ width: 'calc(100% - 175px)', display: 'inline-block' }}>
         <span className={styles.TagName}>{nameSplit[0]}</span>
         <span className={styles.ClassExpandedTitle}>{nameSplit[1].trim()}</span>
       </span>
     ) : (
-      <span className={styles.TagName} style={{ width: 'calc(100% - 150px)' }}>
+      <span className={styles.TagName} style={{ width: 'calc(100% - 175px)' }}>
         <input type="text" value={name} onChange={editName} className={styles.TagEdit} />
       </span>
     );

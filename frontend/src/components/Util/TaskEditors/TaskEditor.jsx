@@ -374,7 +374,10 @@ class TaskEditor extends React.Component<Props, State> {
     const subTaskName = (oneSubTaskNameCache === null || oneSubTaskNameCache[0] !== subTask.id)
       ? subTask.name : oneSubTaskNameCache[1];
     return (
-      <div key={subTask.order} className={styles.TaskEditorFlexibleContainer}>
+      <div
+        key={subTask.order}
+        className={[styles.TaskEditorFlexibleContainer, styles.TaskEditorSubtaskCheckBox]}
+      >
         <CheckBox
           className={styles.TaskEditorCheckBox}
           checked={complete || subTask.complete}
@@ -383,12 +386,13 @@ class TaskEditor extends React.Component<Props, State> {
         />
         <input
           className={styles.TaskEditorFlexibleInput}
-          placeholder="Your Sub-Task"
+          placeholder="Your Subtask"
           value={subTaskName}
           ref={refHandler}
           onKeyDown={this.pressEnterHandler}
           onChange={this.editSubTaskNameCache(subTask.id)}
           onBlur={this.editTaskName}
+          style={{ width: 'calc(100% - 70px)' }}
         />
         <Icon
           name={subTask.inFocus ? 'bookmark' : 'bookmark outline'}

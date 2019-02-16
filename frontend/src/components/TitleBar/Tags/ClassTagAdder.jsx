@@ -74,7 +74,7 @@ function ClassTagAdder({ courses }: Props) {
   const changeClass = (option: SimpleCourse) => {
     const { value, classId } = option;
     addTag({
-      name: value, color: '#56d9c1', classId,
+      name: value, color: '#289de9', classId,
     });
   };
   return (

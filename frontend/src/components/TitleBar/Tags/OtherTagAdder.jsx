@@ -9,7 +9,7 @@ import { addTag } from '../../../firebase/actions';
 type Props = {||};
 type State = {| +name: string; +color: string; |};
 
-const defaultColor = '#56d9c1';
+const defaultColor = '#289de9';
 const initialState: State = { name: '', color: defaultColor };
 
 export default class OtherTagAdder extends React.PureComponent<Props, State> {
@@ -44,7 +44,7 @@ export default class OtherTagAdder extends React.PureComponent<Props, State> {
           onChange={this.editName}
           onKeyDown={this.onSubmit}
         />
-        <ColorEditor color={color} onChange={this.editColor} />
+        <ColorEditor color={color} onChange={this.editColor} styles={{ marginRight: '10px' }} />
       </li>
     );
   }
