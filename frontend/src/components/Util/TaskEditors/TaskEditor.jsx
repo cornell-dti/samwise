@@ -18,7 +18,6 @@ import { getTodayAtZeroAM } from '../../../util/datetime-util';
 type DefaultProps = {|
   +className?: string;
   children?: Node;
-  +allowEditTemporarySubTasks?: boolean;
   +newSubTaskDisabled?: boolean;
   +onFocus?: (event: SyntheticFocusEvent<HTMLElement>) => void;
   +onBlur?: (event: SyntheticFocusEvent<HTMLElement>) => void;
@@ -43,7 +42,7 @@ type State = {|
   +oneSubTaskNameCache: [string, string] | null;
   +doesShowTagEditor: boolean;
   +doesShowDateEditor: boolean;
-  +needToSwitchFocus: boolean;
+  +needToSwitchFocus: number | null; // number: expected array length, null: don't switch
 |};
 
 /**
@@ -58,14 +57,14 @@ class TaskEditor extends React.Component<Props, State> {
     oneSubTaskNameCache: null,
     doesShowTagEditor: false,
     doesShowDateEditor: false,
-    needToSwitchFocus: false,
+    needToSwitchFocus: null,
   };
 
   shouldComponentUpdate(nextProps: Props, { needToSwitchFocus: nextNeed }: State): boolean {
     const { needToSwitchFocus: currNeed } = this.state;
     // Previously need to switch focus, now we don't need any more.
     // In this case, we don't need to re-render.
-    return !(currNeed && !nextNeed);
+    return !(currNeed !== null && !nextNeed);
   }
 
   /*
@@ -93,11 +92,6 @@ class TaskEditor extends React.Component<Props, State> {
    * Part 2: Editor Methods
    * --------------------------------------------------------------------------------
    */
-
-  subTaskCanBeEdited = (): boolean => {
-    const { allowEditTemporarySubTasks } = this.props;
-    return allowEditTemporarySubTasks !== false;
-  };
 
   /**
    * Edit the cache for task name.
@@ -173,9 +167,6 @@ class TaskEditor extends React.Component<Props, State> {
    */
   editSubTaskNameCache = (subtaskId: string) => (event: SyntheticEvent<HTMLInputElement>) => {
     event.stopPropagation();
-    if (!this.subTaskCanBeEdited()) {
-      return;
-    }
     const oneSubTaskNameCache = [subtaskId, event.currentTarget.value];
     this.setState({ oneSubTaskNameCache });
   };
@@ -187,9 +178,6 @@ class TaskEditor extends React.Component<Props, State> {
    * @return {function(): void} the edit completion event handler.
    */
   editSubTaskComplete = (subTask: SubTask) => (): void => {
-    if (!this.subTaskCanBeEdited()) {
-      return;
-    }
     const { editSubTask } = this.props;
     editSubTask(subTask.id, { complete: !subTask.complete }, false);
   };
@@ -201,9 +189,6 @@ class TaskEditor extends React.Component<Props, State> {
    * @return {function(): void} the edit completion event handler.
    */
   editSubTaskInFocus = (subTask: SubTask) => (): void => {
-    if (!this.subTaskCanBeEdited()) {
-      return;
-    }
     const { editSubTask } = this.props;
     editSubTask(subTask.id, { inFocus: !subTask.inFocus }, false);
   };
@@ -231,7 +216,7 @@ class TaskEditor extends React.Component<Props, State> {
     };
     const { addSubTask } = this.props;
     addSubTask(newSubTask);
-    this.setState({ needToSwitchFocus: true });
+    this.setState({ needToSwitchFocus: subtasks.length + 1 });
   };
 
   /*
@@ -378,21 +363,18 @@ class TaskEditor extends React.Component<Props, State> {
     const { complete, removeSubTask } = this.props;
     const { oneSubTaskNameCache, needToSwitchFocus } = this.state;
     const refHandler = (inputElementRef) => {
-      if (index === array.length - 1 && needToSwitchFocus && inputElementRef != null) {
+      if (needToSwitchFocus === array.length
+        && index === array.length - 1
+        && inputElementRef != null) {
         inputElementRef.focus();
-        this.setState({ needToSwitchFocus: false });
+        this.setState({ needToSwitchFocus: null });
       }
     };
-    const onRemoveSubTask = () => {
-      if (this.subTaskCanBeEdited()) {
-        removeSubTask(subTask.id);
-      }
-    };
+    const onRemoveSubTask = () => removeSubTask(subTask.id);
     const subTaskName = (oneSubTaskNameCache === null || oneSubTaskNameCache[0] !== subTask.id)
       ? subTask.name : oneSubTaskNameCache[1];
-    // Using index as the key to make the element persistent even if it gets a new id
     return (
-      <div key={index} className={styles.TaskEditorFlexibleContainer}>
+      <div key={subTask.order} className={styles.TaskEditorFlexibleContainer}>
         <CheckBox
           className={styles.TaskEditorCheckBox}
           checked={complete || subTask.complete}

@@ -115,7 +115,7 @@ export const editTask = (task: Task, diff: TaskDiff): void => {
   });
   // Handle subtasksEdits
   subtasksEdits.forEach(([subtaskId, edit]) => {
-    batch.set(tasksCollection().doc(subtaskId), edit);
+    batch.set(tasksCollection().doc(subtaskId), edit, { merge: true });
   });
   // Handle subtasksDeletions
   subtasksDeletions.forEach(id => batch.delete(tasksCollection().doc(id)));

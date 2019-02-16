@@ -54,7 +54,6 @@ export default function InlineTaskEditor({ task, className }: Props): Node {
     removeSubTask: (subtaskId: string) => { removeSubTask(subtaskId); },
     onSave: onBlur,
     className,
-    allowEditTemporarySubTasks: false,
     newSubTaskDisabled: disabled || !task.inFocus,
     onFocus,
     onBlur,
