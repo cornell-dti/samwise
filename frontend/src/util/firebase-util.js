@@ -23,11 +23,6 @@ export function firebaseInit(): void {
     storageBucket: 'dti-samwise.appspot.com',
     messagingSenderId: '114434220691',
   });
-  const provider = new firebase.auth.GoogleAuthProvider();
-  provider.setCustomParameters({
-    login_hint: 'your-email@cornell.edu',
-    hd: 'cornell.edu',
-  });
 }
 
 /**
