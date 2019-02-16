@@ -10,9 +10,6 @@ import { cacheAppUser, toAppUser } from '../../../firebase/auth';
 import initListeners from '../../../firebase/listeners';
 import { dispatchAction } from '../../../store/store';
 import { patchStoreAction } from '../../../store/actions';
-// $FlowFixMe
-import coursesJson from '../../../assets/json/sp19-courses-with-exams-min.json';
-import buildCoursesMap from '../../../util/courses-util';
 
 const uiConfig = {
   signInFlow: 'popup',
@@ -94,23 +91,22 @@ export default function LoginBarrier({ appRenderer }: Props): Node {
       return () => {};
     }
     if (!loaded) {
-      return initListeners({
+      initListeners({
         onTagsUpdate: (tags) => {
           dispatchAction(patchStoreAction(tags, null, null));
         },
         onTasksUpdate: (tasks) => {
           dispatchAction(patchStoreAction(null, tasks, null));
         },
-        onFirstFetched: () => {
-          const courseMap = buildCoursesMap(coursesJson);
+        onCourseMapFetched: (courseMap) => {
           dispatchAction(patchStoreAction(null, null, courseMap));
-          setLoaded(true);
         },
+        onFirstFetched: () => setLoaded(true),
       });
     }
     // initRefreshDataTask();
     return () => {};
-  }, [loaded]);
+  }, [loginStatus, loaded]);
 
   if (loaded) {
     // It will be loaded only if the user is signed in, so we can render!

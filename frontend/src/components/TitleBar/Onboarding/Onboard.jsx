@@ -67,7 +67,14 @@ type State = {| +progress: number; +shouldDisp: boolean; |};
  * @constructor
  */
 class Onboard extends React.PureComponent<Props, State> {
-  state: State = { progress: 0, shouldDisp: false };
+  constructor(props: Props) {
+    super(props);
+    const { tags, tasks } = props;
+    // We set state based on props here b/c we want shouldDisp's value to persist
+    // even after a couple of tags have been added
+    const shouldDisp = tags.length === 1 && tasks.length === 0;
+    this.state = { progress: 0, shouldDisp };
+  }
 
   showNext = () => this.setState((state: State) => ({ ...state, progress: state.progress + 1 }));
 
@@ -83,26 +90,17 @@ class Onboard extends React.PureComponent<Props, State> {
 
   render() {
     const classTags: Tag[] = [];
-    const otherTags: Tag[] = [];
-    const { tags, tasks } = this.props;
+    const { tags } = this.props;
     const { shouldDisp, progress } = this.state;
     tags.forEach((tag) => {
       if (tag.classId !== null) {
         classTags.push(tag);
-      } else if (tag.name !== 'None') {
-        otherTags.push(tag);
       }
     });
 
-    if (classTags.length === 0 && otherTags.length === 0 && tasks.length === 0) {
-      // Using an if statement here b/c we want shouldDisp's value to persist
-      // even after a couple of tags have been added
-      this.setState(state => ({ ...state, shouldDisp: true }));
-    }
     const renderTags = (arr: Tag[]): Node => arr.map((tag: Tag) => (
       <TagItem key={tag.id} tag={tag} />
     ));
-
 
     return (
       <div

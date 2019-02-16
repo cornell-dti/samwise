@@ -3,11 +3,17 @@
 import { tagsCollection, tasksCollection } from './db';
 import { getAppUser } from './auth';
 import type { FirestoreSubTask, FirestoreTag, FirestoreTask } from './firestore-types';
-import type { SubTask, Tag, Task } from '../store/store-types';
+import type {
+  Course, SubTask, Tag, Task,
+} from '../store/store-types';
+// $FlowFixMe
+import coursesJson from '../assets/json/sp19-courses-with-exams-min.json';
+import buildCoursesMap from '../util/courses-util';
 
 type Listeners = {|
   +onTagsUpdate: (Tag[]) => void;
   +onTasksUpdate: (Task[]) => void;
+  +onCourseMapFetched: (Map<number, Course[]>) => void;
   +onFirstFetched: () => void;
 |};
 
@@ -17,15 +23,15 @@ function sortByOrder<-T: { +order: number }>(arr: T[]): T[] {
 
 /**
  * Initialize listeners bind to firestore.
- *
- * @param {function(Tag[]): void} onTagsUpdate called when tags changed.
- * @param {function(Task[]): void} onTasksUpdate called when tasks changed.
- * @param {function(): void} onFirstFetched called when the first wave of data is fetched.
- * @return {function(): void} the handler to destroy the listeners.
  */
-export default ({ onTagsUpdate, onTasksUpdate, onFirstFetched }: Listeners): (() => void) => {
+export default (listeners: Listeners): (() => void) => {
+  const {
+    onTagsUpdate, onTasksUpdate, onCourseMapFetched, onFirstFetched,
+  } = listeners;
+
   let firstTagsFetched = false;
   let firstTasksFetched = false;
+  let courseJsonFetched = false;
   const ownerEmail = getAppUser().email;
 
   const unmountTagsListener = tagsCollection().where('owner', '==', ownerEmail).onSnapshot((s) => {
@@ -37,7 +43,7 @@ export default ({ onTagsUpdate, onTasksUpdate, onFirstFetched }: Listeners): (()
     const sortedTags = tags.sort((a, b) => a.order - b.order);
     onTagsUpdate(sortedTags);
     firstTagsFetched = true;
-    if (firstTagsFetched && firstTasksFetched) {
+    if (firstTagsFetched && firstTasksFetched && courseJsonFetched) {
       onFirstFetched();
     }
   });
@@ -79,12 +85,23 @@ export default ({ onTagsUpdate, onTasksUpdate, onFirstFetched }: Listeners): (()
     mainTasksMap.forEach((task: Task) => { tasks.push(task); });
     onTasksUpdate(sortByOrder(tasks));
     firstTasksFetched = true;
-    if (firstTagsFetched && firstTasksFetched) {
+    if (firstTagsFetched && firstTasksFetched && courseJsonFetched) {
+      onFirstFetched();
+    }
+  });
+
+  fetch(coursesJson).then(resp => resp.json()).then(buildCoursesMap).then((courseMap) => {
+    onCourseMapFetched(courseMap);
+    courseJsonFetched = true;
+    if (firstTagsFetched && firstTasksFetched && courseJsonFetched) {
       onFirstFetched();
     }
   });
 
   return () => {
+    // Suppressed because it's likely that this block of code will never be run.
+    // eslint-disable-next-line no-console
+    console.log('Unmounting Listeners... This should only happen when app dies!');
     unmountTagsListener();
     unmountTasksListener();
   };

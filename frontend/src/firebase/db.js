@@ -1,6 +1,7 @@
 // @flow strict
 
 import firebase from 'firebase/app';
+import 'firebase/firestore';
 import type { Firestore } from 'firebase/firestore';
 
 /**
