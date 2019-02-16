@@ -55,7 +55,7 @@ export const removeTag = (id: string): void => {
  * --------------------------------------------------------------------------------
  */
 
-export const addTask = (task: WithoutIdOrder<Task>): void => {
+export const addTask = (task: WithoutIdOrder<Task>, noUndo?: 'no-undo'): void => {
   const { subtasks, ...taskWithoutSubtasks } = task;
   const transformedTask = { type: 'TASK', ...taskWithoutSubtasks };
   createFirestoreObject('tasks', transformedTask)
@@ -76,7 +76,11 @@ export const addTask = (task: WithoutIdOrder<Task>): void => {
           completeTask.subtasks.push({ id: subtaskDoc.id, ...rest });
           batch.set(subtaskDoc, firebaseSubTask);
         });
-        batch.commit().then(() => emitUndoAddTaskToast(completeTask));
+        batch.commit().then(() => {
+          if (noUndo !== 'no-undo') {
+            emitUndoAddTaskToast(completeTask);
+          }
+        });
       });
     });
 };
@@ -99,7 +103,7 @@ export const editTask = (task: Task, diff: TaskDiff): void => {
   } = diff;
   const batch = db().batch();
   // Handle mainTaskDiff
-  batch.set(tasksCollection().doc(task.id), mainTaskDiff);
+  batch.set(tasksCollection().doc(task.id), mainTaskDiff, { merge: true });
   // Handle subtasksCreations
   const parent = task.id;
   subtasksCreations.forEach((creation) => {
@@ -126,11 +130,15 @@ export const editSubTask = (subtaskId: string, partialSubTask: PartialSubTask): 
   tasksCollection().doc(subtaskId).update(partialSubTask).then(ignore);
 };
 
-export const removeTask = (task: Task): void => {
+export const removeTask = (task: Task, noUndo?: 'no-undo'): void => {
   const batch = db().batch();
   batch.delete(tasksCollection().doc(task.id));
   task.subtasks.forEach(s => batch.delete(tasksCollection().doc(s.id)));
-  batch.commit().then(() => emitUndoRemoveTaskToast(task));
+  batch.commit().then(() => {
+    if (noUndo !== 'no-undo') {
+      emitUndoRemoveTaskToast(task);
+    }
+  });
 };
 
 export const removeSubTask = (subtaskId: string): void => {

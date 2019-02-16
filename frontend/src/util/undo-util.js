@@ -11,8 +11,7 @@ let lastRemovedTask: Task | null = null;
 export function clearLastAddedTask(performUndo: boolean): void {
   if (lastAddedTask !== null) {
     if (performUndo) {
-      const { id, order, ...rest } = lastAddedTask;
-      addTask(rest);
+      removeTask(lastAddedTask, 'no-undo');
     }
     lastAddedTask = null;
   }
@@ -21,7 +20,8 @@ export function clearLastAddedTask(performUndo: boolean): void {
 export function clearLastRemovedTask(performUndo: boolean): void {
   if (lastRemovedTask !== null) {
     if (performUndo) {
-      removeTask(lastRemovedTask);
+      const { id, order, ...rest } = lastRemovedTask;
+      addTask(rest, 'no-undo');
     }
     lastRemovedTask = null;
   }
@@ -35,7 +35,7 @@ export function emitUndoAddTaskToast(task: Task): void {
   lastAddedTask = task;
   const message = `Added Task "${task.name}" on ${date2String(task.date)}.`;
   emitToast({
-    toastId: 'add-task',
+    toastId: 'task-management',
     message,
     onUndo: () => clearLastAddedTask(true),
     onDismiss: () => clearLastAddedTask(false),
@@ -49,7 +49,7 @@ export function emitUndoRemoveTaskToast(task: Task): void {
   lastRemovedTask = task;
   const message = `Removed Task "${task.name}" on ${date2String(task.date)}.`;
   emitToast({
-    toastId: 'remove-task',
+    toastId: 'task-management',
     message,
     onUndo: () => clearLastRemovedTask(true),
     onDismiss: () => clearLastRemovedTask(false),
