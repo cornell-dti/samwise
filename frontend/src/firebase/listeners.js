@@ -52,10 +52,10 @@ export default ({ onTagsUpdate, onTasksUpdate, onFirstFetched }: Listeners): (()
       const firestoreTaskOrSubTask: FirestoreTask | FirestoreSubTask = doc.data();
       if (firestoreTaskOrSubTask.type === 'TASK') {
         const {
-          type, owner, date: t, ...rest
+          type, owner, date, ...rest
         }: FirestoreTask = firestoreTaskOrSubTask;
         const task: Task = {
-          id, date: t.toDate(), subtasks: [], ...rest,
+          id, date, subtasks: [], ...rest,
         };
         mainTasksMap.set(id, task);
       } else {

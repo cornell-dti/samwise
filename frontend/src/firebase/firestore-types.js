@@ -1,8 +1,5 @@
 // @flow strict
 
-// $FlowFixMe
-import { Timestamp } from 'firebase/firestore';
-
 export type FirestoreCommon = {|
   +owner: string;
   +order: number;
@@ -20,7 +17,7 @@ export type FirestoreTask = {|
   +type: 'TASK';
   +name: string;
   +tag: string;
-  +date: Timestamp;
+  +date: Date;
   +complete: boolean;
   +inFocus: boolean;
 |};

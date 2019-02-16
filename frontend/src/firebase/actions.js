@@ -1,7 +1,5 @@
 // @flow strict
 
-// $FlowFixMe
-import { Timestamp } from 'firebase/firestore';
 import type {
   Course,
   PartialMainTask, PartialSubTask, SubTask, Tag, Task,
@@ -58,12 +56,8 @@ export const removeTag = (id: string): void => {
  */
 
 export const addTask = (task: WithoutIdOrder<Task>): void => {
-  const {
-    name, tag, date, complete, inFocus, subtasks,
-  } = task;
-  const transformedTask = {
-    type: 'TASK', name, tag, date: Timestamp.fromDate(date), complete, inFocus,
-  };
+  const { subtasks, ...taskWithoutSubtasks } = task;
+  const transformedTask = { type: 'TASK', ...taskWithoutSubtasks };
   createFirestoreObject('tasks', transformedTask)
     .then((firestoreTask: FirestoreTask) => {
       tasksCollection().add(firestoreTask).then((addedDoc) => {
@@ -105,11 +99,7 @@ export const editTask = (task: Task, diff: TaskDiff): void => {
   } = diff;
   const batch = db().batch();
   // Handle mainTaskDiff
-  const mainTaskUpdate = { ...mainTaskDiff };
-  if (mainTaskUpdate.date != null) {
-    mainTaskUpdate.date = Timestamp.fromDate(mainTaskUpdate.date);
-  }
-  batch.set(tasksCollection().doc(task.id), mainTaskUpdate);
+  batch.set(tasksCollection().doc(task.id), mainTaskDiff);
   // Handle subtasksCreations
   const parent = task.id;
   subtasksCreations.forEach((creation) => {
@@ -129,11 +119,7 @@ export const editTask = (task: Task, diff: TaskDiff): void => {
 };
 
 export const editMainTask = (taskId: string, partialMainTask: PartialMainTask): void => {
-  const mainTaskUpdate = { ...partialMainTask };
-  if (mainTaskUpdate.date != null) {
-    mainTaskUpdate.date = Timestamp.fromDate(mainTaskUpdate.date);
-  }
-  tasksCollection().doc(taskId).update(mainTaskUpdate).then(ignore);
+  tasksCollection().doc(taskId).update(partialMainTask).then(ignore);
 };
 
 export const editSubTask = (subtaskId: string, partialSubTask: PartialSubTask): void => {
@@ -159,7 +145,8 @@ export const removeSubTask = (subtaskId: string): void => {
 
 export const importCourseExams = (): void => {
   const { tags, tasks, courses } = store.getState();
-  const newTasks: WithoutIdOrder<Task>[] = [];
+  type SimpleTask = $Diff<WithoutIdOrder<Task>, {| +subtasks: SubTask[] |}>;
+  const newTasks: SimpleTask[] = [];
   tags.forEach((tag) => {
     if (tag.classId === null) {
       return;
@@ -180,13 +167,12 @@ export const importCourseExams = (): void => {
             && date.getHours() === t.getHours();
         };
         if (!tasks.some(filter)) {
-          const newTask: WithoutIdOrder<Task> = {
+          const newTask: SimpleTask = {
             name: 'Exam',
             tag: tag.id,
             date: t,
             complete: false,
             inFocus: false,
-            subtasks: [],
           };
           newTasks.push(newTask);
         }
@@ -198,11 +184,8 @@ export const importCourseExams = (): void => {
       const newOrderedTasks = newTasks.map((t, i) => ({ ...t, order: i + startOrder }));
       const batch = db().batch();
       newOrderedTasks.forEach((orderedTask) => {
-        const {
-          order, name, tag, date, complete, inFocus,
-        } = orderedTask;
         const transformedTask: FirestoreTask = mergeWithOwner({
-          type: 'TASK', order, name, tag, date: Timestamp.fromDate(date), complete, inFocus,
+          type: 'TASK', ...orderedTask,
         });
         batch.set(tasksCollection().doc(), transformedTask);
       });

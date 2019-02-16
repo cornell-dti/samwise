@@ -11,7 +11,7 @@ import initListeners from '../../../firebase/listeners';
 import { dispatchAction } from '../../../store/store';
 import { patchStoreAction } from '../../../store/actions';
 // $FlowFixMe
-import coursesJson from '../../../assets/json/sp19-courses-with-exams-min';
+import coursesJson from '../../../assets/json/sp19-courses-with-exams-min.json';
 import buildCoursesMap from '../../../util/courses-util';
 
 const uiConfig = {
