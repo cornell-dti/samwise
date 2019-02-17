@@ -2,10 +2,11 @@
 
 import React from 'react';
 import type { Node } from 'react';
-import { Icon } from 'semantic-ui-react'; // do we have bookmark svgs?
-import { Delete } from '../../assets/svgs/X.svg'
+import { Icon } from 'semantic-ui-react';
+import Pin from '../../../assets/svgs/pin-2-dark.svg';
+import Delete from '../../../assets/svgs/X.svg';
 import styles from './FutureViewTask.css';
-import type { PartialSubTask, SubTask } from '../../../store/store-types';
+import type { SubTask } from '../../../store/store-types';
 import CheckBox from '../../UI/CheckBox';
 import { editSubTask, removeSubTask } from '../../../firebase/actions';
 
@@ -40,8 +41,14 @@ export default function FutureViewSubTask(
       >
         {name}
       </span>
+      inFocus ?
       <Icon
-        name={inFocus ? 'bookmark' : 'bookmark outline'}
+        name="bookmark outline"
+        className={styles.TaskIcon}
+        onClick={onFocusChange}
+      />
+      :
+      <Pin
         className={styles.TaskIcon}
         onClick={onFocusChange}
       />

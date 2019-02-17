@@ -2,9 +2,8 @@
 
 import React from 'react';
 import type { Node } from 'react';
-import { Icon } from 'semantic-ui-react'; // do we have arrow alternate circle right outline svg?
-import { Plus } from '../../assets/svgs/' // where is plus icon
-import { Delete } from '../../assets/svgs' // where is delete icon
+import { Icon } from 'semantic-ui-react';
+import Delete from '../../assets/svgs/X.svg';
 import 'react-toastify/dist/ReactToastify.css';
 import styles from './TaskCreator.css';
 import TagPicker from './TagPicker';
@@ -294,7 +293,7 @@ export default class TaskCreator extends React.PureComponent<{||}, State> {
         </button>
         <div className={styles.NewTaskModal}>
           <ul>{subtasks.map(existingSubTaskEditor)}</ul>
-          <Plus />  // use Plus
+          <Icon name="plus" />
           <input type="text" placeholder="Add a Subtask" value="" onChange={this.addNewSubTask} />
           <button type="button" className={styles.ResetButton} onClick={this.resetTask}>
             {'Clear'}

@@ -2,8 +2,7 @@
 
 import React from 'react';
 import type { Node } from 'react';
-import { Icon } from 'semantic-ui-react';
-import { Tag } from '../../assets/svg/tags.svg'
+import tagIcon from '../../assets/svgs/tag.svg';
 import TagListPicker from '../Util/TagListPicker/TagListPicker';
 import styles from './Picker.css';
 import { getTagConnect, NONE_TAG_ID } from '../../util/tag-util';
@@ -30,7 +29,7 @@ function TagPicker(props: Props): Node {
     const { name, color, classId } = getTag(tag);
     const style = isDefault ? {} : { background: color };
     const internal = isDefault
-      ? (<Tag className={styles.CenterIcon} />)   // use Tag
+      ? (<tagIcon className={styles.CenterIcon} />)
       : (
         <React.Fragment>
           <span className={styles.TagDisplay}>{classId != null ? name.split(':')[0] : name}</span>

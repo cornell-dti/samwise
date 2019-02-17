@@ -2,7 +2,7 @@
 
 import React from 'react';
 import type { Node } from 'react';
-import Delete from '../../../assets/svgs/X.svg'
+import Delete from '../../../assets/svgs/X.svg';
 import type { Tag } from '../../../store/store-types';
 import styles from './TagItem.css';
 import ColorEditor from './ColorEditor';

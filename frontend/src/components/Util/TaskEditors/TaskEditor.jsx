@@ -2,10 +2,10 @@
 
 import React from 'react';
 import type { Node } from 'react';
-import { Icon } from 'semantic-ui-react'; // do we have bookmark svgs?
-import { Dark } from '../../assets/svgs/dark.svg'
-import { Delete } from '../../assets/svgs/X.svg'
 import Calendar from 'react-calendar';
+import { Icon } from 'semantic-ui-react';
+import Dark from '../../../assets/svgs/dark.svg';
+import Delete from '../../../assets/svgs/X.svg';
 import type {
   Tag, SubTask, Task, PartialMainTask, PartialSubTask,
 } from '../../../store/store-types';
