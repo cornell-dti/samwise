@@ -22,7 +22,7 @@ function TagPicker(props: Props): Node {
     tag, opened, onTagChange, onPickerOpened, getTag,
   } = props;
   // Controllers
-  const clickPicker = () => { if (!opened) { onPickerOpened(); } };
+  const clickPicker = () => { onPickerOpened(); };
   const reset = () => onTagChange(NONE_TAG_ID);
   // Nodes
   const displayedNode = (isDefault: boolean) => {
@@ -32,7 +32,7 @@ function TagPicker(props: Props): Node {
       ? (<Icon name="tag" className={styles.CenterIcon} />)
       : (
         <React.Fragment>
-          <span className={styles.TagDisplay}>{classId == null ? name.split(':')[0] : name}</span>
+          <span className={styles.TagDisplay}>{classId != null ? name.split(':')[0] : name}</span>
           <button type="button" className={styles.ResetButton} onClick={reset}>&times;</button>
         </React.Fragment>
       );

@@ -24,6 +24,10 @@
   z-index: 2;
 }
 
+.NewTaskDatePick div>abbr{
+  color:black;
+}
+
 .HideInput {
   display: none;
 }
@@ -34,8 +38,15 @@
 }
 
 .TagDisplay {
-  display: inline;
-  padding: 0 5px 0 10px;
+  padding: 0 2px 0 10px;
+
+  text-overflow: ellipsis;
+  overflow:hidden;
+  
+  /* Any narrower and some long class tags will begin to be truncated. */
+  max-width: 110px;
+  display: inline-block;
+  
 }
 
 .CenterIcon {
@@ -45,16 +56,16 @@
 
 .ResetButton {
   background: none;
-  display: inline;
+  display: inline-block;
   border: none;
   cursor: pointer;
   color: white;
-  height: 18px;
-  width: 18px;
-  border-radius: 9px;
-  margin: 0 2px 0 0;
+  height: 20px;
+  width: 20px;
+  border-radius: 10px;
+  margin: 0;
   padding: 0;
-  line-height: 20px;
+  line-height: 21px;
   position: relative;
   bottom: 0;
 }

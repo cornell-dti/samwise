@@ -73,13 +73,13 @@ const fuseConfigs = {
  * @constructor
  */
 function ClassTagAdder({ courses, addTag }: Props) {
-  if (courses.size == 0) {
+  if (courses.size === 0) {
     return null;
   }
   const changeClass = (option: SimpleCourse) => {
     const { value, classId } = option;
     addTag({
-      id: randomId(), name: value, color: '#56d9c1', classId,
+      id: randomId(), name: value, color: '#289de9', classId,
     });
   };
   return (
