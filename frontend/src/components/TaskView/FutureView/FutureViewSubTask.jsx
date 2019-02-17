@@ -2,7 +2,8 @@
 
 import React from 'react';
 import type { Node } from 'react';
-import { Icon } from 'semantic-ui-react';
+import { Icon } from 'semantic-ui-react'; // do we have bookmark svgs?
+import { Delete } from '../../assets/svgs/X.svg'
 import styles from './FutureViewTask.css';
 import {
   editSubTask as editSubTaskAction,
@@ -72,7 +73,7 @@ function FutureViewSubTask(props: Props): Node {
         className={styles.TaskIcon}
         onClick={onFocusChange}
       />
-      <Icon name="delete" className={styles.TaskIcon} onClick={onRemove} />
+      <Delete className={styles.TaskIcon} onClick={onRemove} />
     </div>
   );
 }

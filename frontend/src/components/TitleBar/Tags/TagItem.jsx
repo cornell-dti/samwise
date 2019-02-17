@@ -3,6 +3,7 @@
 import React from 'react';
 import type { Node } from 'react';
 import { Icon } from 'semantic-ui-react';
+import { Delete } from '../../assets/svgs/X.svg'
 import type { EditTagAction, RemoveTagAction } from '../../../store/action-types';
 import { editTag as editTagAction, removeTag as removeTagAction } from '../../../store/actions';
 import type { Tag } from '../../../store/store-types';
@@ -56,7 +57,7 @@ function TagItem({ tag, editTag, removeTag }: Props): Node {
       {nameNode}
       <ColorEditor color={color} onChange={editColor} />
       <button type="button" className={styles.DeleteTag} onClick={onRemove}>
-        <Icon name="close" />
+        <Delete />   
       </button>
     </li>
   );

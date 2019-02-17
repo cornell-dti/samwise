@@ -2,6 +2,7 @@
 
 import React from 'react';
 import { Icon } from 'semantic-ui-react';
+import { Pin } from '../../assets/svgs/pin-2-dark.svg'
 import styles from './Picker.css';
 
 type Props = {|
@@ -18,7 +19,7 @@ export default function FocusPicker({ pinned, onPinChange }: Props) {
   return (
     <div className={styles.Main}>
       <span role="presentation" onClick={clickPicker} className={styles.Label}>
-        <Icon name="pin" className={styles.CenterIcon} style={iconStyle} />
+        <Pin name="pin" className={styles.CenterIcon} style={iconStyle} />   // use Pin
       </span>
     </div>
   );

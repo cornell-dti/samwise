@@ -2,6 +2,8 @@
 
 import * as React from 'react';
 import { Icon } from 'semantic-ui-react';
+import { Settings } from '../../assets/svgs/settings.svg'
+import { Delete } from '../../assets/svgs/X.svg'
 import SettingsPage from './SettingsPage';
 import styles from './SettingsButton.css';
 
@@ -27,13 +29,13 @@ export default class SettingsButton extends React.PureComponent<{||}, State> {
     return (
       <div style={{ display: 'inline-block' }}>
         <button type="submit" onClick={this.displayModal}>
-          <Icon name="setting" />
+          <Settings /> // use Settings
         </button>
         {showSettings && (
           <div className={styles.settingsModal}>
             { /*<span className={styles.changesSaved}>All changes saved</span>*/ }
             <button className={styles.closeButton} type="submit" onClick={this.closeModal}>
-              <Icon name="close" />
+              <Delete /> // use Delete
             </button>
             <section className={styles.contentWrap}>
               <h2>Settings</h2>

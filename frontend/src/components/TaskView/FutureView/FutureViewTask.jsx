@@ -2,7 +2,8 @@
 
 import React from 'react';
 import type { Node } from 'react';
-import { Icon } from 'semantic-ui-react';
+import { Icon } from 'semantic-ui-react'; // do we have bookmark svg?
+import { Delete } from '../../assets/svgs/X.svg'
 import styles from './FutureViewTask.css';
 import {
   editMainTask as editMainTaskAction,
@@ -92,7 +93,7 @@ class FutureViewTask extends React.PureComponent<Props, State> {
         removeTask(id, true);
       }
     };
-    return <Icon name="delete" className={styles.TaskIcon} onClick={handler} />;
+    return <Icon name="delete" className={styles.TaskIcon} onClick={handler} />; // use Delete
   };
 
   renderBookmarkIcon = (): Node => {

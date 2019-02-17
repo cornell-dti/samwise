@@ -4,6 +4,7 @@ import React from 'react';
 import type { Node } from 'react';
 import { GithubPicker } from 'react-color';
 import { Icon } from 'semantic-ui-react';
+import { AngleDown } from '../../assets/svgs/v.svg'
 import colMap from './ListColors';
 import styles from './ColorEditor.css';
 
@@ -42,7 +43,7 @@ export default class ColorEditor extends React.Component<Props, State> {
         <button type="button" className={styles.ColorEdit} onClick={this.toggleEditor}>
           {colMap[color.toLowerCase()]}
           <span className={styles.ColorDisplay} style={{ backgroundColor: color }} />
-          <Icon className={styles.Arrow} name="angle down" />
+          <AngleDown className={styles.Arrow}  />   // use AngleDown
         </button>
         {doesShowEditor && (
           <div className={styles.ColorPicker}>

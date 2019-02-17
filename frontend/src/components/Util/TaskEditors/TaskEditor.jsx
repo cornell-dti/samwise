@@ -2,7 +2,9 @@
 
 import React from 'react';
 import type { Node } from 'react';
-import { Icon } from 'semantic-ui-react';
+import { Icon } from 'semantic-ui-react'; // do we have bookmark svgs?
+import { Dark } from '../../assets/svgs/dark.svg'
+import { Delete } from '../../assets/svgs/X.svg'
 import Calendar from 'react-calendar';
 import type {
   Tag, SubTask, Task, PartialMainTask, PartialSubTask,
@@ -333,8 +335,7 @@ class TaskEditor extends React.Component<Props, State> {
         {tagDisplay}
         {tagEditor}
         <span className={styles.TaskEditorFlexiblePadding} />
-        <Icon
-          name="calendar"
+        <Dark
           className={styles.TaskEditorIconButton}
           onClick={this.toggleDateEditor}
         />
@@ -383,7 +384,7 @@ class TaskEditor extends React.Component<Props, State> {
           className={styles.TaskEditorIcon}
           onClick={this.editInFocus}
         />
-        <Icon className={styles.TaskEditorIcon} name="delete" onClick={onRemove} />
+        <Delete className={styles.TaskEditorIcon} onClick={onRemove} /> // use Delete
       </div>
     );
   };
@@ -437,7 +438,7 @@ class TaskEditor extends React.Component<Props, State> {
           className={styles.TaskEditorIcon}
           onClick={this.editSubTaskInFocus(subTask)}
         />
-        <Icon name="delete" className={styles.TaskEditorIcon} onClick={onRemoveSubTask} />
+        <Delete className={styles.TaskEditorIcon} onClick={onRemoveSubTask} />
       </div>
     );
   };

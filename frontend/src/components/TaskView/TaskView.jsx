@@ -2,7 +2,8 @@
 
 import React from 'react';
 import type { Node } from 'react';
-import { Icon } from 'semantic-ui-react';
+import { Icon } from 'semantic-ui-react'; // do we have chevron/bookmark svgs?
+import { Calendar } from '../../assets/svgs/dark.svg'
 import FocusView from './FocusView/FocusView';
 import FutureView, { futureViewConfigProvider } from './FutureView/FutureView';
 import styles from './TaskView.css';
@@ -62,12 +63,16 @@ function TaskView({ windowSize, fullTasks, inFocusTasks }: Props): Node {
     if (!screenIsSmall) {
       return null;
     }
-    return (
+    return (doesShowFutureViewInSmallScreen ?
       <Icon
-        name={doesShowFutureViewInSmallScreen ? 'bookmark' : 'calendar'}
+        name={'bookmark'}
+        className={styles.ViewSwitcher}
+        onClick={switchView}
+      /> : <Calendar
         className={styles.ViewSwitcher}
         onClick={switchView}
       />
+
     );
   };
 

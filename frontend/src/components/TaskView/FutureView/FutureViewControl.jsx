@@ -2,7 +2,9 @@
 
 import React from 'react';
 import type { Node } from 'react';
-import { Icon } from 'semantic-ui-react';
+import { Icon } from 'semantic-ui-react'; // do we have chevron svgs?
+import { Show } from '../../assets/svgs/show.svg'
+import { Hide } from '../../assets/svgs/hide.svg'
 import type { FutureViewContainerType, FutureViewDisplayOption } from './future-view-types';
 import SquareTextToggle from '../../UI/SquareTextToggle';
 import SquareIconToggle from '../../UI/SquareIconToggle';
