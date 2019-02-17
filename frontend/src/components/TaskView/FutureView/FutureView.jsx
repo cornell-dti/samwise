@@ -25,7 +25,7 @@ type Props = {|
   +tasks: Task[];
   +onConfigChange: (FutureViewConfig) => void;
   // subscribed from redux store.
-  +getTag: (id: number) => Tag;
+  +getTag: (id: string) => Tag;
 |};
 
 export type FutureViewConfigProvider = {|
@@ -121,12 +121,12 @@ function computeStartAndEndDay(
  * @param {number} nDays number of days in n-days view.
  * @param {DateToTaskMap} date2TaskMap the built date to tasks map.
  * @param {FutureViewConfig} config the display config.
- * @param {function(number): Tag} getTag the function used to get tags from id.
+ * @param {function(string): Tag} getTag the function used to get tags from id.
  * @return {OneDayTask[]} an array of backlog days information.
  */
 function buildDaysInFutureView(
   nDays: number, date2TaskMap: DateToTaskMap, config: FutureViewConfig,
-  getTag: (number) => Tag,
+  getTag: (string) => Tag,
 ): OneDayTask[] {
   const { displayOption: { containerType, doesShowCompletedTasks }, offset } = config;
   const { startDate, endDate } = computeStartAndEndDay(nDays, containerType, offset);

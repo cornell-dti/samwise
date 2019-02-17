@@ -1,17 +1,12 @@
 // @flow strict
 
 import React from 'react';
-import type { Node } from 'react';
+import type { ComponentType, Node } from 'react';
 import { Icon } from 'semantic-ui-react';
 import styles from './FutureViewTask.css';
-import {
-  editMainTask as editMainTaskAction,
-  removeTask as removeTaskAction,
-} from '../../../store/actions';
 import FutureViewSubTask from './FutureViewSubTask';
 import FloatingTaskEditor from '../../Util/TaskEditors/FloatingTaskEditor';
-import type { PartialMainTask, SubTask, Task } from '../../../store/store-types';
-import type { EditMainTaskAction, RemoveTaskAction } from '../../../store/action-types';
+import type { SubTask, Task } from '../../../store/store-types';
 import CheckBox from '../../UI/CheckBox';
 import type { FloatingPosition } from '../../Util/TaskEditors/task-editors-types';
 import { getTodayAtZeroAM } from '../../../util/datetime-util';
@@ -20,21 +15,21 @@ import windowSizeConnect from '../../Util/Responsive/WindowSizeConsumer';
 import type { WindowSize } from '../../Util/Responsive/window-size-context';
 import { nDaysViewHeaderHeight, otherViewsHeightHeader } from './future-view-css-props';
 import { error } from '../../../util/general-util';
-import { dispatchConnect } from '../../../store/react-redux-util';
-import type { PropsWithoutWindowSize } from '../../Util/Responsive/WindowSizeConsumer';
+import { editMainTask, removeTask } from '../../../firebase/actions';
 
-type Props = {|
+type OwnProps = {|
   +originalTask: Task;
   +filteredTask: Task;
   +taskColor: string;
   +inNDaysView: boolean;
   +isInMainList: boolean;
   +taskEditorPosition: FloatingPosition;
+|};
+
+type Props = {|
+  ...OwnProps;
   // Subscribed window size
   +windowSize: WindowSize;
-  // Subscribed from dispatchers.
-  +editMainTask: (taskId: number, partialMainTask: PartialMainTask) => EditMainTaskAction;
-  +removeTask: (taskId: number, undoable?: boolean) => RemoveTaskAction;
 |};
 
 type State = {|
@@ -58,23 +53,16 @@ class FutureViewTask extends React.PureComponent<Props, State> {
     if (event.target instanceof HTMLElement) {
       const elem: HTMLElement = event.target;
       // only accept click on text.
-      if (elem.className === styles.TaskText && this.canBeEdited()) {
+      if (elem.className === styles.TaskText) {
         opener();
       }
     }
   };
 
-  canBeEdited = (): boolean => {
-    const { originalTask: { id } } = this.props;
-    return id >= 0;
-  };
-
   renderCheckBox = (): Node => {
-    const { filteredTask: { id, complete }, editMainTask } = this.props;
+    const { filteredTask: { id, complete } } = this.props;
     const onChange = () => {
-      if (this.canBeEdited()) {
-        editMainTask(id, { complete: !complete });
-      }
+      editMainTask(id, { complete: !complete });
     };
     return <CheckBox className={styles.TaskCheckBox} checked={complete} onChange={onChange} />;
   };
@@ -86,23 +74,17 @@ class FutureViewTask extends React.PureComponent<Props, State> {
   };
 
   renderRemoveTaskIcon = (): Node => {
-    const { filteredTask: { id }, removeTask } = this.props;
+    const { filteredTask } = this.props;
     const handler = () => {
-      if (this.canBeEdited()) {
-        removeTask(id, true);
-      }
+      removeTask(filteredTask);
     };
     return <Icon name="delete" className={styles.TaskIcon} onClick={handler} />;
   };
 
   renderBookmarkIcon = (): Node => {
-    const { filteredTask: { id, inFocus }, editMainTask } = this.props;
+    const { filteredTask: { id, inFocus } } = this.props;
     const iconName = inFocus ? 'bookmark' : 'bookmark outline';
-    const handler = () => {
-      if (this.canBeEdited()) {
-        editMainTask(id, { inFocus: !inFocus });
-      }
-    };
+    const handler = () => editMainTask(id, { inFocus: !inFocus });
     return <Icon name={iconName} className={styles.TaskIcon} onClick={handler} />;
   };
 
@@ -123,11 +105,10 @@ class FutureViewTask extends React.PureComponent<Props, State> {
   };
 
   renderSubTasks = (): Node => {
-    const { filteredTask: { id, complete, subtasks } } = this.props;
+    const { filteredTask: { complete, subtasks } } = this.props;
     return subtasks.map((subTask: SubTask) => (
       <FutureViewSubTask
         key={subTask.id}
-        mainTaskId={id}
         mainTaskCompleted={complete}
         {...subTask}
       />
@@ -191,8 +172,5 @@ class FutureViewTask extends React.PureComponent<Props, State> {
   }
 }
 
-const actionsCreators = { editMainTask: editMainTaskAction, removeTask: removeTaskAction };
-const Connected = dispatchConnect<PropsWithoutWindowSize<Props>, typeof actionsCreators>(
-  actionsCreators,
-)(windowSizeConnect<Props>(FutureViewTask));
+const Connected: ComponentType<OwnProps> = windowSizeConnect(FutureViewTask);
 export default Connected;

@@ -1,18 +1,14 @@
 // @flow strict
 
 import React from 'react';
+import type { ComponentType } from 'react';
 import ReactSearchBox from 'react-search-box';
-import { addTag as addTagAction } from '../../../store/actions';
-import type { AddTagAction } from '../../../store/action-types';
+import { connect } from 'react-redux';
 import styles from './TagAdder.css';
-import type { Course, Tag } from '../../../store/store-types';
-import { randomId } from '../../../util/general-util';
-import { fullConnect } from '../../../store/react-redux-util';
+import type { Course } from '../../../store/store-types';
+import { addTag } from '../../../firebase/actions';
 
-type Props = {|
-  +courses: Map<number, Course[]>;
-  +addTag: (tag: Tag) => AddTagAction
-|};
+type Props = {| +courses: Map<number, Course[]>; |};
 
 type SimpleCourse = {|
   +key: number;
@@ -68,18 +64,17 @@ const fuseConfigs = {
  * The class tag adder.
  *
  * @param {Map<number, Course[]>} courses all courses.
- * @param {function(Tag): AddTagAction} addTag the action to add tags.
  * @return {Node} the rendered node.
  * @constructor
  */
-function ClassTagAdder({ courses, addTag }: Props) {
+function ClassTagAdder({ courses }: Props) {
   if (courses.size === 0) {
     return null;
   }
   const changeClass = (option: SimpleCourse) => {
     const { value, classId } = option;
     addTag({
-      id: randomId(), name: value, color: '#289de9', classId,
+      name: value, color: '#289de9', classId,
     });
   };
   return (
@@ -95,11 +90,7 @@ function ClassTagAdder({ courses, addTag }: Props) {
   );
 }
 
-const actionCreators = { addTag: addTagAction };
-type CoursesProps = {| +courses: Map<number, Course[]>; |};
-const MemoizedClassTagAdder = React.memo<Props>(ClassTagAdder);
-const ConnectedClassTagAdder = fullConnect<Props, CoursesProps, typeof actionCreators>(
-  ({ courses }) => ({ courses }),
-  actionCreators,
-)(MemoizedClassTagAdder);
+const ConnectedClassTagAdder: ComponentType<{||}> = connect(
+  ({ courses }) => ({ courses }), null,
+)(React.memo(ClassTagAdder));
 export default ConnectedClassTagAdder;

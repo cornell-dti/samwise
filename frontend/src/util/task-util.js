@@ -1,9 +1,10 @@
 // @flow strict
 
+import { connect } from 'react-redux';
 import type { ComponentType } from 'react';
-import type { PartialMainTask, PartialSubTask, SubTask, Task } from '../store/store-types';
-import type { ConnectedComponent } from '../store/react-redux-util';
-import { stateConnect } from '../store/react-redux-util';
+import type {
+  PartialMainTask, PartialSubTask, SubTask, Task,
+} from '../store/store-types';
 
 /**
  * This is the utility module for array of tasks and subtasks.
@@ -20,19 +21,19 @@ import { stateConnect } from '../store/react-redux-util';
  * @return {Task[]} the new task array.
  */
 export const replaceTask = (
-  tasks: Task[], id: number, replacer: (Task) => Task,
+  tasks: Task[], id: string, replacer: (Task) => Task,
 ): Task[] => tasks.map((task: Task) => (task.id !== id ? task : replacer(task)));
 
 /**
  * Replace a subtask with given id in an array of task.
  *
  * @param {SubTask[]} subTasks the subtask array to perform the replace operation.
- * @param {number} id the id of the subtask to be replaced.
+ * @param {string} id the id of the subtask to be replaced.
  * @param {function(SubTask): SubTask} replacer the replacer function.
  * @return {SubTask[]} the new subtask array.
  */
 export const replaceSubTask = (
-  subTasks: SubTask[], id: number, replacer: (SubTask) => SubTask,
+  subTasks: SubTask[], id: string, replacer: (SubTask) => SubTask,
 ): SubTask[] => subTasks.map(
   (subTask: SubTask) => (subTask.id === id ? replacer(subTask) : subTask),
 );
@@ -41,13 +42,13 @@ export const replaceSubTask = (
  * Replace a subtask with given id in an array of task.
  *
  * @param {Task[]} tasks the main task array to perform the replace operation.
- * @param {number} mainTaskID the id of the main task to be replaced.
- * @param {number} subTaskID the id of the subtask to be replaced.
+ * @param {string} mainTaskID the id of the main task to be replaced.
+ * @param {string} subTaskID the id of the subtask to be replaced.
  * @param {function(SubTask, Task): SubTask} replacer the replacer function.
  * @return {Task[]} the new subtask array.
  */
 export const replaceSubTaskWithinMainTask = (
-  tasks: Task[], mainTaskID: number, subTaskID: number,
+  tasks: Task[], mainTaskID: string, subTaskID: string,
   replacer: ((SubTask, Task) => SubTask),
 ): Task[] => replaceTask(tasks, mainTaskID, (task: Task) => ({
   ...task,
@@ -61,8 +62,8 @@ export const replaceSubTaskWithinMainTask = (
 export type TaskDiff = {|
   +mainTaskDiff: PartialMainTask,
   +subtasksCreations: SubTask[];
-  +subtasksEdits: [number, PartialSubTask][];
-  +subtasksDeletions: number[];
+  +subtasksEdits: [string, PartialSubTask][];
+  +subtasksDeletions: string[];
 |};
 
 /**
@@ -127,7 +128,6 @@ export const filterInFocusTasks = (tasks: Task[]): Task[] => tasks
 
 export type TasksProgress = {| +completed: number; +all: number |};
 export type TasksProgressProps = {| +progress: TasksProgress; |};
-export type TasksProps = {| +tasks: Task[] |};
 
 /**
  * Compute the progress given a list of filtered tasks.
@@ -151,17 +151,15 @@ export const computeTaskProgress = (inFocusTasks: Task[]): TasksProgress => {
 };
 
 /**
- * A function to connect a component with just tasks in redux store.
- *
- * @param component the component to connect.
- * @return {ConnectedComponent<Config, TagsProps>} the connected component.
+ * A function to connect a component with just displayable tasks in redux store.
  */
 export function tasksConnect<-Config>(
   component: ComponentType<Config>,
-): ConnectedComponent<Config, TasksProps> {
+): ComponentType<$Diff<Config, {| +tasks: Task[] |}>> {
   const yesterday = new Date();
   yesterday.setDate(yesterday.getDate() - 1);
-  return stateConnect<Config, TasksProps>(({ tasks }): TasksProps => ({
-    tasks: tasks.filter(t => (!t.complete || t.date > yesterday)),
-  }))(component);
+  return connect(
+    ({ tasks }) => ({ tasks: tasks.filter(t => (!t.complete || t.date > yesterday)) }),
+    null,
+  )(component);
 }

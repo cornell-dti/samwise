@@ -3,39 +3,28 @@
 import React from 'react';
 import type { Node } from 'react';
 import { Icon } from 'semantic-ui-react';
-import type { EditTagAction, RemoveTagAction } from '../../../store/action-types';
-import { editTag as editTagAction, removeTag as removeTagAction } from '../../../store/actions';
 import type { Tag } from '../../../store/store-types';
 import styles from './TagItem.css';
-import { dispatchConnect } from '../../../store/react-redux-util';
 import ColorEditor from './ColorEditor';
+import { editTag, removeTag } from '../../../firebase/actions';
 
-type Props = {|
-  +tag: Tag;
-  +editTag: (tag: Tag) => EditTagAction;
-  +removeTag: (tagId: number) => RemoveTagAction
-|};
+type Props = {| +tag: Tag; |};
 
 /**
  * The tag item component.
  */
-function TagItem({ tag, editTag, removeTag }: Props): Node {
-  const canBeEdited = tag.id >= 0;
+export default function TagItem({ tag }: Props): Node {
   const onRemove = () => {
-    // eslint-disable-next-line
-    if (canBeEdited && confirm('Do you want to remove this tag?')) {
+    // eslint-disable-next-line no-restricted-globals, no-alert
+    if (confirm('Do you want to remove this tag?')) {
       removeTag(tag.id);
     }
   };
   const editColor = (color: string) => {
-    if (canBeEdited) {
-      editTag({ ...tag, color });
-    }
+    editTag({ ...tag, color });
   };
   const editName = (name: SyntheticInputEvent<HTMLInputElement>) => {
-    if (canBeEdited) {
-      editTag({ ...tag, name: name.currentTarget.value });
-    }
+    editTag({ ...tag, name: name.currentTarget.value });
   };
   const { name, color, classId } = tag;
   const isClass = classId !== null;
@@ -61,7 +50,3 @@ function TagItem({ tag, editTag, removeTag }: Props): Node {
     </li>
   );
 }
-
-const actionCreators = { editTag: editTagAction, removeTag: removeTagAction };
-const Connected = dispatchConnect<Props, typeof actionCreators>(actionCreators)(TagItem);
-export default Connected;

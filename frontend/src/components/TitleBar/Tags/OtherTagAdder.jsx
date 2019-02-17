@@ -2,52 +2,32 @@
 
 import React from 'react';
 import type { Node } from 'react';
-import type { Tag } from '../../../store/store-types';
 import styles from './TagItem.css';
-import type { AddTagAction } from '../../../store/action-types';
-import { addTag as addTagAction } from '../../../store/actions';
-import { randomId } from '../../../util/general-util';
-import { dispatchConnect } from '../../../store/react-redux-util';
 import ColorEditor from './ColorEditor';
+import { addTag } from '../../../firebase/actions';
 
-type Props = {| +addTag: (tag: Tag) => AddTagAction |};
+type Props = {||};
 type State = {| +name: string; +color: string; |};
 
 const defaultColor = '#289de9';
 const initialState: State = { name: '', color: defaultColor };
 
-class OtherTagAdder extends React.Component<Props, State> {
+export default class OtherTagAdder extends React.PureComponent<Props, State> {
   state: State = initialState;
 
-  /**
-   * Edit the color.
-   *
-   * @param {string} color the color from the editor.
-   */
   editColor = (color: string) => this.setState({ color });
 
-  /**
-   * Edit the name.
-   *
-   * @param {SyntheticEvent<HTMLInputElement>} event the edit event.
-   */
   editName = (event: SyntheticEvent<HTMLInputElement>) => this.setState({
     name: event.currentTarget.value,
   });
 
-  /**
-   * Handle potential submit.
-   *
-   * @param {SyntheticKeyboardEvent<HTMLInputElement>} event the potential submit event.
-   */
   onSubmit = (event: SyntheticKeyboardEvent<HTMLInputElement>) => {
     if (event.key !== 'Enter') {
       return;
     }
     const { name, color } = this.state;
-    const { addTag } = this.props;
     addTag({
-      id: randomId(), name, color, classId: null,
+      name, color, classId: null,
     });
     this.setState(initialState);
   };
@@ -64,13 +44,8 @@ class OtherTagAdder extends React.Component<Props, State> {
           onChange={this.editName}
           onKeyDown={this.onSubmit}
         />
-        <ColorEditor color={color} onChange={this.editColor} styles={{ marginRight: '10px' }} />
+        <ColorEditor color={color} onChange={this.editColor} />
       </li>
     );
   }
 }
-
-const ConnectedOtherTagAdder = dispatchConnect<Props, Props>(
-  { addTag: addTagAction },
-)(OtherTagAdder);
-export default ConnectedOtherTagAdder;

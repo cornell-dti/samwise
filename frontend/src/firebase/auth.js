@@ -3,32 +3,13 @@
 import firebase from 'firebase/app';
 import type { FirebaseUser } from 'firebase';
 import 'firebase/auth';
-import { error } from './general-util';
+import { error } from '../util/general-util';
 
 export type AppUser = {|
   +displayName: string;
   +email: string;
   +token: string;
 |};
-
-/**
- * Initialize the firebase app.
- */
-export function firebaseInit(): void {
-  firebase.initializeApp({
-    apiKey: 'AIzaSyBrnR-ai3ZQrr3aYnezDZTZdw9e2TWTRtc',
-    authDomain: 'dti-samwise.firebaseapp.com',
-    databaseURL: 'https://dti-samwise.firebaseio.com',
-    projectId: 'dti-samwise',
-    storageBucket: 'dti-samwise.appspot.com',
-    messagingSenderId: '114434220691',
-  });
-  const provider = new firebase.auth.GoogleAuthProvider();
-  provider.setCustomParameters({
-    login_hint: 'your-email@cornell.edu',
-    hd: 'cornell.edu',
-  });
-}
 
 /**
  * Returns the promise of an app user from the given raw firebase user.
@@ -46,13 +27,6 @@ export async function toAppUser(firebaseUser: ?FirebaseUser): Promise<AppUser | 
   }
   const token: string = await firebaseUser.getIdToken(true);
   return { displayName, email, token };
-}
-
-/**
- * Returns the promise of firebase user or null if there is no signed-in user.
- */
-export async function firebaseUserPromise(): Promise<AppUser | null> {
-  return toAppUser(firebase.auth().currentUser);
 }
 
 let appUser: AppUser | null = null;

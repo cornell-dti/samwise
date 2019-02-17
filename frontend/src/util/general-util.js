@@ -5,7 +5,7 @@
  *
  * @return {number} a random id.
  */
-export const randomId = (): number => -100 - Math.floor(10000 * Math.random());
+export const randomId = (): string => String(-100 - Math.floor(10000 * Math.random()));
 
 /**
  * An empty function used to ignore promise.

@@ -12,6 +12,7 @@
     "node": true
   },
   "rules": {
-    "no-underscore-dangle": "off"
+    "no-underscore-dangle": "off",
+    "react/default-props-match-prop-types": "off"
   }
 }

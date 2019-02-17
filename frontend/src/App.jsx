@@ -1,7 +1,7 @@
 // @flow strict
 
 import React from 'react';
-import type { Node } from 'react';
+import type { ComponentType, Node } from 'react';
 import { ToastContainer } from 'react-toastify';
 import styles from './App.css';
 import Onboard from './components/TitleBar/Onboarding/Onboard';
@@ -9,17 +9,13 @@ import TaskCreator from './components/TaskCreator/TaskCreator';
 import TaskView from './components/TaskView/TaskView';
 import TitleBar from './components/TitleBar/TitleBar';
 import ProgressTracker from './components/ProgressTracker/ProgressTracker';
-import type { TasksProps } from './util/task-util';
 import { computeTaskProgress, filterInFocusTasks, tasksConnect } from './util/task-util';
+import type { Task } from './store/store-types';
 
 /**
  * The top level app component.
- *
- * @param tasks all the tasks.
- * @return {Node} the rendered app.
- * @constructor
  */
-function App({ tasks }: TasksProps): Node {
+function App({ tasks }: {| +tasks: Task[] |}): Node {
   const inFocusTasks = filterInFocusTasks(tasks);
   const progress = computeTaskProgress(inFocusTasks);
   return (
@@ -34,5 +30,5 @@ function App({ tasks }: TasksProps): Node {
   );
 }
 
-const ConnectedApp = tasksConnect<TasksProps>(App);
+const ConnectedApp: ComponentType<{||}> = tasksConnect(App);
 export default ConnectedApp;
