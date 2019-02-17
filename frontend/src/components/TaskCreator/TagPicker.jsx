@@ -22,7 +22,7 @@ function TagPicker(props: Props): Node {
     tag, opened, onTagChange, onPickerOpened, getTag,
   } = props;
   // Controllers
-  const clickPicker = () => { if (!opened) { onPickerOpened(); } };
+  const clickPicker = () => { onPickerOpened(); };
   const reset = () => onTagChange(NONE_TAG_ID);
   // Nodes
   const displayedNode = (isDefault: boolean) => {

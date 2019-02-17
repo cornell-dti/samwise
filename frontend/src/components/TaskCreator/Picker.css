@@ -24,6 +24,10 @@
   z-index: 2;
 }
 
+.NewTaskDatePick div>abbr{
+  color:black;
+}
+
 .HideInput {
   display: none;
 }

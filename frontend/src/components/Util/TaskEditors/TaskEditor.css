@@ -113,6 +113,10 @@ input.TaskEditorFlexibleInput:focus-within::placeholder {
   z-index: 4;
 }
 
+.TaskEditorCalendar div>abbr{
+  color: black;
+}
+
 /*
  * --------------------------------------------------------------------------------
  * Part 4: Components for Sub-Task Editor
