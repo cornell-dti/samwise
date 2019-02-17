@@ -80,12 +80,18 @@ class TaskCreator extends React.PureComponent<Props, State> {
   /**
    * Open the tag picker and close the date picker.
    */
-  openTagPicker = () => this.setState({ tagPickerOpened: true, datePickerOpened: false });
+  openTagPicker = () => this.setState(({ tagPickerOpened }: State) => ({
+    tagPickerOpened: !tagPickerOpened,
+    datePickerOpened: false,
+  }));
 
   /**
    * Open the date picker and close the tag picker.
    */
-  openDatePicker = () => this.setState({ tagPickerOpened: false, datePickerOpened: true });
+  openDatePicker = () => this.setState(({ datePickerOpened }: State) => ({
+    datePickerOpened: !datePickerOpened,
+    tagPickerOpened: false,
+  }));
 
   /*
    * --------------------------------------------------------------------------------
@@ -159,10 +165,10 @@ class TaskCreator extends React.PureComponent<Props, State> {
   /**
    * Edit the date.
    *
-   * @param {Date} date the new date.
+   * @param {Date} date the new date, or null for today.
    */
   editDate = (date: Date) => this.setState(
-    { date, datePickerOpened: false, datePicked: true },
+    { date: date || new Date(), datePickerOpened: false, datePicked: Boolean(date) },
     this.focusTaskName,
   );
 
