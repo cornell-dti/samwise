@@ -12,8 +12,8 @@
   font-size: 1em;
 
   /* Proposed Experimental Change */
-  top:-0.4em; right:-0.5em;
-  border-bottom-left-radius: 1em;
+  top:-0.3em; right:-0.3em;
+  /*border-bottom-left-radius: 1em;*/
 }
 
 .OverdueAlertAbsolute {
