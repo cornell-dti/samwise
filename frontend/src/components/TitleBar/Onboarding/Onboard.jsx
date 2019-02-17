@@ -1,13 +1,21 @@
 // @flow strict
 
 import * as React from 'react';
-import type { Node } from 'react';
+import type { ComponentType, Node } from 'react';
+import { connect } from 'react-redux';
 import TagItem from '../Tags/TagItem';
 import ClassTagAdder from '../Tags/ClassTagAdder';
 import styles from './Onboard.css';
 import type { Tag, Task } from '../../../store/store-types';
-import { importCourseExams } from '../../../store/actions';
-import { dispatchConnect, stateConnect } from '../../../store/react-redux-util';
+import Tutorial1 from '../../../assets/tutorial/t1.png';
+import Tutorial2 from '../../../assets/tutorial/t2.png';
+import Tutorial3 from '../../../assets/tutorial/t3.png';
+import Tutorial4 from '../../../assets/tutorial/t4.png';
+import Tutorial5 from '../../../assets/tutorial/t5.png';
+import Tutorial6 from '../../../assets/tutorial/t6.png';
+import { importCourseExams } from '../../../firebase/actions';
+
+const images = [Tutorial1, Tutorial2, Tutorial3, Tutorial4, Tutorial5, Tutorial6];
 
 /**
  * The class adder component.
@@ -23,15 +31,11 @@ const ClassAdder = (): Node => (
   </div>
 );
 
-/**
- * The exam exporter component.
- *
- * @return {Node} rendered component.
- * @constructor
- */
-const ExamImporter = dispatchConnect({ onClick: importCourseExams })(({ onClick }) => (
-  <button type="button" onClick={onClick} className={styles.SignButton}>Import Exams</button>
-));
+const ExamImporter = () => (
+  <button type="button" onClick={importCourseExams} className={styles.SignButton}>
+    Import Exams
+  </button>
+);
 
 /**
  * The tags container component.
@@ -63,7 +67,14 @@ type State = {| +progress: number; +shouldDisp: boolean; |};
  * @constructor
  */
 class Onboard extends React.PureComponent<Props, State> {
-  state: State = { progress: 0, shouldDisp: false };
+  constructor(props: Props) {
+    super(props);
+    const { tags, tasks } = props;
+    // We set state based on props here b/c we want shouldDisp's value to persist
+    // even after a couple of tags have been added
+    const shouldDisp = tags.length === 1 && tasks.length === 0;
+    this.state = { progress: 0, shouldDisp };
+  }
 
   showNext = () => this.setState((state: State) => ({ ...state, progress: state.progress + 1 }));
 
@@ -79,33 +90,17 @@ class Onboard extends React.PureComponent<Props, State> {
 
   render() {
     const classTags: Tag[] = [];
-    const otherTags: Tag[] = [];
-    const { tags, tasks } = this.props;
+    const { tags } = this.props;
     const { shouldDisp, progress } = this.state;
     tags.forEach((tag) => {
       if (tag.classId !== null) {
         classTags.push(tag);
-      } else if (tag.name !== 'None') {
-        otherTags.push(tag);
       }
     });
 
-    if (classTags.length === 0 && otherTags.length === 0 && tasks.length === 0) {
-      // Using an if statement here b/c we want shouldDisp's value to persist
-      // even after a couple of tags have been added
-      this.setState(state => ({ ...state, shouldDisp: true }));
-    }
     const renderTags = (arr: Tag[]): Node => arr.map((tag: Tag) => (
       <TagItem key={tag.id} tag={tag} />
     ));
-
-    const importAll = (r) => {
-      const images = {};
-      r.keys().forEach((item) => { images[item.replace('./', '')] = r(item); });
-      return images;
-    };
-
-    const images = importAll(require.context('../../../assets/tutorial', false, /\.(png|jpe?g|svg)$/));
 
     return (
       <div
@@ -145,7 +140,7 @@ class Onboard extends React.PureComponent<Props, State> {
             <button type="button" onClick={this.goBack}>&lsaquo;</button>
             <img
               className={styles.TutorialImg}
-              src={progress > 0 && progress < 7 ? images[`t${progress}.png`] : ''}
+              src={progress > 0 && progress < 7 ? images[progress - 1] : ''}
               alt="Tutorial"
             />
             <button type="button" onClick={this.showNext}>&rsaquo;</button>
@@ -161,7 +156,5 @@ class Onboard extends React.PureComponent<Props, State> {
   }
 }
 
-const Connected = stateConnect<Props, Props>(
-  ({ tags, tasks }) => ({ tags, tasks }),
-)(Onboard);
+const Connected: ComponentType<{||}> = connect(({ tags, tasks }) => ({ tags, tasks }))(Onboard);
 export default Connected;

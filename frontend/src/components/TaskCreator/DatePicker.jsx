@@ -8,7 +8,7 @@ import { date2String } from '../../util/datetime-util';
 import { NONE_TAG } from '../../util/tag-util';
 
 type Props = {|
-  +onDateChange: (date: Date) => void;
+  +onDateChange: (date: Date | null) => void;
   +date: Date;
   +opened: boolean;
   +datePicked: boolean;
@@ -20,8 +20,8 @@ export default function DatePicker(props: Props) {
     date, opened, datePicked, onDateChange, onPickerOpened,
   } = props;
   // Controllers
-  const clickPicker = () => { if (!opened) { onPickerOpened(); } };
-  const reset = () => onDateChange(new Date());
+  const clickPicker = () => { onPickerOpened(); };
+  const reset = (e) => { e.stopPropagation(); onDateChange(null); };
   // Nodes
   const displayedNode = (isDefault: boolean) => {
     const style = isDefault ? {} : { background: NONE_TAG.color };

@@ -5,54 +5,26 @@ import type { Node } from 'react';
 import { Icon } from 'semantic-ui-react'; // do we have bookmark svgs?
 import { Delete } from '../../assets/svgs/X.svg'
 import styles from './FutureViewTask.css';
-import {
-  editSubTask as editSubTaskAction,
-  removeSubTask as removeSubTaskAction,
-} from '../../../store/actions';
 import type { PartialSubTask, SubTask } from '../../../store/store-types';
-import type { EditSubTaskAction, RemoveSubTaskAction } from '../../../store/action-types';
 import CheckBox from '../../UI/CheckBox';
-import { dispatchConnect } from '../../../store/react-redux-util';
+import { editSubTask, removeSubTask } from '../../../firebase/actions';
 
 type Props = {|
   ...SubTask;
-  +mainTaskId: number;
   +mainTaskCompleted: boolean;
-  // subscribed from dispatchers.
-  +editSubTask: (
-    taskId: number, subtaskId: number, partialSubTask: PartialSubTask,
-  ) => EditSubTaskAction;
-  +removeSubTask: (taskId: number, subTaskId: number) => RemoveSubTaskAction;
 |};
 
 /**
- * The component used to render one subtask in backlog day.
- *
- * @param props the props to render.
- * @return {Node} the rendered element.
- * @constructor
+ * The component used to render one subtask in future view day.
  */
-function FutureViewSubTask(props: Props): Node {
-  const {
-    name, id, mainTaskId, complete, inFocus,
-    mainTaskCompleted, editSubTask, removeSubTask,
-  } = props;
-  const canBeEdited = mainTaskId >= 0 && id >= 0;
-  const onCompleteChange = () => {
-    if (canBeEdited) {
-      editSubTask(mainTaskId, id, { complete: !complete });
-    }
-  };
-  const onFocusChange = () => {
-    if (canBeEdited) {
-      editSubTask(mainTaskId, id, { inFocus: !inFocus });
-    }
-  };
-  const onRemove = () => {
-    if (canBeEdited) {
-      removeSubTask(mainTaskId, id);
-    }
-  };
+export default function FutureViewSubTask(
+  {
+    name, id, complete, inFocus, mainTaskCompleted,
+  }: Props,
+): Node {
+  const onCompleteChange = () => editSubTask(id, { complete: !complete });
+  const onFocusChange = () => editSubTask(id, { inFocus: !inFocus });
+  const onRemove = () => removeSubTask(id);
   return (
     <div className={styles.SubTask}>
       <CheckBox
@@ -77,9 +49,3 @@ function FutureViewSubTask(props: Props): Node {
     </div>
   );
 }
-
-const actionsCreators = { editSubTask: editSubTaskAction, removeSubTask: removeSubTaskAction };
-const Connected = dispatchConnect<Props, typeof actionsCreators>(
-  actionsCreators,
-)(FutureViewSubTask);
-export default Connected;

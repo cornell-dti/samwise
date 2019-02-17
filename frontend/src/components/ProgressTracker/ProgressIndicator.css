@@ -33,4 +33,6 @@
   height: 2em;
   border-radius: 1em;
   background-color: #7ED321;
+
+  transition: width 0.7s ease-in-out;
 }

@@ -3,18 +3,21 @@
 import React from 'react';
 import type { Node } from 'react';
 import firebase from 'firebase/app';
-import 'firebase/auth';
 // $FlowFixMe
 import { FirebaseAuth } from 'react-firebaseui';
 import styles from './Login.css';
-import type { AppUser } from '../../../util/firebase-util';
-import { cacheAppUser, toAppUser } from '../../../util/firebase-util';
-import { httpInitializeData } from '../../../http/http-service';
+import { cacheAppUser, toAppUser } from '../../../firebase/auth';
+import initListeners from '../../../firebase/listeners';
 import { dispatchAction } from '../../../store/store';
+import { patchStoreAction } from '../../../store/actions';
 
 const uiConfig = {
   signInFlow: 'popup',
-  signInOptions: [firebase.auth.GoogleAuthProvider.PROVIDER_ID],
+  signInOptions: [
+    {
+      provider: firebase.auth.GoogleAuthProvider.PROVIDER_ID,
+      customParameters: { hd: 'cornell.edu' },
+    }],
   signInSuccessUrl: '/',
   callbacks: {
     // Avoid redirects after sign-in.
@@ -43,8 +46,7 @@ function initRefreshDataTask() {
 */
 
 type Props = {| +appRenderer: () => Node; |}
-type CurrentUser = AppUser | null | 'UNDECIDED';
-// type State = {| +currentUser: CurrentUser; |};
+type LoginStatus = boolean | 'UNDECIDED';
 
 /**
  * The login barrier component.
@@ -54,57 +56,63 @@ type CurrentUser = AppUser | null | 'UNDECIDED';
  * @param appRenderer the function to call when the login flow finishes.
  */
 export default function LoginBarrier({ appRenderer }: Props): Node {
-  const [currentUser, setCurrentUser] = React.useState<CurrentUser>('UNDECIDED');
+  const [loginStatus, setLoginStatus] = React.useState<LoginStatus>('UNDECIDED');
   const [loaded, setLoaded] = React.useState(false);
 
-  // Used for hook effect optimization
-  const currentUserToken = (currentUser === null || typeof currentUser === 'string')
-    ? null : currentUser.token;
   // Listen for auth state changes in effect hooks.
   React.useEffect(() => {
     firebase.auth().onAuthStateChanged((user) => {
       toAppUser(user).then((currentUserFromFirebase) => {
         if (currentUserFromFirebase === null) {
-          setCurrentUser(null);
+          setLoginStatus(false);
+          setLoaded(false);
           return;
         }
         const { email } = currentUserFromFirebase;
         if (email.endsWith('@cornell.edu')) {
-          setCurrentUser(currentUserFromFirebase);
+          cacheAppUser(currentUserFromFirebase);
+          setLoginStatus(true);
         } else {
           const alertMessage = 'You should sign in with your Cornell email!';
           firebase.auth().signOut().then(() => {
-            // eslint-disable-next-line
+            // eslint-disable-next-line no-alert
             alert(alertMessage);
-            // eslint-disable-next-line
+            // eslint-disable-next-line no-restricted-globals
             location.reload(false);
           });
         }
       });
     });
-  }, [currentUserToken]);
+  }, [loginStatus]);
 
   // The effect of loading data when login finishes
   React.useEffect(() => {
-    if (currentUser === null || typeof currentUser === 'string') {
-      return;
+    if (loginStatus !== true) {
+      return () => {};
     }
-    cacheAppUser(currentUser);
     if (!loaded) {
-      httpInitializeData().then((action) => {
-        dispatchAction(action);
-        setLoaded(true);
+      initListeners({
+        onTagsUpdate: (tags) => {
+          dispatchAction(patchStoreAction(tags, null, null));
+        },
+        onTasksUpdate: (tasks) => {
+          dispatchAction(patchStoreAction(null, tasks, null));
+        },
+        onCourseMapFetched: (courseMap) => {
+          dispatchAction(patchStoreAction(null, null, courseMap));
+        },
+        onFirstFetched: () => setLoaded(true),
       });
-    } else {
-      // initRefreshDataTask();
     }
-  });
+    // initRefreshDataTask();
+    return () => {};
+  }, [loginStatus, loaded]);
 
   if (loaded) {
     // It will be loaded only if the user is signed in, so we can render!
     return appRenderer();
   }
-  const loadingOrLogin = currentUser === null
+  const loadingOrLogin = loginStatus === false
     ? (
       <React.Fragment>
         <FirebaseAuth uiConfig={uiConfig} firebaseAuth={firebase.auth()} />
