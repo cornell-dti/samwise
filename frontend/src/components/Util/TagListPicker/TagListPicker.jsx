@@ -24,7 +24,13 @@ function TagListPicker({ onTagChange, tags }: Props): Node {
     const newTag = parseInt(e.currentTarget.getAttribute('data-id') || -1, 10);
     onTagChange(newTag);
   };
-  const items = tags.map(({ id, name, color }: Tag) => (
+  const items = tags.slice().sort((a, b) => {
+    if (a.id === -1) { return -1; }
+    if (b.id === -1) { return 1; }
+    if (a.classId != null && b.classId == null) { return -1; }
+    if (a.classId == null && b.classId != null) { return 1; }
+    return a.name.localeCompare(b.name);
+  }).map(({ id, name, color }: Tag) => (
     <TagPickerItem key={id} id={id} title={name} color={color} onChange={handleClassChange} />
   ));
   return (
