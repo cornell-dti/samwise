@@ -8,7 +8,7 @@ import { date2String } from '../../util/datetime-util';
 import { NONE_TAG } from '../../util/tag-util';
 
 type Props = {|
-  +onDateChange: (date: Date) => void;
+  +onDateChange: (date: Date | null) => void;
   +date: Date;
   +opened: boolean;
   +datePicked: boolean;

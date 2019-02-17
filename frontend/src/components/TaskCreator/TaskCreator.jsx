@@ -158,7 +158,7 @@ export default class TaskCreator extends React.PureComponent<{||}, State> {
    *
    * @param {Date} date the new date, or null for today.
    */
-  editDate = (date: Date) => this.setState(
+  editDate = (date: Date | null) => this.setState(
     { date: date || new Date(), datePickerOpened: false, datePicked: Boolean(date) },
     this.focusTaskName,
   );

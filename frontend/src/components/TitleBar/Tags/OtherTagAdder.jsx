@@ -44,7 +44,7 @@ export default class OtherTagAdder extends React.PureComponent<Props, State> {
           onChange={this.editName}
           onKeyDown={this.onSubmit}
         />
-        <ColorEditor color={color} onChange={this.editColor} styles={{ marginRight: '10px' }} />
+        <ColorEditor color={color} onChange={this.editColor} />
       </li>
     );
   }

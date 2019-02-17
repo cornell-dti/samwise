@@ -1,8 +1,7 @@
 // @flow strict
 
 import type {
-  Course,
-  PartialMainTask, PartialSubTask, SubTask, Tag, Task,
+  Course, PartialMainTask, PartialSubTask, SubTask, Tag, Task,
 } from '../store/store-types';
 import type {
   FirestoreCommon, FirestoreTag, FirestoreTask, FirestoreSubTask,
@@ -35,6 +34,11 @@ type WithoutIdOrder<Props> = $ReadOnly<$Diff<Props, {| +id: string; +order: numb
  */
 
 export const addTag = (tag: WithoutIdOrder<Tag>): void => {
+  const { tags } = store.getState();
+  const { classId } = tag;
+  if (classId != null && tags.some(t => t.classId === classId)) {
+    return;
+  }
   createFirestoreObject('tags', tag)
     .then((firebaseTag: FirestoreTag) => tagsCollection().add(firebaseTag))
     .then(ignore);
