@@ -359,6 +359,9 @@ function backendPatchLoadedData(
 export default function rootReducer(state: State = initialState, action: Action): State {
   switch (action.type) {
     case 'ADD_TAG':
+      if (action.tag.classId != null && state.tags.some(x => x.classId === action.tag.classId)) {
+        return state;
+      }
       httpNewTag(action.tag)
         .then(id => dispatchAction(backendPatchNewTagAction(action.tag.id, id)));
       return { ...state, tags: [...state.tags, action.tag] };
