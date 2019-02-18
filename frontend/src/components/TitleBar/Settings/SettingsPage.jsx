@@ -1,14 +1,13 @@
 // @flow strict
 
 import * as React from 'react';
-import type { Node } from 'react';
+import type { ComponentType, Node } from 'react';
 import { connect } from 'react-redux';
 import TagItem from '../Tags/TagItem';
 import ClassTagAdder from '../Tags/ClassTagAdder';
 import OtherTagAdder from '../Tags/OtherTagAdder';
 import styles from './SettingsPage.css';
 import type { Tag } from '../../../store/store-types';
-import { tagsConnect } from '../../../util/tag-util';
 import SignOut from '../Gadgets/SignOut';
 import { importCourseExams } from '../../../firebase/actions';
 
@@ -97,5 +96,5 @@ function SettingsPage({ tags }: Props): Node {
   );
 }
 
-const Connected = tagsConnect<Props>(SettingsPage);
+const Connected: ComponentType<{||}> = connect(({ tags }) => ({ tags }))(SettingsPage);
 export default Connected;

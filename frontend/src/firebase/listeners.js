@@ -9,6 +9,7 @@ import type {
 // $FlowFixMe
 import coursesJson from '../assets/json/sp19-courses-with-exams-min.json';
 import buildCoursesMap from '../util/courses-util';
+import { error } from '../util/general-util';
 
 type Listeners = {|
   +onTagsUpdate: (Tag[]) => void;
@@ -60,8 +61,7 @@ export default (listeners: Listeners): (() => void) => {
         const {
           type, owner, date: timestamp, ...rest
         }: FirestoreTask = firestoreTaskOrSubTask;
-        // hack to enable timestamp->date transformation
-        const date = (timestamp: any).toDate();
+        const date = timestamp instanceof Date ? timestamp : timestamp.toDate();
         const task: Task = {
           id, date, subtasks: [], ...rest,
         };

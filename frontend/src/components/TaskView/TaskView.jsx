@@ -1,7 +1,7 @@
 // @flow strict
 
 import React from 'react';
-import type { Node } from 'react';
+import type { ComponentType, Node } from 'react';
 import { Icon } from 'semantic-ui-react';
 import FocusView from './FocusView/FocusView';
 import FutureView, { futureViewConfigProvider } from './FutureView/FutureView';
@@ -10,11 +10,8 @@ import windowSizeConnect from '../Util/Responsive/WindowSizeConsumer';
 import type { WindowSize } from '../Util/Responsive/window-size-context';
 import type { Task } from '../../store/store-types';
 
-type Props = {|
-  +windowSize: WindowSize;
-  +fullTasks: Task[];
-  +inFocusTasks: Task[];
-|};
+type OwnProps = {| +fullTasks: Task[]; +inFocusTasks: Task[]; |};
+type Props = {| ...OwnProps; +windowSize: WindowSize; |};
 
 function TaskView({ windowSize, fullTasks, inFocusTasks }: Props): Node {
   const [
@@ -118,5 +115,5 @@ function TaskView({ windowSize, fullTasks, inFocusTasks }: Props): Node {
   );
 }
 
-const ConnectedTaskView = windowSizeConnect<Props>(TaskView);
+const ConnectedTaskView: ComponentType<OwnProps> = windowSizeConnect(TaskView);
 export default ConnectedTaskView;
