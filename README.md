@@ -20,6 +20,7 @@ _Last updated **02/04/2019**_.
     - [Since 2016](#since-2016)
     - [Since 2017](#since-2017)
     - [Since 2018](#since-2018)
+    - [Since 2018](#since-2019)
 
 ## About
 
@@ -97,10 +98,9 @@ To know about the specific versions of these dependencies, go to [package.json](
 
 To know about the specific versions of these dependencies, go to [package.json](backend/requirements.txt).
 
-## External Documentation
+## Documentation
 
-- [Backend API Documentation](https://samwise.docs.apiary.io/) - this is an external Apiary documenting the endpoints for our application.
-- [Design Docs](docs/design-docs.md) - this is a place where we document some of our design decisions.
+Check the [docs](./docs) folder to see a list of all documentations.
 
 ## Screenshots
 
@@ -128,8 +128,9 @@ To know about the specific versions of these dependencies, go to [package.json](
 - **Sam Zhou** - Front-end Developer
 
 ### Since 2019
+
 - **Megan Yin** - Front-end Developer
-- **William Evans** - Backend Developer
+- **William Evans** - Back-end Developer
 
 We are a team within **Cornell Design & Tech Initiative**. For more information, see our website [here](https://cornelldti.org/).
 
