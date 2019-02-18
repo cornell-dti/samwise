@@ -22,7 +22,7 @@ In the current version of Samwise, we use [Firebase Auth](https://firebase.googl
 authenticate users and [Firestore](https://firebase.google.com/docs/firestore) to store user
 information. Security is enforced by 
 [Firestore Security Rules](https://firebase.google.com/docs/firestore/security/overview) and the
-config is store [here](../frontend/firestore.rules). We adopted Firebase to satisfy our need for an
+config is store [here](../firestore.rules). We adopted Firebase to satisfy our need for an
 efficient and correct realtime data syncing system.
 
 Our frontend subscribes from firestore to ensure we have the latest data. The workflow will be
