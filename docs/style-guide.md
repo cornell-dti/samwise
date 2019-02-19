@@ -31,7 +31,7 @@ IDE Integration:
 ### ESLint
 
 Always follow the [airbnb JavaScript style guide](https://github.com/airbnb/javascript). We already
-have the [ESLint](https://eslint.org) [config](../.eslintrc) setup in the repo.
+have the [ESLint](https://eslint.org) [config](../frontend/.eslintrc) setup in the repo.
 
 ESLint IDE Integration:
 

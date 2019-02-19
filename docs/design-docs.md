@@ -28,6 +28,9 @@ efficient and correct realtime data syncing system.
 Our frontend subscribes from firestore to ensure we have the latest data. The workflow will be
 introduced in the next section.
 
+We also use Firebase Functions to post-process many Firestore operations. Currently, we only use
+Firebase functions for analytics.
+
 ## Frontend Overview
 
 The frontend workflow can be summarized with the following ASCII art:
@@ -65,3 +68,12 @@ and type definition of redux store [here](../frontend/src/store/store-types.js).
 We have our Firestore and Redux Store to have almost the same shape. In this way, we can speed up
 our development process by making as less data conversion as possible. We only have some slight
 shape different when we absolutely need them.
+
+## Firebase Functions Overview
+
+We use Firebase functions to perform some non-urgent tasks, such as gathering some analytics stats
+when the users do something in our app. We subscribe to those Firestore events emitted inside 
+Google Cloud.
+
+Note that there may be a few seconds of delay before Firebase functions can handle the request.
+However, this is not a problem since no user actions will be blocked by this event handling.
