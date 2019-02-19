@@ -155,7 +155,6 @@ export const removeSubTask = (subtaskId: string): void => {
 export const clearFocus = (taskIds: string[]): void => {
   const batch = db().batch();
   taskIds.forEach(id => batch.update(tasksCollection().doc(id), { inFocus: false }));
-  console.log(taskIds)
   batch.commit().then(ignore);
 };
 

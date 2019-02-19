@@ -9,7 +9,6 @@ import type {
 // $FlowFixMe
 import coursesJson from '../assets/json/sp19-courses-with-exams-min.json';
 import buildCoursesMap from '../util/courses-util';
-import { error } from '../util/general-util';
 
 type Listeners = {|
   +onTagsUpdate: (Tag[]) => void;

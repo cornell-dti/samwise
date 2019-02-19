@@ -6,8 +6,6 @@ const common = require('./webpack.common');
 module.exports = merge(common, {
   mode: 'production',
   plugins: [
-    new webpack.DefinePlugin({
-      'process.env': { IS_STAGING: '"false"' },
-    }),
+    new webpack.DefinePlugin({ 'process.env': { IS_STAGING: '"false"' } }),
   ],
 });
