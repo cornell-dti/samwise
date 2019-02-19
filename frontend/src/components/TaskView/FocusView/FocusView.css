@@ -5,6 +5,20 @@
   overflow-x: hidden;
 }
 
+.ControlBlock {
+  display: flex;
+  align-items: center;
+}
+
+.Title {
+  font-size: 24px;
+  margin: 1em 0.5em !important;
+}
+
+.Padding {
+  flex: 1 1 auto;
+}
+
 .TaskBox {
   width: 100%;
   font-size: 12px;

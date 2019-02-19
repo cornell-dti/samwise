@@ -9,6 +9,8 @@ import styles from './TaskView.css';
 import windowSizeConnect from '../Util/Responsive/WindowSizeConsumer';
 import type { WindowSize } from '../Util/Responsive/window-size-context';
 import type { Task } from '../../store/store-types';
+import SquareTextButton from '../UI/SquareTextButton';
+import { clearFocus } from '../../firebase/actions';
 
 type OwnProps = {| +fullTasks: Task[]; +inFocusTasks: Task[]; |};
 type Props = {| ...OwnProps; +windowSize: WindowSize; |};
@@ -68,49 +70,41 @@ function TaskView({ windowSize, fullTasks, inFocusTasks }: Props): Node {
     );
   };
 
-  if (!screenIsSmall) {
-    const showFocusView = futureViewConfigProvider.isInNDaysView(futureViewConfig)
-      || doesShowFocusViewInWideScreen;
+  const FocusPanel = (): Node => (
+    <div className={styles.FocusPanel}>
+      <FocusView tasks={inFocusTasks} />
+    </div>
+  );
+
+  const FuturePanel = ({ children }: {| +children?: Node |}): Node => (
+    <div className={styles.FuturePanel}>
+      {children}
+      <FutureView
+        windowSize={windowSize}
+        config={futureViewConfig}
+        tasks={fullTasks}
+        onConfigChange={onConfigChange}
+      />
+    </div>
+  );
+  FuturePanel.defaultProps = { children: null };
+
+  if (screenIsSmall) {
     return (
       <div className={styles.TaskView}>
-        {showFocusView && (
-          <div className={styles.FocusPanel}>
-            <h3 className={styles.ControlTitle}>Focus</h3>
-            <FocusView tasks={inFocusTasks} />
-          </div>
-        )}
-        <div className={styles.FuturePanel}>
-          {renderWideScreenFocusViewToggleComponent()}
-          <FutureView
-            windowSize={windowSize}
-            config={futureViewConfig}
-            tasks={fullTasks}
-            onConfigChange={onConfigChange}
-          />
-        </div>
+        {doesShowFutureViewInSmallScreen ? <FuturePanel /> : <FocusPanel />}
+        {renderSmallScreenViewSwitcherComponent()}
       </div>
     );
   }
-  const renderedView = doesShowFutureViewInSmallScreen
-    ? (
-      <div className={styles.FuturePanel}>
-        <FutureView
-          windowSize={windowSize}
-          config={futureViewConfig}
-          tasks={fullTasks}
-          onConfigChange={onConfigChange}
-        />
-      </div>
-    ) : (
-      <div className={styles.FocusPanel}>
-        <h3 className={styles.ControlTitle}>Focus</h3>
-        <FocusView tasks={inFocusTasks} />
-      </div>
-    );
+  const showFocusView = futureViewConfigProvider.isInNDaysView(futureViewConfig)
+    || doesShowFocusViewInWideScreen;
   return (
     <div className={styles.TaskView}>
-      {renderedView}
-      {renderSmallScreenViewSwitcherComponent()}
+      {showFocusView && <FocusPanel inFocusTasks={inFocusTasks} />}
+      <FuturePanel>
+        {renderWideScreenFocusViewToggleComponent()}
+      </FuturePanel>
     </div>
   );
 }

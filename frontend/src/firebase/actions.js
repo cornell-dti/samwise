@@ -149,6 +149,16 @@ export const removeSubTask = (subtaskId: string): void => {
   tasksCollection().doc(subtaskId).delete().then(ignore);
 };
 
+/**
+ * Clear all the completed tasks in focus view.
+ */
+export const clearFocus = (taskIds: string[]): void => {
+  const batch = db().batch();
+  taskIds.forEach(id => batch.update(tasksCollection().doc(id), { inFocus: false }));
+  console.log(taskIds)
+  batch.commit().then(ignore);
+};
+
 /*
  * --------------------------------------------------------------------------------
  * Section 3: Other Compound Actions

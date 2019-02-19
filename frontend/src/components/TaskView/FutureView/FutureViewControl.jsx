@@ -4,7 +4,7 @@ import React from 'react';
 import type { Node } from 'react';
 import { Icon } from 'semantic-ui-react';
 import type { FutureViewContainerType, FutureViewDisplayOption } from './future-view-types';
-import SquareTextToggle from '../../UI/SquareTextToggle';
+import SquareTextButton from '../../UI/SquareTextButton';
 import SquareIconToggle from '../../UI/SquareIconToggle';
 import { date2YearMonth } from '../../../util/datetime-util';
 import styles from './FutureViewControl.css';
@@ -230,7 +230,7 @@ export default function FutureViewControl(props: Props): Node {
     onChange({ offset: newOffset });
   };
   const today = offset !== 0 && (
-    <SquareTextToggle text="Today" onClick={changeOffset('TODAY')} />
+    <SquareTextButton text="Today" onClick={changeOffset('TODAY')} />
   );
   const navControl = (
     <NavControl
