@@ -67,11 +67,6 @@ module.exports = {
   },
   plugins: [
     new CleanWebpackPlugin(['dist']),
-    new ExtractCssChunks({
-      filename: '[name].css',
-      chunkFilename: '[id].css',
-      hot: true,
-    }),
     new HtmlWebpackPlugin({ template: './public/index.html' }),
     new AppManifestWebpackPlugin({
       logo: './src/assets/favicon/icon.svg',
