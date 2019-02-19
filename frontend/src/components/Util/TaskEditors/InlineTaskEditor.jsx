@@ -1,7 +1,7 @@
 // @flow strict
 
 import React from 'react';
-import type { Node } from 'react';
+import type { ComponentType, Node } from 'react';
 import type {
   PartialMainTask, PartialSubTask, SubTask, Task,
 } from '../../../store/store-types';
@@ -23,12 +23,12 @@ type DefaultProps = {|
   className?: string; // additional class names applied to the editor.
 |};
 
-type Props = {| ...OwnProps;...DefaultProps; |};
+type Props = {| ...OwnProps; ...DefaultProps; |};
 
 /**
  * The task editor used to edit task inline, activated on focus.
  */
-export default function InlineTaskEditor({ task, className }: Props): Node {
+function InlineTaskEditor({ task, className }: Props): Node {
   const [disabled, setDisabled] = React.useState(true);
 
   const { id } = task;
@@ -63,3 +63,6 @@ export default function InlineTaskEditor({ task, className }: Props): Node {
 }
 
 InlineTaskEditor.defaultProps = { className: undefined };
+
+const Connected: ComponentType<Props> = React.memo(InlineTaskEditor);
+export default Connected;

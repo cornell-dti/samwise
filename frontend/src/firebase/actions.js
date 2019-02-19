@@ -164,6 +164,63 @@ export const clearFocus = (taskIds: string[]): void => {
  * --------------------------------------------------------------------------------
  */
 
+/**
+ * Reorder a list of items by swapping items with order sourceOrder and destinationOrder
+ *
+ * @param {'tags' | 'tasks'} orderFor whether the reorder is for tags or tasks.
+ * @param {array} originalList the original list as a reference.
+ * @param {number} sourceOrder where is the dragged item from.
+ * @param {number} destinationOrder where the dragged item goes.
+ * @return {array} a new list with updated orders.
+ */
+export function reorder<-T: { +id: string; +order: number }>(
+  orderFor: 'tags' | 'tasks',
+  originalList: T[],
+  sourceOrder: number,
+  destinationOrder: number,
+): T[] {
+  if (sourceOrder === destinationOrder) {
+    return originalList;
+  }
+  const sortedList = originalList.sort((a, b) => a.order - b.order);
+  const reorderMap = new Map<string, number>(); // key: id, value: new order
+  if (sourceOrder < destinationOrder) {
+    // wants to go to later places
+    sortedList.forEach((element) => {
+      if (element.order === sourceOrder) {
+        reorderMap.set(element.id, destinationOrder);
+      } else if (element.order > sourceOrder && element.order <= destinationOrder) {
+        reorderMap.set(element.id, element.order - 1);
+      }
+    });
+  } else {
+    // wants to go to earlier places
+    sortedList.forEach((element) => {
+      if (element.order === sourceOrder) {
+        reorderMap.set(element.id, destinationOrder);
+      } else if (element.order >= destinationOrder && element.order < sourceOrder) {
+        reorderMap.set(element.id, element.order + 1);
+      }
+    });
+  }
+  for (let i = 0; i < sortedList.length; i += 1) {
+    const element = sortedList[i];
+    const newOrder = reorderMap.get(element.id);
+    if (newOrder != null) {
+      sortedList[i] = { ...element, order: newOrder };
+    }
+  }
+  const collection = orderFor === 'tags'
+    ? id => tagsCollection().doc(id)
+    : id => tasksCollection().doc(id);
+  const batch = db().batch();
+  reorderMap.forEach((order, id) => {
+    batch.update(collection(id), { order });
+  });
+  batch.commit().then(ignore);
+  return sortedList.sort((a, b) => a.order - b.order);
+}
+
 export const importCourseExams = (): void => {
   const { tags, tasks, courses } = store.getState();
   type SimpleTask = $Diff<WithoutIdOrder<Task>, {| +subtasks: SubTask[] |}>;
