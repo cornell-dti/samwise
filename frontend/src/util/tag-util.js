@@ -3,7 +3,6 @@
 import type { ComponentType } from 'react';
 import { connect } from 'react-redux';
 import type { Tag } from '../store/store-types';
-import { error } from './general-util';
 
 /**
  * ID of the none tag.
@@ -22,8 +21,8 @@ export const NONE_TAG: Tag = {
 /**
  * Returns the tag from a list of tags given the id.
  */
-const getTagById = (tags: Tag[], id: string): Tag => tags
-  .find(t => t.id === id) ?? error(`Tag ${id} not found! Corrupted store.`);
+const getTagById = (tags: Tag[], id: string): Tag | null => tags
+  .find(t => t.id === id) || null;
 
 /**
  * A function to connect a component with just tags in redux store.

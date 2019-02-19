@@ -26,7 +26,8 @@ function TagPicker(props: Props): Node {
   const reset = () => onTagChange(NONE_TAG_ID);
   // Nodes
   const displayedNode = (isDefault: boolean) => {
-    const { name, color, classId } = getTag(tag);
+    const { name, color, classId } = getTag(tag) || { name: null, color: null, classId: null };
+    if (name === null) { reset(); }
     const style = isDefault ? {} : { background: color };
     const internal = isDefault
       ? (<Icon name="tag" className={styles.CenterIcon} />)
