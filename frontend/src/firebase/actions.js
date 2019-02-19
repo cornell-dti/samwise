@@ -13,6 +13,7 @@ import type { TaskDiff } from '../util/task-util';
 import { emitUndoAddTaskToast, emitUndoRemoveTaskToast } from '../util/undo-util';
 import allocateNewOrder from './order-manager';
 import { store } from '../store/store';
+import { NONE_TAG_ID } from '../util/tag-util';
 
 async function createFirestoreObject<-T>(
   orderFor: 'tags' | 'tasks', source: T,
@@ -50,7 +51,19 @@ export const editTag = (tag: Tag): void => {
 };
 
 export const removeTag = (id: string): void => {
-  tagsCollection().doc(id).delete().then(ignore);
+  tasksCollection()
+    .where('owner', '==', getAppUser().email)
+    .where('tag', '==', id)
+    .get()
+    .then((s) => {
+      const batch = db().batch();
+      s.docs.filter(doc => doc.data().type === 'TASK')
+        .forEach((doc) => {
+          batch.update(tasksCollection().doc(doc.id), { tag: NONE_TAG_ID });
+        });
+      batch.delete(tagsCollection().doc(id));
+      batch.commit().then(ignore);
+    });
 };
 
 /*
