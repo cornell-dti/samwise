@@ -111,9 +111,6 @@ yarn-error.log*
 *.manifest
 *.spec
 
-# Flow Typed
-frontend/flow-typed
-
 # Environment variable script
 run_db_viewer
 

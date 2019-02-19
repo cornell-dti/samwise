@@ -52,7 +52,7 @@ you to follow.
 
 Flow should be automatically installed in `node_modules/` when you are installing frontend
 dependencies. You can follow the instructions on [Flow's website](https://flow.org/en/docs/install/)
-if you encountered any problems. The config of the flow is listed [here](../.flowconfig).
+if you encountered any problems. The config of the flow is listed [here](../frontend/.flowconfig).
 
 To run flow locally to type-check your code, you can run `yarn run flow` or `flow` if you have
 installed flow globally. Flow can provide reliable type-based auto-completion service for your IDEs,
