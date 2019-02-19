@@ -1,19 +1,21 @@
-import * as functions from 'firebase-functions';
-import { firestore } from 'firebase-admin';
+import { EventContext, firestore as firestoreFunction,  } from 'firebase-functions';
+import { firestore, initializeApp } from 'firebase-admin';
 import {
+  FirestoreSubTask,
   FirestoreTag,
   FirestoreTask,
-  FirestoreSubTask,
   UserActionRecord,
   UserActionStat
 } from './types';
+
+initializeApp();
 
 const TAG_DOC = 'samwise-tags/{tagId}';
 const TASK_DOC = 'samwise-tasks/{taskId}';
 
 const userActions = () => firestore().collection('samwise-user-actions');
 
-const getTime = (context: functions.EventContext): firestore.Timestamp => {
+const getTime = (context: EventContext): firestore.Timestamp => {
   const d = new Date(context.timestamp);
   d.setUTCMinutes(0, 0, 0);
   return firestore.Timestamp.fromDate(d);
@@ -41,7 +43,7 @@ const emptyActions: UserActionStat = {
 };
 
 const updateRecord = (
-  user: string, context: functions.EventContext,
+  user: string, context: EventContext,
   getNewActionStat: () => UserActionStat,
   updateActionStat: (actions: UserActionStat) => UserActionStat
 ): void => {
@@ -57,10 +59,12 @@ const updateRecord = (
       const actions: UserActionStat = updateActionStat(existingRecord.actions);
       transaction.update(userActions().doc(existingDoc.id), { actions });
     }
-  });
+  }).then(() => {
+    // Do nothing here
+  }).catch(reason => console.log(reason));
 };
 
-export const tagsOnCreate = functions.firestore.document(TAG_DOC)
+export const tagsOnCreate = firestoreFunction.document(TAG_DOC)
   .onCreate((snapshot, context) => {
     const { owner } = snapshot.data() as FirestoreTag;
     updateRecord(
@@ -69,9 +73,10 @@ export const tagsOnCreate = functions.firestore.document(TAG_DOC)
       () => ({ ...emptyActions, createTag: 1 }),
       (actions) => ({ ...actions, createTag: actions.createTag + 1 })
     );
+    return null;
   });
 
-export const tagsOnUpdate = functions.firestore.document(TAG_DOC)
+export const tagsOnUpdate = firestoreFunction.document(TAG_DOC)
   .onUpdate((snapshot, context) => {
     const { after } = snapshot;
     if (after === undefined) {
@@ -84,9 +89,10 @@ export const tagsOnUpdate = functions.firestore.document(TAG_DOC)
       () => ({ ...emptyActions, editTag: 1 }),
       (actions) => ({ ...actions, editTag: actions.editTag + 1 })
     );
+    return null;
   });
 
-export const tagsOnDelete = functions.firestore.document(TAG_DOC)
+export const tagsOnDelete = firestoreFunction.document(TAG_DOC)
   .onDelete((snapshot, context) => {
     const { owner } = snapshot.data() as FirestoreTag;
     updateRecord(
@@ -95,9 +101,10 @@ export const tagsOnDelete = functions.firestore.document(TAG_DOC)
       () => ({ ...emptyActions, deleteTag: 1 }),
       (actions) => ({ ...actions, deleteTag: actions.deleteTag + 1 })
     );
+    return null;
   });
 
-export const tasksOnCreate = functions.firestore.document(TASK_DOC)
+export const tasksOnCreate = firestoreFunction.document(TASK_DOC)
   .onCreate((snapshot, context) => {
     const { owner, type } = snapshot.data() as (FirestoreTask | FirestoreSubTask);
     updateRecord(
@@ -114,9 +121,10 @@ export const tasksOnCreate = functions.firestore.document(TASK_DOC)
           : { ...actions, createSubTask: actions.createSubTask + 1 }
       )
     );
+    return null;
   });
 
-export const tasksOnUpdate = functions.firestore.document(TASK_DOC)
+export const tasksOnUpdate = firestoreFunction.document(TASK_DOC)
   .onUpdate((snapshot, context) => {
     const { before, after } = snapshot;
     if (before === undefined || after === undefined) {
@@ -164,10 +172,11 @@ export const tasksOnUpdate = functions.firestore.document(TASK_DOC)
         focusTask: actions.focusTask + focusTaskIncrease,
         completeFocusedTask: actions.completeFocusedTask + completeFocusedTaskIncrease
       })
-    )
+    );
+    return null;
   });
 
-export const tasksOnDelete = functions.firestore.document(TASK_DOC)
+export const tasksOnDelete = firestoreFunction.document(TASK_DOC)
   .onDelete((snapshot, context) => {
     const { owner, type } = snapshot.data() as (FirestoreTask | FirestoreSubTask);
     updateRecord(
@@ -184,4 +193,5 @@ export const tasksOnDelete = functions.firestore.document(TASK_DOC)
           : { ...actions, deleteSubTask: actions.deleteSubTask + 1 }
       )
     );
+    return null;
   });
