@@ -48,11 +48,10 @@ export default function FutureViewSubTask(
         onClick={onFocusChange}
       />
       :
-      <Pin
-        className={styles.TaskIcon}
-        onClick={onFocusChange}
-      />
-      <Delete className={styles.TaskIcon} onClick={onRemove} />
+      {/* onClick={onFocusChange} */}
+      <img src={Pin} alt="pin" className={styles.TaskIcon} />
+      {/* onClick={onRemove} */}
+      <img src={Delete} alt="" className={styles.TaskIcon} />
     </div>
   );
 }

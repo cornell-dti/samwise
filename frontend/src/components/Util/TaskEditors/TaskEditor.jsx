@@ -291,7 +291,9 @@ class TaskEditor extends React.Component<Props, State> {
     );
     const dateDisplay = (<span>{`${date.getMonth() + 1}/${date.getDate()}`}</span>);
     const dateEditor = doesShowDateEditor && (
-      <Calendar
+      <img
+        src={Calendar}
+        alt="X"
         value={date}
         className={styles.TaskEditorCalendar}
         minDate={new Date()}
@@ -347,7 +349,8 @@ class TaskEditor extends React.Component<Props, State> {
           className={styles.TaskEditorIcon}
           onClick={this.editInFocus}
         />
-        <Delete className={styles.TaskEditorIcon} onClick={onRemove} /> // use Delete
+        {/*onClick={onRemove}*/}
+        <img src={Delete} alt="X" className={styles.TaskEditorIcon} />
       </div>
     );
   };
@@ -400,7 +403,8 @@ class TaskEditor extends React.Component<Props, State> {
           className={styles.TaskEditorIcon}
           onClick={this.editSubTaskInFocus(subTask)}
         />
-        <Delete className={styles.TaskEditorIcon} onClick={onRemoveSubTask} />
+        {/*onClick={onRemoveSubTask}*/}
+        <img src={Delete} alt="X" className={styles.TaskEditorIcon} />
       </div>
     );
   };

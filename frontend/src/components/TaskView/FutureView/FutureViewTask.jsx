@@ -79,7 +79,8 @@ class FutureViewTask extends React.PureComponent<Props, State> {
     const handler = () => {
       removeTask(filteredTask);
     };
-    return <Icon name="delete" className={styles.TaskIcon} onClick={handler} />; // use Delete
+    // onClick={handler}
+    return <img alt="" src={Delete} className={styles.TaskIcon} />;
   };
 
   renderBookmarkIcon = (): Node => {

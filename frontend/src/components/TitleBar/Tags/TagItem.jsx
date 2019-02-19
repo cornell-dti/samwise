@@ -45,7 +45,7 @@ export default function TagItem({ tag }: Props): Node {
       {nameNode}
       <ColorEditor color={color} onChange={editColor} />
       <button type="button" className={styles.DeleteTag} onClick={onRemove}>
-        <Delete />
+        <img src={Delete} alt="X" />
       </button>
     </li>
   );

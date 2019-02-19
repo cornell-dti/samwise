@@ -3,7 +3,7 @@
 import React from 'react';
 import type { Node } from 'react';
 import { GithubPicker } from 'react-color';
-import down from '../../../assets/svgs/v.svg';
+import Down from '../../../assets/svgs/v.svg';
 import colMap from './ListColors';
 import styles from './ColorEditor.css';
 
@@ -28,7 +28,7 @@ export default function ColorEditor({ color, onChange }: Props): Node {
       <button type="button" className={styles.ColorEdit} onClick={toggleEditor}>
         {colMap[color.toLowerCase()]}
         <span className={styles.ColorDisplay} style={{ backgroundColor: color }} />
-        <down className={styles.Arrow} />
+        <img src={Down} alt="" className={styles.Arrow} />
       </button>
       {doesShowEditor && (
         <div className={styles.ColorPicker}>

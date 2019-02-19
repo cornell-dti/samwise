@@ -1,6 +1,6 @@
 // @flow strict
 
-import * as React from 'react';
+import React from 'react';
 import Settings from '../../../assets/svgs/settings.svg';
 import Delete from '../../../assets/svgs/X.svg';
 import SettingsPage from './SettingsPage';
@@ -12,6 +12,15 @@ export default function SettingsButton() {
   const displayModal = () => setShowSettings(true);
   const closeModal = () => setShowSettings(false);
 
+  // /**
+  //  * Display the settings model.
+  //  */
+  // displayModal = () => this.setState({ showSettings: true });
+  //
+  // /**
+  //  * Close the settings model.
+  //  */
+  // closeModal = () => this.setState({ showSettings: false });
   return (
     <div style={{ display: 'inline-block' }}>
       <button type="submit" onClick={displayModal}>
@@ -20,7 +29,7 @@ export default function SettingsButton() {
       {showSettings && (
         <div className={styles.settingsModal}>
           <button className={styles.closeButton} type="submit" onClick={closeModal}>
-            <Delete />
+            <img src={Delete} alt="X" />
           </button>
           <section className={styles.contentWrap}>
             <h2>Settings</h2>

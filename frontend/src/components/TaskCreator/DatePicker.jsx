@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { Calendar } from 'react-calendar';
-import { Icon } from 'semantic-ui-react';
+import Dark from '../../assets/svgs/dark.svg';
 import styles from './Picker.css';
 import { date2String } from '../../util/datetime-util';
 import { NONE_TAG } from '../../util/tag-util';
@@ -26,7 +26,7 @@ export default function DatePicker(props: Props) {
   const displayedNode = (isDefault: boolean) => {
     const style = isDefault ? {} : { background: NONE_TAG.color };
     const internal = isDefault
-      ? (<Icon name="calendar outline" className={styles.CenterIcon} />)
+      ? (<img src={Dark} alt="calendar" />)
       : (
         <React.Fragment>
           <span className={styles.DateDisplay}>{date2String(date)}</span>
