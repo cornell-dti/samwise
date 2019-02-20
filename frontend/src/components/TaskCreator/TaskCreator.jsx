@@ -260,7 +260,7 @@ export default class TaskCreator extends React.PureComponent<{||}, State> {
       return (
         <li key={id}>
           <button type="button" tabIndex={-1} onClick={this.deleteSubTask(id)}>
-            <img src={Delete} alt="X" />
+            <span style={{ backgroundImage: `url(${Delete})` }} />
           </button>
           <input
             type="text"

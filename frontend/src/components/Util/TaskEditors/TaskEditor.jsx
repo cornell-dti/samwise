@@ -3,9 +3,10 @@
 import React from 'react';
 import type { Node } from 'react';
 import Calendar from 'react-calendar';
-import { Icon } from 'semantic-ui-react';
 import Dark from '../../../assets/svgs/dark.svg';
 import Delete from '../../../assets/svgs/X.svg';
+import PinOutline from '../../../assets/svgs/pin-2-dark.svg';
+import Pin from '../../../assets/svgs/pin-2-dark-filled.svg';
 import type {
   Tag, SubTask, Task, PartialMainTask, PartialSubTask,
 } from '../../../store/store-types';
@@ -291,9 +292,7 @@ class TaskEditor extends React.Component<Props, State> {
     );
     const dateDisplay = (<span>{`${date.getMonth() + 1}/${date.getDate()}`}</span>);
     const dateEditor = doesShowDateEditor && (
-      <img
-        src={Calendar}
-        alt="X"
+      <Calendar
         value={date}
         className={styles.TaskEditorCalendar}
         minDate={new Date()}
@@ -305,7 +304,8 @@ class TaskEditor extends React.Component<Props, State> {
         {tagDisplay}
         {tagEditor}
         <span className={styles.TaskEditorFlexiblePadding} />
-        <Dark
+        <span
+          style={{ backgroundImage: `url(${Dark})` }}
           className={styles.TaskEditorIconButton}
           onClick={this.toggleDateEditor}
         />
@@ -344,13 +344,8 @@ class TaskEditor extends React.Component<Props, State> {
           onChange={this.editTaskNameCache}
           onBlur={this.editTaskName}
         />
-        <Icon
-          name={inFocus ? 'bookmark' : 'bookmark outline'}
-          className={styles.TaskEditorIcon}
-          onClick={this.editInFocus}
-        />
-        {/*onClick={onRemove}*/}
-        <img src={Delete} alt="X" className={styles.TaskEditorIcon} />
+        <span style={{ backgroundImage: `url(${inFocus ? Pin : PinOutline})` }} className={styles.TaskEditorIcon} onClick={this.editInFocus} />
+        <span style={{ backgroundImage: `url(${Delete})` }} className={styles.TaskEditorIcon} onClick={onRemove} />
       </div>
     );
   };
@@ -398,13 +393,8 @@ class TaskEditor extends React.Component<Props, State> {
           onBlur={this.editTaskName}
           style={{ width: 'calc(100% - 70px)' }}
         />
-        <Icon
-          name={subTask.inFocus ? 'bookmark' : 'bookmark outline'}
-          className={styles.TaskEditorIcon}
-          onClick={this.editSubTaskInFocus(subTask)}
-        />
-        {/*onClick={onRemoveSubTask}*/}
-        <img src={Delete} alt="X" className={styles.TaskEditorIcon} />
+        <span style={{ backgroundImage: `url(${Pin})` }} className={styles.TaskEditorIcon} onClick={this.editSubTaskInFocus(subTask)} />
+        <span style={{ backgroundImage: `url(${Delete})` }} onClick={onRemoveSubTask} className={styles.TaskEditorIcon} />
       </div>
     );
   };

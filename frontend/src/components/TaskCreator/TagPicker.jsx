@@ -29,7 +29,7 @@ function TagPicker(props: Props): Node {
     const { name, color, classId } = getTag(tag);
     const style = isDefault ? {} : { background: color };
     const internal = isDefault
-      ? (<img src={tagIcon} alt="tag" />)
+      ? (<span style={{ backgroundImage: `url(${tagIcon})` }} />)
       : (
         <React.Fragment>
           <span className={styles.TagDisplay}>{classId != null ? name.split(':')[0] : name}</span>

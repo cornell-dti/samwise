@@ -2,8 +2,8 @@
 
 import React from 'react';
 import type { Node } from 'react';
-import { Icon } from 'semantic-ui-react';
-import Pin from '../../../assets/svgs/pin-2-dark.svg';
+import PinFilled from '../../../assets/svgs/pin-2-dark-filled.svg';
+import PinOutline from '../../../assets/svgs/pin-2-dark.svg';
 import Delete from '../../../assets/svgs/X.svg';
 import styles from './FutureViewTask.css';
 import type { SubTask } from '../../../store/store-types';
@@ -41,17 +41,8 @@ export default function FutureViewSubTask(
       >
         {name}
       </span>
-      inFocus ?
-      <Icon
-        name="bookmark outline"
-        className={styles.TaskIcon}
-        onClick={onFocusChange}
-      />
-      :
-      {/* onClick={onFocusChange} */}
-      <img src={Pin} alt="pin" className={styles.TaskIcon} />
-      {/* onClick={onRemove} */}
-      <img src={Delete} alt="" className={styles.TaskIcon} />
+      <span style={{ backgroundImage: `url(${inFocus ? PinOutline : PinFilled})` }} onClick={onFocusChange} className={styles.TaskIcon} />
+      <span style={{ backgroundImage: `url(${Delete})` }} onClick={onRemove} className={styles.TaskIcon} />
     </div>
   );
 }

@@ -26,7 +26,7 @@ export default function DatePicker(props: Props) {
   const displayedNode = (isDefault: boolean) => {
     const style = isDefault ? {} : { background: NONE_TAG.color };
     const internal = isDefault
-      ? (<img src={Dark} alt="calendar" />)
+      ? ((<span style={{ backgroundImage: `url(${Dark})` }} className={styles.CenterIcon} />))
       : (
         <React.Fragment>
           <span className={styles.DateDisplay}>{date2String(date)}</span>

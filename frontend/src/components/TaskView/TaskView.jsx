@@ -4,6 +4,7 @@ import React from 'react';
 import type { Node } from 'react';
 import { Icon } from 'semantic-ui-react';
 import Calendar from '../../assets/svgs/dark.svg';
+import Pin from '../../assets/svgs/pin-2-dark-filled.svg';
 import FocusView from './FocusView/FocusView';
 import FutureView, { futureViewConfigProvider } from './FutureView/FutureView';
 import styles from './TaskView.css';
@@ -64,18 +65,16 @@ function TaskView({ windowSize, fullTasks, inFocusTasks }: Props): Node {
       return null;
     }
     return (doesShowFutureViewInSmallScreen
-        ?
-        (<Icon
-          name="bookmark"
-          className={styles.ViewSwitcher}
-          onClick={switchView}
-        />) : <button onClick={switchView}>
-                <img
-                  src={Calendar}
-                  alt=""
-                  className={styles.ViewSwitcher}
-              />
-            </button>
+      ? (<span
+        style={{ backgroundImage: `url(${Pin})` }}
+        className={styles.ViewSwitcher}
+        onClick={switchView}
+      />)
+      : <span
+        style={{ backgroundImage: `url(${Calendar})`}}
+        onClick={switchView}
+        className={styles.ViewSwitcher}
+      />
     );
   };
 
