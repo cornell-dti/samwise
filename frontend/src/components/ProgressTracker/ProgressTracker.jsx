@@ -1,7 +1,7 @@
 // @flow strict
 
 import React from 'react';
-import type { Node } from 'react';
+import type { ComponentType, Node } from 'react';
 import type { TasksProgress } from '../../util/task-util';
 import windowSizeConnect from '../Util/Responsive/WindowSizeConsumer';
 import type { WindowSize } from '../Util/Responsive/window-size-context';
@@ -9,10 +9,8 @@ import Bear from './Bear';
 import ProgressIndicator from './ProgressIndicator';
 import styles from './ProgressTracker.css';
 
-type Props = {|
-  +windowSize: WindowSize;
-  +progress: TasksProgress;
-|};
+type OwnProps = {| +progress: TasksProgress; |};
+type Props = {| +windowSize: WindowSize; +progress: TasksProgress; |};
 
 /**
  * The progress tracker component.
@@ -23,6 +21,8 @@ type Props = {|
  * @constructor
  */
 function ProgressTracker({ windowSize, progress }: Props): Node {
+  // Note: windowSize is unused for now, but it may be used later to distinguish
+  // desktop and mobile view.
   return (
     <div className={styles.ProgressTracker}>
       <Bear progress={progress} />
@@ -31,5 +31,5 @@ function ProgressTracker({ windowSize, progress }: Props): Node {
   );
 }
 
-const Connected = windowSizeConnect<Props>(ProgressTracker);
+const Connected: ComponentType<OwnProps> = windowSizeConnect(ProgressTracker);
 export default Connected;

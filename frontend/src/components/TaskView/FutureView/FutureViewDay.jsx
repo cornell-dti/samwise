@@ -1,7 +1,7 @@
 // @flow strict
 
 import React from 'react';
-import type { Node } from 'react';
+import type { ComponentType, Node } from 'react';
 import type { CompoundTask } from './future-view-types';
 import type { FloatingPosition } from '../../Util/TaskEditors/task-editors-types';
 import styles from './FutureViewDay.css';
@@ -17,11 +17,15 @@ import windowSizeConnect from '../../Util/Responsive/WindowSizeConsumer';
 import type { WindowSize } from '../../Util/Responsive/window-size-context';
 import { error } from '../../../util/general-util';
 
-type Props = {|
+type OwnProps = {|
   +date: Date;
   +tasks: CompoundTask[];
   +inNDaysView: boolean;
   +taskEditorPosition: FloatingPosition;
+|};
+
+type Props = {|
+  ...OwnProps;
   +windowSize: WindowSize;
 |};
 
@@ -242,5 +246,5 @@ class FutureViewDay extends React.PureComponent<Props, State> {
   }
 }
 
-const ConnectedFutureViewDay = windowSizeConnect<Props>(FutureViewDay);
+const ConnectedFutureViewDay: ComponentType<OwnProps> = windowSizeConnect(FutureViewDay);
 export default ConnectedFutureViewDay;

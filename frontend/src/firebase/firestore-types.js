@@ -17,7 +17,7 @@ export type FirestoreTask = {|
   +type: 'TASK';
   +name: string;
   +tag: string;
-  +date: Date;
+  +date: Date | { +toDate: () => Date };
   +complete: boolean;
   +inFocus: boolean;
 |};

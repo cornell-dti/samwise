@@ -60,8 +60,7 @@ export default (listeners: Listeners): (() => void) => {
         const {
           type, owner, date: timestamp, ...rest
         }: FirestoreTask = firestoreTaskOrSubTask;
-        // hack to enable timestamp->date transformation
-        const date = (timestamp: any).toDate();
+        const date = timestamp instanceof Date ? timestamp : timestamp.toDate();
         const task: Task = {
           id, date, subtasks: [], ...rest,
         };

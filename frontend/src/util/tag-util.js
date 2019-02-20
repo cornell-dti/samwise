@@ -37,7 +37,7 @@ export function tagsConnect<-Config>(
 /**
  * A function to connect a component with a function to find the color of a tag.
  */
-export function getTagConnect<Config: Object>(
+export function getTagConnect<-Config>(
   component: ComponentType<Config>,
 ): ComponentType<$Diff<Config, {| +getTag: (id: string) => Tag; |}>> {
   return connect(

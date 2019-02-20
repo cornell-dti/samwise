@@ -1,7 +1,7 @@
 // @flow strict
 
 import React from 'react';
-import type { Node } from 'react';
+import type { ComponentType, Node } from 'react';
 import type { CompoundTask } from './future-view-types';
 import type { FloatingPosition } from '../../Util/TaskEditors/task-editors-types';
 import FutureViewTask from './FutureViewTask';
@@ -9,7 +9,16 @@ import styles from './FutureViewDayTaskContainer.css';
 import windowSizeConnect from '../../Util/Responsive/WindowSizeConsumer';
 import type { WindowSize } from '../../Util/Responsive/window-size-context';
 
+type OwnProps = {|
+  +tasks: CompoundTask[];
+  +inNDaysView: boolean;
+  +taskEditorPosition: FloatingPosition;
+  +isInMainList: boolean;
+  +onOverflowChange: (doesOverflow: boolean) => void;
+|};
+
 type Props = {|
+  ...OwnProps;
   /*
    * Disabled this below for technical reason.
    * We want it to re-render whenever window size changes so we can know the
@@ -17,11 +26,6 @@ type Props = {|
    */
   // eslint-disable-next-line
   +windowSize: WindowSize;
-  +tasks: CompoundTask[];
-  +inNDaysView: boolean;
-  +taskEditorPosition: FloatingPosition;
-  +isInMainList: boolean;
-  +onOverflowChange: (doesOverflow: boolean) => void;
 |};
 
 /**
@@ -63,5 +67,5 @@ class FutureViewDayTaskContainer extends React.PureComponent<Props> {
   }
 }
 
-const Connected = windowSizeConnect<Props>(FutureViewDayTaskContainer);
+const Connected: ComponentType<OwnProps> = windowSizeConnect(FutureViewDayTaskContainer);
 export default Connected;
