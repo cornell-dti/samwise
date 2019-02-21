@@ -15,7 +15,7 @@ type Props = {|
   ...NameCompleteInFocus;
   +onChange: ($Shape<NameCompleteInFocus>) => void;
   +onRemove: () => void;
-  +onPressEnter: (event: SyntheticKeyboardEvent<HTMLInputElement>) => void;
+  +onPressEnter: ('main-task' | number) => void;
 |};
 
 function MainTaskEditor(
@@ -28,6 +28,12 @@ function MainTaskEditor(
   const editComplete = () => onChange({ complete: !complete });
   const editInFocus = () => onChange({ inFocus: !inFocus });
 
+  const onKeyDown = (event: SyntheticKeyboardEvent<HTMLInputElement>) => {
+    if (event.key !== 'Enter') {
+      return;
+    }
+    onPressEnter('main-task');
+  };
   const onInputChange = (event: SyntheticEvent<HTMLInputElement>): void => {
     event.stopPropagation();
     setNameCache(event.currentTarget.value);
@@ -50,7 +56,7 @@ function MainTaskEditor(
         className={styles.TaskEditorFlexibleInput}
         placeholder="Main Task"
         value={nameCache}
-        onKeyDown={onPressEnter}
+        onKeyDown={onKeyDown}
         onChange={onInputChange}
         onBlur={onBlur}
       />

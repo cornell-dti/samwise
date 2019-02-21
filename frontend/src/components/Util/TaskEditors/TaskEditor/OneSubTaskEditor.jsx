@@ -14,7 +14,7 @@ type Props = {|
   +afterFocusedCallback: () => void;
   +editSubTask: (subtaskId: string, partialSubTask: PartialSubTask, doSave: boolean) => void;
   +removeSubTask: (subtaskId: string) => void;
-  +onPressEnter: (event: SyntheticKeyboardEvent<HTMLInputElement>) => void;
+  +onPressEnter: ('main-task' | number) => void;
 |};
 
 const className = [styles.TaskEditorFlexibleContainer, styles.TaskEditorSubtaskCheckBox].join(' ');
@@ -36,6 +36,12 @@ function OneSubTaskEditor(
   const onInFocusChange = () => editSubTask(subTask.id, { inFocus: !subTask.inFocus }, false);
   const onRemove = () => removeSubTask(subTask.id);
 
+  const onKeyDown = (event: SyntheticKeyboardEvent<HTMLInputElement>) => {
+    if (event.key !== 'Enter') {
+      return;
+    }
+    onPressEnter(subTask.order);
+  };
   const onInputChange = (event: SyntheticEvent<HTMLInputElement>): void => {
     event.stopPropagation();
     setNameCache(event.currentTarget.value);
@@ -72,7 +78,7 @@ function OneSubTaskEditor(
         placeholder="Your Subtask"
         value={nameCache}
         ref={editorRef}
-        onKeyDown={onPressEnter}
+        onKeyDown={onKeyDown}
         onChange={onInputChange}
         onBlur={onBlur}
         style={{ width: 'calc(100% - 70px)' }}

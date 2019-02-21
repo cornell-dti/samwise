@@ -6,10 +6,16 @@ import styles from './TaskEditor.css';
 
 type Props = {|
   +onChange: (string) => void;
+  +needToBeFocused: boolean;
+  +afterFocusedCallback: () => void;
   +onPressEnter: () => void;
 |};
 
-export default function NewSubTaskEditor({ onChange, onPressEnter }: Props): Node {
+export default function NewSubTaskEditor(
+  {
+    onChange, needToBeFocused, afterFocusedCallback, onPressEnter,
+  }: Props,
+): Node {
   const onInputChange = (event: SyntheticEvent<HTMLInputElement>) => {
     event.stopPropagation();
     const newSubTaskValue: string = event.currentTarget.value.trim();
@@ -22,9 +28,23 @@ export default function NewSubTaskEditor({ onChange, onPressEnter }: Props): Nod
       onPressEnter();
     }
   };
+
+  const editorRef = React.useRef(null);
+
+  React.useEffect(() => {
+    if (needToBeFocused) {
+      const currentElement = editorRef.current;
+      if (currentElement != null) {
+        currentElement.focus();
+        afterFocusedCallback();
+      }
+    }
+  });
+
   return (
     <div className={styles.TaskEditorFlexibleContainer}>
       <input
+        ref={editorRef}
         className={styles.TaskEditorFlexibleInput}
         placeholder="A new subtask"
         value=""

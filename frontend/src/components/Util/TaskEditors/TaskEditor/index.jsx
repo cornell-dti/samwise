@@ -44,6 +44,8 @@ type Props = {|
   +getTag: (id: string) => Tag;
 |};
 
+type TaskToFocus = number | 'new-subtask' | null;
+
 /**
  * The component of an standalone task editor.
  * It is designed to be wrapped inside another component to extend its functionality. The task
@@ -61,7 +63,7 @@ function TaskEditor(props: Props): Node {
     editMainTask, editSubTask, addSubTask, removeTask, removeSubTask, onSave,
   } = actions;
 
-  const [subTaskToFocus, setSubTaskToFocus] = React.useState<number | null>(null);
+  const [subTaskToFocus, setSubTaskToFocus] = React.useState<TaskToFocus>(null);
 
   const tagDateOnChange = change => editMainTask(change, false);
   const nameCompleteInFocusChange = change => editMainTask(change, false);
@@ -82,21 +84,23 @@ function TaskEditor(props: Props): Node {
    * The event handler that handles an press enter event.
    * It will switch the focus as expected.
    *
-   * @param {SyntheticKeyboardEvent<HTMLInputElement>} event the event of a keypress.
+   * @param {'main-task' | number} caller the caller of the handler.
    */
-  const pressEnterHandler = (event: SyntheticKeyboardEvent<HTMLInputElement>) => {
-    if (event.key !== 'Enter') {
-      return;
+  const pressEnterHandler = (caller: 'main-task' | number) => {
+    const order = caller === 'main-task' ? -1 : caller;
+    let focused = false;
+    for (let i = 0; i < subtasks.length; i += 1) {
+      const { order: subtaskOrder } = subtasks[i];
+      if (subtaskOrder > order) {
+        setSubTaskToFocus(subtaskOrder);
+        focused = true;
+        break;
+      }
     }
-    const { form } = event.currentTarget;
-    if (form == null) {
-      throw new Error('Form should not be null!');
+    if (!focused) {
+      // need to focus the new subtask editor
+      setSubTaskToFocus('new-subtask');
     }
-    let index = Array.prototype.indexOf.call(form, event.target) + 1;
-    while (form.elements[index].tabIndex === -1) {
-      index += 1;
-    }
-    form.elements[index].focus();
   };
 
   const isOverdue = date < getTodayAtZeroAM() && !complete;
@@ -142,7 +146,12 @@ function TaskEditor(props: Props): Node {
           />
         ))}
         {(newSubTaskDisabled !== true) && (
-          <NewSubTaskEditor onChange={handleNewSubTaskValueChange} onPressEnter={onSave} />
+          <NewSubTaskEditor
+            onChange={handleNewSubTaskValueChange}
+            needToBeFocused={subTaskToFocus === 'new-subtask'}
+            afterFocusedCallback={() => setSubTaskToFocus(null)}
+            onPressEnter={onSave}
+          />
         )}
       </div>
       {children}
