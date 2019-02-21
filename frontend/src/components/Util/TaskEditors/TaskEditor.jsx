@@ -23,26 +23,34 @@ type DefaultProps = {|
   +onBlur?: (event: SyntheticFocusEvent<HTMLElement>) => void;
   +refFunction?: (HTMLElement | null) => void; // used to get the DOM element.
 |};
-type Props = {|
-  ...Task; // The task given to the editor at this point.
-  ...DefaultProps; // Props with default values.
-  // actions
+type Actions = {|
   +editMainTask: (partialMainTask: PartialMainTask, doSave: boolean) => void;
   +editSubTask: (subtaskId: string, partialSubTask: PartialSubTask, doSave: boolean) => void;
   +addSubTask: (subTask: SubTask) => void;
   +removeTask: () => void;
   +removeSubTask: (subtaskId: string) => void;
   +onSave: () => void;
+|};
+type Props = {|
+  +task: Task; // The task given to the editor at this point.
+  +actions: Actions; // The actions to perform under different events
+  ...DefaultProps; // Props with default values.
   // subscribed from redux store.
   +getTag: (id: string) => Tag;
 |};
-
+/*
 type State = {|
   +mainTaskNameCache: string | null;
   +oneSubTaskNameCache: [string, string] | null;
   +doesShowTagEditor: boolean;
   +doesShowDateEditor: boolean;
   +needToSwitchFocus: number | null; // number: expected array length, null: don't switch
+|};
+*/
+
+type EditorDisplayStatus = {|
+  +doesShowTagEditor: boolean;
+  +doesShowDateEditor: boolean;
 |};
 
 /**
@@ -51,161 +59,80 @@ type State = {|
  * editor itself does not remember the state of editing a task, a wrapper component should.
  * You can read the docs for props above.
  */
-class TaskEditor extends React.Component<Props, State> {
-  state: State = {
-    mainTaskNameCache: null,
-    oneSubTaskNameCache: null,
+function TaskEditor(props: Props): Node {
+  const {
+    task, actions, getTag, className, children, newSubTaskDisabled, onFocus, onBlur, refFunction,
+  } = props;
+  const {
+    name: taskName, tag, date, complete, inFocus, subtasks,
+  } = task;
+  const {
+    editMainTask, editSubTask, addSubTask, removeTask, removeSubTask, onSave,
+  } = actions;
+
+  const [mainTaskNameCache, setMainTaskNameCache] = React.useState<string | null>(null);
+  const [oneSubTaskNameCache, setOneSubTaskNameCache] = React.useState<[string, string] | null>(
+    null,
+  );
+  const [editorDisplayStatus, setEditorDisplayStatus] = React.useState<EditorDisplayStatus>({
     doesShowTagEditor: false,
     doesShowDateEditor: false,
-    needToSwitchFocus: null,
-  };
+  });
+  const [needToSwitchFocus, setNeedToSwitchFocus] = React.useState<number | null>(null);
 
-  shouldComponentUpdate(nextProps: Props, { needToSwitchFocus: nextNeed }: State): boolean {
-    const { needToSwitchFocus: currNeed } = this.state;
-    // Previously need to switch focus, now we don't need any more.
-    // In this case, we don't need to re-render.
-    return !(currNeed !== null && !nextNeed);
-  }
-
-  /*
-   * --------------------------------------------------------------------------------
-   * Part 1: Toggle Methods
-   * --------------------------------------------------------------------------------
-   */
-
-  /**
-   * Toggle the editor for the tag of the task.
-   */
-  toggleTagEditor = () => this.setState((state: State) => ({
-    doesShowTagEditor: !state.doesShowTagEditor, doesShowDateEditor: false,
+  const toggleTagEditor = () => setEditorDisplayStatus(prev => ({
+    doesShowTagEditor: !prev.doesShowTagEditor, doesShowDateEditor: false,
+  }));
+  const toggleDateEditor = () => setEditorDisplayStatus(prev => ({
+    doesShowTagEditor: false, doesShowDateEditor: !prev.doesShowDateEditor,
   }));
 
-  /**
-   * Toggle the editor of the deadline of the task.
-   */
-  toggleDateEditor = () => this.setState((state: State) => ({
-    doesShowTagEditor: false, doesShowDateEditor: !state.doesShowDateEditor,
-  }));
-
-  /*
-   * --------------------------------------------------------------------------------
-   * Part 2: Editor Methods
-   * --------------------------------------------------------------------------------
-   */
-
-  /**
-   * Edit the cache for task name.
-   *
-   * @param {SyntheticEvent<HTMLInputElement>} event the event to notify the name change.
-   */
-  editTaskNameCache = (event: SyntheticEvent<HTMLInputElement>): void => {
+  const editTaskNameCache = (event: SyntheticEvent<HTMLInputElement>): void => {
     event.stopPropagation();
-    const mainTaskNameCache = event.currentTarget.value;
-    this.setState({ mainTaskNameCache });
+    setMainTaskNameCache(event.currentTarget.value);
   };
-
-  /**
-   * Change the name of a task and clear cache.
-   *
-   * @param {SyntheticEvent<>} event the event to notify the name change.
-   */
-  editTaskName = (event?: SyntheticEvent<>): void => {
+  const editTaskName = (event?: SyntheticEvent<>): void => {
     if (event) {
       event.stopPropagation();
     }
     const doSave = event == null;
-    const { mainTaskNameCache, oneSubTaskNameCache } = this.state;
     if (mainTaskNameCache !== null) {
-      const { editMainTask } = this.props;
       editMainTask({ name: mainTaskNameCache }, doSave);
-      this.setState({ mainTaskNameCache: null });
+      setMainTaskNameCache(null);
     } else if (oneSubTaskNameCache !== null) {
       const [subtaskId, name] = oneSubTaskNameCache;
-      const { editSubTask } = this.props;
       editSubTask(subtaskId, { name }, doSave);
-      this.setState({ oneSubTaskNameCache: null });
+      setOneSubTaskNameCache(null);
     } else if (doSave) {
-      const { onSave } = this.props;
       onSave();
     }
   };
-
-  editTaskTag = (tag: string): void => {
-    const { editMainTask } = this.props;
-    editMainTask({ tag }, false);
-    this.setState({ doesShowTagEditor: false });
+  const editTaskTag = (t: string): void => {
+    editMainTask({ tag: t }, false);
+    setEditorDisplayStatus(prev => ({ ...prev, doesShowTagEditor: false }));
   };
-
-  editTaskDate = (dateString: string): void => {
-    const date = new Date(dateString);
-    const { editMainTask } = this.props;
-    editMainTask({ date }, false);
-    this.setState({ doesShowDateEditor: false });
+  const editTaskDate = (dateString: string): void => {
+    editMainTask({ date: new Date(dateString) }, false);
+    setEditorDisplayStatus(prev => ({ ...prev, doesShowDateEditor: false }));
   };
-
-  /**
-   * Toggle the completion status of the task.
-   */
-  editComplete = () => {
-    const { complete, editMainTask } = this.props;
-    editMainTask({ complete: !complete }, false);
-  };
-
-  /**
-   * Change the in-focus status of the task.
-   */
-  editInFocus = () => {
-    const { inFocus, editMainTask } = this.props;
-    editMainTask({ inFocus: !inFocus }, false);
-  };
-
-  /**
-   * Edit the cache for task name.
-   *
-   * @param {string} subtaskId id of the subtask.
-   * @return {function(SyntheticEvent<HTMLInputElement>): void} event handler.
-   */
-  editSubTaskNameCache = (subtaskId: string) => (event: SyntheticEvent<HTMLInputElement>) => {
+  const editComplete = () => editMainTask({ complete: !complete }, false);
+  const editInFocus = () => editMainTask({ inFocus: !inFocus }, false);
+  const editSubTaskNameCache = (subtaskId: string) => (event: SyntheticEvent<HTMLInputElement>) => {
     event.stopPropagation();
-    const oneSubTaskNameCache = [subtaskId, event.currentTarget.value];
-    this.setState({ oneSubTaskNameCache });
+    setOneSubTaskNameCache([subtaskId, event.currentTarget.value]);
   };
-
-  /**
-   * Toggle one particular subtask's completion.
-   *
-   * @param {SubTask} subTask the subtask.
-   * @return {function(): void} the edit completion event handler.
-   */
-  editSubTaskComplete = (subTask: SubTask) => (): void => {
-    const { editSubTask } = this.props;
+  const editSubTaskComplete = (subTask: SubTask) => (): void => {
     editSubTask(subTask.id, { complete: !subTask.complete }, false);
   };
-
-  /**
-   * Toggle one particular subtask's in focus status.
-   *
-   * @param {SubTask} subTask the subtask.
-   * @return {function(): void} the edit completion event handler.
-   */
-  editSubTaskInFocus = (subTask: SubTask) => (): void => {
-    const { editSubTask } = this.props;
+  const editSubTaskInFocus = (subTask: SubTask) => (): void => {
     editSubTask(subTask.id, { inFocus: !subTask.inFocus }, false);
   };
-
-  /**
-   * Update the state when the new line of subtask name changes.
-   *
-   * @param {SyntheticEvent<HTMLInputElement>} event the event that notifies about the change and
-   * contains the new value.
-   */
-  handleNewSubTaskValueChange = (event: SyntheticEvent<HTMLInputElement>) => {
+  const handleNewSubTaskValueChange = (event: SyntheticEvent<HTMLInputElement>) => {
     event.stopPropagation();
     const newSubTaskValue: string = event.currentTarget.value.trim();
     if (newSubTaskValue.length === 0) {
       return;
     }
-    const { subtasks } = this.props;
     const maxOrder = subtasks.reduce((acc, s) => Math.max(acc, s.order), 0);
     const newSubTask: SubTask = {
       name: newSubTaskValue,
@@ -214,16 +141,9 @@ class TaskEditor extends React.Component<Props, State> {
       complete: false,
       inFocus: false,
     };
-    const { addSubTask } = this.props;
     addSubTask(newSubTask);
-    this.setState({ needToSwitchFocus: subtasks.length + 1 });
+    setNeedToSwitchFocus(subtasks.length + 1);
   };
-
-  /*
-   * --------------------------------------------------------------------------------
-   * Part 3: Keyboard Shortcut Methods
-   * --------------------------------------------------------------------------------
-   */
 
   /**
    * The event handler that handles an press enter event.
@@ -231,13 +151,13 @@ class TaskEditor extends React.Component<Props, State> {
    *
    * @param {SyntheticKeyboardEvent<HTMLInputElement>} event the event of a keypress.
    */
-  pressEnterHandler = (event: SyntheticKeyboardEvent<HTMLInputElement>) => {
+  const pressEnterHandler = (event: SyntheticKeyboardEvent<HTMLInputElement>) => {
     if (event.key !== 'Enter') {
       return;
     }
     // event.stopPropagation();
     if (event.shiftKey) {
-      this.editTaskName();
+      editTaskName();
       event.currentTarget.blur();
       return;
     }
@@ -248,43 +168,30 @@ class TaskEditor extends React.Component<Props, State> {
     const index = Array.prototype.indexOf.call(form, event.target);
     form.elements[index + 1].focus();
   };
-
   /**
    * The event handler that handles an press enter event for adding a new subtask.
    * It will automatically submit the edited task.
+   * It will only be called when there is nothing in the new input box and the user presses ENTER.
    *
    * @param {SyntheticKeyboardEvent<HTMLInputElement>} event the event of a keypress.
    */
-  newSubTaskPressEnterHandler = (event: SyntheticKeyboardEvent<HTMLInputElement>) => {
+  const newSubTaskPressEnterHandler = (event: SyntheticKeyboardEvent<HTMLInputElement>) => {
     if (event.key === 'Enter') {
-      const { onSave } = this.props;
       onSave();
     }
   };
 
-  /*
-   * --------------------------------------------------------------------------------
-   * Part 4: Render Methods
-   * --------------------------------------------------------------------------------
-   */
-
-  /**
-   * Return the rendered header element.
-   *
-   * @return {Node} the rendered header node.
-   */
-  renderHeader = (): Node => {
-    const { tag, date, getTag } = this.props;
-    const { doesShowTagEditor, doesShowDateEditor } = this.state;
-    const className = `${styles.TaskEditorFlexibleContainer} ${styles.TaskEditorHeader}`;
+  const Header = (): Node => {
+    const { doesShowTagEditor, doesShowDateEditor } = editorDisplayStatus;
+    const headerClassName = `${styles.TaskEditorFlexibleContainer} ${styles.TaskEditorHeader}`;
     const tagDisplay = (
-      <button type="button" className={styles.TaskEditorTag} onClick={this.toggleTagEditor}>
+      <button type="button" className={styles.TaskEditorTag} onClick={toggleTagEditor}>
         {getTag(tag).name}
       </button>
     );
     const tagEditor = doesShowTagEditor && (
       <div className={styles.TaskEditorTagEditor}>
-        <TagListPicker onTagChange={this.editTaskTag} />
+        <TagListPicker onTagChange={editTaskTag} />
       </div>
     );
     const dateDisplay = (<span>{`${date.getMonth() + 1}/${date.getDate()}`}</span>);
@@ -293,18 +200,18 @@ class TaskEditor extends React.Component<Props, State> {
         value={date}
         className={styles.TaskEditorCalendar}
         minDate={new Date()}
-        onChange={this.editTaskDate}
+        onChange={editTaskDate}
       />
     );
     return (
-      <div className={className}>
+      <div className={headerClassName}>
         {tagDisplay}
         {tagEditor}
         <span className={styles.TaskEditorFlexiblePadding} />
         <Icon
           name="calendar"
           className={styles.TaskEditorIconButton}
-          onClick={this.toggleDateEditor}
+          onClick={toggleDateEditor}
         />
         {dateDisplay}
         {dateEditor}
@@ -312,17 +219,8 @@ class TaskEditor extends React.Component<Props, State> {
     );
   };
 
-  /**
-   * Return the rendered main task text editor element.
-   *
-   * @return {Node} the rendered main task edit node.
-   */
-  renderMainTaskEdit = (): Node => {
-    const {
-      name, complete, inFocus, removeTask,
-    } = this.props;
-    const { mainTaskNameCache } = this.state;
-    const taskNameValue = mainTaskNameCache === null ? name : mainTaskNameCache;
+  const MainTaskEdit = (): Node => {
+    const taskNameValue = mainTaskNameCache === null ? taskName : mainTaskNameCache;
     const onRemove = () => {
       removeTask();
     };
@@ -331,43 +229,33 @@ class TaskEditor extends React.Component<Props, State> {
         <CheckBox
           className={styles.TaskEditorCheckBox}
           checked={complete}
-          onChange={this.editComplete}
+          onChange={editComplete}
         />
         <input
           className={styles.TaskEditorFlexibleInput}
           placeholder="Main Task"
           value={taskNameValue}
-          onKeyDown={this.pressEnterHandler}
-          onChange={this.editTaskNameCache}
-          onBlur={this.editTaskName}
+          onKeyDown={pressEnterHandler}
+          onChange={editTaskNameCache}
+          onBlur={editTaskName}
         />
         <Icon
           name={inFocus ? 'bookmark' : 'bookmark outline'}
           className={styles.TaskEditorIcon}
-          onClick={this.editInFocus}
+          onClick={editInFocus}
         />
         <Icon className={styles.TaskEditorIcon} name="delete" onClick={onRemove} />
       </div>
     );
   };
 
-  /**
-   * Render a subtask.
-   *
-   * @param {SubTask} subTask one subtask.
-   * @param {number} index index of the subtask.
-   * @param {SubTask[]} array the entire subtask array.
-   * @return {Node} the rendered subtask.
-   */
-  renderSubTask = (subTask: SubTask, index: number, array: SubTask[]): Node => {
-    const { complete, removeSubTask } = this.props;
-    const { oneSubTaskNameCache, needToSwitchFocus } = this.state;
+  const renderSubTask = (subTask: SubTask, index: number, array: SubTask[]): Node => {
     const refHandler = (inputElementRef) => {
       if (needToSwitchFocus === array.length
         && index === array.length - 1
         && inputElementRef != null) {
         inputElementRef.focus();
-        this.setState({ needToSwitchFocus: null });
+        setNeedToSwitchFocus(null);
       }
     };
     const onRemoveSubTask = () => removeSubTask(subTask.id);
@@ -382,73 +270,67 @@ class TaskEditor extends React.Component<Props, State> {
           className={styles.TaskEditorCheckBox}
           checked={complete || subTask.complete}
           disabled={complete}
-          onChange={this.editSubTaskComplete(subTask)}
+          onChange={editSubTaskComplete(subTask)}
         />
         <input
           className={styles.TaskEditorFlexibleInput}
           placeholder="Your Subtask"
           value={subTaskName}
           ref={refHandler}
-          onKeyDown={this.pressEnterHandler}
-          onChange={this.editSubTaskNameCache(subTask.id)}
-          onBlur={this.editTaskName}
+          onKeyDown={pressEnterHandler}
+          onChange={editSubTaskNameCache(subTask.id)}
+          onBlur={editTaskName}
           style={{ width: 'calc(100% - 70px)' }}
         />
         <Icon
           name={subTask.inFocus ? 'bookmark' : 'bookmark outline'}
           className={styles.TaskEditorIcon}
-          onClick={this.editSubTaskInFocus(subTask)}
+          onClick={editSubTaskInFocus(subTask)}
         />
         <Icon name="delete" className={styles.TaskEditorIcon} onClick={onRemoveSubTask} />
       </div>
     );
   };
 
-  render(): Node {
-    const {
-      tag, complete, date, subtasks, newSubTaskDisabled, children,
-      className, onFocus, onBlur, refFunction, getTag,
-    } = this.props;
-    const isOverdue = date < getTodayAtZeroAM() && !complete;
-    const backgroundColor = getTag(tag).color;
-    const formStyle = isOverdue
-      ? { backgroundColor, border: '5px solid #D0021B' }
-      : { backgroundColor };
-    const actualClassName = className == null
-      ? styles.TaskEditor : `${styles.TaskEditor} ${className}`;
-    return (
-      <form
-        className={actualClassName}
-        style={formStyle}
-        onMouseEnter={onFocus}
-        onMouseLeave={onBlur}
-        onFocus={onFocus}
-        onBlur={() => {}}
-        ref={refFunction}
-      >
-        {isOverdue && <OverdueAlert />}
-        <div>
-          {this.renderHeader()}
-          {this.renderMainTaskEdit()}
-        </div>
-        <div className={styles.TaskEditorSubTasksIndentedContainer}>
-          {subtasks.map(this.renderSubTask)}
-          {(newSubTaskDisabled !== true) && (
-            <div className={styles.TaskEditorFlexibleContainer}>
-              <input
-                className={styles.TaskEditorFlexibleInput}
-                placeholder="A new subtask"
-                value=""
-                onChange={this.handleNewSubTaskValueChange}
-                onKeyDown={this.newSubTaskPressEnterHandler}
-              />
-            </div>
-          )}
-        </div>
-        {children}
-      </form>
-    );
-  }
+  const isOverdue = date < getTodayAtZeroAM() && !complete;
+  const backgroundColor = getTag(tag).color;
+  const formStyle = isOverdue
+    ? { backgroundColor, border: '5px solid #D0021B' }
+    : { backgroundColor };
+  const actualClassName = className == null
+    ? styles.TaskEditor : `${styles.TaskEditor} ${className}`;
+  return (
+    <form
+      className={actualClassName}
+      style={formStyle}
+      onMouseEnter={onFocus}
+      onMouseLeave={onBlur}
+      onFocus={onFocus}
+      onBlur={() => {}}
+      ref={refFunction}
+    >
+      {isOverdue && <OverdueAlert />}
+      <div>
+        <Header />
+        <MainTaskEdit />
+      </div>
+      <div className={styles.TaskEditorSubTasksIndentedContainer}>
+        {subtasks.map(renderSubTask)}
+        {(newSubTaskDisabled !== true) && (
+          <div className={styles.TaskEditorFlexibleContainer}>
+            <input
+              className={styles.TaskEditorFlexibleInput}
+              placeholder="A new subtask"
+              value=""
+              onChange={handleNewSubTaskValueChange}
+              onKeyDown={newSubTaskPressEnterHandler}
+            />
+          </div>
+        )}
+      </div>
+      {children}
+    </form>
+  );
 }
 
 const ConnectedTaskEditor = getTagConnect<Props>(TaskEditor);

@@ -35,8 +35,7 @@ function InlineTaskEditor({ task, className }: Props): Node {
   // To un-mount the editor when finished editing.
   const onFocus = () => setDisabled(false);
   const onBlur = () => setDisabled(true);
-  const taskEditorProps = {
-    ...task,
+  const actions = {
     editMainTask: (partialMainTask: PartialMainTask, onSave: boolean) => {
       editMainTask(id, partialMainTask);
       if (onSave) {
@@ -53,6 +52,10 @@ function InlineTaskEditor({ task, className }: Props): Node {
     removeTask: () => { removeTask(task); },
     removeSubTask: (subtaskId: string) => { removeSubTask(subtaskId); },
     onSave: onBlur,
+  };
+  const taskEditorProps = {
+    task,
+    actions,
     className,
     newSubTaskDisabled: disabled || !task.inFocus,
     onFocus,

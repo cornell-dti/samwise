@@ -270,15 +270,18 @@ class FloatingTaskEditor extends React.PureComponent<Props, State> {
    */
   renderEditorNode = (): Node => {
     const { task } = this.state;
-    const taskEditorProps = {
-      ...task,
+    const actions = {
       editMainTask: this.editMainTask,
       editSubTask: this.editSubTask,
       addSubTask: this.addSubTask,
       removeTask: this.removeTask,
       removeSubTask: this.removeSubTask,
-      className: styles.FloatingTaskEditor,
       onSave: this.saveEditedTask,
+    };
+    const taskEditorProps = {
+      task,
+      actions,
+      className: styles.FloatingTaskEditor,
       refFunction: (e) => { this.editorElement = e; },
     };
     return (
