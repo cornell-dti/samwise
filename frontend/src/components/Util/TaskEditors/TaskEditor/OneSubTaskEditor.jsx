@@ -10,9 +10,10 @@ import type { PartialSubTask, SubTask } from '../../../../store/store-types';
 type Props = {|
   +subTask: SubTask;
   +mainTaskComplete: boolean;
+  +needToBeFocused: boolean;
+  +afterFocusedCallback: () => void;
   +editSubTask: (subtaskId: string, partialSubTask: PartialSubTask, doSave: boolean) => void;
   +removeSubTask: (subtaskId: string) => void;
-  +refHandler: (?HTMLInputElement) => void;
   +onPressEnter: (event: SyntheticKeyboardEvent<HTMLInputElement>) => void;
 |};
 
@@ -20,7 +21,13 @@ const className = [styles.TaskEditorFlexibleContainer, styles.TaskEditorSubtaskC
 
 function OneSubTaskEditor(
   {
-    subTask, mainTaskComplete, editSubTask, removeSubTask, refHandler, onPressEnter,
+    subTask,
+    mainTaskComplete,
+    needToBeFocused,
+    afterFocusedCallback,
+    editSubTask,
+    removeSubTask,
+    onPressEnter,
   }: Props,
 ): Node {
   const [nameCache, setNameCache] = React.useState<string>(subTask.name);
@@ -40,6 +47,18 @@ function OneSubTaskEditor(
     }
   };
 
+  const editorRef = React.useRef(null);
+
+  React.useEffect(() => {
+    if (needToBeFocused) {
+      const currentElement = editorRef.current;
+      if (currentElement != null) {
+        currentElement.focus();
+        afterFocusedCallback();
+      }
+    }
+  });
+
   return (
     <div className={className}>
       <CheckBox
@@ -52,7 +71,7 @@ function OneSubTaskEditor(
         className={styles.TaskEditorFlexibleInput}
         placeholder="Your Subtask"
         value={nameCache}
-        ref={refHandler}
+        ref={editorRef}
         onKeyDown={onPressEnter}
         onChange={onInputChange}
         onBlur={onBlur}

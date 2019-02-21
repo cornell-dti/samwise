@@ -61,21 +61,21 @@ function TaskEditor(props: Props): Node {
     editMainTask, editSubTask, addSubTask, removeTask, removeSubTask, onSave,
   } = actions;
 
-  const [needToSwitchFocus, setNeedToSwitchFocus] = React.useState<number | null>(null);
+  const [subTaskToFocus, setSubTaskToFocus] = React.useState<number | null>(null);
 
   const tagDateOnChange = change => editMainTask(change, false);
   const nameCompleteInFocusChange = change => editMainTask(change, false);
   const handleNewSubTaskValueChange = (newSubTaskValue: string) => {
-    const maxOrder = subtasks.reduce((acc, s) => Math.max(acc, s.order), 0);
+    const order = subtasks.reduce((acc, s) => Math.max(acc, s.order), 0) + 1;
     const newSubTask: SubTask = {
       id: randomId(),
       name: newSubTaskValue,
-      order: maxOrder + 1,
+      order,
       complete: false,
       inFocus: false,
     };
     addSubTask(newSubTask);
-    setNeedToSwitchFocus(subtasks.length + 1);
+    setSubTaskToFocus(order);
   };
 
   /**
@@ -97,28 +97,6 @@ function TaskEditor(props: Props): Node {
       index += 1;
     }
     form.elements[index].focus();
-  };
-
-  const renderSubTask = (subTask: SubTask, index: number, array: SubTask[]): Node => {
-    const refHandler = (inputElementRef) => {
-      if (needToSwitchFocus === array.length
-        && index === array.length - 1
-        && inputElementRef != null) {
-        inputElementRef.focus();
-        setNeedToSwitchFocus(null);
-      }
-    };
-    return (
-      <OneSubTaskEditor
-        key={subTask.order}
-        subTask={subTask}
-        mainTaskComplete={complete}
-        editSubTask={editSubTask}
-        removeSubTask={removeSubTask}
-        refHandler={refHandler}
-        onPressEnter={pressEnterHandler}
-      />
-    );
   };
 
   const isOverdue = date < getTodayAtZeroAM() && !complete;
@@ -151,7 +129,18 @@ function TaskEditor(props: Props): Node {
         />
       </div>
       <div className={styles.TaskEditorSubTasksIndentedContainer}>
-        {subtasks.map(renderSubTask)}
+        {subtasks.map(subTask => (
+          <OneSubTaskEditor
+            key={subTask.order}
+            subTask={subTask}
+            mainTaskComplete={complete}
+            needToBeFocused={subTaskToFocus === subTask.order}
+            afterFocusedCallback={() => setSubTaskToFocus(null)}
+            editSubTask={editSubTask}
+            removeSubTask={removeSubTask}
+            onPressEnter={pressEnterHandler}
+          />
+        ))}
         {(newSubTaskDisabled !== true) && (
           <NewSubTaskEditor onChange={handleNewSubTaskValueChange} onPressEnter={onSave} />
         )}
