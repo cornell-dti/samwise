@@ -1,18 +1,24 @@
 // @flow strict
 
+// NOTE:
+// Other Components in this folder are only designed to be used by TaskEditors.
+// These components' API are NOT guaranteed to be stable.
+// You should only use this component from the outside.
+
 import React from 'react';
 import type { Node } from 'react';
 import type {
   Tag, SubTask, Task, PartialMainTask, PartialSubTask,
-} from '../../../store/store-types';
-import OverdueAlert from '../../UI/OverdueAlert';
+} from '../../../../store/store-types';
+import OverdueAlert from '../../../UI/OverdueAlert';
 import styles from './TaskEditor.css';
-import { getTagConnect } from '../../../util/tag-util';
-import { randomId } from '../../../util/general-util';
-import { getTodayAtZeroAM } from '../../../util/datetime-util';
-import {
-  EditorHeader, MainTaskEditor, NewSubTaskEditor, OneSubTaskEditor,
-} from './SubComponents';
+import { getTagConnect } from '../../../../util/tag-util';
+import { randomId } from '../../../../util/general-util';
+import { getTodayAtZeroAM } from '../../../../util/datetime-util';
+import EditorHeader from './EditorHeader';
+import MainTaskEditor from './MainTaskEditor';
+import NewSubTaskEditor from './NewSubTaskEditor';
+import OneSubTaskEditor from './OneSubTaskEditor';
 
 type DefaultProps = {|
   +className?: string;

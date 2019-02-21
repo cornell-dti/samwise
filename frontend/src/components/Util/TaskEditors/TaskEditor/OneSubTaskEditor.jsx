@@ -3,7 +3,7 @@
 import React from 'react';
 import type { ComponentType, Node } from 'react';
 import { Icon } from 'semantic-ui-react';
-import styles from '../TaskEditor.css';
+import styles from './TaskEditor.css';
 import CheckBox from '../../../UI/CheckBox';
 import type { PartialSubTask, SubTask } from '../../../../store/store-types';
 

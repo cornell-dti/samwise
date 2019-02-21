@@ -12,7 +12,7 @@ Note that this is only a guideline, or a tutorial. You should learn flow on its
 ## Always Type Annotated React Components
 
 React components can become very complex over time. There may be 
-[ten different things](../frontend/src/components/Util/TaskEditors/TaskEditor.jsx) you need to pass
+[ten different things](../frontend/src/components/Util/TaskEditors/TaskEditor/index.jsx) you need to pass
 into a component. With type declarations, the users of those component can easily check what needs
 to be passed. Also, when it's the time for refactoring, type checker can ensure that you fixed all
 the references and usages of the component to be refactored.

@@ -4,7 +4,7 @@ import React from 'react';
 import type { Node } from 'react';
 import { Icon } from 'semantic-ui-react';
 import Calendar from 'react-calendar';
-import styles from '../TaskEditor.css';
+import styles from './TaskEditor.css';
 import TagListPicker from '../../TagListPicker/TagListPicker';
 import type { Tag } from '../../../../store/store-types';
 

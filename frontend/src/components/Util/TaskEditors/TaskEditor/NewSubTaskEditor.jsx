@@ -2,7 +2,7 @@
 
 import React from 'react';
 import type { Node } from 'react';
-import styles from '../TaskEditor.css';
+import styles from './TaskEditor.css';
 
 type Props = {|
   +onChange: (string) => void;

@@ -8,7 +8,7 @@ import type {
 import type { FloatingPosition } from './task-editors-types';
 import TaskEditor from './TaskEditor';
 import styles from './FloatingTaskEditor.css';
-import { TaskEditorFlexiblePadding as flexiblePaddingClass } from './TaskEditor.css';
+import { TaskEditorFlexiblePadding as flexiblePaddingClass } from './TaskEditor/TaskEditor.css';
 import { replaceSubTask, EMPTY_TASK_DIFF, taskDiffIsEmpty } from '../../../util/task-util';
 import windowSizeConnect from '../Responsive/WindowSizeConsumer';
 import type { WindowSize } from '../Responsive/window-size-context';
