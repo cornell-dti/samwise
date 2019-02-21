@@ -197,18 +197,29 @@ class FloatingTaskEditor extends React.PureComponent<Props, State> {
     removeTask(task);
   };
 
-  removeSubTask = (subtaskId: string) => {
-    this.setState((state: State) => ({
-      task: {
-        ...state.task,
-        subtasks: state.task.subtasks.filter(s => s.id !== subtaskId),
-      },
-      diff: {
-        ...state.diff,
-        subtasksDeletions: [...state.diff.subtasksDeletions, subtaskId],
-      },
-    }));
-  };
+  removeSubTask = (subtaskId: string) => this.setState((state: State) => {
+    const newTask = {
+      ...state.task,
+      subtasks: state.task.subtasks.filter(s => s.id !== subtaskId),
+    };
+    const subtasksCreations = [];
+    let foundInNew = false;
+    state.diff.subtasksCreations.forEach((s) => {
+      if (s.id === subtaskId) {
+        foundInNew = true;
+      } else {
+        subtasksCreations.push(s);
+      }
+    });
+    let subtasksDeletions;
+    if (foundInNew) {
+      subtasksDeletions = [];
+    } else {
+      subtasksDeletions = [...state.diff.subtasksDeletions, subtaskId];
+    }
+    const newDiff = { ...state.diff, subtasksCreations, subtasksDeletions };
+    return { task: newTask, diff: newDiff };
+  });
 
   /**
    * The element of the actual editor.
