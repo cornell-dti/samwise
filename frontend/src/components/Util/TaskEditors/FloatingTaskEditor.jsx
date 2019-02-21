@@ -61,9 +61,6 @@ class FloatingTaskEditor extends React.PureComponent<Props, State> {
     this.updateFloatingEditorPosition();
   }
 
-  /**
-   * Update the position of itself.
-   */
   updateFloatingEditorPosition = () => {
     const editorPosDiv = this.editorElement;
     if (editorPosDiv == null) {
@@ -138,12 +135,6 @@ class FloatingTaskEditor extends React.PureComponent<Props, State> {
     this.closePopup();
   };
 
-  /**
-   * Edit main task.
-   *
-   * @param {PartialMainTask} partialMainTask partial main task.
-   * @param {boolean} doSave whether to save.
-   */
   editMainTask = (partialMainTask: PartialMainTask, doSave: boolean) => {
     this.setState(
       ({ task, diff }: State) => ({
@@ -154,13 +145,6 @@ class FloatingTaskEditor extends React.PureComponent<Props, State> {
     );
   };
 
-  /**
-   * Edit subtask.
-   *
-   * @param {string} subtaskId id of the subtask.
-   * @param {PartialSubTask} partialSubTask partial subtask.
-   * @param {boolean} doSave whether to save.
-   */
   editSubTask = (subtaskId: string, partialSubTask: PartialSubTask, doSave: boolean) => {
     this.setState(({ task, diff }: State) => {
       const newTask = {
@@ -195,11 +179,6 @@ class FloatingTaskEditor extends React.PureComponent<Props, State> {
     }, doSave ? this.saveEditedTask : undefined);
   };
 
-  /**
-   * Add subtask.
-   *
-   * @param {SubTask} subTask subtask to add.
-   */
   addSubTask = (subTask: SubTask) => {
     this.setState((state: State) => ({
       task: {
@@ -213,19 +192,11 @@ class FloatingTaskEditor extends React.PureComponent<Props, State> {
     }));
   };
 
-  /**
-   * Handle remove task.
-   */
   removeTask = () => {
     const { task } = this.state;
     removeTask(task);
   };
 
-  /**
-   * Remove subtask with given id.
-   *
-   * @param {string} subtaskId id of the subtask to remove.
-   */
   removeSubTask = (subtaskId: string) => {
     this.setState((state: State) => ({
       task: {
@@ -278,14 +249,15 @@ class FloatingTaskEditor extends React.PureComponent<Props, State> {
       removeSubTask: this.removeSubTask,
       onSave: this.saveEditedTask,
     };
-    const taskEditorProps = {
-      task,
-      actions,
-      className: styles.FloatingTaskEditor,
-      refFunction: (e) => { this.editorElement = e; },
-    };
     return (
-      <TaskEditor {...taskEditorProps}>{this.renderSubmitComponent()}</TaskEditor>
+      <TaskEditor
+        task={task}
+        actions={actions}
+        className={styles.FloatingTaskEditor}
+        refFunction={(e) => { this.editorElement = e; }}
+      >
+        {this.renderSubmitComponent()}
+      </TaskEditor>
     );
   };
 

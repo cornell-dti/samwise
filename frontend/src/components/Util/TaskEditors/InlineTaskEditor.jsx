@@ -48,9 +48,9 @@ function InlineTaskEditor({ task, className }: Props): Node {
         onBlur();
       }
     },
-    addSubTask: (subTask: SubTask) => { addSubTask(id, subTask); },
-    removeTask: () => { removeTask(task); },
-    removeSubTask: (subtaskId: string) => { removeSubTask(subtaskId); },
+    addSubTask: (subTask: SubTask) => addSubTask(id, subTask),
+    removeTask: () => removeTask(task),
+    removeSubTask,
     onSave: onBlur,
   };
   const taskEditorProps = {
@@ -67,5 +67,5 @@ function InlineTaskEditor({ task, className }: Props): Node {
 
 InlineTaskEditor.defaultProps = { className: undefined };
 
-const Connected: ComponentType<Props> = React.memo(InlineTaskEditor);
-export default Connected;
+const Memoized: ComponentType<Props> = React.memo(InlineTaskEditor);
+export default Memoized;
