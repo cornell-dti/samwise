@@ -1,0 +1,6 @@
+{
+  "projects": {
+    "default": "samwise-dev",
+    "production": "dti-samwise"
+  }
+}

@@ -1,6 +1,7 @@
 /* eslint-disable import/no-extraneous-dependencies */
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
+const AppManifestWebpackPlugin = require('app-manifest-webpack-plugin');
 const CleanWebpackPlugin = require('clean-webpack-plugin');
 
 module.exports = {
@@ -67,5 +68,10 @@ module.exports = {
   plugins: [
     new CleanWebpackPlugin(['dist']),
     new HtmlWebpackPlugin({ template: './public/index.html' }),
+    new AppManifestWebpackPlugin({
+      logo: './src/assets/favicon/icon.svg',
+      inject: true,
+      persistentCache: true,
+    }),
   ],
 };

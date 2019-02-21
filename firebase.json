@@ -4,7 +4,7 @@
     "indexes": "firestore.indexes.json"
   },
   "hosting": {
-    "public": "dist",
+    "public": "frontend/dist",
     "ignore": [
       "firebase.json",
       "**/.*",
@@ -15,6 +15,13 @@
         "source": "**",
         "destination": "/index.html"
       }
+    ]
+  },
+  "functions": {
+    "source": "functions/",
+    "predeploy": [
+      "cd \"$RESOURCE_DIR\"; yarn run lint",
+      "cd \"$RESOURCE_DIR\"; yarn run build"
     ]
   }
 }

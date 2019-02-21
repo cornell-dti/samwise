@@ -12,6 +12,7 @@ import { error } from './util/general-util';
 import { store } from './store/store';
 import LoginBarrier from './components/Util/AppInit/LoginBarrier';
 import WindowSizeProvider from './components/Util/Responsive/WindowSizeProvider';
+import './util/ga-util';
 
 const appRenderer = (): Node => <ReactReduxProvider store={store}><App /></ReactReduxProvider>;
 

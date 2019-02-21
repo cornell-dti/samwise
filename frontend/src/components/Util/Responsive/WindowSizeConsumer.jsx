@@ -7,6 +7,9 @@ import type { WindowSize, WindowSizeProps } from './window-size-context';
 
 export type PropsWithoutWindowSize<Props> = $Diff<Props, WindowSizeProps>;
 
+type FullProps<OP> = {| ...$Exact<OP>; ...WindowSizeProps |}
+type UnconnectedCom<OP> = AbstractComponent<FullProps<OP>>;
+
 /**
  * The connect function to create a component that automatically subscribed to the latest window
  * size.
@@ -15,20 +18,14 @@ export type PropsWithoutWindowSize<Props> = $Diff<Props, WindowSizeProps>;
  * const ConnectedDialog = windowSizeConnect(Dialog);
  * <ConnectedDialog {...props} />
  * ```
- * Type Param: Config. The original component's config.
- *
- * @param {ComponentType<Props>} UnconnectedComponent the unconnected component.
- * @return {ComponentType<PropsWithoutWindowSize<Props>>} the connected component.
+ * Type Param: OP. The own props of the component, excluding the subscribed WindowSize.
  */
-export default function windowSizeConnect<Config: Object>(
-  UnconnectedComponent: AbstractComponent<Config>,
-): AbstractComponent<PropsWithoutWindowSize<Config>, void> {
-  return (props: PropsWithoutWindowSize<Config>): Node => (
+export default function windowSizeConnect<OP>(
+  UnconnectedComponent: UnconnectedCom<OP>,
+): AbstractComponent<$Exact<OP>, void> {
+  return (props): Node => (
     <WindowSizeContext.Consumer>
-      {(windowSize: WindowSize) => {
-        const allProps = { ...props, windowSize };
-        return <UnconnectedComponent {...allProps} />;
-      }}
+      {(windowSize: WindowSize) => <UnconnectedComponent windowSize={windowSize} {...props} />}
     </WindowSizeContext.Consumer>
   );
 }

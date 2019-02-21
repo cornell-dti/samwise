@@ -19,14 +19,6 @@ export opaque type FutureViewConfig = {|
   +displayOption: FutureViewDisplayOption;
   +offset: number;
 |};
-type Props = {|
-  +windowSize: WindowSize;
-  +config: FutureViewConfig;
-  +tasks: Task[];
-  +onConfigChange: (FutureViewConfig) => void;
-  // subscribed from redux store.
-  +getTag: (id: string) => Tag;
-|};
 
 export type FutureViewConfigProvider = {|
   +initialValue: FutureViewConfig;
@@ -151,54 +143,50 @@ function buildDaysInFutureView(
   return days;
 }
 
-class FutureView extends React.PureComponent<Props> {
-  /**
-   * Compute the number of days in n-days mode.
-   *
-   * @return {number} the number of days in n-days mode.
-   */
-  nDays = (): number => {
-    const { windowSize: { width } } = this.props;
+type Props = {|
+  +windowSize: WindowSize;
+  +config: FutureViewConfig;
+  +tasks: Task[];
+  +onConfigChange: (FutureViewConfig) => void;
+  // subscribed from redux store.
+  +getTag: (id: string) => Tag;
+|};
+
+function FutureView(
+  {
+    windowSize, config, tasks, onConfigChange, getTag,
+  }: Props,
+): Node {
+  // the number of days in n-days mode.
+  const nDays = (() => {
+    const { width } = windowSize;
     if (width > 960) { return 5; }
     if (width > 768) { return 4; }
     if (width > 500) { return 2; }
     return 1;
-  };
-
-  /**
-   * Changes the state when the future view controller changes.
-   *
-   * @param {$Shape<State>} change the partial change.
-   */
-  controlOnChange = (change: $Shape<FutureViewConfig>) => {
-    const { config, onConfigChange } = this.props;
+  })();
+  const controlOnChange = (change: $Shape<FutureViewConfig>) => {
     onConfigChange({ ...config, ...change });
   };
 
-  render(): Node {
-    const {
-      windowSize, config, tasks, getTag,
-    } = this.props;
-    const nDays = this.nDays();
-    const days = buildDaysInFutureView(nDays, buildDate2TaskMap(tasks), config, getTag);
-    const { displayOption, offset } = config;
-    const inNDaysView = displayOption.containerType === 'N_DAYS';
-    const daysContainer = inNDaysView
-      ? <FutureViewNDays nDays={nDays} days={days} />
-      : <FutureViewSevenColumns days={days} />;
-    return (
-      <div>
-        <FutureViewControl
-          windowSize={windowSize}
-          nDays={nDays}
-          displayOption={displayOption}
-          offset={offset}
-          onChange={this.controlOnChange}
-        />
-        {daysContainer}
-      </div>
-    );
-  }
+  const days = buildDaysInFutureView(nDays, buildDate2TaskMap(tasks), config, getTag);
+  const { displayOption, offset } = config;
+  const inNDaysView = displayOption.containerType === 'N_DAYS';
+  const daysContainer = inNDaysView
+    ? <FutureViewNDays nDays={nDays} days={days} />
+    : <FutureViewSevenColumns days={days} />;
+  return (
+    <div>
+      <FutureViewControl
+        windowSize={windowSize}
+        nDays={nDays}
+        displayOption={displayOption}
+        offset={offset}
+        onChange={controlOnChange}
+      />
+      {daysContainer}
+    </div>
+  );
 }
 
 const Connected = getTagConnect<Props>(FutureView);
