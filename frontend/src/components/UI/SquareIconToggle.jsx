@@ -33,4 +33,12 @@ export default function SquareIconToggle({ active, iconNames, onToggle }: Props)
       />
     </button>
   );
+  // const IconName = active ? activeIconName : inactiveIconName;
+  // return (
+  //   <button className={className} type="button" onClick={onToggle}>
+  //     <IconName
+  //       className={styles.SquareButtonText}
+  //     />
+  //   </button>
+  // );
 }

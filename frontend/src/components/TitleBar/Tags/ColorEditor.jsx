@@ -28,7 +28,7 @@ export default function ColorEditor({ color, onChange }: Props): Node {
       <button type="button" className={styles.ColorEdit} onClick={toggleEditor}>
         {colMap[color.toLowerCase()]}
         <span className={styles.ColorDisplay} style={{ backgroundColor: color }} />
-        <span style={{ backgroundImage: `url(${Down})` }} className={styles.Arrow} />
+        <Down className={styles.Arrow} />
       </button>
       {doesShowEditor && (
         <div className={styles.ColorPicker}>

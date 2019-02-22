@@ -24,12 +24,12 @@ export default function SettingsButton() {
   return (
     <div style={{ display: 'inline-block' }}>
       <button type="submit" onClick={displayModal}>
-        <span style={{ backgroundImage: `url(${Settings})` }} />
+        <Settings />
       </button>
       {showSettings && (
         <div className={styles.settingsModal}>
           <button className={styles.closeButton} type="submit" onClick={closeModal}>
-            <span style={{ backgroundImage: `url(${Delete})` }} />
+            <Delete />
           </button>
           <section className={styles.contentWrap}>
             <h2>Settings</h2>

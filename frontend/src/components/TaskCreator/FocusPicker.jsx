@@ -20,7 +20,7 @@ export default function FocusPicker({ pinned, onPinChange }: Props) {
   return (
     <div className={styles.Main}>
       <span role="presentation" onClick={clickPicker} className={styles.Label}>
-        <span style={{ backgroundImage: `url(${Pin})`, iconStyle }} className={styles.CenterIcon} />
+        <Pin className={styles.CenterIcon} />
       </span>
     </div>
   );

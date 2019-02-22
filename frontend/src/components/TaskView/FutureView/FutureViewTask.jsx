@@ -2,7 +2,6 @@
 
 import React from 'react';
 import type { ComponentType, Node } from 'react';
-import { Icon } from 'semantic-ui-react';
 import Delete from '../../../assets/svgs/X.svg';
 import PinFilled from '../../../assets/svgs/pin-2-dark-filled.svg';
 import PinOutline from '../../../assets/svgs/pin-2-dark.svg';
@@ -81,15 +80,15 @@ class FutureViewTask extends React.PureComponent<Props, State> {
     const handler = () => {
       removeTask(filteredTask);
     };
-    // onClick={handler}
-    return <span style={{ backgroundImage: `url(${Delete})` }} className={styles.TaskIcon} />;
+    return <Delete className={styles.TaskEditorIcon} onClick={handler} />;
   };
 
   renderBookmarkIcon = (): Node => {
     const { filteredTask: { id, inFocus } } = this.props;
-    const iconName = inFocus ? PinFilled : PinOutline;
     const handler = () => editMainTask(id, { inFocus: !inFocus });
-    return <span style={{ backgroundImage: `url(${iconName})` }} className={styles.TaskIcon} onClick={handler} />;
+    return (inFocus)
+      ? <PinFilled className={styles.TaskEditorIcon} onClick={handler} />
+      : <PinOutline className={styles.TaskEditorIcon} onClick={handler} />;
   };
 
   renderMainTaskInfo = (simplified: boolean = false): Node => {

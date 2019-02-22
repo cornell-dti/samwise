@@ -41,8 +41,12 @@ export default function FutureViewSubTask(
       >
         {name}
       </span>
-      <span style={{ backgroundImage: `url(${inFocus ? PinOutline : PinFilled})` }} onClick={onFocusChange} className={styles.TaskIcon} />
-      <span style={{ backgroundImage: `url(${Delete})` }} onClick={onRemove} className={styles.TaskIcon} />
+      inFocus
+      ?
+      <PinOutline onClick={onFocusChange} className={styles.TaskIcon} />
+      :
+      <PinFilled onClick={onFocusChange} className={styles.TaskIcon} />
+      <Delete className={styles.TaskEditorIcon} onClick={onRemove} />
     </div>
   );
 }
