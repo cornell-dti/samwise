@@ -1,4 +1,4 @@
-// flow-typed signature: 3495ff451462bf8e355ed7a07557878b
+// flow-typed signature: 16bf9f9bec5ed6a5654840d5868122aa
 // flow-typed version: <<STUB>>/webpack-dev-server_v^3.1.14/flow_v0.93.0
 
 /**
@@ -58,6 +58,10 @@ declare module 'webpack-dev-server/client/sockjs.bundle' {
   declare module.exports: any;
 }
 
+declare module 'webpack-dev-server/client/webpack.config' {
+  declare module.exports: any;
+}
+
 declare module 'webpack-dev-server/lib/Server' {
   declare module.exports: any;
 }
@@ -67,6 +71,10 @@ declare module 'webpack-dev-server/lib/utils/addEntries' {
 }
 
 declare module 'webpack-dev-server/lib/utils/createCertificate' {
+  declare module.exports: any;
+}
+
+declare module 'webpack-dev-server/lib/utils/createConfig' {
   declare module.exports: any;
 }
 
@@ -106,6 +114,9 @@ declare module 'webpack-dev-server/client/socket.js' {
 declare module 'webpack-dev-server/client/sockjs.bundle.js' {
   declare module.exports: $Exports<'webpack-dev-server/client/sockjs.bundle'>;
 }
+declare module 'webpack-dev-server/client/webpack.config.js' {
+  declare module.exports: $Exports<'webpack-dev-server/client/webpack.config'>;
+}
 declare module 'webpack-dev-server/lib/Server.js' {
   declare module.exports: $Exports<'webpack-dev-server/lib/Server'>;
 }
@@ -114,6 +125,9 @@ declare module 'webpack-dev-server/lib/utils/addEntries.js' {
 }
 declare module 'webpack-dev-server/lib/utils/createCertificate.js' {
   declare module.exports: $Exports<'webpack-dev-server/lib/utils/createCertificate'>;
+}
+declare module 'webpack-dev-server/lib/utils/createConfig.js' {
+  declare module.exports: $Exports<'webpack-dev-server/lib/utils/createConfig'>;
 }
 declare module 'webpack-dev-server/lib/utils/createDomain.js' {
   declare module.exports: $Exports<'webpack-dev-server/lib/utils/createDomain'>;

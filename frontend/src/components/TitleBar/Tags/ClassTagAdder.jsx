@@ -1,6 +1,6 @@
 // @flow strict
 
-import React from 'react';
+import React, { useState } from 'react';
 import type { ComponentType } from 'react';
 import ReactSearchBox from 'react-search-box';
 import { connect } from 'react-redux';
@@ -68,6 +68,7 @@ const fuseConfigs = {
  * @constructor
  */
 function ClassTagAdder({ courses }: Props) {
+  const [key, setKey] = useState(0);
   if (courses.size === 0) {
     return null;
   }
@@ -76,6 +77,7 @@ function ClassTagAdder({ courses }: Props) {
     addTag({
       name: value, color: '#289de9', classId,
     });
+    setKey(() => setKey(key + 1));
   };
   return (
     <div className={`${styles.TagColorConfigItemAdder} ${styles.SearchClasses}`}>
@@ -85,6 +87,7 @@ function ClassTagAdder({ courses }: Props) {
         fuseConfigs={fuseConfigs}
         onSelect={changeClass}
         placeholder="Search for classes (e.g. CS 2110, Introduction to Creative Writing)"
+        key={key}
       />
     </div>
   );
