@@ -2,7 +2,7 @@
 
 import React from 'react';
 import type { Node } from 'react';
-import { Icon } from 'semantic-ui-react';
+import Delete from '../../../assets/svgs/XLight.svg';
 import type { Tag } from '../../../store/store-types';
 import styles from './TagItem.css';
 import ColorEditor from './ColorEditor';
@@ -45,7 +45,7 @@ export default function TagItem({ tag }: Props): Node {
       {nameNode}
       <ColorEditor color={color} onChange={editColor} />
       <button type="button" className={styles.DeleteTag} onClick={onRemove}>
-        <Icon name="close" />
+        <Delete />
       </button>
     </li>
   );
