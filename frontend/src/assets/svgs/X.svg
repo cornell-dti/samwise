@@ -11,7 +11,7 @@
             <use xlink:href="#path-1"></use>
         </mask>
         <use id="Combined-Shape" stroke="#FFFFFF" fill="#FFFFFF" fill-rule="nonzero" stroke-linecap="round" xlink:href="#path-1"></use>
-        <g id="color/white" mask="url(#mask-2)" fill="#FFFFFF" fill-rule="nonzero">
+        <g id="color/white" mask="url(#mask-2)" fill="transparent" fill-rule="nonzero">
             <rect id="Rectangle" x="0" y="0" width="20" height="20"></rect>
         </g>
     </g>
