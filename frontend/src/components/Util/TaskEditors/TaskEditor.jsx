@@ -3,7 +3,7 @@
 import React from 'react';
 import type { Node } from 'react';
 import Calendar from 'react-calendar';
-import Dark from '../../../assets/svgs/dark.svg';
+import LightCalendar from '../../../assets/svgs/light.svg';
 import Delete from '../../../assets/svgs/X.svg';
 import PinOutline from '../../../assets/svgs/pin-2-dark.svg';
 import Pin from '../../../assets/svgs/pin-2-dark-filled.svg';
@@ -304,9 +304,9 @@ class TaskEditor extends React.Component<Props, State> {
         {tagDisplay}
         {tagEditor}
         <span className={styles.TaskEditorFlexiblePadding} />
-        <span
-          style={{ backgroundImage: `url(${Dark})` }}
-          className={styles.TaskEditorIconButton}
+        <LightCalendar
+          className={[styles.TaskEditorIconButton, styles.TaskEditorIcon].join(', ')}
+          style={{ marginRight: '8px' }}
           onClick={this.toggleDateEditor}
         />
         {dateDisplay}
@@ -344,8 +344,11 @@ class TaskEditor extends React.Component<Props, State> {
           onChange={this.editTaskNameCache}
           onBlur={this.editTaskName}
         />
-        <span style={{ backgroundImage: `url(${inFocus ? Pin : PinOutline})` }} className={styles.TaskEditorIcon} onClick={this.editInFocus} />
-        <span style={{ backgroundImage: `url(${Delete})` }} className={styles.TaskEditorIcon} onClick={onRemove} />
+        {inFocus
+          ? <Pin className={styles.TaskEditorIcon} onClick={this.editInFocus} />
+          : <PinOutline className={styles.TaskEditorIcon} onClick={this.editInFocus} />
+        }
+        <Delete className={styles.TaskEditorIcon} onClick={onRemove} />
       </div>
     );
   };
@@ -393,8 +396,16 @@ class TaskEditor extends React.Component<Props, State> {
           onBlur={this.editTaskName}
           style={{ width: 'calc(100% - 70px)' }}
         />
-        <span style={{ backgroundImage: `url(${Pin})` }} className={styles.TaskEditorIcon} onClick={this.editSubTaskInFocus(subTask)} />
-        <span style={{ backgroundImage: `url(${Delete})` }} onClick={onRemoveSubTask} className={styles.TaskEditorIcon} />
+        {subTask.inFocus
+          ? <Pin className={styles.TaskEditorIcon} onClick={this.editSubTaskInFocus(subTask)} />
+          : (
+            <PinOutline
+              className={styles.TaskEditorIcon}
+              onClick={this.editSubTaskInFocus(subTask)}
+            />
+          )
+        }
+        <Delete onClick={onRemoveSubTask} className={styles.TaskEditorIcon} />
       </div>
     );
   };

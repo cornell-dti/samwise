@@ -68,6 +68,7 @@ input.TaskEditorFlexibleInput:focus-within::placeholder {
 }
 
 .TaskEditorIcon {
+  width: 16px;
   flex: none;
   cursor: pointer;
   height: unset !important;
