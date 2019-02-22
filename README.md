@@ -20,7 +20,7 @@ _Last updated **02/04/2019**_.
     - [Since 2016](#since-2016)
     - [Since 2017](#since-2017)
     - [Since 2018](#since-2018)
-    - [Since 2018](#since-2019)
+    - [Since 2019](#since-2019)
 
 ## About
 
