@@ -28,7 +28,7 @@ export type FirestoreSubTask = {|
   +inFocus: boolean;
 |};
 
-export type FirebaseTaskChildrenMap = {|
+export type FirestoreTaskChildrenMap = {|
   +owner: string;
   +children: string[];
 |};

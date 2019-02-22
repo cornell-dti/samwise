@@ -1,13 +1,20 @@
 // @flow strict
 
+import firebase from 'firebase/app';
 import type {
   Course, PartialMainTask, PartialSubTask, SubTask, Tag, Task,
 } from '../store/store-types';
 import type {
-  FirestoreCommon, FirestoreTag, FirestoreTask, FirestoreSubTask,
+  FirestoreCommon, FirestoreTag, FirestoreTask, FirestoreSubTask, FirestoreTaskChildrenMap,
 } from './firestore-types';
 import { getAppUser } from './auth';
-import { db, tagsCollection, taskChildrenMapCollection, tasksCollection } from './db';
+import {
+  db,
+  subTasksCollection,
+  tagsCollection,
+  taskChildrenMapCollection,
+  tasksCollection
+} from './db';
 import { ignore } from '../util/general-util';
 import type { TaskDiff } from '../util/task-util';
 import { emitUndoAddTaskToast, emitUndoRemoveTaskToast } from '../util/undo-util';
@@ -106,12 +113,14 @@ export const addTask = (
   // TODO undo
 };
 
-export const addSubTask = (taskId: string, subTask: SubTask): void => {
-  const { id, ...rest } = subTask;
-  const firebaseSubTask: FirestoreSubTask = mergeWithOwner({
-    type: 'SUBTASK', parent: taskId, ...rest,
+export const addSubTask = (taskId: string, subTask: WithoutId<SubTask>): void => {
+  const firebaseSubTask: FirestoreSubTask = mergeWithOwner(subTask);
+  subTasksCollection().add(firebaseSubTask).then((doc) => {
+    taskChildrenMapCollection()
+      .doc(taskId)
+      .update({ children: firebase.firestore.FieldValue.arrayUnion(doc.id) })
+      .then(ignore);
   });
-  tasksCollection().add(firebaseSubTask).then(ignore);
 };
 
 /**
@@ -126,21 +135,27 @@ export const editTask = (task: Task, diff: TaskDiff): void => {
   // Handle mainTaskDiff
   batch.set(tasksCollection().doc(task.id), mainTaskDiff, { merge: true });
   // Handle subtasksCreations
-  const parent = task.id;
+  const createdSubTaskIds = [];
   subtasksCreations.forEach((creation) => {
     const { id, ...rest } = creation;
-    const firebaseSubTask: FirestoreSubTask = mergeWithOwner({
-      type: 'SUBTASK', parent, ...rest,
-    });
-    batch.set(tasksCollection().doc(), firebaseSubTask);
+    const firebaseSubTask: FirestoreSubTask = mergeWithOwner(rest);
+    const subTaskDocRef = subTasksCollection().doc();
+    createdSubTaskIds.push(subTaskDocRef.id);
+    batch.set(subTaskDocRef, firebaseSubTask);
   });
   // Handle subtasksEdits
   subtasksEdits.forEach(([subtaskId, edit]) => {
-    batch.set(tasksCollection().doc(subtaskId), edit, { merge: true });
+    batch.set(subTasksCollection().doc(subtaskId), edit, { merge: true });
   });
   // Handle subtasksDeletions
   subtasksDeletions.forEach(id => batch.delete(tasksCollection().doc(id)));
-  batch.commit().then(ignore);
+  batch.commit().then(() => {
+    taskChildrenMapCollection().doc(task.id).update({
+      children: firebase.firestore.FieldValue
+        .arrayUnion(...createdSubTaskIds)
+        .arrayRemove(...subtasksDeletions),
+    }).then(ignore);
+  });
 };
 
 export const editMainTask = (taskId: string, partialMainTask: PartialMainTask): void => {
@@ -151,12 +166,13 @@ export const editSubTask = (subtaskId: string, partialSubTask: PartialSubTask): 
   tasksCollection().doc(subtaskId).update(partialSubTask).then(ignore);
 };
 
-export const removeTask = (task: Task, noUndo?: 'no-undo'): void => {
+export const removeTask = (taskId: string, subTaskIds: string[], noUndo?: 'no-undo'): void => {
   const batch = db().batch();
-  batch.delete(tasksCollection().doc(task.id));
-  task.subtasks.forEach(s => batch.delete(tasksCollection().doc(s.id)));
+  batch.delete(tasksCollection().doc(taskId));
+  subTaskIds.forEach(id => batch.delete(tasksCollection().doc(id)));
   batch.commit().then(() => {
     if (noUndo !== 'no-undo') {
+      // TODO
       emitUndoRemoveTaskToast(task);
     }
   });
