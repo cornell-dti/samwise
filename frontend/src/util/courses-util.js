@@ -1,5 +1,6 @@
 // @flow strict
 
+import { Map } from 'immutable';
 import type { Course } from '../store/store-types';
 
 /**
@@ -9,15 +10,16 @@ import type { Course } from '../store/store-types';
  * @return {Map<number, Course[]>} the map from course id to courses.
  */
 export default function buildCoursesMap(courses: Course[]): Map<number, Course[]> {
-  const map = new Map();
-  for (let i = 0; i < courses.length; i += 1) {
-    const course = courses[i];
-    const existingCourses = map.get(course.courseId);
-    if (existingCourses == null) {
-      map.set(course.courseId, [course]);
-    } else {
-      existingCourses.push(course);
+  const map = Map<number, Course[]>();
+  return map.withMutations((m) => {
+    for (let i = 0; i < courses.length; i += 1) {
+      const course = courses[i];
+      const existingCourses = m.get(course.courseId);
+      if (existingCourses == null) {
+        m.set(course.courseId, [course]);
+      } else {
+        existingCourses.push(course);
+      }
     }
-  }
-  return map;
+  });
 }

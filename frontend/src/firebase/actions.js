@@ -37,7 +37,8 @@ type WithoutIdOrder<Props> = $ReadOnly<$Diff<Props, {| +id: string; +order: numb
 export const addTag = (tag: WithoutIdOrder<Tag>): void => {
   const { tags } = store.getState();
   const { classId } = tag;
-  if (classId != null && tags.some(t => t.classId === classId)) {
+  // $FlowFixMe incomplete typing rules for Object.values.
+  if (classId != null && Object.values(tags).some((t: Tag) => t.classId === classId)) {
     return;
   }
   createFirestoreObject('tags', tag)
@@ -238,7 +239,8 @@ export const importCourseExams = (): void => {
   const { tags, tasks, courses } = store.getState();
   type SimpleTask = $Diff<WithoutIdOrder<Task>, {| +subtasks: SubTask[] |}>;
   const newTasks: SimpleTask[] = [];
-  tags.forEach((tag) => {
+  // $FlowFixMe
+  Object.values(tags).forEach((tag: Tag) => {
     if (tag.classId === null) {
       return;
     }
@@ -257,7 +259,8 @@ export const importCourseExams = (): void => {
             && date.getDate() === t.getDate()
             && date.getHours() === t.getHours();
         };
-        if (!tasks.some(filter)) {
+        // $FlowFixMe
+        if (!Object.values(tasks).some(filter)) {
           const newTask: SimpleTask = {
             name: 'Exam',
             tag: tag.id,

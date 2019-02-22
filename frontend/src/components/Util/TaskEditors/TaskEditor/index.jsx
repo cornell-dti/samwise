@@ -13,7 +13,7 @@ import type {
 import OverdueAlert from '../../../UI/OverdueAlert';
 import styles from './TaskEditor.css';
 import { getTagConnect } from '../../../../util/tag-util';
-import { randomId } from '../../../../util/general-util';
+import { ignore, randomId } from '../../../../util/general-util';
 import { getTodayAtZeroAM } from '../../../../util/datetime-util';
 import EditorHeader from './EditorHeader';
 import MainTaskEditor from './MainTaskEditor';
@@ -52,10 +52,19 @@ type TaskToFocus = number | 'new-subtask' | null;
  * editor itself does not remember the state of editing a task, a wrapper component should.
  * You can read the docs for props above.
  */
-function TaskEditor(props: Props): Node {
-  const {
-    task, actions, getTag, className, children, newSubTaskDisabled, onFocus, onBlur, refFunction,
-  } = props;
+function TaskEditor(
+  {
+    task,
+    actions,
+    getTag,
+    className,
+    children,
+    newSubTaskDisabled,
+    onFocus,
+    onBlur,
+    refFunction,
+  }: Props,
+): Node {
   const {
     name, tag, date, complete, inFocus, subtasks,
   } = task;
@@ -63,7 +72,11 @@ function TaskEditor(props: Props): Node {
     editMainTask, editSubTask, addSubTask, removeTask, removeSubTask, onSave,
   } = actions;
 
-  const [subTaskToFocus, setSubTaskToFocus] = React.useState<TaskToFocus>(null);
+  const [subTaskToFocus, setSubTaskToFocus] = React.useState<TaskToFocus>(() => {
+    console.log('recreated!');
+    return null;
+  });
+  console.log(subTaskToFocus);
 
   const tagDateOnChange = change => editMainTask(change, false);
   const nameCompleteInFocusChange = change => editMainTask(change, false);
@@ -76,8 +89,11 @@ function TaskEditor(props: Props): Node {
       complete: false,
       inFocus: false,
     };
+    console.log('new-subtask', newSubTask);
     addSubTask(newSubTask);
+    console.log('try to add...');
     setSubTaskToFocus(order);
+    console.log('set focus')
   };
 
   /**
@@ -102,6 +118,7 @@ function TaskEditor(props: Props): Node {
       setSubTaskToFocus('new-subtask');
     }
   };
+  const clearNeedToFocus = () => setSubTaskToFocus(null);
 
   const isOverdue = date < getTodayAtZeroAM() && !complete;
   const backgroundColor = getTag(tag).color;
@@ -117,7 +134,7 @@ function TaskEditor(props: Props): Node {
       onMouseEnter={onFocus}
       onMouseLeave={onBlur}
       onFocus={onFocus}
-      onBlur={() => {}}
+      onBlur={ignore}
       ref={refFunction}
     >
       {isOverdue && <OverdueAlert />}
@@ -139,7 +156,7 @@ function TaskEditor(props: Props): Node {
             subTask={subTask}
             mainTaskComplete={complete}
             needToBeFocused={subTaskToFocus === subTask.order}
-            afterFocusedCallback={() => setSubTaskToFocus(null)}
+            afterFocusedCallback={clearNeedToFocus}
             editSubTask={editSubTask}
             removeSubTask={removeSubTask}
             onPressEnter={pressEnterHandler}
@@ -149,7 +166,7 @@ function TaskEditor(props: Props): Node {
           <NewSubTaskEditor
             onChange={handleNewSubTaskValueChange}
             needToBeFocused={subTaskToFocus === 'new-subtask'}
-            afterFocusedCallback={() => setSubTaskToFocus(null)}
+            afterFocusedCallback={clearNeedToFocus}
             onPressEnter={onSave}
           />
         )}
@@ -159,5 +176,5 @@ function TaskEditor(props: Props): Node {
   );
 }
 
-const ConnectedTaskEditor = getTagConnect<Props>(React.memo<Props>(TaskEditor));
+const ConnectedTaskEditor = getTagConnect<Props>(TaskEditor);
 export default ConnectedTaskEditor;

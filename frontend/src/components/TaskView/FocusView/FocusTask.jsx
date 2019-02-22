@@ -11,6 +11,10 @@ import styles from './FocusTask.module.css';
 type Props = {| +task: Task |};
 
 function FocusTask({ task }: Props): Node {
+  React.useState(() => {
+    console.log('focus task recreated');
+    return null;
+  });
   return (
     <Draggable draggableId={task.id} index={task.order}>
       {provided => (

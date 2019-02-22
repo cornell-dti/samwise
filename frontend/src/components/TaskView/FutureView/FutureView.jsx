@@ -146,7 +146,7 @@ function buildDaysInFutureView(
 type Props = {|
   +windowSize: WindowSize;
   +config: FutureViewConfig;
-  +tasks: Task[];
+  +taskIds: number[];
   +onConfigChange: (FutureViewConfig) => void;
   // subscribed from redux store.
   +getTag: (id: string) => Tag;
@@ -154,7 +154,7 @@ type Props = {|
 
 function FutureView(
   {
-    windowSize, config, tasks, onConfigChange, getTag,
+    windowSize, config, taskIds, onConfigChange, getTag,
   }: Props,
 ): Node {
   // the number of days in n-days mode.

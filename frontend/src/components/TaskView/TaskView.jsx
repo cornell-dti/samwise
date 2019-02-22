@@ -8,14 +8,14 @@ import FutureView, { futureViewConfigProvider } from './FutureView/FutureView';
 import styles from './TaskView.css';
 import windowSizeConnect from '../Util/Responsive/WindowSizeConsumer';
 import type { WindowSize } from '../Util/Responsive/window-size-context';
-import type { Task } from '../../store/store-types';
-import SquareTextButton from '../UI/SquareTextButton';
-import { clearFocus } from '../../firebase/actions';
 
-type OwnProps = {| +fullTasks: Task[]; +inFocusTasks: Task[]; |};
+type OwnProps = {|
+  +taskIds: number[];
+  +focusedTaskIds: number[];
+|};
 type Props = {| ...OwnProps; +windowSize: WindowSize; |};
 
-function TaskView({ windowSize, fullTasks, inFocusTasks }: Props): Node {
+function TaskView({ windowSize, taskIds, focusedTaskIds }: Props): Node {
   const [
     doesShowFocusViewInWideScreen, setDoesShowFocusViewInWideScreen,
   ] = React.useState(false);
@@ -72,7 +72,7 @@ function TaskView({ windowSize, fullTasks, inFocusTasks }: Props): Node {
 
   const FocusPanel = (): Node => (
     <div className={styles.FocusPanel}>
-      <FocusView tasks={inFocusTasks} />
+      <FocusView focusedTaskIds={focusedTaskIds} />
     </div>
   );
 
@@ -82,7 +82,7 @@ function TaskView({ windowSize, fullTasks, inFocusTasks }: Props): Node {
       <FutureView
         windowSize={windowSize}
         config={futureViewConfig}
-        tasks={fullTasks}
+        taskIds={taskIds}
         onConfigChange={onConfigChange}
       />
     </div>
@@ -101,7 +101,7 @@ function TaskView({ windowSize, fullTasks, inFocusTasks }: Props): Node {
     || doesShowFocusViewInWideScreen;
   return (
     <div className={styles.TaskView}>
-      {showFocusView && <FocusPanel inFocusTasks={inFocusTasks} />}
+      {showFocusView && <FocusPanel />}
       <FuturePanel>
         {renderWideScreenFocusViewToggleComponent()}
       </FuturePanel>

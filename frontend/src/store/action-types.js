@@ -1,15 +1,30 @@
 // @flow strict
 
-import type { Course, Tag, Task } from './store-types';
+import type { Map } from 'immutable';
+import type {
+  Course, SubTask, Tag, Task,
+} from './store-types';
 
-/**
- * Used to patch the redux store with data from firebase.
- */
-export type PatchStoreAction = {|
-  type: 'PATCH_STORE';
-  +tags: Tag[] | null; // all the tags from backend
-  +tasks: Task[] | null; // all the tasks from backend
-  +courses: Map<number, Course[]> | null; // all the courses from backend
+export type PatchStoreTags = {|
+  type: 'PATCH_TAGS';
+  +created: Tag[];
+  +edited: Tag[];
+  +deleted: string[];
 |};
 
-export type Action = PatchStoreAction;
+export type PatchStoreTasks = {|
+  type: 'PATCH_TASKS';
+  +createdTasks: Task[];
+  +createdSubTasks: SubTask[];
+  +editedTasks: Task[];
+  +editedSubTasks: SubTask[];
+  +deletedTasks: string[];
+  +deletedSubTasks: string[];
+|};
+
+export type PatchStoreCourses = {|
+  type: 'PATCH_COURSES';
+  +courses: Map<number, Course[]>;
+|};
+
+export type Action = PatchStoreTags | PatchStoreTasks | PatchStoreCourses;

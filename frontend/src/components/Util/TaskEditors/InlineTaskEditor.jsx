@@ -29,7 +29,10 @@ type Props = {| ...OwnProps; ...DefaultProps; |};
  * The task editor used to edit task inline, activated on focus.
  */
 function InlineTaskEditor({ task, className }: Props): Node {
-  const [disabled, setDisabled] = React.useState(true);
+  const [disabled, setDisabled] = React.useState(() => {
+    console.log('InlineTaskEditor recreated!')
+    return true;
+  });
 
   const { id } = task;
   // To un-mount the editor when finished editing.

@@ -12,16 +12,12 @@ import { reorder } from '../../../firebase/actions';
 
 const focusViewDroppableId = 'focus-view-droppable';
 
-type Props = {| +tasks: Task[] |};
+type Props = {| +focusedTaskIds: number[] |};
 
 /**
  * The focus view component.
- *
- * @param {Task[]} tasks the main task array.
- * @return {Node} the rendered focus view component.
- * @constructor
  */
-function FocusView({ tasks }: Props): Node {
+function FocusView({ focusedTaskIds }: Props): Node {
   const [localTasks, setLocalTasks] = React.useState<Task[]>(tasks);
   if (localTasks !== tasks) {
     setLocalTasks(tasks);

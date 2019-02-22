@@ -1,5 +1,7 @@
 // @flow strict
 
+import type { Map } from 'immutable';
+
 export type Tag = {|
   +id: string;
   +order: number;
@@ -32,7 +34,7 @@ export type Task = {|
   +date: Date; // Example: new Date()
   +complete: boolean;
   +inFocus: boolean; // Whether the task is in focus
-  +subtasks: SubTask[];
+  +subtasks: number[]; // ids of subtasks
 |};
 
 /**
@@ -59,7 +61,8 @@ export type Course = {|
  * The type of the entire redux state.
  */
 export type State = {|
-  +tasks: Task[];
-  +tags: Tag[];
+  +tags: Map<string, Tag>;
+  +tasks: Map<string, Task>;
+  +subTasks: Map<string, SubTask>;
   +courses: Map<number, Course[]>;
 |};
