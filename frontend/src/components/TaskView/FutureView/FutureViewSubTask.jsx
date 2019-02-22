@@ -3,8 +3,8 @@
 import React from 'react';
 import type { Node } from 'react';
 import PinFilled from '../../../assets/svgs/pin-2-dark-filled.svg';
-import PinOutline from '../../../assets/svgs/pin-2-dark.svg';
-import Delete from '../../../assets/svgs/X.svg';
+import PinOutline from '../../../assets/svgs/pin-2-dark-outline.svg';
+import DeleteDark from '../../../assets/svgs/XDark.svg';
 import styles from './FutureViewTask.css';
 import type { SubTask } from '../../../store/store-types';
 import CheckBox from '../../UI/CheckBox';
@@ -45,7 +45,7 @@ export default function FutureViewSubTask(
         ? <PinFilled onClick={onFocusChange} className={styles.TaskIcon} />
         : <PinOutline onClick={onFocusChange} className={styles.TaskIcon} />
       }
-      <Delete className={styles.TaskIcon} onClick={onRemove} />
+      <DeleteDark className={styles.TaskIcon} onClick={onRemove} />
     </div>
   );
 }

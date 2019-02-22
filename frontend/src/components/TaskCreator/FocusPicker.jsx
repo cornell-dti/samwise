@@ -1,7 +1,7 @@
 // @flow strict
 
 import React from 'react';
-import Pin from '../../assets/svgs/pin-2-dark.svg';
+import Pin from '../../assets/svgs/pin-2-dark-outline.svg';
 import styles from './Picker.css';
 
 type Props = {|

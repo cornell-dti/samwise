@@ -3,7 +3,7 @@
 import React from 'react';
 import type { Node } from 'react';
 import { Icon } from 'semantic-ui-react';
-import Delete from '../../assets/svgs/X.svg';
+import Delete from '../../assets/svgs/XLight.svg';
 import 'react-toastify/dist/ReactToastify.css';
 import styles from './TaskCreator.css';
 import TagPicker from './TagPicker';

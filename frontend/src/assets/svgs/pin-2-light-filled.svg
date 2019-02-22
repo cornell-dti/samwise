@@ -12,6 +12,6 @@
         <mask id="mask-2" fill="white">
             <use xlink:href="#path-1"></use>
         </mask>
-        <use id="Combined-Shape" stroke="#000000" fill="#000000" stroke-width="2" stroke-linejoin="round" fill-rule="nonzero" transform="translate(11.545942, 12.045942) rotate(-45.000000) translate(-11.545942, -12.045942) " xlink:href="#path-1"></use>
+        <use id="Combined-Shape" stroke="#F9F9F9" fill="#F9F9F9" stroke-width="2" stroke-linejoin="round" fill-rule="nonzero" transform="translate(11.545942, 12.045942) rotate(-45.000000) translate(-11.545942, -12.045942) " xlink:href="#path-1"></use>
     </g>
 </svg>

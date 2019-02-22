@@ -28,14 +28,15 @@ function TagPicker(props: Props): Node {
   const displayedNode = (isDefault: boolean) => {
     const { name, color, classId } = getTag(tag);
     const style = isDefault ? {} : { background: color };
-    const internal = isDefault
-      ? (<tagIcon />)
-      : (
-        <React.Fragment>
-          <span className={styles.TagDisplay}>{classId != null ? name.split(':')[0] : name}</span>
-          <button type="button" className={styles.ResetButton} onClick={reset}>&times;</button>
-        </React.Fragment>
-      );
+    // const internal = isDefault
+    //   ? (<tagIcon />)
+    //   : (
+    //     <React.Fragment>
+    //       <span className={styles.TagDisplay}>{classId != null ? name.split(':')[0] : name}</span>
+    //       <button type="button" className={styles.ResetButton} onClick={reset}>&times;</button>
+    //     </React.Fragment>
+    //   );
+    const internal = <tagIcon />;
     return (
       <span role="presentation" onClick={clickPicker} className={styles.Label} style={style}>
         {internal}

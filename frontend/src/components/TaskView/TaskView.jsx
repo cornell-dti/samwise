@@ -4,7 +4,7 @@ import React from 'react';
 import type { Node } from 'react';
 import { Icon } from 'semantic-ui-react';
 import Calendar from '../../assets/svgs/dark.svg';
-import PinFilled from '../../assets/svgs/pin-2-dark-filled.svg';
+import PinFilled from '../../assets/svgs/pin-2-light-filled.svg';
 import FocusView from './FocusView/FocusView';
 import FutureView, { futureViewConfigProvider } from './FutureView/FutureView';
 import styles from './TaskView.css';

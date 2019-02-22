@@ -2,7 +2,7 @@
 
 import React from 'react';
 import Settings from '../../../assets/svgs/settings.svg';
-import Delete from '../../../assets/svgs/X.svg';
+import Delete from '../../../assets/svgs/XLight.svg';
 import SettingsPage from './SettingsPage';
 import styles from './SettingsButton.css';
 

@@ -4,9 +4,9 @@ import React from 'react';
 import type { Node } from 'react';
 import Calendar from 'react-calendar';
 import LightCalendar from '../../../assets/svgs/light.svg';
-import Delete from '../../../assets/svgs/X.svg';
-import PinOutline from '../../../assets/svgs/pin-2-dark.svg';
-import Pin from '../../../assets/svgs/pin-2-dark-filled.svg';
+import Delete from '../../../assets/svgs/XLight.svg';
+import PinOutline from '../../../assets/svgs/pin-2-dark-outline.svg';
+import Pin from '../../../assets/svgs/pin-2-light-filled.svg';
 import type {
   Tag, SubTask, Task, PartialMainTask, PartialSubTask,
 } from '../../../store/store-types';
