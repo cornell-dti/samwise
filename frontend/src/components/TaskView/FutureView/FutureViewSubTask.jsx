@@ -41,12 +41,11 @@ export default function FutureViewSubTask(
       >
         {name}
       </span>
-      inFocus
-      ?
-      <PinOutline onClick={onFocusChange} className={styles.TaskIcon} />
-      :
-      <PinFilled onClick={onFocusChange} className={styles.TaskIcon} />
-      <Delete className={styles.TaskEditorIcon} onClick={onRemove} />
+      {inFocus
+        ? <PinOutline onClick={onFocusChange} className={styles.TaskIcon} />
+        : <PinFilled onClick={onFocusChange} className={styles.TaskIcon} />
+      }
+      <Delete className={styles.TaskIcon} onClick={onRemove} />
     </div>
   );
 }
