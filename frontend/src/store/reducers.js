@@ -1,10 +1,15 @@
 // @flow strict
 
-import { Map } from 'immutable';
+import { Map, Set } from 'immutable';
 import type {
-  Action, PatchStoreCourses, PatchStoreTags, PatchStoreTasks,
+  Action,
+  PatchCourses,
+  PatchTags,
+  PatchTasks,
+  PatchSubTasks,
+  PatchTaskChildrenMap,
 } from './action-types';
-import type { State, Tag, Task } from './store-types';
+import type { State } from './store-types';
 import { NONE_TAG_ID, NONE_TAG } from '../util/tag-util';
 
 /**
@@ -13,13 +18,14 @@ import { NONE_TAG_ID, NONE_TAG } from '../util/tag-util';
  * @type {State}
  */
 const initialState: State = {
-  tags: Map(),
+  tags: Map({ [NONE_TAG_ID]: NONE_TAG }),
   tasks: Map(),
   subTasks: Map(),
+  taskChildrenMap: Map(),
   courses: Map(),
 };
 
-function patchStoreTags(state: State, { created, edited, deleted }: PatchStoreTags): State {
+function patchTags(state: State, { created, edited, deleted }: PatchTags): State {
   const newTags = state.tags.withMutations((tags) => {
     created.forEach(t => tags.set(t.id, t));
     edited.forEach(t => tags.set(t.id, t));
@@ -28,54 +34,51 @@ function patchStoreTags(state: State, { created, edited, deleted }: PatchStoreTa
   return { ...state, tags: newTags };
 }
 
-function patchStoreTasks(
-  state: State,
-  {
-    createdTasks, createdSubTasks, editedTasks, editedSubTasks, deletedTasks, deletedSubTasks,
-  }: PatchStoreTasks,
-): State {
-  const newTasksWithSubTasksPatched = state.tasks.withMutations((tasks) => {
-    createdSubTasks.forEach(t => tasks.set(t.id, t));
-    editedSubTasks.forEach(t => tasks.set(t.id, t));
-    deletedSubTasks.forEach(id => tasks.delete(id));
-    const parentsForNewSubTasks = createdSubTasks.map(t => t.p)
+function patchTasks(state: State, { created, edited, deleted }: PatchTasks): State {
+  const newTasks = state.tasks.withMutations((tasks) => {
+    created.forEach(t => tasks.set(t.id, t));
+    edited.forEach(t => tasks.set(t.id, t));
+    deleted.forEach(id => tasks.delete(id));
   });
-
+  return { ...state, tasks: newTasks };
 }
 
-/**
- * Patch the entire redux store with the loaded data from the backend.
- *
- * @see PatchStoreAction
- */
-function patchStore(state: State, { tags, tasks, courses }: PatchStoreAction): State {
-  const newState = { ...state };
-  if (tags !== null) {
-    // $FlowFixMe must use any
-    const tagsObj: any = { [NONE_TAG_ID]: NONE_TAG };
-    tags.forEach((t) => {
-      tagsObj[t.id] = t;
-    });
-    newState.tags = (tagsObj: {| +[id: string]: Tag |});
-  }
-  if (tasks !== null) {
-    // $FlowFixMe must use any
-    const tasksObj: any = {};
-    tasks.forEach((t) => {
-      tasksObj[t.id] = t;
-    });
-    newState.tasks = (tasksObj: {| +[id: string]: Task |});
-  }
-  if (courses !== null) {
-    newState.courses = courses;
-  }
-  return newState;
+function patchSubTasks(state: State, { created, edited, deleted }: PatchSubTasks): State {
+  const newSubTasks = state.subTasks.withMutations((subTasks) => {
+    created.forEach(t => subTasks.set(t.id, t));
+    edited.forEach(t => subTasks.set(t.id, t));
+    deleted.forEach(id => subTasks.delete(id));
+  });
+  return { ...state, subTasks: newSubTasks };
+}
+
+function patchTaskChildrenMap(
+  state: State, { created, edited, deleted }: PatchTaskChildrenMap,
+): State {
+  const newMap = state.taskChildrenMap.withMutations((m) => {
+    created.forEach((values, key) => m.set(key, Set(values)));
+    edited.forEach((values, key) => m.set(key, Set(values)));
+    deleted.forEach(id => m.delete(id));
+  });
+  return { ...state, taskChildrenMap: newMap };
+}
+
+function patchCourses(state: State, { courses }: PatchCourses): State {
+  return { ...state, courses };
 }
 
 export default function rootReducer(state: State = initialState, action: Action): State {
   switch (action.type) {
     case 'PATCH_TAGS':
-      return patchStoreTags(state, action);
+      return patchTags(state, action);
+    case 'PATCH_TASKS':
+      return patchTasks(state, action);
+    case 'PATCH_SUBTASKS':
+      return patchSubTasks(state, action);
+    case 'PATCH_TASK_CHILDREN_MAP':
+      return patchTaskChildrenMap(state, action);
+    case 'PATCH_COURSES':
+      return patchCourses(state, action);
     default:
       return state;
   }

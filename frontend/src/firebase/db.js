@@ -16,10 +16,14 @@ export const db = (): Firestore => firebase.firestore();
  */
 const collections = {
   ORDER_MANAGER: 'samwise-order-manager',
-  TAGS: 'samwise-tags',
-  TASKS: 'samwise-tasks',
+  TAGS: 'samwise-tags-experimental',
+  TASKS: 'samwise-tasks-experimental',
+  SUBTASKS: 'samwise-subtasks-experimental',
+  TASK_CHILDREN_MAP: 'samwise-task-children-map-experimental',
 };
 
 export const orderManagerCollection = () => db().collection(collections.ORDER_MANAGER);
 export const tagsCollection = () => db().collection(collections.TAGS);
 export const tasksCollection = () => db().collection(collections.TASKS);
+export const subTasksCollection = () => db().collection(collections.SUBTASKS);
+export const taskChildrenMapCollection = () => db().collection(collections.TASK_CHILDREN_MAP);

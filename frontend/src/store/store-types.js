@@ -1,6 +1,6 @@
 // @flow strict
 
-import type { Map } from 'immutable';
+import type { Map, Set } from 'immutable';
 
 export type Tag = {|
   +id: string;
@@ -23,9 +23,6 @@ export type SubTask = {|
  */
 export type PartialSubTask = $Shape<$Diff<SubTask, {| +id: string; |}>>
 
-/**
- * The task in the store.
- */
 export type Task = {|
   +id: string;
   +order: number;
@@ -34,13 +31,12 @@ export type Task = {|
   +date: Date; // Example: new Date()
   +complete: boolean;
   +inFocus: boolean; // Whether the task is in focus
-  +subtasks: number[]; // ids of subtasks
 |};
 
 /**
  * The task type without id and subtask.
  */
-export type MainTask = $Diff<Task, {| +id: string; +subtasks: SubTask[]; |}>;
+export type MainTask = $Diff<Task, {| +id: string; |}>;
 /**
  * The task type without id and subtask, and with all properties as optional.
  */
@@ -64,5 +60,6 @@ export type State = {|
   +tags: Map<string, Tag>;
   +tasks: Map<string, Task>;
   +subTasks: Map<string, SubTask>;
+  +taskChildrenMap: Map<string, Set<string>>;
   +courses: Map<number, Course[]>;
 |};

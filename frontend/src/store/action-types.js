@@ -5,26 +5,42 @@ import type {
   Course, SubTask, Tag, Task,
 } from './store-types';
 
-export type PatchStoreTags = {|
+export type PatchTags = {|
   type: 'PATCH_TAGS';
   +created: Tag[];
   +edited: Tag[];
   +deleted: string[];
 |};
 
-export type PatchStoreTasks = {|
+export type PatchTasks = {|
   type: 'PATCH_TASKS';
-  +createdTasks: Task[];
-  +createdSubTasks: SubTask[];
-  +editedTasks: Task[];
-  +editedSubTasks: SubTask[];
-  +deletedTasks: string[];
-  +deletedSubTasks: string[];
+  +created: Task[];
+  +edited: Task[];
+  +deleted: string[];
 |};
 
-export type PatchStoreCourses = {|
+export type PatchSubTasks = {|
+  type: 'PATCH_SUBTASKS';
+  +created: SubTask[];
+  +edited: SubTask[];
+  +deleted: string[];
+|};
+
+export type PatchTaskChildrenMap = {|
+  type: 'PATCH_TASK_CHILDREN_MAP';
+  +created: Map<string, string[]>;
+  +edited: Map<string, string[]>;
+  +deleted: string[];
+|};
+
+export type PatchCourses = {|
   type: 'PATCH_COURSES';
   +courses: Map<number, Course[]>;
 |};
 
-export type Action = PatchStoreTags | PatchStoreTasks | PatchStoreCourses;
+export type Action =
+  | PatchTags
+  | PatchTasks
+  | PatchSubTasks
+  | PatchTaskChildrenMap
+  | PatchCourses;

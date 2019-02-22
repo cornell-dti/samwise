@@ -14,19 +14,21 @@ export type FirestoreTag = {|
 
 export type FirestoreTask = {|
   ...FirestoreCommon;
-  +type: 'TASK';
   +name: string;
   +tag: string;
-  +date: Date | { +toDate: () => Date };
+  +date: Date | {| +toDate: () => Date |};
   +complete: boolean;
   +inFocus: boolean;
 |};
 
 export type FirestoreSubTask = {|
   ...FirestoreCommon;
-  +type: 'SUBTASK';
-  +parent: string;
   +name: string;
   +complete: boolean;
   +inFocus: boolean;
+|};
+
+export type FirebaseTaskChildrenMap = {|
+  +owner: string;
+  +children: string[];
 |};

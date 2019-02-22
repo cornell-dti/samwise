@@ -7,7 +7,7 @@ import type {
   FirestoreCommon, FirestoreTag, FirestoreTask, FirestoreSubTask,
 } from './firestore-types';
 import { getAppUser } from './auth';
-import { db, tagsCollection, tasksCollection } from './db';
+import { db, tagsCollection, taskChildrenMapCollection, tasksCollection } from './db';
 import { ignore } from '../util/general-util';
 import type { TaskDiff } from '../util/task-util';
 import { emitUndoAddTaskToast, emitUndoRemoveTaskToast } from '../util/undo-util';
@@ -27,6 +27,7 @@ const mergeWithOwner = <T>(obj: T): {| ...T, +owner: string |} => ({
 });
 
 type WithoutIdOrder<Props> = $ReadOnly<$Diff<Props, {| +id: string; +order: number |}>>;
+type WithoutId<Props> = $ReadOnly<$Diff<Props, {| +id: string; |}>>;
 
 /*
  * --------------------------------------------------------------------------------
@@ -73,34 +74,36 @@ export const removeTag = (id: string): void => {
  * --------------------------------------------------------------------------------
  */
 
-export const addTask = (task: WithoutIdOrder<Task>, noUndo?: 'no-undo'): void => {
-  const { subtasks, ...taskWithoutSubtasks } = task;
-  const transformedTask = { type: 'TASK', ...taskWithoutSubtasks };
-  createFirestoreObject('tasks', transformedTask)
-    .then((firestoreTask: FirestoreTask) => {
-      tasksCollection().add(firestoreTask).then((addedDoc) => {
-        const completeTask = {
-          ...task, id: addedDoc.id, order: firestoreTask.order, subtasks: [],
-        };
-        const batch = db().batch();
-        subtasks.forEach((subtask) => {
-          const { id: _, ...rest } = subtask;
-          const firebaseSubTask: FirestoreSubTask = mergeWithOwner({
-            type: 'SUBTASK',
-            parent: addedDoc.id,
-            ...rest,
-          });
-          const subtaskDoc = tasksCollection().doc();
-          completeTask.subtasks.push({ id: subtaskDoc.id, ...rest });
-          batch.set(subtaskDoc, firebaseSubTask);
-        });
-        batch.commit().then(() => {
-          if (noUndo !== 'no-undo') {
-            emitUndoAddTaskToast(completeTask);
-          }
-        });
-      });
+export const addTask = (
+  task: WithoutIdOrder<Task>,
+  subTasks: WithoutId<SubTask>[],
+  noUndo?: 'no-undo',
+): void => {
+  const createTaskIdPromise: Promise<string> = (async () => {
+    const firestoreTask: FirestoreTask = await createFirestoreObject('tasks', task);
+    const addedDoc = await tasksCollection().add(firestoreTask);
+    return addedDoc.id;
+  })();
+  const createSubTaskIdsPromise: Promise<string[]> = (async () => {
+    const created: string[] = [];
+    const batch = db().batch();
+    subTasks.forEach((subtask) => {
+      const firebaseSubTask: FirestoreSubTask = mergeWithOwner(subtask);
+      const subtaskDoc = tasksCollection().doc();
+      created.push(subtaskDoc.id);
+      batch.set(subtaskDoc, firebaseSubTask);
     });
+    await batch.commit();
+    return created;
+  })();
+  Promise.all([createTaskIdPromise, createSubTaskIdsPromise])
+    .then(([createdTaskId, createdSubTaskIds]) => {
+      taskChildrenMapCollection()
+        .doc(createdTaskId)
+        .set({ children: createdSubTaskIds })
+        .then(ignore);
+    });
+  // TODO undo
 };
 
 export const addSubTask = (taskId: string, subTask: SubTask): void => {
