@@ -2,6 +2,7 @@
 
 import React from 'react';
 import type { Node } from 'react';
+import type { Set } from 'immutable';
 import { Icon } from 'semantic-ui-react';
 import Delete from '../../assets/svgs/XLight.svg';
 import 'react-toastify/dist/ReactToastify.css';
@@ -16,8 +17,11 @@ import { replaceSubTask } from '../../util/task-util';
 import { isToday } from '../../util/datetime-util';
 import { addTask } from '../../firebase/actions';
 
+type SimpleTask = $Diff<Task, {| +order: number; +children: Set<string> |}>;
+
 type State = {|
-  ...$Diff<Task, {| +order: number |}>;
+  ...SimpleTask;
+  +subTasks: SubTask[];
   +opened: boolean;
   +tagPickerOpened: boolean;
   +datePickerOpened: boolean;
@@ -41,7 +45,7 @@ const initialState = (): State => ({
   date: new Date(),
   complete: false,
   inFocus: false,
-  subtasks: [],
+  subTasks: [],
   opened: false,
   tagPickerOpened: false,
   datePickerOpened: false,
@@ -109,20 +113,21 @@ export default class TaskCreator extends React.PureComponent<{||}, State> {
       e.preventDefault();
     }
     const {
-      name, tag, date, complete, inFocus, subtasks,
+      name, tag, date, complete, inFocus, subTasks,
     } = this.state;
     if (name === '') {
       return;
     }
-    const newSubTasks = subtasks
+    const newSubTasks = subTasks
       .filter(subTask => subTask.name !== '') // remove empty subtasks
-      .map((s, order) => ({ ...s, order })); // normalize orders: use current sequence as order;
+      // normalize orders: use current sequence as order;; remove useless id
+      .map(({ id, ...rest }, order) => ({ ...rest, order }));
     const autoInFocus = inFocus || isToday(date); // Put task in focus is the due date is today.
     const newTask = {
-      name, tag, date, complete, inFocus: autoInFocus, subtasks: newSubTasks,
+      name, tag, date, complete, inFocus: autoInFocus,
     };
     // Add the task to the store.
-    addTask(newTask);
+    addTask(newTask, newSubTasks);
     // Reset the state.
     this.setState({ ...initialState() });
     this.closeNewTask();
@@ -180,9 +185,9 @@ export default class TaskCreator extends React.PureComponent<{||}, State> {
     if (newSubTaskName === '') {
       return;
     }
-    this.setState(({ subtasks }: State) => ({
-      subtasks: [...subtasks, {
-        id: String(subtasks.length),
+    this.setState(({ subTasks }: State) => ({
+      subTasks: [...subTasks, {
+        id: String(subTasks.length),
         order: 0, // some random order, will be ignored anyway
         name: newSubTaskName,
         complete: false,
@@ -200,8 +205,8 @@ export default class TaskCreator extends React.PureComponent<{||}, State> {
    */
   editSubTask = (subtaskId: string) => (e: SyntheticEvent<HTMLInputElement>) => {
     const name = e.currentTarget.value;
-    this.setState(({ subtasks }: State) => ({
-      subtasks: replaceSubTask(subtasks, subtaskId, s => ({ ...s, name })),
+    this.setState(({ subTasks }: State) => ({
+      subTasks: replaceSubTask(subTasks, subtaskId, s => ({ ...s, name })),
     }));
   };
 
@@ -224,8 +229,8 @@ export default class TaskCreator extends React.PureComponent<{||}, State> {
    */
   deleteSubTask = (subtaskId: string) => (e: SyntheticEvent<HTMLButtonElement>) => {
     e.preventDefault();
-    this.setState(({ subtasks }: State) => ({
-      subtasks: subtasks.filter(s => s.id !== subtaskId),
+    this.setState(({ subTasks }: State) => ({
+      subTasks: subTasks.filter(s => s.id !== subtaskId),
     }));
   };
 
@@ -247,7 +252,7 @@ export default class TaskCreator extends React.PureComponent<{||}, State> {
       return null;
     }
     const {
-      tag, date, inFocus, subtasks,
+      tag, date, inFocus, subTasks,
       tagPickerOpened, datePickerOpened, datePicked, needToSwitchFocus,
     } = this.state;
     const existingSubTaskEditor = ({ id, name }: SubTask, i: number, arr: SubTask[]) => {
@@ -292,7 +297,7 @@ export default class TaskCreator extends React.PureComponent<{||}, State> {
           <Icon name="arrow alternate circle right outline" color="black" />
         </button>
         <div className={styles.NewTaskModal}>
-          <ul>{subtasks.map(existingSubTaskEditor)}</ul>
+          <ul>{subTasks.map(existingSubTaskEditor)}</ul>
           <Icon name="plus" />
           <input type="text" placeholder="Add a Subtask" value="" onChange={this.addNewSubTask} />
           <button type="button" className={styles.ResetButton} onClick={this.resetTask}>

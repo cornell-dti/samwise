@@ -1,21 +1,32 @@
 // @flow strict
 
 import React from 'react';
+import type { Map } from 'immutable';
 import type { ComponentType, Node } from 'react';
 import { connect } from 'react-redux';
-import type { Task } from '../../../store/store-types';
+import type { SubTask, Task } from '../../../store/store-types';
 import SquareTextButton from '../../UI/SquareTextButton';
 import { clearFocus } from '../../../firebase/actions';
 
-function ClearFocus({ tasks }: {| +tasks: Task[] |}): Node {
+type Props = {|
+  +tasks: Map<string, Task>;
+  +subTasks: Map<string, SubTask>;
+|};
+
+function ClearFocus({ tasks, subTasks }: Props): Node {
   const taskIds: string[] = [];
+  const subTaskIds: string[] = [];
   tasks.forEach((t) => {
     if (t.inFocus && t.complete) {
       taskIds.push(t.id);
     } else {
-      t.subtasks.forEach((s) => {
+      t.children.forEach((id) => {
+        const s = subTasks.get(id);
+        if (s == null) {
+          return;
+        }
         if (s.inFocus && s.complete) {
-          taskIds.push(s.id);
+          subTaskIds.push(s.id);
         }
       });
     }
@@ -23,8 +34,11 @@ function ClearFocus({ tasks }: {| +tasks: Task[] |}): Node {
   if (taskIds.length === 0) {
     return null;
   }
-  return <SquareTextButton text="Clear Focus" onClick={() => clearFocus(taskIds)} />;
+  const handleClick = () => clearFocus(taskIds, subTaskIds);
+  return <SquareTextButton text="Clear Focus" onClick={handleClick} />;
 }
 
-const Connected: ComponentType<{||}> = connect(({ tasks }) => ({ tasks }), null)(ClearFocus);
+const Connected: ComponentType<{||}> = connect(
+  ({ tasks, subTasks }) => ({ tasks, subTasks }),
+)(ClearFocus);
 export default Connected;
