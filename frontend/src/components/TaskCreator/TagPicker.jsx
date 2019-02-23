@@ -2,7 +2,7 @@
 
 import React from 'react';
 import type { Node } from 'react';
-import tagIcon from '../../assets/svgs/tag.svg';
+import TagIcon from '../../assets/svgs/tag.svg';
 import TagListPicker from '../Util/TagListPicker/TagListPicker';
 import styles from './Picker.css';
 import { getTagConnect, NONE_TAG_ID } from '../../util/tag-util';
@@ -28,15 +28,14 @@ function TagPicker(props: Props): Node {
   const displayedNode = (isDefault: boolean) => {
     const { name, color, classId } = getTag(tag);
     const style = isDefault ? {} : { background: color };
-    // const internal = isDefault
-    //   ? (<tagIcon />)
-    //   : (
-    //     <React.Fragment>
-    //       <span className={styles.TagDisplay}>{classId != null ? name.split(':')[0] : name}</span>
-    //       <button type="button" className={styles.ResetButton} onClick={reset}>&times;</button>
-    //     </React.Fragment>
-    //   );
-    const internal = <tagIcon />;
+    const internal = isDefault
+      ? (<TagIcon />)
+      : (
+        <React.Fragment>
+          <span className={styles.TagDisplay}>{classId != null ? name.split(':')[0] : name}</span>
+          <button type="button" className={styles.ResetButton} onClick={reset}>&times;</button>
+        </React.Fragment>
+      );
     return (
       <span role="presentation" onClick={clickPicker} className={styles.Label} style={style}>
         {internal}
