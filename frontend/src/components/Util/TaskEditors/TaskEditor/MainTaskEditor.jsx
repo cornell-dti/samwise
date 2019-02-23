@@ -2,7 +2,9 @@
 
 import React from 'react';
 import type { ComponentType, Node } from 'react';
-import { Icon } from 'semantic-ui-react';
+import Delete from '../../../../assets/svgs/XLight.svg';
+import PinOutline from '../../../../assets/svgs/pin-2-light-outline.svg';
+import Pin from '../../../../assets/svgs/pin-2-light-filled.svg';
 import styles from './TaskEditor.css';
 import CheckBox from '../../../UI/CheckBox';
 
@@ -17,6 +19,8 @@ type Props = {|
   +onRemove: () => void;
   +onPressEnter: ('main-task' | number) => void;
 |};
+
+const deleteIconClass = [styles.TaskEditorIcon, styles.TaskEditorIconLeftPad].join(' ');
 
 function MainTaskEditor(
   {
@@ -60,12 +64,11 @@ function MainTaskEditor(
         onChange={onInputChange}
         onBlur={onBlur}
       />
-      <Icon
-        name={inFocus ? 'bookmark' : 'bookmark outline'}
-        className={styles.TaskEditorIcon}
-        onClick={editInFocus}
-      />
-      <Icon className={styles.TaskEditorIcon} name="delete" onClick={onRemove} />
+      {inFocus
+        ? <Pin className={styles.TaskEditorIcon} onClick={editInFocus} />
+        : <PinOutline className={styles.TaskEditorIcon} onClick={editInFocus} />
+      }
+      <Delete className={deleteIconClass} onClick={onRemove} />
     </div>
   );
 }

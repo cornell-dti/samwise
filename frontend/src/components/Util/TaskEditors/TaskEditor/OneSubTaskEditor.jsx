@@ -2,7 +2,9 @@
 
 import React from 'react';
 import type { ComponentType, Node } from 'react';
-import { Icon } from 'semantic-ui-react';
+import Delete from '../../../../assets/svgs/XLight.svg';
+import PinOutline from '../../../../assets/svgs/pin-2-light-outline.svg';
+import Pin from '../../../../assets/svgs/pin-2-light-filled.svg';
 import styles from './TaskEditor.css';
 import CheckBox from '../../../UI/CheckBox';
 import type { PartialSubTask, SubTask } from '../../../../store/store-types';
@@ -18,6 +20,7 @@ type Props = {|
 |};
 
 const className = [styles.TaskEditorFlexibleContainer, styles.TaskEditorSubtaskCheckBox].join(' ');
+const deleteIconClass = [styles.TaskEditorIcon, styles.TaskEditorIconLeftPad].join(' ');
 
 function OneSubTaskEditor(
   {
@@ -84,12 +87,11 @@ function OneSubTaskEditor(
         onBlur={onBlur}
         style={{ width: 'calc(100% - 70px)' }}
       />
-      <Icon
-        name={subTask.inFocus ? 'bookmark' : 'bookmark outline'}
-        className={styles.TaskEditorIcon}
-        onClick={onInFocusChange}
-      />
-      <Icon name="delete" className={styles.TaskEditorIcon} onClick={onRemove} />
+      {subTask.inFocus
+        ? <Pin className={styles.TaskEditorIcon} onClick={onInFocusChange} />
+        : <PinOutline className={styles.TaskEditorIcon} onClick={onInFocusChange} />
+      }
+      <Delete onClick={onRemove} className={deleteIconClass} />
     </div>
   );
 }

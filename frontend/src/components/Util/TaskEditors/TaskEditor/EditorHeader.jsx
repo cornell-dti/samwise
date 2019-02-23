@@ -2,8 +2,8 @@
 
 import React from 'react';
 import type { Node } from 'react';
-import { Icon } from 'semantic-ui-react';
 import Calendar from 'react-calendar';
+import LightCalendar from '../../../../assets/svgs/light.svg';
 import styles from './TaskEditor.css';
 import TagListPicker from '../../TagListPicker/TagListPicker';
 import type { Tag } from '../../../../store/store-types';
@@ -23,6 +23,8 @@ type EditorDisplayStatus = {|
   +doesShowTagEditor: boolean;
   +doesShowDateEditor: boolean;
 |};
+
+const calendarIconClass = [styles.TaskEditorIconButton, styles.TaskEditorIcon].join(' ');
 
 export default function EditorHeader(
   {
@@ -75,9 +77,9 @@ export default function EditorHeader(
       {tagDisplay}
       {tagEditor}
       <span className={styles.TaskEditorFlexiblePadding} />
-      <Icon
-        name="calendar"
-        className={styles.TaskEditorIconButton}
+      <LightCalendar
+        className={calendarIconClass}
+        style={{ marginRight: '8px' }}
         onClick={toggleDateEditor}
       />
       {dateDisplay}
