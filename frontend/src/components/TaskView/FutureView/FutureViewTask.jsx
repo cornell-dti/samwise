@@ -1,12 +1,13 @@
 // @flow strict
 
 import React from 'react';
-import type { Node } from 'react';
+import type { ComponentType, Node } from 'react';
 import { Icon } from 'semantic-ui-react';
+import { connect } from 'react-redux';
 import styles from './FutureViewTask.css';
 import FutureViewSubTask from './FutureViewSubTask';
 import FloatingTaskEditor from '../../Util/TaskEditors/FloatingTaskEditor';
-import type { Task } from '../../../store/store-types';
+import type { State, Task } from '../../../store/store-types';
 import CheckBox from '../../UI/CheckBox';
 import type { FloatingPosition } from '../../Util/TaskEditors/task-editors-types';
 import { getTodayAtZeroAM } from '../../../util/datetime-util';
@@ -15,14 +16,19 @@ import { nDaysViewHeaderHeight, otherViewsHeightHeader } from './future-view-css
 import { error } from '../../../util/general-util';
 import { editMainTask, removeTask } from '../../../firebase/actions';
 import { useMappedWindowSize } from '../../../hooks/window-size-hook';
+import type { CompoundTask } from '../../../util/task-util';
+
+type OwnProps = {|
+  +taskId: string;
+  +inNDaysView: boolean;
+  +taskEditorPosition: FloatingPosition;
+  +doesShowCompletedTasks: boolean;
+  +isInMainList: boolean;
+|};
 
 type Props = {|
-  +originalTask: Task;
-  +filteredTask: Task;
-  +taskColor: string;
-  +inNDaysView: boolean;
-  +isInMainList: boolean;
-  +taskEditorPosition: FloatingPosition;
+  ...OwnProps;
+  +compoundTask: CompoundTask | null;
 |};
 
 type AlertPos = {| +top: number; +right: number; |};
@@ -30,13 +36,18 @@ type AlertPos = {| +top: number; +right: number; |};
 /**
  * The component used to render one task in backlog day.
  */
-export default function FutureViewTask(
+function FutureViewTask(
   {
-    originalTask, filteredTask, taskColor, inNDaysView, isInMainList, taskEditorPosition,
+    compoundTask, inNDaysView, taskEditorPosition, isInMainList,
   }: Props,
 ): Node {
   const [overdueAlertPosition, setOverdueAlertPosition] = React.useState<AlertPos | null>(null);
   const isSmallScreen = useMappedWindowSize(({ width }) => width <= 768);
+
+  if (compoundTask === null) {
+    return null;
+  }
+  const { original, filtered, color } = compoundTask;
 
   /**
    * Get an onClickHandler when the element is clicked.
@@ -56,21 +67,21 @@ export default function FutureViewTask(
   };
 
   const TaskCheckBox = (): Node => {
-    const { id, complete } = filteredTask;
+    const { id, complete } = filtered;
     const onChange = () => editMainTask(id, { complete: !complete });
     return <CheckBox className={styles.TaskCheckBox} checked={complete} onChange={onChange} />;
   };
   const TaskName = (): Node => {
-    const { name, complete } = filteredTask;
+    const { name, complete } = filtered;
     const tagStyle = complete ? { textDecoration: 'line-through' } : {};
     return <span className={styles.TaskText} style={tagStyle}>{name}</span>;
   };
   const RemoveTaskIcon = (): Node => {
-    const handler = () => removeTask(originalTask);
+    const handler = () => removeTask(original);
     return <Icon name="delete" className={styles.TaskIcon} onClick={handler} />;
   };
   const PinIcon = (): Node => {
-    const { id, inFocus } = filteredTask;
+    const { id, inFocus } = filtered;
     const iconName = inFocus ? 'bookmark' : 'bookmark outline';
     const handler = () => editMainTask(id, { inFocus: !inFocus });
     return <Icon name={iconName} className={styles.TaskIcon} onClick={handler} />;
@@ -78,11 +89,11 @@ export default function FutureViewTask(
 
   const renderMainTaskInfo = (simplified: boolean = false): Node => {
     if (simplified && isInMainList) {
-      const style = { backgroundColor: taskColor, height: '25px' };
+      const style = { backgroundColor: color, height: '25px' };
       return <div className={styles.TaskMainWrapper} style={style} />;
     }
     return (
-      <div className={styles.TaskMainWrapper} style={{ backgroundColor: taskColor }}>
+      <div className={styles.TaskMainWrapper} style={{ backgroundColor: color }}>
         <TaskCheckBox />
         <TaskName />
         <PinIcon />
@@ -91,11 +102,11 @@ export default function FutureViewTask(
     );
   };
 
-  const renderSubTasks = (): Node => filteredTask.children.map(id => (
-    <FutureViewSubTask key={id} mainTaskCompleted={filteredTask.complete} subTaskId={id} />
+  const renderSubTasks = (): Node => filtered.children.map(id => (
+    <FutureViewSubTask key={id} mainTaskCompleted={filtered.complete} subTaskId={id} />
   ));
 
-  const { date, complete } = originalTask;
+  const { date, complete } = original;
   const overdueComponentOpt = overdueAlertPosition && (
     <OverdueAlert absolutePosition={overdueAlertPosition} />
   );
@@ -139,8 +150,26 @@ export default function FutureViewTask(
   return (
     <FloatingTaskEditor
       position={taskEditorPosition}
-      initialTask={originalTask}
+      initialTask={original}
       trigger={trigger}
     />
   );
 }
+
+const mapStateToProps = (
+  { tasks, subTasks, tags }: State, { taskId, doesShowCompletedTasks }: OwnProps,
+): {| +compoundTask: CompoundTask | null |} => {
+  const original: Task = tasks.get(taskId) ?? error();
+  if (original.complete && !doesShowCompletedTasks) {
+    return { compoundTask: null };
+  }
+  const children = original.children
+    .filter(id => doesShowCompletedTasks || !(subTasks.get(id)?.complete ?? false));
+  const filtered = { ...original, children };
+  const color = tags.get(original.tag)?.color ?? 'black';
+  const compoundTask: CompoundTask = { original, filtered, color };
+  return { compoundTask };
+};
+
+const Connected: ComponentType<OwnProps> = connect(mapStateToProps)(FutureViewTask);
+export default Connected;

@@ -3,12 +3,13 @@
 import React from 'react';
 import type { ComponentType, Node } from 'react';
 import { connect } from 'react-redux';
-import type { CompoundTask, SimpleDate } from './future-view-types';
+import type { SimpleDate } from './future-view-types';
 import type { FloatingPosition } from '../../Util/TaskEditors/task-editors-types';
 import FutureViewTask from './FutureViewTask';
 import styles from './FutureViewDayTaskContainer.css';
 import { useWindowSize } from '../../../hooks/window-size-hook';
 import { error } from '../../../util/general-util';
+import { getTaskIdsByDate } from '../../../util/task-util';
 
 type OwnProps = {|
   +date: SimpleDate;
@@ -21,7 +22,7 @@ type OwnProps = {|
 
 type Props = {|
   ...OwnProps;
-  +tasks: CompoundTask[];
+  +taskIds: string[];
 |};
 
 /**
@@ -29,7 +30,7 @@ type Props = {|
  */
 function FutureViewDayTaskContainer(
   {
-    tasks, inNDaysView, taskEditorPosition, doesShowCompletedTasks, isInMainList, onHeightChange,
+    taskIds, inNDaysView, taskEditorPosition, doesShowCompletedTasks, isInMainList, onHeightChange,
   }: Props,
 ): Node {
   // Subscribes to it, but don't use the value. Force rerender when window size changes.
@@ -43,14 +44,13 @@ function FutureViewDayTaskContainer(
     onHeightChange(tasksHeight > containerHeight, tasksHeight);
   });
 
-  const taskListComponent = tasks.map((t: CompoundTask) => (
+  const taskListComponent = taskIds.map(id => (
     <FutureViewTask
-      key={t.original.id}
-      originalTask={t.original}
-      filteredTask={t.filtered}
-      taskColor={t.color}
+      key={id}
+      taskId={id}
       inNDaysView={inNDaysView}
       taskEditorPosition={taskEditorPosition}
+      doesShowCompletedTasks={doesShowCompletedTasks}
       isInMainList={isInMainList}
     />
   ));
@@ -63,8 +63,6 @@ function FutureViewDayTaskContainer(
 }
 
 const Connected: ComponentType<OwnProps> = connect(
-  null, null,
+  ({ dateTaskMap }, { date }) => getTaskIdsByDate(dateTaskMap, date.text),
 )(FutureViewDayTaskContainer);
 export default Connected;
-
-// TODO subscribe tasks and pass into the date

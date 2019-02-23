@@ -1,8 +1,6 @@
 // @flow strict
 
-import { connect } from 'react-redux';
-import type { ComponentType } from 'react';
-import type { Map } from 'immutable';
+import type { Map, Set } from 'immutable';
 import type {
   PartialMainTask, PartialSubTask, SubTask, Task,
 } from '../store/store-types';
@@ -18,21 +16,16 @@ export const getTaskById = (
   tasks: Map<string, Task>, id: string,
 ): {| +task: Task |} => ({ task: tasks.get(id) ?? error('bad') });
 
+export const getTaskIdsByDate = (
+  dateTaskMap: Map<string, Set<string>>, date: string,
+): {| +taskIds: string[] |} => {
+  const set = dateTaskMap.get(date) ?? error('bad');
+  return { taskIds: set.toArray() };
+};
+
 export const getSubTaskById = (
   subTasks: Map<string, SubTask>, id: string,
 ): {| +subTask: SubTask |} => ({ subTask: subTasks.get(id) ?? error('bad') });
-
-/**
- * Replace a task with given id in an array of task.
- *
- * @param {Task[]} tasks the task array to perform the replace operation.
- * @param {number} id the id of the task to be replaced.
- * @param {function(Task): Task} replacer the replacer function.
- * @return {Task[]} the new task array.
- */
-export const replaceTask = (
-  tasks: Task[], id: string, replacer: (Task) => Task,
-): Task[] => tasks.map((task: Task) => (task.id !== id ? task : replacer(task)));
 
 /**
  * Replace a subtask with given id in an array of task.
@@ -47,6 +40,15 @@ export const replaceSubTask = (
 ): SubTask[] => subTasks.map(
   (subTask: SubTask) => (subTask.id === id ? replacer(subTask) : subTask),
 );
+
+/**
+ * The type for a task augmented with color information and filtered task.
+ */
+export type CompoundTask = {|
+  +original: Task;
+  +filtered: Task;
+  +color: string;
+|};
 
 /**
  * Used to keep track of the task diff to optimize edit speed.
@@ -89,18 +91,6 @@ export const taskDiffIsEmpty = (diff: TaskDiff): boolean => {
   }
   return subtasksCreations.length === 0 && subtasksEdits.length === 0 && subtasksDeletions === 0;
 };
-
-/**
- * Filter away all the completed tasks.
- *
- * @param {Task[]} tasks the original tasks.
- * @return {[Task, Task][]} an array of tuple (original task, filtered task).
- */
-export const filterCompletedTasks = (tasks: Task[]): [Task, Task][] => tasks
-  .filter(t => !t.complete)
-  .map((task: Task) => [
-    task, { ...task, subtasks: task.subtasks.filter(s => !s.complete) },
-  ]);
 
 /**
  * Filter and leave only tasks and partial tasks in focus.
