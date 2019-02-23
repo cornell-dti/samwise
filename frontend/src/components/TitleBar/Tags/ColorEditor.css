@@ -1,4 +1,6 @@
 .ColorEdit {
+  display: inline-flex;
+  align-items: center;
   width: 125px;
   margin: 0;
   padding: 2px 0 2px 10px;

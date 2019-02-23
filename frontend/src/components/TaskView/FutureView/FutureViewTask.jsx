@@ -80,15 +80,15 @@ class FutureViewTask extends React.PureComponent<Props, State> {
     const handler = () => {
       removeTask(filteredTask);
     };
-    return <Delete className={styles.TaskEditorIcon} onClick={handler} />;
+    return <Delete className={styles.TaskIcon} onClick={handler} />;
   };
 
   renderBookmarkIcon = (): Node => {
     const { filteredTask: { id, inFocus } } = this.props;
     const handler = () => editMainTask(id, { inFocus: !inFocus });
     return (inFocus)
-      ? <PinFilled className={styles.TaskEditorIcon} onClick={handler} />
-      : <PinOutline className={styles.TaskEditorIcon} onClick={handler} />;
+      ? <PinFilled className={styles.TaskIcon} onClick={handler} />
+      : <PinOutline className={styles.TaskIcon} onClick={handler} />;
   };
 
   renderMainTaskInfo = (simplified: boolean = false): Node => {

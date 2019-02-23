@@ -5,7 +5,7 @@ import type { Node } from 'react';
 import Calendar from 'react-calendar';
 import LightCalendar from '../../../assets/svgs/light.svg';
 import Delete from '../../../assets/svgs/XLight.svg';
-import PinOutline from '../../../assets/svgs/pin-2-dark-outline.svg';
+import PinOutline from '../../../assets/svgs/pin-2-light-outline.svg';
 import Pin from '../../../assets/svgs/pin-2-light-filled.svg';
 import type {
   Tag, SubTask, Task, PartialMainTask, PartialSubTask,
@@ -305,7 +305,7 @@ class TaskEditor extends React.Component<Props, State> {
         {tagEditor}
         <span className={styles.TaskEditorFlexiblePadding} />
         <LightCalendar
-          className={[styles.TaskEditorIconButton, styles.TaskEditorIcon].join(', ')}
+          className={[styles.TaskEditorIconButton, styles.TaskEditorIcon].join(' ')}
           style={{ marginRight: '8px' }}
           onClick={this.toggleDateEditor}
         />
@@ -348,7 +348,10 @@ class TaskEditor extends React.Component<Props, State> {
           ? <Pin className={styles.TaskEditorIcon} onClick={this.editInFocus} />
           : <PinOutline className={styles.TaskEditorIcon} onClick={this.editInFocus} />
         }
-        <Delete className={styles.TaskEditorIcon} onClick={onRemove} />
+        <Delete
+          className={[styles.TaskEditorIcon, styles.TaskEditorIconLeftPad].join(' ')}
+          onClick={onRemove}
+        />
       </div>
     );
   };
@@ -378,7 +381,7 @@ class TaskEditor extends React.Component<Props, State> {
     return (
       <div
         key={subTask.order}
-        className={[styles.TaskEditorFlexibleContainer, styles.TaskEditorSubtaskCheckBox]}
+        className={[styles.TaskEditorFlexibleContainer, styles.TaskEditorSubtaskCheckBox].join(' ')}
       >
         <CheckBox
           className={styles.TaskEditorCheckBox}
@@ -394,7 +397,7 @@ class TaskEditor extends React.Component<Props, State> {
           onKeyDown={this.pressEnterHandler}
           onChange={this.editSubTaskNameCache(subTask.id)}
           onBlur={this.editTaskName}
-          style={{ width: 'calc(100% - 70px)' }}
+          style={{ width: 'calc(100% - 74px)' }}
         />
         {subTask.inFocus
           ? <Pin className={styles.TaskEditorIcon} onClick={this.editSubTaskInFocus(subTask)} />
@@ -405,7 +408,10 @@ class TaskEditor extends React.Component<Props, State> {
             />
           )
         }
-        <Delete onClick={onRemoveSubTask} className={styles.TaskEditorIcon} />
+        <Delete
+          onClick={onRemoveSubTask}
+          className={[styles.TaskEditorIcon, styles.TaskEditorIconLeftPad].join(' ')}
+        />
       </div>
     );
   };

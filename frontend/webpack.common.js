@@ -48,7 +48,6 @@ module.exports = {
           {
             loader: '@svgr/webpack',
             options: {
-              dimensions: true,
               icon: true,
             },
           },
