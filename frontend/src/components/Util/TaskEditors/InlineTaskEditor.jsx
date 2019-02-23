@@ -14,7 +14,7 @@ import {
   removeSubTask,
   removeTask,
 } from '../../../firebase/actions';
-import { error } from '../../../util/general-util';
+import { getTaskById } from '../../../util/task-util';
 
 type OwnProps = {|
   +taskId: string; // the initial task given to the editor.
@@ -75,6 +75,6 @@ InlineTaskEditor.defaultProps = { className: undefined };
 // TODO filter subtasks that are not in focus
 
 const Connected: ComponentType<OwnProps> = connect(
-  ({ tasks }, { taskId }) => ({ task: tasks.get(taskId) ?? error('Corrupted!') }),
+  ({ tasks }, { taskId }) => getTaskById(tasks, taskId),
 )(InlineTaskEditor);
 export default Connected;

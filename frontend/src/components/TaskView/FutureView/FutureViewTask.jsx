@@ -6,7 +6,7 @@ import { Icon } from 'semantic-ui-react';
 import styles from './FutureViewTask.css';
 import FutureViewSubTask from './FutureViewSubTask';
 import FloatingTaskEditor from '../../Util/TaskEditors/FloatingTaskEditor';
-import type { SubTask, Task } from '../../../store/store-types';
+import type { Task } from '../../../store/store-types';
 import CheckBox from '../../UI/CheckBox';
 import type { FloatingPosition } from '../../Util/TaskEditors/task-editors-types';
 import { getTodayAtZeroAM } from '../../../util/datetime-util';
