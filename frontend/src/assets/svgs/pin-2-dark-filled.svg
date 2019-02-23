@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="20px" height="20px" viewBox="0 0 20 20" version="1.1" 
+    xmlns="http://www.w3.org/2000/svg" 
+    xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 52.4 (67378) - http://www.bohemiancoding.com/sketch -->
+    <title>icon/pin/pin-2-dark-filled</title>
+    <desc>Created with Sketch.</desc>
+    <defs>
+        <path d="M14.5459415,5.69300037 L14.5459415,9.92829449 C15.3031948,10.6049136 15.8031948,11.3107959 16.0459415,12.0459415 C16.2886883,12.7810872 16.4553549,13.3484768 16.5459415,13.7481104 L6.54594155,13.7481104 C6.61325411,13.5097204 6.77992078,12.9423308 7.04594155,12.0459415 C7.31196231,11.1495523 7.81196231,10.44367 8.54594155,9.92829449 L8.54594155,5.69300037 L6.54594155,3.04594155 L16.5459415,3.04594155 L14.5459415,5.69300037 Z M10.5459415,14.1635886 L12.5459415,14.1635886 L11.5459415,21.0459415 L10.5459415,14.1635886 Z" id="path-1"></path>
+    </defs>
+    <g id="icon/pin/pin-2-dark" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <mask id="mask-2" fill="white">
+            <use xlink:href="#path-1"></use>
+        </mask>
+        <use id="Combined-Shape" stroke="#000000" fill="#000000" stroke-width="2" stroke-linejoin="round" fill-rule="nonzero" transform="translate(11.545942, 12.045942) rotate(-45.000000) translate(-11.545942, -12.045942) " xlink:href="#path-1"></use>
+    </g>
+</svg>

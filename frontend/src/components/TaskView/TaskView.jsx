@@ -3,6 +3,8 @@
 import React from 'react';
 import type { Node } from 'react';
 import { Icon } from 'semantic-ui-react';
+import Calendar from '../../assets/svgs/dark.svg';
+import PinFilled from '../../assets/svgs/pin-2-light-filled.svg';
 import FocusView from './FocusView';
 import FutureView, { futureViewConfigProvider } from './FutureView';
 import styles from './TaskView.css';
@@ -35,16 +37,18 @@ export default function TaskView(): Node {
   FuturePanel.defaultProps = { children: null };
 
   if (screenIsSmall) {
-    return (
-      <div className={styles.TaskView}>
-        {doesShowFutureViewInSmallScreen ? <FuturePanel /> : <FocusPanel />}
-        <Icon
-          name={doesShowFutureViewInSmallScreen ? 'bookmark' : 'calendar'}
-          className={styles.ViewSwitcher}
-          onClick={switchView}
-        />
-      </div>
-    );
+    return doesShowFutureViewInSmallScreen
+      ? (
+        <div className={styles.TaskView}>
+          <FuturePanel />
+          <PinFilled className={styles.ViewSwitcher} onClick={switchView} />
+        </div>
+      ) : (
+        <div className={styles.TaskView}>
+          <FocusPanel />
+          <Calendar onClick={switchView} className={styles.ViewSwitcher} />
+        </div>
+      );
   }
   const inNDaysView = futureViewConfigProvider.isInNDaysView(config);
   const showFocusView = inNDaysView || doesShowFocusViewInWideScreen;
@@ -71,6 +75,7 @@ export default function TaskView(): Node {
       </div>
     );
   };
+
   return (
     <div className={styles.TaskView}>
       {showFocusView && <FocusPanel />}

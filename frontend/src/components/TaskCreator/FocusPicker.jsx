@@ -1,7 +1,8 @@
 // @flow strict
 
 import React from 'react';
-import { Icon } from 'semantic-ui-react';
+import PinOutline from '../../assets/svgs/pin-2-dark-outline.svg';
+import Pin from '../../assets/svgs/pin-2-dark-filled.svg';
 import styles from './Picker.css';
 
 type Props = {|
@@ -14,11 +15,11 @@ export default function FocusPicker({ pinned, onPinChange }: Props) {
     e.stopPropagation();
     onPinChange(!pinned);
   };
-  const iconStyle = { color: pinned ? 'black' : 'gray' };
+  const pinIconClass = styles.CenterIcon;
   return (
     <div className={styles.Main}>
       <span role="presentation" onClick={clickPicker} className={styles.Label}>
-        <Icon name="pin" className={styles.CenterIcon} style={iconStyle} />
+        {pinned ? <Pin className={pinIconClass} /> : <PinOutline className={pinIconClass} />}
       </span>
     </div>
   );

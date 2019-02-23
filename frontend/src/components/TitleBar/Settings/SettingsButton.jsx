@@ -1,7 +1,8 @@
 // @flow strict
 
 import React from 'react';
-import { Icon } from 'semantic-ui-react';
+import Settings from '../../../assets/svgs/settings.svg';
+import Delete from '../../../assets/svgs/XLight.svg';
 import SettingsPage from './SettingsPage';
 import styles from './SettingsButton.css';
 
@@ -11,15 +12,24 @@ export default function SettingsButton() {
   const displayModal = () => setShowSettings(true);
   const closeModal = () => setShowSettings(false);
 
+  // /**
+  //  * Display the settings model.
+  //  */
+  // displayModal = () => this.setState({ showSettings: true });
+  //
+  // /**
+  //  * Close the settings model.
+  //  */
+  // closeModal = () => this.setState({ showSettings: false });
   return (
     <div style={{ display: 'inline-block' }}>
       <button type="submit" onClick={displayModal}>
-        <Icon name="setting" />
+        <Settings />
       </button>
       {showSettings && (
         <div className={styles.settingsModal}>
           <button className={styles.closeButton} type="submit" onClick={closeModal}>
-            <Icon name="close" />
+            <Delete />
           </button>
           <section className={styles.contentWrap}>
             <h2>Settings</h2>

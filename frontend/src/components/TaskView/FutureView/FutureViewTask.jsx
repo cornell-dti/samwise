@@ -2,8 +2,10 @@
 
 import React from 'react';
 import type { ComponentType, Node } from 'react';
-import { Icon } from 'semantic-ui-react';
 import { connect } from 'react-redux';
+import Delete from '../../../assets/svgs/XLight.svg';
+import PinFilled from '../../../assets/svgs/pin-2-light-filled.svg';
+import PinOutline from '../../../assets/svgs/pin-2-dark-outline.svg';
 import styles from './FutureViewTask.css';
 import FutureViewSubTask from './FutureViewSubTask';
 import FloatingTaskEditor from '../../Util/TaskEditors/FloatingTaskEditor';
@@ -76,15 +78,17 @@ function FutureViewTask(
     const tagStyle = complete ? { textDecoration: 'line-through' } : {};
     return <span className={styles.TaskText} style={tagStyle}>{name}</span>;
   };
+
   const RemoveTaskIcon = (): Node => {
     const handler = () => removeTask(original);
-    return <Icon name="delete" className={styles.TaskIcon} onClick={handler} />;
+    return <Delete className={styles.TaskIcon} onClick={handler} />;
   };
   const PinIcon = (): Node => {
     const { id, inFocus } = filtered;
-    const iconName = inFocus ? 'bookmark' : 'bookmark outline';
     const handler = () => editMainTask(id, { inFocus: !inFocus });
-    return <Icon name={iconName} className={styles.TaskIcon} onClick={handler} />;
+    return (inFocus)
+      ? <PinFilled className={styles.TaskIcon} onClick={handler} />
+      : <PinOutline className={styles.TaskIcon} onClick={handler} />;
   };
 
   const renderMainTaskInfo = (simplified: boolean = false): Node => {
