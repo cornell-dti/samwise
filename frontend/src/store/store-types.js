@@ -60,6 +60,7 @@ export type Course = {|
 export type State = {|
   +tags: Map<string, Tag>;
   +tasks: Map<string, Task>;
+  +dateTaskMap: Map<string, Set<string>>;
   +subTasks: Map<string, SubTask>;
   +taskChildrenMap: Map<string, Set<string>>;
   +courses: Map<number, Course[]>;

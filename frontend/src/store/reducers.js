@@ -1,6 +1,6 @@
 // @flow strict
 
-import { Map } from 'immutable';
+import { Map, Set } from 'immutable';
 import type {
   Action,
   PatchCourses,
@@ -10,6 +10,7 @@ import type {
 } from './action-types';
 import type { State } from './store-types';
 import { NONE_TAG_ID, NONE_TAG } from '../util/tag-util';
+import { error } from '../util/general-util';
 
 /**
  * The initial state of the app.
@@ -19,6 +20,7 @@ import { NONE_TAG_ID, NONE_TAG } from '../util/tag-util';
 const initialState: State = {
   tags: Map({ [NONE_TAG_ID]: NONE_TAG }),
   tasks: Map(),
+  dateTaskMap: Map(),
   subTasks: Map(),
   taskChildrenMap: Map(),
   courses: Map(),
@@ -34,12 +36,46 @@ function patchTags(state: State, { created, edited, deleted }: PatchTags): State
 }
 
 function patchTasks(state: State, { created, edited, deleted }: PatchTasks): State {
+  const newDateTaskMap = state.dateTaskMap.withMutations((m) => {
+    created.forEach((t) => {
+      const key = t.date.toDateString();
+      const set = m.get(key);
+      if (set == null) {
+        m.set(key, Set(t.id));
+      } else {
+        m.set(key, set.add(t.id));
+      }
+    });
+    edited.forEach((t) => {
+      const key = t.date.toDateString();
+      const oldTask = state.tasks.get(t.id) ?? error();
+      const oldKey = oldTask.date.toDateString();
+      if (oldKey !== key) {
+        // remove first
+        m.remove(oldKey);
+      }
+      const set = m.get(key);
+      if (set == null) {
+        m.set(key, Set(t.id));
+      } else {
+        m.set(key, set.add(t.id));
+      }
+    });
+    deleted.forEach((id) => {
+      const oldTask = state.tasks.get(id) ?? error();
+      const key = oldTask.date.toDateString();
+      const set = m.get(key);
+      if (set != null) {
+        m.set(key, set.remove(id));
+      }
+    });
+  });
   const newTasks = state.tasks.withMutations((tasks) => {
     created.forEach(t => tasks.set(t.id, t));
     edited.forEach(t => tasks.set(t.id, t));
     deleted.forEach(id => tasks.delete(id));
   });
-  return { ...state, tasks: newTasks };
+  return { ...state, tasks: newTasks, dateTaskMap: newDateTaskMap };
 }
 
 function patchSubTasks(state: State, { created, edited, deleted }: PatchSubTasks): State {
