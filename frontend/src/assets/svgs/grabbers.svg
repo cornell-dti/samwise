@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="26px" height="20px" viewBox="0 0 26 20" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 52.4 (67378) - http://www.bohemiancoding.com/sketch -->
+    <title>icon/grabbers</title>
+    <desc>Created with Sketch.</desc>
+    <g id="icon/grabbers" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" opacity="0.503789993">
+        <circle id="Oval" fill="#FFFFFF" fill-rule="nonzero" cx="10" cy="4" r="2"></circle>
+        <circle id="Oval" fill="#FFFFFF" fill-rule="nonzero" cx="10" cy="10" r="2"></circle>
+        <circle id="Oval" fill="#FFFFFF" fill-rule="nonzero" cx="10" cy="16" r="2"></circle>
+        <circle id="Oval" fill="#FFFFFF" fill-rule="nonzero" cx="16" cy="4" r="2"></circle>
+        <circle id="Oval" fill="#FFFFFF" fill-rule="nonzero" cx="16" cy="10" r="2"></circle>
+        <circle id="Oval" fill="#FFFFFF" fill-rule="nonzero" cx="16" cy="16" r="2"></circle>
+    </g>
+</svg>

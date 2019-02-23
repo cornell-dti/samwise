@@ -3,6 +3,7 @@
 import React from 'react';
 import type { Node } from 'react';
 import { Icon } from 'semantic-ui-react';
+import Delete from '../../assets/svgs/XLight.svg';
 import 'react-toastify/dist/ReactToastify.css';
 import styles from './TaskCreator.css';
 import TagPicker from './TagPicker';
@@ -259,7 +260,7 @@ export default class TaskCreator extends React.PureComponent<{||}, State> {
       return (
         <li key={id}>
           <button type="button" tabIndex={-1} onClick={this.deleteSubTask(id)}>
-            <Icon name="delete" />
+            <Delete />
           </button>
           <input
             type="text"

@@ -2,8 +2,11 @@
 
 import React from 'react';
 import type { Node } from 'react';
-import { Icon } from 'semantic-ui-react';
 import Calendar from 'react-calendar';
+import LightCalendar from '../../../assets/svgs/light.svg';
+import Delete from '../../../assets/svgs/XLight.svg';
+import PinOutline from '../../../assets/svgs/pin-2-light-outline.svg';
+import Pin from '../../../assets/svgs/pin-2-light-filled.svg';
 import type {
   Tag, SubTask, Task, PartialMainTask, PartialSubTask,
 } from '../../../store/store-types';
@@ -301,9 +304,9 @@ class TaskEditor extends React.Component<Props, State> {
         {tagDisplay}
         {tagEditor}
         <span className={styles.TaskEditorFlexiblePadding} />
-        <Icon
-          name="calendar"
-          className={styles.TaskEditorIconButton}
+        <LightCalendar
+          className={[styles.TaskEditorIconButton, styles.TaskEditorIcon].join(' ')}
+          style={{ marginRight: '8px' }}
           onClick={this.toggleDateEditor}
         />
         {dateDisplay}
@@ -341,12 +344,14 @@ class TaskEditor extends React.Component<Props, State> {
           onChange={this.editTaskNameCache}
           onBlur={this.editTaskName}
         />
-        <Icon
-          name={inFocus ? 'bookmark' : 'bookmark outline'}
-          className={styles.TaskEditorIcon}
-          onClick={this.editInFocus}
+        {inFocus
+          ? <Pin className={styles.TaskEditorIcon} onClick={this.editInFocus} />
+          : <PinOutline className={styles.TaskEditorIcon} onClick={this.editInFocus} />
+        }
+        <Delete
+          className={[styles.TaskEditorIcon, styles.TaskEditorIconLeftPad].join(' ')}
+          onClick={onRemove}
         />
-        <Icon className={styles.TaskEditorIcon} name="delete" onClick={onRemove} />
       </div>
     );
   };
@@ -376,7 +381,7 @@ class TaskEditor extends React.Component<Props, State> {
     return (
       <div
         key={subTask.order}
-        className={[styles.TaskEditorFlexibleContainer, styles.TaskEditorSubtaskCheckBox]}
+        className={[styles.TaskEditorFlexibleContainer, styles.TaskEditorSubtaskCheckBox].join(' ')}
       >
         <CheckBox
           className={styles.TaskEditorCheckBox}
@@ -392,14 +397,21 @@ class TaskEditor extends React.Component<Props, State> {
           onKeyDown={this.pressEnterHandler}
           onChange={this.editSubTaskNameCache(subTask.id)}
           onBlur={this.editTaskName}
-          style={{ width: 'calc(100% - 70px)' }}
+          style={{ width: 'calc(100% - 74px)' }}
         />
-        <Icon
-          name={subTask.inFocus ? 'bookmark' : 'bookmark outline'}
-          className={styles.TaskEditorIcon}
-          onClick={this.editSubTaskInFocus(subTask)}
+        {subTask.inFocus
+          ? <Pin className={styles.TaskEditorIcon} onClick={this.editSubTaskInFocus(subTask)} />
+          : (
+            <PinOutline
+              className={styles.TaskEditorIcon}
+              onClick={this.editSubTaskInFocus(subTask)}
+            />
+          )
+        }
+        <Delete
+          onClick={onRemoveSubTask}
+          className={[styles.TaskEditorIcon, styles.TaskEditorIconLeftPad].join(' ')}
         />
-        <Icon name="delete" className={styles.TaskEditorIcon} onClick={onRemoveSubTask} />
       </div>
     );
   };

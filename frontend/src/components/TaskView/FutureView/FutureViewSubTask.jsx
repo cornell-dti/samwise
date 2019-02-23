@@ -2,9 +2,11 @@
 
 import React from 'react';
 import type { Node } from 'react';
-import { Icon } from 'semantic-ui-react';
+import PinFilled from '../../../assets/svgs/pin-2-dark-filled.svg';
+import PinOutline from '../../../assets/svgs/pin-2-dark-outline.svg';
+import DeleteDark from '../../../assets/svgs/XDark.svg';
 import styles from './FutureViewTask.css';
-import type { PartialSubTask, SubTask } from '../../../store/store-types';
+import type { SubTask } from '../../../store/store-types';
 import CheckBox from '../../UI/CheckBox';
 import { editSubTask, removeSubTask } from '../../../firebase/actions';
 
@@ -39,12 +41,11 @@ export default function FutureViewSubTask(
       >
         {name}
       </span>
-      <Icon
-        name={inFocus ? 'bookmark' : 'bookmark outline'}
-        className={styles.TaskIcon}
-        onClick={onFocusChange}
-      />
-      <Icon name="delete" className={styles.TaskIcon} onClick={onRemove} />
+      {inFocus
+        ? <PinFilled onClick={onFocusChange} className={styles.TaskIcon} />
+        : <PinOutline onClick={onFocusChange} className={styles.TaskIcon} />
+      }
+      <DeleteDark className={styles.TaskIcon} onClick={onRemove} />
     </div>
   );
 }
