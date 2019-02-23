@@ -93,7 +93,7 @@ function TaskEditor(
     addSubTask(newSubTask);
     console.log('try to add...');
     setSubTaskToFocus(order);
-    console.log('set focus')
+    console.log('set focus');
   };
 
   /**

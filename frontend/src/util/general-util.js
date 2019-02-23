@@ -8,6 +8,11 @@
 export const randomId = (): string => String(-100 - Math.floor(10000 * Math.random()));
 
 /**
+ * The identity function.
+ */
+export function identity<T>(t: T): T { return t; }
+
+/**
  * An empty function used to ignore promise.
  * @type {function(): void}
  */

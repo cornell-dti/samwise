@@ -12,10 +12,6 @@ import { error } from './general-util';
  * Other modules should try to call functions in this module instead of implementing their own.
  */
 
-export const getTaskById = (
-  tasks: Map<string, Task>, id: string,
-): {| +task: Task |} => ({ task: tasks.get(id) ?? error('bad') });
-
 export const getTaskIdsByDate = (
   dateTaskMap: Map<string, Set<string>>, date: string,
 ): {| +taskIds: string[] |} => {
@@ -23,9 +19,23 @@ export const getTaskIdsByDate = (
   return { taskIds: set.toArray() };
 };
 
-export const getSubTaskById = (
-  subTasks: Map<string, SubTask>, id: string,
-): {| +subTask: SubTask |} => ({ subTask: subTasks.get(id) ?? error('bad') });
+export const getFilteredCompletedTask = (
+  task: Task, subTasks: Map<string, SubTask>,
+): Task | null => {
+  if (task.complete) {
+    return null;
+  }
+  const children = task.children.filter(id => !(subTasks.get(id)?.complete ?? false));
+  return { ...task, children };
+};
+
+export const getFilteredInFocusTask = (task: Task, subTasks: Map<string, SubTask>): Task => {
+  if (task.inFocus) {
+    return task;
+  }
+  const children = task.children.filter(id => subTasks.get(id)?.inFocus ?? false);
+  return { ...task, children };
+};
 
 /**
  * Replace a subtask with given id in an array of task.
@@ -91,22 +101,6 @@ export const taskDiffIsEmpty = (diff: TaskDiff): boolean => {
   }
   return subtasksCreations.length === 0 && subtasksEdits.length === 0 && subtasksDeletions === 0;
 };
-
-/**
- * Filter and leave only tasks and partial tasks in focus.
- *
- * @param {Task[]} tasks unfiltered tasks.
- * @return {Task[]} filtered tasks.
- */
-export const filterInFocusTasks = (tasks: Task[]): Task[] => tasks
-  .map((task: Task): Task => {
-    if (task.inFocus) {
-      return task;
-    }
-    const subtasks = task.subtasks.filter(subTask => subTask.inFocus);
-    return { ...task, subtasks };
-  })
-  .filter((task: Task) => task.inFocus || task.subtasks.length > 0);
 
 export type TasksProgressProps = {| +completedTasksCount: number; +allTasksCount: number |};
 

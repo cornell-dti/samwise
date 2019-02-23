@@ -1,8 +1,7 @@
 // @flow strict
 
 import React from 'react';
-import type { ComponentType, Node } from 'react';
-import { connect } from 'react-redux';
+import type { Node } from 'react';
 import type {
   PartialMainTask, PartialSubTask, SubTask, Task,
 } from '../../../store/store-types';
@@ -14,29 +13,23 @@ import {
   removeSubTask,
   removeTask,
 } from '../../../firebase/actions';
-import { getTaskById } from '../../../util/task-util';
-
-type OwnProps = {|
-  +taskId: string; // the initial task given to the editor.
-  className?: string; // additional class names applied to the editor.
-|};
 
 type Props = {|
-  ...OwnProps;
-  task: Task;
   className?: string; // additional class names applied to the editor.
+  original: Task;
+  filtered: Task;
 |};
 
 /**
  * The task editor used to edit task inline, activated on focus.
  */
-function InlineTaskEditor({ task, className }: Props): Node {
+export default function InlineTaskEditor({ original, filtered, className }: Props): Node {
   const [disabled, setDisabled] = React.useState(() => {
     console.log('InlineTaskEditor recreated!');
     return true;
   });
 
-  const { id } = task;
+  const { id } = original;
   // To un-mount the editor when finished editing.
   const onFocus = () => setDisabled(false);
   const onBlur = () => setDisabled(true);
@@ -54,15 +47,15 @@ function InlineTaskEditor({ task, className }: Props): Node {
       }
     },
     addSubTask: ({ id: _, ...subTaskWithoutID }: SubTask) => addSubTask(id, subTaskWithoutID),
-    removeTask: () => removeTask(task),
+    removeTask: () => removeTask(original),
     removeSubTask,
     onSave: onBlur,
   };
   const taskEditorProps = {
-    task,
+    task: filtered,
     actions,
     className,
-    newSubTaskDisabled: disabled || !task.inFocus,
+    newSubTaskDisabled: disabled || !original.inFocus,
     onFocus,
     onBlur,
   };
@@ -71,10 +64,3 @@ function InlineTaskEditor({ task, className }: Props): Node {
 }
 
 InlineTaskEditor.defaultProps = { className: undefined };
-
-// TODO filter subtasks that are not in focus
-
-const Connected: ComponentType<OwnProps> = connect(
-  ({ tasks }, { taskId }) => getTaskById(tasks, taskId),
-)(InlineTaskEditor);
-export default Connected;

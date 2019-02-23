@@ -10,7 +10,7 @@ import styles from './FutureViewTask.css';
 import type { SubTask } from '../../../store/store-types';
 import CheckBox from '../../UI/CheckBox';
 import { editSubTask, removeSubTask } from '../../../firebase/actions';
-import { getSubTaskById } from '../../../util/task-util';
+import { getSubTaskById } from '../../../store/selectors';
 
 type OwnProps = {|
   +subTaskId: string;
@@ -56,6 +56,6 @@ function FutureViewSubTask({ subTaskId, subTask, mainTaskCompleted }: Props): No
 }
 
 const Connected: ComponentType<OwnProps> = connect(
-  ({ subTasks }, { subTaskId }) => getSubTaskById(subTasks, subTaskId)
+  (state, { subTaskId }) => getSubTaskById(state, subTaskId),
 )(FutureViewSubTask);
 export default Connected;

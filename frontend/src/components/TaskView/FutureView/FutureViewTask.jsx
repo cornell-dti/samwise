@@ -19,6 +19,8 @@ import { error } from '../../../util/general-util';
 import { editMainTask, removeTask } from '../../../firebase/actions';
 import { useMappedWindowSize } from '../../../hooks/window-size-hook';
 import type { CompoundTask } from '../../../util/task-util';
+import { NONE_TAG } from '../../../util/tag-util';
+import { getFilteredCompletedTask } from '../../../util/task-util';
 
 type OwnProps = {|
   +taskId: string;
@@ -160,20 +162,26 @@ function FutureViewTask(
   );
 }
 
-const mapStateToProps = (
+const getCompoundTask = (
   { tasks, subTasks, tags }: State, { taskId, doesShowCompletedTasks }: OwnProps,
-): {| +compoundTask: CompoundTask | null |} => {
-  const original: Task = tasks.get(taskId) ?? error();
-  if (original.complete && !doesShowCompletedTasks) {
-    return { compoundTask: null };
+): CompoundTask | null => {
+  const original = tasks.get(taskId);
+  if (original == null) {
+    return null;
   }
-  const children = original.children
-    .filter(id => doesShowCompletedTasks || !(subTasks.get(id)?.complete ?? false));
-  const filtered = { ...original, children };
-  const color = tags.get(original.tag)?.color ?? 'black';
-  const compoundTask: CompoundTask = { original, filtered, color };
-  return { compoundTask };
+  const color = tags.get(original.tag)?.color ?? NONE_TAG.color;
+  if (doesShowCompletedTasks) {
+    return { original, filtered: original, color };
+  }
+  const filtered = getFilteredCompletedTask(original, subTasks);
+  if (filtered === null) {
+    return null;
+  }
+  return { original, filtered, color };
 };
+const mapStateToProps = (
+  state: State, ownProps: OwnProps,
+): {| +compoundTask: CompoundTask | null |} => ({ compoundTask: getCompoundTask(state, ownProps) });
 
 const Connected: ComponentType<OwnProps> = connect(mapStateToProps)(FutureViewTask);
 export default Connected;
