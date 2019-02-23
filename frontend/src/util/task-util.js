@@ -6,12 +6,21 @@ import type { Map } from 'immutable';
 import type {
   PartialMainTask, PartialSubTask, SubTask, Task,
 } from '../store/store-types';
+import { error } from './general-util';
 
 /**
  * This is the utility module for array of tasks and subtasks.
  * This module implements many common functional operations on an array of tasks or subtasks.
  * Other modules should try to call functions in this module instead of implementing their own.
  */
+
+export const getTaskById = (
+  tasks: Map<string, Task>, id: string,
+): {| +task: Task |} => ({ task: tasks.get(id) ?? error('bad') });
+
+export const getSubTaskById = (
+  subTasks: Map<string, SubTask>, id: string,
+): {| +subTask: SubTask |} => ({ subTask: subTasks.get(id) ?? error('bad') });
 
 /**
  * Replace a task with given id in an array of task.
@@ -38,24 +47,6 @@ export const replaceSubTask = (
 ): SubTask[] => subTasks.map(
   (subTask: SubTask) => (subTask.id === id ? replacer(subTask) : subTask),
 );
-
-/**
- * Replace a subtask with given id in an array of task.
- *
- * @param {Task[]} tasks the main task array to perform the replace operation.
- * @param {string} mainTaskID the id of the main task to be replaced.
- * @param {string} subTaskID the id of the subtask to be replaced.
- * @param {function(SubTask, Task): SubTask} replacer the replacer function.
- * @return {Task[]} the new subtask array.
- */
-export const replaceSubTaskWithinMainTask = (
-  tasks: Task[], mainTaskID: string, subTaskID: string,
-  replacer: ((SubTask, Task) => SubTask),
-): Task[] => replaceTask(tasks, mainTaskID, (task: Task) => ({
-  ...task,
-  subtasks: replaceSubTask(task.subtasks, subTaskID, s => replacer(s, task)),
-}));
-
 
 /**
  * Used to keep track of the task diff to optimize edit speed.
@@ -154,17 +145,3 @@ export const computeTaskProgress = (
   }
   return { completedTasksCount, allTasksCount };
 };
-
-/**
- * A function to connect a component with just displayable tasks in redux store.
- */
-export function tasksConnect<-Config>(
-  component: ComponentType<Config>,
-): ComponentType<$Diff<Config, {| +tasks: Task[] |}>> {
-  const yesterday = new Date();
-  yesterday.setDate(yesterday.getDate() - 1);
-  return connect(
-    ({ tasks }) => ({ tasks: tasks.filter(t => (!t.complete || t.date > yesterday)) }),
-    null,
-  )(component);
-}

@@ -7,7 +7,7 @@ import FutureViewNDays from './FutureViewNDays';
 import FutureViewSevenColumns from './FutureViewSevenColumns';
 import type {
   FutureViewContainerType,
-  FutureViewDisplayOption,
+  FutureViewDisplayOption, SimpleDate,
 } from './future-view-types';
 import { useMappedWindowSize } from '../../../hooks/window-size-hook';
 
@@ -88,13 +88,20 @@ function computeStartAndEndDay(
  * @param {FutureViewConfig} config the display config.
  * @return {Date[]} an array of backlog days information.
  */
-function buildDaysInFutureView(nDays: number, config: FutureViewConfig): Date[] {
+function buildDaysInFutureView(nDays: number, config: FutureViewConfig): SimpleDate[] {
   const { displayOption: { containerType }, offset } = config;
   const { startDate, endDate } = computeStartAndEndDay(nDays, containerType, offset);
   // Adding the days to array
-  const days: Date[] = [];
+  const days: SimpleDate[] = [];
   for (let d = startDate; d < endDate; d.setDate(d.getDate() + 1)) {
-    days.push(new Date(d));
+    const simpleDate: SimpleDate = {
+      year: d.getFullYear(),
+      month: d.getMonth(),
+      date: d.getDate(),
+      day: d.getDay(),
+      text: d.toDateString(),
+    };
+    days.push(simpleDate);
   }
   return days;
 }

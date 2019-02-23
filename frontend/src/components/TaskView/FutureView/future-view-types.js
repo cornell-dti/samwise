@@ -14,6 +14,14 @@ export type FutureViewDisplayOption = {|
   +doesShowCompletedTasks: boolean;
 |};
 
+export type SimpleDate = {|
+  +year: number;
+  +month: number;
+  +date: number;
+  +day: number;
+  +text: string;
+|};
+
 /**
  * The type for a task augmented with color information and filtered task.
  */

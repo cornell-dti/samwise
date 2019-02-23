@@ -1,13 +1,12 @@
 // @flow strict
 
-import { Map, Set } from 'immutable';
+import { Map } from 'immutable';
 import type {
   Action,
   PatchCourses,
   PatchTags,
   PatchTasks,
   PatchSubTasks,
-  PatchTaskChildrenMap,
 } from './action-types';
 import type { State } from './store-types';
 import { NONE_TAG_ID, NONE_TAG } from '../util/tag-util';
@@ -52,17 +51,6 @@ function patchSubTasks(state: State, { created, edited, deleted }: PatchSubTasks
   return { ...state, subTasks: newSubTasks };
 }
 
-function patchTaskChildrenMap(
-  state: State, { created, edited, deleted }: PatchTaskChildrenMap,
-): State {
-  const newMap = state.taskChildrenMap.withMutations((m) => {
-    created.forEach((values, key) => m.set(key, Set(values)));
-    edited.forEach((values, key) => m.set(key, Set(values)));
-    deleted.forEach(id => m.delete(id));
-  });
-  return { ...state, taskChildrenMap: newMap };
-}
-
 function patchCourses(state: State, { courses }: PatchCourses): State {
   return { ...state, courses };
 }
@@ -75,8 +63,6 @@ export default function rootReducer(state: State = initialState, action: Action)
       return patchTasks(state, action);
     case 'PATCH_SUBTASKS':
       return patchSubTasks(state, action);
-    case 'PATCH_TASK_CHILDREN_MAP':
-      return patchTaskChildrenMap(state, action);
     case 'PATCH_COURSES':
       return patchCourses(state, action);
     default:

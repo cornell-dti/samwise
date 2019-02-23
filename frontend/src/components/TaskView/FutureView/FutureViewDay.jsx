@@ -2,7 +2,8 @@
 
 import React from 'react';
 import type { ComponentType, Node } from 'react';
-import type { CompoundTask } from './future-view-types';
+import { connect } from 'react-redux';
+import type { CompoundTask, SimpleDate } from './future-view-types';
 import type { FloatingPosition } from '../../Util/TaskEditors/task-editors-types';
 import styles from './FutureViewDay.css';
 import FutureViewDayTaskContainer from './FutureViewDayTaskContainer';
@@ -12,13 +13,13 @@ import {
   otherViewsHeightHeader,
   taskHeight,
 } from './future-view-css-props';
-import { day2String } from '../../../util/datetime-util';
+import { day2String, getTodayAtZeroAM } from '../../../util/datetime-util';
 import { error } from '../../../util/general-util';
 import { useWindowSize } from '../../../hooks/window-size-hook';
 import type { WindowSize } from '../../../hooks/window-size-hook';
 
 type OwnProps = {|
-  +date: Date;
+  +date: SimpleDate;
   +inNDaysView: boolean;
   +taskEditorPosition: FloatingPosition;
   +doesShowCompletedTasks: boolean;
@@ -118,7 +119,11 @@ const computeFloatingViewStyle = (props: PropsForPositionComputation): PositionS
 /**
  * The component that renders all tasks on a certain day.
  */
-export default function FutureViewDay(props: Props): Node {
+function FutureViewDay(
+  {
+    date, inNDaysView, taskEditorPosition, doesShowCompletedTasks, tasks,
+  }: Props,
+): Node {
   const [floatingViewOpened, setFloatingViewOpened] = React.useState(false);
   const [doesOverflow, setDoesOverflow] = React.useState(false);
   const windowSize = useWindowSize();
@@ -129,11 +134,10 @@ export default function FutureViewDay(props: Props): Node {
   };
 
   const isToday = (() => {
-    const { date } = props;
-    const today = new Date();
-    return date.getFullYear() === today.getFullYear()
-      && date.getMonth() === today.getMonth()
-      && date.getDate() === today.getDate();
+    const today = getTodayAtZeroAM();
+    return date.year === today.getFullYear()
+      && date.month === today.getMonth()
+      && date.date === today.getDate();
   })();
 
   const computeFloatingViewPosition = (): PositionStyle => {
@@ -148,10 +152,9 @@ export default function FutureViewDay(props: Props): Node {
     const mainViewPosition = {
       width, height, top, left,
     };
-    const {
-      date, taskEditorPosition, doesShowCompletedTasks, ...positionProps
-    } = props;
-    return computeFloatingViewStyle({ ...positionProps, mainViewPosition, windowSize });
+    return computeFloatingViewStyle({
+      tasks, inNDaysView, mainViewPosition, windowSize,
+    });
   };
 
   const openFloatingView = () => setFloatingViewOpened(true);
@@ -164,9 +167,6 @@ export default function FutureViewDay(props: Props): Node {
    * @return {*} the rendered content
    */
   const renderContent = (inMainList: boolean): Node => {
-    const {
-      date, tasks, inNDaysView, taskEditorPosition,
-    } = props;
     const dateNumCssClass = inNDaysView
       ? styles.DateNumNDaysView
       : styles.DateNumOtherViews;
@@ -176,10 +176,10 @@ export default function FutureViewDay(props: Props): Node {
         <div className={styles.DateInfo} style={containerStyle}>
           {inNDaysView && (
             <div className={styles.DateInfoDay}>
-              {isToday ? 'TODAY' : day2String(date.getDay())}
+              {isToday ? 'TODAY' : day2String(date.day)}
             </div>
           )}
-          <div className={dateNumCssClass}>{date.getDate()}</div>
+          <div className={dateNumCssClass}>{date.date}</div>
         </div>
         <FutureViewDayTaskContainer
           tasks={tasks}
@@ -221,7 +221,6 @@ export default function FutureViewDay(props: Props): Node {
     );
   };
 
-  const { inNDaysView } = props;
   let wrapperCssClass: string;
   if (inNDaysView) {
     wrapperCssClass = isToday ? `${styles.NDaysView} ${styles.Today}` : styles.NDaysView;
@@ -234,3 +233,8 @@ export default function FutureViewDay(props: Props): Node {
     </div>
   );
 }
+
+const Connected: ComponentType<OwnProps> = connect(
+  null, null,
+)(FutureViewDay);
+export default Connected;
