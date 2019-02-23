@@ -8,8 +8,6 @@ import { FirebaseAuth } from 'react-firebaseui';
 import styles from './Login.css';
 import { cacheAppUser, toAppUser } from '../../../firebase/auth';
 import initListeners from '../../../firebase/listeners';
-import { dispatchAction } from '../../../store/store';
-import { patchStoreAction } from '../../../store/actions';
 
 const uiConfig = {
   signInFlow: 'popup',
@@ -24,26 +22,6 @@ const uiConfig = {
     signInSuccessWithAuthResult: () => false,
   },
 };
-
-/*
-TODO
-  I disabled this because it may destroy some state in the React component.
-  Unless we go through a major code review to fix the state persistence problem,
-  we should not try to ship this auto refresh feature.
-
-const refreshDataTimeInterval = 60 * 1000;
-let refreshDataTimeIntervalID: IntervalID | null = null;
-
-function refreshData() {
-  httpInitializeData().then(a => dispatchAction(a));
-}
-
-function initRefreshDataTask() {
-  if (refreshDataTimeIntervalID === null) {
-    refreshDataTimeIntervalID = setInterval(refreshData, refreshDataTimeInterval);
-  }
-}
-*/
 
 type Props = {| +appRenderer: () => Node; |}
 type LoginStatus = boolean | 'UNDECIDED';
@@ -91,20 +69,8 @@ export default function LoginBarrier({ appRenderer }: Props): Node {
       return () => {};
     }
     if (!loaded) {
-      initListeners({
-        onTagsUpdate: (tags) => {
-          dispatchAction(patchStoreAction(tags, null, null));
-        },
-        onTasksUpdate: (tasks) => {
-          dispatchAction(patchStoreAction(null, tasks, null));
-        },
-        onCourseMapFetched: (courseMap) => {
-          dispatchAction(patchStoreAction(null, null, courseMap));
-        },
-        onFirstFetched: () => setLoaded(true),
-      });
+      initListeners(() => setLoaded(true));
     }
-    // initRefreshDataTask();
     return () => {};
   }, [loginStatus, loaded]);
 

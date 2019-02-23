@@ -1,4 +1,4 @@
-// flow-typed signature: c3a4cd78457c0d98906872ff0a2f1308
+// flow-typed signature: f06f00c3ad0cfedb90c0c6de04b219f3
 // flow-typed version: 3a6d556e4b/react-redux_v5.x.x/flow_>=v0.89.x
 
 /**

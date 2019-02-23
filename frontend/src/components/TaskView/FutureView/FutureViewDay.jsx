@@ -13,25 +13,20 @@ import {
   taskHeight,
 } from './future-view-css-props';
 import { day2String } from '../../../util/datetime-util';
-import windowSizeConnect from '../../Util/Responsive/WindowSizeConsumer';
-import type { WindowSize } from '../../Util/Responsive/window-size-context';
 import { error } from '../../../util/general-util';
+import { useWindowSize } from '../../../hooks/window-size-hook';
+import type { WindowSize } from '../../../hooks/window-size-hook';
 
 type OwnProps = {|
   +date: Date;
-  +tasks: CompoundTask[];
   +inNDaysView: boolean;
   +taskEditorPosition: FloatingPosition;
+  +doesShowCompletedTasks: boolean;
 |};
 
 type Props = {|
   ...OwnProps;
-  +windowSize: WindowSize;
-|};
-
-type State = {|
-  +floatingViewOpened: boolean;
-  +doesOverflow: boolean;
+  +tasks: CompoundTask[];
 |};
 
 type PropsForPositionComputation = {|
@@ -60,7 +55,7 @@ const countTasks = (tasks: CompoundTask[], includeSubTasks: boolean): number => 
   }
   const subtaskReducer = v => v + 1;
   const reducer = (a: number, t: CompoundTask): number => (
-    a + 1 + t.filtered.subtasks.reduce(subtaskReducer, 0)
+    a + 1 + t.filtered.children.reduce(subtaskReducer, 0)
   );
   return tasks.reduce(reducer, 0);
 };
@@ -123,26 +118,26 @@ const computeFloatingViewStyle = (props: PropsForPositionComputation): PositionS
 /**
  * The component that renders all tasks on a certain day.
  */
-class FutureViewDay extends React.PureComponent<Props, State> {
-  state: State = { floatingViewOpened: false, doesOverflow: false };
+export default function FutureViewDay(props: Props): Node {
+  const [floatingViewOpened, setFloatingViewOpened] = React.useState(false);
+  const [doesOverflow, setDoesOverflow] = React.useState(false);
+  const windowSize = useWindowSize();
+  const componentDivRef = React.useRef(null);
 
-  onOverflowChange = (doesOverflow: boolean) => {
-    this.setState(state => (!state.floatingViewOpened ? { doesOverflow } : {}));
+  const onOverflowChange = (newVal: boolean) => {
+    if (!floatingViewOpened) { setDoesOverflow(newVal); }
   };
 
-  isToday = (): boolean => {
-    const { date } = this.props;
+  const isToday = (() => {
+    const { date } = props;
     const today = new Date();
     return date.getFullYear() === today.getFullYear()
       && date.getMonth() === today.getMonth()
       && date.getDate() === today.getDate();
-  };
+  })();
 
-  /**
-   * Compute the floating view position.
-   */
-  computeFloatingViewPosition = (): PositionStyle => {
-    const componentDiv = this.backlogDayElement ?? error('Impossible Case!');
+  const computeFloatingViewPosition = (): PositionStyle => {
+    const componentDiv = componentDivRef.current ?? error('Impossible Case!');
     const boundingRect = componentDiv.getBoundingClientRect();
     if (!(boundingRect instanceof DOMRect)) {
       throw new Error('Bad boundingRect!');
@@ -153,25 +148,25 @@ class FutureViewDay extends React.PureComponent<Props, State> {
     const mainViewPosition = {
       width, height, top, left,
     };
-    const { date, taskEditorPosition, ...positionProps } = this.props;
-    return computeFloatingViewStyle({ ...positionProps, mainViewPosition });
+    const {
+      date, taskEditorPosition, doesShowCompletedTasks, ...positionProps
+    } = props;
+    return computeFloatingViewStyle({ ...positionProps, mainViewPosition, windowSize });
   };
 
-  openFloatingView = () => this.setState({ floatingViewOpened: true });
-
-  closeFloatingView = () => this.setState({ floatingViewOpened: false });
+  const openFloatingView = () => setFloatingViewOpened(true);
+  const closeFloatingView = () => setFloatingViewOpened(false);
 
   /**
    * Render the main content.
    *
    * @param {boolean} inMainList whether the header is in main list as opposed to floating list.
-   * @return {*} the rendered header component.
+   * @return {*} the rendered content
    */
-  renderContent = (inMainList: boolean): Node => {
+  const renderContent = (inMainList: boolean): Node => {
     const {
       date, tasks, inNDaysView, taskEditorPosition,
-    } = this.props;
-    const isToday = this.isToday();
+    } = props;
     const dateNumCssClass = inNDaysView
       ? styles.DateNumNDaysView
       : styles.DateNumOtherViews;
@@ -191,22 +186,21 @@ class FutureViewDay extends React.PureComponent<Props, State> {
           inNDaysView={inNDaysView}
           taskEditorPosition={taskEditorPosition}
           isInMainList={inMainList}
-          onOverflowChange={this.onOverflowChange}
+          onOverflowChange={onOverflowChange}
         />
       </React.Fragment>
     );
   };
 
-  renderBody = (): Node => {
-    const { floatingViewOpened, doesOverflow } = this.state;
+  const Body = (): Node => {
     if (!doesOverflow) {
-      return this.renderContent(true);
+      return renderContent(true);
     }
     if (!floatingViewOpened) {
       return (
         <React.Fragment>
-          {this.renderContent(true)}
-          <button type="button" className={styles.MoreTasksBar} onClick={this.openFloatingView}>
+          {renderContent(true)}
+          <button type="button" className={styles.MoreTasksBar} onClick={openFloatingView}>
             More Tasks...
           </button>
         </React.Fragment>
@@ -218,33 +212,25 @@ class FutureViewDay extends React.PureComponent<Props, State> {
         <div
           role="presentation"
           className={styles.FloatingBackgroundBlocker}
-          onClick={this.closeFloatingView}
+          onClick={closeFloatingView}
         />
-        <div className={styles.FloatingView} style={this.computeFloatingViewPosition()}>
-          {this.renderContent(false)}
+        <div className={styles.FloatingView} style={computeFloatingViewPosition()}>
+          {renderContent(false)}
         </div>
       </React.Fragment>
     );
   };
 
-  backlogDayElement: ?HTMLDivElement;
-
-  render(): Node {
-    const { inNDaysView } = this.props;
-    let wrapperCssClass: string;
-    if (inNDaysView) {
-      wrapperCssClass = this.isToday()
-        ? `${styles.NDaysView} ${styles.Today}` : styles.NDaysView;
-    } else {
-      wrapperCssClass = styles.OtherViews;
-    }
-    return (
-      <div className={wrapperCssClass} ref={(e) => { this.backlogDayElement = e; }}>
-        {this.renderBody()}
-      </div>
-    );
+  const { inNDaysView } = props;
+  let wrapperCssClass: string;
+  if (inNDaysView) {
+    wrapperCssClass = isToday ? `${styles.NDaysView} ${styles.Today}` : styles.NDaysView;
+  } else {
+    wrapperCssClass = styles.OtherViews;
   }
+  return (
+    <div className={wrapperCssClass} ref={componentDivRef}>
+      <Body />
+    </div>
+  );
 }
-
-const ConnectedFutureViewDay: ComponentType<OwnProps> = windowSizeConnect(FutureViewDay);
-export default ConnectedFutureViewDay;

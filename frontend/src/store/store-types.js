@@ -31,12 +31,13 @@ export type Task = {|
   +date: Date; // Example: new Date()
   +complete: boolean;
   +inFocus: boolean; // Whether the task is in focus
+  +children: Set<string>;
 |};
 
 /**
  * The task type without id and subtask.
  */
-export type MainTask = $Diff<Task, {| +id: string; |}>;
+export type MainTask = $Diff<Task, {| +id: string; +children: Set<string>; |}>;
 /**
  * The task type without id and subtask, and with all properties as optional.
  */

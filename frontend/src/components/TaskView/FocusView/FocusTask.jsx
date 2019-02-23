@@ -4,22 +4,17 @@ import React from 'react';
 import type { ComponentType, Node } from 'react';
 // $FlowFixMe not flow strict
 import { Draggable } from 'react-beautiful-dnd';
-import type { Task } from '../../../store/store-types';
 import InlineTaskEditor from '../../Util/TaskEditors/InlineTaskEditor';
 import styles from './FocusTask.module.css';
 
-type Props = {| +task: Task |};
+type Props = {| +id: string; order: number; |};
 
-function FocusTask({ task }: Props): Node {
-  React.useState(() => {
-    console.log('focus task recreated');
-    return null;
-  });
+function FocusTask({ id, order }: Props): Node {
   return (
-    <Draggable draggableId={task.id} index={task.order}>
+    <Draggable draggableId={id} index={order}>
       {provided => (
         <div ref={provided.innerRef} {...provided.draggableProps} {...provided.dragHandleProps}>
-          <InlineTaskEditor className={styles.FocusTask} task={task} />
+          <InlineTaskEditor className={styles.FocusTask} taskId={id} />
         </div>
       )}
     </Draggable>

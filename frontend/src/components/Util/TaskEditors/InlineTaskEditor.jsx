@@ -2,6 +2,7 @@
 
 import React from 'react';
 import type { ComponentType, Node } from 'react';
+import { connect } from 'react-redux';
 import type {
   PartialMainTask, PartialSubTask, SubTask, Task,
 } from '../../../store/store-types';
@@ -13,24 +14,25 @@ import {
   removeSubTask,
   removeTask,
 } from '../../../firebase/actions';
+import { error } from '../../../util/general-util';
 
 type OwnProps = {|
-  +task: Task; // the initial task given to the editor.
+  +taskId: string; // the initial task given to the editor.
   className?: string; // additional class names applied to the editor.
 |};
 
-type DefaultProps = {|
+type Props = {|
+  ...OwnProps;
+  task: Task;
   className?: string; // additional class names applied to the editor.
 |};
-
-type Props = {| ...OwnProps; ...DefaultProps; |};
 
 /**
  * The task editor used to edit task inline, activated on focus.
  */
 function InlineTaskEditor({ task, className }: Props): Node {
   const [disabled, setDisabled] = React.useState(() => {
-    console.log('InlineTaskEditor recreated!')
+    console.log('InlineTaskEditor recreated!');
     return true;
   });
 
@@ -51,7 +53,7 @@ function InlineTaskEditor({ task, className }: Props): Node {
         onBlur();
       }
     },
-    addSubTask: (subTask: SubTask) => addSubTask(id, subTask),
+    addSubTask: ({ id: _, ...subTaskWithoutID }: SubTask) => addSubTask(id, subTaskWithoutID),
     removeTask: () => removeTask(task),
     removeSubTask,
     onSave: onBlur,
@@ -70,5 +72,9 @@ function InlineTaskEditor({ task, className }: Props): Node {
 
 InlineTaskEditor.defaultProps = { className: undefined };
 
-const Memoized: ComponentType<Props> = React.memo(InlineTaskEditor);
-export default Memoized;
+// TODO filter subtasks that are not in focus
+
+const Connected: ComponentType<OwnProps> = connect(
+  ({ tasks }, { taskId }) => ({ task: tasks.get(taskId) ?? error('Corrupted!') }),
+)(InlineTaskEditor);
+export default Connected;

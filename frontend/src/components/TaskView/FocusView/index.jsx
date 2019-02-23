@@ -4,23 +4,26 @@ import React from 'react';
 import type { ComponentType, Node } from 'react';
 // $FlowFixMe not flow strict
 import { DragDropContext, Droppable } from 'react-beautiful-dnd';
-import type { Task } from '../../../store/store-types';
+import { connect } from 'react-redux';
 import styles from './FocusView.css';
 import ClearFocus from './ClearFocus';
 import FocusTask from './FocusTask';
 import { reorder } from '../../../firebase/actions';
+import { getTaskIdOrderListForFocusView } from '../../../store/selectors';
 
 const focusViewDroppableId = 'focus-view-droppable';
 
-type Props = {| +focusedTaskIds: number[] |};
+type IdOrder = {| +id: string; order: number |};
+
+const tasksRenderer = ({ id, order }: IdOrder) => <FocusTask key={id} id={id} order={order} />;
 
 /**
  * The focus view component.
  */
-function FocusView({ focusedTaskIds }: Props): Node {
-  const [localTasks, setLocalTasks] = React.useState<Task[]>(tasks);
-  if (localTasks !== tasks) {
-    setLocalTasks(tasks);
+function FocusView({ idOrderList }: {| +idOrderList: IdOrder[] |}): Node {
+  const [localList, setLocalList] = React.useState<IdOrder[]>(idOrderList);
+  if (localList !== idOrderList) {
+    setLocalList(idOrderList);
   }
 
   const onDragEnd = (result) => {
@@ -33,8 +36,8 @@ function FocusView({ focusedTaskIds }: Props): Node {
       // drop at the same place.
       return;
     }
-    const newTasks = reorder('tasks', tasks, source.index, destination.index);
-    setLocalTasks(newTasks);
+    const newList = reorder('tasks', localList, source.index, destination.index);
+    setLocalList(newList);
   };
 
   return (
@@ -49,9 +52,7 @@ function FocusView({ focusedTaskIds }: Props): Node {
           <Droppable droppableId={focusViewDroppableId}>
             {provided => (
               <div ref={provided.innerRef} {...provided.droppableProps}>
-                {localTasks.map((task: Task): Node => (
-                  <FocusTask key={task.id} task={task} />
-                ))}
+                {localList.map(tasksRenderer)}
                 {provided.placeholder}
               </div>
             )}
@@ -62,5 +63,5 @@ function FocusView({ focusedTaskIds }: Props): Node {
   );
 }
 
-const Connected: ComponentType<Props> = React.memo(FocusView);
+const Connected: ComponentType<{||}> = connect(getTaskIdOrderListForFocusView)(FocusView);
 export default Connected;

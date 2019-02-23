@@ -19,6 +19,7 @@ export type FirestoreTask = {|
   +date: Date | {| +toDate: () => Date |};
   +complete: boolean;
   +inFocus: boolean;
+  +children: string[];
 |};
 
 export type FirestoreSubTask = {|
@@ -26,9 +27,4 @@ export type FirestoreSubTask = {|
   +name: string;
   +complete: boolean;
   +inFocus: boolean;
-|};
-
-export type FirestoreTaskChildrenMap = {|
-  +owner: string;
-  +children: string[];
 |};

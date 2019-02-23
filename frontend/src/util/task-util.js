@@ -2,6 +2,7 @@
 
 import { connect } from 'react-redux';
 import type { ComponentType } from 'react';
+import type { Map } from 'immutable';
 import type {
   PartialMainTask, PartialSubTask, SubTask, Task,
 } from '../store/store-types';
@@ -126,28 +127,32 @@ export const filterInFocusTasks = (tasks: Task[]): Task[] => tasks
   })
   .filter((task: Task) => task.inFocus || task.subtasks.length > 0);
 
-export type TasksProgress = {| +completed: number; +all: number |};
-export type TasksProgressProps = {| +progress: TasksProgress; |};
+export type TasksProgressProps = {| +completedTasksCount: number; +allTasksCount: number |};
 
 /**
  * Compute the progress given a list of filtered tasks.
  *
  * @param {Task[]} inFocusTasks in-focus filtered tasks.
- * @return {TasksProgress} the progress.
+ * @param {Map<string, SubTask>} subTasks all subtasks map as a reference.
+ * @return {TasksProgressProps} the progress.
  */
-export const computeTaskProgress = (inFocusTasks: Task[]): TasksProgress => {
-  let completed = 0;
-  let all = 0;
+export const computeTaskProgress = (
+  inFocusTasks: Task[], subTasks: Map<string, SubTask>,
+): TasksProgressProps => {
+  let completedTasksCount = 0;
+  let allTasksCount = 0;
   for (let i = 0; i < inFocusTasks.length; i += 1) {
     const task = inFocusTasks[i];
-    all += task.subtasks.length + 1;
+    allTasksCount += task.children.size + 1;
     if (task.complete) {
-      completed += task.subtasks.length + 1;
+      completedTasksCount += task.children.size + 1;
     } else {
-      completed += task.subtasks.reduce((a, s) => a + (s.complete ? 1 : 0), 0);
+      completedTasksCount += task.children.reduce(
+        (acc, s) => acc + ((subTasks.get(s)?.complete ?? false) ? 1 : 0), 0,
+      );
     }
   }
-  return { completed, all };
+  return { completedTasksCount, allTasksCount };
 };
 
 /**

@@ -8,12 +8,8 @@ import FutureViewSevenColumns from './FutureViewSevenColumns';
 import type {
   FutureViewContainerType,
   FutureViewDisplayOption,
-  OneDayTask,
 } from './future-view-types';
-import type { WindowSize } from '../../Util/Responsive/window-size-context';
-import type { Tag, Task } from '../../../store/store-types';
-import { getTagConnect } from '../../../util/tag-util';
-import { filterCompletedTasks } from '../../../util/task-util';
+import { useMappedWindowSize } from '../../../hooks/window-size-hook';
 
 export opaque type FutureViewConfig = {|
   +displayOption: FutureViewDisplayOption;
@@ -34,28 +30,6 @@ export const futureViewConfigProvider: FutureViewConfigProvider = {
   },
   isInNDaysView: (config: FutureViewConfig) => config.displayOption.containerType === 'N_DAYS',
 };
-
-type DateToTaskMap = Map<string, Task[]>;
-
-/**
- * Compute a map from date to a list of tasks on that day for faster access.
- *
- * @param {Task[]} tasks all tasks. There is no assumption of the order of the tasks.
- * @return {DateToTaskMap} the built map.
- */
-function buildDate2TaskMap(tasks: Task[]): DateToTaskMap {
-  const map: DateToTaskMap = new Map();
-  tasks.forEach((task) => {
-    const dateString = new Date(task.date).toLocaleDateString();
-    const tasksArrOpt = map.get(dateString);
-    if (tasksArrOpt == null) {
-      map.set(dateString, [task]);
-    } else {
-      tasksArrOpt.push(task);
-    }
-  });
-  return map;
-}
 
 /**
  * Compute the start date and end date.
@@ -111,74 +85,46 @@ function computeStartAndEndDay(
  * Returns an array of future view days given the current props and the display option.
  *
  * @param {number} nDays number of days in n-days view.
- * @param {DateToTaskMap} date2TaskMap the built date to tasks map.
  * @param {FutureViewConfig} config the display config.
- * @param {function(string): Tag} getTag the function used to get tags from id.
- * @return {OneDayTask[]} an array of backlog days information.
+ * @return {Date[]} an array of backlog days information.
  */
-function buildDaysInFutureView(
-  nDays: number, date2TaskMap: DateToTaskMap, config: FutureViewConfig,
-  getTag: (string) => Tag,
-): OneDayTask[] {
-  const { displayOption: { containerType, doesShowCompletedTasks }, offset } = config;
+function buildDaysInFutureView(nDays: number, config: FutureViewConfig): Date[] {
+  const { displayOption: { containerType }, offset } = config;
   const { startDate, endDate } = computeStartAndEndDay(nDays, containerType, offset);
   // Adding the days to array
-  const days: OneDayTask[] = [];
+  const days: Date[] = [];
   for (let d = startDate; d < endDate; d.setDate(d.getDate() + 1)) {
-    const date = new Date(d);
-    const tasksOnThisDay = date2TaskMap.get(date.toLocaleDateString()) || [];
-    const compoundTasks = doesShowCompletedTasks
-      ? tasksOnThisDay.map((task: Task) => ({
-        original: task,
-        filtered: task,
-        color: getTag(task.tag).color,
-      }))
-      : filterCompletedTasks(tasksOnThisDay).map(([original, filtered]) => ({
-        original,
-        filtered,
-        color: getTag(original.tag).color,
-      }));
-    days.push({ date, tasks: compoundTasks });
+    days.push(new Date(d));
   }
   return days;
 }
 
 type Props = {|
-  +windowSize: WindowSize;
   +config: FutureViewConfig;
-  +taskIds: number[];
   +onConfigChange: (FutureViewConfig) => void;
-  // subscribed from redux store.
-  +getTag: (id: string) => Tag;
 |};
 
-function FutureView(
-  {
-    windowSize, config, taskIds, onConfigChange, getTag,
-  }: Props,
-): Node {
+export default function FutureView({ config, onConfigChange }: Props): Node {
   // the number of days in n-days mode.
-  const nDays = (() => {
-    const { width } = windowSize;
+  const nDays = useMappedWindowSize(({ width }) => {
     if (width > 960) { return 5; }
     if (width > 768) { return 4; }
     if (width > 500) { return 2; }
     return 1;
-  })();
+  });
   const controlOnChange = (change: $Shape<FutureViewConfig>) => {
     onConfigChange({ ...config, ...change });
   };
 
-  const days = buildDaysInFutureView(nDays, buildDate2TaskMap(tasks), config, getTag);
+  const days = buildDaysInFutureView(nDays, config);
   const { displayOption, offset } = config;
-  const inNDaysView = displayOption.containerType === 'N_DAYS';
-  const daysContainer = inNDaysView
-    ? <FutureViewNDays nDays={nDays} days={days} />
-    : <FutureViewSevenColumns days={days} />;
+  const { containerType, doesShowCompletedTasks } = displayOption;
+  const daysContainer = containerType === 'N_DAYS'
+    ? <FutureViewNDays days={days} doesShowCompletedTasks={doesShowCompletedTasks} />
+    : <FutureViewSevenColumns days={days} doesShowCompletedTasks={doesShowCompletedTasks} />;
   return (
     <div>
       <FutureViewControl
-        windowSize={windowSize}
         nDays={nDays}
         displayOption={displayOption}
         offset={offset}
@@ -188,6 +134,3 @@ function FutureView(
     </div>
   );
 }
-
-const Connected = getTagConnect<Props>(FutureView);
-export default Connected;

@@ -8,7 +8,7 @@ import SquareTextButton from '../../UI/SquareTextButton';
 import SquareIconToggle from '../../UI/SquareIconToggle';
 import { date2YearMonth } from '../../../util/datetime-util';
 import styles from './FutureViewControl.css';
-import type { WindowSize } from '../../Util/Responsive/window-size-context';
+import { useMappedWindowSize } from '../../../hooks/window-size-hook';
 
 /*
  * --------------------------------------------------------------------------------
@@ -22,7 +22,6 @@ type ChangeableProps = {|
   +offset: number;
 |};
 type Props = {|
-  +windowSize: WindowSize;
   +nDays: number;
   ...ChangeableProps;
   +onChange: ($Shape<ChangeableProps>) => void;
@@ -130,16 +129,10 @@ function NavControl(props: NavControlProps): Node {
  * --------------------------------------------------------------------------------
  */
 
-type DisplayOptionControlProps = $Diff<Props, {| +windowSize: WindowSize; |}>;
-
 /**
- * The component to control display options.
- *
- * @param {DisplayOptionControlProps} props all the props.
- * @return {Node} the rendered component.
- * @constructor
+ * The component to control display options
  */
-function DisplayOptionControl(props: DisplayOptionControlProps): Node {
+function DisplayOptionControl(props: Props): Node {
   const {
     nDays, displayOption, offset, onChange,
   } = props;
@@ -221,9 +214,8 @@ function DisplayOptionControl(props: DisplayOptionControlProps): Node {
  * @constructor
  */
 export default function FutureViewControl(props: Props): Node {
-  const {
-    windowSize: { width }, nDays, displayOption, offset, onChange,
-  } = props;
+  const { displayOption, offset, onChange } = props;
+  const isSmallScreen = useMappedWindowSize(({ width }) => width <= 600);
   const { containerType } = displayOption;
   const changeOffset = (instruction: ChangeOffsetInstruction) => () => {
     const newOffset = instruction === 'TODAY' ? 0 : (offset + instruction);
@@ -239,22 +231,14 @@ export default function FutureViewControl(props: Props): Node {
       changeOffset={changeOffset}
     />
   );
-  const displayOptionControl = (
-    <DisplayOptionControl
-      nDays={nDays}
-      displayOption={displayOption}
-      offset={offset}
-      onChange={onChange}
-    />
-  );
-  if (width <= 600) {
+  if (isSmallScreen) {
     return (
       <div>
         <div className={styles.FutureViewControl}>
           <Title text="Future" />
           <Padding />
           {today}
-          {displayOptionControl}
+          <DisplayOptionControl {...props} />
         </div>
         <div className={styles.FutureViewControl}>
           <Padding />
@@ -270,7 +254,7 @@ export default function FutureViewControl(props: Props): Node {
       {navControl}
       <Padding />
       {today}
-      {displayOptionControl}
+      <DisplayOptionControl {...props} />
     </div>
   );
 }

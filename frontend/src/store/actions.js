@@ -5,7 +5,6 @@ import type {
   PatchCourses,
   PatchSubTasks,
   PatchTags,
-  PatchTaskChildrenMap,
   PatchTasks,
 } from './action-types';
 import type {
@@ -27,12 +26,6 @@ export const patchSubTasks = (
   created: SubTask[], edited: SubTask[], deleted: string[],
 ): PatchSubTasks => ({
   type: 'PATCH_SUBTASKS', created, edited, deleted,
-});
-
-export const patchTaskChildrenMap = (
-  created: Map<string, string[]>, edited: Map<string, string[]>, deleted: string[],
-): PatchTaskChildrenMap => ({
-  type: 'PATCH_TASK_CHILDREN_MAP', created, edited, deleted,
 });
 
 export const patchCourses = (courses: Map<number, Course[]>): PatchCourses => ({

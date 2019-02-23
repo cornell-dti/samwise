@@ -26,13 +26,6 @@ export type PatchSubTasks = {|
   +deleted: string[];
 |};
 
-export type PatchTaskChildrenMap = {|
-  type: 'PATCH_TASK_CHILDREN_MAP';
-  +created: Map<string, string[]>;
-  +edited: Map<string, string[]>;
-  +deleted: string[];
-|};
-
 export type PatchCourses = {|
   type: 'PATCH_COURSES';
   +courses: Map<number, Course[]>;
@@ -42,5 +35,4 @@ export type Action =
   | PatchTags
   | PatchTasks
   | PatchSubTasks
-  | PatchTaskChildrenMap
   | PatchCourses;
