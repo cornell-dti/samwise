@@ -24,17 +24,21 @@ import OneSubTaskEditor from './OneSubTaskEditor';
 type DefaultProps = {|
   +className?: string;
   +children?: Node;
-  +newSubTaskDisabled?: boolean;
-  +onFocus?: (event: SyntheticFocusEvent<HTMLElement>) => void;
-  +onBlur?: (event: SyntheticFocusEvent<HTMLElement>) => void;
-  +editorRef?: { current: HTMLFormElement | null };
+  +newSubTaskDisabled?: boolean; // whether to disable new subtask creation
+  +onFocus?: (event: SyntheticFocusEvent<HTMLElement>) => void; // when the editor gets focus
+  +onBlur?: (event: SyntheticFocusEvent<HTMLElement>) => void; // when the editor loses focus
+  +editorRef?: { current: HTMLFormElement | null }; // the ref of the editor
 |};
 type Actions = {|
   +editMainTask: (partialMainTask: PartialMainTask) => void;
+  // edit a subtask, which can be the one created but cached locally!
   +editSubTask: (subtaskId: string, partialSubTask: PartialSubTask) => void;
+  // add a subtask, but cache the subtask locally.
   +addSubTask: (subTask: SubTask) => void;
   +removeTask: () => void;
+  // remove the subtask, which can be the one created but cached locally!
   +removeSubTask: (subtaskId: string) => void;
+  // save all the edits. remember also to save the locally cached new subtask.
   +onSave: () => void;
 |};
 type OwnProps = {|
