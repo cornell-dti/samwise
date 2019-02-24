@@ -3,7 +3,6 @@
 import React from 'react';
 import type { ComponentType, Node } from 'react';
 import { connect } from 'react-redux';
-import type { SimpleDate } from './future-view-types';
 import type { FloatingPosition } from '../../Util/TaskEditors/editors-types';
 import FutureViewTask from './FutureViewTask';
 import styles from './FutureViewDayTaskContainer.css';
@@ -13,7 +12,7 @@ import type { State } from '../../../store/store-types';
 import { createGetIdOrderListByDate } from '../../../store/selectors';
 
 type OwnProps = {|
-  +date: SimpleDate;
+  +date: string;
   +inNDaysView: boolean;
   +taskEditorPosition: FloatingPosition;
   +doesShowCompletedTasks: boolean;
@@ -39,14 +38,19 @@ function FutureViewDayTaskContainer(
     onHeightChange,
   }: Props,
 ): Node {
-  // Subscribes to it, but don't use the value. Force rerender when window size changes.
-  useWindowSize();
   const containerRef = React.useRef(null);
+  const [prevHeights, setPrevHeights] = React.useState(() => [0, 0]);
 
-  React.useEffect(() => {
+  // Subscribes to it, but don't use the value. Force rerender when window size changes.
+  useWindowSize(() => {
     const containerNode = containerRef.current ?? error();
     const tasksHeight = containerNode.scrollHeight;
     const containerHeight = containerNode.clientHeight;
+    const [prevTasksHeight, prevContainerHeight] = prevHeights;
+    if (prevTasksHeight === tasksHeight && prevContainerHeight === containerHeight) {
+      return;
+    }
+    setPrevHeights([tasksHeight, containerHeight]);
     onHeightChange(tasksHeight > containerHeight, tasksHeight);
   });
 
@@ -69,6 +73,6 @@ function FutureViewDayTaskContainer(
 }
 
 const Connected: ComponentType<OwnProps> = connect(
-  (state: State, { date }: OwnProps) => createGetIdOrderListByDate(date.text)(state),
+  (state: State, { date }: OwnProps) => createGetIdOrderListByDate(date)(state),
 )(FutureViewDayTaskContainer);
 export default Connected;

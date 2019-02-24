@@ -5,16 +5,16 @@ import type { Node } from 'react';
 import type { SimpleDate } from './future-view-types';
 import type { FloatingPosition } from '../../Util/TaskEditors/editors-types';
 import styles from './FutureViewDay.css';
-import FutureViewDayTaskContainer from './FutureViewDayTaskContainer';
 import {
   floatingViewWidth,
   nDaysViewHeaderHeight,
   otherViewsHeightHeader,
 } from './future-view-css-props';
-import { day2String, getTodayAtZeroAM } from '../../../util/datetime-util';
+import { getTodayAtZeroAM } from '../../../util/datetime-util';
 import { error } from '../../../util/general-util';
 import { useWindowSize } from '../../../hooks/window-size-hook';
 import type { WindowSize } from '../../../hooks/window-size-hook';
+import FutureViewDayContent from './FutureViewDayContent';
 
 type Position = {| +width: number; +height: number; +top: number; +left: number; |};
 type PositionStyle = {| +width: string; +height: string; +top: string; +left: string; |};
@@ -92,27 +92,45 @@ const dummyHeightInfo: HeightInfo = { doesOverflow: false, tasksHeight: 0 };
 /**
  * The component that renders all tasks on a certain day.
  */
-export default function FutureViewDay(
-  {
-    date, inNDaysView, taskEditorPosition, doesShowCompletedTasks,
-  }: Props,
-): Node {
+export default function FutureViewDay(props: Props): Node {
+  const { date, inNDaysView } = props;
   const [floatingViewOpened, setFloatingViewOpened] = React.useState(false);
   const [heightInfo, setHeightInfo] = React.useState<HeightInfo>(dummyHeightInfo);
   const windowSize = useWindowSize();
   const componentDivRef = React.useRef(null);
 
   const onHeightChange = (doesOverflow: boolean, tasksHeight: number) => {
-    setHeightInfo({ doesOverflow, tasksHeight });
+    if (heightInfo !== tasksHeight) {
+      setHeightInfo({ doesOverflow, tasksHeight });
+    }
   };
 
-  const isToday = (() => {
-    const today = getTodayAtZeroAM();
-    return date.year === today.getFullYear()
-      && date.month === today.getMonth()
-      && date.date === today.getDate();
-  })();
+  const openFloatingView = () => setFloatingViewOpened(true);
+  const closeFloatingView = () => setFloatingViewOpened(false);
 
+  const isToday: boolean = getTodayAtZeroAM().toDateString() === date.text;
+  let wrapperCssClass: string;
+  if (inNDaysView) {
+    wrapperCssClass = isToday ? `${styles.NDaysView} ${styles.Today}` : styles.NDaysView;
+  } else {
+    wrapperCssClass = styles.OtherViews;
+  }
+  if (!floatingViewOpened) {
+    return (
+      <div className={wrapperCssClass} ref={componentDivRef}>
+        <FutureViewDayContent
+          inMainList
+          onHeightChange={onHeightChange}
+          {...props}
+        />
+        {heightInfo.doesOverflow && (
+          <button type="button" className={styles.MoreTasksBar} onClick={openFloatingView}>
+            More Tasks...
+          </button>
+        )}
+      </div>
+    );
+  }
   const computeFloatingViewPosition = (): PositionStyle => {
     const componentDiv = componentDivRef.current ?? error();
     const boundingRect = componentDiv.getBoundingClientRect();
@@ -130,77 +148,21 @@ export default function FutureViewDay(
       tasksHeight, inNDaysView, mainViewPosition, windowSize,
     });
   };
-
-  const openFloatingView = () => setFloatingViewOpened(true);
-  const closeFloatingView = () => setFloatingViewOpened(false);
-
-  /**
-   * Render the main content.
-   *
-   * @param {boolean} inMainList whether the header is in main list as opposed to floating list.
-   * @return {*} the rendered content
-   */
-  const Content = ({ inMainList }: {| +inMainList: boolean |}): Node => {
-    const dateNumCssClass = inNDaysView
-      ? styles.DateNumNDaysView
-      : styles.DateNumOtherViews;
-    const containerStyle = (inNDaysView && inMainList) ? { paddingTop: '1em' } : {};
-    return (
-      <React.Fragment>
-        <div className={styles.DateInfo} style={containerStyle}>
-          {inNDaysView && (
-            <div className={styles.DateInfoDay}>
-              {isToday ? 'TODAY' : day2String(date.day)}
-            </div>
-          )}
-          <div className={dateNumCssClass}>{date.date}</div>
-        </div>
-        <FutureViewDayTaskContainer
-          date={date}
-          inNDaysView={inNDaysView}
-          taskEditorPosition={taskEditorPosition}
-          doesShowCompletedTasks={doesShowCompletedTasks}
-          isInMainList={inMainList}
+  return (
+    <div className={wrapperCssClass} ref={componentDivRef}>
+      <div className={styles.FloatingViewPrevPadding} />
+      <div
+        role="presentation"
+        className={styles.FloatingBackgroundBlocker}
+        onClick={closeFloatingView}
+      />
+      <div className={styles.FloatingView} style={computeFloatingViewPosition()}>
+        <FutureViewDayContent
+          inMainList={false}
           onHeightChange={onHeightChange}
+          {...props}
         />
-      </React.Fragment>
-    );
-  };
-
-  const Body = (): Node => {
-    if (!heightInfo.doesOverflow) {
-      return <Content inMainList />;
-    }
-    if (!floatingViewOpened) {
-      return (
-        <React.Fragment>
-          <Content inMainList />
-          <button type="button" className={styles.MoreTasksBar} onClick={openFloatingView}>
-            More Tasks...
-          </button>
-        </React.Fragment>
-      );
-    }
-    return (
-      <React.Fragment>
-        <div className={styles.FloatingViewPrevPadding} />
-        <div
-          role="presentation"
-          className={styles.FloatingBackgroundBlocker}
-          onClick={closeFloatingView}
-        />
-        <div className={styles.FloatingView} style={computeFloatingViewPosition()}>
-          <Content inMainList={false} />
-        </div>
-      </React.Fragment>
-    );
-  };
-
-  let wrapperCssClass: string;
-  if (inNDaysView) {
-    wrapperCssClass = isToday ? `${styles.NDaysView} ${styles.Today}` : styles.NDaysView;
-  } else {
-    wrapperCssClass = styles.OtherViews;
-  }
-  return <div className={wrapperCssClass} ref={componentDivRef}><Body /></div>;
+      </div>
+    </div>
+  );
 }

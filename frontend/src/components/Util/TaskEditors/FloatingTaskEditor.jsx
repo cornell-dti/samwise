@@ -231,7 +231,7 @@ function FloatingTaskEditor({ position, initialTask, fullInitialTask, trigger }:
       <TaskEditor
         mainTask={mainTask}
         subTasks={subTasks}
-        uncommittedSubTask={uncommittedSubTask}
+        tempSubTask={uncommittedSubTask}
         actions={actions}
         className={styles.FloatingTaskEditor}
         editorRef={editorRef}

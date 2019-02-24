@@ -4,19 +4,56 @@ import { useState, useEffect, useMemo } from 'react';
 import type { Node } from 'react';
 
 export type WindowSize = {| +width: number; +height: number; |};
+type Listener = (WindowSize) => void;
 
 const getWindowSize = (): WindowSize => ({ width: window.innerWidth, height: window.innerHeight });
 
+let cachedWindowSize: WindowSize = { width: 0, height: 0 };
+let hasUnreportedChange: boolean = false;
+const listeners = new Map<number, Listener>();
+let listenerSize = 0;
+
+const windowSizeListener = () => {
+  const newSize = getWindowSize();
+  if (newSize.width === cachedWindowSize.width && newSize.height === cachedWindowSize.height) {
+    return;
+  }
+  cachedWindowSize = newSize;
+  hasUnreportedChange = true;
+};
+
+const notifyAll = () => {
+  if (hasUnreportedChange) {
+    listeners.forEach(l => l(cachedWindowSize));
+    hasUnreportedChange = false;
+  }
+};
+
+const bindListener = (listener: Listener): () => void => {
+  const id = listenerSize;
+  listeners.set(id, listener);
+  listenerSize += 1;
+  return () => {
+    listeners.delete(id);
+  };
+};
+
+if (cachedWindowSize.width === 0) {
+  window.addEventListener('resize', windowSizeListener);
+  setInterval(notifyAll, 100);
+}
+
 /**
  * A hook for window size.
- * @return {WindowSize} the correct value of window size.
  */
-export function useWindowSize(): WindowSize {
+export function useWindowSize(onChange: ?() => void): WindowSize {
   const [size, setSize] = useState(getWindowSize);
   useEffect(() => {
-    const listener = () => setSize(getWindowSize());
-    window.addEventListener('resize', listener);
-    return () => window.removeEventListener('resize', listener);
+    const l = bindListener(setSize);
+    if (onChange) {
+      onChange();
+    }
+    return l;
   });
   return size;
 }
