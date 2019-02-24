@@ -13,7 +13,15 @@
   },
   "rules": {
     "no-underscore-dangle": "off",
-    "object-curly-newline": ["error", { "multiline": true, "minProperties": 6 }],
-    "react/default-props-match-prop-types": "off",
+    // too noisy for props declaration
+    "object-curly-newline": [
+      "error", {
+      "ObjectExpression": { "minProperties": 6, "multiline": true, "consistent": true },
+      "ObjectPattern": { "minProperties": 6, "multiline": true, "consistent": true },
+      "ImportDeclaration": { "minProperties": 6, "multiline": true, "consistent": true },
+      "ExportDeclaration": { "minProperties": 6, "multiline": true, "consistent": true }
+    }],
+    "react/default-props-match-prop-types": "off", // incompatible with flow
+    "react/require-default-props": "off" // incompatible with flow
   }
 }
