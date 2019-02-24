@@ -13,6 +13,7 @@
   },
   "rules": {
     "no-underscore-dangle": "off",
-    "react/default-props-match-prop-types": "off"
+    "object-curly-newline": ["error", { "multiline": true, "minProperties": 6 }],
+    "react/default-props-match-prop-types": "off",
   }
 }

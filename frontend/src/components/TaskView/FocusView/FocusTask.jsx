@@ -18,11 +18,7 @@ type Props = {|
   +filtered: TaskWithSubTasks | null;
 |};
 
-function FocusTask(
-  {
-    id, order, original, filtered,
-  }: Props,
-): Node {
+function FocusTask({ id, order, original, filtered }: Props): Node {
   if (filtered === null) {
     return null;
   }
