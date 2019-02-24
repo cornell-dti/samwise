@@ -4,9 +4,9 @@ import React from 'react';
 import type { ComponentType, Node } from 'react';
 // $FlowFixMe not flow strict
 import { Draggable } from 'react-beautiful-dnd';
+import { connect } from 'react-redux';
 import InlineTaskEditor from '../../Util/TaskEditors/InlineTaskEditor';
 import styles from './FocusTask.module.css';
-import { connect } from 'react-redux';
 import type { State, Task, TaskWithSubTasks } from '../../../store/store-types';
 import { error } from '../../../util/general-util';
 import { getFilteredInFocusTask } from '../../../util/task-util';

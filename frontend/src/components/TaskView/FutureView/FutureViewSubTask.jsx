@@ -14,23 +14,32 @@ import { getSubTaskById } from '../../../store/selectors';
 
 type OwnProps = {|
   +subTaskId: string;
+  +mainTaskId: string;
   +mainTaskCompleted: boolean;
 |};
 
 type Props = {|
   +subTaskId: string;
-  +subTask: SubTask;
+  +subTask: ?SubTask;
+  +mainTaskId: string;
   +mainTaskCompleted: boolean;
 |};
 
 /**
  * The component used to render one subtask in future view day.
  */
-function FutureViewSubTask({ subTaskId, subTask, mainTaskCompleted }: Props): Node {
+function FutureViewSubTask(
+  {
+    subTaskId, subTask, mainTaskId, mainTaskCompleted,
+  }: Props,
+): Node {
+  if (subTask == null) {
+    return null;
+  }
   const { name, complete, inFocus } = subTask;
   const onCompleteChange = () => editSubTask(subTaskId, { complete: !complete });
   const onFocusChange = () => editSubTask(subTaskId, { inFocus: !inFocus });
-  const onRemove = () => removeSubTask(subTaskId);
+  const onRemove = () => removeSubTask(mainTaskId, subTaskId);
   return (
     <div className={styles.SubTask}>
       <CheckBox

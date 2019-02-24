@@ -15,6 +15,7 @@ import {
 // $FlowFixMe
 import coursesJson from '../assets/json/sp19-courses-with-exams-min.json';
 import buildCoursesMap from '../util/courses-util';
+import { store } from '../store/store';
 
 /**
  * Initialize listeners bind to firestore.
@@ -34,7 +35,7 @@ export default (onFirstFetched: () => void): (() => void) => {
       const edited = [];
       const deleted = [];
       s.docChanges().forEach((change) => {
-        const doc: DocumentSnapshot = change.doc;
+        const { doc } = change;
         const { id } = doc;
         if (change.type === 'removed') {
           deleted.push(id);
@@ -48,7 +49,7 @@ export default (onFirstFetched: () => void): (() => void) => {
           }
         }
       });
-      patchTags(created, edited, deleted);
+      store.dispatch(patchTags(created, edited, deleted));
       firstTagsFetched = true;
       if (allFetched()) {
         onFirstFetched();
@@ -61,7 +62,7 @@ export default (onFirstFetched: () => void): (() => void) => {
       const edited = [];
       const deleted = [];
       s.docChanges().forEach((change) => {
-        const doc: DocumentSnapshot = change.doc;
+        const { doc } = change;
         const { id } = doc;
         if (change.type === 'removed') {
           deleted.push(id);
@@ -82,7 +83,7 @@ export default (onFirstFetched: () => void): (() => void) => {
           }
         }
       });
-      patchTasks(created, edited, deleted);
+      store.dispatch(patchTasks(created, edited, deleted));
       firstTasksFetched = true;
       if (allFetched()) {
         onFirstFetched();
@@ -95,7 +96,7 @@ export default (onFirstFetched: () => void): (() => void) => {
       const edited = [];
       const deleted = [];
       s.docChanges().forEach((change) => {
-        const doc: DocumentSnapshot = change.doc;
+        const { doc } = change;
         const { id } = doc;
         if (change.type === 'removed') {
           deleted.push(id);
@@ -109,7 +110,7 @@ export default (onFirstFetched: () => void): (() => void) => {
           }
         }
       });
-      patchSubTasks(created, edited, deleted);
+      store.dispatch(patchSubTasks(created, edited, deleted));
       firstSubTasksFetched = true;
       if (allFetched()) {
         onFirstFetched();
@@ -117,7 +118,7 @@ export default (onFirstFetched: () => void): (() => void) => {
     });
 
   fetch(coursesJson).then(resp => resp.json()).then(buildCoursesMap).then((courseMap) => {
-    patchCourses(courseMap);
+    store.dispatch(patchCourses(courseMap));
     courseJsonFetched = true;
     if (allFetched()) {
       onFirstFetched();

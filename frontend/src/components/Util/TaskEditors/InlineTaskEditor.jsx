@@ -24,10 +24,7 @@ type Props = {|
  * The task editor used to edit task inline, activated on focus.
  */
 export default function InlineTaskEditor({ original, filtered, className }: Props): Node {
-  const [disabled, setDisabled] = React.useState(() => {
-    console.log('InlineTaskEditor recreated!');
-    return true;
-  });
+  const [disabled, setDisabled] = React.useState(true);
 
   const { id } = original;
   // To un-mount the editor when finished editing.
@@ -48,7 +45,7 @@ export default function InlineTaskEditor({ original, filtered, className }: Prop
     },
     addSubTask: ({ id: _, ...subTaskWithoutID }: SubTask) => addSubTask(id, subTaskWithoutID),
     removeTask: () => removeTask(original),
-    removeSubTask,
+    removeSubTask: subTaskId => removeSubTask(id, subTaskId),
     onSave: onBlur,
   };
   const taskEditorProps = {

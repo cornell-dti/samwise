@@ -41,7 +41,7 @@ function patchTasks(state: State, { created, edited, deleted }: PatchTasks): Sta
       const key = t.date.toDateString();
       const set = m.get(key);
       if (set == null) {
-        m.set(key, Set(t.id));
+        m.set(key, Set.of(t.id));
       } else {
         m.set(key, set.add(t.id));
       }
@@ -56,7 +56,7 @@ function patchTasks(state: State, { created, edited, deleted }: PatchTasks): Sta
       }
       const set = m.get(key);
       if (set == null) {
-        m.set(key, Set(t.id));
+        m.set(key, Set.of(t.id));
       } else {
         m.set(key, set.add(t.id));
       }

@@ -33,7 +33,6 @@ function OneSubTaskEditor(
     onPressEnter,
   }: Props,
 ): Node {
-  console.log(subTask.name, needToBeFocused);
   const [nameCache, setNameCache] = React.useState<string>(subTask.name);
 
   const onCompleteChange = () => editSubTask(subTask.id, { complete: !subTask.complete }, false);

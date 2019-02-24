@@ -9,7 +9,7 @@ import PinOutline from '../../../assets/svgs/pin-2-dark-outline.svg';
 import styles from './FutureViewTask.css';
 import FutureViewSubTask from './FutureViewSubTask';
 import FloatingTaskEditor from '../../Util/TaskEditors/FloatingTaskEditor';
-import type { State, Task } from '../../../store/store-types';
+import type { State } from '../../../store/store-types';
 import CheckBox from '../../UI/CheckBox';
 import type { FloatingPosition } from '../../Util/TaskEditors/task-editors-types';
 import { getTodayAtZeroAM } from '../../../util/datetime-util';
@@ -109,7 +109,12 @@ function FutureViewTask(
   };
 
   const renderSubTasks = (): Node => filtered.children.map(id => (
-    <FutureViewSubTask key={id} mainTaskCompleted={filtered.complete} subTaskId={id} />
+    <FutureViewSubTask
+      key={id}
+      mainTaskId={filtered.id}
+      mainTaskCompleted={filtered.complete}
+      subTaskId={id}
+    />
   ));
 
   const { date, complete } = original;

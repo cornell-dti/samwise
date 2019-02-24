@@ -167,7 +167,7 @@ export const editMainTask = (taskId: string, partialMainTask: PartialMainTask): 
 };
 
 export const editSubTask = (subtaskId: string, partialSubTask: PartialSubTask): void => {
-  tasksCollection().doc(subtaskId).update(partialSubTask).then(ignore);
+  subTasksCollection().doc(subtaskId).update(partialSubTask).then(ignore);
 };
 
 export const removeTask = (task: Task, noUndo?: 'no-undo'): void => {
@@ -188,8 +188,13 @@ export const removeTask = (task: Task, noUndo?: 'no-undo'): void => {
   });
 };
 
-export const removeSubTask = (subtaskId: string): void => {
-  tasksCollection().doc(subtaskId).delete().then(ignore);
+export const removeSubTask = (taskId: string, subtaskId: string): void => {
+  const batch = db().batch();
+  batch.update(tasksCollection().doc(taskId), {
+    children: firestore.FieldValue.arrayRemove(subtaskId),
+  });
+  batch.delete(subTasksCollection().doc(subtaskId));
+  batch.commit().then(ignore);
 };
 
 /**
