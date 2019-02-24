@@ -55,8 +55,8 @@ export const addTag = (tag: WithoutIdOrder<Tag>): void => {
     return;
   }
   createFirestoreObject('tags', tag)
-    .then((firebaseTag: FirestoreTag) => tagsCollection().add(firebaseTag))
-    .then(ignore);
+  .then((firebaseTag: FirestoreTag) => tagsCollection().add(firebaseTag))
+  .then(ignore);
 };
 
 export const editTag = (tag: Tag): void => {
@@ -66,18 +66,18 @@ export const editTag = (tag: Tag): void => {
 
 export const removeTag = (id: string): void => {
   tasksCollection()
-    .where('owner', '==', getAppUser().email)
-    .where('tag', '==', id)
-    .get()
-    .then((s) => {
-      const batch = db().batch();
-      s.docs.filter(doc => doc.data().type === 'TASK')
-        .forEach((doc) => {
-          batch.update(tasksCollection().doc(doc.id), { tag: NONE_TAG_ID });
-        });
-      batch.delete(tagsCollection().doc(id));
-      batch.commit().then(ignore);
-    });
+  .where('owner', '==', getAppUser().email)
+  .where('tag', '==', id)
+  .get()
+  .then((s) => {
+    const batch = db().batch();
+    s.docs.filter(doc => doc.data().type === 'TASK')
+     .forEach((doc) => {
+       batch.update(tasksCollection().doc(doc.id), { tag: NONE_TAG_ID });
+     });
+    batch.delete(tagsCollection().doc(id));
+    batch.commit().then(ignore);
+  });
 };
 
 /*
@@ -119,14 +119,16 @@ export const addTask = (
   })();
 };
 
-export const addSubTask = (taskId: string, subTask: WithoutId<SubTask>): void => {
+export const addSubTask = (taskId: string, subTask: WithoutId<SubTask>): SubTask => {
+  const newSubTaskDoc = subTasksCollection().doc();
   const firebaseSubTask: FirestoreSubTask = mergeWithOwner(subTask);
-  subTasksCollection().add(firebaseSubTask).then((doc) => {
-    tasksCollection()
-      .doc(taskId)
-      .update({ children: firestore.FieldValue.arrayUnion(doc.id) })
-      .then(ignore);
+  const batch = db().batch();
+  batch.set(newSubTaskDoc, firebaseSubTask);
+  batch.update(tasksCollection().doc(taskId), {
+    children: firestore.FieldValue.arrayUnion(newSubTaskDoc.id),
   });
+  batch.commit().then(ignore);
+  return { ...subTask, id: newSubTaskDoc.id };
 };
 
 /**
@@ -173,8 +175,8 @@ export const editSubTask = (subtaskId: string, partialSubTask: PartialSubTask): 
 export const removeTask = (task: Task, noUndo?: 'no-undo'): void => {
   const { subTasks } = store.getState();
   const deletedSubTasks = task.children
-    .map(id => subTasks.get(id) ?? error('corrupted!'))
-    .toArray();
+                              .map(id => subTasks.get(id) ?? error('corrupted!'))
+                              .toArray();
   const batch = db().batch();
   batch.delete(tasksCollection().doc(task.id));
   task.children.forEach(id => batch.delete(subTasksCollection().doc(id)));
@@ -308,14 +310,14 @@ export const importCourseExams = (): void => {
     });
   });
   allocateNewOrder('tasks', newTasks.length)
-    .then((startOrder: number) => {
-      const newOrderedTasks = newTasks.map((t, i) => ({ ...t, order: i + startOrder }));
-      const batch = db().batch();
-      newOrderedTasks.forEach((orderedTask) => {
-        const transformedTask: FirestoreTask = mergeWithOwner({ ...orderedTask, children: [] });
-        batch.set(tasksCollection().doc(), transformedTask);
-      });
-      // eslint-disable-next-line no-alert
-      batch.commit().then(() => alert('Exams Added!'));
+  .then((startOrder: number) => {
+    const newOrderedTasks = newTasks.map((t, i) => ({ ...t, order: i + startOrder }));
+    const batch = db().batch();
+    newOrderedTasks.forEach((orderedTask) => {
+      const transformedTask: FirestoreTask = mergeWithOwner({ ...orderedTask, children: [] });
+      batch.set(tasksCollection().doc(), transformedTask);
     });
+    // eslint-disable-next-line no-alert
+    batch.commit().then(() => alert('Exams Added!'));
+  });
 };

@@ -34,21 +34,10 @@ export type Task = {|
   +children: Set<string>;
 |};
 
-export type TaskWithSubTasks = {|
-  +id: string;
-  +order: number;
-  +name: string;
-  +tag: string;
-  +date: Date;
-  +complete: boolean;
-  +inFocus: boolean;
-  +subTasks: SubTask[];
-|};
-
 /**
  * The task type without id and subtask.
  */
-export type MainTask = $Diff<Task, {| +id: string; +children: Set<string>; |}>;
+export type MainTask = $ReadOnly<$Diff<Task, {| +id: string; +children: Set<string>; |}>>;
 /**
  * The task type without id and subtask, and with all properties as optional.
  */

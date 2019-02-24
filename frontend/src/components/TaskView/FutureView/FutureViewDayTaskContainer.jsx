@@ -4,7 +4,7 @@ import React from 'react';
 import type { ComponentType, Node } from 'react';
 import { connect } from 'react-redux';
 import type { SimpleDate } from './future-view-types';
-import type { FloatingPosition } from '../../Util/TaskEditors/task-editors-types';
+import type { FloatingPosition } from '../../Util/TaskEditors/editors-types';
 import FutureViewTask from './FutureViewTask';
 import styles from './FutureViewDayTaskContainer.css';
 import { useWindowSize } from '../../../hooks/window-size-hook';

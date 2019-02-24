@@ -11,7 +11,7 @@ import FutureViewSubTask from './FutureViewSubTask';
 import FloatingTaskEditor from '../../Util/TaskEditors/FloatingTaskEditor';
 import type { State } from '../../../store/store-types';
 import CheckBox from '../../UI/CheckBox';
-import type { FloatingPosition } from '../../Util/TaskEditors/task-editors-types';
+import type { FloatingPosition } from '../../Util/TaskEditors/editors-types';
 import { getTodayAtZeroAM } from '../../../util/datetime-util';
 import OverdueAlert from '../../UI/OverdueAlert';
 import { nDaysViewHeaderHeight, otherViewsHeightHeader } from './future-view-css-props';

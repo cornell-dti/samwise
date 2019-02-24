@@ -9,7 +9,7 @@ import React from 'react';
 import type { ComponentType, Node } from 'react';
 import { connect } from 'react-redux';
 import type {
-  Tag, SubTask, PartialMainTask, PartialSubTask, TaskWithSubTasks, State,
+  Tag, SubTask, PartialMainTask, PartialSubTask, State, MainTask,
 } from '../../../../store/store-types';
 import OverdueAlert from '../../../UI/OverdueAlert';
 import styles from './TaskEditor.css';
@@ -30,15 +30,17 @@ type DefaultProps = {|
   +editorRef?: { current: HTMLFormElement | null };
 |};
 type Actions = {|
-  +editMainTask: (partialMainTask: PartialMainTask, doSave: boolean) => void;
-  +editSubTask: (subtaskId: string, partialSubTask: PartialSubTask, doSave: boolean) => void;
+  +editMainTask: (partialMainTask: PartialMainTask) => void;
+  +editSubTask: (subtaskId: string, partialSubTask: PartialSubTask) => void;
   +addSubTask: (subTask: SubTask) => void;
   +removeTask: () => void;
   +removeSubTask: (subtaskId: string) => void;
   +onSave: () => void;
 |};
 type OwnProps = {|
-  +task: TaskWithSubTasks; // The task given to the editor at this point.
+  +mainTask: MainTask; // The task given to the editor at this point.
+  +subTasks: SubTask[];
+  +tempSubTask: SubTask | null;
   +actions: Actions; // The actions to perform under different events
   ...DefaultProps; // Props with default values.
 |};
@@ -58,7 +60,9 @@ type TaskToFocus = number | 'new-subtask' | null;
  */
 function TaskEditor(
   {
-    task,
+    mainTask,
+    subTasks,
+    tempSubTask,
     actions,
     getTag,
     className,
@@ -69,35 +73,24 @@ function TaskEditor(
     editorRef,
   }: Props,
 ): Node {
-  const {
-    name, tag, date, complete, inFocus, subTasks,
-  } = task;
+  const { name, tag, date, complete, inFocus } = mainTask;
   const {
     editMainTask, editSubTask, addSubTask, removeTask, removeSubTask, onSave,
   } = actions;
 
-  const [subTaskToFocus, setSubTaskToFocus] = React.useState<TaskToFocus>(() => {
-    console.log('recreated!');
-    return null;
-  });
-  console.log(subTaskToFocus);
+  const [subTaskToFocus, setSubTaskToFocus] = React.useState<TaskToFocus>(null);
 
-  const tagDateOnChange = change => editMainTask(change, false);
-  const nameCompleteInFocusChange = change => editMainTask(change, false);
-  const handleNewSubTaskValueChange = (newSubTaskValue: string) => {
+  // called when the user types in the first char in the new subtask box. We need to shift now.
+  const handleNewSubTaskFirstType = (firstTypedValue: string) => {
     const order = subTasks.reduce((acc, s) => Math.max(acc, s.order), 0) + 1;
-    const newSubTask: SubTask = {
+    addSubTask({
       id: randomId(),
-      name: newSubTaskValue,
+      name: firstTypedValue,
       order,
       complete: false,
       inFocus: false,
-    };
-    console.log('new-subtask', newSubTask);
-    addSubTask(newSubTask);
-    console.log('try to add...');
+    });
     setSubTaskToFocus(order);
-    console.log('set focus');
   };
 
   /**
@@ -143,20 +136,20 @@ function TaskEditor(
     >
       {isOverdue && <OverdueAlert />}
       <div>
-        <EditorHeader tag={tag} date={date} onChange={tagDateOnChange} getTag={getTag} />
+        <EditorHeader tag={tag} date={date} onChange={editMainTask} getTag={getTag} />
         <MainTaskEditor
           name={name}
           complete={complete}
           inFocus={inFocus}
-          onChange={nameCompleteInFocusChange}
+          onChange={editMainTask}
           onRemove={removeTask}
           onPressEnter={pressEnterHandler}
         />
       </div>
       <div className={styles.TaskEditorSubTasksIndentedContainer}>
-        {subTasks.map(subTask => (
+        {subTasks.map((subTask: SubTask) => (
           <OneSubTaskEditor
-            key={subTask.order}
+            key={subTask.id}
             subTask={subTask}
             mainTaskComplete={complete}
             needToBeFocused={subTaskToFocus === subTask.order}
@@ -166,9 +159,20 @@ function TaskEditor(
             onPressEnter={pressEnterHandler}
           />
         ))}
-        {(newSubTaskDisabled !== true) && (
+        {tempSubTask !== null && (
+          <OneSubTaskEditor
+            subTask={tempSubTask}
+            mainTaskComplete={complete}
+            needToBeFocused={subTaskToFocus === tempSubTask.order}
+            afterFocusedCallback={clearNeedToFocus}
+            editSubTask={editSubTask}
+            removeSubTask={removeSubTask}
+            onPressEnter={pressEnterHandler}
+          />
+        )}
+        {newSubTaskDisabled !== true && (
           <NewSubTaskEditor
-            onChange={handleNewSubTaskValueChange}
+            onChange={handleNewSubTaskFirstType}
             needToBeFocused={subTaskToFocus === 'new-subtask'}
             afterFocusedCallback={clearNeedToFocus}
             onPressEnter={onSave}

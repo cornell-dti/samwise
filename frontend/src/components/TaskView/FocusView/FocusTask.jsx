@@ -7,9 +7,10 @@ import { Draggable } from 'react-beautiful-dnd';
 import { connect } from 'react-redux';
 import InlineTaskEditor from '../../Util/TaskEditors/InlineTaskEditor';
 import styles from './FocusTask.module.css';
-import type { State, Task, TaskWithSubTasks } from '../../../store/store-types';
+import type { State, Task } from '../../../store/store-types';
 import { error } from '../../../util/general-util';
 import { getFilteredInFocusTask } from '../../../util/task-util';
+import type { TaskWithSubTasks } from '../../Util/TaskEditors/editors-types';
 
 type OwnProps = {| +id: string; order: number; |};
 type Props = {|

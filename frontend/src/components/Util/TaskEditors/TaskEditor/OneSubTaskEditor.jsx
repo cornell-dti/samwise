@@ -11,10 +11,10 @@ import type { PartialSubTask, SubTask } from '../../../../store/store-types';
 
 type Props = {|
   +subTask: SubTask;
-  +mainTaskComplete: boolean;
-  +needToBeFocused: boolean;
-  +afterFocusedCallback: () => void;
-  +editSubTask: (subtaskId: string, partialSubTask: PartialSubTask, doSave: boolean) => void;
+  +mainTaskComplete: boolean; // whether the main task is completed
+  +needToBeFocused: boolean; // whether it needs to be focused.
+  +afterFocusedCallback: () => void; // need to be called once we focused the subtask
+  +editSubTask: (subtaskId: string, partialSubTask: PartialSubTask) => void;
   +removeSubTask: (subtaskId: string) => void;
   +onPressEnter: ('main-task' | number) => void;
 |};
@@ -33,10 +33,10 @@ function OneSubTaskEditor(
     onPressEnter,
   }: Props,
 ): Node {
-  const [nameCache, setNameCache] = React.useState<string>(subTask.name);
+  const [nameCache, setNameCache] = React.useState<string>(() => subTask.name);
 
-  const onCompleteChange = () => editSubTask(subTask.id, { complete: !subTask.complete }, false);
-  const onInFocusChange = () => editSubTask(subTask.id, { inFocus: !subTask.inFocus }, false);
+  const onCompleteChange = () => editSubTask(subTask.id, { complete: !subTask.complete });
+  const onInFocusChange = () => editSubTask(subTask.id, { inFocus: !subTask.inFocus });
   const onRemove = () => removeSubTask(subTask.id);
 
   const onKeyDown = (event: SyntheticKeyboardEvent<HTMLInputElement>) => {
@@ -47,12 +47,13 @@ function OneSubTaskEditor(
   };
   const onInputChange = (event: SyntheticEvent<HTMLInputElement>): void => {
     event.stopPropagation();
-    setNameCache(event.currentTarget.value);
+    const newValue = event.currentTarget.value;
+    setNameCache(newValue);
   };
   const onBlur = (event: SyntheticEvent<>): void => {
     event.stopPropagation();
     if (subTask.name !== nameCache) {
-      editSubTask(subTask.id, { name: nameCache }, false);
+      editSubTask(subTask.id, { name: nameCache });
     }
   };
 
@@ -95,5 +96,9 @@ function OneSubTaskEditor(
   );
 }
 
-const Memoized: ComponentType<Props> = React.memo(OneSubTaskEditor);
+const Memoized: ComponentType<Props> = React.memo(
+  OneSubTaskEditor,
+  (prev, curr) => prev.subTask === curr.subTask
+    && prev.mainTaskComplete === curr.mainTaskComplete,
+);
 export default Memoized;

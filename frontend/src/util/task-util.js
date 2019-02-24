@@ -1,23 +1,14 @@
 // @flow strict
 
-import type { Map, Set } from 'immutable';
-import type {
-  PartialMainTask, PartialSubTask, State, SubTask, Task, TaskWithSubTasks,
-} from '../store/store-types';
-import { error } from './general-util';
+import type { Map } from 'immutable';
+import type { PartialMainTask, PartialSubTask, SubTask, Task } from '../store/store-types';
+import type { TaskWithSubTasks } from '../components/Util/TaskEditors/editors-types';
 
 /**
  * This is the utility module for array of tasks and subtasks.
  * This module implements many common functional operations on an array of tasks or subtasks.
  * Other modules should try to call functions in this module instead of implementing their own.
  */
-
-export const getTaskIdsByDate = (
-  { tasks, dateTaskMap }: State, date: string,
-): {| +taskIds: string[] |} => {
-  const set = dateTaskMap.get(date) ?? error('bad');
-  return { taskIds: set.toArray() };
-};
 
 export const getFilteredCompletedTask = (
   task: Task, subTasks: Map<string, SubTask>,
@@ -49,20 +40,6 @@ export const getFilteredInFocusTask = (
   }
   return { ...rest, subTasks: newSubTasks };
 };
-
-/**
- * Replace a subtask with given id in an array of task.
- *
- * @param {SubTask[]} subTasks the subtask array to perform the replace operation.
- * @param {string} id the id of the subtask to be replaced.
- * @param {function(SubTask): SubTask} replacer the replacer function.
- * @return {SubTask[]} the new subtask array.
- */
-export const replaceSubTask = (
-  subTasks: SubTask[], id: string, replacer: (SubTask) => SubTask,
-): SubTask[] => subTasks.map(
-  (subTask: SubTask) => (subTask.id === id ? replacer(subTask) : subTask),
-);
 
 /**
  * The type for a task augmented with color information and filtered task.

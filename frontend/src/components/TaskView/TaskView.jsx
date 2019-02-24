@@ -80,7 +80,7 @@ export default function TaskView(): Node {
     <div className={styles.TaskView}>
       {showFocusView && <FocusPanel />}
       <FuturePanel>
-        {inNDaysView && <WideScreenFocusViewToggle />}
+        {!inNDaysView && <WideScreenFocusViewToggle />}
       </FuturePanel>
     </div>
   );

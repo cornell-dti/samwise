@@ -13,7 +13,6 @@ import FocusPicker from './FocusPicker';
 import { randomId } from '../../util/general-util';
 import type { Task, SubTask } from '../../store/store-types';
 import { NONE_TAG_ID } from '../../util/tag-util';
-import { replaceSubTask } from '../../util/task-util';
 import { isToday } from '../../util/datetime-util';
 import { addTask } from '../../firebase/actions';
 
@@ -200,13 +199,13 @@ export default class TaskCreator extends React.PureComponent<{||}, State> {
   /**
    * Edit a subtask.
    *
-   * @param {string} subtaskId id of the subtask to edit.
+   * @param {string} subTaskId id of the subtask to edit.
    * @return {Function<SyntheticEvent<HTMLInputElement>, void>} the event handler.
    */
-  editSubTask = (subtaskId: string) => (e: SyntheticEvent<HTMLInputElement>) => {
+  editSubTask = (subTaskId: string) => (e: SyntheticEvent<HTMLInputElement>) => {
     const name = e.currentTarget.value;
     this.setState(({ subTasks }: State) => ({
-      subTasks: replaceSubTask(subTasks, subtaskId, s => ({ ...s, name })),
+      subTasks: subTasks.map(s => (s.id === subTaskId ? { ...s, name } : s)),
     }));
   };
 

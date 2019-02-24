@@ -65,6 +65,6 @@ function FutureViewSubTask(
 }
 
 const Connected: ComponentType<OwnProps> = connect(
-  (state, { subTaskId }) => getSubTaskById(state, subTaskId),
+  (state, { subTaskId }) => ({ subTask: getSubTaskById(state, subTaskId) }),
 )(FutureViewSubTask);
 export default Connected;

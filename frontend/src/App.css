@@ -1,15 +1,3 @@
-@import url('https://fonts.googleapis.com/css?family=Open+Sans:400,800');
-
-body {
-  background-color: white;
-  font-family: "Open Sans", sans-serif !important;
-}
-
-:global(.ui.dimmer) {
-  transition: background-color 1s linear;
-  background-color: rgba(0, 0, 0, .15);
-}
-
 .Toast div {
   min-height: unset !important;
   background: #676767;
