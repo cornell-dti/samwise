@@ -8,7 +8,7 @@
 import React from 'react';
 import type { Node } from 'react';
 import type {
-  Tag, SubTask, Task, PartialMainTask, PartialSubTask,
+  Tag, SubTask, PartialMainTask, PartialSubTask, TaskWithSubTasks,
 } from '../../../../store/store-types';
 import OverdueAlert from '../../../UI/OverdueAlert';
 import styles from './TaskEditor.css';
@@ -26,7 +26,7 @@ type DefaultProps = {|
   +newSubTaskDisabled?: boolean;
   +onFocus?: (event: SyntheticFocusEvent<HTMLElement>) => void;
   +onBlur?: (event: SyntheticFocusEvent<HTMLElement>) => void;
-  +refFunction?: (HTMLElement | null) => void; // used to get the DOM element.
+  +editorRef?: { current: HTMLFormElement | null };
 |};
 type Actions = {|
   +editMainTask: (partialMainTask: PartialMainTask, doSave: boolean) => void;
@@ -37,7 +37,7 @@ type Actions = {|
   +onSave: () => void;
 |};
 type Props = {|
-  +task: Task; // The task given to the editor at this point.
+  +task: TaskWithSubTasks; // The task given to the editor at this point.
   +actions: Actions; // The actions to perform under different events
   ...DefaultProps; // Props with default values.
   // subscribed from redux store.
@@ -62,11 +62,11 @@ function TaskEditor(
     newSubTaskDisabled,
     onFocus,
     onBlur,
-    refFunction,
+    editorRef,
   }: Props,
 ): Node {
   const {
-    name, tag, date, complete, inFocus, subtasks,
+    name, tag, date, complete, inFocus, subTasks,
   } = task;
   const {
     editMainTask, editSubTask, addSubTask, removeTask, removeSubTask, onSave,
@@ -81,7 +81,7 @@ function TaskEditor(
   const tagDateOnChange = change => editMainTask(change, false);
   const nameCompleteInFocusChange = change => editMainTask(change, false);
   const handleNewSubTaskValueChange = (newSubTaskValue: string) => {
-    const order = subtasks.reduce((acc, s) => Math.max(acc, s.order), 0) + 1;
+    const order = subTasks.reduce((acc, s) => Math.max(acc, s.order), 0) + 1;
     const newSubTask: SubTask = {
       id: randomId(),
       name: newSubTaskValue,
@@ -105,8 +105,8 @@ function TaskEditor(
   const pressEnterHandler = (caller: 'main-task' | number) => {
     const order = caller === 'main-task' ? -1 : caller;
     let focused = false;
-    for (let i = 0; i < subtasks.length; i += 1) {
-      const { order: subtaskOrder } = subtasks[i];
+    for (let i = 0; i < subTasks.length; i += 1) {
+      const { order: subtaskOrder } = subTasks[i];
       if (subtaskOrder > order) {
         setSubTaskToFocus(subtaskOrder);
         focused = true;
@@ -135,7 +135,7 @@ function TaskEditor(
       onMouseLeave={onBlur}
       onFocus={onFocus}
       onBlur={ignore}
-      ref={refFunction}
+      ref={editorRef}
     >
       {isOverdue && <OverdueAlert />}
       <div>
@@ -150,7 +150,7 @@ function TaskEditor(
         />
       </div>
       <div className={styles.TaskEditorSubTasksIndentedContainer}>
-        {subtasks.map(subTask => (
+        {subTasks.map(subTask => (
           <OneSubTaskEditor
             key={subTask.order}
             subTask={subTask}

@@ -130,10 +130,9 @@ export const addSubTask = (taskId: string, subTask: WithoutId<SubTask>): void =>
 };
 
 /**
- * @see EditTaskAction
  * @see TaskDiff
  */
-export const editTask = (task: Task, diff: TaskDiff): void => {
+export const editTask = (taskId: string, diff: TaskDiff): void => {
   const {
     mainTaskDiff, subtasksCreations, subtasksEdits, subtasksDeletions,
   } = diff;
@@ -157,8 +156,8 @@ export const editTask = (task: Task, diff: TaskDiff): void => {
     const removals = FieldValue.arrayRemove(...subtasksDeletions);
     const creations = FieldValue.arrayUnion(...createdSubTaskIds);
     const b = db().batch();
-    b.update(tasksCollection().doc(task.id), { ...mainTaskDiff, children: creations });
-    b.update(tasksCollection().doc(task.id), { children: removals });
+    b.update(tasksCollection().doc(taskId), { ...mainTaskDiff, children: creations });
+    b.update(tasksCollection().doc(taskId), { children: removals });
     b.commit().then(ignore);
   });
 };

@@ -34,6 +34,17 @@ export type Task = {|
   +children: Set<string>;
 |};
 
+export type TaskWithSubTasks = {|
+  +id: string;
+  +order: number;
+  +name: string;
+  +tag: string;
+  +date: Date;
+  +complete: boolean;
+  +inFocus: boolean;
+  +subTasks: SubTask[];
+|};
+
 /**
  * The task type without id and subtask.
  */

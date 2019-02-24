@@ -2,7 +2,7 @@
 
 import type { Map, Set } from 'immutable';
 import type {
-  PartialMainTask, PartialSubTask, SubTask, Task,
+  PartialMainTask, PartialSubTask, SubTask, Task, TaskWithSubTasks,
 } from '../store/store-types';
 import { error } from './general-util';
 
@@ -29,12 +29,22 @@ export const getFilteredCompletedTask = (
   return { ...task, children };
 };
 
-export const getFilteredInFocusTask = (task: Task, subTasks: Map<string, SubTask>): Task => {
+export const getFilteredInFocusTask = (
+  task: Task, subTasks: Map<string, SubTask>,
+): TaskWithSubTasks => {
+  const { children, ...rest } = task;
+  const childrenArray = children.map(id => subTasks.get(id)).filter(s => s != null);
+  const newSubTasks = [];
   if (task.inFocus) {
-    return task;
+    childrenArray.forEach((s) => {
+      if (s != null) { newSubTasks.push(s); }
+    });
+  } else {
+    childrenArray.forEach((s) => {
+      if (s != null && s.inFocus) { newSubTasks.push(s); }
+    });
   }
-  const children = task.children.filter(id => subTasks.get(id)?.inFocus ?? false);
-  return { ...task, children };
+  return { ...rest, subTasks: newSubTasks };
 };
 
 /**
