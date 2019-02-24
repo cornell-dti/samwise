@@ -6,17 +6,34 @@ import type { ComponentType, Node } from 'react';
 import { Draggable } from 'react-beautiful-dnd';
 import InlineTaskEditor from '../../Util/TaskEditors/InlineTaskEditor';
 import styles from './FocusTask.module.css';
+import { connect } from 'react-redux';
+import type { State, Task, TaskWithSubTasks } from '../../../store/store-types';
+import { error } from '../../../util/general-util';
+import { getFilteredInFocusTask } from '../../../util/task-util';
 
-type Props = {| +id: string; order: number; |};
+type OwnProps = {| +id: string; order: number; |};
+type Props = {|
+  ...OwnProps;
+  +original: Task;
+  +filtered: TaskWithSubTasks | null;
+|};
 
-function FocusTask({ id, order }: Props): Node {
+function FocusTask(
+  {
+    id, order, original, filtered,
+  }: Props,
+): Node {
+  if (filtered === null) {
+    return null;
+  }
   return (
     <Draggable draggableId={id} index={order}>
       {provided => (
         <div ref={provided.innerRef} {...provided.draggableProps} {...provided.dragHandleProps}>
           <InlineTaskEditor
             className={styles.FocusTask}
-            taskId={id}
+            original={original}
+            filtered={filtered}
           />
         </div>
       )}
@@ -24,5 +41,11 @@ function FocusTask({ id, order }: Props): Node {
   );
 }
 
-const Memoized: ComponentType<Props> = React.memo(FocusTask);
-export default Memoized;
+const Connected: ComponentType<OwnProps> = connect(
+  ({ tasks, subTasks }: State, { id }: OwnProps) => {
+    const original = tasks.get(id) ?? error();
+    const filtered = getFilteredInFocusTask(original, subTasks);
+    return { original, filtered };
+  },
+)(FocusTask);
+export default Connected;

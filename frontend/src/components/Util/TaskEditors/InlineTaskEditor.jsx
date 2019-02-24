@@ -1,10 +1,9 @@
 // @flow strict
 
 import React from 'react';
-import type { ComponentType, Node } from 'react';
-import { connect } from 'react-redux';
+import type { Node } from 'react';
 import type {
-  PartialMainTask, PartialSubTask, State, SubTask, Task, TaskWithSubTasks,
+  PartialMainTask, PartialSubTask, SubTask, Task, TaskWithSubTasks,
 } from '../../../store/store-types';
 import TaskEditor from './TaskEditor';
 import {
@@ -14,23 +13,17 @@ import {
   removeSubTask,
   removeTask,
 } from '../../../firebase/actions';
-import { error } from '../../../util/general-util';
-import { getFilteredInFocusTask } from '../../../util/task-util';
 
-type OwnProps = {|
-  +taskId: string;
-  +className?: string; // additional class names applied to the editor.
-|};
 type Props = {|
-  ...OwnProps;
   +original: Task;
   +filtered: TaskWithSubTasks;
+  +className?: string; // additional class names applied to the editor.
 |};
 
 /**
  * The task editor used to edit task inline, activated on focus.
  */
-function InlineTaskEditor({ original, filtered, className }: Props): Node {
+export default function InlineTaskEditor({ original, filtered, className }: Props): Node {
   const [disabled, setDisabled] = React.useState(() => {
     console.log('InlineTaskEditor recreated!');
     return true;
@@ -71,12 +64,3 @@ function InlineTaskEditor({ original, filtered, className }: Props): Node {
 }
 
 InlineTaskEditor.defaultProps = { className: undefined };
-
-const Connected: ComponentType<OwnProps> = connect(
-  ({ tasks, subTasks }: State, { taskId }: OwnProps) => {
-    const original = tasks.get(taskId) ?? error();
-    const filtered = getFilteredInFocusTask(original, subTasks);
-    return { original, filtered };
-  },
-)(InlineTaskEditor);
-export default Connected;

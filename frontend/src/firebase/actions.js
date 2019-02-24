@@ -1,6 +1,6 @@
 // @flow strict
 
-import { FieldValue } from 'firebase/firestore';
+import { firestore } from 'firebase/app';
 import { Map, Set } from 'immutable';
 import type {
   Course, PartialMainTask, PartialSubTask, SubTask, Tag, Task,
@@ -96,7 +96,7 @@ export const addTask = (
     const batch = db().batch();
     const createdSubTasks: SubTask[] = subTasks.map((subtask) => {
       const firebaseSubTask: FirestoreSubTask = mergeWithOwner(subtask);
-      const subtaskDoc = tasksCollection().doc();
+      const subtaskDoc = subTasksCollection().doc();
       batch.set(subtaskDoc, firebaseSubTask);
       return { ...subtask, id: subtaskDoc.id };
     });
@@ -124,7 +124,7 @@ export const addSubTask = (taskId: string, subTask: WithoutId<SubTask>): void =>
   subTasksCollection().add(firebaseSubTask).then((doc) => {
     tasksCollection()
       .doc(taskId)
-      .update({ children: FieldValue.arrayUnion(doc.id) })
+      .update({ children: firestore.FieldValue.arrayUnion(doc.id) })
       .then(ignore);
   });
 };
@@ -153,8 +153,8 @@ export const editTask = (taskId: string, diff: TaskDiff): void => {
   // Handle subtasksDeletions
   subtasksDeletions.forEach(id => batch.delete(tasksCollection().doc(id)));
   batch.commit().then(() => {
-    const removals = FieldValue.arrayRemove(...subtasksDeletions);
-    const creations = FieldValue.arrayUnion(...createdSubTaskIds);
+    const removals = firestore.FieldValue.arrayRemove(...subtasksDeletions);
+    const creations = firestore.FieldValue.arrayUnion(...createdSubTaskIds);
     const b = db().batch();
     b.update(tasksCollection().doc(taskId), { ...mainTaskDiff, children: creations });
     b.update(tasksCollection().doc(taskId), { children: removals });

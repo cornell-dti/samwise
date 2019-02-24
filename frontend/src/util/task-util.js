@@ -2,7 +2,7 @@
 
 import type { Map, Set } from 'immutable';
 import type {
-  PartialMainTask, PartialSubTask, SubTask, Task, TaskWithSubTasks,
+  PartialMainTask, PartialSubTask, State, SubTask, Task, TaskWithSubTasks,
 } from '../store/store-types';
 import { error } from './general-util';
 
@@ -13,7 +13,7 @@ import { error } from './general-util';
  */
 
 export const getTaskIdsByDate = (
-  dateTaskMap: Map<string, Set<string>>, date: string,
+  { tasks, dateTaskMap }: State, date: string,
 ): {| +taskIds: string[] |} => {
   const set = dateTaskMap.get(date) ?? error('bad');
   return { taskIds: set.toArray() };
@@ -31,7 +31,7 @@ export const getFilteredCompletedTask = (
 
 export const getFilteredInFocusTask = (
   task: Task, subTasks: Map<string, SubTask>,
-): TaskWithSubTasks => {
+): TaskWithSubTasks | null => {
   const { children, ...rest } = task;
   const childrenArray = children.map(id => subTasks.get(id)).filter(s => s != null);
   const newSubTasks = [];
@@ -43,6 +43,9 @@ export const getFilteredInFocusTask = (
     childrenArray.forEach((s) => {
       if (s != null && s.inFocus) { newSubTasks.push(s); }
     });
+    if (newSubTasks.length === 0) {
+      return null;
+    }
   }
   return { ...rest, subTasks: newSubTasks };
 };

@@ -67,11 +67,11 @@ export default (onFirstFetched: () => void): (() => void) => {
           deleted.push(id);
         } else {
           const {
-            owner, date, children, ...rest
+            owner, date: timestamp, children, ...rest
           }: FirestoreTask = doc.data();
           const task: Task = {
             id,
-            date: date instanceof Date ? date : date.toDate(),
+            date: timestamp instanceof Date ? timestamp : timestamp.toDate(),
             children: Set(children),
             ...rest,
           };

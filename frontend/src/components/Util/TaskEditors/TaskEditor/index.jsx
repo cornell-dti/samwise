@@ -6,13 +6,14 @@
 // You should only use this component from the outside.
 
 import React from 'react';
-import type { Node } from 'react';
+import type { ComponentType, Node } from 'react';
+import { connect } from 'react-redux';
 import type {
-  Tag, SubTask, PartialMainTask, PartialSubTask, TaskWithSubTasks,
+  Tag, SubTask, PartialMainTask, PartialSubTask, TaskWithSubTasks, State,
 } from '../../../../store/store-types';
 import OverdueAlert from '../../../UI/OverdueAlert';
 import styles from './TaskEditor.css';
-import { getTagConnect } from '../../../../util/tag-util';
+import { NONE_TAG } from '../../../../util/tag-util';
 import { ignore, randomId } from '../../../../util/general-util';
 import { getTodayAtZeroAM } from '../../../../util/datetime-util';
 import EditorHeader from './EditorHeader';
@@ -22,7 +23,7 @@ import OneSubTaskEditor from './OneSubTaskEditor';
 
 type DefaultProps = {|
   +className?: string;
-  children?: Node;
+  +children?: Node;
   +newSubTaskDisabled?: boolean;
   +onFocus?: (event: SyntheticFocusEvent<HTMLElement>) => void;
   +onBlur?: (event: SyntheticFocusEvent<HTMLElement>) => void;
@@ -36,10 +37,13 @@ type Actions = {|
   +removeSubTask: (subtaskId: string) => void;
   +onSave: () => void;
 |};
-type Props = {|
+type OwnProps = {|
   +task: TaskWithSubTasks; // The task given to the editor at this point.
   +actions: Actions; // The actions to perform under different events
   ...DefaultProps; // Props with default values.
+|};
+type Props = {|
+  ...OwnProps;
   // subscribed from redux store.
   +getTag: (id: string) => Tag;
 |};
@@ -176,5 +180,7 @@ function TaskEditor(
   );
 }
 
-const ConnectedTaskEditor = getTagConnect<Props>(TaskEditor);
-export default ConnectedTaskEditor;
+const Connected: ComponentType<OwnProps> = connect(
+  ({ tags }: State) => ({ getTag: id => tags.get(id) ?? NONE_TAG }),
+)(TaskEditor);
+export default Connected;

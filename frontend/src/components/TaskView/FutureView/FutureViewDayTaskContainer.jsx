@@ -9,7 +9,8 @@ import FutureViewTask from './FutureViewTask';
 import styles from './FutureViewDayTaskContainer.css';
 import { useWindowSize } from '../../../hooks/window-size-hook';
 import { error } from '../../../util/general-util';
-import { getTaskIdsByDate } from '../../../util/task-util';
+import type { State } from '../../../store/store-types';
+import { createGetIdOrderListByDate } from '../../../store/selectors';
 
 type OwnProps = {|
   +date: SimpleDate;
@@ -22,7 +23,7 @@ type OwnProps = {|
 
 type Props = {|
   ...OwnProps;
-  +taskIds: string[];
+  +idOrderList: {| +id: string; +order: number |}[];
 |};
 
 /**
@@ -30,7 +31,12 @@ type Props = {|
  */
 function FutureViewDayTaskContainer(
   {
-    taskIds, inNDaysView, taskEditorPosition, doesShowCompletedTasks, isInMainList, onHeightChange,
+    idOrderList,
+    inNDaysView,
+    taskEditorPosition,
+    doesShowCompletedTasks,
+    isInMainList,
+    onHeightChange,
   }: Props,
 ): Node {
   // Subscribes to it, but don't use the value. Force rerender when window size changes.
@@ -44,7 +50,7 @@ function FutureViewDayTaskContainer(
     onHeightChange(tasksHeight > containerHeight, tasksHeight);
   });
 
-  const taskListComponent = taskIds.map(id => (
+  const taskListComponent = idOrderList.map(({ id }) => (
     <FutureViewTask
       key={id}
       taskId={id}
@@ -63,6 +69,6 @@ function FutureViewDayTaskContainer(
 }
 
 const Connected: ComponentType<OwnProps> = connect(
-  ({ dateTaskMap }, { date }) => getTaskIdsByDate(dateTaskMap, date.text),
+  (state: State, { date }: OwnProps) => createGetIdOrderListByDate(date.text)(state),
 )(FutureViewDayTaskContainer);
 export default Connected;

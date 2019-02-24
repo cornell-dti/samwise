@@ -9,7 +9,7 @@ import styles from './FocusView.css';
 import ClearFocus from './ClearFocus';
 import FocusTask from './FocusTask';
 import { reorder } from '../../../firebase/actions';
-import { getTaskIdOrderListForFocusView } from '../../../store/selectors';
+import { getTaskIdOrderList } from '../../../store/selectors';
 
 const focusViewDroppableId = 'focus-view-droppable';
 
@@ -63,5 +63,5 @@ function FocusView({ idOrderList }: {| +idOrderList: IdOrder[] |}): Node {
   );
 }
 
-const Connected: ComponentType<{||}> = connect(getTaskIdOrderListForFocusView)(FocusView);
+const Connected: ComponentType<{||}> = connect(getTaskIdOrderList)(FocusView);
 export default Connected;

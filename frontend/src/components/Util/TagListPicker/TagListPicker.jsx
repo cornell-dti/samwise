@@ -1,15 +1,16 @@
 // @flow strict
 
-import * as React from 'react';
-import type { Node } from 'react';
+import React from 'react';
+import type { ComponentType, Node } from 'react';
+import { connect } from 'react-redux';
 import TagPickerItem from './TagPickerItem';
 import styles from './TagListPicker.css';
-import type { Tag } from '../../../store/store-types';
-import { NONE_TAG_ID, tagsConnect } from '../../../util/tag-util';
+import type { State, Tag } from '../../../store/store-types';
+import { NONE_TAG_ID } from '../../../util/tag-util';
+import { getOrderedTags } from '../../../store/selectors';
 
 type OwnProps = {| +onTagChange: (string) => void |};
-type SubscribedProps = {| +tags: Tag[]; |};
-type Props = {| ...OwnProps; ...SubscribedProps; |};
+type Props = {| ...OwnProps; +tags: Tag[]; |};
 
 /**
  * The component used to pick a tag from a list.
@@ -36,5 +37,7 @@ function TagListPicker({ onTagChange, tags }: Props): Node {
   );
 }
 
-const ConnectedTagListPicker = tagsConnect<Props>(TagListPicker);
-export default ConnectedTagListPicker;
+const Connected: ComponentType<OwnProps> = connect(
+  (state: State) => ({ tags: getOrderedTags(state) }),
+)(TagListPicker);
+export default Connected;
