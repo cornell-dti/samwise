@@ -14,6 +14,7 @@ import type {
 import { getAppUser } from './auth';
 import {
   db,
+  settingsCollection,
   subTasksCollection,
   tagsCollection,
   tasksCollection,
@@ -279,11 +280,16 @@ export function reorder<-T: { +id: string; +order: number }>(
   return sortedList.sort((a, b) => a.order - b.order);
 }
 
+export const completeOnboarding = (completedOnboarding: boolean): void => {
+  settingsCollection().doc(getAppUser().email)
+    .update({ completedOnboarding })
+    .then(ignore);
+};
+
 export const importCourseExams = (): void => {
   const { tags, tasks, courses } = store.getState();
   const newTasks: TaskWithoutIdOrderChildren[] = [];
-  // $FlowFixMe
-  Object.values(tags).forEach((tag: Tag) => {
+  tags.forEach((tag: Tag) => {
     if (tag.classId === null) {
       return;
     }
@@ -302,8 +308,7 @@ export const importCourseExams = (): void => {
             && date.getDate() === t.getDate()
             && date.getHours() === t.getHours();
         };
-        // $FlowFixMe
-        if (!Object.values(tasks).some(filter)) {
+        if (!Array.from(tasks.values()).some(filter)) {
           const newTask: TaskWithoutIdOrderChildren = {
             name: 'Exam',
             tag: tag.id,

@@ -8,13 +8,21 @@ service cloud.firestore {
     }
     match /samwise-order-manager/{userEmail} {
     	allow create: if request.auth.token.email == userEmail
-      allow read, write, delete: if request.auth.token.email == userEmail
+        allow read, write, delete: if request.auth.token.email == userEmail
+    }
+    match /samwise-settings/{userEmail} {
+    	allow create: if request.auth.token.email == userEmail
+        allow read, write, delete: if request.auth.token.email == userEmail
     }
   	match /samwise-tags/{tag} {
     	allow create: if canCreate()
     	allow read, write, delete: if canReadWriteDelete()
     }
   	match /samwise-tasks/{task} {
+    	allow create: if canCreate()
+    	allow read, write, delete: if canReadWriteDelete()
+    }
+  	match /samwise-subtasks/{task} {
     	allow create: if canCreate()
     	allow read, write, delete: if canReadWriteDelete()
     }

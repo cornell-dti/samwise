@@ -8,8 +8,8 @@ import ClassTagAdder from '../Tags/ClassTagAdder';
 import OtherTagAdder from '../Tags/OtherTagAdder';
 import styles from './SettingsPage.css';
 import type { Tag } from '../../../store/store-types';
-import SignOut from '../Gadgets/SignOut';
-import { importCourseExams } from '../../../firebase/actions';
+import { completeOnboarding, importCourseExams } from '../../../firebase/actions';
+import { firebaseSignOut } from '../../../firebase/auth';
 
 /**
  * The class adder component.
@@ -91,7 +91,27 @@ function SettingsPage({ tags }: Props): Node {
         {renderTags(otherTags)}
         <OtherTagAdder />
       </TagsContainer>
-      <SignOut />
+      <div className={styles.FinalRowButtonContainer}>
+        <div className={styles.SettingsButton}>
+          <button
+            type="button"
+            className={[styles.FinalRowButton, styles.SignButton].join(' ')}
+            onClick={firebaseSignOut}
+          >
+            Sign Out
+          </button>
+        </div>
+        <span className={styles.Padding} />
+        <div className={styles.SettingsButton}>
+          <button
+            type="button"
+            className={[styles.FinalRowButton, styles.ReplayTutorialButton].join(' ')}
+            onClick={() => completeOnboarding(false)}
+          >
+            Replay Tutorial
+          </button>
+        </div>
+      </div>
     </div>
   );
 }

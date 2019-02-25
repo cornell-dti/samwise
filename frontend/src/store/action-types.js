@@ -2,7 +2,7 @@
 
 import type { Map } from 'immutable';
 import type {
-  Course, SubTask, Tag, Task,
+  Course, Settings, SubTask, Tag, Task,
 } from './store-types';
 
 export type PatchTags = {|
@@ -26,6 +26,11 @@ export type PatchSubTasks = {|
   +deleted: string[];
 |};
 
+export type PatchSettings = {|
+  type: 'PATCH_SETTINGS';
+  +settings: Settings;
+|};
+
 export type PatchCourses = {|
   type: 'PATCH_COURSES';
   +courses: Map<number, Course[]>;
@@ -35,4 +40,5 @@ export type Action =
   | PatchTags
   | PatchTasks
   | PatchSubTasks
+  | PatchSettings
   | PatchCourses;

@@ -44,6 +44,14 @@ export type MainTask = $ReadOnly<$Diff<Task, {| +id: string; +children: Set<stri
 export type PartialMainTask = $Shape<MainTask>;
 
 /**
+ * The type of user settings.
+ */
+export type Settings = {|
+  +completedOnboarding: boolean;
+  +theme: 'light' | 'dark';
+|};
+
+/**
  * The type of a course info entry.
  */
 export type Course = {|
@@ -63,5 +71,6 @@ export type State = {|
   +dateTaskMap: Map<string, Set<string>>;
   +subTasks: Map<string, SubTask>;
   +taskChildrenMap: Map<string, Set<string>>;
+  +settings: Settings;
   +courses: Map<number, Course[]>;
 |};
