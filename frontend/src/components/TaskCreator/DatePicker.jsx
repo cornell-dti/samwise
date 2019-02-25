@@ -3,7 +3,7 @@
 import React from 'react';
 import { Calendar } from 'react-calendar';
 import Dark from '../../assets/svgs/dark.svg';
-import styles from './Picker.module.css';
+import styles from './Picker.css';
 import { date2String } from '../../util/datetime-util';
 import { NONE_TAG } from '../../util/tag-util';
 

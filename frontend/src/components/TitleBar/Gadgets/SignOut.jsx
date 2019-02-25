@@ -2,7 +2,7 @@
 
 import React from 'react';
 
-import styles from '../Settings/SettingsPage.module.css';
+import styles from '../Settings/SettingsPage.css';
 import { firebaseSignOut } from '../../../firebase/auth';
 
 /**

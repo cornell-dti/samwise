@@ -3,7 +3,7 @@
 import React from 'react';
 import type { Node } from 'react';
 import { Icon } from 'semantic-ui-react';
-import styles from './SquareButtons.module.css';
+import styles from './SquareButtons.css';
 
 type Props = {|
   +active: boolean;

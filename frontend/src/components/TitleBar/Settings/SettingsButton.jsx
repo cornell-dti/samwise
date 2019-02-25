@@ -4,7 +4,7 @@ import React from 'react';
 import Settings from '../../../assets/svgs/settings.svg';
 import Delete from '../../../assets/svgs/XLight.svg';
 import SettingsPage from './SettingsPage';
-import styles from './SettingsButton.module.css';
+import styles from './SettingsButton.css';
 
 export default function SettingsButton() {
   const [showSettings, setShowSettings] = React.useState(false);

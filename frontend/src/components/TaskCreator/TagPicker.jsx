@@ -5,7 +5,7 @@ import type { ComponentType, Node } from 'react';
 import { connect } from 'react-redux';
 import TagIcon from '../../assets/svgs/tag.svg';
 import TagListPicker from '../Util/TagListPicker/TagListPicker';
-import styles from './Picker.module.css';
+import styles from './Picker.css';
 import { NONE_TAG, NONE_TAG_ID } from '../../util/tag-util';
 import type { State, Tag } from '../../store/store-types';
 

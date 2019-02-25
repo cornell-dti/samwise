@@ -3,7 +3,7 @@
 import React from 'react';
 import type { Node } from 'react';
 import { toast } from 'react-toastify';
-import styles from './UndoToast.module.css';
+import styles from './UndoToast.css';
 
 type Props = {|
   +toastId: string;

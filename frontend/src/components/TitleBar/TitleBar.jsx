@@ -4,7 +4,7 @@ import React from 'react';
 import type { Node } from 'react';
 import Clock from 'react-live-clock';
 import { date2FullDateString } from '../../util/datetime-util';
-import styles from './TitleBar.module.css';
+import styles from './TitleBar.css';
 import SettingsButton from './Settings/SettingsButton';
 
 /**

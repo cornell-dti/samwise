@@ -6,7 +6,7 @@ import { connect } from 'react-redux';
 import type { TasksProgressProps } from '../../util/task-util';
 import Bear from './Bear';
 import ProgressIndicator from './ProgressIndicator';
-import styles from './ProgressTracker.module.css';
+import styles from './ProgressTracker.css';
 import { getProgress } from '../../store/selectors';
 
 /**

@@ -9,7 +9,7 @@ import type { FutureViewContainerType, FutureViewDisplayOption } from './future-
 import SquareTextButton from '../../UI/SquareTextButton';
 import SquareIconToggle from '../../UI/SquareIconToggle';
 import { date2YearMonth } from '../../../util/datetime-util';
-import styles from './FutureViewControl.module.css';
+import styles from './FutureViewControl.css';
 import { useMappedWindowSize } from '../../../hooks/window-size-hook';
 
 /*

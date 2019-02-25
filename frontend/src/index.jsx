@@ -1,10 +1,10 @@
+/* eslint-disable react/jsx-filename-extension */
 // @flow strict
 
 import '@babel/polyfill';
 import React from 'react';
-import type { Node } from 'react';
 import ReactDOM from 'react-dom';
-import './index.css';
+import './index.non-module.css';
 import { Provider as ReactReduxProvider } from 'react-redux';
 import App from './App';
 import './firebase'; // import and init
@@ -13,7 +13,7 @@ import { store } from './store/store';
 import LoginBarrier from './components/Util/AppInit/LoginBarrier';
 import './util/ga-util';
 
-const appRenderer = (): Node => <ReactReduxProvider store={store}><App /></ReactReduxProvider>;
+const appRenderer = () => <ReactReduxProvider store={store}><App /></ReactReduxProvider>;
 
 ReactDOM.render(
   <LoginBarrier appRenderer={appRenderer} />,

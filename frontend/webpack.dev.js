@@ -1,8 +1,8 @@
 /* eslint-disable import/no-extraneous-dependencies */
 const merge = require('webpack-merge');
-const common = require('./webpack.common');
+const commonFunction = require('./webpack.common.js');
 
-module.exports = merge(common, {
+module.exports = merge(commonFunction('development'), {
   devServer: {
     contentBase: './dist',
     port: 3000,

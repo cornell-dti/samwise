@@ -5,7 +5,7 @@ import type { ComponentType, Node } from 'react';
 // $FlowFixMe not flow strict
 import { DragDropContext, Droppable } from 'react-beautiful-dnd';
 import { connect } from 'react-redux';
-import styles from './FocusView.module.css';
+import styles from './FocusView.css';
 import ClearFocus from './ClearFocus';
 import FocusTask from './FocusTask';
 import { reorder } from '../../../firebase/actions';

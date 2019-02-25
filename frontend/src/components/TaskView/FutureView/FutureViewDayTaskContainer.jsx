@@ -5,7 +5,7 @@ import type { ComponentType, Node } from 'react';
 import { connect } from 'react-redux';
 import type { FloatingPosition } from '../../Util/TaskEditors/editors-types';
 import FutureViewTask from './FutureViewTask';
-import styles from './FutureViewDayTaskContainer.module.css';
+import styles from './FutureViewDayTaskContainer.css';
 import { useWindowSizeCallback } from '../../../hooks/window-size-hook';
 import { error } from '../../../util/general-util';
 import type { State } from '../../../store/store-types';

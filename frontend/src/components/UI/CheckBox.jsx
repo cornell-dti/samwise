@@ -3,7 +3,7 @@
 
 import React from 'react';
 import type { Node } from 'react';
-import styles from './CheckBox.module.css';
+import styles from './CheckBox.css';
 
 type Props = {|
   +checked: boolean; // whether the box is initially checked
