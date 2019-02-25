@@ -16,9 +16,9 @@ export const db = (): Firestore => firebase.firestore();
  */
 const collections = {
   ORDER_MANAGER: 'samwise-order-manager',
-  TAGS: 'samwise-tags-experimental',
-  TASKS: 'samwise-tasks-experimental',
-  SUBTASKS: 'samwise-subtasks-experimental',
+  TAGS: 'samwise-tags',
+  TASKS: 'samwise-tasks',
+  SUBTASKS: 'samwise-subtasks',
 };
 
 export const orderManagerCollection = () => db().collection(collections.ORDER_MANAGER);
