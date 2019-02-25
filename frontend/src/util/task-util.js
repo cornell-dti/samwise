@@ -38,7 +38,7 @@ export const getFilteredInFocusTask = (
       return null;
     }
   }
-  return { ...rest, subTasks: newSubTasks };
+  return { ...rest, subTasks: newSubTasks.sort((a, b) => a.order - b.order) };
 };
 
 /**

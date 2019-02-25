@@ -13,9 +13,11 @@ import { getTaskIdOrderList } from '../../../store/selectors';
 
 const focusViewDroppableId = 'focus-view-droppable';
 
-type IdOrder = {| +id: string; order: number |};
+const tasksRenderer = ({ id }: { +id: string }, index: number) => (
+  <FocusTask key={id} id={id} order={index} />
+);
 
-const tasksRenderer = ({ id, order }: IdOrder) => <FocusTask key={id} id={id} order={order} />;
+type IdOrder = {| +id: string; order: number |};
 
 /**
  * The focus view component.
@@ -36,7 +38,13 @@ function FocusView({ idOrderList }: {| +idOrderList: IdOrder[] |}): Node {
       // drop at the same place.
       return;
     }
-    const newList = reorder('tasks', localList, source.index, destination.index);
+    // TODO has problem when there is a gap in order
+    const newList = reorder(
+      'tasks',
+      localList,
+      localList[source.index].order,
+      localList[destination.index].order,
+    );
     setLocalList(newList);
   };
 

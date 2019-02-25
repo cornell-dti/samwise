@@ -242,23 +242,23 @@ export function reorder<-T: { +id: string; +order: number }>(
     return originalList;
   }
   const sortedList = originalList.sort((a, b) => a.order - b.order);
-  const reorderMap = new Map<string, number>(); // key: id, value: new order
+  let reorderMap = Map<string, number>(); // key: id, value: new order
   if (sourceOrder < destinationOrder) {
     // wants to go to later places
     sortedList.forEach((element) => {
       if (element.order === sourceOrder) {
-        reorderMap.set(element.id, destinationOrder);
+        reorderMap = reorderMap.set(element.id, destinationOrder);
       } else if (element.order > sourceOrder && element.order <= destinationOrder) {
-        reorderMap.set(element.id, element.order - 1);
+        reorderMap = reorderMap.set(element.id, element.order - 1);
       }
     });
   } else {
     // wants to go to earlier places
     sortedList.forEach((element) => {
       if (element.order === sourceOrder) {
-        reorderMap.set(element.id, destinationOrder);
+        reorderMap = reorderMap.set(element.id, destinationOrder);
       } else if (element.order >= destinationOrder && element.order < sourceOrder) {
-        reorderMap.set(element.id, element.order + 1);
+        reorderMap = reorderMap.set(element.id, element.order + 1);
       }
     });
   }
