@@ -6,7 +6,7 @@ import { connect } from 'react-redux';
 import type { FloatingPosition } from '../../Util/TaskEditors/editors-types';
 import FutureViewTask from './FutureViewTask';
 import styles from './FutureViewDayTaskContainer.css';
-import { useWindowSize } from '../../../hooks/window-size-hook';
+import { useWindowSizeCallback } from '../../../hooks/window-size-hook';
 import { error } from '../../../util/general-util';
 import type { State } from '../../../store/store-types';
 import { createGetIdOrderListByDate } from '../../../store/selectors';
@@ -42,7 +42,7 @@ function FutureViewDayTaskContainer(
   const [prevHeights, setPrevHeights] = React.useState(() => [0, 0]);
 
   // Subscribes to it, but don't use the value. Force rerender when window size changes.
-  useWindowSize(() => {
+  useWindowSizeCallback(() => {
     const containerNode = containerRef.current ?? error();
     const tasksHeight = containerNode.scrollHeight;
     const containerHeight = containerNode.clientHeight;

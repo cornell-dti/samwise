@@ -55,8 +55,8 @@ export const addTag = (tag: WithoutIdOrder<Tag>): void => {
     return;
   }
   createFirestoreObject('tags', tag)
-  .then((firebaseTag: FirestoreTag) => tagsCollection().add(firebaseTag))
-  .then(ignore);
+    .then((firebaseTag: FirestoreTag) => tagsCollection().add(firebaseTag))
+    .then(ignore);
 };
 
 export const editTag = (tag: Tag): void => {
@@ -66,18 +66,18 @@ export const editTag = (tag: Tag): void => {
 
 export const removeTag = (id: string): void => {
   tasksCollection()
-  .where('owner', '==', getAppUser().email)
-  .where('tag', '==', id)
-  .get()
-  .then((s) => {
-    const batch = db().batch();
-    s.docs.filter(doc => doc.data().type === 'TASK')
-     .forEach((doc) => {
-       batch.update(tasksCollection().doc(doc.id), { tag: NONE_TAG_ID });
-     });
-    batch.delete(tagsCollection().doc(id));
-    batch.commit().then(ignore);
-  });
+    .where('owner', '==', getAppUser().email)
+    .where('tag', '==', id)
+    .get()
+    .then((s) => {
+      const batch = db().batch();
+      s.docs.filter(doc => doc.data().type === 'TASK')
+        .forEach((doc) => {
+          batch.update(tasksCollection().doc(doc.id), { tag: NONE_TAG_ID });
+        });
+      batch.delete(tagsCollection().doc(id));
+      batch.commit().then(ignore);
+    });
 };
 
 /*
@@ -155,11 +155,19 @@ export const editTask = (taskId: string, diff: TaskDiff): void => {
   // Handle subtasksDeletions
   subtasksDeletions.forEach(id => batch.delete(tasksCollection().doc(id)));
   batch.commit().then(() => {
-    const removals = firestore.FieldValue.arrayRemove(...subtasksDeletions);
-    const creations = firestore.FieldValue.arrayUnion(...createdSubTaskIds);
     const b = db().batch();
-    b.update(tasksCollection().doc(taskId), { ...mainTaskDiff, children: creations });
-    b.update(tasksCollection().doc(taskId), { children: removals });
+    if (createdSubTaskIds.length > 0) {
+      b.update(tasksCollection().doc(taskId), {
+        ...mainTaskDiff, children: firestore.FieldValue.arrayUnion(...createdSubTaskIds),
+      });
+    } else {
+      b.update(tasksCollection().doc(taskId), { ...mainTaskDiff });
+    }
+    if (subtasksDeletions.length > 0) {
+      b.update(tasksCollection().doc(taskId), {
+        children: firestore.FieldValue.arrayRemove(...subtasksDeletions),
+      });
+    }
     b.commit().then(ignore);
   });
 };
@@ -175,8 +183,8 @@ export const editSubTask = (subtaskId: string, partialSubTask: PartialSubTask): 
 export const removeTask = (task: Task, noUndo?: 'no-undo'): void => {
   const { subTasks } = store.getState();
   const deletedSubTasks = task.children
-                              .map(id => subTasks.get(id) ?? error('corrupted!'))
-                              .toArray();
+    .map(id => subTasks.get(id) ?? error('corrupted!'))
+    .toArray();
   const batch = db().batch();
   batch.delete(tasksCollection().doc(task.id));
   task.children.forEach(id => batch.delete(subTasksCollection().doc(id)));
@@ -310,14 +318,14 @@ export const importCourseExams = (): void => {
     });
   });
   allocateNewOrder('tasks', newTasks.length)
-  .then((startOrder: number) => {
-    const newOrderedTasks = newTasks.map((t, i) => ({ ...t, order: i + startOrder }));
-    const batch = db().batch();
-    newOrderedTasks.forEach((orderedTask) => {
-      const transformedTask: FirestoreTask = mergeWithOwner({ ...orderedTask, children: [] });
-      batch.set(tasksCollection().doc(), transformedTask);
+    .then((startOrder: number) => {
+      const newOrderedTasks = newTasks.map((t, i) => ({ ...t, order: i + startOrder }));
+      const batch = db().batch();
+      newOrderedTasks.forEach((orderedTask) => {
+        const transformedTask: FirestoreTask = mergeWithOwner({ ...orderedTask, children: [] });
+        batch.set(tasksCollection().doc(), transformedTask);
+      });
+      // eslint-disable-next-line no-alert
+      batch.commit().then(() => alert('Exams Added!'));
     });
-    // eslint-disable-next-line no-alert
-    batch.commit().then(() => alert('Exams Added!'));
-  });
 };

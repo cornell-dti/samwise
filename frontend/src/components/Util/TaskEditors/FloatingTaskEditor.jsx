@@ -13,7 +13,7 @@ import { TaskEditorFlexiblePadding as flexiblePaddingClass } from './TaskEditor/
 import { EMPTY_TASK_DIFF, taskDiffIsEmpty } from '../../../util/task-util';
 import type { TaskDiff } from '../../../util/task-util';
 import { editTask, removeTask as removeTaskAction } from '../../../firebase/actions';
-import { useWindowSize } from '../../../hooks/window-size-hook';
+import { useWindowSizeCallback } from '../../../hooks/window-size-hook';
 import type { WindowSize } from '../../../hooks/window-size-hook';
 
 const updateFloatingEditorPosition = (
@@ -99,8 +99,7 @@ function FloatingTaskEditor({ position, initialTask, fullInitialTask, trigger }:
 
   const editorRef = React.useRef(null);
 
-  const windowSize = useWindowSize();
-  React.useEffect(() => {
+  useWindowSizeCallback((windowSize) => {
     updateFloatingEditorPosition(editorRef.current, windowSize, position);
   });
 
@@ -121,7 +120,7 @@ function FloatingTaskEditor({ position, initialTask, fullInitialTask, trigger }:
     uncommittedSubTask: null, // just committed here!
   });
 
-  const saveEditedTask = (currentDiff?: TaskDiff): void => {
+  const saveEditedTask = (): void => {
     if (task.name.trim().length === 0) {
       return;
     }
@@ -129,7 +128,7 @@ function FloatingTaskEditor({ position, initialTask, fullInitialTask, trigger }:
     if (uncommittedSubTask !== null) {
       diffToUse = commitUncommittedTask(uncommittedSubTask, componentState).diff;
     } else {
-      diffToUse = currentDiff ?? diff;
+      diffToUse = diff;
     }
     if (taskDiffIsEmpty(diffToUse)) {
       return;
@@ -224,37 +223,10 @@ function FloatingTaskEditor({ position, initialTask, fullInitialTask, trigger }:
     });
   };
 
-  const Submit = (): Node => (
-    <div className={styles.FloatingTaskEditorSubmitButtonRow}>
-      <span className={flexiblePaddingClass} />
-      <div
-        role="presentation"
-        className={styles.FloatingTaskEditorSaveButton}
-        onClick={saveEditedTask}
-      >
-        <span className={styles.FloatingTaskEditorSaveButtonText}>Save</span>
-      </div>
-    </div>
-  );
-
-  const Editor = (): Node => {
-    const actions = {
-      editMainTask, editSubTask, addSubTask, removeTask, removeSubTask, onSave: saveEditedTask,
-    };
-    const { id: _, subTasks, ...mainTask } = task;
-    return (
-      <TaskEditor
-        mainTask={mainTask}
-        subTasks={subTasks}
-        tempSubTask={uncommittedSubTask}
-        actions={actions}
-        className={styles.FloatingTaskEditor}
-        editorRef={editorRef}
-      >
-        <Submit />
-      </TaskEditor>
-    );
+  const actions = {
+    editMainTask, editSubTask, addSubTask, removeTask, removeSubTask, onSave: saveEditedTask,
   };
+  const { id: _, subTasks, ...mainTask } = task;
 
   return (
     <React.Fragment>
@@ -262,7 +234,23 @@ function FloatingTaskEditor({ position, initialTask, fullInitialTask, trigger }:
       {open && (
         <div className={styles.BackgroundBlocker} role="presentation" onClick={saveEditedTask} />
       )}
-      {open && <Editor />}
+      {open && (
+        <TaskEditor
+          mainTask={mainTask}
+          subTasks={subTasks}
+          tempSubTask={uncommittedSubTask}
+          actions={actions}
+          className={styles.Editor}
+          editorRef={editorRef}
+        >
+          <div className={styles.SaveButtonRow}>
+            <span className={flexiblePaddingClass} />
+            <div role="presentation" className={styles.SaveButton} onClick={saveEditedTask}>
+              <span className={styles.SaveButtonText}>Save</span>
+            </div>
+          </div>
+        </TaskEditor>
+      )}
     </React.Fragment>
   );
 }
