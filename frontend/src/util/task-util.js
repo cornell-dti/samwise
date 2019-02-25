@@ -10,16 +10,6 @@ import type { TaskWithSubTasks } from '../components/Util/TaskEditors/editors-ty
  * Other modules should try to call functions in this module instead of implementing their own.
  */
 
-export const getFilteredCompletedTask = (
-  task: Task, subTasks: Map<string, SubTask>,
-): Task | null => {
-  if (task.complete) {
-    return null;
-  }
-  const children = task.children.filter(id => !(subTasks.get(id)?.complete ?? false));
-  return { ...task, children };
-};
-
 export const getFilteredInFocusTask = (
   task: Task, subTasks: Map<string, SubTask>,
 ): TaskWithSubTasks | null => {
@@ -40,15 +30,6 @@ export const getFilteredInFocusTask = (
   }
   return { ...rest, subTasks: newSubTasks.sort((a, b) => a.order - b.order) };
 };
-
-/**
- * The type for a task augmented with color information and filtered task.
- */
-export type CompoundTask = {|
-  +original: Task;
-  +filtered: Task;
-  +color: string;
-|};
 
 /**
  * Used to keep track of the task diff to optimize edit speed.

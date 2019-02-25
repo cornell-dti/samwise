@@ -9,7 +9,7 @@ import PinOutline from '../../../assets/svgs/pin-2-dark-outline.svg';
 import styles from './FutureViewTask.css';
 import FutureViewSubTask from './FutureViewSubTask';
 import FloatingTaskEditor from '../../Util/TaskEditors/FloatingTaskEditor';
-import type { State } from '../../../store/store-types';
+import type { State, SubTask, Task } from '../../../store/store-types';
 import CheckBox from '../../UI/CheckBox';
 import type { FloatingPosition } from '../../Util/TaskEditors/editors-types';
 import { getTodayAtZeroAM } from '../../../util/datetime-util';
@@ -18,9 +18,13 @@ import { nDaysViewHeaderHeight, otherViewsHeightHeader } from './future-view-css
 import { error } from '../../../util/general-util';
 import { editMainTask, removeTask } from '../../../firebase/actions';
 import { useMappedWindowSize } from '../../../hooks/window-size-hook';
-import type { CompoundTask } from '../../../util/task-util';
 import { NONE_TAG } from '../../../util/tag-util';
-import { getFilteredCompletedTask } from '../../../util/task-util';
+
+type CompoundTask = {|
+  +original: Task;
+  +filteredSubTasks: SubTask[];
+  +color: string;
+|};
 
 type OwnProps = {|
   +taskId: string;
@@ -51,7 +55,7 @@ function FutureViewTask(
   if (compoundTask === null) {
     return null;
   }
-  const { original, filtered, color } = compoundTask;
+  const { original, filteredSubTasks, color } = compoundTask;
 
   /**
    * Get an onClickHandler when the element is clicked.
@@ -71,12 +75,12 @@ function FutureViewTask(
   };
 
   const TaskCheckBox = (): Node => {
-    const { id, complete } = filtered;
+    const { id, complete } = original;
     const onChange = () => editMainTask(id, { complete: !complete });
     return <CheckBox className={styles.TaskCheckBox} checked={complete} onChange={onChange} />;
   };
   const TaskName = (): Node => {
-    const { name, complete } = filtered;
+    const { name, complete } = original;
     const tagStyle = complete ? { textDecoration: 'line-through' } : {};
     return <span className={styles.TaskText} style={tagStyle}>{name}</span>;
   };
@@ -86,7 +90,7 @@ function FutureViewTask(
     return <Delete className={styles.TaskIcon} onClick={handler} />;
   };
   const PinIcon = (): Node => {
-    const { id, inFocus } = filtered;
+    const { id, inFocus } = original;
     const handler = () => editMainTask(id, { inFocus: !inFocus });
     return (inFocus)
       ? <PinFilled className={styles.TaskIcon} onClick={handler} />
@@ -108,12 +112,12 @@ function FutureViewTask(
     );
   };
 
-  const renderSubTasks = (): Node => filtered.children.map(id => (
+  const renderSubTasks = (): Node => filteredSubTasks.map(s => (
     <FutureViewSubTask
-      key={id}
-      mainTaskId={filtered.id}
-      mainTaskCompleted={filtered.complete}
-      subTaskId={id}
+      key={s.id}
+      subTask={s}
+      mainTaskId={original.id}
+      mainTaskCompleted={original.complete}
     />
   ));
 
@@ -176,13 +180,24 @@ const getCompoundTask = (
   }
   const color = tags.get(original.tag)?.color ?? NONE_TAG.color;
   if (doesShowCompletedTasks) {
-    return { original, filtered: original, color };
+    let filteredSubTasks = [];
+    original.children.forEach((subTaskId) => {
+      const s = subTasks.get(subTaskId);
+      if (s != null) { filteredSubTasks.push(s); }
+    });
+    filteredSubTasks = filteredSubTasks.sort((a, b) => a.order - b.order);
+    return { original, filteredSubTasks, color };
   }
-  const filtered = getFilteredCompletedTask(original, subTasks);
-  if (filtered === null) {
+  if (original.complete) {
     return null;
   }
-  return { original, filtered, color };
+  let filteredSubTasks = [];
+  original.children.forEach((subTaskId) => {
+    const s = subTasks.get(subTaskId);
+    if (s != null && !s.complete) { filteredSubTasks.push(s); }
+  });
+  filteredSubTasks = filteredSubTasks.sort((a, b) => a.order - b.order);
+  return { original, filteredSubTasks, color };
 };
 const mapStateToProps = (
   state: State, ownProps: OwnProps,

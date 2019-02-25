@@ -12,15 +12,8 @@ import CheckBox from '../../UI/CheckBox';
 import { editSubTask, removeSubTask } from '../../../firebase/actions';
 import { getSubTaskById } from '../../../store/selectors';
 
-type OwnProps = {|
-  +subTaskId: string;
-  +mainTaskId: string;
-  +mainTaskCompleted: boolean;
-|};
-
 type Props = {|
-  +subTaskId: string;
-  +subTask: ?SubTask;
+  +subTask: SubTask;
   +mainTaskId: string;
   +mainTaskCompleted: boolean;
 |};
@@ -28,18 +21,14 @@ type Props = {|
 /**
  * The component used to render one subtask in future view day.
  */
-function FutureViewSubTask(
-  {
-    subTaskId, subTask, mainTaskId, mainTaskCompleted,
-  }: Props,
-): Node {
+function FutureViewSubTask({ subTask, mainTaskId, mainTaskCompleted}: Props): Node {
   if (subTask == null) {
     return null;
   }
   const { name, complete, inFocus } = subTask;
-  const onCompleteChange = () => editSubTask(subTaskId, { complete: !complete });
-  const onFocusChange = () => editSubTask(subTaskId, { inFocus: !inFocus });
-  const onRemove = () => removeSubTask(mainTaskId, subTaskId);
+  const onCompleteChange = () => editSubTask(subTask.id, { complete: !complete });
+  const onFocusChange = () => editSubTask(subTask.id, { inFocus: !inFocus });
+  const onRemove = () => removeSubTask(mainTaskId, subTask.id);
   return (
     <div className={styles.SubTask}>
       <CheckBox
@@ -64,7 +53,5 @@ function FutureViewSubTask(
   );
 }
 
-const Connected: ComponentType<OwnProps> = connect(
-  (state, { subTaskId }) => ({ subTask: getSubTaskById(state, subTaskId) }),
-)(FutureViewSubTask);
-export default Connected;
+const Memoized: ComponentType<Props> = React.memo(FutureViewSubTask);
+export default Memoized;
