@@ -50,8 +50,7 @@ type TaskWithoutIdOrderChildren = $ReadOnly<$Diff<Task, IdOrderChildren>>;
 export const addTag = (tag: WithoutIdOrder<Tag>): void => {
   const { tags } = store.getState();
   const { classId } = tag;
-  // $FlowFixMe incomplete typing rules for Object.values.
-  if (classId != null && Object.values(tags).some((t: Tag) => t.classId === classId)) {
+  if (classId != null && Array.from(tags.values()).some((t: Tag) => t.classId === classId)) {
     return;
   }
   createFirestoreObject('tags', tag)

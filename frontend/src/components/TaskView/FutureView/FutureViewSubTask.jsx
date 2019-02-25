@@ -2,7 +2,6 @@
 
 import React from 'react';
 import type { ComponentType, Node } from 'react';
-import { connect } from 'react-redux';
 import PinFilled from '../../../assets/svgs/pin-2-dark-filled.svg';
 import PinOutline from '../../../assets/svgs/pin-2-dark-outline.svg';
 import DeleteDark from '../../../assets/svgs/XDark.svg';
@@ -10,7 +9,6 @@ import styles from './FutureViewTask.css';
 import type { SubTask } from '../../../store/store-types';
 import CheckBox from '../../UI/CheckBox';
 import { editSubTask, removeSubTask } from '../../../firebase/actions';
-import { getSubTaskById } from '../../../store/selectors';
 
 type Props = {|
   +subTask: SubTask;
