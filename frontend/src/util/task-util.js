@@ -1,10 +1,8 @@
 // @flow strict
 
-import { connect } from 'react-redux';
-import type { ComponentType } from 'react';
-import type {
-  PartialMainTask, PartialSubTask, SubTask, Task,
-} from '../store/store-types';
+import type { Map } from 'immutable';
+import type { PartialMainTask, PartialSubTask, SubTask, Task } from '../store/store-types';
+import type { TaskWithSubTasks } from '../components/Util/TaskEditors/editors-types';
 
 /**
  * This is the utility module for array of tasks and subtasks.
@@ -12,49 +10,26 @@ import type {
  * Other modules should try to call functions in this module instead of implementing their own.
  */
 
-/**
- * Replace a task with given id in an array of task.
- *
- * @param {Task[]} tasks the task array to perform the replace operation.
- * @param {number} id the id of the task to be replaced.
- * @param {function(Task): Task} replacer the replacer function.
- * @return {Task[]} the new task array.
- */
-export const replaceTask = (
-  tasks: Task[], id: string, replacer: (Task) => Task,
-): Task[] => tasks.map((task: Task) => (task.id !== id ? task : replacer(task)));
-
-/**
- * Replace a subtask with given id in an array of task.
- *
- * @param {SubTask[]} subTasks the subtask array to perform the replace operation.
- * @param {string} id the id of the subtask to be replaced.
- * @param {function(SubTask): SubTask} replacer the replacer function.
- * @return {SubTask[]} the new subtask array.
- */
-export const replaceSubTask = (
-  subTasks: SubTask[], id: string, replacer: (SubTask) => SubTask,
-): SubTask[] => subTasks.map(
-  (subTask: SubTask) => (subTask.id === id ? replacer(subTask) : subTask),
-);
-
-/**
- * Replace a subtask with given id in an array of task.
- *
- * @param {Task[]} tasks the main task array to perform the replace operation.
- * @param {string} mainTaskID the id of the main task to be replaced.
- * @param {string} subTaskID the id of the subtask to be replaced.
- * @param {function(SubTask, Task): SubTask} replacer the replacer function.
- * @return {Task[]} the new subtask array.
- */
-export const replaceSubTaskWithinMainTask = (
-  tasks: Task[], mainTaskID: string, subTaskID: string,
-  replacer: ((SubTask, Task) => SubTask),
-): Task[] => replaceTask(tasks, mainTaskID, (task: Task) => ({
-  ...task,
-  subtasks: replaceSubTask(task.subtasks, subTaskID, s => replacer(s, task)),
-}));
-
+export const getFilteredInFocusTask = (
+  task: Task, subTasks: Map<string, SubTask>,
+): TaskWithSubTasks | null => {
+  const { children, ...rest } = task;
+  const childrenArray = children.map(id => subTasks.get(id)).filter(s => s != null);
+  const newSubTasks = [];
+  if (task.inFocus) {
+    childrenArray.forEach((s) => {
+      if (s != null) { newSubTasks.push(s); }
+    });
+  } else {
+    childrenArray.forEach((s) => {
+      if (s != null && s.inFocus) { newSubTasks.push(s); }
+    });
+    if (newSubTasks.length === 0) {
+      return null;
+    }
+  }
+  return { ...rest, subTasks: newSubTasks.sort((a, b) => a.order - b.order) };
+};
 
 /**
  * Used to keep track of the task diff to optimize edit speed.
@@ -98,68 +73,30 @@ export const taskDiffIsEmpty = (diff: TaskDiff): boolean => {
   return subtasksCreations.length === 0 && subtasksEdits.length === 0 && subtasksDeletions === 0;
 };
 
-/**
- * Filter away all the completed tasks.
- *
- * @param {Task[]} tasks the original tasks.
- * @return {[Task, Task][]} an array of tuple (original task, filtered task).
- */
-export const filterCompletedTasks = (tasks: Task[]): [Task, Task][] => tasks
-  .filter(t => !t.complete)
-  .map((task: Task) => [
-    task, { ...task, subtasks: task.subtasks.filter(s => !s.complete) },
-  ]);
-
-/**
- * Filter and leave only tasks and partial tasks in focus.
- *
- * @param {Task[]} tasks unfiltered tasks.
- * @return {Task[]} filtered tasks.
- */
-export const filterInFocusTasks = (tasks: Task[]): Task[] => tasks
-  .map((task: Task): Task => {
-    if (task.inFocus) {
-      return task;
-    }
-    const subtasks = task.subtasks.filter(subTask => subTask.inFocus);
-    return { ...task, subtasks };
-  })
-  .filter((task: Task) => task.inFocus || task.subtasks.length > 0);
-
-export type TasksProgress = {| +completed: number; +all: number |};
-export type TasksProgressProps = {| +progress: TasksProgress; |};
+export type TasksProgressProps = {| +completedTasksCount: number; +allTasksCount: number |};
 
 /**
  * Compute the progress given a list of filtered tasks.
  *
  * @param {Task[]} inFocusTasks in-focus filtered tasks.
- * @return {TasksProgress} the progress.
+ * @param {Map<string, SubTask>} subTasks all subtasks map as a reference.
+ * @return {TasksProgressProps} the progress.
  */
-export const computeTaskProgress = (inFocusTasks: Task[]): TasksProgress => {
-  let completed = 0;
-  let all = 0;
+export const computeTaskProgress = (
+  inFocusTasks: Task[], subTasks: Map<string, SubTask>,
+): TasksProgressProps => {
+  let completedTasksCount = 0;
+  let allTasksCount = 0;
   for (let i = 0; i < inFocusTasks.length; i += 1) {
     const task = inFocusTasks[i];
-    all += task.subtasks.length + 1;
+    allTasksCount += task.children.size + 1;
     if (task.complete) {
-      completed += task.subtasks.length + 1;
+      completedTasksCount += task.children.size + 1;
     } else {
-      completed += task.subtasks.reduce((a, s) => a + (s.complete ? 1 : 0), 0);
+      completedTasksCount += task.children.reduce(
+        (acc, s) => acc + ((subTasks.get(s)?.complete ?? false) ? 1 : 0), 0,
+      );
     }
   }
-  return { completed, all };
+  return { completedTasksCount, allTasksCount };
 };
-
-/**
- * A function to connect a component with just displayable tasks in redux store.
- */
-export function tasksConnect<-Config>(
-  component: ComponentType<Config>,
-): ComponentType<$Diff<Config, {| +tasks: Task[] |}>> {
-  const yesterday = new Date();
-  yesterday.setDate(yesterday.getDate() - 1);
-  return connect(
-    ({ tasks }) => ({ tasks: tasks.filter(t => (!t.complete || t.date > yesterday)) }),
-    null,
-  )(component);
-}

@@ -1,100 +1,126 @@
 // @flow strict
 
-import { tagsCollection, tasksCollection } from './db';
+import type { DocumentSnapshot } from 'firebase/firestore';
+import { Set } from 'immutable';
+import { subTasksCollection, tagsCollection, tasksCollection } from './db';
 import { getAppUser } from './auth';
 import type { FirestoreSubTask, FirestoreTag, FirestoreTask } from './firestore-types';
-import type {
-  Course, SubTask, Tag, Task,
-} from '../store/store-types';
+import type { SubTask, Tag, Task } from '../store/store-types';
+import {
+  patchCourses,
+  patchSubTasks,
+  patchTags,
+  patchTasks,
+} from '../store/actions';
 // $FlowFixMe
 import coursesJson from '../assets/json/sp19-courses-with-exams-min.json';
 import buildCoursesMap from '../util/courses-util';
-
-type Listeners = {|
-  +onTagsUpdate: (Tag[]) => void;
-  +onTasksUpdate: (Task[]) => void;
-  +onCourseMapFetched: (Map<number, Course[]>) => void;
-  +onFirstFetched: () => void;
-|};
-
-function sortByOrder<-T: { +order: number }>(arr: T[]): T[] {
-  return arr.sort((a, b) => a.order - b.order);
-}
+import { store } from '../store/store';
 
 /**
  * Initialize listeners bind to firestore.
  */
-export default (listeners: Listeners): (() => void) => {
-  const {
-    onTagsUpdate, onTasksUpdate, onCourseMapFetched, onFirstFetched,
-  } = listeners;
-
+export default (onFirstFetched: () => void): (() => void) => {
   let firstTagsFetched = false;
   let firstTasksFetched = false;
+  let firstSubTasksFetched = false;
   let courseJsonFetched = false;
+  const allFetched = () => firstTagsFetched && firstTasksFetched
+    && firstSubTasksFetched && courseJsonFetched;
   const ownerEmail = getAppUser().email;
 
-  const unmountTagsListener = tagsCollection().where('owner', '==', ownerEmail).onSnapshot((s) => {
-    const tags = s.docs.map((doc) => {
-      const { id } = doc;
-      const { owner, ...rest }: FirestoreTag = doc.data();
-      return ({ id, ...rest }: Tag);
+  const unmountTagsListener = tagsCollection().where('owner', '==', ownerEmail)
+    .onSnapshot((s) => {
+      const created = [];
+      const edited = [];
+      const deleted = [];
+      s.docChanges().forEach((change) => {
+        const { doc } = change;
+        const { id } = doc;
+        if (change.type === 'removed') {
+          deleted.push(id);
+        } else {
+          const { owner, ...rest }: FirestoreTag = doc.data();
+          const tag: Tag = { id, ...rest };
+          if (change.type === 'added') {
+            created.push(tag);
+          } else {
+            edited.push(tag);
+          }
+        }
+      });
+      store.dispatch(patchTags(created, edited, deleted));
+      firstTagsFetched = true;
+      if (allFetched()) {
+        onFirstFetched();
+      }
     });
-    const sortedTags = tags.sort((a, b) => a.order - b.order);
-    onTagsUpdate(sortedTags);
-    firstTagsFetched = true;
-    if (firstTagsFetched && firstTasksFetched && courseJsonFetched) {
-      onFirstFetched();
-    }
-  });
 
-  const unmountTasksListener = tasksCollection().where('owner', '==', ownerEmail).onSnapshot((s) => {
-    const mainTasksMap = new Map<string, Task>(); // key is task id
-    const subTasksMap = new Map<string, SubTask[]>(); // key is parent id
-    const len = s.docs.length;
-    for (let i = 0; i < len; i += 1) {
-      const doc = s.docs[i];
-      const { id } = doc;
-      const firestoreTaskOrSubTask: FirestoreTask | FirestoreSubTask = doc.data();
-      if (firestoreTaskOrSubTask.type === 'TASK') {
-        const {
-          type, owner, date: timestamp, ...rest
-        }: FirestoreTask = firestoreTaskOrSubTask;
-        const date = timestamp instanceof Date ? timestamp : timestamp.toDate();
-        const task: Task = {
-          id, date, subtasks: [], ...rest,
-        };
-        mainTasksMap.set(id, task);
-      } else {
-        const {
-          type, owner, parent, ...rest
-        }: FirestoreSubTask = firestoreTaskOrSubTask;
-        const subtask: SubTask = { id, ...rest };
-        const arr = subTasksMap.get(parent) ?? [];
-        arr.push(subtask);
-        subTasksMap.set(parent, arr);
+  const unmountTasksListener = tasksCollection().where('owner', '==', ownerEmail)
+    .onSnapshot((s) => {
+      const created = [];
+      const edited = [];
+      const deleted = [];
+      s.docChanges().forEach((change) => {
+        const { doc } = change;
+        const { id } = doc;
+        if (change.type === 'removed') {
+          deleted.push(id);
+        } else {
+          const {
+            owner, date: timestamp, children, ...rest
+          }: FirestoreTask = doc.data();
+          const task: Task = {
+            id,
+            date: timestamp instanceof Date ? timestamp : timestamp.toDate(),
+            children: Set(children),
+            ...rest,
+          };
+          if (change.type === 'added') {
+            created.push(task);
+          } else {
+            edited.push(task);
+          }
+        }
+      });
+      store.dispatch(patchTasks(created, edited, deleted));
+      firstTasksFetched = true;
+      if (allFetched()) {
+        onFirstFetched();
       }
-    }
-    subTasksMap.forEach((subtasks: SubTask[], parent: string) => {
-      const mainTask = mainTasksMap.get(parent);
-      if (mainTask == null) {
-        return;
-      }
-      mainTasksMap.set(parent, { ...mainTask, subtasks: sortByOrder(subtasks) });
     });
-    const tasks: Task[] = [];
-    mainTasksMap.forEach((task: Task) => { tasks.push(task); });
-    onTasksUpdate(sortByOrder(tasks));
-    firstTasksFetched = true;
-    if (firstTagsFetched && firstTasksFetched && courseJsonFetched) {
-      onFirstFetched();
-    }
-  });
+
+  const unmountSubTasksListener = subTasksCollection().where('owner', '==', ownerEmail)
+    .onSnapshot((s) => {
+      const created = [];
+      const edited = [];
+      const deleted = [];
+      s.docChanges().forEach((change) => {
+        const { doc } = change;
+        const { id } = doc;
+        if (change.type === 'removed') {
+          deleted.push(id);
+        } else {
+          const { owner, ...rest }: FirestoreSubTask = doc.data();
+          const subTask: SubTask = { id, ...rest };
+          if (change.type === 'added') {
+            created.push(subTask);
+          } else {
+            edited.push(subTask);
+          }
+        }
+      });
+      store.dispatch(patchSubTasks(created, edited, deleted));
+      firstSubTasksFetched = true;
+      if (allFetched()) {
+        onFirstFetched();
+      }
+    });
 
   fetch(coursesJson).then(resp => resp.json()).then(buildCoursesMap).then((courseMap) => {
-    onCourseMapFetched(courseMap);
+    store.dispatch(patchCourses(courseMap));
     courseJsonFetched = true;
-    if (firstTagsFetched && firstTasksFetched && courseJsonFetched) {
+    if (allFetched()) {
       onFirstFetched();
     }
   });
@@ -105,5 +131,6 @@ export default (listeners: Listeners): (() => void) => {
     console.log('Unmounting Listeners... This should only happen when app dies!');
     unmountTagsListener();
     unmountTasksListener();
+    unmountSubTasksListener();
   };
 };

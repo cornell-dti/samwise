@@ -1,7 +1,7 @@
 // @flow strict
 
 import React from 'react';
-import type { Node } from 'react';
+import type { ComponentType, Node } from 'react';
 import PinFilled from '../../../assets/svgs/pin-2-dark-filled.svg';
 import PinOutline from '../../../assets/svgs/pin-2-dark-outline.svg';
 import DeleteDark from '../../../assets/svgs/XDark.svg';
@@ -11,21 +11,22 @@ import CheckBox from '../../UI/CheckBox';
 import { editSubTask, removeSubTask } from '../../../firebase/actions';
 
 type Props = {|
-  ...SubTask;
+  +subTask: SubTask;
+  +mainTaskId: string;
   +mainTaskCompleted: boolean;
 |};
 
 /**
  * The component used to render one subtask in future view day.
  */
-export default function FutureViewSubTask(
-  {
-    name, id, complete, inFocus, mainTaskCompleted,
-  }: Props,
-): Node {
-  const onCompleteChange = () => editSubTask(id, { complete: !complete });
-  const onFocusChange = () => editSubTask(id, { inFocus: !inFocus });
-  const onRemove = () => removeSubTask(id);
+function FutureViewSubTask({ subTask, mainTaskId, mainTaskCompleted}: Props): Node {
+  if (subTask == null) {
+    return null;
+  }
+  const { name, complete, inFocus } = subTask;
+  const onCompleteChange = () => editSubTask(subTask.id, { complete: !complete });
+  const onFocusChange = () => editSubTask(subTask.id, { inFocus: !inFocus });
+  const onRemove = () => removeSubTask(mainTaskId, subTask.id);
   return (
     <div className={styles.SubTask}>
       <CheckBox
@@ -49,3 +50,6 @@ export default function FutureViewSubTask(
     </div>
   );
 }
+
+const Memoized: ComponentType<Props> = React.memo(FutureViewSubTask);
+export default Memoized;

@@ -1,7 +1,7 @@
 // @flow strict
 
 import React from 'react';
-import type { ComponentType, Node } from 'react';
+import type { Node } from 'react';
 import type {
   PartialMainTask, PartialSubTask, SubTask, Task,
 } from '../../../store/store-types';
@@ -13,56 +13,90 @@ import {
   removeSubTask,
   removeTask,
 } from '../../../firebase/actions';
+import type { TaskWithSubTasks } from './editors-types';
 
-type OwnProps = {|
-  +task: Task; // the initial task given to the editor.
-  className?: string; // additional class names applied to the editor.
+type Props = {|
+  +original: Task;
+  +filtered: TaskWithSubTasks;
+  +className?: string; // additional class names applied to the editor.
 |};
 
-type DefaultProps = {|
-  className?: string; // additional class names applied to the editor.
-|};
-
-type Props = {| ...OwnProps; ...DefaultProps; |};
+type TempSubTask =
+  | {| +type: 'UNCOMMITTED', +subTask: SubTask |}
+  | {| +type: 'COMMITTED', +subTask: SubTask; +prevTempId: string; |}
+  | null;
 
 /**
  * The task editor used to edit task inline, activated on focus.
  */
-function InlineTaskEditor({ task, className }: Props): Node {
+export default function InlineTaskEditor({ original, filtered, className }: Props): Node {
   const [disabled, setDisabled] = React.useState(true);
+  const [tempSubTask, setTempSubTask] = React.useState<TempSubTask>(null);
+  if (tempSubTask?.type === 'COMMITTED') {
+    setTempSubTask(null);
+  }
 
-  const { id } = task;
+  const { id } = original;
   // To un-mount the editor when finished editing.
   const onFocus = () => setDisabled(false);
-  const onBlur = () => setDisabled(true);
-  const taskEditorProps = {
-    ...task,
-    editMainTask: (partialMainTask: PartialMainTask, onSave: boolean) => {
-      editMainTask(id, partialMainTask);
-      if (onSave) {
-        onBlur();
-      }
-    },
-    editSubTask: (subtaskId: string, partialSubTask: PartialSubTask, onSave: boolean) => {
-      editSubTask(subtaskId, partialSubTask);
-      if (onSave) {
-        onBlur();
-      }
-    },
-    addSubTask: (subTask: SubTask) => { addSubTask(id, subTask); },
-    removeTask: () => { removeTask(task); },
-    removeSubTask: (subtaskId: string) => { removeSubTask(subtaskId); },
-    onSave: onBlur,
-    className,
-    newSubTaskDisabled: disabled || !task.inFocus,
-    onFocus,
-    onBlur,
+  const onBlur = () => {
+    if (tempSubTask !== null && tempSubTask.type === 'UNCOMMITTED') {
+      const { id: prevTempId, ...rest } = tempSubTask.subTask;
+      const newSubTask = addSubTask(id, rest);
+      setTempSubTask({ type: 'COMMITTED', subTask: newSubTask, prevTempId });
+    }
+    setDisabled(true);
   };
-
-  return <TaskEditor {...taskEditorProps} />;
+  const actions = {
+    editMainTask: (partialMainTask: PartialMainTask) => {
+      editMainTask(id, partialMainTask);
+    },
+    editSubTask: (subTaskId: string, partialSubTask: PartialSubTask) => {
+      if (tempSubTask !== null) {
+        if (tempSubTask.type === 'UNCOMMITTED') {
+          if (tempSubTask.subTask.id === subTaskId) {
+            const { id: prevTempId, ...rest } = tempSubTask.subTask;
+            const newSubTask = addSubTask(id, { ...rest, ...partialSubTask });
+            setTempSubTask({ type: 'COMMITTED', subTask: newSubTask, prevTempId });
+            return;
+          }
+        } else if (tempSubTask.type === 'COMMITTED' && tempSubTask.prevTempId === subTaskId) {
+          editSubTask(tempSubTask.subTask.id, partialSubTask);
+          return;
+        }
+      }
+      editSubTask(subTaskId, partialSubTask);
+    },
+    addSubTask: (subTask: SubTask) => {
+      setTempSubTask({ type: 'UNCOMMITTED', subTask });
+    },
+    removeTask: () => removeTask(original),
+    removeSubTask: (subTaskId) => {
+      if (tempSubTask !== null) {
+        if (tempSubTask.type === 'UNCOMMITTED' && subTaskId === tempSubTask.subTask.id) {
+          setTempSubTask(null);
+        } else if (tempSubTask.type === 'COMMITTED') {
+          removeSubTask(id, tempSubTask.subTask.id);
+        }
+      } else {
+        removeSubTask(id, subTaskId);
+      }
+    },
+    onSave: onBlur,
+  };
+  const { id: _, subTasks, ...mainTask } = filtered;
+  return (
+    <TaskEditor
+      className={className}
+      mainTask={mainTask}
+      subTasks={subTasks}
+      tempSubTask={tempSubTask === null ? null : tempSubTask.subTask}
+      actions={actions}
+      newSubTaskDisabled={disabled || !original.inFocus}
+      onFocus={onFocus}
+      onBlur={onBlur}
+    />
+  );
 }
 
 InlineTaskEditor.defaultProps = { className: undefined };
-
-const Connected: ComponentType<Props> = React.memo(InlineTaskEditor);
-export default Connected;

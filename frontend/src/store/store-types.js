@@ -1,5 +1,7 @@
 // @flow strict
 
+import type { Map, Set } from 'immutable';
+
 export type Tag = {|
   +id: string;
   +order: number;
@@ -21,9 +23,6 @@ export type SubTask = {|
  */
 export type PartialSubTask = $Shape<$Diff<SubTask, {| +id: string; |}>>
 
-/**
- * The task in the store.
- */
 export type Task = {|
   +id: string;
   +order: number;
@@ -32,13 +31,13 @@ export type Task = {|
   +date: Date; // Example: new Date()
   +complete: boolean;
   +inFocus: boolean; // Whether the task is in focus
-  +subtasks: SubTask[];
+  +children: Set<string>;
 |};
 
 /**
  * The task type without id and subtask.
  */
-export type MainTask = $Diff<Task, {| +id: string; +subtasks: SubTask[]; |}>;
+export type MainTask = $ReadOnly<$Diff<Task, {| +id: string; +children: Set<string>; |}>>;
 /**
  * The task type without id and subtask, and with all properties as optional.
  */
@@ -59,7 +58,10 @@ export type Course = {|
  * The type of the entire redux state.
  */
 export type State = {|
-  +tasks: Task[];
-  +tags: Tag[];
+  +tags: Map<string, Tag>;
+  +tasks: Map<string, Task>;
+  +dateTaskMap: Map<string, Set<string>>;
+  +subTasks: Map<string, SubTask>;
+  +taskChildrenMap: Map<string, Set<string>>;
   +courses: Map<number, Course[]>;
 |};

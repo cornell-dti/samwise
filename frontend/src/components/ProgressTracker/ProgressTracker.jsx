@@ -2,34 +2,27 @@
 
 import React from 'react';
 import type { ComponentType, Node } from 'react';
-import type { TasksProgress } from '../../util/task-util';
-import windowSizeConnect from '../Util/Responsive/WindowSizeConsumer';
-import type { WindowSize } from '../Util/Responsive/window-size-context';
+import { connect } from 'react-redux';
+import type { TasksProgressProps } from '../../util/task-util';
 import Bear from './Bear';
 import ProgressIndicator from './ProgressIndicator';
 import styles from './ProgressTracker.css';
-
-type OwnProps = {| +progress: TasksProgress; |};
-type Props = {| +windowSize: WindowSize; +progress: TasksProgress; |};
+import { getProgress } from '../../store/selectors';
 
 /**
  * The progress tracker component.
  * It is a wrapper component designed to pass down the progress object.
- *
- * @param {WindowSize} windowSize the current window size.
- * @param {TasksProgress} progress the current progress.
- * @constructor
  */
-function ProgressTracker({ windowSize, progress }: Props): Node {
+function ProgressTracker({ completedTasksCount, allTasksCount }: TasksProgressProps): Node {
   // Note: windowSize is unused for now, but it may be used later to distinguish
   // desktop and mobile view.
   return (
     <div className={styles.ProgressTracker}>
-      <Bear progress={progress} />
-      <ProgressIndicator progress={progress} />
+      <Bear completedTasksCount={completedTasksCount} allTasksCount={allTasksCount} />
+      <ProgressIndicator completedTasksCount={completedTasksCount} allTasksCount={allTasksCount} />
     </div>
   );
 }
 
-const Connected: ComponentType<OwnProps> = windowSizeConnect(ProgressTracker);
+const Connected: ComponentType<{||}> = connect(getProgress)(ProgressTracker);
 export default Connected;

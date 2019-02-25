@@ -2,18 +2,58 @@
 
 import React from 'react';
 import type { ComponentType, Node } from 'react';
+import { connect } from 'react-redux';
 import type {
-  PartialMainTask, PartialSubTask, SubTask, Task,
+  PartialMainTask, PartialSubTask, State, SubTask, Task,
 } from '../../../store/store-types';
-import type { FloatingPosition } from './task-editors-types';
+import type { FloatingPosition, TaskWithSubTasks } from './editors-types';
 import TaskEditor from './TaskEditor';
 import styles from './FloatingTaskEditor.css';
-import { TaskEditorFlexiblePadding as flexiblePaddingClass } from './TaskEditor.css';
-import { replaceSubTask, EMPTY_TASK_DIFF, taskDiffIsEmpty } from '../../../util/task-util';
-import windowSizeConnect from '../Responsive/WindowSizeConsumer';
-import type { WindowSize } from '../Responsive/window-size-context';
+import { TaskEditorFlexiblePadding as flexiblePaddingClass } from './TaskEditor/TaskEditor.css';
+import { EMPTY_TASK_DIFF, taskDiffIsEmpty } from '../../../util/task-util';
 import type { TaskDiff } from '../../../util/task-util';
-import { editTask, removeTask } from '../../../firebase/actions';
+import { editTask, removeTask as removeTaskAction } from '../../../firebase/actions';
+import { useWindowSizeCallback } from '../../../hooks/window-size-hook';
+import type { WindowSize } from '../../../hooks/window-size-hook';
+
+const updateFloatingEditorPosition = (
+  editorElement: ?HTMLFormElement,
+  windowSize: WindowSize,
+  position: FloatingPosition,
+) => {
+  const editorPosDiv = editorElement;
+  if (editorPosDiv == null) {
+    return;
+  }
+  const taskElement = editorPosDiv.previousElementSibling?.previousElementSibling;
+  if (taskElement === null || !(taskElement instanceof HTMLDivElement)) {
+    throw new Error('Task element must be a div!');
+  }
+  editorPosDiv.style.position = 'fixed';
+  const taskElementBoundingRect = taskElement.getBoundingClientRect();
+  if (!(taskElementBoundingRect instanceof DOMRect)) {
+    throw new Error('Bad taskElementBoundingRect!');
+  }
+  const myWidth = editorPosDiv.offsetWidth;
+  const myHeight = editorPosDiv.offsetHeight;
+  const windowWidth = windowSize.width;
+  const windowHeight = windowSize.height;
+  if (windowWidth <= 768) {
+    editorPosDiv.style.top = `${(windowHeight - myHeight) / 2}px`;
+    editorPosDiv.style.left = `${(windowWidth - myWidth) / 2}px`;
+    return;
+  }
+  const { y, left, right } = taskElementBoundingRect;
+  const topPos = (y + myHeight) > windowHeight ? windowHeight - myHeight : y;
+  editorPosDiv.style.top = `${topPos}px`;
+  if (position === 'right') {
+    editorPosDiv.style.left = `${right}px`;
+  } else if (position === 'left') {
+    editorPosDiv.style.left = `${left - editorPosDiv.offsetWidth}px`;
+  } else {
+    throw new Error('Bad floating position!');
+  }
+};
 
 type OwnProps = {|
   +position: FloatingPosition;
@@ -23,162 +63,116 @@ type OwnProps = {|
 
 type Props = {|
   ...OwnProps;
-  +windowSize: WindowSize;
+  +fullInitialTask: TaskWithSubTasks;
 |};
 
-type State = {|
-  +task: Task;
+type ComponentState = {|
+  +task: TaskWithSubTasks;
   +diff: TaskDiff;
+  +uncommittedSubTask: SubTask | null;
   +open: boolean;
+  +prevFullTask: TaskWithSubTasks;
 |};
 
 /**
  * FloatingTaskEditor is a component used to edit a task on the fly.
  * It is triggered from a click on a specified element.
  */
-class FloatingTaskEditor extends React.PureComponent<Props, State> {
-  constructor(props: Props) {
-    super(props);
-    this.state = { task: props.initialTask, diff: EMPTY_TASK_DIFF, open: false };
+function FloatingTaskEditor({ position, initialTask, fullInitialTask, trigger }: Props): Node {
+  const [componentState, setState] = React.useState<ComponentState>({
+    task: fullInitialTask,
+    diff: EMPTY_TASK_DIFF,
+    uncommittedSubTask: null,
+    open: false,
+    prevFullTask: fullInitialTask,
+  });
+  const { task, diff, uncommittedSubTask, open, prevFullTask } = componentState;
+  if (prevFullTask !== fullInitialTask) {
+    setState(prev => ({
+      ...prev,
+      task: fullInitialTask,
+      diff: EMPTY_TASK_DIFF,
+      uncommittedSubTask: null,
+      prevFullTask: fullInitialTask,
+    }));
   }
 
-  componentDidMount() {
-    this.updateFloatingEditorPosition();
-  }
+  const editorRef = React.useRef(null);
 
-  componentWillReceiveProps(nextProps: Props) {
-    // This methods ensure that the stuff inside the editor is always the latest from store.
-    // Since we implement task in an immutable data structure, a shallow equality comparison is
-    // enough.
-    const { initialTask } = this.props;
-    if (initialTask !== nextProps.initialTask) {
-      const nextInitialTask = nextProps.initialTask;
-      this.setState({ task: nextInitialTask, diff: EMPTY_TASK_DIFF });
-    }
-  }
-
-  componentDidUpdate() {
-    this.updateFloatingEditorPosition();
-  }
-
-  /**
-   * Update the position of itself.
-   */
-  updateFloatingEditorPosition = () => {
-    const editorPosDiv = this.editorElement;
-    if (editorPosDiv == null) {
-      return;
-    }
-    const taskElement = editorPosDiv.previousElementSibling?.previousElementSibling;
-    if (taskElement === null || !(taskElement instanceof HTMLDivElement)) {
-      throw new Error('Task element must be a div!');
-    }
-    editorPosDiv.style.position = 'fixed';
-    const taskElementBoundingRect = taskElement.getBoundingClientRect();
-    if (!(taskElementBoundingRect instanceof DOMRect)) {
-      throw new Error('Bad taskElementBoundingRect!');
-    }
-    const { windowSize } = this.props;
-    const myWidth = editorPosDiv.offsetWidth;
-    const myHeight = editorPosDiv.offsetHeight;
-    const windowWidth = windowSize.width;
-    const windowHeight = windowSize.height;
-    if (windowWidth <= 768) {
-      editorPosDiv.style.top = `${(windowHeight - myHeight) / 2}px`;
-      editorPosDiv.style.left = `${(windowWidth - myWidth) / 2}px`;
-      return;
-    }
-    const { y, left, right } = taskElementBoundingRect;
-    const topPos = (y + myHeight) > windowHeight ? windowHeight - myHeight : y;
-    editorPosDiv.style.top = `${topPos}px`;
-    const { position } = this.props;
-    if (position === 'right') {
-      editorPosDiv.style.left = `${right}px`;
-    } else if (position === 'left') {
-      editorPosDiv.style.left = `${left - editorPosDiv.offsetWidth}px`;
-    } else {
-      throw new Error('Bad floating position!');
-    }
-  };
-
-  openPopup = () => this.setState({ open: true });
-
-  closePopup = (): void => this.setState({ open: false, diff: EMPTY_TASK_DIFF });
-
-  /**
-   * Check whether a task has a good format.
-   *
-   * @param {Task} task the task to check.
-   * @return {boolean} whether the task has a good format.
-   */
-  taskIsGood = (task: Task): boolean => task.name.trim().length > 0;
-
-  /**
-   * Filter the task without all the empty subtasks.
-   *
-   * @param {Task} task the task to filter.
-   * @return {Task} the filtered task.
-   */
-  filterEmptySubTasks = (task: Task): Task => ({
-    ...task, subtasks: task.subtasks.filter(t => t.name.trim().length > 0),
+  useWindowSizeCallback((windowSize) => {
+    updateFloatingEditorPosition(editorRef.current, windowSize, position);
   });
 
-  /**
-   * Handle the saveEditedTask event.
-   */
-  saveEditedTask = (): void => {
-    const { task, diff } = this.state;
-    if (!this.taskIsGood(task)) {
+  const openPopup = () => setState(prev => ({ ...prev, open: true }));
+  const closePopup = () => setState(prev => ({
+    ...prev, open: false, diff: EMPTY_TASK_DIFF, uncommittedSubTask: null,
+  }));
+
+  const commitUncommittedTask = (
+    tempUncommittedTask: SubTask, state: ComponentState,
+  ): ComponentState => ({
+    ...state,
+    task: { ...state.task, subTasks: [...state.task.subTasks, tempUncommittedTask] },
+    diff: {
+      ...state.diff,
+      subtasksCreations: [...state.diff.subtasksCreations, tempUncommittedTask],
+    },
+    uncommittedSubTask: null, // just committed here!
+  });
+
+  const saveEditedTask = (): void => {
+    if (task.name.trim().length === 0) {
       return;
     }
-    if (taskDiffIsEmpty(diff)) {
+    let diffToUse: TaskDiff;
+    if (uncommittedSubTask !== null) {
+      diffToUse = commitUncommittedTask(uncommittedSubTask, componentState).diff;
+    } else {
+      diffToUse = diff;
+    }
+    if (taskDiffIsEmpty(diffToUse)) {
       return;
     }
-    editTask(this.filterEmptySubTasks(task), diff);
-    this.closePopup();
+    editTask(task.id, diffToUse);
+    closePopup();
   };
 
-  /**
-   * Edit main task.
-   *
-   * @param {PartialMainTask} partialMainTask partial main task.
-   * @param {boolean} doSave whether to save.
-   */
-  editMainTask = (partialMainTask: PartialMainTask, doSave: boolean) => {
-    this.setState(
-      ({ task, diff }: State) => ({
-        task: { ...task, ...partialMainTask },
-        diff: { ...diff, mainTaskDiff: { ...diff.mainTaskDiff, ...partialMainTask } },
-      }),
-      doSave ? this.saveEditedTask : undefined,
+  const editMainTask = (partialMainTask: PartialMainTask) => {
+    setState(
+      (state: ComponentState) => {
+        const newTask = { ...state.task, ...partialMainTask };
+        const newDiff = {
+          ...state.diff, mainTaskDiff: { ...state.diff.mainTaskDiff, ...partialMainTask },
+        };
+        return { ...state, task: newTask, diff: newDiff };
+      },
     );
   };
 
-  /**
-   * Edit subtask.
-   *
-   * @param {string} subtaskId id of the subtask.
-   * @param {PartialSubTask} partialSubTask partial subtask.
-   * @param {boolean} doSave whether to save.
-   */
-  editSubTask = (subtaskId: string, partialSubTask: PartialSubTask, doSave: boolean) => {
-    this.setState(({ task, diff }: State) => {
-      const newTask = {
-        ...task,
-        subtasks: replaceSubTask(task.subtasks, subtaskId, s => ({ ...s, ...partialSubTask })),
-      };
+  const editSubTask = (subTaskId: string, partialSubTask: PartialSubTask) => {
+    if (uncommittedSubTask !== null && subTaskId === uncommittedSubTask.id) {
+      const newSubTask: SubTask = { ...uncommittedSubTask, ...partialSubTask };
+      setState((state: ComponentState) => commitUncommittedTask(newSubTask, state));
+      return;
+    }
+    setState((state: ComponentState) => {
+      const newSubTasks = state.task.subTasks.map(
+        s => (s.id === subTaskId ? { ...s, ...partialSubTask } : s),
+      );
+      const newTask = { ...state.task, subTasks: newSubTasks };
       let foundInPreviousEdits = false;
-      const subtasksCreations = replaceSubTask(diff.subtasksCreations, subtaskId, (s) => {
-        if (s.id === subtaskId) {
+      const subtasksCreations = state.diff.subtasksCreations.map((s) => {
+        if (s.id === subTaskId) {
           foundInPreviousEdits = true;
+          return { ...s, ...partialSubTask };
         }
-        return { ...s, ...partialSubTask };
+        return s;
       });
       const subtasksEdits = [];
-      for (let i = 0; i < diff.subtasksEdits.length; i += 1) {
-        const pair = diff.subtasksEdits[i];
+      for (let i = 0; i < state.diff.subtasksEdits.length; i += 1) {
+        const pair = state.diff.subtasksEdits[i];
         const [id, edit] = pair;
-        if (id === subtaskId) {
+        if (id === subTaskId) {
           foundInPreviousEdits = true;
           subtasksEdits.push([id, { ...edit, ...partialSubTask }]);
         } else {
@@ -186,124 +180,91 @@ class FloatingTaskEditor extends React.PureComponent<Props, State> {
         }
       }
       if (!foundInPreviousEdits) {
-        subtasksEdits.push([subtaskId, partialSubTask]);
+        subtasksEdits.push([subTaskId, partialSubTask]);
       }
-      return {
-        task: newTask,
-        diff: { ...diff, subtasksCreations, subtasksEdits },
+      const newDiff = { ...state.diff, subtasksCreations, subtasksEdits };
+      return { ...state, task: newTask, diff: newDiff };
+    });
+  };
+
+  const addSubTask = (subTask: SubTask) => {
+    setState((state: ComponentState) => ({ ...state, uncommittedSubTask: subTask }));
+  };
+
+  const removeTask = () => removeTaskAction(initialTask);
+
+  const removeSubTask = (subTaskId: string) => {
+    if (uncommittedSubTask !== null && subTaskId === uncommittedSubTask.id) {
+      setState((state: ComponentState) => ({ ...state, uncommittedSubTask: null }));
+      return;
+    }
+    setState((state: ComponentState) => {
+      const newTask = {
+        ...state.task,
+        subTasks: state.task.subTasks.filter(s => s.id !== subTaskId),
       };
-    }, doSave ? this.saveEditedTask : undefined);
+      const subtasksCreations = [];
+      let foundInNew = false;
+      state.diff.subtasksCreations.forEach((s) => {
+        if (s.id === subTaskId) {
+          foundInNew = true;
+        } else {
+          subtasksCreations.push(s);
+        }
+      });
+      let subtasksDeletions;
+      if (foundInNew) {
+        subtasksDeletions = [];
+      } else {
+        subtasksDeletions = [...state.diff.subtasksDeletions, subTaskId];
+      }
+      const newDiff = { ...state.diff, subtasksCreations, subtasksDeletions };
+      return { ...state, task: newTask, diff: newDiff };
+    });
   };
 
-  /**
-   * Add subtask.
-   *
-   * @param {SubTask} subTask subtask to add.
-   */
-  addSubTask = (subTask: SubTask) => {
-    this.setState((state: State) => ({
-      task: {
-        ...state.task,
-        subtasks: [...state.task.subtasks, subTask],
-      },
-      diff: {
-        ...state.diff,
-        subtasksCreations: [...state.diff.subtasksCreations, subTask],
-      },
-    }));
+  const actions = {
+    editMainTask, editSubTask, addSubTask, removeTask, removeSubTask, onSave: saveEditedTask,
   };
+  const { id: _, subTasks, ...mainTask } = task;
 
-  /**
-   * Handle remove task.
-   */
-  removeTask = () => {
-    const { task } = this.state;
-    removeTask(task);
-  };
-
-  /**
-   * Remove subtask with given id.
-   *
-   * @param {string} subtaskId id of the subtask to remove.
-   */
-  removeSubTask = (subtaskId: string) => {
-    this.setState((state: State) => ({
-      task: {
-        ...state.task,
-        subtasks: state.task.subtasks.filter(s => s.id !== subtaskId),
-      },
-      diff: {
-        ...state.diff,
-        subtasksDeletions: [...state.diff.subtasksDeletions, subtaskId],
-      },
-    }));
-  };
-
-  /**
-   * The element of the actual editor.
-   * This is only used when the editor is embedded inside the DOM instead of mount to body.
-   */
-  editorElement: ?HTMLElement;
-
-  /**
-   * Render the manual submit button component.
-   *
-   * @return {Node} the manual submit button component.
-   */
-  renderSubmitComponent = (): Node => (
-    <div className={styles.FloatingTaskEditorSubmitButtonRow}>
-      <span className={flexiblePaddingClass} />
-      <div
-        role="presentation"
-        className={styles.FloatingTaskEditorSaveButton}
-        onClick={this.saveEditedTask}
-      >
-        <span className={styles.FloatingTaskEditorSaveButtonText}>Save</span>
-      </div>
-    </div>
+  return (
+    <React.Fragment>
+      {trigger(open, openPopup)}
+      {open && (
+        <div className={styles.BackgroundBlocker} role="presentation" onClick={saveEditedTask} />
+      )}
+      {open && (
+        <TaskEditor
+          mainTask={mainTask}
+          subTasks={subTasks}
+          tempSubTask={uncommittedSubTask}
+          actions={actions}
+          className={styles.Editor}
+          editorRef={editorRef}
+        >
+          <div className={styles.SaveButtonRow}>
+            <span className={flexiblePaddingClass} />
+            <div role="presentation" className={styles.SaveButton} onClick={saveEditedTask}>
+              <span className={styles.SaveButtonText}>Save</span>
+            </div>
+          </div>
+        </TaskEditor>
+      )}
+    </React.Fragment>
   );
-
-  /**
-   * Render the editor node.
-   *
-   * @return {Node} the rendered node.
-   */
-  renderEditorNode = (): Node => {
-    const { task } = this.state;
-    const taskEditorProps = {
-      ...task,
-      editMainTask: this.editMainTask,
-      editSubTask: this.editSubTask,
-      addSubTask: this.addSubTask,
-      removeTask: this.removeTask,
-      removeSubTask: this.removeSubTask,
-      className: styles.FloatingTaskEditor,
-      onSave: this.saveEditedTask,
-      refFunction: (e) => { this.editorElement = e; },
-    };
-    return (
-      <TaskEditor {...taskEditorProps}>{this.renderSubmitComponent()}</TaskEditor>
-    );
-  };
-
-  render(): Node {
-    const { trigger } = this.props;
-    const { open } = this.state;
-    return (
-      <React.Fragment>
-        {trigger(open, this.openPopup)}
-        {open && (
-          <div
-            className={styles.BackgroundBlocker}
-            role="presentation"
-            onClick={this.saveEditedTask}
-          />
-        )}
-        {open && this.renderEditorNode()}
-      </React.Fragment>
-    );
-  }
 }
 
-const Connected: ComponentType<OwnProps> = windowSizeConnect(FloatingTaskEditor);
+const Connected: ComponentType<OwnProps> = connect(
+  ({ subTasks }: State, { initialTask }: OwnProps) => {
+    const { children, ...rest } = initialTask;
+    const newSubTasks = [];
+    children.forEach((id) => {
+      const s = subTasks.get(id);
+      if (s != null) { newSubTasks.push(s); }
+    });
+    const fullInitialTask: TaskWithSubTasks = { ...rest, subTasks: newSubTasks };
+    return { fullInitialTask };
+  },
+)(FloatingTaskEditor);
 export default Connected;

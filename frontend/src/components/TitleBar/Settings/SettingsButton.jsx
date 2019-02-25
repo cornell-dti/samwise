@@ -12,26 +12,17 @@ export default function SettingsButton() {
   const displayModal = () => setShowSettings(true);
   const closeModal = () => setShowSettings(false);
 
-  // /**
-  //  * Display the settings model.
-  //  */
-  // displayModal = () => this.setState({ showSettings: true });
-  //
-  // /**
-  //  * Close the settings model.
-  //  */
-  // closeModal = () => this.setState({ showSettings: false });
   return (
     <div style={{ display: 'inline-block' }}>
       <button type="submit" onClick={displayModal}>
         <Settings />
       </button>
       {showSettings && (
-        <div className={styles.settingsModal}>
-          <button className={styles.closeButton} type="submit" onClick={closeModal}>
+        <div className={styles.SettingsModal}>
+          <button className={styles.CloseButton} type="submit" onClick={closeModal}>
             <Delete />
           </button>
-          <section className={styles.contentWrap}>
+          <section className={styles.ContentWrap}>
             <h2>Settings</h2>
             <SettingsPage />
           </section>

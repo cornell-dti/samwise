@@ -1,36 +1,26 @@
 // @flow strict
 
 import React from 'react';
-import type { Node } from 'react';
-import type { OneDayTask } from './future-view-types';
 import FutureViewDay from './FutureViewDay';
-import type { FloatingPosition } from '../../Util/TaskEditors/task-editors-types';
 import styles from './FutureViewSevenColumns.css';
+import type { SimpleDate } from './future-view-types';
 
-type Props = {|
-  +days: OneDayTask[];
-|};
+type Props = {| +days: SimpleDate[]; +doesShowCompletedTasks: boolean; |};
 
 /**
- * The component used to contain all the backlog days in 7 columns..
- *
- * @param {OneDayTask[]} days all the days.
- * @return {Node} the rendered component.
- * @constructor
+ * The component used to contain all the backlog days in 7 columns.
  */
-export default function FutureViewSevenColumns({ days }: Props): Node {
+export default function FutureViewSevenColumns({ days, doesShowCompletedTasks }: Props) {
   // Start building items
-  const items = days.map((day: OneDayTask, i: number) => {
-    const taskEditorPosition: FloatingPosition = (i % 7) < 4 ? 'right' : 'left';
-    return (
-      <FutureViewDay
-        key={day.date.getTime()}
-        inNDaysView={false}
-        taskEditorPosition={taskEditorPosition}
-        {...day}
-      />
-    );
-  });
+  const items = days.map((date: SimpleDate, i: number) => (
+    <FutureViewDay
+      key={date.text}
+      inNDaysView={false}
+      taskEditorPosition={(i % 7) < 4 ? 'right' : 'left'}
+      doesShowCompletedTasks={doesShowCompletedTasks}
+      date={date}
+    />
+  ));
   let styleString = '40px';
   const numRows = Math.ceil(items.length / 7);
   const templateStyleString = ` minmax(0, ${1 / numRows}fr)`;

@@ -1,36 +1,29 @@
 // @flow strict
 
 import React from 'react';
-import type { Node } from 'react';
-import type { OneDayTask } from './future-view-types';
 import FutureViewDay from './FutureViewDay';
 import styles from './FutureViewNDays.css';
+import type { SimpleDate } from './future-view-types';
 
-type Props = {|
-  +nDays: number;
-  +days: OneDayTask[];
-|};
+type Props = {| +days: SimpleDate[]; +doesShowCompletedTasks: boolean; |};
 
 /**
  * The component used to contain all the backlog days in n-days mode.
- *
- * @param {Props} props all of the given props.
- * @return {Node} the rendered component.
- * @constructor
  */
-export default function FutureViewNDays(props: Props): Node {
-  const { nDays, days } = props;
+export default function FutureViewNDays({ days, doesShowCompletedTasks }: Props) {
+  const nDays = days.length;
   const containerStyle = { gridTemplateColumns: `${100.0 / nDays}% `.repeat(nDays).trim() };
   return (
     <div className={styles.FutureViewNDays} style={containerStyle}>
-      {days.map((day: OneDayTask, index: number) => {
+      {days.map((date: SimpleDate, index: number) => {
         const taskEditorPosition = index < (nDays / 2) ? 'right' : 'left';
         return (
-          <div key={day.date.getTime()} className={styles.Column}>
+          <div key={date.text} className={styles.Column}>
             <FutureViewDay
               inNDaysView
               taskEditorPosition={taskEditorPosition}
-              {...day}
+              doesShowCompletedTasks={doesShowCompletedTasks}
+              date={date}
             />
           </div>
         );

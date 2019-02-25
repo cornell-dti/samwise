@@ -2,70 +2,77 @@
 
 import React from 'react';
 import type { ComponentType, Node } from 'react';
-import type { CompoundTask } from './future-view-types';
-import type { FloatingPosition } from '../../Util/TaskEditors/task-editors-types';
+import { connect } from 'react-redux';
+import type { FloatingPosition } from '../../Util/TaskEditors/editors-types';
 import FutureViewTask from './FutureViewTask';
 import styles from './FutureViewDayTaskContainer.css';
-import windowSizeConnect from '../../Util/Responsive/WindowSizeConsumer';
-import type { WindowSize } from '../../Util/Responsive/window-size-context';
+import { useWindowSizeCallback } from '../../../hooks/window-size-hook';
+import { error } from '../../../util/general-util';
+import type { State } from '../../../store/store-types';
+import { createGetIdOrderListByDate } from '../../../store/selectors';
 
 type OwnProps = {|
-  +tasks: CompoundTask[];
+  +date: string;
   +inNDaysView: boolean;
   +taskEditorPosition: FloatingPosition;
+  +doesShowCompletedTasks: boolean;
   +isInMainList: boolean;
-  +onOverflowChange: (doesOverflow: boolean) => void;
+  +onHeightChange: (doesOverflow: boolean, tasksHeight: number) => void;
 |};
 
 type Props = {|
   ...OwnProps;
-  /*
-   * Disabled this below for technical reason.
-   * We want it to re-render whenever window size changes so we can know the
-   * current status of overflow, which depends on some DOM manipulation.
-   */
-  // eslint-disable-next-line
-  +windowSize: WindowSize;
+  +idOrderList: {| +id: string; +order: number |}[];
 |};
 
 /**
  * The component to render a list of tasks in backlog day or its floating expanding list.
  */
-class FutureViewDayTaskContainer extends React.PureComponent<Props> {
-  updateOverflowStatus = (containerNode: ?HTMLDivElement) => {
-    if (containerNode == null) {
+function FutureViewDayTaskContainer(
+  {
+    idOrderList,
+    inNDaysView,
+    taskEditorPosition,
+    doesShowCompletedTasks,
+    isInMainList,
+    onHeightChange,
+  }: Props,
+): Node {
+  const containerRef = React.useRef(null);
+  const [prevHeights, setPrevHeights] = React.useState(() => [0, 0]);
+
+  // Subscribes to it, but don't use the value. Force rerender when window size changes.
+  useWindowSizeCallback(() => {
+    const containerNode = containerRef.current ?? error();
+    const tasksHeight = containerNode.scrollHeight;
+    const containerHeight = containerNode.clientHeight;
+    const [prevTasksHeight, prevContainerHeight] = prevHeights;
+    if (prevTasksHeight === tasksHeight && prevContainerHeight === containerHeight) {
       return;
     }
-    const { onOverflowChange } = this.props;
-    onOverflowChange(containerNode.scrollHeight > containerNode.clientHeight);
-  };
+    setPrevHeights([tasksHeight, containerHeight]);
+    onHeightChange(tasksHeight > containerHeight && containerHeight > 0, tasksHeight);
+  });
 
-  render(): Node {
-    const {
-      tasks, inNDaysView, taskEditorPosition, isInMainList,
-    } = this.props;
-    const taskListComponent = tasks.map((t: CompoundTask) => (
-      <FutureViewTask
-        key={t.original.id}
-        originalTask={t.original}
-        filteredTask={t.filtered}
-        taskColor={t.color}
-        inNDaysView={inNDaysView}
-        isInMainList={isInMainList}
-        taskEditorPosition={taskEditorPosition}
-      />
-    ));
-    const className = inNDaysView ? styles.NDaysView : styles.OtherViews;
-    if (isInMainList) {
-      return (
-        <div className={className} style={{ overflow: 'hidden' }} ref={this.updateOverflowStatus}>
-          {taskListComponent}
-        </div>
-      );
-    }
-    return <div className={className} ref={this.updateOverflowStatus}>{taskListComponent}</div>;
+  const taskListComponent = idOrderList.map(({ id }) => (
+    <FutureViewTask
+      key={id}
+      taskId={id}
+      inNDaysView={inNDaysView}
+      taskEditorPosition={taskEditorPosition}
+      doesShowCompletedTasks={doesShowCompletedTasks}
+      isInMainList={isInMainList}
+    />
+  ));
+  const className = inNDaysView ? styles.NDaysView : styles.OtherViews;
+  if (isInMainList) {
+    const style = { overflow: 'hidden' };
+    return <div className={className} style={style} ref={containerRef}>{taskListComponent}</div>;
   }
+  return <div className={className} ref={containerRef}>{taskListComponent}</div>;
 }
 
-const Connected: ComponentType<OwnProps> = windowSizeConnect(FutureViewDayTaskContainer);
+const Connected: ComponentType<OwnProps> = connect(
+  (state: State, { date }: OwnProps) => createGetIdOrderListByDate(date)(state),
+)(FutureViewDayTaskContainer);
 export default Connected;

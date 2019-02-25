@@ -2,25 +2,19 @@
 
 import React from 'react';
 import type { Node } from 'react';
-import type { TasksProgress, TasksProgressProps } from '../../util/task-util';
+import type { TasksProgressProps } from '../../util/task-util';
 import styles from './ProgressIndicator.css';
 
 type ProgressBarProps = {|
-  +progress: TasksProgress;
-  +children: Node;
+  ...TasksProgressProps;
+  +children?: Node;
 |};
 
 /**
  * A simple progress bar with optional children.
- *
- * @param {TasksProgress} progress the current progress.
- * @param {?Node} children an optional children.
- * @return {Node} the rendered progress bar.
- * @constructor
  */
-function ProgressBar({ progress, children }: ProgressBarProps): Node {
-  const { completed, all } = progress;
-  const percentage = all === 0 ? 0 : completed / all * 100;
+function ProgressBar({ completedTasksCount, allTasksCount, children }: ProgressBarProps): Node {
+  const percentage = allTasksCount === 0 ? 0 : completedTasksCount / allTasksCount * 100;
   const innerStyle = { width: `${percentage}%` };
   return (
     <div className={styles.ProgressBarContainer}>
@@ -30,26 +24,21 @@ function ProgressBar({ progress, children }: ProgressBarProps): Node {
   );
 }
 
-// eslint-disable-next-line
 ProgressBar.defaultProps = { children: null };
 
 /**
  * The progress indicator.
- *
- * @param {WindowSize} windowSize the current window size.
- * @param {TasksProgress} progress the current progress.
- * @return {Node} the rendered progress bar.
- * @constructor
  */
-export default function ProgressIndicator({ progress }: TasksProgressProps): Node {
-  const { completed, all } = progress;
+export default function ProgressIndicator(props: TasksProgressProps): Node {
+  const { completedTasksCount, allTasksCount } = props;
+  const fractionString = `${completedTasksCount}/${allTasksCount}`;
   return (
     <div className={styles.ProgressIndicator}>
       <div className={styles.ProgressText}>
-        <div className={styles.ProgressCountText}>{`${completed}/${all}`}</div>
+        <div className={styles.ProgressCountText}>{fractionString}</div>
         <div className={styles.ProgressOtherText}>tasks complete</div>
       </div>
-      <ProgressBar progress={progress} />
+      <ProgressBar completedTasksCount={completedTasksCount} allTasksCount={allTasksCount} />
     </div>
   );
 }

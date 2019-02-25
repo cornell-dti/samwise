@@ -2,47 +2,60 @@
 
 import React from 'react';
 import type { ComponentType, Node } from 'react';
+import { connect } from 'react-redux';
 import Delete from '../../../assets/svgs/XLight.svg';
 import PinFilled from '../../../assets/svgs/pin-2-light-filled.svg';
 import PinOutline from '../../../assets/svgs/pin-2-dark-outline.svg';
 import styles from './FutureViewTask.css';
 import FutureViewSubTask from './FutureViewSubTask';
 import FloatingTaskEditor from '../../Util/TaskEditors/FloatingTaskEditor';
-import type { SubTask, Task } from '../../../store/store-types';
+import type { State, SubTask, Task } from '../../../store/store-types';
 import CheckBox from '../../UI/CheckBox';
-import type { FloatingPosition } from '../../Util/TaskEditors/task-editors-types';
+import type { FloatingPosition } from '../../Util/TaskEditors/editors-types';
 import { getTodayAtZeroAM } from '../../../util/datetime-util';
 import OverdueAlert from '../../UI/OverdueAlert';
-import windowSizeConnect from '../../Util/Responsive/WindowSizeConsumer';
-import type { WindowSize } from '../../Util/Responsive/window-size-context';
 import { nDaysViewHeaderHeight, otherViewsHeightHeader } from './future-view-css-props';
 import { error } from '../../../util/general-util';
 import { editMainTask, removeTask } from '../../../firebase/actions';
+import { useMappedWindowSize } from '../../../hooks/window-size-hook';
+import { NONE_TAG } from '../../../util/tag-util';
+
+type CompoundTask = {|
+  +original: Task;
+  +filteredSubTasks: SubTask[];
+  +color: string;
+|};
 
 type OwnProps = {|
-  +originalTask: Task;
-  +filteredTask: Task;
-  +taskColor: string;
+  +taskId: string;
   +inNDaysView: boolean;
-  +isInMainList: boolean;
   +taskEditorPosition: FloatingPosition;
+  +doesShowCompletedTasks: boolean;
+  +isInMainList: boolean;
 |};
 
 type Props = {|
   ...OwnProps;
-  // Subscribed window size
-  +windowSize: WindowSize;
+  +compoundTask: CompoundTask | null;
 |};
 
-type State = {|
-  +overdueAlertPosition: ?{| +top: number; +right: number; |};
-|};
+type AlertPos = {| +top: number; +right: number; |};
 
 /**
  * The component used to render one task in backlog day.
  */
-class FutureViewTask extends React.PureComponent<Props, State> {
-  state: State = { overdueAlertPosition: null };
+function FutureViewTask(
+  {
+    compoundTask, inNDaysView, taskEditorPosition, isInMainList,
+  }: Props,
+): Node {
+  const [overdueAlertPosition, setOverdueAlertPosition] = React.useState<AlertPos | null>(null);
+  const isSmallScreen = useMappedWindowSize(({ width }) => width <= 768);
+
+  if (compoundTask === null) {
+    return null;
+  }
+  const { original, filteredSubTasks, color } = compoundTask;
 
   /**
    * Get an onClickHandler when the element is clicked.
@@ -51,7 +64,7 @@ class FutureViewTask extends React.PureComponent<Props, State> {
    * @param {function(): void} opener the opener passed by the floating task editor.
    * @return {function} the onClick handler.
    */
-  getOnClickHandler = (opener: () => void) => (event: SyntheticEvent<HTMLElement>): void => {
+  const getOnClickHandler = (opener: () => void) => (event: SyntheticEvent<HTMLElement>): void => {
     if (event.target instanceof HTMLElement) {
       const elem: HTMLElement = event.target;
       // only accept click on text.
@@ -61,119 +74,134 @@ class FutureViewTask extends React.PureComponent<Props, State> {
     }
   };
 
-  renderCheckBox = (): Node => {
-    const { filteredTask: { id, complete } } = this.props;
-    const onChange = () => {
-      editMainTask(id, { complete: !complete });
-    };
+  const TaskCheckBox = (): Node => {
+    const { id, complete } = original;
+    const onChange = () => editMainTask(id, { complete: !complete });
     return <CheckBox className={styles.TaskCheckBox} checked={complete} onChange={onChange} />;
   };
-
-  renderTaskName = (): Node => {
-    const { filteredTask: { name, complete } } = this.props;
+  const TaskName = (): Node => {
+    const { name, complete } = original;
     const tagStyle = complete ? { textDecoration: 'line-through' } : {};
     return <span className={styles.TaskText} style={tagStyle}>{name}</span>;
   };
 
-  renderRemoveTaskIcon = (): Node => {
-    const { filteredTask } = this.props;
-    const handler = () => {
-      removeTask(filteredTask);
-    };
+  const RemoveTaskIcon = (): Node => {
+    const handler = () => removeTask(original);
     return <Delete className={styles.TaskIcon} onClick={handler} />;
   };
-
-  renderBookmarkIcon = (): Node => {
-    const { filteredTask: { id, inFocus } } = this.props;
+  const PinIcon = (): Node => {
+    const { id, inFocus } = original;
     const handler = () => editMainTask(id, { inFocus: !inFocus });
     return (inFocus)
       ? <PinFilled className={styles.TaskIcon} onClick={handler} />
       : <PinOutline className={styles.TaskIcon} onClick={handler} />;
   };
 
-  renderMainTaskInfo = (simplified: boolean = false): Node => {
-    const { taskColor, isInMainList } = this.props;
+  const renderMainTaskInfo = (simplified: boolean = false): Node => {
     if (simplified && isInMainList) {
-      const style = { backgroundColor: taskColor, height: '25px' };
+      const style = { backgroundColor: color, height: '25px' };
       return <div className={styles.TaskMainWrapper} style={style} />;
     }
     return (
-      <div className={styles.TaskMainWrapper} style={{ backgroundColor: taskColor }}>
-        {this.renderCheckBox()}
-        {this.renderTaskName()}
-        {this.renderBookmarkIcon()}
-        {this.renderRemoveTaskIcon()}
+      <div className={styles.TaskMainWrapper} style={{ backgroundColor: color }}>
+        <TaskCheckBox />
+        <TaskName />
+        <PinIcon />
+        <RemoveTaskIcon />
       </div>
     );
   };
 
-  renderSubTasks = (): Node => {
-    const { filteredTask: { complete, subtasks } } = this.props;
-    return subtasks.map((subTask: SubTask) => (
-      <FutureViewSubTask
-        key={subTask.id}
-        mainTaskCompleted={complete}
-        {...subTask}
-      />
-    ));
-  };
+  const renderSubTasks = (): Node => filteredSubTasks.map(s => (
+    <FutureViewSubTask
+      key={s.id}
+      subTask={s}
+      mainTaskId={original.id}
+      mainTaskCompleted={original.complete}
+    />
+  ));
 
-  render(): Node {
-    const { inNDaysView, taskEditorPosition, originalTask } = this.props;
-    const { date, complete } = originalTask;
-    const { overdueAlertPosition } = this.state;
-    const overdueComponentOpt = overdueAlertPosition && (
-      <OverdueAlert absolutePosition={overdueAlertPosition} />
-    );
-    const refHandler = (divElement: HTMLDivElement | null) => {
-      if (divElement != null) {
-        const isOverdue = date < getTodayAtZeroAM() && !complete;
-        if (isOverdue && overdueAlertPosition == null) {
-          const { top } = divElement.getBoundingClientRect();
-          const parent = divElement.parentElement ?? error('Corrupted DOM!');
-          const parentRect = parent.getBoundingClientRect();
-          const headerHeight = inNDaysView ? nDaysViewHeaderHeight : otherViewsHeightHeader;
-          this.setState({
-            overdueAlertPosition: {
-              top: top - parentRect.top + headerHeight - 3,
-              right: -5,
-            },
-          });
-        }
+  const { date, complete } = original;
+  const overdueComponentOpt = overdueAlertPosition && (
+    <OverdueAlert absolutePosition={overdueAlertPosition} />
+  );
+  const refHandler = (divElement: HTMLDivElement | null) => {
+    if (divElement != null) {
+      const isOverdue = date < getTodayAtZeroAM() && !complete;
+      if (isOverdue && overdueAlertPosition == null) {
+        const { top } = divElement.getBoundingClientRect();
+        const parent = divElement.parentElement ?? error('Corrupted DOM!');
+        const parentRect = parent.getBoundingClientRect();
+        const headerHeight = inNDaysView ? nDaysViewHeaderHeight : otherViewsHeightHeader;
+        setOverdueAlertPosition({
+          top: top - parentRect.top + headerHeight - 3,
+          right: -5,
+        });
       }
-    };
-    // Construct the trigger for the floating task editor.
-    const trigger = (opened: boolean, opener: () => void): Node => {
-      const onClickHandler = this.getOnClickHandler(opener);
-      const style = opened ? { zIndex: 8 } : {};
-      const { windowSize: { width } } = this.props;
-      const mainTasks = inNDaysView
-        ? this.renderMainTaskInfo()
-        : this.renderMainTaskInfo(width <= 768);
-      const subtasks = inNDaysView ? this.renderSubTasks() : null;
-      return (
-        <div
-          role="presentation"
-          className={styles.Task}
-          style={style}
-          onClick={onClickHandler}
-          ref={refHandler}
-        >
-          {overdueComponentOpt}
-          {mainTasks}
-          {subtasks}
-        </div>
-      );
-    };
+    }
+  };
+  // Construct the trigger for the floating task editor.
+  const trigger = (opened: boolean, opener: () => void): Node => {
+    const onClickHandler = getOnClickHandler(opener);
+    const style = opened ? { zIndex: 8 } : {};
+    const mainTasks = inNDaysView
+      ? renderMainTaskInfo()
+      : renderMainTaskInfo(isSmallScreen);
+    const subtasks = inNDaysView ? renderSubTasks() : null;
     return (
-      <FloatingTaskEditor
-        position={taskEditorPosition}
-        initialTask={originalTask}
-        trigger={trigger}
-      />
+      <div
+        role="presentation"
+        className={styles.Task}
+        style={style}
+        onClick={onClickHandler}
+        ref={refHandler}
+      >
+        {overdueComponentOpt}
+        {mainTasks}
+        {subtasks}
+      </div>
     );
-  }
+  };
+  return (
+    <FloatingTaskEditor
+      position={taskEditorPosition}
+      initialTask={original}
+      trigger={trigger}
+    />
+  );
 }
 
-const Connected: ComponentType<OwnProps> = windowSizeConnect(FutureViewTask);
+const getCompoundTask = (
+  { tasks, subTasks, tags }: State, { taskId, doesShowCompletedTasks }: OwnProps,
+): CompoundTask | null => {
+  const original = tasks.get(taskId);
+  if (original == null) {
+    return null;
+  }
+  const color = tags.get(original.tag)?.color ?? NONE_TAG.color;
+  if (doesShowCompletedTasks) {
+    let filteredSubTasks = [];
+    original.children.forEach((subTaskId) => {
+      const s = subTasks.get(subTaskId);
+      if (s != null) { filteredSubTasks.push(s); }
+    });
+    filteredSubTasks = filteredSubTasks.sort((a, b) => a.order - b.order);
+    return { original, filteredSubTasks, color };
+  }
+  if (original.complete) {
+    return null;
+  }
+  let filteredSubTasks = [];
+  original.children.forEach((subTaskId) => {
+    const s = subTasks.get(subTaskId);
+    if (s != null && !s.complete) { filteredSubTasks.push(s); }
+  });
+  filteredSubTasks = filteredSubTasks.sort((a, b) => a.order - b.order);
+  return { original, filteredSubTasks, color };
+};
+const mapStateToProps = (
+  state: State, ownProps: OwnProps,
+): {| +compoundTask: CompoundTask | null |} => ({ compoundTask: getCompoundTask(state, ownProps) });
+
+const Connected: ComponentType<OwnProps> = connect(mapStateToProps)(FutureViewTask);
 export default Connected;

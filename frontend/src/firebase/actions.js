@@ -1,14 +1,24 @@
 // @flow strict
 
+import { firestore } from 'firebase/app';
+import { Map, Set } from 'immutable';
 import type {
   Course, PartialMainTask, PartialSubTask, SubTask, Tag, Task,
 } from '../store/store-types';
 import type {
-  FirestoreCommon, FirestoreTag, FirestoreTask, FirestoreSubTask,
+  FirestoreCommon,
+  FirestoreTag,
+  FirestoreTask,
+  FirestoreSubTask,
 } from './firestore-types';
 import { getAppUser } from './auth';
-import { db, tagsCollection, tasksCollection } from './db';
-import { ignore } from '../util/general-util';
+import {
+  db,
+  subTasksCollection,
+  tagsCollection,
+  tasksCollection,
+} from './db';
+import { error, ignore } from '../util/general-util';
 import type { TaskDiff } from '../util/task-util';
 import { emitUndoAddTaskToast, emitUndoRemoveTaskToast } from '../util/undo-util';
 import allocateNewOrder from './order-manager';
@@ -27,6 +37,9 @@ const mergeWithOwner = <T>(obj: T): {| ...T, +owner: string |} => ({
 });
 
 type WithoutIdOrder<Props> = $ReadOnly<$Diff<Props, {| +id: string; +order: number |}>>;
+type WithoutId<Props> = $ReadOnly<$Diff<Props, {| +id: string; |}>>;
+type IdOrderChildren = {| +id: string; +order: number; +children: Set<string>; |};
+type TaskWithoutIdOrderChildren = $ReadOnly<$Diff<Task, IdOrderChildren>>;
 
 /*
  * --------------------------------------------------------------------------------
@@ -37,7 +50,7 @@ type WithoutIdOrder<Props> = $ReadOnly<$Diff<Props, {| +id: string; +order: numb
 export const addTag = (tag: WithoutIdOrder<Tag>): void => {
   const { tags } = store.getState();
   const { classId } = tag;
-  if (classId != null && tags.some(t => t.classId === classId)) {
+  if (classId != null && Array.from(tags.values()).some((t: Tag) => t.classId === classId)) {
     return;
   }
   createFirestoreObject('tags', tag)
@@ -72,71 +85,90 @@ export const removeTag = (id: string): void => {
  * --------------------------------------------------------------------------------
  */
 
-export const addTask = (task: WithoutIdOrder<Task>, noUndo?: 'no-undo'): void => {
-  const { subtasks, ...taskWithoutSubtasks } = task;
-  const transformedTask = { type: 'TASK', ...taskWithoutSubtasks };
-  createFirestoreObject('tasks', transformedTask)
-    .then((firestoreTask: FirestoreTask) => {
-      tasksCollection().add(firestoreTask).then((addedDoc) => {
-        const completeTask = {
-          ...task, id: addedDoc.id, order: firestoreTask.order, subtasks: [],
-        };
-        const batch = db().batch();
-        subtasks.forEach((subtask) => {
-          const { id: _, ...rest } = subtask;
-          const firebaseSubTask: FirestoreSubTask = mergeWithOwner({
-            type: 'SUBTASK',
-            parent: addedDoc.id,
-            ...rest,
-          });
-          const subtaskDoc = tasksCollection().doc();
-          completeTask.subtasks.push({ id: subtaskDoc.id, ...rest });
-          batch.set(subtaskDoc, firebaseSubTask);
-        });
-        batch.commit().then(() => {
-          if (noUndo !== 'no-undo') {
-            emitUndoAddTaskToast(completeTask);
-          }
-        });
-      });
+export const addTask = (
+  task: TaskWithoutIdOrderChildren,
+  subTasks: WithoutId<SubTask>[],
+  noUndo?: 'no-undo',
+): void => {
+  (async () => {
+    // Step 1: Create SubTasks
+    const batch = db().batch();
+    const createdSubTasks: SubTask[] = subTasks.map((subtask) => {
+      const firebaseSubTask: FirestoreSubTask = mergeWithOwner(subtask);
+      const subtaskDoc = subTasksCollection().doc();
+      batch.set(subtaskDoc, firebaseSubTask);
+      return { ...subtask, id: subtaskDoc.id };
     });
+    await batch.commit();
+    const subtaskIds = createdSubTasks.map(s => s.id);
+    // Step 2: Create Task
+    const taskWithChildren = { ...task, children: subtaskIds };
+    const firestoreTask: FirestoreTask = await createFirestoreObject('tasks', taskWithChildren);
+    const addedDoc = await tasksCollection().add(firestoreTask);
+    // Step 3: Handle optional UNDO
+    if (noUndo !== 'no-undo') {
+      const fullTask = {
+        ...task,
+        id: addedDoc.id,
+        order: firestoreTask.order,
+        children: createdSubTasks,
+      };
+      emitUndoAddTaskToast(fullTask);
+    }
+  })();
 };
 
-export const addSubTask = (taskId: string, subTask: SubTask): void => {
-  const { id, ...rest } = subTask;
-  const firebaseSubTask: FirestoreSubTask = mergeWithOwner({
-    type: 'SUBTASK', parent: taskId, ...rest,
+export const addSubTask = (taskId: string, subTask: WithoutId<SubTask>): SubTask => {
+  const newSubTaskDoc = subTasksCollection().doc();
+  const firebaseSubTask: FirestoreSubTask = mergeWithOwner(subTask);
+  const batch = db().batch();
+  batch.set(newSubTaskDoc, firebaseSubTask);
+  batch.update(tasksCollection().doc(taskId), {
+    children: firestore.FieldValue.arrayUnion(newSubTaskDoc.id),
   });
-  tasksCollection().add(firebaseSubTask).then(ignore);
+  batch.commit().then(ignore);
+  return { ...subTask, id: newSubTaskDoc.id };
 };
 
 /**
- * @see EditTaskAction
  * @see TaskDiff
  */
-export const editTask = (task: Task, diff: TaskDiff): void => {
+export const editTask = (taskId: string, diff: TaskDiff): void => {
   const {
     mainTaskDiff, subtasksCreations, subtasksEdits, subtasksDeletions,
   } = diff;
   const batch = db().batch();
-  // Handle mainTaskDiff
-  batch.set(tasksCollection().doc(task.id), mainTaskDiff, { merge: true });
   // Handle subtasksCreations
-  const parent = task.id;
+  const createdSubTaskIds = [];
   subtasksCreations.forEach((creation) => {
     const { id, ...rest } = creation;
-    const firebaseSubTask: FirestoreSubTask = mergeWithOwner({
-      type: 'SUBTASK', parent, ...rest,
-    });
-    batch.set(tasksCollection().doc(), firebaseSubTask);
+    const firebaseSubTask: FirestoreSubTask = mergeWithOwner(rest);
+    const subTaskDocRef = subTasksCollection().doc();
+    createdSubTaskIds.push(subTaskDocRef.id);
+    batch.set(subTaskDocRef, firebaseSubTask);
   });
   // Handle subtasksEdits
   subtasksEdits.forEach(([subtaskId, edit]) => {
-    batch.set(tasksCollection().doc(subtaskId), edit, { merge: true });
+    batch.set(subTasksCollection().doc(subtaskId), edit, { merge: true });
   });
   // Handle subtasksDeletions
   subtasksDeletions.forEach(id => batch.delete(tasksCollection().doc(id)));
-  batch.commit().then(ignore);
+  batch.commit().then(() => {
+    const b = db().batch();
+    if (createdSubTaskIds.length > 0) {
+      b.update(tasksCollection().doc(taskId), {
+        ...mainTaskDiff, children: firestore.FieldValue.arrayUnion(...createdSubTaskIds),
+      });
+    } else {
+      b.update(tasksCollection().doc(taskId), { ...mainTaskDiff });
+    }
+    if (subtasksDeletions.length > 0) {
+      b.update(tasksCollection().doc(taskId), {
+        children: firestore.FieldValue.arrayRemove(...subtasksDeletions),
+      });
+    }
+    b.commit().then(ignore);
+  });
 };
 
 export const editMainTask = (taskId: string, partialMainTask: PartialMainTask): void => {
@@ -144,30 +176,43 @@ export const editMainTask = (taskId: string, partialMainTask: PartialMainTask): 
 };
 
 export const editSubTask = (subtaskId: string, partialSubTask: PartialSubTask): void => {
-  tasksCollection().doc(subtaskId).update(partialSubTask).then(ignore);
+  subTasksCollection().doc(subtaskId).update(partialSubTask).then(ignore);
 };
 
 export const removeTask = (task: Task, noUndo?: 'no-undo'): void => {
+  const { subTasks } = store.getState();
+  const deletedSubTasks = task.children
+    .map(id => subTasks.get(id) ?? error('corrupted!'))
+    .toArray();
   const batch = db().batch();
   batch.delete(tasksCollection().doc(task.id));
-  task.subtasks.forEach(s => batch.delete(tasksCollection().doc(s.id)));
+  task.children.forEach(id => batch.delete(subTasksCollection().doc(id)));
   batch.commit().then(() => {
     if (noUndo !== 'no-undo') {
-      emitUndoRemoveTaskToast(task);
+      // TODO
+      const { children, ...rest } = task;
+      const fullTask = { ...rest, children: deletedSubTasks };
+      emitUndoRemoveTaskToast(fullTask);
     }
   });
 };
 
-export const removeSubTask = (subtaskId: string): void => {
-  tasksCollection().doc(subtaskId).delete().then(ignore);
+export const removeSubTask = (taskId: string, subtaskId: string): void => {
+  const batch = db().batch();
+  batch.update(tasksCollection().doc(taskId), {
+    children: firestore.FieldValue.arrayRemove(subtaskId),
+  });
+  batch.delete(subTasksCollection().doc(subtaskId));
+  batch.commit().then(ignore);
 };
 
 /**
  * Clear all the completed tasks in focus view.
  */
-export const clearFocus = (taskIds: string[]): void => {
+export const clearFocus = (taskIds: string[], subTaskIds: string[]): void => {
   const batch = db().batch();
   taskIds.forEach(id => batch.update(tasksCollection().doc(id), { inFocus: false }));
+  subTaskIds.forEach(id => batch.update(subTasksCollection().doc(id), { inFocus: false }));
   batch.commit().then(ignore);
 };
 
@@ -196,23 +241,23 @@ export function reorder<-T: { +id: string; +order: number }>(
     return originalList;
   }
   const sortedList = originalList.sort((a, b) => a.order - b.order);
-  const reorderMap = new Map<string, number>(); // key: id, value: new order
+  let reorderMap = Map<string, number>(); // key: id, value: new order
   if (sourceOrder < destinationOrder) {
     // wants to go to later places
     sortedList.forEach((element) => {
       if (element.order === sourceOrder) {
-        reorderMap.set(element.id, destinationOrder);
+        reorderMap = reorderMap.set(element.id, destinationOrder);
       } else if (element.order > sourceOrder && element.order <= destinationOrder) {
-        reorderMap.set(element.id, element.order - 1);
+        reorderMap = reorderMap.set(element.id, element.order - 1);
       }
     });
   } else {
     // wants to go to earlier places
     sortedList.forEach((element) => {
       if (element.order === sourceOrder) {
-        reorderMap.set(element.id, destinationOrder);
+        reorderMap = reorderMap.set(element.id, destinationOrder);
       } else if (element.order >= destinationOrder && element.order < sourceOrder) {
-        reorderMap.set(element.id, element.order + 1);
+        reorderMap = reorderMap.set(element.id, element.order + 1);
       }
     });
   }
@@ -236,9 +281,9 @@ export function reorder<-T: { +id: string; +order: number }>(
 
 export const importCourseExams = (): void => {
   const { tags, tasks, courses } = store.getState();
-  type SimpleTask = $Diff<WithoutIdOrder<Task>, {| +subtasks: SubTask[] |}>;
-  const newTasks: SimpleTask[] = [];
-  tags.forEach((tag) => {
+  const newTasks: TaskWithoutIdOrderChildren[] = [];
+  // $FlowFixMe
+  Object.values(tags).forEach((tag: Tag) => {
     if (tag.classId === null) {
       return;
     }
@@ -257,8 +302,9 @@ export const importCourseExams = (): void => {
             && date.getDate() === t.getDate()
             && date.getHours() === t.getHours();
         };
-        if (!tasks.some(filter)) {
-          const newTask: SimpleTask = {
+        // $FlowFixMe
+        if (!Object.values(tasks).some(filter)) {
+          const newTask: TaskWithoutIdOrderChildren = {
             name: 'Exam',
             tag: tag.id,
             date: t,
@@ -275,9 +321,7 @@ export const importCourseExams = (): void => {
       const newOrderedTasks = newTasks.map((t, i) => ({ ...t, order: i + startOrder }));
       const batch = db().batch();
       newOrderedTasks.forEach((orderedTask) => {
-        const transformedTask: FirestoreTask = mergeWithOwner({
-          type: 'TASK', ...orderedTask,
-        });
+        const transformedTask: FirestoreTask = mergeWithOwner({ ...orderedTask, children: [] });
         batch.set(tasksCollection().doc(), transformedTask);
       });
       // eslint-disable-next-line no-alert

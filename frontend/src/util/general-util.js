@@ -5,7 +5,12 @@
  *
  * @return {number} a random id.
  */
-export const randomId = (): string => String(-100 - Math.floor(10000 * Math.random()));
+export const randomId = (): string => String(new Date().getTime());
+
+/**
+ * The identity function.
+ */
+export function identity<T>(t: T): T { return t; }
 
 /**
  * An empty function used to ignore promise.

@@ -1,0 +1,5 @@
+.Toast div {
+  min-height: unset !important;
+  background: #676767;
+  border-radius: 5px;
+}

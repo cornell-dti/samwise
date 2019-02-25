@@ -1,24 +1,22 @@
-.closeButton {
-  position:absolute;
-  top:40px;
-  right:40px;
-  color:white;
-  font-size:30px;
+.CloseButton {
+  position: absolute;
+  top: 40px;
+  right: 40px;
+  color: white;
+  font-size: 30px;
 }
 
-.changesSaved {
-  position:absolute;
-  top:40px;
-  right:100px;
-  line-height:30px;
-  padding:0;margin:0;
-  font-style:italic;
+.ChangesSaved {
+  position: absolute;
+  top: 40px;
+  right: 100px;
+  line-height: 30px;
+  padding: 0;
+  margin: 0;
+  font-style: italic;
 }
 
-
-
-
-.settingsModal {
+.SettingsModal {
   position: fixed;
   top: 0;
   bottom: 0;
@@ -26,12 +24,10 @@
   right: 0;
   z-index: 10;
   background-color: #7b7b7b;
-  color:white;
-  overflow-y:auto;
+  color: white;
+  overflow-y: auto;
 }
 
-
-
-.contentWrap{
+.ContentWrap {
   padding: 60px 50px;
 }

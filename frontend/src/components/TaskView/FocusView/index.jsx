@@ -4,27 +4,28 @@ import React from 'react';
 import type { ComponentType, Node } from 'react';
 // $FlowFixMe not flow strict
 import { DragDropContext, Droppable } from 'react-beautiful-dnd';
-import type { Task } from '../../../store/store-types';
+import { connect } from 'react-redux';
 import styles from './FocusView.css';
 import ClearFocus from './ClearFocus';
 import FocusTask from './FocusTask';
 import { reorder } from '../../../firebase/actions';
+import { getTaskIdOrderList } from '../../../store/selectors';
 
 const focusViewDroppableId = 'focus-view-droppable';
 
-type Props = {| +tasks: Task[] |};
+const tasksRenderer = ({ id }: { +id: string }, index: number) => (
+  <FocusTask key={id} id={id} order={index} />
+);
+
+type IdOrder = {| +id: string; order: number |};
 
 /**
  * The focus view component.
- *
- * @param {Task[]} tasks the main task array.
- * @return {Node} the rendered focus view component.
- * @constructor
  */
-function FocusView({ tasks }: Props): Node {
-  const [localTasks, setLocalTasks] = React.useState<Task[]>(tasks);
-  if (localTasks !== tasks) {
-    setLocalTasks(tasks);
+function FocusView({ idOrderList }: {| +idOrderList: IdOrder[] |}): Node {
+  const [localList, setLocalList] = React.useState<IdOrder[]>(idOrderList);
+  if (localList !== idOrderList) {
+    setLocalList(idOrderList);
   }
 
   const onDragEnd = (result) => {
@@ -37,8 +38,14 @@ function FocusView({ tasks }: Props): Node {
       // drop at the same place.
       return;
     }
-    const newTasks = reorder('tasks', tasks, source.index, destination.index);
-    setLocalTasks(newTasks);
+    // TODO has problem when there is a gap in order
+    const newList = reorder(
+      'tasks',
+      localList,
+      localList[source.index].order,
+      localList[destination.index].order,
+    );
+    setLocalList(newList);
   };
 
   return (
@@ -53,9 +60,7 @@ function FocusView({ tasks }: Props): Node {
           <Droppable droppableId={focusViewDroppableId}>
             {provided => (
               <div ref={provided.innerRef} {...provided.droppableProps}>
-                {localTasks.map((task: Task): Node => (
-                  <FocusTask key={task.id} task={task} />
-                ))}
+                {localList.map(tasksRenderer)}
                 {provided.placeholder}
               </div>
             )}
@@ -66,5 +71,5 @@ function FocusView({ tasks }: Props): Node {
   );
 }
 
-const Connected: ComponentType<Props> = React.memo(FocusView);
+const Connected: ComponentType<{||}> = connect(getTaskIdOrderList)(FocusView);
 export default Connected;

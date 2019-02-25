@@ -18,8 +18,10 @@ const collections = {
   ORDER_MANAGER: 'samwise-order-manager',
   TAGS: 'samwise-tags',
   TASKS: 'samwise-tasks',
+  SUBTASKS: 'samwise-subtasks',
 };
 
 export const orderManagerCollection = () => db().collection(collections.ORDER_MANAGER);
 export const tagsCollection = () => db().collection(collections.TAGS);
 export const tasksCollection = () => db().collection(collections.TASKS);
+export const subTasksCollection = () => db().collection(collections.SUBTASKS);
