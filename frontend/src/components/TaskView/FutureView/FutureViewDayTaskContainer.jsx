@@ -51,7 +51,7 @@ function FutureViewDayTaskContainer(
       return;
     }
     setPrevHeights([tasksHeight, containerHeight]);
-    onHeightChange(tasksHeight > containerHeight, tasksHeight);
+    onHeightChange(tasksHeight > containerHeight && containerHeight > 0, tasksHeight);
   });
 
   const taskListComponent = idOrderList.map(({ id }) => (

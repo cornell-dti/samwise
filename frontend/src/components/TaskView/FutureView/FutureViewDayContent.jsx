@@ -37,7 +37,7 @@ function FutureViewDayContent(
   const containerStyle = (inNDaysView && inMainList) ? { paddingTop: '1em' } : {};
   const isToday: boolean = getTodayAtZeroAM().toDateString() === date.text;
   return (
-    <div>
+    <>
       <div className={styles.DateInfo} style={containerStyle}>
         {inNDaysView && (
           <div className={styles.DateInfoDay}>
@@ -54,7 +54,7 @@ function FutureViewDayContent(
         isInMainList={inMainList}
         onHeightChange={onHeightChange}
       />
-    </div>
+    </>
   );
 }
 
