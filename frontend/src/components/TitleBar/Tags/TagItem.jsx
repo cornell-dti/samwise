@@ -4,7 +4,7 @@ import React from 'react';
 import type { Node } from 'react';
 import Delete from '../../../assets/svgs/XLight.svg';
 import type { Tag } from '../../../store/store-types';
-import styles from './TagItem.css';
+import styles from './TagItem.module.css';
 import ColorEditor from './ColorEditor';
 import { editTag, removeTag } from '../../../firebase/actions';
 

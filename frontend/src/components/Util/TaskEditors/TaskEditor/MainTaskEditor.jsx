@@ -5,7 +5,7 @@ import type { ComponentType, Node } from 'react';
 import Delete from '../../../../assets/svgs/XLight.svg';
 import PinOutline from '../../../../assets/svgs/pin-2-light-outline.svg';
 import Pin from '../../../../assets/svgs/pin-2-light-filled.svg';
-import styles from './TaskEditor.css';
+import styles from './TaskEditor.module.css';
 import CheckBox from '../../../UI/CheckBox';
 
 type NameCompleteInFocus = {|

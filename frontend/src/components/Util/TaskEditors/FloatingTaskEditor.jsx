@@ -8,8 +8,8 @@ import type {
 } from '../../../store/store-types';
 import type { FloatingPosition, TaskWithSubTasks } from './editors-types';
 import TaskEditor from './TaskEditor';
-import styles from './FloatingTaskEditor.css';
-import { TaskEditorFlexiblePadding as flexiblePaddingClass } from './TaskEditor/TaskEditor.css';
+import styles from './FloatingTaskEditor.module.css';
+import { TaskEditorFlexiblePadding as flexiblePaddingClass } from './TaskEditor/TaskEditor.module.css';
 import { EMPTY_TASK_DIFF, taskDiffIsEmpty } from '../../../util/task-util';
 import type { TaskDiff } from '../../../util/task-util';
 import { editTask, removeTask as removeTaskAction } from '../../../firebase/actions';

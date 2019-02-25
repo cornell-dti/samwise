@@ -2,7 +2,7 @@
 
 import React from 'react';
 import type { Node } from 'react';
-import styles from './TagItem.css';
+import styles from './TagItem.module.css';
 import ColorEditor from './ColorEditor';
 import { addTag } from '../../../firebase/actions';
 

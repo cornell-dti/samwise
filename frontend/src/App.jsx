@@ -3,7 +3,7 @@
 import React from 'react';
 import type { Node } from 'react';
 import { ToastContainer } from 'react-toastify';
-import styles from './App.css';
+import styles from './App.module.css';
 import Onboard from './components/TitleBar/Onboarding/Onboard';
 import TaskCreator from './components/TaskCreator/TaskCreator';
 import TaskView from './components/TaskView/TaskView';

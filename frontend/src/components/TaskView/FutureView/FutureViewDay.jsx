@@ -4,7 +4,7 @@ import React from 'react';
 import type { Node } from 'react';
 import type { SimpleDate } from './future-view-types';
 import type { FloatingPosition } from '../../Util/TaskEditors/editors-types';
-import styles from './FutureViewDay.css';
+import styles from './FutureViewDay.module.css';
 import {
   floatingViewWidth,
   nDaysViewHeaderHeight,

@@ -7,7 +7,7 @@ import Calendar from '../../assets/svgs/dark.svg';
 import PinFilled from '../../assets/svgs/pin-2-light-filled.svg';
 import FocusView from './FocusView';
 import FutureView, { futureViewConfigProvider } from './FutureView';
-import styles from './TaskView.css';
+import styles from './TaskView.module.css';
 import { useMappedWindowSize } from '../../hooks/window-size-hook';
 
 const FocusPanel = (): Node => <div className={styles.FocusPanel}><FocusView /></div>;

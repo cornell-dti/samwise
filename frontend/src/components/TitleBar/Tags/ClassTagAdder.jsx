@@ -4,7 +4,7 @@ import React, { useState } from 'react';
 import type { ComponentType } from 'react';
 import ReactSearchBox from 'react-search-box';
 import { connect } from 'react-redux';
-import styles from './TagAdder.css';
+import styles from './TagAdder.module.css';
 import type { Course } from '../../../store/store-types';
 import { addTag } from '../../../firebase/actions';
 

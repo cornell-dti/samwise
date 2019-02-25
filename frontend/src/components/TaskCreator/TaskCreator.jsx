@@ -6,7 +6,7 @@ import type { Set } from 'immutable';
 import { Icon } from 'semantic-ui-react';
 import Delete from '../../assets/svgs/XDark.svg';
 import 'react-toastify/dist/ReactToastify.css';
-import styles from './TaskCreator.css';
+import styles from './TaskCreator.module.css';
 import TagPicker from './TagPicker';
 import DatePicker from './DatePicker';
 import FocusPicker from './FocusPicker';

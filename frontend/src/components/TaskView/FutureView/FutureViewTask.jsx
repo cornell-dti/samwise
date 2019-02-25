@@ -6,7 +6,7 @@ import { connect } from 'react-redux';
 import Delete from '../../../assets/svgs/XLight.svg';
 import PinFilled from '../../../assets/svgs/pin-2-light-filled.svg';
 import PinOutline from '../../../assets/svgs/pin-2-dark-outline.svg';
-import styles from './FutureViewTask.css';
+import styles from './FutureViewTask.module.css';
 import FutureViewSubTask from './FutureViewSubTask';
 import FloatingTaskEditor from '../../Util/TaskEditors/FloatingTaskEditor';
 import type { State, SubTask, Task } from '../../../store/store-types';

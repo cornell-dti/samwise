@@ -2,7 +2,7 @@
 
 import React from 'react';
 import FutureViewDay from './FutureViewDay';
-import styles from './FutureViewNDays.css';
+import styles from './FutureViewNDays.module.css';
 import type { SimpleDate } from './future-view-types';
 
 type Props = {| +days: SimpleDate[]; +doesShowCompletedTasks: boolean; |};

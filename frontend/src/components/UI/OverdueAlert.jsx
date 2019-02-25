@@ -2,7 +2,7 @@
 
 import React from 'react';
 import type { Node } from 'react';
-import styles from './OverdueAlert.css';
+import styles from './OverdueAlert.module.css';
 
 type Props = {| +absolutePosition: ?{| +top: number; +right: number; |}; |};
 

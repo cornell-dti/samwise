@@ -3,7 +3,7 @@
 import React from 'react';
 import PinOutline from '../../assets/svgs/pin-2-dark-outline.svg';
 import Pin from '../../assets/svgs/pin-2-dark-filled.svg';
-import styles from './Picker.css';
+import styles from './Picker.module.css';
 
 type Props = {|
   +pinned: boolean;

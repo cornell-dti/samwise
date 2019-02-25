@@ -4,7 +4,7 @@ import React from 'react';
 import type { Node } from 'react';
 import Calendar from 'react-calendar';
 import LightCalendar from '../../../../assets/svgs/light.svg';
-import styles from './TaskEditor.css';
+import styles from './TaskEditor.module.css';
 import TagListPicker from '../../TagListPicker/TagListPicker';
 import type { Tag } from '../../../../store/store-types';
 

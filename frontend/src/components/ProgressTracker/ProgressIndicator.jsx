@@ -3,7 +3,7 @@
 import React from 'react';
 import type { Node } from 'react';
 import type { TasksProgressProps } from '../../util/task-util';
-import styles from './ProgressIndicator.css';
+import styles from './ProgressIndicator.module.css';
 
 type ProgressBarProps = {|
   ...TasksProgressProps;

@@ -5,7 +5,7 @@ import type { Node } from 'react';
 import firebase from 'firebase/app';
 // $FlowFixMe
 import { FirebaseAuth } from 'react-firebaseui';
-import styles from './Login.css';
+import styles from './Login.module.css';
 import { cacheAppUser, toAppUser } from '../../../firebase/auth';
 import initListeners from '../../../firebase/listeners';
 

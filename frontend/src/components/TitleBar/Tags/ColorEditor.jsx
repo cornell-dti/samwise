@@ -5,7 +5,7 @@ import type { Node } from 'react';
 import { GithubPicker } from 'react-color';
 import Down from '../../../assets/svgs/v.svg';
 import colMap from './ListColors';
-import styles from './ColorEditor.css';
+import styles from './ColorEditor.module.css';
 
 type Props = {|
   +color: string,

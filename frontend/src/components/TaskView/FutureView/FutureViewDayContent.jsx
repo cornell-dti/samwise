@@ -4,7 +4,7 @@ import React from 'react';
 import type { ComponentType, Node } from 'react';
 import type { SimpleDate } from './future-view-types';
 import type { FloatingPosition } from '../../Util/TaskEditors/editors-types';
-import styles from './FutureViewDay.css';
+import styles from './FutureViewDay.module.css';
 import { day2String, getTodayAtZeroAM } from '../../../util/datetime-util';
 import FutureViewDayTaskContainer from './FutureViewDayTaskContainer';
 
