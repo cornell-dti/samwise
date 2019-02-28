@@ -18,17 +18,15 @@ export interface FirestoreTag extends FirestoreCommon {
 }
 
 export interface FirestoreTask extends FirestoreCommon {
-  readonly type: 'TASK';
   readonly name: string;
   readonly tag: string;
   readonly date: firestore.Timestamp;
   readonly complete: boolean;
   readonly inFocus: boolean;
+  readonly children: string[];
 }
 
 export interface FirestoreSubTask extends FirestoreCommon {
-  readonly type: 'SUBTASK';
-  readonly parent: string;
   readonly name: string;
   readonly complete: boolean;
   readonly inFocus: boolean;
