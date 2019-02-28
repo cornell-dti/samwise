@@ -38,12 +38,28 @@ p.SettingsSectionTitle {
   margin-top: 5px;
 }
 
-.SignButton {
-  background: #e93838 !important;
+.FinalRowButtonContainer {
+  display: flex;
+}
+
+.Padding {
+  flex: 1 1 auto;
+}
+
+.FinalRowButton {
   border: none !important;
   border-radius: 20px !important;
   font-size: 16px !important;
   padding: 10px 20px !important;
+}
+
+.SignButton {
+  background: #e93838 !important;
+}
+
+.ReplayTutorialButton {
+  color: #333333 !important;
+  background: white !important;
 }
 
 .ColorConfigItemList {

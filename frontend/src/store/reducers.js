@@ -6,7 +6,7 @@ import type {
   PatchCourses,
   PatchTags,
   PatchTasks,
-  PatchSubTasks,
+  PatchSubTasks, PatchSettings,
 } from './action-types';
 import type { State } from './store-types';
 import { NONE_TAG_ID, NONE_TAG } from '../util/tag-util';
@@ -23,6 +23,7 @@ const initialState: State = {
   dateTaskMap: Map(),
   subTasks: Map(),
   taskChildrenMap: Map(),
+  settings: { completedOnboarding: true, theme: 'light' },
   courses: Map(),
 };
 
@@ -87,6 +88,10 @@ function patchSubTasks(state: State, { created, edited, deleted }: PatchSubTasks
   return { ...state, subTasks: newSubTasks };
 }
 
+function patchSettings(state: State, { settings }: PatchSettings): State {
+  return { ...state, settings };
+}
+
 function patchCourses(state: State, { courses }: PatchCourses): State {
   return { ...state, courses };
 }
@@ -99,6 +104,8 @@ export default function rootReducer(state: State = initialState, action: Action)
       return patchTasks(state, action);
     case 'PATCH_SUBTASKS':
       return patchSubTasks(state, action);
+    case 'PATCH_SETTINGS':
+      return patchSettings(state, action);
     case 'PATCH_COURSES':
       return patchCourses(state, action);
     default:
