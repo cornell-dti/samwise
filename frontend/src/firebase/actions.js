@@ -298,11 +298,13 @@ export const importCourseExams = (): void => {
       return; // not an error because it may be courses in previous semesters.
     }
     allCoursesWithId.forEach((course: Course) => {
-      course.examTimes.forEach((examTime) => {
-        const t = new Date(examTime);
+      course.examTimes.forEach(({ type, time }) => {
+        const courseType = type === 'final' ? 'Final' : 'Prelim';
+        const examName = `${course.subject}${course.courseNumber} ${courseType}`;
+        const t = new Date(time);
         const filter = (task: Task) => {
           const { name, date } = task;
-          return task.tag === tag.id && name === 'Exam'
+          return task.tag === tag.id && name === examName
             && date.getFullYear() === t.getFullYear()
             && date.getMonth() === t.getMonth()
             && date.getDate() === t.getDate()
@@ -310,7 +312,7 @@ export const importCourseExams = (): void => {
         };
         if (!Array.from(tasks.values()).some(filter)) {
           const newTask: TaskWithoutIdOrderChildren = {
-            name: 'Exam',
+            name: examName,
             tag: tag.id,
             date: t,
             complete: false,

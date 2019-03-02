@@ -59,7 +59,7 @@ export type Course = {|
   +subject: string;
   +courseNumber: string;
   +title: string;
-  +examTimes: string[];
+  +examTimes: {| +type: 'final' | 'prelim', +time: number |}[];
 |};
 
 /**

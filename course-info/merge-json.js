@@ -15,7 +15,7 @@ class Course {
 
   get plainJs() {
     const examTimes = [];
-    this.examTimes.forEach((time, type) => {
+    this.examTimes.forEach((type, time) => {
       examTimes.push({
         type,
         time,
@@ -46,7 +46,7 @@ function processExamInfoJson(map, json, type) {
       console.log(`Warning: the exam at ${time} for ${identifier} is not found in course info.`);
       return;
     }
-    course.examTimes.set(identifier, { type, time });
+    course.examTimes.set(time, type);
   });
 }
 
