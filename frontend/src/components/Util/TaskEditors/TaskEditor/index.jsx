@@ -174,14 +174,17 @@ function TaskEditor(
             onPressEnter={pressEnterHandler}
           />
         )}
-        {newSubTaskDisabled !== true && (
+        <div
+          className={styles.SubtaskHide}
+          style={{ maxHeight: newSubTaskDisabled === true ? 0 : 50 }}
+        >
           <NewSubTaskEditor
             onChange={handleNewSubTaskFirstType}
             needToBeFocused={subTaskToFocus === 'new-subtask'}
             afterFocusedCallback={clearNeedToFocus}
             onPressEnter={onSave}
           />
-        )}
+        </div>
       </div>
       {children}
     </form>

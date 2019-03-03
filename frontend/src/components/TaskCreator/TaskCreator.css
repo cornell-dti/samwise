@@ -111,9 +111,9 @@
 .NewTaskModal {
   background: white;
   position: absolute;
-  top: -30px;
+  top: -50px;
   right: -30px;
-  padding: 70px 0 10px 0;
+  padding: 90px 0 10px 0;
   z-index: -1;
   /*box-shadow: 0 2px 25px 5px #444;*/
   box-shadow: 0 8px 65px 3px #444;
