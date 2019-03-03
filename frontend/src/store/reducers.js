@@ -102,9 +102,7 @@ export default function rootReducer(state: State = initialState, action: Action)
     case 'PATCH_TAGS':
       return patchTags(state, action);
     case 'PATCH_TASKS':
-      const a = patchTasks(state, action);
-      console.log(a.dateTaskMap.toJS(), a.tasks.toJS());
-      return a;
+      return patchTasks(state, action);
     case 'PATCH_SUBTASKS':
       return patchSubTasks(state, action);
     case 'PATCH_SETTINGS':
