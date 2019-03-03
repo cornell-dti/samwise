@@ -28,6 +28,6 @@ export const patchSettings = (settings: Settings): PatchSettings => ({
   type: 'PATCH_SETTINGS', settings,
 });
 
-export const patchCourses = (courses: Map<number, Course[]>): PatchCourses => ({
+export const patchCourses = (courses: Map<string, Course[]>): PatchCourses => ({
   type: 'PATCH_COURSES', courses,
 });
