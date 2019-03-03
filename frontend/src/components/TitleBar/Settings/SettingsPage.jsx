@@ -105,7 +105,7 @@ function SettingsPage({ tags }: Props): Node {
           <button
             type="button"
             className={[styles.FinalRowButton, styles.FeedbackButton].join(' ')}
-            onClick={() => { window.location.href = 'www.google.com'; }}
+            onClick={() => { window.location.href = 'https://goo.gl/forms/PZUZ1Ze6kN82EmcD2'; }}
           >
             Feedback?
           </button>
