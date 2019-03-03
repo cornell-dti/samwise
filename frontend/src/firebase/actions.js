@@ -300,7 +300,7 @@ export const importCourseExams = (): void => {
     allCoursesWithId.forEach((course: Course) => {
       course.examTimes.forEach(({ type, time }) => {
         const courseType = type === 'final' ? 'Final' : 'Prelim';
-        const examName = `${course.subject}${course.courseNumber} ${courseType}`;
+        const examName = `${course.subject} ${course.courseNumber} ${courseType}`;
         const t = new Date(time);
         const filter = (task: Task) => {
           const { name, date } = task;

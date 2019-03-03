@@ -33,7 +33,7 @@ export type PatchSettings = {|
 
 export type PatchCourses = {|
   type: 'PATCH_COURSES';
-  +courses: Map<number, Course[]>;
+  +courses: Map<string, Course[]>;
 |};
 
 export type Action =

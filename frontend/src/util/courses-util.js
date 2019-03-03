@@ -9,14 +9,15 @@ import type { Course } from '../store/store-types';
  * @param {Course[]} courses an array of courses.
  * @return {Map<number, Course[]>} the map from course id to courses.
  */
-export default function buildCoursesMap(courses: Course[]): Map<number, Course[]> {
-  const map = Map<number, Course[]>();
+export default function buildCoursesMap(courses: Course[]): Map<string, Course[]> {
+  const map = Map<string, Course[]>();
   return map.withMutations((m) => {
     for (let i = 0; i < courses.length; i += 1) {
       const course = courses[i];
-      const existingCourses = m.get(course.courseId);
+      const id = `${course.courseId} ${course.subject} ${course.courseNumber}`;
+      const existingCourses = m.get(id);
       if (existingCourses == null) {
-        m.set(course.courseId, [course]);
+        m.set(id, [course]);
       } else {
         existingCourses.push(course);
       }
