@@ -53,7 +53,8 @@ function patchTasks(state: State, { created, edited, deleted }: PatchTasks): Sta
       const oldKey = oldTask.date.toDateString();
       if (oldKey !== key) {
         // remove first
-        m.remove(oldKey);
+        const oldBucket = m.get(oldKey) ?? error('impossible!');
+        m.set(oldKey, oldBucket.remove(t.id));
       }
       const set = m.get(key);
       if (set == null) {
@@ -101,7 +102,9 @@ export default function rootReducer(state: State = initialState, action: Action)
     case 'PATCH_TAGS':
       return patchTags(state, action);
     case 'PATCH_TASKS':
-      return patchTasks(state, action);
+      const a = patchTasks(state, action);
+      console.log(a.dateTaskMap.toJS(), a.tasks.toJS());
+      return a;
     case 'PATCH_SUBTASKS':
       return patchSubTasks(state, action);
     case 'PATCH_SETTINGS':
