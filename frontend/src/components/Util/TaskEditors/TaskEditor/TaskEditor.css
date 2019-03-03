@@ -131,3 +131,10 @@ input.TaskEditorFlexibleInput:focus-within::placeholder {
 .TaskEditorSubTasksIndentedContainer {
   margin-left: 2em;
 }
+
+.SubtaskHide{
+  max-height:50px;
+  transition: max-height 0.5s ease-in-out;
+  overflow:hidden;
+  margin:-15px 0 20px 0;padding:0;
+}
