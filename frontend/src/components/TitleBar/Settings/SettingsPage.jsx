@@ -101,6 +101,15 @@ function SettingsPage({ tags }: Props): Node {
             Sign Out
           </button>
         </div>
+        <div className={styles.SettingsButton}>
+          <button
+            type="button"
+            className={[styles.FinalRowButton, styles.FeedbackButton].join(' ')}
+            onClick={() => { window.location.href = 'www.google.com'; }}
+          >
+            Feedback?
+          </button>
+        </div>
         <span className={styles.Padding} />
         <div className={styles.SettingsButton}>
           <button
