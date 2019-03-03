@@ -1,4 +1,4 @@
-import { EventContext, firestore as firestoreFunction,  } from 'firebase-functions';
+import { EventContext, firestore as firestoreFunction } from 'firebase-functions';
 import { firestore, initializeApp } from 'firebase-admin';
 import {
   FirestoreSubTask,
@@ -12,6 +12,7 @@ initializeApp();
 
 const TAG_DOC = 'samwise-tags/{tagId}';
 const TASK_DOC = 'samwise-tasks/{taskId}';
+const SUBTASK_DOC = 'samwise-subtasks/{subTaskId}';
 
 const userActions = () => firestore().collection('samwise-user-actions');
 
@@ -64,6 +65,12 @@ const updateRecord = (
   }).catch(reason => console.log(reason));
 };
 
+/*
+ * --------------------------------------------------------------------------------
+ * Section 1: Tags Listeners
+ * --------------------------------------------------------------------------------
+ */
+
 export const tagsOnCreate = firestoreFunction.document(TAG_DOC)
   .onCreate((snapshot, context) => {
     const { owner } = snapshot.data() as FirestoreTag;
@@ -104,22 +111,20 @@ export const tagsOnDelete = firestoreFunction.document(TAG_DOC)
     return null;
   });
 
+/*
+ * --------------------------------------------------------------------------------
+ * Section 2: Tasks Listeners
+ * --------------------------------------------------------------------------------
+ */
+
 export const tasksOnCreate = firestoreFunction.document(TASK_DOC)
   .onCreate((snapshot, context) => {
-    const { owner, type } = snapshot.data() as (FirestoreTask | FirestoreSubTask);
+    const { owner } = snapshot.data() as FirestoreTask;
     updateRecord(
       owner,
       context,
-      () => (
-        type === 'TASK'
-          ? { ...emptyActions, createTask: 1 }
-          : { ...emptyActions, createSubTask: 1 }
-      ),
-      (actions) => (
-        type === 'TASK'
-          ? { ...actions, createTask: actions.createTask + 1 }
-          : { ...actions, createSubTask: actions.createSubTask + 1 }
-      )
+      () => ({ ...emptyActions, createTask: 1 }),
+      (actions) => ({ ...actions, createTask: actions.createTask + 1 })
     );
     return null;
   });
@@ -130,8 +135,8 @@ export const tasksOnUpdate = firestoreFunction.document(TASK_DOC)
     if (before === undefined || after === undefined) {
       return;
     }
-    const beforeData = before.data() as (FirestoreTask | FirestoreSubTask);
-    const afterData = after.data() as (FirestoreTask | FirestoreSubTask);
+    const beforeData = before.data() as FirestoreTask;
+    const afterData = after.data() as FirestoreTask;
     const user = afterData.owner;
     let editTaskIncrease = 0;
     let completeTaskIncrease = 0;
@@ -139,10 +144,9 @@ export const tasksOnUpdate = firestoreFunction.document(TASK_DOC)
     let completeFocusedTaskIncrease = 0;
     if (afterData.name !== beforeData.name) {
       editTaskIncrease = 1;
-    } else if (afterData.type === 'TASK') {
+    } else {
       const { date, tag } = afterData;
-      const beforeTask = beforeData as FirestoreTask;
-      if (!date.isEqual(beforeTask.date) || tag !== beforeTask.tag) {
+      if (!date.isEqual(beforeData.date) || tag !== beforeData.tag) {
         editTaskIncrease = 1;
       }
     }
@@ -178,20 +182,78 @@ export const tasksOnUpdate = firestoreFunction.document(TASK_DOC)
 
 export const tasksOnDelete = firestoreFunction.document(TASK_DOC)
   .onDelete((snapshot, context) => {
-    const { owner, type } = snapshot.data() as (FirestoreTask | FirestoreSubTask);
+    const { owner } = snapshot.data() as (FirestoreTask | FirestoreSubTask);
     updateRecord(
       owner,
       context,
-      () => (
-        type === 'TASK'
-          ? { ...emptyActions, deleteTask: 1 }
-          : { ...emptyActions, deleteSubTask: 1 }
-      ),
-      (actions) => (
-        type === 'TASK'
-          ? { ...actions, deleteTask: actions.deleteTask + 1 }
-          : { ...actions, deleteSubTask: actions.deleteSubTask + 1 }
-      )
+      () => ({ ...emptyActions, deleteTask: 1 }),
+      (actions) => ({ ...actions, deleteTask: actions.deleteTask + 1 })
+    );
+    return null;
+  });
+
+/*
+ * --------------------------------------------------------------------------------
+ * Section 3: SubTasks Listeners
+ * --------------------------------------------------------------------------------
+ */
+
+export const subTasksOnCreate = firestoreFunction.document(SUBTASK_DOC)
+  .onCreate((snapshot, context) => {
+    const { owner } = snapshot.data() as FirestoreSubTask;
+    updateRecord(
+      owner,
+      context,
+      () => ({ ...emptyActions, createSubTask: 1 }),
+      (actions) => ({ ...actions, createSubTask: actions.createSubTask + 1 })
+    );
+    return null;
+  });
+
+export const subTasksOnUpdate = firestoreFunction.document(SUBTASK_DOC)
+  .onUpdate((snapshot, context) => {
+    const { before, after } = snapshot;
+    if (before === undefined || after === undefined) {
+      return;
+    }
+    const beforeData = before.data() as FirestoreSubTask;
+    const afterData = after.data() as FirestoreSubTask;
+    const user = afterData.owner;
+    const editTaskIncrease = afterData.name !== beforeData.name ? 1 : 0;
+    const completeTaskIncrease = !beforeData.complete && afterData.complete ? 1 : 0;
+    const focusTaskIncrease = !beforeData.inFocus && afterData.inFocus ? 1 : 0;
+    const completeFocusedTaskIncrease = (
+      beforeData.inFocus && afterData.inFocus && !beforeData.complete && afterData.complete
+    ) ? 1 : 0;
+    updateRecord(
+      user,
+      context,
+      () => ({
+        ...emptyActions,
+        editTask: editTaskIncrease,
+        completeTask: completeTaskIncrease,
+        focusTask: focusTaskIncrease,
+        completeFocusedTask: completeFocusedTaskIncrease
+      }),
+      (actions) => ({
+        ...actions,
+        editTask: actions.editTask + editTaskIncrease,
+        completeTask: actions.completeTask + completeTaskIncrease,
+        focusTask: actions.focusTask + focusTaskIncrease,
+        completeFocusedTask: actions.completeFocusedTask + completeFocusedTaskIncrease
+      })
+    );
+    return null;
+  });
+
+export const subTasksOnDelete = firestoreFunction.document(SUBTASK_DOC)
+  .onDelete((snapshot, context) => {
+    const { owner } = snapshot.data() as FirestoreSubTask;
+    updateRecord(
+      owner,
+      context,
+      () => ({ ...emptyActions, deleteSubTask: 1 }),
+      (actions) => ({ ...actions, deleteSubTask: actions.deleteSubTask + 1 })
     );
     return null;
   });
