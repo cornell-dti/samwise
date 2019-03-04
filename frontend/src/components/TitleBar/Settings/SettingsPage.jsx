@@ -101,6 +101,15 @@ function SettingsPage({ tags }: Props): Node {
             Sign Out
           </button>
         </div>
+        <div>
+          <a
+            className={styles.FeedbackButton}
+            href="https://goo.gl/forms/PZUZ1Ze6kN82EmcD2"
+            target="_blank"
+          >
+            Give Feedback
+          </a>
+        </div>
         <span className={styles.Padding} />
         <div className={styles.SettingsButton}>
           <button

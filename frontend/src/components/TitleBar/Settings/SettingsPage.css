@@ -54,7 +54,16 @@ p.SettingsSectionTitle {
 }
 
 .SignButton {
-  background: #e93838 !important;
+   background: #e93838 !important;
+ }
+
+.FeedbackButton {
+  text-decoration: underline #83c1ff;
+  color: #83c1ff;
+  margin-left: 1em;
+  position: relative;
+  top: 67px;
+  left: 76.5vw;
 }
 
 .ReplayTutorialButton {

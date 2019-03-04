@@ -8,7 +8,7 @@ import styles from './TagAdder.css';
 import type { Course } from '../../../store/store-types';
 import { addTag } from '../../../firebase/actions';
 
-type Props = {| +courses: Map<number, Course[]>; |};
+type Props = {| +courses: Map<string, Course[]>; |};
 
 type SimpleCourse = {|
   +key: number;
@@ -16,7 +16,7 @@ type SimpleCourse = {|
   +subject: string;
   +courseNumber: string;
   +title: string;
-  +classId: number;
+  +classId: string;
 |};
 
 /**
@@ -25,7 +25,7 @@ type SimpleCourse = {|
  * @param {Map<number, Course[]>} courseMap new courses.
  * @return {SimpleCourse[]} course options.
  */
-function getCourseOptions(courseMap: Map<number, Course[]>): SimpleCourse[] {
+function getCourseOptions(courseMap: Map<string, Course[]>): SimpleCourse[] {
   const courseOptions = [];
   let i = 0;
   courseMap.forEach((courses: Course[]) => {
@@ -33,9 +33,10 @@ function getCourseOptions(courseMap: Map<number, Course[]>): SimpleCourse[] {
       const {
         subject, courseNumber, title, courseId: classId,
       } = course;
+      const id = `${classId} ${subject} ${courseNumber}`;
       const name = `${subject} ${courseNumber}: ${title}`;
       courseOptions.push({
-        key: i, value: name, subject, courseNumber, title, classId,
+        key: i, value: name, subject, courseNumber, title, classId: id,
       });
       i += 1;
     });

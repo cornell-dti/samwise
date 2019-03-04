@@ -7,7 +7,7 @@ export type Tag = {|
   +order: number;
   +name: string;
   +color: string;
-  +classId: number | null;
+  +classId: string | null;
 |};
 
 export type SubTask = {|
@@ -59,7 +59,7 @@ export type Course = {|
   +subject: string;
   +courseNumber: string;
   +title: string;
-  +examTimes: string[];
+  +examTimes: {| +type: 'final' | 'prelim', +time: number |}[];
 |};
 
 /**
@@ -72,5 +72,5 @@ export type State = {|
   +subTasks: Map<string, SubTask>;
   +taskChildrenMap: Map<string, Set<string>>;
   +settings: Settings;
-  +courses: Map<number, Course[]>;
+  +courses: Map<string, Course[]>;
 |};

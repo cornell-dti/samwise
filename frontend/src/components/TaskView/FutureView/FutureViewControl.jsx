@@ -78,6 +78,15 @@ function getMonthlyViewHeaderTitle(monthOffset: number): string {
   return date2YearMonth(d);
 }
 
+function getBiWeeklyViewHeaderTitle(biweeklyOffest: number): string  {
+  const s = new Date();
+  s.setDate(s.getDate()+ biweeklyOffest);
+  const e = new Date();
+  e.setDate(e.getDate()+ biweeklyOffest + 13);
+  return (s.getMonth()+1) + '/'+ s.getDate() + '/'+ s.getFullYear() + 
+  ' - ' + (e.getMonth()+1)  + '/'+ e.getDate() + '/'+ e.getFullYear() ;
+}
+
 /**
  * The component to control nav.
  *
@@ -108,6 +117,7 @@ function NavControl(props: NavControlProps): Node {
     return (
       <React.Fragment>
         {futureViewOffset >= 0 && prev}
+        <Title text={getBiWeeklyViewHeaderTitle(futureViewOffset)} />
         {next}
       </React.Fragment>
     );

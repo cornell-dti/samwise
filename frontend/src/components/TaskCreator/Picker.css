@@ -8,6 +8,8 @@
   position: relative;
   color: white;
   margin-left: 5px;
+  transform:translateY(-30px);
+  z-index:2;
 }
 
 .Label {
