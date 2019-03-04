@@ -20,6 +20,8 @@ type Props = {|
   +onPressEnter: ('main-task' | number) => void;
 |};
 
+type NameCache = {| +cached: string; +originalPropsName: string; |};
+
 const deleteIconClass = [styles.TaskEditorIcon, styles.TaskEditorIconLeftPad].join(' ');
 
 function MainTaskEditor(
@@ -27,7 +29,13 @@ function MainTaskEditor(
     name, complete, inFocus, onChange, onRemove, onPressEnter,
   }: Props,
 ): Node {
-  const [nameCache, setNameCache] = React.useState<string>(name);
+  const [nameCache, setNameCache] = React.useState<NameCache>({
+    cached: name,
+    originalPropsName: name,
+  });
+  if (name !== nameCache.originalPropsName) {
+    setNameCache({ cached: name, originalPropsName: name });
+  }
 
   const editComplete = () => onChange({ complete: !complete });
   const editInFocus = () => onChange({ inFocus: !inFocus });
@@ -40,12 +48,13 @@ function MainTaskEditor(
   };
   const onInputChange = (event: SyntheticEvent<HTMLInputElement>): void => {
     event.stopPropagation();
-    setNameCache(event.currentTarget.value);
+    const newValue = event.currentTarget.value;
+    setNameCache(prev => ({ ...prev, cached: newValue }));
   };
   const onBlur = (event: SyntheticEvent<>): void => {
     event.stopPropagation();
-    if (name !== nameCache) {
-      onChange({ name: nameCache });
+    if (name !== nameCache.cached) {
+      onChange({ name: nameCache.cached });
     }
   };
 
@@ -59,7 +68,7 @@ function MainTaskEditor(
       <input
         className={styles.TaskEditorFlexibleInput}
         placeholder="Main Task"
-        value={nameCache}
+        value={nameCache.cached}
         onKeyDown={onKeyDown}
         onChange={onInputChange}
         onBlur={onBlur}

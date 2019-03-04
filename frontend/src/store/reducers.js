@@ -53,7 +53,8 @@ function patchTasks(state: State, { created, edited, deleted }: PatchTasks): Sta
       const oldKey = oldTask.date.toDateString();
       if (oldKey !== key) {
         // remove first
-        m.remove(oldKey);
+        const oldBucket = m.get(oldKey) ?? error('impossible!');
+        m.set(oldKey, oldBucket.remove(t.id));
       }
       const set = m.get(key);
       if (set == null) {
