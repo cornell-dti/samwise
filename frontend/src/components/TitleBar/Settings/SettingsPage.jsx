@@ -101,14 +101,14 @@ function SettingsPage({ tags }: Props): Node {
             Sign Out
           </button>
         </div>
-        <div className={styles.SettingsButton}>
-          <button
-            type="button"
-            className={[styles.FinalRowButton, styles.FeedbackButton].join(' ')}
-            onClick={() => { window.open('https://goo.gl/forms/PZUZ1Ze6kN82EmcD2', '_blank'); }}
+        <div>
+          <a
+            className={styles.FeedbackButton}
+            href="https://goo.gl/forms/PZUZ1Ze6kN82EmcD2"
+            target="_blank"
           >
-            Feedback?
-          </button>
+            Give Feedback
+          </a>
         </div>
         <span className={styles.Padding} />
         <div className={styles.SettingsButton}>
