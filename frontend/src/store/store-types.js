@@ -7,7 +7,7 @@ export type Tag = {|
   +order: number;
   +name: string;
   +color: string;
-  +classId: number | null;
+  +classId: string | null;
 |};
 
 export type SubTask = {|
@@ -72,5 +72,5 @@ export type State = {|
   +subTasks: Map<string, SubTask>;
   +taskChildrenMap: Map<string, Set<string>>;
   +settings: Settings;
-  +courses: Map<number, Course[]>;
+  +courses: Map<string, Course[]>;
 |};

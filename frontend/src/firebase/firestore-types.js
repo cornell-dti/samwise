@@ -9,7 +9,7 @@ export type FirestoreTag = {|
   ...FirestoreCommon;
   +name: string;
   +color: string;
-  +classId: number | null;
+  +classId: string | null;
 |};
 
 export type FirestoreTask = {|

@@ -43,12 +43,11 @@ function parseFinalLine(line) {
   const subject = segments[0];
   const courseNumber = segments[1];
   const sectionNumber = segments[2];
-  let datetimeString = `${currentYear}`;
-  for (let i = 2; i < segments.length; i += 1) {
+  let datetimeString = '';
+  for (let i = 3; i < segments.length; i += 1) {
     const s = segments[i];
     if (s !== '') {
       datetimeString += ` ${s}`;
-      break;
     }
   }
   datetimeString = datetimeString.trim();

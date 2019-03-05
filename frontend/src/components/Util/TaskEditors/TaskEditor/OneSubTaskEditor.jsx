@@ -19,6 +19,8 @@ type Props = {|
   +onPressEnter: ('main-task' | number) => void;
 |};
 
+type NameCache = {| +cached: string; +originalPropsName: string; |};
+
 const className = [styles.TaskEditorFlexibleContainer, styles.TaskEditorSubtaskCheckBox].join(' ');
 const deleteIconClass = [styles.TaskEditorIcon, styles.TaskEditorIconLeftPad].join(' ');
 
@@ -33,7 +35,13 @@ function OneSubTaskEditor(
     onPressEnter,
   }: Props,
 ): Node {
-  const [nameCache, setNameCache] = React.useState<string>(() => subTask.name);
+  const [nameCache, setNameCache] = React.useState<NameCache>({
+    cached: subTask.name,
+    originalPropsName: subTask.name,
+  });
+  if (subTask.name !== nameCache.originalPropsName) {
+    setNameCache({ cached: subTask.name, originalPropsName: subTask.name });
+  }
 
   const onCompleteChange = () => editSubTask(subTask.id, { complete: !subTask.complete });
   const onInFocusChange = () => editSubTask(subTask.id, { inFocus: !subTask.inFocus });
@@ -48,12 +56,12 @@ function OneSubTaskEditor(
   const onInputChange = (event: SyntheticEvent<HTMLInputElement>): void => {
     event.stopPropagation();
     const newValue = event.currentTarget.value;
-    setNameCache(newValue);
+    setNameCache(prev => ({ ...prev, cached: newValue }));
   };
   const onBlur = (event: SyntheticEvent<>): void => {
     event.stopPropagation();
-    if (subTask.name !== nameCache) {
-      editSubTask(subTask.id, { name: nameCache });
+    if (subTask.name !== nameCache.cached) {
+      editSubTask(subTask.id, { name: nameCache.cached });
     }
   };
 
@@ -80,7 +88,7 @@ function OneSubTaskEditor(
       <input
         className={styles.TaskEditorFlexibleInput}
         placeholder="Your Subtask"
-        value={nameCache}
+        value={nameCache.cached}
         ref={editorRef}
         onKeyDown={onKeyDown}
         onChange={onInputChange}
