@@ -5,7 +5,8 @@ import type { ComponentType, Node } from 'react';
 import { connect } from 'react-redux';
 import Delete from '../../../assets/svgs/XLight.svg';
 import PinFilled from '../../../assets/svgs/pin-2-light-filled.svg';
-import PinOutline from '../../../assets/svgs/pin-2-dark-outline.svg';
+import PinOutlineDark from '../../../assets/svgs/pin-2-dark-outline.svg';
+import PinOutlineLight from '../../../assets/svgs/pin-2-light-outline.svg';
 import styles from './FutureViewTask.css';
 import FutureViewSubTask from './FutureViewSubTask';
 import FloatingTaskEditor from '../../Util/TaskEditors/FloatingTaskEditor';
@@ -94,7 +95,7 @@ function FutureViewTask(
     const handler = () => editMainTask(id, { inFocus: !inFocus });
     return (inFocus)
       ? <PinFilled className={styles.TaskIcon} onClick={handler} />
-      : <PinOutline className={styles.TaskIcon} onClick={handler} />;
+      : <PinOutlineLight className={styles.TaskIcon} onClick={handler} />;
   };
 
   const renderMainTaskInfo = (simplified: boolean = false): Node => {
