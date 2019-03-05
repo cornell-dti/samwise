@@ -2,7 +2,7 @@
  * Note:
  * Webpack is configured in a way so that this file won't have CSS module.
  */
-@import url('https://fonts.googleapis.com/css?family=Open+Sans:400,800');
+@import url('https://fonts.googleapis.com/css?family=Open+Sans:400,600');
 
 body {
   margin: 0;
