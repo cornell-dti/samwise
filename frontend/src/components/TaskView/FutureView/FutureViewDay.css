@@ -50,9 +50,11 @@
   left: 0;
   right: 0;
   cursor: pointer;
-  background-color: #333333;
-  opacity: 0.98;
-  color: #E7E7E7;
+  background-color: #ffffff;
+  opacity: 1;
+  color: #333333;
+  border: 0;
+  box-shadow: 0 -1px 1px rgba(0,0,0,0.1);
   text-align: center;
   line-height: 20px;
   font-size: 1em;
