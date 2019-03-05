@@ -32,7 +32,8 @@ const ExamImporter = () => (
     <p className={styles.SettingsSectionTitle}>Auto Import Exams</p>
     <div className={`${styles.SettingsButton} ${styles.SettingsSectionContent}`}>
       Click the following button to automatically import the prelims and finals
-      from your registered classes into your planner.
+      from your added classes into your planner. We will only import those that
+      appears on Cornell prelim/final schedule webpage.
       <br />
       <button type="button" onClick={importCourseExams}>Import</button>
     </div>
