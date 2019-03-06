@@ -7,6 +7,7 @@ import { connect } from 'react-redux';
 import styles from './TagAdder.css';
 import type { Course } from '../../../store/store-types';
 import { addTag } from '../../../firebase/actions';
+import getUnusedColor from './rotation-color-picker';
 
 type Props = {| +courses: Map<string, Course[]>; |};
 
@@ -76,7 +77,7 @@ function ClassTagAdder({ courses }: Props) {
   const changeClass = (option: SimpleCourse) => {
     const { value, classId } = option;
     addTag({
-      name: value, color: '#289de9', classId,
+      name: value, color: getUnusedColor(), classId,
     });
     setKey(() => setKey(key + 1));
   };
