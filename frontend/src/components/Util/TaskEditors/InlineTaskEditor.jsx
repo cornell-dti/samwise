@@ -92,7 +92,8 @@ export default function InlineTaskEditor({ original, filtered, className }: Prop
       subTasks={subTasks}
       tempSubTask={tempSubTask === null ? null : tempSubTask.subTask}
       actions={actions}
-      newSubTaskDisabled={disabled || !original.inFocus}
+      newSubTaskAutoFocused={!original.inFocus}
+      newSubTaskDisabled={disabled}
       onFocus={onFocus}
       onBlur={onBlur}
     />
