@@ -1,7 +1,4 @@
-// @flow strict
-
-import React from 'react';
-import type { Node } from 'react';
+import React, { ReactElement } from 'react';
 import { ToastContainer } from 'react-toastify';
 import styles from './App.module.css';
 import Onboard from './components/TitleBar/Onboarding/Onboard';
@@ -13,7 +10,7 @@ import ProgressTracker from './components/ProgressTracker/ProgressTracker';
 /**
  * The top level app component.
  */
-export default function App(): Node {
+export default function App(): ReactElement {
   return (
     <div>
       <Onboard />
