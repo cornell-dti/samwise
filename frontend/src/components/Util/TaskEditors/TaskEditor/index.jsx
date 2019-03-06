@@ -24,6 +24,7 @@ import OneSubTaskEditor from './OneSubTaskEditor';
 type DefaultProps = {|
   +className?: string;
   +children?: Node;
+  +newSubTaskAutoFocused?: boolean; // whether to auto focus the new subtask
   +newSubTaskDisabled?: boolean; // whether to disable new subtask creation
   +onFocus?: (event: SyntheticFocusEvent<HTMLElement>) => void; // when the editor gets focus
   +onBlur?: (event: SyntheticFocusEvent<HTMLElement>) => void; // when the editor loses focus
@@ -71,6 +72,7 @@ function TaskEditor(
     getTag,
     className,
     children,
+    newSubTaskAutoFocused,
     newSubTaskDisabled,
     onFocus,
     onBlur,
@@ -92,7 +94,7 @@ function TaskEditor(
       name: firstTypedValue,
       order,
       complete: false,
-      inFocus: false,
+      inFocus: newSubTaskAutoFocused === true ? true : false,
     });
     setSubTaskToFocus(order);
   };
