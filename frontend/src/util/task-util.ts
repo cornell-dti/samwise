@@ -13,7 +13,7 @@ export const getFilteredInFocusTask = (
 ): TaskWithSubTasks | null => {
   const { children, ...rest } = task;
   const childrenArray = children.map(id => subTasks.get(id)).filter(s => s != null);
-  const newSubTasks = [];
+  const newSubTasks: SubTask[] = [];
   if (task.inFocus) {
     childrenArray.forEach((s) => {
       if (s != null) { newSubTasks.push(s); }

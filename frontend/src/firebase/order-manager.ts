@@ -30,6 +30,9 @@ export default async function allocateNewOrder(
       return 0;
     }
     const manager = docInTransaction.data();
+    if (manager === undefined) {
+      return;
+    }
     const newOrder = forTags ? manager.tagsMaxOrder : manager.tasksMaxOrder;
     const update: PartialManager = forTags
       ? { tagsMaxOrder: newOrder + count }

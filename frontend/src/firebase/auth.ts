@@ -1,5 +1,4 @@
-import firebase, { app } from 'firebase/app';
-import { FirebaseUser } from 'firebase';
+import firebase from 'firebase/app';
 import 'firebase/auth';
 import { error } from '../util/general-util';
 
@@ -12,10 +11,10 @@ export type AppUser = {
 /**
  * Returns the promise of an app user from the given raw firebase user.
  *
- * @param {FirebaseUser | null} firebaseUser a raw firebase user or null.
- * @return {Promise<AppUser | null>} the promise of an app user.
+ * @param firebaseUser a raw firebase user or null.
+ * @return the promise of an app user or null if there is no such user..
  */
-export async function toAppUser(firebaseUser: FirebaseUser | null): Promise<AppUser | null> {
+export async function toAppUser(firebaseUser: firebase.User | null): Promise<AppUser | null> {
   if (firebaseUser == null) {
     return null;
   }

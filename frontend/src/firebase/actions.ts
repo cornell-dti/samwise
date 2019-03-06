@@ -34,7 +34,11 @@ const mergeWithOwner = <T>(obj: T): T & { readonly owner: string } => ({
 
 type WithoutIdOrder<Props> = Pick<Props, Exclude<keyof Props, 'id' | 'order'>>;
 type WithoutId<Props> = Pick<Props, Exclude<keyof Props, 'id'>>;
-type IdOrderChildren = { readonly id: string; readonly order: number; readonly children: Set<string>; };
+type IdOrderChildren = {
+  readonly id: string;
+  readonly order: number;
+  readonly children: Set<string>;
+};
 type TaskWithoutIdOrderChildren = Pick<Task, Exclude<keyof Task, 'id' | 'order' | 'children'>>;
 
 /*
@@ -135,7 +139,7 @@ export const editTask = (taskId: string, diff: TaskDiff): void => {
   } = diff;
   const batch = db().batch();
   // Handle subtasksCreations
-  const createdSubTaskIds = [];
+  const createdSubTaskIds: string[] = [];
   subtasksCreations.forEach((creation) => {
     const { id, ...rest } = creation;
     const firebaseSubTask: FirestoreSubTask = mergeWithOwner(rest);
@@ -268,8 +272,8 @@ export function reorder<T extends { readonly id: string; readonly order: number 
     }
   }
   const collection = orderFor === 'tags'
-    ? id => tagsCollection().doc(id)
-    : id => tasksCollection().doc(id);
+    ? (id: string) => tagsCollection().doc(id)
+    : (id: string) => tasksCollection().doc(id);
   const batch = db().batch();
   reorderMap.forEach((order, id) => {
     batch.update(collection(id), { order });

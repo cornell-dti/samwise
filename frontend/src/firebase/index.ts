@@ -1,5 +1,3 @@
-// @flow strict
-
 import firebase from 'firebase/app';
 
 let firebaseConfig: object;

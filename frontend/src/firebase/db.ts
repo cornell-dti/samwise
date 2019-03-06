@@ -1,12 +1,11 @@
 import firebase from 'firebase/app';
 import 'firebase/firestore';
-import { Firestore } from 'firebase/firestore';
 
 /**
  * The firestore database.
  * @return {firebase.firestore.Firestore}
  */
-export const db = (): Firestore => firebase.firestore();
+export const db = (): firebase.firestore.Firestore => firebase.firestore();
 
 /**
  * Collection name literals.

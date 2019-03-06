@@ -22,7 +22,9 @@ const updateFloatingEditorPosition = (
   if (editorPosDiv == null) {
     return;
   }
-  const taskElement = editorPosDiv.previousElementSibling?.previousElementSibling;
+  const taskElement = editorPosDiv.previousElementSibling == null
+    ? null
+    : editorPosDiv.previousElementSibling.previousElementSibling;
   if (taskElement === null || !(taskElement instanceof HTMLDivElement)) {
     throw new Error('Task element must be a div!');
   }
@@ -199,7 +201,7 @@ function FloatingTaskEditor(
         ...state.task,
         subTasks: state.task.subTasks.filter(s => s.id !== subTaskId),
       };
-      const subtasksCreations = [];
+      const subtasksCreations: SubTask[] = [];
       let foundInNew = false;
       state.diff.subtasksCreations.forEach((s) => {
         if (s.id === subTaskId) {
@@ -208,7 +210,7 @@ function FloatingTaskEditor(
           subtasksCreations.push(s);
         }
       });
-      let subtasksDeletions;
+      let subtasksDeletions: string[];
       if (foundInNew) {
         subtasksDeletions = [];
       } else {
@@ -254,7 +256,7 @@ function FloatingTaskEditor(
 const Connected = connect(
   ({ subTasks }: State, { initialTask }: OwnProps) => {
     const { children, ...rest } = initialTask;
-    const newSubTasks = [];
+    const newSubTasks: SubTask[] = [];
     children.forEach((id) => {
       const s = subTasks.get(id);
       if (s != null) { newSubTasks.push(s); }

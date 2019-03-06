@@ -48,17 +48,11 @@ function patchTasks(state: State, { created, edited, deleted }: PatchTasks): Sta
     });
     edited.forEach((t) => {
       const key = t.date.toDateString();
-      const oldTask = state.tasks.get(t.id);
-      if (oldTask == null) {
-        error();
-      }
+      const oldTask = state.tasks.get(t.id) || error();
       const oldKey = oldTask.date.toDateString();
       if (oldKey !== key) {
         // remove first
-        const oldBucket = m.get(oldKey);
-        if (oldBucket == null) {
-          error('impossible!');
-        }
+        const oldBucket = m.get(oldKey) || error('impossible!');
         m.set(oldKey, oldBucket.remove(t.id));
       }
       const set = m.get(key);
@@ -69,10 +63,7 @@ function patchTasks(state: State, { created, edited, deleted }: PatchTasks): Sta
       }
     });
     deleted.forEach((id) => {
-      const oldTask = state.tasks.get(id);
-      if (oldTask == null) {
-        error();
-      }
+      const oldTask = state.tasks.get(id) || error('impossible');
       const key = oldTask.date.toDateString();
       const set = m.get(key);
       if (set != null) {

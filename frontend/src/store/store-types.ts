@@ -58,7 +58,7 @@ export type Course = {
   readonly subject: string;
   readonly courseNumber: string;
   readonly title: string;
-  readonly examTimes: {  readonly type: 'final' | 'prelim', readonly time: number }[];
+  readonly examTimes: { readonly type: 'final' | 'prelim', readonly time: number }[];
 };
 
 /**

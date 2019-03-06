@@ -1,9 +1,8 @@
-import { Set } from 'immutable';
-import { DocumentSnapshot, QuerySnapshot } from 'firebase/firestore';
+import { Map, Set } from 'immutable';
 import { subTasksCollection, tagsCollection, tasksCollection, settingsCollection } from './db';
 import { getAppUser } from './auth';
 import { FirestoreSubTask, FirestoreTag, FirestoreTask } from './firestore-types';
-import { SubTask, Tag, Task, Settings } from '../store/store-types';
+import { Course, SubTask, Tag, Task, Settings } from '../store/store-types';
 import {
   patchCourses,
   patchSettings,
@@ -16,6 +15,10 @@ import coursesJson from '../assets/json/sp19-courses-with-exams-min.json';
 import buildCoursesMap from '../util/courses-util';
 import { store } from '../store/store';
 import { ignore } from '../util/general-util';
+
+// Some type alias
+type DocumentSnapshot = firebase.firestore.DocumentSnapshot;
+type QuerySnapshot = firebase.firestore.QuerySnapshot;
 
 type UnmountCallback = () => void;
 const listenTagsChange = (
@@ -52,16 +55,20 @@ export default (onFirstFetched: () => void): (() => void) => {
   const ownerEmail = getAppUser().email;
 
   const unmountTagsListener = listenTagsChange(ownerEmail, (snapshot) => {
-    const created = [];
-    const edited = [];
-    const deleted = [];
+    const created: Tag[] = [];
+    const edited: Tag[] = [];
+    const deleted: string[] = [];
     snapshot.docChanges().forEach((change) => {
       const { doc } = change;
       const { id } = doc;
       if (change.type === 'removed') {
         deleted.push(id);
       } else {
-        const { owner, ...rest }: FirestoreTag = doc.data();
+        const data = doc.data();
+        if (data === undefined) {
+          return;
+        }
+        const { owner, ...rest } = <FirestoreTag>data;
         const tag: Tag = { id, ...rest };
         if (change.type === 'added') {
           created.push(tag);
@@ -76,16 +83,20 @@ export default (onFirstFetched: () => void): (() => void) => {
   });
 
   const unmountTasksListener = listenTasksChange(ownerEmail, (snapshot) => {
-    const created = [];
-    const edited = [];
-    const deleted = [];
+    const created: Task[] = [];
+    const edited: Task[] = [];
+    const deleted: string[] = [];
     snapshot.docChanges().forEach((change) => {
       const { doc } = change;
       const { id } = doc;
       if (change.type === 'removed') {
         deleted.push(id);
       } else {
-        const { owner, date: timestamp, children, ...rest }: FirestoreTask = doc.data();
+        const data = doc.data();
+        if (data === undefined) {
+          return;
+        }
+        const { owner, date: timestamp, children, ...rest } = <FirestoreTask>data;
         const task: Task = {
           id,
           date: timestamp instanceof Date ? timestamp : timestamp.toDate(),
@@ -105,16 +116,20 @@ export default (onFirstFetched: () => void): (() => void) => {
   });
 
   const unmountSubTasksListener = listenSubTasksChange(ownerEmail, (snapshot) => {
-    const created = [];
-    const edited = [];
-    const deleted = [];
+    const created: SubTask[] = [];
+    const edited: SubTask[] = [];
+    const deleted: string[] = [];
     snapshot.docChanges().forEach((change) => {
       const { doc } = change;
       const { id } = doc;
       if (change.type === 'removed') {
         deleted.push(id);
       } else {
-        const { owner, ...rest }: FirestoreSubTask = doc.data();
+        const data = doc.data();
+        if (data === undefined) {
+          return;
+        }
+        const { owner, ...rest } = <FirestoreSubTask>data;
         const subTask: SubTask = { id, ...rest };
         if (change.type === 'added') {
           created.push(subTask);
@@ -134,17 +149,24 @@ export default (onFirstFetched: () => void): (() => void) => {
       settingsCollection().doc(ownerEmail).set(newSettings).then(ignore);
       return;
     }
-    const { completedOnboarding, theme }: Settings = snapshot.data();
+    const data = snapshot.data();
+    if (data === undefined) {
+      return;
+    }
+    const { completedOnboarding, theme } = <Settings>data;
     store.dispatch(patchSettings({ completedOnboarding, theme }));
     firstSettingsFetched = true;
     reportFirstFetchedIfAllFetched();
   });
 
-  fetch(coursesJson).then(resp => resp.json()).then(buildCoursesMap).then((courseMap) => {
-    store.dispatch(patchCourses(courseMap));
-    courseJsonFetched = true;
-    reportFirstFetchedIfAllFetched();
-  });
+  // @ts-ignore ts cannot decide that this imported json is resolved into a string.
+  fetch(coursesJson)
+    .then((resp: Response) => resp.json())
+    .then(buildCoursesMap).then((courseMap: Map<string, Course[]>) => {
+      store.dispatch(patchCourses(courseMap));
+      courseJsonFetched = true;
+      reportFirstFetchedIfAllFetched();
+    });
 
   return () => {
     // Suppressed because it's likely that this block of code will never be run.

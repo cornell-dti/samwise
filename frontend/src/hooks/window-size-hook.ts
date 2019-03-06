@@ -53,7 +53,7 @@ export function useWindowSize(): WindowSize {
 /**
  * A hook for window size.
  */
-export function useWindowSizeCallback(onChange: (WindowSize) => void): void {
+export function useWindowSizeCallback(onChange: (windowSize: WindowSize) => void): void {
   const [size, setSize] = useState(getWindowSize);
   useEffect(() => {
     const l = bindListener(setSize);
@@ -66,10 +66,10 @@ export function useWindowSizeCallback(onChange: (WindowSize) => void): void {
  * A hook for computed value based on window size and memoized rendering.
  * You can use this hook to implement efficient breakpoint logic.
  *
- * @param {function(WindowSize): T} f a function that computes the value given a window size.
- * @return {T} the computed value.
+ * @param f a function that computes the value given a window size.
+ * @return the computed value.
  */
-export function useMappedWindowSize<T>(f: (WindowSize) => T): T {
+export function useMappedWindowSize<T>(f: (windowSize: WindowSize) => T): T {
   return f(useWindowSize());
 }
 
@@ -77,11 +77,14 @@ export function useMappedWindowSize<T>(f: (WindowSize) => T): T {
  * A hook for computed value based on window size and memoized rendering.
  * You can use this hook to implement efficient breakpoint logic.
  *
- * @param {function(WindowSize): T} f a function that computes the value given a window size.
- * @param {function(T): Node} render a function that renders a component given the computed value.
- * @return {T} the computed value.
+ * @param f a function that computes the value given a window size.
+ * @param render a function that renders a component given the computed value.
+ * @return the memoized rendered value.
  */
-export function useMemoizedMappedWindowSize<T>(f: (WindowSize) => T, render: (t: T) => ReactNode): ReactNode {
+export function useMemoizedMappedWindowSize<T>(
+  f: (windowSize: WindowSize) => T,
+  render: (t: T) => ReactNode,
+): ReactNode {
   const value = f(useWindowSize());
   return useMemo(() => render(value), [value]);
 }

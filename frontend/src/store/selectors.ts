@@ -1,5 +1,3 @@
-// @flow strict
-
 import { createSelector, createSelectorCreator, defaultMemoize } from 'reselect';
 import { Map, Set } from 'immutable';
 import { State, SubTask, Tag, Task } from './store-types';
@@ -60,7 +58,7 @@ const getTasksInFocus: SelectorOf<Task[]> = createSelector(
 );
 
 export const getTaskIds: SelectorOf<{ readonly ids: string[] }> = createSetEqualSelector(
-  getTasksId, ids => ({ ids: ids.toArray() }),
+  getTasksId, (ids: Set<string>) => ({ ids: ids.toArray() }),
 );
 
 type IdOrder = { readonly id: string; readonly order: number };
@@ -80,7 +78,7 @@ export const createGetIdOrderListByDate = (
     if (set == null) {
       return { idOrderList: [] };
     }
-    const list = [];
+    const list: IdOrder[] = [];
     set.forEach((id) => {
       const task = tasks.get(id);
       if (task != null) {
