@@ -1,19 +1,15 @@
-// @flow strict
-
-import React from 'react';
-import type { Node } from 'react';
-import type { TasksProgressProps } from '../../util/task-util';
+import React, { ReactNode, ReactElement } from 'react';
+import { TasksProgressProps } from '../../util/task-util';
 import styles from './ProgressIndicator.css';
 
-type ProgressBarProps = {|
-  ...TasksProgressProps;
-  +children?: Node;
-|};
+type ProgressBarProps = TasksProgressProps & { readonly children?: ReactNode };
 
 /**
  * A simple progress bar with optional children.
  */
-function ProgressBar({ completedTasksCount, allTasksCount, children }: ProgressBarProps): Node {
+function ProgressBar(
+  { completedTasksCount, allTasksCount, children }: ProgressBarProps,
+): ReactElement {
   const percentage = allTasksCount === 0 ? 0 : completedTasksCount / allTasksCount * 100;
   const innerStyle = { width: `${percentage}%` };
   return (
@@ -29,7 +25,7 @@ ProgressBar.defaultProps = { children: null };
 /**
  * The progress indicator.
  */
-export default function ProgressIndicator(props: TasksProgressProps): Node {
+export default function ProgressIndicator(props: TasksProgressProps): ReactElement {
   const { completedTasksCount, allTasksCount } = props;
   const fractionString = `${completedTasksCount}/${allTasksCount}`;
   return (

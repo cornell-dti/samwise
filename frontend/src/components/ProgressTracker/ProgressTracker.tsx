@@ -1,9 +1,6 @@
-// @flow strict
-
-import React from 'react';
-import type { ComponentType, Node } from 'react';
+import React, { ReactElement } from 'react';
 import { connect } from 'react-redux';
-import type { TasksProgressProps } from '../../util/task-util';
+import { TasksProgressProps } from '../../util/task-util';
 import Bear from './Bear';
 import ProgressIndicator from './ProgressIndicator';
 import styles from './ProgressTracker.css';
@@ -13,7 +10,7 @@ import { getProgress } from '../../store/selectors';
  * The progress tracker component.
  * It is a wrapper component designed to pass down the progress object.
  */
-function ProgressTracker({ completedTasksCount, allTasksCount }: TasksProgressProps): Node {
+function ProgressTracker({ completedTasksCount, allTasksCount }: TasksProgressProps): ReactElement {
   // Note: windowSize is unused for now, but it may be used later to distinguish
   // desktop and mobile view.
   return (
@@ -24,5 +21,5 @@ function ProgressTracker({ completedTasksCount, allTasksCount }: TasksProgressPr
   );
 }
 
-const Connected: ComponentType<{||}> = connect(getProgress)(ProgressTracker);
+const Connected = connect(getProgress)(ProgressTracker);
 export default Connected;
