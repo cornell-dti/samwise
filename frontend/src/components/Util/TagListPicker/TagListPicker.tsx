@@ -1,5 +1,3 @@
-// @flow strict
-
 import React, { ReactElement } from 'react';
 import { connect } from 'react-redux';
 import TagPickerItem from './TagPickerItem';

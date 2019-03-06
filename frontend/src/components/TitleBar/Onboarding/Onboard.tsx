@@ -1,4 +1,4 @@
-import React, { ReactElement } from 'react';
+import React, { ReactElement, CSSProperties } from 'react';
 import { connect } from 'react-redux';
 import TagItem from '../Tags/TagItem';
 import ClassTagAdder from '../Tags/ClassTagAdder';
@@ -91,7 +91,7 @@ type Props = { readonly classTags: Tag[]; readonly completedOnboarding: boolean 
 /**
  * The onboarding page. Displayed only if the user chooses to do so or during first landing.
  */
-function Onboard({ classTags, completedOnboarding }: Props): ReactElement {
+function Onboard({ classTags, completedOnboarding }: Props): ReactElement | null {
   const [progress, setProgress] = React.useState<number>(0);
 
   if (completedOnboarding || progress >= 7) {
@@ -104,7 +104,7 @@ function Onboard({ classTags, completedOnboarding }: Props): ReactElement {
   const goBack = () => setProgress(prev => (prev > 1 ? prev - 1 : prev));
   const skipTutorial = () => setProgress(100);
 
-  const onboardingContainerStyle = progress > 0
+  const onboardingContainerStyle: CSSProperties | undefined = progress > 0
     ? { overflowY: 'hidden', background: 'rgba(0,0,0,0.8)' }
     : undefined;
   return (

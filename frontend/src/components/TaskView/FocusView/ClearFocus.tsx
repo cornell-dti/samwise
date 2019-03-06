@@ -10,7 +10,7 @@ type Props = {
   readonly subTasks: Map<string, SubTask>;
 };
 
-function ClearFocus({ tasks, subTasks }: Props): ReactElement {
+function ClearFocus({ tasks, subTasks }: Props): ReactElement | null {
   const taskIds: string[] = [];
   const subTaskIds: string[] = [];
   tasks.forEach((t) => {

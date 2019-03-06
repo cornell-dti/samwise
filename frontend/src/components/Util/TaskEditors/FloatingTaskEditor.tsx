@@ -6,7 +6,7 @@ import {
 import { FloatingPosition, TaskWithSubTasks } from './editors-types';
 import TaskEditor from './TaskEditor';
 import styles from './FloatingTaskEditor.css';
-import { TaskEditorFlexiblePadding as flexiblePaddingClass } from './TaskEditor/TaskEditor.css';
+import TaskEditorStyle from './TaskEditor/TaskEditor.css';
 import { EMPTY_TASK_DIFF, taskDiffIsEmpty } from '../../../util/task-util';
 import { TaskDiff } from '../../../util/task-util';
 import { editTask, removeTask as removeTaskAction } from '../../../firebase/actions';
@@ -166,7 +166,7 @@ function FloatingTaskEditor(
         }
         return s;
       });
-      const subtasksEdits = [];
+      const subtasksEdits: [string, PartialSubTask][] = [];
       for (let i = 0; i < state.diff.subtasksEdits.length; i += 1) {
         const pair = state.diff.subtasksEdits[i];
         const [id, edit] = pair;
@@ -180,7 +180,7 @@ function FloatingTaskEditor(
       if (!foundInPreviousEdits) {
         subtasksEdits.push([subTaskId, partialSubTask]);
       }
-      const newDiff = { ...state.diff, subtasksCreations, subtasksEdits };
+      const newDiff: TaskDiff = { ...state.diff, subtasksCreations, subtasksEdits };
       return { ...state, task: newTask, diff: newDiff };
     });
   };
@@ -242,7 +242,7 @@ function FloatingTaskEditor(
           editorRef={editorRef}
         >
           <div className={styles.SaveButtonRow}>
-            <span className={flexiblePaddingClass} />
+            <span className={TaskEditorStyle.TaskEditorFlexiblePadding} />
             <div role="presentation" className={styles.SaveButton} onClick={saveEditedTask}>
               <span className={styles.SaveButtonText}>Save</span>
             </div>

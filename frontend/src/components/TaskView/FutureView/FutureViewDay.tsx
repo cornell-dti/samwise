@@ -107,7 +107,7 @@ export default function FutureViewDay(props: Props): ReactElement {
   const componentDivRef = React.useRef(null);
 
   const onHeightChange = (doesOverflow: boolean, tasksHeight: number) => {
-    if (heightInfo !== tasksHeight) {
+    if (heightInfo.tasksHeight !== tasksHeight) {
       setHeightInfo({ doesOverflow, tasksHeight });
     }
   };

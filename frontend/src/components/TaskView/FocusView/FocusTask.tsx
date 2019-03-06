@@ -14,7 +14,7 @@ type Props = OwnProps & {
   readonly filtered: TaskWithSubTasks | null;
 };
 
-function FocusTask({ id, order, original, filtered }: Props): ReactElement {
+function FocusTask({ id, order, original, filtered }: Props): ReactElement | null {
   if (filtered === null) {
     return null;
   }
@@ -35,10 +35,7 @@ function FocusTask({ id, order, original, filtered }: Props): ReactElement {
 
 const Connected = connect(
   ({ tasks, subTasks }: State, { id }: OwnProps) => {
-    const original = tasks.get(id);
-    if (original == null) {
-      error();
-    }
+    const original = tasks.get(id) || error();
     const filtered = getFilteredInFocusTask(original, subTasks);
     return { original, filtered };
   },

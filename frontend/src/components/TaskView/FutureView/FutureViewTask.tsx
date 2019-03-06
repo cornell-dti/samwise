@@ -45,7 +45,7 @@ function FutureViewTask(
   {
     compoundTask, inNDaysView, taskEditorPosition, isInMainList,
   }: Props,
-): ReactElement {
+): ReactElement | null {
   const [overdueAlertPosition, setOverdueAlertPosition] = React.useState<AlertPos | null>(null);
   const isSmallScreen = useMappedWindowSize(({ width }) => width <= 768);
 
@@ -127,7 +127,7 @@ function FutureViewTask(
       const isOverdue = date < getTodayAtZeroAM() && !complete;
       if (isOverdue && overdueAlertPosition == null) {
         const { top } = divElement.getBoundingClientRect();
-        const parent = divElement.parentElement ?? error('Corrupted DOM!');
+        const parent = divElement.parentElement || error('Corrupted DOM!');
         const parentRect = parent.getBoundingClientRect();
         const headerHeight = inNDaysView ? nDaysViewHeaderHeight : otherViewsHeightHeader;
         setOverdueAlertPosition({
@@ -177,7 +177,7 @@ const getCompoundTask = (
   }
   const { color } = tags.get(original.tag) || NONE_TAG;
   if (doesShowCompletedTasks) {
-    let filteredSubTasks = [];
+    let filteredSubTasks: SubTask[] = [];
     original.children.forEach((subTaskId) => {
       const s = subTasks.get(subTaskId);
       if (s != null) { filteredSubTasks.push(s); }
@@ -188,7 +188,7 @@ const getCompoundTask = (
   if (original.complete) {
     return null;
   }
-  let filteredSubTasks = [];
+  let filteredSubTasks: SubTask[] = [];
   original.children.forEach((subTaskId) => {
     const s = subTasks.get(subTaskId);
     if (s != null && !s.complete) { filteredSubTasks.push(s); }

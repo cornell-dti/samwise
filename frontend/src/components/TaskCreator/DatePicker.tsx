@@ -1,4 +1,4 @@
-import React, { ReactElement } from 'react';
+import React, { ReactElement, SyntheticEvent } from 'react';
 import { Calendar } from 'react-calendar';
 import Dark from '../../assets/svgs/dark.svg';
 import styles from './Picker.css';
@@ -19,7 +19,10 @@ export default function DatePicker(props: Props): ReactElement {
   } = props;
   // Controllers
   const clickPicker = () => { onPickerOpened(); };
-  const reset = (e) => { e.stopPropagation(); onDateChange(null); };
+  const reset = (e: SyntheticEvent<HTMLElement>) => {
+    e.stopPropagation();
+    onDateChange(null);
+  };
   // Nodes
   const displayedNode = (isDefault: boolean) => {
     const style = isDefault ? {} : { background: NONE_TAG.color };

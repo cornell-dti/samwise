@@ -1,5 +1,3 @@
-// @flow strict
-
 import React, { ReactElement, ReactNode } from 'react';
 import { connect } from 'react-redux';
 import TagItem from '../Tags/TagItem';
@@ -64,10 +62,6 @@ type Props = { readonly tags: Tag[] };
 
 /**
  * The settings page.
- *
- * @param {Tag[]} tags all the tags.
- * @return {Node} the rendered editor.
- * @constructor
  */
 function SettingsPage({ tags }: Props): ReactElement {
   const classTags: Tag[] = [];
@@ -79,7 +73,7 @@ function SettingsPage({ tags }: Props): ReactElement {
       otherTags.push(tag);
     }
   });
-  const renderTags = (arr: Tag[]): ReactElement => arr.map((tag: Tag) => (
+  const renderTags = (arr: Tag[]): ReactNode => arr.map((tag: Tag) => (
     <TagItem key={tag.id} tag={tag} />
   ));
   return (

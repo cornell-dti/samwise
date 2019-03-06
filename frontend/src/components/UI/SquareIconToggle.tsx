@@ -1,10 +1,11 @@
 import React, { ReactElement } from 'react';
 import { Icon } from 'semantic-ui-react';
 import styles from './SquareButtons.css';
+import { SemanticICONS } from 'semantic-ui-react';
 
 type Props = {
   readonly active: boolean;
-  readonly iconNames: [string, string];
+  readonly iconNames: [SemanticICONS, SemanticICONS];
   readonly onToggle: () => void;
 };
 
