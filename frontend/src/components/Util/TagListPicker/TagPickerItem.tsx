@@ -1,23 +1,16 @@
-// @flow strict
+import React, { ReactElement } from 'react';
 
-import * as React from 'react';
-import type { Node } from 'react';
-
-type Props = {|
-  +color: string;
-  +title: string;
-  +id: string;
-  +onChange: (string) => void;
-|};
+type Props = {
+  readonly color: string;
+  readonly title: string;
+  readonly id: string;
+  readonly onChange: (tag: string) => void;
+};
 
 /**
  * One item in the class picker.
  */
-export default function TagPickerItem(
-  {
-    id, color, title, onChange,
-  }: Props,
-): Node {
+export default function TagPickerItem({ id, color, title, onChange }: Props,): ReactElement {
   return (
     <li style={{ '--custom-color': color }}>
       <input

@@ -1,20 +1,17 @@
-// @flow strict
-
-import React from 'react';
-import type { ComponentType, Node } from 'react';
+import React, { ReactElement } from 'react';
 import { connect } from 'react-redux';
-import type {
+import {
   PartialMainTask, PartialSubTask, State, SubTask, Task,
 } from '../../../store/store-types';
-import type { FloatingPosition, TaskWithSubTasks } from './editors-types';
+import { FloatingPosition, TaskWithSubTasks } from './editors-types';
 import TaskEditor from './TaskEditor';
 import styles from './FloatingTaskEditor.css';
 import { TaskEditorFlexiblePadding as flexiblePaddingClass } from './TaskEditor/TaskEditor.css';
 import { EMPTY_TASK_DIFF, taskDiffIsEmpty } from '../../../util/task-util';
-import type { TaskDiff } from '../../../util/task-util';
+import { TaskDiff } from '../../../util/task-util';
 import { editTask, removeTask as removeTaskAction } from '../../../firebase/actions';
 import { useWindowSizeCallback } from '../../../hooks/window-size-hook';
-import type { WindowSize } from '../../../hooks/window-size-hook';
+import { WindowSize } from '../../../hooks/window-size-hook';
 
 const updateFloatingEditorPosition = (
   editorElement: ?HTMLFormElement,
@@ -55,30 +52,29 @@ const updateFloatingEditorPosition = (
   }
 };
 
-type OwnProps = {|
-  +position: FloatingPosition;
-  +initialTask: Task;
-  +trigger: (opened: boolean, opener: () => void) => Node;
-|};
+type OwnProps = {
+  readonly position: FloatingPosition;
+  readonly initialTask: Task;
+  readonly trigger: (opened: boolean, opener: () => void) => Node;
+};
 
-type Props = {|
-  ...OwnProps;
-  +fullInitialTask: TaskWithSubTasks;
-|};
+type Props = OwnProps & { readonly fullInitialTask: TaskWithSubTasks };
 
-type ComponentState = {|
-  +task: TaskWithSubTasks;
-  +diff: TaskDiff;
-  +uncommittedSubTask: SubTask | null;
-  +open: boolean;
-  +prevFullTask: TaskWithSubTasks;
-|};
+type ComponentState = {
+  readonly task: TaskWithSubTasks;
+  readonly diff: TaskDiff;
+  readonly uncommittedSubTask: SubTask | null;
+  readonly open: boolean;
+  readonly prevFullTask: TaskWithSubTasks;
+};
 
 /**
  * FloatingTaskEditor is a component used to edit a task on the fly.
  * It is triggered from a click on a specified element.
  */
-function FloatingTaskEditor({ position, initialTask, fullInitialTask, trigger }: Props): Node {
+function FloatingTaskEditor(
+  { position, initialTask, fullInitialTask, trigger }: Props,
+): ReactElement {
   const [componentState, setState] = React.useState<ComponentState>({
     task: fullInitialTask,
     diff: EMPTY_TASK_DIFF,
@@ -255,7 +251,7 @@ function FloatingTaskEditor({ position, initialTask, fullInitialTask, trigger }:
   );
 }
 
-const Connected: ComponentType<OwnProps> = connect(
+const Connected = connect(
   ({ subTasks }: State, { initialTask }: OwnProps) => {
     const { children, ...rest } = initialTask;
     const newSubTasks = [];

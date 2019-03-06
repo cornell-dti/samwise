@@ -1,10 +1,5 @@
-// @flow strict
-
-import React from 'react';
-import type { Node } from 'react';
-import type {
-  PartialMainTask, PartialSubTask, SubTask, Task,
-} from '../../../store/store-types';
+import React, { ReactElement } from 'react';
+import { PartialMainTask, PartialSubTask, SubTask, Task } from '../../../store/store-types';
 import TaskEditor from './TaskEditor';
 import {
   addSubTask,
@@ -13,26 +8,26 @@ import {
   removeSubTask,
   removeTask,
 } from '../../../firebase/actions';
-import type { TaskWithSubTasks } from './editors-types';
+import { TaskWithSubTasks } from './editors-types';
 
-type Props = {|
-  +original: Task;
-  +filtered: TaskWithSubTasks;
-  +className?: string; // additional class names applied to the editor.
-|};
+type Props = {
+  readonly original: Task;
+  readonly filtered: TaskWithSubTasks;
+  readonly className?: string; // additional class names applied to the editor.
+};
 
 type TempSubTask =
-  | {| +type: 'UNCOMMITTED', +subTask: SubTask |}
-  | {| +type: 'COMMITTED', +subTask: SubTask; +prevTempId: string; |}
+  | { readonly type: 'UNCOMMITTED', readonly subTask: SubTask }
+  | { readonly type: 'COMMITTED', readonly subTask: SubTask; readonly prevTempId: string; }
   | null;
 
 /**
  * The task editor used to edit task inline, activated on focus.
  */
-export default function InlineTaskEditor({ original, filtered, className }: Props): Node {
+export default function InlineTaskEditor({ original, filtered, className }: Props): ReactElement {
   const [disabled, setDisabled] = React.useState(true);
   const [tempSubTask, setTempSubTask] = React.useState<TempSubTask>(null);
-  if (tempSubTask?.type === 'COMMITTED') {
+  if (tempSubTask !== null && tempSubTask.type === 'COMMITTED') {
     setTempSubTask(null);
   }
 

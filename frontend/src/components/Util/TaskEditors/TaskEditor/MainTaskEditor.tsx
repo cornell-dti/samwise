@@ -1,26 +1,25 @@
-// @flow strict
-
-import React from 'react';
-import type { ComponentType, Node } from 'react';
+import React, { KeyboardEvent, ReactElement, SyntheticEvent } from 'react';
 import Delete from '../../../../assets/svgs/XLight.svg';
 import PinOutline from '../../../../assets/svgs/pin-2-light-outline.svg';
 import Pin from '../../../../assets/svgs/pin-2-light-filled.svg';
 import styles from './TaskEditor.css';
 import CheckBox from '../../../UI/CheckBox';
 
-type NameCompleteInFocus = {|
-  +name: string;
-  +complete: boolean;
-  +inFocus: boolean;
-|};
-type Props = {|
-  ...NameCompleteInFocus;
-  +onChange: ($Shape<NameCompleteInFocus>) => void;
-  +onRemove: () => void;
-  +onPressEnter: ('main-task' | number) => void;
-|};
+type NameCompleteInFocus = {
+  readonly name: string;
+  readonly complete: boolean;
+  readonly inFocus: boolean;
+};
+type Props = NameCompleteInFocus & {
+  readonly onChange: (change: Partial<NameCompleteInFocus>) => void;
+  readonly onRemove: () => void;
+  readonly onPressEnter: (id: 'main-task' | number) => void;
+};
 
-type NameCache = {| +cached: string; +originalPropsName: string; |};
+type NameCache = {
+  readonly cached: string;
+  readonly originalPropsName: string;
+};
 
 const deleteIconClass = [styles.TaskEditorIcon, styles.TaskEditorIconLeftPad].join(' ');
 
@@ -28,7 +27,7 @@ function MainTaskEditor(
   {
     name, complete, inFocus, onChange, onRemove, onPressEnter,
   }: Props,
-): Node {
+): ReactElement {
   const [nameCache, setNameCache] = React.useState<NameCache>({
     cached: name,
     originalPropsName: name,
@@ -40,7 +39,7 @@ function MainTaskEditor(
   const editComplete = () => onChange({ complete: !complete });
   const editInFocus = () => onChange({ inFocus: !inFocus });
 
-  const onKeyDown = (event: SyntheticKeyboardEvent<HTMLInputElement>) => {
+  const onKeyDown = (event: KeyboardEvent<HTMLInputElement>) => {
     if (event.key !== 'Enter') {
       return;
     }
@@ -51,7 +50,7 @@ function MainTaskEditor(
     const newValue = event.currentTarget.value;
     setNameCache(prev => ({ ...prev, cached: newValue }));
   };
-  const onBlur = (event: SyntheticEvent<>): void => {
+  const onBlur = (event: SyntheticEvent<HTMLInputElement>): void => {
     event.stopPropagation();
     if (name !== nameCache.cached) {
       onChange({ name: nameCache.cached });
@@ -82,5 +81,5 @@ function MainTaskEditor(
   );
 }
 
-const Memoized: ComponentType<Props> = React.memo(MainTaskEditor);
+const Memoized = React.memo(MainTaskEditor);
 export default Memoized;

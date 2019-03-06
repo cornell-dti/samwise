@@ -1,15 +1,17 @@
-// @flow strict
-
 // NOTE:
 // Other Components in this folder are only designed to be used by TaskEditors.
 // These components' API are NOT guaranteed to be stable.
 // You should only use this component from the outside.
 
-import React from 'react';
-import type { ComponentType, Node } from 'react';
+import React, { FocusEvent, ReactElement, ReactNode } from 'react';
 import { connect } from 'react-redux';
-import type {
-  Tag, SubTask, PartialMainTask, PartialSubTask, State, MainTask,
+import {
+  Tag,
+  SubTask,
+  PartialMainTask,
+  PartialSubTask,
+  State,
+  MainTask,
 } from '../../../../store/store-types';
 import OverdueAlert from '../../../UI/OverdueAlert';
 import styles from './TaskEditor.css';
@@ -21,39 +23,37 @@ import MainTaskEditor from './MainTaskEditor';
 import NewSubTaskEditor from './NewSubTaskEditor';
 import OneSubTaskEditor from './OneSubTaskEditor';
 
-type DefaultProps = {|
-  +className?: string;
-  +children?: Node;
-  +newSubTaskAutoFocused?: boolean; // whether to auto focus the new subtask
-  +newSubTaskDisabled?: boolean; // whether to disable new subtask creation
-  +onFocus?: (event: SyntheticFocusEvent<HTMLElement>) => void; // when the editor gets focus
-  +onBlur?: (event: SyntheticFocusEvent<HTMLElement>) => void; // when the editor loses focus
-  +editorRef?: { current: HTMLFormElement | null }; // the ref of the editor
-|};
-type Actions = {|
-  +editMainTask: (partialMainTask: PartialMainTask) => void;
+type DefaultProps = {
+  readonly className?: string;
+  readonly children?: ReactNode;
+  readonly newSubTaskAutoFocused?: boolean; // whether to auto focus the new subtask
+  readonly newSubTaskDisabled?: boolean; // whether to disable new subtask creation
+  readonly onFocus?: (event: FocusEvent<HTMLElement>) => void; // when the editor gets focus
+  readonly onBlur?: (event: FocusEvent<HTMLElement>) => void; // when the editor loses focus
+  readonly editorRef?: { current: HTMLFormElement | null }; // the ref of the editor
+};
+type Actions = {
+  readonly editMainTask: (partialMainTask: PartialMainTask) => void;
   // edit a subtask, which can be the one created but cached locally!
-  +editSubTask: (subtaskId: string, partialSubTask: PartialSubTask) => void;
+  readonly editSubTask: (subtaskId: string, partialSubTask: PartialSubTask) => void;
   // add a subtask, but cache the subtask locally.
-  +addSubTask: (subTask: SubTask) => void;
-  +removeTask: () => void;
+  readonly addSubTask: (subTask: SubTask) => void;
+  readonly removeTask: () => void;
   // remove the subtask, which can be the one created but cached locally!
-  +removeSubTask: (subtaskId: string) => void;
+  readonly removeSubTask: (subtaskId: string) => void;
   // save all the edits. remember also to save the locally cached new subtask.
-  +onSave: () => void;
-|};
-type OwnProps = {|
-  +mainTask: MainTask; // The task given to the editor at this point.
-  +subTasks: SubTask[];
-  +tempSubTask: SubTask | null;
-  +actions: Actions; // The actions to perform under different events
-  ...DefaultProps; // Props with default values.
-|};
-type Props = {|
-  ...OwnProps;
+  readonly onSave: () => void;
+};
+type OwnProps = DefaultProps & {
+  readonly mainTask: MainTask; // The task given to the editor at this point.
+  readonly subTasks: SubTask[];
+  readonly tempSubTask: SubTask | null;
+  readonly actions: Actions; // The actions to perform under different events
+};
+type Props = OwnProps & {
   // subscribed from redux store.
-  +getTag: (id: string) => Tag;
-|};
+  readonly getTag: (id: string) => Tag;
+};
 
 type TaskToFocus = number | 'new-subtask' | null;
 
@@ -78,7 +78,7 @@ function TaskEditor(
     onBlur,
     editorRef,
   }: Props,
-): Node {
+): ReactElement {
   const { name, tag, date, complete, inFocus } = mainTask;
   const {
     editMainTask, editSubTask, addSubTask, removeTask, removeSubTask, onSave,
@@ -193,7 +193,7 @@ function TaskEditor(
   );
 }
 
-const Connected: ComponentType<OwnProps> = connect(
-  ({ tags }: State) => ({ getTag: id => tags.get(id) ?? NONE_TAG }),
+const Connected = connect(
+  ({ tags }: State) => ({ getTag: (id: string) => tags.get(id) || NONE_TAG }),
 )(TaskEditor);
 export default Connected;

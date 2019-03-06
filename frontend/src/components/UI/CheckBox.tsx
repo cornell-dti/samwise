@@ -1,26 +1,20 @@
-// @flow strict
 /* eslint-disable jsx-a11y/label-has-associated-control,jsx-a11y/label-has-for */
 
-import React from 'react';
-import type { Node } from 'react';
+import React, { MouseEvent, ReactElement } from 'react';
 import styles from './CheckBox.css';
 
-type Props = {|
-  +checked: boolean; // whether the box is initially checked
-  +onChange: (checked: boolean) => void; // called when the value changed.
-  +disabled: boolean; // whether the checkbox is disabled.
-  +inverted: boolean; // whether the color is inverted.
-  +className: string | null; // additional className to apply
-|};
+type Props = {
+  readonly checked: boolean; // whether the box is initially checked
+  readonly onChange: (checked: boolean) => void; // called when the value changed.
+  readonly disabled: boolean; // whether the checkbox is disabled.
+  readonly inverted: boolean; // whether the color is inverted.
+  readonly className: string | null; // additional className to apply
+};
 
 /**
- * This is the checkbox that implements the minimalist design.
- *
- * @param {Props} props all the props.
- * @return {Node} the rendered checkbox.
- * @constructor
+ * This is the checkbox that implements designers' minimalist design.
  */
-export default function CheckBox(props: Props): Node {
+export default function CheckBox(props: Props): ReactElement {
   const {
     checked, onChange, disabled, inverted, className,
   } = props;
@@ -28,7 +22,7 @@ export default function CheckBox(props: Props): Node {
   if (inverted) {
     allClassNames = `${allClassNames} ${styles.InvertedCheckBox}`;
   }
-  const handleClick = (e: SyntheticMouseEvent<HTMLInputElement>) => {
+  const handleClick = (e: MouseEvent<HTMLInputElement>) => {
     e.stopPropagation();
     if (!disabled) {
       onChange(!checked);

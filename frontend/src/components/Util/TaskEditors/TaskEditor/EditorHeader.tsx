@@ -1,36 +1,28 @@
-// @flow strict
-
-import React from 'react';
-import type { Node } from 'react';
+import React, { ReactElement } from 'react';
 import Calendar from 'react-calendar';
 import LightCalendar from '../../../../assets/svgs/light.svg';
 import styles from './TaskEditor.css';
 import TagListPicker from '../../TagListPicker/TagListPicker';
-import type { Tag } from '../../../../store/store-types';
+import { Tag } from '../../../../store/store-types';
 
-type TagAndDate = {|
-  +tag: string;
-  +date: Date;
-|};
+type TagAndDate = {
+  readonly tag: string;
+  readonly date: Date;
+};
 
-type Props = {|
-  ...TagAndDate;
-  +onChange: ($Shape<TagAndDate>) => void;
-  +getTag: (id: string) => Tag;
-|};
+type Props = TagAndDate & {
+  readonly onChange: (change: Partial<TagAndDate>) => void;
+  readonly getTag: (id: string) => Tag;
+};
 
-type EditorDisplayStatus = {|
-  +doesShowTagEditor: boolean;
-  +doesShowDateEditor: boolean;
-|};
+type EditorDisplayStatus = {
+  readonly doesShowTagEditor: boolean;
+  readonly doesShowDateEditor: boolean;
+};
 
 const calendarIconClass = [styles.TaskEditorIconButton, styles.TaskEditorIcon].join(' ');
 
-export default function EditorHeader(
-  {
-    tag, date, onChange, getTag,
-  }: Props,
-): Node {
+export default function EditorHeader({ tag, date, onChange, getTag }: Props): ReactElement {
   const [editorDisplayStatus, setEditorDisplayStatus] = React.useState<EditorDisplayStatus>({
     doesShowTagEditor: false,
     doesShowDateEditor: false,

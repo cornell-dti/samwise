@@ -1,9 +1,5 @@
-// @flow strict
-
-import React from 'react';
-import type { Node } from 'react';
+import React, { ReactElement } from 'react';
 import firebase from 'firebase/app';
-// $FlowFixMe
 import { FirebaseAuth } from 'react-firebaseui';
 import styles from './Login.css';
 import { cacheAppUser, toAppUser } from '../../../firebase/auth';
@@ -23,7 +19,7 @@ const uiConfig = {
   },
 };
 
-type Props = {| +appRenderer: () => Node; |}
+type Props = { readonly appRenderer: () => ReactElement };
 type LoginStatus = boolean | 'UNDECIDED';
 
 /**
@@ -33,7 +29,7 @@ type LoginStatus = boolean | 'UNDECIDED';
  *
  * @param appRenderer the function to call when the login flow finishes.
  */
-export default function LoginBarrier({ appRenderer }: Props): Node {
+export default function LoginBarrier({ appRenderer }: Props): ReactElement {
   const [loginStatus, setLoginStatus] = React.useState<LoginStatus>('UNDECIDED');
   const [loaded, setLoaded] = React.useState(false);
 

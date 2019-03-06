@@ -1,21 +1,18 @@
-// @flow strict
-
-import React from 'react';
-import type { Node } from 'react';
+import React, { KeyboardEvent, ReactElement, SyntheticEvent } from 'react';
 import styles from './TaskEditor.css';
 
-type Props = {|
-  +onChange: (string) => void;
-  +needToBeFocused: boolean;
-  +afterFocusedCallback: () => void;
-  +onPressEnter: () => void;
-|};
+type Props = {
+  readonly onChange: (change: string) => void;
+  readonly needToBeFocused: boolean;
+  readonly afterFocusedCallback: () => void;
+  readonly onPressEnter: () => void;
+};
 
 export default function NewSubTaskEditor(
   {
     onChange, needToBeFocused, afterFocusedCallback, onPressEnter,
   }: Props,
-): Node {
+): ReactElement {
   const onInputChange = (event: SyntheticEvent<HTMLInputElement>) => {
     event.stopPropagation();
     const newSubTaskValue: string = event.currentTarget.value.trim();
@@ -23,7 +20,7 @@ export default function NewSubTaskEditor(
       onChange(newSubTaskValue);
     }
   };
-  const onKeyDown = (event: SyntheticKeyboardEvent<HTMLInputElement>) => {
+  const onKeyDown = (event: KeyboardEvent<HTMLInputElement>) => {
     if (event.key === 'Enter') {
       onPressEnter();
     }

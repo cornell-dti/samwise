@@ -1,25 +1,24 @@
 // @flow strict
 
-import React from 'react';
-import type { ComponentType, Node } from 'react';
+import React, { KeyboardEvent, ReactElement, SyntheticEvent } from 'react';
 import Delete from '../../../../assets/svgs/XLight.svg';
 import PinOutline from '../../../../assets/svgs/pin-2-light-outline.svg';
 import Pin from '../../../../assets/svgs/pin-2-light-filled.svg';
 import styles from './TaskEditor.css';
 import CheckBox from '../../../UI/CheckBox';
-import type { PartialSubTask, SubTask } from '../../../../store/store-types';
+import { PartialSubTask, SubTask } from '../../../../store/store-types';
 
-type Props = {|
-  +subTask: SubTask;
-  +mainTaskComplete: boolean; // whether the main task is completed
-  +needToBeFocused: boolean; // whether it needs to be focused.
-  +afterFocusedCallback: () => void; // need to be called once we focused the subtask
-  +editSubTask: (subtaskId: string, partialSubTask: PartialSubTask) => void;
-  +removeSubTask: (subtaskId: string) => void;
-  +onPressEnter: ('main-task' | number) => void;
-|};
+type Props = {
+  readonly subTask: SubTask; // the subtask to edit
+  readonly mainTaskComplete: boolean; // whether the main task is completed
+  readonly needToBeFocused: boolean; // whether it needs to be focused.
+  readonly afterFocusedCallback: () => void; // need to be called once we focused the subtask
+  readonly editSubTask: (subtaskId: string, partialSubTask: PartialSubTask) => void;
+  readonly removeSubTask: (subtaskId: string) => void;
+  readonly onPressEnter: (id: 'main-task' | number) => void;
+};
 
-type NameCache = {| +cached: string; +originalPropsName: string; |};
+type NameCache = { readonly cached: string; readonly originalPropsName: string; };
 
 const className = [styles.TaskEditorFlexibleContainer, styles.TaskEditorSubtaskCheckBox].join(' ');
 const deleteIconClass = [styles.TaskEditorIcon, styles.TaskEditorIconLeftPad].join(' ');
@@ -34,7 +33,7 @@ function OneSubTaskEditor(
     removeSubTask,
     onPressEnter,
   }: Props,
-): Node {
+): ReactElement {
   const [nameCache, setNameCache] = React.useState<NameCache>({
     cached: subTask.name,
     originalPropsName: subTask.name,
@@ -47,7 +46,7 @@ function OneSubTaskEditor(
   const onInFocusChange = () => editSubTask(subTask.id, { inFocus: !subTask.inFocus });
   const onRemove = () => removeSubTask(subTask.id);
 
-  const onKeyDown = (event: SyntheticKeyboardEvent<HTMLInputElement>) => {
+  const onKeyDown = (event: KeyboardEvent<HTMLInputElement>) => {
     if (event.key !== 'Enter') {
       return;
     }
@@ -58,7 +57,7 @@ function OneSubTaskEditor(
     const newValue = event.currentTarget.value;
     setNameCache(prev => ({ ...prev, cached: newValue }));
   };
-  const onBlur = (event: SyntheticEvent<>): void => {
+  const onBlur = (event: SyntheticEvent<HTMLInputElement>): void => {
     event.stopPropagation();
     if (subTask.name !== nameCache.cached) {
       editSubTask(subTask.id, { name: nameCache.cached });
@@ -104,7 +103,7 @@ function OneSubTaskEditor(
   );
 }
 
-const Memoized: ComponentType<Props> = React.memo(
+const Memoized = React.memo(
   OneSubTaskEditor,
   (prev, curr) => prev.subTask === curr.subTask
     && prev.mainTaskComplete === curr.mainTaskComplete,
