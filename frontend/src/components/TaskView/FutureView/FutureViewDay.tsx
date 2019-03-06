@@ -104,7 +104,7 @@ export default function FutureViewDay(props: Props): ReactElement {
   const [floatingViewOpened, setFloatingViewOpened] = React.useState(false);
   const [heightInfo, setHeightInfo] = React.useState<HeightInfo>(dummyHeightInfo);
   const windowSize = useWindowSize();
-  const componentDivRef = React.useRef(null);
+  const componentDivRef = React.useRef<HTMLDivElement>(null);
 
   const onHeightChange = (doesOverflow: boolean, tasksHeight: number) => {
     if (heightInfo.tasksHeight !== tasksHeight) {
@@ -139,7 +139,7 @@ export default function FutureViewDay(props: Props): ReactElement {
     );
   }
   const computeFloatingViewPosition = (): PositionStyle => {
-    const componentDiv = componentDivRef.current ?? error();
+    const componentDiv = componentDivRef.current || error();
     const boundingRect = componentDiv.getBoundingClientRect();
     if (!(boundingRect instanceof DOMRect)) {
       throw new Error('Bad boundingRect!');

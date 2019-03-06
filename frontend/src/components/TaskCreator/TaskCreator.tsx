@@ -239,7 +239,7 @@ export default class TaskCreator extends React.PureComponent<{}, State> {
    *
    * @return the rendered other info editor.
    */
-  renderOtherInfoEditor(): ReactElement {
+  renderOtherInfoEditor(): ReactElement | null {
     const { opened } = this.state;
     if (!opened) {
       return null;
@@ -249,7 +249,7 @@ export default class TaskCreator extends React.PureComponent<{}, State> {
       tagPickerOpened, datePickerOpened, datePicked, needToSwitchFocus,
     } = this.state;
     const existingSubTaskEditor = ({ id, name }: SubTask, i: number, arr: SubTask[]) => {
-      const refHandler = (inputElementRef) => {
+      const refHandler = (inputElementRef: HTMLInputElement | null) => {
         if (i === arr.length - 1 && needToSwitchFocus && inputElementRef != null) {
           inputElementRef.focus();
           this.setState({ needToSwitchFocus: false });

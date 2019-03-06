@@ -17,11 +17,7 @@ type Props = OwnProps & {
   readonly getTag: (id: string) => Tag;
 };
 
-function TagPicker(
-  {
-    tag, opened, onTagChange, onPickerOpened, getTag,
-  }: Props,
-): ReactElement {
+function TagPicker({ tag, opened, onTagChange, onPickerOpened, getTag }: Props): ReactElement {
   // Controllers
   const clickPicker = () => { onPickerOpened(); };
   const reset = () => onTagChange(NONE_TAG_ID);

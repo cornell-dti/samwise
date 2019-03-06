@@ -34,12 +34,12 @@ function FutureViewDayTaskContainer(
     onHeightChange,
   }: Props,
 ): ReactElement {
-  const containerRef = React.useRef(null);
+  const containerRef = React.useRef<HTMLDivElement>(null);
   const [prevHeights, setPrevHeights] = React.useState(() => [0, 0]);
 
   // Subscribes to it, but don't use the value. Force rerender when window size changes.
   useWindowSizeCallback(() => {
-    const containerNode = containerRef.current ?? error();
+    const containerNode = containerRef.current || error();
     const tasksHeight = containerNode.scrollHeight;
     const containerHeight = containerNode.clientHeight;
     const [prevTasksHeight, prevContainerHeight] = prevHeights;
