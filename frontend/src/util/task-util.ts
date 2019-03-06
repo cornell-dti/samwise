@@ -1,8 +1,6 @@
-// @flow strict
-
-import type { Map } from 'immutable';
-import type { PartialMainTask, PartialSubTask, SubTask, Task } from '../store/store-types';
-import type { TaskWithSubTasks } from '../components/Util/TaskEditors/editors-types';
+import { Map } from 'immutable';
+import { PartialMainTask, PartialSubTask, SubTask, Task } from '../store/store-types';
+import { TaskWithSubTasks } from '../components/Util/TaskEditors/editors-types';
 
 /**
  * This is the utility module for array of tasks and subtasks.
@@ -34,12 +32,12 @@ export const getFilteredInFocusTask = (
 /**
  * Used to keep track of the task diff to optimize edit speed.
  */
-export type TaskDiff = {|
-  +mainTaskDiff: PartialMainTask,
-  +subtasksCreations: SubTask[];
-  +subtasksEdits: [string, PartialSubTask][];
-  +subtasksDeletions: string[];
-|};
+export type TaskDiff = {
+  readonly mainTaskDiff: PartialMainTask,
+  readonly subtasksCreations: SubTask[];
+  readonly subtasksEdits: [string, PartialSubTask][];
+  readonly subtasksDeletions: string[];
+};
 
 /**
  * The empty task diff.
@@ -70,10 +68,15 @@ export const taskDiffIsEmpty = (diff: TaskDiff): boolean => {
   if (!mainTaskEmpty) {
     return false;
   }
-  return subtasksCreations.length === 0 && subtasksEdits.length === 0 && subtasksDeletions === 0;
+  return subtasksCreations.length === 0
+    && subtasksEdits.length === 0
+    && subtasksDeletions.length === 0;
 };
 
-export type TasksProgressProps = {| +completedTasksCount: number; +allTasksCount: number |};
+export type TasksProgressProps = {
+  readonly completedTasksCount: number;
+  readonly allTasksCount: number
+};
 
 /**
  * Compute the progress given a list of filtered tasks.
@@ -93,14 +96,20 @@ export const computeTaskProgress = (
       allTasksCount += task.children.size + 1;
     } else {
       allTasksCount += task.children.reduce(
-        (acc, s) => acc + ((subTasks.get(s)?.inFocus ?? false) ? 1 : 0), 0,
+        (acc, s) => {
+          const subTask = subTasks.get(s);
+          return acc + (subTask == null ? 0 : (subTask.inFocus ? 1 : 0));
+        }, 0,
       );
     }
     if (task.complete) {
       completedTasksCount += task.children.size + 1;
     } else {
       completedTasksCount += task.children.reduce(
-        (acc, s) => acc + ((subTasks.get(s)?.complete ?? false) ? 1 : 0), 0,
+        (acc, s) => {
+          const subTask = subTasks.get(s);
+          return acc + (subTask == null ? 0 : (subTask.complete ? 1 : 0));
+        }, 0,
       );
     }
   }

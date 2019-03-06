@@ -1,7 +1,5 @@
-// @flow strict
-
 import { Map } from 'immutable';
-import type { Course } from '../store/store-types';
+import { Course } from '../store/store-types';
 
 /**
  * Build a map from course id to courses.

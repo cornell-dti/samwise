@@ -1,10 +1,8 @@
-// @flow strict
-
 import { createStore } from 'redux';
-import type { Store } from 'redux';
+import { Store } from 'redux';
 import rootReducer from './reducers';
-import type { State } from './store-types';
-import type { Action } from './action-types';
+import { State } from './store-types';
+import { Action } from './action-types';
 
 export type GlobalStore = Store<State, Action>;
 

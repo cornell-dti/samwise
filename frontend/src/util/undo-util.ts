@@ -1,15 +1,12 @@
-// @flow strict
-
 import { Set } from 'immutable';
-import type { SubTask, Task } from '../store/store-types';
+import { SubTask, Task } from '../store/store-types';
 import emitToast from '../components/UI/UndoToast';
 import { date2String } from './datetime-util';
 import { addTask, removeTask } from '../firebase/actions';
 
-type TaskWithFullChildren = {|
-  ...$ReadOnly<$Diff<Task, { +children: Set<string> }>>;
-  +children: SubTask[];
-|};
+type TaskWithFullChildren = Pick<Task, Exclude<keyof Task, 'children'>> & {
+  readonly children: SubTask[];
+};
 
 let lastAddedTask: TaskWithFullChildren | null = null;
 let lastRemovedTask: TaskWithFullChildren | null = null;

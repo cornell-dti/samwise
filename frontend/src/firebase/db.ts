@@ -1,8 +1,6 @@
-// @flow strict
-
 import firebase from 'firebase/app';
 import 'firebase/firestore';
-import type { Firestore } from 'firebase/firestore';
+import { Firestore } from 'firebase/firestore';
 
 /**
  * The firestore database.
@@ -12,7 +10,6 @@ export const db = (): Firestore => firebase.firestore();
 
 /**
  * Collection name literals.
- * @type {{TASKS: string, TAGS: string, SUBTASKS: string}}
  */
 const collections = {
   ORDER_MANAGER: 'samwise-order-manager',

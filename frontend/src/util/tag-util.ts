@@ -1,6 +1,4 @@
-// @flow strict
-
-import type { Tag } from '../store/store-types';
+import { Tag } from '../store/store-types';
 
 /**
  * ID of the none tag.

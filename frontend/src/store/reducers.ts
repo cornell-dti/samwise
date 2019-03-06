@@ -1,14 +1,13 @@
-// @flow strict
-
 import { Map, Set } from 'immutable';
-import type {
+import {
   Action,
   PatchCourses,
   PatchTags,
   PatchTasks,
-  PatchSubTasks, PatchSettings,
+  PatchSubTasks,
+  PatchSettings,
 } from './action-types';
-import type { State } from './store-types';
+import { State } from './store-types';
 import { NONE_TAG_ID, NONE_TAG } from '../util/tag-util';
 import { error } from '../util/general-util';
 
@@ -49,11 +48,17 @@ function patchTasks(state: State, { created, edited, deleted }: PatchTasks): Sta
     });
     edited.forEach((t) => {
       const key = t.date.toDateString();
-      const oldTask = state.tasks.get(t.id) ?? error();
+      const oldTask = state.tasks.get(t.id);
+      if (oldTask == null) {
+        error();
+      }
       const oldKey = oldTask.date.toDateString();
       if (oldKey !== key) {
         // remove first
-        const oldBucket = m.get(oldKey) ?? error('impossible!');
+        const oldBucket = m.get(oldKey);
+        if (oldBucket == null) {
+          error('impossible!');
+        }
         m.set(oldKey, oldBucket.remove(t.id));
       }
       const set = m.get(key);
@@ -64,7 +69,10 @@ function patchTasks(state: State, { created, edited, deleted }: PatchTasks): Sta
       }
     });
     deleted.forEach((id) => {
-      const oldTask = state.tasks.get(id) ?? error();
+      const oldTask = state.tasks.get(id);
+      if (oldTask == null) {
+        error();
+      }
       const key = oldTask.date.toDateString();
       const set = m.get(key);
       if (set != null) {

@@ -1,23 +1,21 @@
-// @flow strict
-
-import firebase from 'firebase/app';
-import type { FirebaseUser } from 'firebase';
+import firebase, { app } from 'firebase/app';
+import { FirebaseUser } from 'firebase';
 import 'firebase/auth';
 import { error } from '../util/general-util';
 
-export type AppUser = {|
-  +displayName: string;
-  +email: string;
-  +token: string;
-|};
+export type AppUser = {
+  readonly displayName: string;
+  readonly email: string;
+  readonly token: string;
+};
 
 /**
  * Returns the promise of an app user from the given raw firebase user.
  *
- * @param firebaseUser a raw firebase user or null.
+ * @param {FirebaseUser | null} firebaseUser a raw firebase user or null.
  * @return {Promise<AppUser | null>} the promise of an app user.
  */
-export async function toAppUser(firebaseUser: ?FirebaseUser): Promise<AppUser | null> {
+export async function toAppUser(firebaseUser: FirebaseUser | null): Promise<AppUser | null> {
   if (firebaseUser == null) {
     return null;
   }
@@ -44,7 +42,9 @@ export function cacheAppUser(user: AppUser) {
  * If the user is not cached yet, it will not try to get one from firebase.
  * Instead, it will throw an error.
  */
-export const getAppUser = (): AppUser => appUser ?? error('App is not initialized.');
+export function getAppUser(): AppUser {
+  return appUser == null ? error('App is not initialized.') : appUser;
+}
 
 /**
  * Sign out from firebase auth.

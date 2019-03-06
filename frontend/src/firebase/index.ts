@@ -2,7 +2,7 @@
 
 import firebase from 'firebase/app';
 
-let firebaseConfig;
+let firebaseConfig: object;
 
 if (process.env.NODE_ENV === 'production' && process.env.IS_STAGING !== 'true') {
   firebaseConfig = {

@@ -1,5 +1,3 @@
-// @flow strict
-
 /**
  * @param {number} day the day to convert, which must be between 0 to 6.
  * @return {string} the converted day string. e.g. 0 ==> 'SUN', 3 ==> 'WED'.

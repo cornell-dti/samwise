@@ -1,16 +1,14 @@
-// @flow strict
-
 import { db, orderManagerCollection } from './db';
 import { getAppUser } from './auth';
 
 const managerRef = () => orderManagerCollection().doc(getAppUser().email);
 
-type Manager = {|
-  +tagsMaxOrder: number;
-  +tasksMaxOrder: number;
-|};
+type Manager = {
+  readonly tagsMaxOrder: number;
+  readonly tasksMaxOrder: number;
+};
 
-type PartialManager = $Shape<Manager>;
+type PartialManager = Partial<Manager>;
 
 /**
  * Allocate a new order number of tags or tgs.

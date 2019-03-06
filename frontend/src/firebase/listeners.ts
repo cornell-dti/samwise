@@ -1,22 +1,17 @@
-// @flow strict
-
 import { Set } from 'immutable';
-import type { DocumentSnapshot, QuerySnapshot } from 'firebase/firestore';
+import { DocumentSnapshot, QuerySnapshot } from 'firebase/firestore';
 import { subTasksCollection, tagsCollection, tasksCollection, settingsCollection } from './db';
 import { getAppUser } from './auth';
-import type {
-  FirestoreSubTask,
-  FirestoreTag,
-  FirestoreTask,
-} from './firestore-types';
-import type { SubTask, Tag, Task, Settings } from '../store/store-types';
+import { FirestoreSubTask, FirestoreTag, FirestoreTask } from './firestore-types';
+import { SubTask, Tag, Task, Settings } from '../store/store-types';
 import {
-  patchCourses, patchSettings,
+  patchCourses,
+  patchSettings,
   patchSubTasks,
   patchTags,
   patchTasks,
 } from '../store/actions';
-// $FlowFixMe
+// @ts-ignore
 import coursesJson from '../assets/json/sp19-courses-with-exams-min.json';
 import buildCoursesMap from '../util/courses-util';
 import { store } from '../store/store';
@@ -24,16 +19,16 @@ import { ignore } from '../util/general-util';
 
 type UnmountCallback = () => void;
 const listenTagsChange = (
-  email: string, listener: (QuerySnapshot) => void,
+  email: string, listener: (snapshot: QuerySnapshot) => void,
 ): UnmountCallback => tagsCollection().where('owner', '==', email).onSnapshot(listener);
 const listenTasksChange = (
-  email: string, listener: (QuerySnapshot) => void,
+  email: string, listener: (snapshot: QuerySnapshot) => void,
 ): UnmountCallback => tasksCollection().where('owner', '==', email).onSnapshot(listener);
 const listenSubTasksChange = (
-  email: string, listener: (QuerySnapshot) => void,
+  email: string, listener: (snapshot: QuerySnapshot) => void,
 ): UnmountCallback => subTasksCollection().where('owner', '==', email).onSnapshot(listener);
 const listenSettingsChange = (
-  email: string, listener: (DocumentSnapshot) => void,
+  email: string, listener: (snapshot: DocumentSnapshot) => void,
 ): UnmountCallback => settingsCollection().doc(email).onSnapshot(listener);
 
 /**
@@ -66,8 +61,7 @@ export default (onFirstFetched: () => void): (() => void) => {
       if (change.type === 'removed') {
         deleted.push(id);
       } else {
-        // $FlowFixMe
-        const { owner, ...rest }: FirestoreTag = (doc.data(): any);
+        const { owner, ...rest }: FirestoreTag = doc.data();
         const tag: Tag = { id, ...rest };
         if (change.type === 'added') {
           created.push(tag);
@@ -91,8 +85,7 @@ export default (onFirstFetched: () => void): (() => void) => {
       if (change.type === 'removed') {
         deleted.push(id);
       } else {
-        // $FlowFixMe
-        const { owner, date: timestamp, children, ...rest }: FirestoreTask = (doc.data(): any);
+        const { owner, date: timestamp, children, ...rest }: FirestoreTask = doc.data();
         const task: Task = {
           id,
           date: timestamp instanceof Date ? timestamp : timestamp.toDate(),
@@ -121,8 +114,7 @@ export default (onFirstFetched: () => void): (() => void) => {
       if (change.type === 'removed') {
         deleted.push(id);
       } else {
-        // $FlowFixMe
-        const { owner, ...rest }: FirestoreSubTask = (doc.data(): any);
+        const { owner, ...rest }: FirestoreSubTask = doc.data();
         const subTask: SubTask = { id, ...rest };
         if (change.type === 'added') {
           created.push(subTask);

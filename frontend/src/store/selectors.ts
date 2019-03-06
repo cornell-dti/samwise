@@ -1,16 +1,10 @@
 // @flow strict
 
 import { createSelector, createSelectorCreator, defaultMemoize } from 'reselect';
-import { Set } from 'immutable';
-import type { Map } from 'immutable';
-import type {
-  State,
-  SubTask,
-  Tag,
-  Task,
-} from './store-types';
+import { Map, Set } from 'immutable';
+import { State, SubTask, Tag, Task } from './store-types';
 import { computeTaskProgress } from '../util/task-util';
-import type { TasksProgressProps } from '../util/task-util';
+import { TasksProgressProps } from '../util/task-util';
 import { NONE_TAG } from '../util/tag-util';
 
 /*
@@ -24,7 +18,7 @@ const createSetEqualSelector = createSelectorCreator(
   (a: Set<string>, b: Set<string>) => a.equals(b),
 );
 
-type SelectorOf<T, Props = void> = (State, Props) => T;
+type SelectorOf<T, Props = void> = (state: State, ownProps: Props) => T;
 
 /*
  * --------------------------------------------------------------------------------
@@ -57,15 +51,18 @@ const getTasksInFocus: SelectorOf<Task[]> = createSelector(
   [getTasks, getSubTasks],
   (tasks, subTasks) => Array
     .from(tasks.values())
-    .filter(t => t.inFocus || t.children.some(id => subTasks.get(id)?.inFocus ?? false)),
+    .filter(t => t.inFocus || t.children.some(id => {
+      const subTask = subTasks.get(id);
+      return subTask == null ? false : subTask.inFocus;
+    })),
 );
 
-export const getTaskIds: SelectorOf<{| ids: string[] |}> = createSetEqualSelector(
+export const getTaskIds: SelectorOf<{ readonly ids: string[] }> = createSetEqualSelector(
   getTasksId, ids => ({ ids: ids.toArray() }),
 );
 
-type IdOrder = {| +id: string; +order: number |};
-type IdOrderListProps = {| +idOrderList: IdOrder[] |};
+type IdOrder = { readonly id: string; readonly order: number };
+type IdOrderListProps = { readonly idOrderList: IdOrder[] };
 export const getTaskIdOrderList: SelectorOf<IdOrderListProps> = createSelector(
   getTasks, tasks => ({
     idOrderList: Array.from(tasks.values())

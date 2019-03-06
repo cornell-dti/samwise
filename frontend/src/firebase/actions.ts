@@ -2,15 +2,10 @@
 
 import { firestore } from 'firebase/app';
 import { Map, Set } from 'immutable';
-import type {
+import {
   Course, PartialMainTask, PartialSubTask, SubTask, Tag, Task,
 } from '../store/store-types';
-import type {
-  FirestoreCommon,
-  FirestoreTag,
-  FirestoreTask,
-  FirestoreSubTask,
-} from './firestore-types';
+import { FirestoreCommon, FirestoreTag, FirestoreTask, FirestoreSubTask } from './firestore-types';
 import { getAppUser } from './auth';
 import {
   db,
@@ -20,27 +15,27 @@ import {
   tasksCollection,
 } from './db';
 import { error, ignore } from '../util/general-util';
-import type { TaskDiff } from '../util/task-util';
+import { TaskDiff } from '../util/task-util';
 import { emitUndoAddTaskToast, emitUndoRemoveTaskToast } from '../util/undo-util';
 import allocateNewOrder from './order-manager';
 import { store } from '../store/store';
 import { NONE_TAG_ID } from '../util/tag-util';
 
-async function createFirestoreObject<-T>(
+async function createFirestoreObject<T>(
   orderFor: 'tags' | 'tasks', source: T,
-): Promise<{| ...T; ...FirestoreCommon |}> {
+): Promise<T & FirestoreCommon> {
   const order = await allocateNewOrder(orderFor);
   return { ...source, owner: getAppUser().email, order };
 }
 
-const mergeWithOwner = <T>(obj: T): {| ...T, +owner: string |} => ({
+const mergeWithOwner = <T>(obj: T): T & { readonly owner: string } => ({
   owner: getAppUser().email, ...obj,
 });
 
-type WithoutIdOrder<Props> = $ReadOnly<$Diff<Props, {| +id: string; +order: number |}>>;
-type WithoutId<Props> = $ReadOnly<$Diff<Props, {| +id: string; |}>>;
-type IdOrderChildren = {| +id: string; +order: number; +children: Set<string>; |};
-type TaskWithoutIdOrderChildren = $ReadOnly<$Diff<Task, IdOrderChildren>>;
+type WithoutIdOrder<Props> = Pick<Props, Exclude<keyof Props, 'id' | 'order'>>;
+type WithoutId<Props> = Pick<Props, Exclude<keyof Props, 'id'>>;
+type IdOrderChildren = { readonly id: string; readonly order: number; readonly children: Set<string>; };
+type TaskWithoutIdOrderChildren = Pick<Task, Exclude<keyof Task, 'id' | 'order' | 'children'>>;
 
 /*
  * --------------------------------------------------------------------------------
@@ -183,7 +178,10 @@ export const editSubTask = (subtaskId: string, partialSubTask: PartialSubTask): 
 export const removeTask = (task: Task, noUndo?: 'no-undo'): void => {
   const { subTasks } = store.getState();
   const deletedSubTasks = task.children
-    .map(id => subTasks.get(id) ?? error('corrupted!'))
+    .map((id) => {
+      const subTask = subTasks.get(id);
+      return subTask == null ? error('corrupted!') : subTask;
+    })
     .toArray();
   const batch = db().batch();
   batch.delete(tasksCollection().doc(task.id));
@@ -232,7 +230,7 @@ export const clearFocus = (taskIds: string[], subTaskIds: string[]): void => {
  * @param {number} destinationOrder where the dragged item goes.
  * @return {array} a new list with updated orders.
  */
-export function reorder<-T: { +id: string; +order: number }>(
+export function reorder<T extends { readonly id: string; readonly order: number }>(
   orderFor: 'tags' | 'tasks',
   originalList: T[],
   sourceOrder: number,

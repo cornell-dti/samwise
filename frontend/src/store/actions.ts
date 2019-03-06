@@ -1,14 +1,12 @@
-// @flow strict
-
-import type { Map } from 'immutable';
-import type {
+import { Map } from 'immutable';
+import {
   PatchCourses,
   PatchSubTasks,
   PatchTags,
   PatchTasks,
   PatchSettings,
 } from './action-types';
-import type { Course, Tag, Task, SubTask, Settings } from './store-types';
+import { Course, Tag, Task, SubTask, Settings } from './store-types';
 
 export const patchTags = (created: Tag[], edited: Tag[], deleted: string[]): PatchTags => ({
   type: 'PATCH_TAGS', created, edited, deleted,

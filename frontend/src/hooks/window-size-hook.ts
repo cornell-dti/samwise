@@ -1,10 +1,8 @@
-// @flow strict
-
 import { useState, useEffect, useMemo } from 'react';
-import type { Node } from 'react';
+import { ReactNode } from 'react';
 
-export type WindowSize = {| +width: number; +height: number; |};
-type Listener = (WindowSize) => void;
+export type WindowSize = { readonly width: number; readonly height: number; };
+type Listener = (windowSize: WindowSize) => void;
 
 const getWindowSize = (): WindowSize => ({ width: window.innerWidth, height: window.innerHeight });
 
@@ -83,7 +81,7 @@ export function useMappedWindowSize<T>(f: (WindowSize) => T): T {
  * @param {function(T): Node} render a function that renders a component given the computed value.
  * @return {T} the computed value.
  */
-export function useMemoizedMappedWindowSize<T>(f: (WindowSize) => T, render: (T) => Node): Node {
+export function useMemoizedMappedWindowSize<T>(f: (WindowSize) => T, render: (t: T) => ReactNode): ReactNode {
   const value = f(useWindowSize());
   return useMemo(() => render(value), [value]);
 }
