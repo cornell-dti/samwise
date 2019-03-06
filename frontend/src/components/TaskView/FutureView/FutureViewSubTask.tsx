@@ -1,25 +1,22 @@
-// @flow strict
-
-import React from 'react';
-import type { ComponentType, Node } from 'react';
+import React, { ReactElement } from 'react';
 import PinFilled from '../../../assets/svgs/pin-2-dark-filled.svg';
 import PinOutline from '../../../assets/svgs/pin-2-dark-outline.svg';
 import DeleteDark from '../../../assets/svgs/XDark.svg';
 import styles from './FutureViewTask.css';
-import type { SubTask } from '../../../store/store-types';
+import { SubTask } from '../../../store/store-types';
 import CheckBox from '../../UI/CheckBox';
 import { editSubTask, removeSubTask } from '../../../firebase/actions';
 
-type Props = {|
-  +subTask: SubTask;
-  +mainTaskId: string;
-  +mainTaskCompleted: boolean;
-|};
+type Props = {
+  readonly subTask: SubTask;
+  readonly mainTaskId: string;
+  readonly mainTaskCompleted: boolean;
+};
 
 /**
  * The component used to render one subtask in future view day.
  */
-function FutureViewSubTask({ subTask, mainTaskId, mainTaskCompleted}: Props): Node {
+function FutureViewSubTask({ subTask, mainTaskId, mainTaskCompleted}: Props): ReactElement {
   if (subTask == null) {
     return null;
   }
@@ -51,5 +48,5 @@ function FutureViewSubTask({ subTask, mainTaskId, mainTaskCompleted}: Props): No
   );
 }
 
-const Memoized: ComponentType<Props> = React.memo(FutureViewSubTask);
+const Memoized = React.memo(FutureViewSubTask);
 export default Memoized;

@@ -1,16 +1,14 @@
-// @flow strict
-
-import React from 'react';
+import React, { ReactElement } from 'react';
 import FutureViewDay from './FutureViewDay';
 import styles from './FutureViewSevenColumns.css';
-import type { SimpleDate } from './future-view-types';
+import { SimpleDate } from './future-view-types';
 
-type Props = {| +days: SimpleDate[]; +doesShowCompletedTasks: boolean; |};
+type Props = { readonly days: SimpleDate[]; readonly doesShowCompletedTasks: boolean; };
 
 /**
  * The component used to contain all the backlog days in 7 columns.
  */
-export default function FutureViewSevenColumns({ days, doesShowCompletedTasks }: Props) {
+export default ({ days, doesShowCompletedTasks }: Props): ReactElement => {
   // Start building items
   const items = days.map((date: SimpleDate, i: number) => (
     <FutureViewDay
@@ -36,4 +34,4 @@ export default function FutureViewSevenColumns({ days, doesShowCompletedTasks }:
       {items}
     </div>
   );
-}
+};

@@ -1,11 +1,8 @@
-// @flow strict
-
-import React from 'react';
-import type { Node } from 'react';
+import React, { ReactElement } from 'react';
 import { Icon } from 'semantic-ui-react';
 // import Show from '../../../assets/svgs/show.svg';
 // import Hide from '../../../assets/svgs/hide.svg';
-import type { FutureViewContainerType, FutureViewDisplayOption } from './future-view-types';
+import { FutureViewContainerType, FutureViewDisplayOption } from './future-view-types';
 import SquareTextButton from '../../UI/SquareTextButton';
 import SquareIconToggle from '../../UI/SquareIconToggle';
 import { date2YearMonth } from '../../../util/datetime-util';
@@ -19,15 +16,14 @@ import { useMappedWindowSize } from '../../../hooks/window-size-hook';
  */
 
 type ChangeOffsetInstruction = 'TODAY' | number;
-type ChangeableProps = {|
-  +displayOption: FutureViewDisplayOption;
-  +offset: number;
-|};
-type Props = {|
-  +nDays: number;
-  ...ChangeableProps;
-  +onChange: ($Shape<ChangeableProps>) => void;
-|};
+type ChangeableProps = {
+  readonly displayOption: FutureViewDisplayOption;
+  readonly offset: number;
+};
+type Props = ChangeableProps & {
+  readonly nDays: number;
+  readonly onChange: (change: Partial<ChangeableProps>) => void;
+};
 
 /*
  * --------------------------------------------------------------------------------
@@ -37,20 +33,13 @@ type Props = {|
 
 /**
  * The padding span.
- *
- * @return {Node} the rendered padding span.
- * @constructor
  */
-const Padding = (): Node => <span className={styles.ControlPadding} />;
+const Padding = (): ReactElement => <span className={styles.ControlPadding} />;
 
 /**
  * The title component.
- *
- * @param {string} text the title text.
- * @return {Node} the rendered title.
- * @constructor
  */
-const Title = ({ text }: {| +text: string |}): Node => (
+const Title = ({ text }: { readonly text: string }): ReactElement => (
   <h3 className={styles.Title}>{text}</h3>
 );
 
@@ -60,11 +49,11 @@ const Title = ({ text }: {| +text: string |}): Node => (
  * --------------------------------------------------------------------------------
  */
 
-type NavControlProps = {|
-  +containerType: FutureViewContainerType;
-  +futureViewOffset: number;
-  +changeOffset: (ChangeOffsetInstruction) => () => void;
-|};
+type NavControlProps = {
+  readonly containerType: FutureViewContainerType;
+  readonly futureViewOffset: number;
+  readonly changeOffset: (instruction: ChangeOffsetInstruction) => () => void;
+};
 
 /**
  * Returns a suitable title for the backlog header title.
@@ -83,18 +72,14 @@ function getBiWeeklyViewHeaderTitle(biweeklyOffest: number): string  {
   s.setDate(s.getDate()+ biweeklyOffest);
   const e = new Date();
   e.setDate(e.getDate()+ biweeklyOffest + 13);
-  return (s.getMonth()+1) + '/'+ s.getDate() + '/'+ s.getFullYear() + 
+  return (s.getMonth()+1) + '/'+ s.getDate() + '/'+ s.getFullYear() +
   ' - ' + (e.getMonth()+1)  + '/'+ e.getDate() + '/'+ e.getFullYear() ;
 }
 
 /**
  * The component to control nav.
- *
- * @param {Props} props all the props.
- * @return {Node} the rendered component.
- * @constructor
  */
-function NavControl(props: NavControlProps): Node {
+function NavControl(props: NavControlProps): ReactElement {
   const { containerType, futureViewOffset, changeOffset } = props;
   const prevHandler = changeOffset(-1);
   const nextHandler = changeOffset(+1);
@@ -144,10 +129,7 @@ function NavControl(props: NavControlProps): Node {
 /**
  * The component to control display options
  */
-function DisplayOptionControl(props: Props): Node {
-  const {
-    nDays, displayOption, offset, onChange,
-  } = props;
+function DisplayOptionControl({ nDays, displayOption, offset, onChange }: Props): ReactElement {
   const { containerType, doesShowCompletedTasks } = displayOption;
   const toggleCompletedTasks = () => onChange({
     displayOption: { containerType, doesShowCompletedTasks: !doesShowCompletedTasks },
@@ -220,12 +202,8 @@ function DisplayOptionControl(props: Props): Node {
 
 /**
  * The controller component for the future view in task view.
- *
- * @param {Props} props all the props.
- * @return {Node} the rendered controller.
- * @constructor
  */
-export default function FutureViewControl(props: Props): Node {
+export default function FutureViewControl(props: Props): ReactElement {
   const { displayOption, offset, onChange } = props;
   const isSmallScreen = useMappedWindowSize(({ width }) => width <= 600);
   const { containerType } = displayOption;

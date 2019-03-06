@@ -1,16 +1,14 @@
-// @flow strict
-
-import React from 'react';
+import React, { ReactElement } from 'react';
 import FutureViewDay from './FutureViewDay';
 import styles from './FutureViewNDays.css';
-import type { SimpleDate } from './future-view-types';
+import { SimpleDate } from './future-view-types';
 
-type Props = {| +days: SimpleDate[]; +doesShowCompletedTasks: boolean; |};
+type Props = { readonly days: SimpleDate[]; readonly doesShowCompletedTasks: boolean; };
 
 /**
  * The component used to contain all the backlog days in n-days mode.
  */
-export default function FutureViewNDays({ days, doesShowCompletedTasks }: Props) {
+export default function FutureViewNDays({ days, doesShowCompletedTasks }: Props): ReactElement {
   const nDays = days.length;
   const containerStyle = { gridTemplateColumns: `${100.0 / nDays}% `.repeat(nDays).trim() };
   return (

@@ -1,32 +1,31 @@
-// @flow strict
-
-import React from 'react';
-import type { Node } from 'react';
+import React, { ReactElement, ReactNode } from 'react';
 import { Icon } from 'semantic-ui-react';
 import Calendar from '../../assets/svgs/dark.svg';
 import PinFilled from '../../assets/svgs/pin-2-light-filled.svg';
 import FocusView from './FocusView';
-import FutureView, { futureViewConfigProvider } from './FutureView';
+import FutureView, { futureViewConfigProvider, FutureViewConfig } from './FutureView';
 import styles from './TaskView.css';
 import { useMappedWindowSize } from '../../hooks/window-size-hook';
 
-const FocusPanel = (): Node => <div className={styles.FocusPanel}><FocusView /></div>;
+const FocusPanel = (): ReactElement => <div className={styles.FocusPanel}><FocusView /></div>;
 
-export default function TaskView(): Node {
+export default function TaskView(): ReactElement {
   const [
     doesShowFocusViewInWideScreen, setDoesShowFocusViewInWideScreen,
   ] = React.useState(false);
   const [
     doesShowFutureViewInSmallScreen, setDoesShowFutureViewInSmallScreen,
   ] = React.useState(false);
-  const [config, setConfig] = React.useState(futureViewConfigProvider.initialValue);
+  const [config, setConfig] = React.useState<FutureViewConfig>(
+    futureViewConfigProvider.initialValue,
+  );
 
   const screenIsSmall = useMappedWindowSize(size => size.width <= 768);
   const toggleFocusViewInWideScreen = () => setDoesShowFocusViewInWideScreen(prev => !prev);
   const switchView = () => setDoesShowFutureViewInSmallScreen(prev => !prev);
 
-  const FuturePanel = ({ children }: {| +children?: Node; |}): Node => {
-    const onChange = (c) => { setConfig(c); };
+  const FuturePanel = ({ children }: { readonly children?: ReactNode }): ReactElement => {
+    const onChange = (c: FutureViewConfig) => { setConfig(c); };
     return (
       <div className={styles.FuturePanel}>
         {children}
@@ -53,7 +52,7 @@ export default function TaskView(): Node {
   const inNDaysView = futureViewConfigProvider.isInNDaysView(config);
   const showFocusView = inNDaysView || doesShowFocusViewInWideScreen;
 
-  const WideScreenFocusViewToggle = (): Node => {
+  const WideScreenFocusViewToggle = (): ReactElement => {
     const wrapperStyle = doesShowFocusViewInWideScreen ? { left: '-4em' } : { left: '-1em' };
     const buttonStyle = doesShowFocusViewInWideScreen ? { left: '2em' } : {};
     const iconName = doesShowFocusViewInWideScreen ? 'chevron left' : 'chevron right';

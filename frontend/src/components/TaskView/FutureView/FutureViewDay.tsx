@@ -1,9 +1,6 @@
-// @flow strict
-
-import React from 'react';
-import type { Node } from 'react';
-import type { SimpleDate } from './future-view-types';
-import type { FloatingPosition } from '../../Util/TaskEditors/editors-types';
+import React, { ReactElement } from 'react';
+import { SimpleDate } from './future-view-types';
+import { FloatingPosition } from '../../Util/TaskEditors/editors-types';
 import styles from './FutureViewDay.css';
 import {
   floatingViewWidth,
@@ -13,17 +10,27 @@ import {
 import { getTodayAtZeroAM } from '../../../util/datetime-util';
 import { error } from '../../../util/general-util';
 import { useWindowSize } from '../../../hooks/window-size-hook';
-import type { WindowSize } from '../../../hooks/window-size-hook';
+import { WindowSize } from '../../../hooks/window-size-hook';
 import FutureViewDayContent from './FutureViewDayContent';
 
-type Position = {| +width: number; +height: number; +top: number; +left: number; |};
-type PositionStyle = {| +width: string; +height: string; +top: string; +left: string; |};
-type PropsForPositionComputation = {|
-  +tasksHeight: number;
-  +inNDaysView: boolean;
-  +windowSize: WindowSize;
-  +mainViewPosition: Position;
-|};
+type Position = {
+  readonly width: number;
+  readonly height: number;
+  readonly top: number;
+  readonly left: number;
+};
+type PositionStyle = {
+  readonly width: string;
+  readonly height: string;
+  readonly top: string;
+  readonly left: string;
+};
+type PropsForPositionComputation = {
+  readonly tasksHeight: number;
+  readonly inNDaysView: boolean;
+  readonly windowSize: WindowSize;
+  readonly mainViewPosition: Position;
+};
 
 /**
  * Returns the computed floating view style from some properties.
@@ -79,20 +86,20 @@ const computeFloatingViewStyle = (props: PropsForPositionComputation): PositionS
   };
 };
 
-type Props = {|
-  +date: SimpleDate;
-  +inNDaysView: boolean;
-  +taskEditorPosition: FloatingPosition;
-  +doesShowCompletedTasks: boolean;
-|};
+type Props = {
+  readonly date: SimpleDate;
+  readonly inNDaysView: boolean;
+  readonly taskEditorPosition: FloatingPosition;
+  readonly doesShowCompletedTasks: boolean;
+};
 
-type HeightInfo = {| +doesOverflow: boolean; +tasksHeight: number |};
+type HeightInfo = { readonly doesOverflow: boolean; readonly tasksHeight: number };
 const dummyHeightInfo: HeightInfo = { doesOverflow: false, tasksHeight: 0 };
 
 /**
  * The component that renders all tasks on a certain day.
  */
-export default function FutureViewDay(props: Props): Node {
+export default function FutureViewDay(props: Props): ReactElement {
   const { date, inNDaysView } = props;
   const [floatingViewOpened, setFloatingViewOpened] = React.useState(false);
   const [heightInfo, setHeightInfo] = React.useState<HeightInfo>(dummyHeightInfo);

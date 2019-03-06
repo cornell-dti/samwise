@@ -1,15 +1,12 @@
-// @flow strict
-
-import React from 'react';
-import type { Node } from 'react';
+import React, { ReactElement } from 'react';
 import { Icon } from 'semantic-ui-react';
 import styles from './SquareButtons.css';
 
-type Props = {|
-  +active: boolean;
-  +iconNames: [string, string];
-  +onToggle: () => void;
-|};
+type Props = {
+  readonly active: boolean;
+  readonly iconNames: [string, string];
+  readonly onToggle: () => void;
+};
 
 /**
  * The component used to render a minimalist icon button.
@@ -20,25 +17,14 @@ type Props = {|
  * @return {Node} the rendered node.
  * @constructor
  */
-export default function SquareIconToggle({ active, iconNames, onToggle }: Props): Node {
+export default function SquareIconToggle({ active, iconNames, onToggle }: Props): ReactElement {
   const [activeIconName, inactiveIconName] = iconNames;
   const className = active
     ? `${styles.SquareButton} ${styles.SquareButtonIconButton}`
     : `${styles.SquareButton} ${styles.SquareButtonIconButton} ${styles.active}`;
   return (
     <button className={className} type="button" onClick={onToggle}>
-      <Icon
-        className={styles.SquareButtonText}
-        name={active ? activeIconName : inactiveIconName}
-      />
+      <Icon className={styles.SquareButtonText} name={active ? activeIconName : inactiveIconName} />
     </button>
   );
-  // const IconName = active ? activeIconName : inactiveIconName;
-  // return (
-  //   <button className={className} type="button" onClick={onToggle}>
-  //     <IconName
-  //       className={styles.SquareButtonText}
-  //     />
-  //   </button>
-  // );
 }

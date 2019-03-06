@@ -1,19 +1,16 @@
-// @flow strict
-
-import React from 'react';
-import type { Map } from 'immutable';
-import type { ComponentType, Node } from 'react';
+import React, { ReactElement } from 'react';
+import { Map } from 'immutable';
 import { connect } from 'react-redux';
-import type { SubTask, Task } from '../../../store/store-types';
+import { SubTask, Task, State } from '../../../store/store-types';
 import SquareTextButton from '../../UI/SquareTextButton';
 import { clearFocus } from '../../../firebase/actions';
 
-type Props = {|
-  +tasks: Map<string, Task>;
-  +subTasks: Map<string, SubTask>;
-|};
+type Props = {
+  readonly tasks: Map<string, Task>;
+  readonly subTasks: Map<string, SubTask>;
+};
 
-function ClearFocus({ tasks, subTasks }: Props): Node {
+function ClearFocus({ tasks, subTasks }: Props): ReactElement {
   const taskIds: string[] = [];
   const subTaskIds: string[] = [];
   tasks.forEach((t) => {
@@ -38,7 +35,5 @@ function ClearFocus({ tasks, subTasks }: Props): Node {
   return <SquareTextButton text="Clear Focus" onClick={handleClick} />;
 }
 
-const Connected: ComponentType<{||}> = connect(
-  ({ tasks, subTasks }) => ({ tasks, subTasks }),
-)(ClearFocus);
+const Connected = connect(({ tasks, subTasks }: State) => ({ tasks, subTasks }))(ClearFocus);
 export default Connected;

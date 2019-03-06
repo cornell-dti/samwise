@@ -1,7 +1,4 @@
-// @flow strict
-
-import React from 'react';
-import type { ComponentType, Node } from 'react';
+import React, { ReactElement, SyntheticEvent, ReactNode } from 'react';
 import { connect } from 'react-redux';
 import Delete from '../../../assets/svgs/XLight.svg';
 import PinFilled from '../../../assets/svgs/pin-2-light-filled.svg';
@@ -10,9 +7,9 @@ import PinOutlineLight from '../../../assets/svgs/pin-2-light-outline.svg';
 import styles from './FutureViewTask.css';
 import FutureViewSubTask from './FutureViewSubTask';
 import FloatingTaskEditor from '../../Util/TaskEditors/FloatingTaskEditor';
-import type { State, SubTask, Task } from '../../../store/store-types';
+import { State, SubTask, Task } from '../../../store/store-types';
 import CheckBox from '../../UI/CheckBox';
-import type { FloatingPosition } from '../../Util/TaskEditors/editors-types';
+import { FloatingPosition } from '../../Util/TaskEditors/editors-types';
 import { getTodayAtZeroAM } from '../../../util/datetime-util';
 import OverdueAlert from '../../UI/OverdueAlert';
 import { nDaysViewHeaderHeight, otherViewsHeightHeader } from './future-view-css-props';
@@ -21,26 +18,25 @@ import { editMainTask, removeTask } from '../../../firebase/actions';
 import { useMappedWindowSize } from '../../../hooks/window-size-hook';
 import { NONE_TAG } from '../../../util/tag-util';
 
-type CompoundTask = {|
-  +original: Task;
-  +filteredSubTasks: SubTask[];
-  +color: string;
-|};
+type CompoundTask = {
+  readonly original: Task;
+  readonly filteredSubTasks: SubTask[];
+  readonly color: string;
+};
 
-type OwnProps = {|
-  +taskId: string;
-  +inNDaysView: boolean;
-  +taskEditorPosition: FloatingPosition;
-  +doesShowCompletedTasks: boolean;
-  +isInMainList: boolean;
-|};
+type OwnProps = {
+  readonly taskId: string;
+  readonly inNDaysView: boolean;
+  readonly taskEditorPosition: FloatingPosition;
+  readonly doesShowCompletedTasks: boolean;
+  readonly isInMainList: boolean;
+};
 
-type Props = {|
-  ...OwnProps;
-  +compoundTask: CompoundTask | null;
-|};
+type Props = OwnProps & {
+  readonly compoundTask: CompoundTask | null;
+};
 
-type AlertPos = {| +top: number; +right: number; |};
+type AlertPos = { readonly top: number; readonly right: number };
 
 /**
  * The component used to render one task in backlog day.
@@ -49,7 +45,7 @@ function FutureViewTask(
   {
     compoundTask, inNDaysView, taskEditorPosition, isInMainList,
   }: Props,
-): Node {
+): ReactElement {
   const [overdueAlertPosition, setOverdueAlertPosition] = React.useState<AlertPos | null>(null);
   const isSmallScreen = useMappedWindowSize(({ width }) => width <= 768);
 
@@ -75,22 +71,22 @@ function FutureViewTask(
     }
   };
 
-  const TaskCheckBox = (): Node => {
+  const TaskCheckBox = (): ReactElement => {
     const { id, complete } = original;
     const onChange = () => editMainTask(id, { complete: !complete });
     return <CheckBox className={styles.TaskCheckBox} checked={complete} onChange={onChange} />;
   };
-  const TaskName = (): Node => {
+  const TaskName = (): ReactElement => {
     const { name, complete } = original;
     const tagStyle = complete ? { textDecoration: 'line-through' } : {};
     return <span className={styles.TaskText} style={tagStyle}>{name}</span>;
   };
 
-  const RemoveTaskIcon = (): Node => {
+  const RemoveTaskIcon = (): ReactElement => {
     const handler = () => removeTask(original);
     return <Delete className={styles.TaskIcon} onClick={handler} />;
   };
-  const PinIcon = (): Node => {
+  const PinIcon = (): ReactElement => {
     const { id, inFocus } = original;
     const handler = () => editMainTask(id, { inFocus: !inFocus });
     return (inFocus)
@@ -98,7 +94,7 @@ function FutureViewTask(
       : <PinOutlineLight className={styles.TaskIcon} onClick={handler} />;
   };
 
-  const renderMainTaskInfo = (simplified: boolean = false): Node => {
+  const renderMainTaskInfo = (simplified: boolean = false): ReactElement => {
     if (simplified && isInMainList) {
       const style = { backgroundColor: color, height: '25px' };
       return <div className={styles.TaskMainWrapper} style={style} />;
@@ -113,7 +109,7 @@ function FutureViewTask(
     );
   };
 
-  const renderSubTasks = (): Node => filteredSubTasks.map(s => (
+  const renderSubTasks = (): ReactNode => filteredSubTasks.map(s => (
     <FutureViewSubTask
       key={s.id}
       subTask={s}
@@ -142,7 +138,7 @@ function FutureViewTask(
     }
   };
   // Construct the trigger for the floating task editor.
-  const trigger = (opened: boolean, opener: () => void): Node => {
+  const trigger = (opened: boolean, opener: () => void): ReactElement => {
     const onClickHandler = getOnClickHandler(opener);
     const style = opened ? { zIndex: 8 } : {};
     const mainTasks = inNDaysView
@@ -179,7 +175,7 @@ const getCompoundTask = (
   if (original == null) {
     return null;
   }
-  const color = tags.get(original.tag)?.color ?? NONE_TAG.color;
+  const { color } = tags.get(original.tag) || NONE_TAG;
   if (doesShowCompletedTasks) {
     let filteredSubTasks = [];
     original.children.forEach((subTaskId) => {
@@ -202,7 +198,9 @@ const getCompoundTask = (
 };
 const mapStateToProps = (
   state: State, ownProps: OwnProps,
-): {| +compoundTask: CompoundTask | null |} => ({ compoundTask: getCompoundTask(state, ownProps) });
+): { readonly compoundTask: CompoundTask | null } => ({
+  compoundTask: getCompoundTask(state, ownProps),
+});
 
-const Connected: ComponentType<OwnProps> = connect(mapStateToProps)(FutureViewTask);
+const Connected = connect(mapStateToProps)(FutureViewTask);
 export default Connected;

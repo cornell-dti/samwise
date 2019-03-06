@@ -1,29 +1,25 @@
-// @flow strict
-
-import React from 'react';
-import type { ComponentType, Node } from 'react';
+import React, { ReactElement } from 'react';
 import { connect } from 'react-redux';
-import type { FloatingPosition } from '../../Util/TaskEditors/editors-types';
+import { FloatingPosition } from '../../Util/TaskEditors/editors-types';
 import FutureViewTask from './FutureViewTask';
 import styles from './FutureViewDayTaskContainer.css';
 import { useWindowSizeCallback } from '../../../hooks/window-size-hook';
 import { error } from '../../../util/general-util';
-import type { State } from '../../../store/store-types';
+import { State } from '../../../store/store-types';
 import { createGetIdOrderListByDate } from '../../../store/selectors';
 
-type OwnProps = {|
-  +date: string;
-  +inNDaysView: boolean;
-  +taskEditorPosition: FloatingPosition;
-  +doesShowCompletedTasks: boolean;
-  +isInMainList: boolean;
-  +onHeightChange: (doesOverflow: boolean, tasksHeight: number) => void;
-|};
+type OwnProps = {
+  readonly date: string;
+  readonly inNDaysView: boolean;
+  readonly taskEditorPosition: FloatingPosition;
+  readonly doesShowCompletedTasks: boolean;
+  readonly isInMainList: boolean;
+  readonly onHeightChange: (doesOverflow: boolean, tasksHeight: number) => void;
+};
 
-type Props = {|
-  ...OwnProps;
-  +idOrderList: {| +id: string; +order: number |}[];
-|};
+type Props = OwnProps & {
+  readonly idOrderList: { readonly id: string; readonly order: number }[];
+};
 
 /**
  * The component to render a list of tasks in backlog day or its floating expanding list.
@@ -37,7 +33,7 @@ function FutureViewDayTaskContainer(
     isInMainList,
     onHeightChange,
   }: Props,
-): Node {
+): ReactElement {
   const containerRef = React.useRef(null);
   const [prevHeights, setPrevHeights] = React.useState(() => [0, 0]);
 
@@ -72,7 +68,7 @@ function FutureViewDayTaskContainer(
   return <div className={className} ref={containerRef}>{taskListComponent}</div>;
 }
 
-const Connected: ComponentType<OwnProps> = connect(
+const Connected = connect(
   (state: State, { date }: OwnProps) => createGetIdOrderListByDate(date)(state),
 )(FutureViewDayTaskContainer);
 export default Connected;

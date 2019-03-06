@@ -1,25 +1,23 @@
-// @flow strict
-
-import React from 'react';
-import type { Node } from 'react';
+import React, { ReactElement } from 'react';
 import FutureViewControl from './FutureViewControl';
 import FutureViewNDays from './FutureViewNDays';
 import FutureViewSevenColumns from './FutureViewSevenColumns';
-import type {
+import {
   FutureViewContainerType,
-  FutureViewDisplayOption, SimpleDate,
+  FutureViewDisplayOption,
+  SimpleDate,
 } from './future-view-types';
 import { useMappedWindowSize } from '../../../hooks/window-size-hook';
 
-export opaque type FutureViewConfig = {|
-  +displayOption: FutureViewDisplayOption;
-  +offset: number;
-|};
+export type FutureViewConfig = {
+  readonly displayOption: FutureViewDisplayOption;
+  readonly offset: number;
+};
 
-export type FutureViewConfigProvider = {|
-  +initialValue: FutureViewConfig;
-  +isInNDaysView: (FutureViewConfig) => boolean;
-|};
+export type FutureViewConfigProvider = {
+  readonly initialValue: FutureViewConfig;
+  readonly isInNDaysView: (config: FutureViewConfig) => boolean;
+};
 export const futureViewConfigProvider: FutureViewConfigProvider = {
   initialValue: {
     displayOption: {
@@ -41,7 +39,7 @@ export const futureViewConfigProvider: FutureViewConfigProvider = {
  */
 function computeStartAndEndDay(
   nDays: number, containerType: FutureViewContainerType, offset: number,
-): {| +startDate: Date; endDate: Date |} {
+): { readonly startDate: Date; readonly endDate: Date } {
   // Compute start date (the first date to display)
   const startDate = new Date();
   let hasAdditionalDays = false;
@@ -106,12 +104,12 @@ function buildDaysInFutureView(nDays: number, config: FutureViewConfig): SimpleD
   return days;
 }
 
-type Props = {|
-  +config: FutureViewConfig;
-  +onConfigChange: (FutureViewConfig) => void;
-|};
+type Props = {
+  readonly config: FutureViewConfig;
+  readonly onConfigChange: (config: FutureViewConfig) => void;
+};
 
-export default function FutureView({ config, onConfigChange }: Props): Node {
+export default function FutureView({ config, onConfigChange }: Props): ReactElement {
   // the number of days in n-days mode.
   const nDays = useMappedWindowSize(({ width }) => {
     if (width > 960) { return 5; }
@@ -119,7 +117,7 @@ export default function FutureView({ config, onConfigChange }: Props): Node {
     if (width > 500) { return 2; }
     return 1;
   });
-  const controlOnChange = (change: $Shape<FutureViewConfig>) => {
+  const controlOnChange = (change: Partial<FutureViewConfig>) => {
     onConfigChange({ ...config, ...change });
   };
 

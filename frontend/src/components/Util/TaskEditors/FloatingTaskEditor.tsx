@@ -1,4 +1,4 @@
-import React, { ReactElement } from 'react';
+import React, { ReactElement, ReactNode } from 'react';
 import { connect } from 'react-redux';
 import {
   PartialMainTask, PartialSubTask, State, SubTask, Task,
@@ -55,7 +55,7 @@ const updateFloatingEditorPosition = (
 type OwnProps = {
   readonly position: FloatingPosition;
   readonly initialTask: Task;
-  readonly trigger: (opened: boolean, opener: () => void) => Node;
+  readonly trigger: (opened: boolean, opener: () => void) => ReactNode;
 };
 
 type Props = OwnProps & { readonly fullInitialTask: TaskWithSubTasks };

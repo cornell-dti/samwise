@@ -1,8 +1,4 @@
-// @flow strict
-
-import React from 'react';
-import type { ComponentType, Node } from 'react';
-// $FlowFixMe not flow strict
+import React, { ReactElement } from 'react';
 import { DragDropContext, Droppable } from 'react-beautiful-dnd';
 import { connect } from 'react-redux';
 import styles from './FocusView.css';
@@ -13,16 +9,16 @@ import { getTaskIdOrderList } from '../../../store/selectors';
 
 const focusViewDroppableId = 'focus-view-droppable';
 
-const tasksRenderer = ({ id }: { +id: string }, index: number) => (
+const tasksRenderer = ({ id }: { readonly id: string }, index: number) => (
   <FocusTask key={id} id={id} order={index} />
 );
 
-type IdOrder = {| +id: string; order: number |};
+type IdOrder = { readonly id: string; readonly order: number };
 
 /**
  * The focus view component.
  */
-function FocusView({ idOrderList }: {| +idOrderList: IdOrder[] |}): Node {
+function FocusView({ idOrderList }: { readonly idOrderList: IdOrder[] }): ReactElement {
   const [localList, setLocalList] = React.useState<IdOrder[]>(idOrderList);
   if (localList !== idOrderList) {
     setLocalList(idOrderList);
@@ -71,5 +67,5 @@ function FocusView({ idOrderList }: {| +idOrderList: IdOrder[] |}): Node {
   );
 }
 
-const Connected: ComponentType<{||}> = connect(getTaskIdOrderList)(FocusView);
+const Connected = connect(getTaskIdOrderList)(FocusView);
 export default Connected;
