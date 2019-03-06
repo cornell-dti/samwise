@@ -12,7 +12,6 @@ import type {
 import { computeTaskProgress } from '../util/task-util';
 import type { TasksProgressProps } from '../util/task-util';
 import { NONE_TAG } from '../util/tag-util';
-import { error } from '../util/general-util';
 
 /*
  * --------------------------------------------------------------------------------
