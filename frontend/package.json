@@ -6,7 +6,8 @@
     "start": "webpack-dev-server --open --config webpack.dev.js",
     "build:stage": "webpack --config webpack.stage.js",
     "build": "webpack --config webpack.prod.js",
-    "flow": "flow"
+    "flow": "flow",
+    "flow-typed-install": "flow-typed install"
   },
   "dependencies": {
     "@babel/polyfill": "^7.2.5",
@@ -35,6 +36,7 @@
     "@babel/preset-env": "^7.3.4",
     "@babel/preset-flow": "^7.0.0",
     "@babel/preset-react": "^7.0.0",
+    "@babel/preset-typescript": "^7.3.3",
     "@svgr/webpack": "^4.1.0",
     "app-manifest-webpack-plugin": "^1.2.0",
     "babel-eslint": "^10.0.1",
@@ -50,6 +52,7 @@
     "eslint-plugin-react": "^7.12.4",
     "file-loader": "^3.0.1",
     "flow-bin": "^0.94.0",
+    "flow-typed": "^2.5.1",
     "html-webpack-plugin": "^4.0.0-beta.5",
     "mini-css-extract-plugin": "0.5.0",
     "optimize-css-assets-webpack-plugin": "^5.0.1",

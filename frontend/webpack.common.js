@@ -21,10 +21,10 @@ module.exports = (webpackEnv) => {
   return {
     entry: [
       isEnvDevelopment && require.resolve('react-dev-utils/webpackHotDevClient'),
-      path.resolve(__dirname, './src/index.jsx'),
+      path.resolve(__dirname, './src/index.tsx'),
     ].filter(Boolean),
     resolve: {
-      extensions: ['.js', '.jsx'],
+      extensions: ['.js', '.jsx', '.ts', '.tsx'],
     },
     output: {
       filename: '[name].bundle.js',
@@ -53,7 +53,7 @@ module.exports = (webpackEnv) => {
     module: {
       rules: [
         {
-          test: /\.(js|jsx)$/,
+          test: /\.(js|jsx|ts|tsx)$/,
           loader: require.resolve('babel-loader'),
           exclude: /node_modules/,
         },
