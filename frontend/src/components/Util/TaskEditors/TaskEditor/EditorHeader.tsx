@@ -38,8 +38,11 @@ export default function EditorHeader({ tag, date, onChange, getTag }: Props): Re
     onChange({ tag: t });
     setEditorDisplayStatus(prev => ({ ...prev, doesShowTagEditor: false }));
   };
-  const editTaskDate = (dateString: string): void => {
-    onChange({ date: new Date(dateString) });
+  const editTaskDate = (date: Date | Date[]): void => {
+    if (Array.isArray(date)) {
+      throw new Error('date is not an arry');
+    }
+    onChange({ date });
     setEditorDisplayStatus(prev => ({ ...prev, doesShowDateEditor: false }));
   };
 

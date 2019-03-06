@@ -26,7 +26,7 @@ export default function NewSubTaskEditor(
     }
   };
 
-  const editorRef = React.useRef(null);
+  const editorRef = React.useRef<HTMLInputElement | null>(null);
 
   React.useEffect(() => {
     if (needToBeFocused) {

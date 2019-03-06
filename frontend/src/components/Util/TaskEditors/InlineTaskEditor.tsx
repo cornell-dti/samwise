@@ -66,7 +66,7 @@ export default function InlineTaskEditor({ original, filtered, className }: Prop
       setTempSubTask({ type: 'UNCOMMITTED', subTask });
     },
     removeTask: () => removeTask(original),
-    removeSubTask: (subTaskId) => {
+    removeSubTask: (subTaskId: string) => {
       if (tempSubTask !== null) {
         if (tempSubTask.type === 'UNCOMMITTED' && subTaskId === tempSubTask.subTask.id) {
           setTempSubTask(null);

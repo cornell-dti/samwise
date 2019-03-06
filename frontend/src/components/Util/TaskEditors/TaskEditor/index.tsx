@@ -28,8 +28,8 @@ type DefaultProps = {
   readonly children?: ReactNode;
   readonly newSubTaskAutoFocused?: boolean; // whether to auto focus the new subtask
   readonly newSubTaskDisabled?: boolean; // whether to disable new subtask creation
-  readonly onFocus?: (event: FocusEvent<HTMLElement>) => void; // when the editor gets focus
-  readonly onBlur?: (event: FocusEvent<HTMLElement>) => void; // when the editor loses focus
+  readonly onFocus?: () => void; // when the editor gets focus
+  readonly onBlur?: () => void; // when the editor loses focus
   readonly editorRef?: { current: HTMLFormElement | null }; // the ref of the editor
 };
 type Actions = {
