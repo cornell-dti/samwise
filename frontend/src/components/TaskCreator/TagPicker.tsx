@@ -1,31 +1,27 @@
-// @flow strict
-
-import React from 'react';
-import type { ComponentType, Node } from 'react';
+import React, { ReactElement } from 'react';
 import { connect } from 'react-redux';
 import TagIcon from '../../assets/svgs/tag.svg';
 import TagListPicker from '../Util/TagListPicker/TagListPicker';
 import styles from './Picker.css';
 import { NONE_TAG, NONE_TAG_ID } from '../../util/tag-util';
-import type { State, Tag } from '../../store/store-types';
+import { State, Tag } from '../../store/store-types';
 
-type OwnProps = {|
-  +tag: string;
-  +opened: boolean;
-  +onTagChange: (tag: string) => void;
-  +onPickerOpened: () => void;
-|};
-type Props = {|
-  ...OwnProps;
+type OwnProps = {
+  readonly tag: string;
+  readonly opened: boolean;
+  readonly onTagChange: (tag: string) => void;
+  readonly onPickerOpened: () => void;
+};
+type Props = OwnProps & {
   // subscribed from redux store.
-  +getTag: (id: string) => Tag;
-|};
+  readonly getTag: (id: string) => Tag;
+};
 
 function TagPicker(
   {
     tag, opened, onTagChange, onPickerOpened, getTag,
   }: Props,
-): Node {
+): ReactElement {
   // Controllers
   const clickPicker = () => { onPickerOpened(); };
   const reset = () => onTagChange(NONE_TAG_ID);
@@ -59,7 +55,7 @@ function TagPicker(
   );
 }
 
-const Connected: ComponentType<OwnProps> = connect(
-  ({ tags }: State) => ({ getTag: id => tags.get(id) ?? NONE_TAG }),
+const Connected = connect(
+  ({ tags }: State) => ({ getTag: (id: string) => tags.get(id) || NONE_TAG }),
 )(TagPicker);
 export default Connected;

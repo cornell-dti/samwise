@@ -1,21 +1,19 @@
-// @flow strict
-
-import React from 'react';
+import React, { ReactElement } from 'react';
 import { Calendar } from 'react-calendar';
 import Dark from '../../assets/svgs/dark.svg';
 import styles from './Picker.css';
 import { date2String } from '../../util/datetime-util';
 import { NONE_TAG } from '../../util/tag-util';
 
-type Props = {|
-  +onDateChange: (date: Date | null) => void;
-  +date: Date;
-  +opened: boolean;
-  +datePicked: boolean;
-  +onPickerOpened: () => void;
-|};
+type Props = {
+  readonly onDateChange: (date: Date | null) => void;
+  readonly date: Date;
+  readonly opened: boolean;
+  readonly datePicked: boolean;
+  readonly onPickerOpened: () => void;
+};
 
-export default function DatePicker(props: Props) {
+export default function DatePicker(props: Props): ReactElement {
   const {
     date, opened, datePicked, onDateChange, onPickerOpened,
   } = props;
