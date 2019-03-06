@@ -1,22 +1,18 @@
-// @flow strict
-
-import React from 'react';
-import type { ComponentType, Node } from 'react';
-import type { SimpleDate } from './future-view-types';
-import type { FloatingPosition } from '../../Util/TaskEditors/editors-types';
+import React, { ReactElement } from 'react';
+import { SimpleDate } from './future-view-types';
+import { FloatingPosition } from '../../Util/TaskEditors/editors-types';
 import styles from './FutureViewDay.css';
 import { day2String, getTodayAtZeroAM } from '../../../util/datetime-util';
 import FutureViewDayTaskContainer from './FutureViewDayTaskContainer';
 
-type Props = {|
-  +date: SimpleDate;
-  +inNDaysView: boolean;
-  +taskEditorPosition: FloatingPosition;
-  +doesShowCompletedTasks: boolean;
-  +date: SimpleDate;
-  +inMainList: boolean;
-  +onHeightChange: (doesOverflow: boolean, tasksHeight: number) => void;
-|};
+type Props = {
+  readonly date: SimpleDate;
+  readonly inNDaysView: boolean;
+  readonly taskEditorPosition: FloatingPosition;
+  readonly doesShowCompletedTasks: boolean;
+  readonly inMainList: boolean;
+  readonly onHeightChange: (doesOverflow: boolean, tasksHeight: number) => void;
+};
 
 /**
  * The main content of future view day.
@@ -30,7 +26,7 @@ function FutureViewDayContent(
     inMainList,
     onHeightChange,
   }: Props,
-): Node {
+): ReactElement {
   const dateNumCssClass = inNDaysView
     ? styles.DateNumNDaysView
     : styles.DateNumOtherViews;
@@ -58,5 +54,5 @@ function FutureViewDayContent(
   );
 }
 
-const Memoized: ComponentType<Props> = React.memo(FutureViewDayContent);
+const Memoized = React.memo(FutureViewDayContent);
 export default Memoized;

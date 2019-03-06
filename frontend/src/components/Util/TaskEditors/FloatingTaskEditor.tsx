@@ -14,7 +14,7 @@ import { useWindowSizeCallback } from '../../../hooks/window-size-hook';
 import { WindowSize } from '../../../hooks/window-size-hook';
 
 const updateFloatingEditorPosition = (
-  editorElement: ?HTMLFormElement,
+  editorElement: HTMLFormElement | null | undefined,
   windowSize: WindowSize,
   position: FloatingPosition,
 ) => {
