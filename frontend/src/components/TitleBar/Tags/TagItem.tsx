@@ -1,19 +1,16 @@
-// @flow strict
-
-import React from 'react';
-import type { Node } from 'react';
+import React, { SyntheticEvent, ReactElement } from 'react';
 import Delete from '../../../assets/svgs/XLight.svg';
-import type { Tag } from '../../../store/store-types';
+import { Tag } from '../../../store/store-types';
 import styles from './TagItem.css';
 import ColorEditor from './ColorEditor';
 import { editTag, removeTag } from '../../../firebase/actions';
 
-type Props = {| +tag: Tag; |};
+type Props = { readonly tag: Tag; };
 
 /**
  * The tag item component.
  */
-export default function TagItem({ tag }: Props): Node {
+export default function TagItem({ tag }: Props): ReactElement {
   const onRemove = () => {
     // eslint-disable-next-line no-restricted-globals, no-alert
     if (confirm('Do you want to remove this tag?')) {
@@ -23,7 +20,7 @@ export default function TagItem({ tag }: Props): Node {
   const editColor = (color: string) => {
     editTag({ ...tag, color });
   };
-  const editName = (name: SyntheticInputEvent<HTMLInputElement>) => {
+  const editName = (name: SyntheticEvent<HTMLInputElement>) => {
     editTag({ ...tag, name: name.currentTarget.value });
   };
   const { name, color, classId } = tag;

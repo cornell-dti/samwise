@@ -1,5 +1,3 @@
-// @flow strict
-
 import { store } from '../../../store/store';
 import colorMap from './ListColors';
 

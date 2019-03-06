@@ -1,12 +1,10 @@
-// @flow strict
-
-import React from 'react';
+import React, { ReactElement } from 'react';
 import Settings from '../../../assets/svgs/settings.svg';
 import Delete from '../../../assets/svgs/XLight.svg';
 import SettingsPage from './SettingsPage';
 import styles from './SettingsButton.css';
 
-export default function SettingsButton() {
+export default function SettingsButton(): ReactElement {
   const [showSettings, setShowSettings] = React.useState(false);
 
   const displayModal = () => setShowSettings(true);

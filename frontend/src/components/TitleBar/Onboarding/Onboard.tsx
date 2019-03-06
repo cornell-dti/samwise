@@ -1,12 +1,9 @@
-// @flow strict
-
-import * as React from 'react';
-import type { ComponentType, Node } from 'react';
+import React, { ReactElement } from 'react';
 import { connect } from 'react-redux';
 import TagItem from '../Tags/TagItem';
 import ClassTagAdder from '../Tags/ClassTagAdder';
 import styles from './Onboard.css';
-import type { State, Tag } from '../../../store/store-types';
+import { State, Tag } from '../../../store/store-types';
 import Tutorial1 from '../../../assets/tutorial/t1.png';
 import Tutorial2 from '../../../assets/tutorial/t2.png';
 import Tutorial3 from '../../../assets/tutorial/t3.png';
@@ -17,12 +14,12 @@ import { completeOnboarding, importCourseExams } from '../../../firebase/actions
 
 const images = [Tutorial1, Tutorial2, Tutorial3, Tutorial4, Tutorial5, Tutorial6];
 
-type AddClassProps = {| +classTags: Tag[]; +showNext: () => void; |};
+type AddClassProps = { readonly classTags: Tag[]; readonly showNext: () => void; };
 
 /**
  * Adding class as the first onboarding step.
  */
-function AddClassOnBoarding({ classTags, showNext }: AddClassProps): Node {
+function AddClassOnBoarding({ classTags, showNext }: AddClassProps): ReactElement {
   return (
     <div style={{ padding: '60px 40px' }}>
       {/* some random intro */}
@@ -61,17 +58,17 @@ function AddClassOnBoarding({ classTags, showNext }: AddClassProps): Node {
   );
 }
 
-type SlidesProps = {|
-  +progress: number;
-  +showNext: () => void;
-  +goBack: () => void;
-  +skipTutorial: () => void;
-|};
+type SlidesProps = {
+  readonly progress: number;
+  readonly showNext: () => void;
+  readonly goBack: () => void;
+  readonly skipTutorial: () => void;
+};
 
 /**
  * Showing slides as the second onboarding step.
  */
-function SlidesOnBoarding({ progress, showNext, goBack, skipTutorial }: SlidesProps): Node {
+function SlidesOnBoarding({ progress, showNext, goBack, skipTutorial }: SlidesProps): ReactElement {
   return (
     <div className={styles.ModalWrap}>
       <h2>Tutorial</h2>
@@ -89,12 +86,12 @@ function SlidesOnBoarding({ progress, showNext, goBack, skipTutorial }: SlidesPr
   );
 }
 
-type Props = {| +classTags: Tag[]; +completedOnboarding: boolean |};
+type Props = { readonly classTags: Tag[]; readonly completedOnboarding: boolean };
 
 /**
  * The onboarding page. Displayed only if the user chooses to do so or during first landing.
  */
-function Onboard({ classTags, completedOnboarding }: Props): Node {
+function Onboard({ classTags, completedOnboarding }: Props): ReactElement {
   const [progress, setProgress] = React.useState<number>(0);
 
   if (completedOnboarding || progress >= 7) {
@@ -109,7 +106,7 @@ function Onboard({ classTags, completedOnboarding }: Props): Node {
 
   const onboardingContainerStyle = progress > 0
     ? { overflowY: 'hidden', background: 'rgba(0,0,0,0.8)' }
-    : {};
+    : undefined;
   return (
     <div className={styles.Hero} style={onboardingContainerStyle}>
       {progress === 0 && <AddClassOnBoarding classTags={classTags} showNext={showNext} />}
@@ -125,7 +122,7 @@ function Onboard({ classTags, completedOnboarding }: Props): Node {
   );
 }
 
-const Connected: ComponentType<{||}> = connect(
+const Connected = connect(
   ({ tags, settings: { completedOnboarding } }: State): Props => {
     const classTags: Tag[] = Array.from(tags.values()).filter(t => t.classId != null);
     return { classTags, completedOnboarding };

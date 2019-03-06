@@ -1,20 +1,17 @@
-// @flow strict
-
-import React from 'react';
-import type { Node } from 'react';
+import React, { ReactElement } from 'react';
 import { GithubPicker } from 'react-color';
 import Down from '../../../assets/svgs/v.svg';
 import colMap from './ListColors';
 import styles from './ColorEditor.css';
 
-type Props = {|
-  +color: string,
-  +onChange: (color: string) => void;
-|};
+type Props = {
+  readonly color: string,
+  readonly onChange: (color: string) => void;
+};
 
 const colArray: string[] = Object.keys(colMap);
 
-export default function ColorEditor({ color, onChange }: Props): Node {
+export default function ColorEditor({ color, onChange }: Props): ReactElement {
   const [doesShowEditor, setDoesShowEditor] = React.useState(false);
 
   const toggleEditor = () => setDoesShowEditor(s => !s);

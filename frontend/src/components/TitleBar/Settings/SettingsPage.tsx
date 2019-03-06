@@ -1,13 +1,12 @@
 // @flow strict
 
-import * as React from 'react';
-import type { ComponentType, Node } from 'react';
+import React, { ReactElement, ReactNode } from 'react';
 import { connect } from 'react-redux';
 import TagItem from '../Tags/TagItem';
 import ClassTagAdder from '../Tags/ClassTagAdder';
 import OtherTagAdder from '../Tags/OtherTagAdder';
 import styles from './SettingsPage.css';
-import type { Tag } from '../../../store/store-types';
+import { Tag, State } from '../../../store/store-types';
 import { completeOnboarding, importCourseExams } from '../../../firebase/actions';
 import { firebaseSignOut } from '../../../firebase/auth';
 
@@ -17,7 +16,7 @@ import { firebaseSignOut } from '../../../firebase/auth';
  * @return {Node} rendered component.
  * @constructor
  */
-const ClassAdder = (): Node => (
+const ClassAdder = (): ReactElement => (
   <div className={styles.SettingsSection}>
     <p className={styles.SettingsSectionTitle}>Add Classes</p>
     <div className={styles.SettingsSectionContent}>
@@ -40,6 +39,8 @@ const ExamImporter = () => (
   </div>
 );
 
+type TagsContainerProps = { readonly title: string; readonly children: ReactNode };
+
 /**
  * The tags container component.
  *
@@ -48,7 +49,7 @@ const ExamImporter = () => (
  * @return {Node} rendered component.
  * @constructor
  */
-const TagsContainer = ({ title, children }: {| +title: string; +children: Node |}): Node => (
+const TagsContainer = ({ title, children }: TagsContainerProps): ReactElement => (
   <div className={styles.SettingsSection}>
     <p className={styles.SettingsSectionTitle}>{title}</p>
     <div className={styles.SettingsSectionContent}>
@@ -59,7 +60,7 @@ const TagsContainer = ({ title, children }: {| +title: string; +children: Node |
   </div>
 );
 
-type Props = {| +tags: Tag[]; |};
+type Props = { readonly tags: Tag[] };
 
 /**
  * The settings page.
@@ -68,7 +69,7 @@ type Props = {| +tags: Tag[]; |};
  * @return {Node} the rendered editor.
  * @constructor
  */
-function SettingsPage({ tags }: Props): Node {
+function SettingsPage({ tags }: Props): ReactElement {
   const classTags: Tag[] = [];
   const otherTags: Tag[] = [];
   tags.forEach((tag) => {
@@ -78,7 +79,7 @@ function SettingsPage({ tags }: Props): Node {
       otherTags.push(tag);
     }
   });
-  const renderTags = (arr: Tag[]): Node => arr.map((tag: Tag) => (
+  const renderTags = (arr: Tag[]): ReactElement => arr.map((tag: Tag) => (
     <TagItem key={tag.id} tag={tag} />
   ));
   return (
@@ -126,5 +127,5 @@ function SettingsPage({ tags }: Props): Node {
   );
 }
 
-const Connected: ComponentType<{||}> = connect(({ tags }) => ({ tags }))(SettingsPage);
+const Connected = connect(({ tags }: State) => ({ tags }))(SettingsPage);
 export default Connected;

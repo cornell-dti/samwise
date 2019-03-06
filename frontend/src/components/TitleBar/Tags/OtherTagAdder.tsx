@@ -1,18 +1,14 @@
-// @flow strict
-
-import React from 'react';
-import type { Node } from 'react';
+import React, { KeyboardEvent, SyntheticEvent, ReactElement } from 'react';
 import styles from './TagItem.css';
 import ColorEditor from './ColorEditor';
 import { addTag } from '../../../firebase/actions';
 
-type Props = {||};
-type State = {| +name: string; +color: string; |};
+type State = { readonly name: string; readonly color: string; };
 
 const defaultColor = '#289de9';
 const initialState: State = { name: '', color: defaultColor };
 
-export default class OtherTagAdder extends React.PureComponent<Props, State> {
+export default class OtherTagAdder extends React.PureComponent<{}, State> {
   state: State = initialState;
 
   editColor = (color: string) => this.setState({ color });
@@ -21,7 +17,7 @@ export default class OtherTagAdder extends React.PureComponent<Props, State> {
     name: event.currentTarget.value,
   });
 
-  onSubmit = (event: SyntheticKeyboardEvent<HTMLInputElement>) => {
+  onSubmit = (event: KeyboardEvent<HTMLInputElement>) => {
     if (event.key !== 'Enter') {
       return;
     }
@@ -32,7 +28,7 @@ export default class OtherTagAdder extends React.PureComponent<Props, State> {
     this.setState(initialState);
   };
 
-  render(): Node {
+  render(): ReactElement {
     const { name, color } = this.state;
     return (
       <li className={styles.ColorConfigItem}>

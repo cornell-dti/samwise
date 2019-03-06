@@ -1,6 +1,4 @@
-// @flow strict
-
-const colMap: { +[colorHex: string]: string } = {
+const colMap: { readonly [colorHex: string]: string } = {
   '#bb5769': 'Dark Rose',
   '#ff8a8a': 'Peachy Pink',
   '#ea5e3d': 'Dusty Orange',
