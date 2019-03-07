@@ -13,6 +13,7 @@ import { NONE_TAG } from '../util/tag-util';
 
 const createSetEqualSelector = createSelectorCreator(
   defaultMemoize,
+  // @ts-ignore ts is a little stupid with generics. Probably a ts bug.
   (a: Set<string>, b: Set<string>) => a.equals(b),
 );
 

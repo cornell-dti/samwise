@@ -1,4 +1,5 @@
 import React, { ReactElement, ReactNode } from 'react';
+import { Map } from 'immutable';
 import { connect } from 'react-redux';
 import TagItem from '../Tags/TagItem';
 import ClassTagAdder from '../Tags/ClassTagAdder';
@@ -58,7 +59,7 @@ const TagsContainer = ({ title, children }: TagsContainerProps): ReactElement =>
   </div>
 );
 
-type Props = { readonly tags: Tag[] };
+type Props = { readonly tags: Map<string, Tag> };
 
 /**
  * The settings page.

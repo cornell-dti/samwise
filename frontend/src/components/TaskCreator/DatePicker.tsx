@@ -1,5 +1,5 @@
 import React, { ReactElement, SyntheticEvent } from 'react';
-import { Calendar } from 'react-calendar';
+import Calendar from 'react-calendar';
 import Dark from '../../assets/svgs/dark.svg';
 import styles from './Picker.css';
 import { date2String } from '../../util/datetime-util';
@@ -40,13 +40,19 @@ export default function DatePicker(props: Props): ReactElement {
       </span>
     );
   };
+  const onChange = (date: Date | Date[]) => {
+    if (Array.isArray(date)) {
+      return;
+    }
+    onDateChange(date);
+  };
   return (
     <div className={styles.Main}>
       {displayedNode(!datePicked)}
       {opened && (
         <div className={styles.NewTaskDatePick}>
           <Calendar
-            onChange={onDateChange}
+            onChange={onChange}
             value={date}
             minDate={new Date()}
           />

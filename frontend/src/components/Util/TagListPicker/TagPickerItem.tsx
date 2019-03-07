@@ -10,16 +10,12 @@ type Props = {
 /**
  * One item in the class picker.
  */
-export default function TagPickerItem({ id, color, title, onChange }: Props,): ReactElement {
+export default function TagPickerItem({ id, color, title, onChange }: Props): ReactElement {
+  const style = { '--custom-color': color };
   return (
-    <li style={{ '--custom-color': color }}>
-      <input
-        data-id={id}
-        data-color={color}
-        data-class-title={title}
-        onClick={() => onChange(id)}
-        type="checkbox"
-      />
+    // @ts-ignore this is a hack to use the :before selector. We should try to find better ways.
+    <li style={style}>
+      <input onClick={() => onChange(id)} type="checkbox" />
       {title}
     </li>
   );

@@ -21,7 +21,7 @@ Class Picker
   border-left:1px black solid;
   border-right:1px black solid;
   border-bottom:1px gray solid;
-  
+
   background:white;
 }
 
@@ -41,15 +41,16 @@ Class Picker
   cursor:pointer;
 }
 
-.NewTaskClass li::before{
-  content:'';
-  display:block;
-  position:absolute;
-  left:5px;top:5px;
-  width:20px;height:20px;
-  background-color:var(--custom-color);
+.NewTaskClass li::before {
+  content: '';
+  display: block;
+  position: absolute;
+  top: 5px;
+  left: 5px;
+  width: 20px;
+  height: 20px;
+  background-color: var(--custom-color);
 }
-
 
 .NewTaskClass input[type="checkbox"]:checked+label+ul{
   display:block;

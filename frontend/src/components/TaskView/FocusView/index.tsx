@@ -1,5 +1,5 @@
 import React, { ReactElement } from 'react';
-import { DragDropContext, Droppable } from 'react-beautiful-dnd';
+import { DragDropContext, Droppable, DropResult } from 'react-beautiful-dnd';
 import { connect } from 'react-redux';
 import styles from './FocusView.css';
 import ClearFocus from './ClearFocus';
@@ -24,7 +24,7 @@ function FocusView({ idOrderList }: { readonly idOrderList: IdOrder[] }): ReactE
     setLocalList(idOrderList);
   }
 
-  const onDragEnd = (result) => {
+  const onDragEnd = (result: DropResult) => {
     const { source, destination } = result;
     if (destination == null || destination.droppableId !== focusViewDroppableId) {
       // drop outside of the list

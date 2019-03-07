@@ -1,4 +1,5 @@
 import React, { ReactElement } from 'react';
+// @ts-ignore this module does not have a ts definition file.
 import Clock from 'react-live-clock';
 import { date2FullDateString } from '../../util/datetime-util';
 import styles from './TitleBar.css';
