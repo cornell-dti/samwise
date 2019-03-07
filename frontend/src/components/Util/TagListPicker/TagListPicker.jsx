@@ -28,7 +28,13 @@ function TagListPicker({ onTagChange, tags }: Props): Node {
     if (a.classId == null && b.classId != null) { return 1; }
     return a.name.localeCompare(b.name);
   }).map(({ id, name, color }: Tag) => (
-    <TagPickerItem key={id} id={id} title={name} color={color} onChange={onTagChange} />
+    <TagPickerItem
+      key={id}
+      id={id}
+      title={name}
+      color={color}
+      onChange={onTagChange}
+    />
   ));
   return (
     <ul className={styles.NewTaskClass}>

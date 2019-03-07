@@ -15,7 +15,7 @@ export default function SettingsButton() {
   return (
     <div style={{ display: 'inline-block' }}>
       <button type="submit" onClick={displayModal}>
-        <Settings />
+        <Settings className={styles.SettingsButton} />
       </button>
       {showSettings && (
         <div className={styles.SettingsModal}>

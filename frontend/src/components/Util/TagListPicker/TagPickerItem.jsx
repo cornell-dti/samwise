@@ -19,7 +19,7 @@ export default function TagPickerItem(
   }: Props,
 ): Node {
   return (
-    <li style={{ '--custom-color': color }}>
+    <li style={{ '--custom-color': color }} >
       <input
         data-id={id}
         data-color={color}
