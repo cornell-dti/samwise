@@ -89,7 +89,13 @@ export const computeTaskProgress = (
   let allTasksCount = 0;
   for (let i = 0; i < inFocusTasks.length; i += 1) {
     const task = inFocusTasks[i];
-    allTasksCount += task.children.size + 1;
+    if (task.inFocus) {
+      allTasksCount += task.children.size + 1;
+    } else {
+      allTasksCount += task.children.reduce(
+        (acc, s) => acc + ((subTasks.get(s)?.inFocus ?? false) ? 1 : 0), 0,
+      );
+    }
     if (task.complete) {
       completedTasksCount += task.children.size + 1;
     } else {

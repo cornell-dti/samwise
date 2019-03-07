@@ -33,6 +33,11 @@
   overflow-y: auto;
 }
 
+.SettingsButton {
+  width: 17.5px;
+  height: 17.5px;
+}
+
 .ContentWrap {
   padding: 60px 50px;
 }

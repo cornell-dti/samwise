@@ -17,7 +17,7 @@ const colMap: { +[colorHex: string]: string } = {
   '#ab8bb6': 'Lilac',
 };
 
-export { colMap as default };
+export default colMap;
 
 /*
   '#7ed321': 'green     ',
