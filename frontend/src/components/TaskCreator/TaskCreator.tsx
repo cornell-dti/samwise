@@ -1,5 +1,4 @@
 import React, { KeyboardEvent, SyntheticEvent, ReactElement } from 'react';
-import { Set } from 'immutable';
 import { Icon } from 'semantic-ui-react';
 import Delete from '../../assets/svgs/XDark.svg';
 import 'react-toastify/dist/ReactToastify.css';
@@ -27,7 +26,7 @@ type State = SimpleTask & {
 /**
  * The placeholder text in the main task input box.
  */
-const PLACEHOLDER_TEXT: string = 'What do you have to do?';
+const PLACEHOLDER_TEXT = 'What do you have to do?';
 /**
  * Generate the initial state.
  */
@@ -47,7 +46,7 @@ const initialState = (): State => ({
 });
 
 export default class TaskCreator extends React.PureComponent<{}, State> {
-  state: State = initialState();
+  public readonly state: State = initialState();
 
   /*
    * --------------------------------------------------------------------------------
@@ -58,17 +57,17 @@ export default class TaskCreator extends React.PureComponent<{}, State> {
   /**
    * Open the new task editor.
    */
-  openNewTask = () => this.setState({ opened: true });
+  private openNewTask = () => this.setState({ opened: true });
 
   /**
    * Close (collapse) the new task editor.
    */
-  closeNewTask = () => this.setState({ opened: false });
+  private closeNewTask = () => this.setState({ opened: false });
 
   /**
    * Open the tag picker and close the date picker.
    */
-  openTagPicker = () => this.setState(({ tagPickerOpened }: State) => ({
+  private openTagPicker = () => this.setState(({ tagPickerOpened }: State) => ({
     tagPickerOpened: !tagPickerOpened,
     datePickerOpened: false,
   }));
@@ -76,7 +75,7 @@ export default class TaskCreator extends React.PureComponent<{}, State> {
   /**
    * Open the date picker and close the tag picker.
    */
-  openDatePicker = () => this.setState(({ datePickerOpened }: State) => ({
+  private openDatePicker = () => this.setState(({ datePickerOpened }: State) => ({
     datePickerOpened: !datePickerOpened,
     tagPickerOpened: false,
   }));
@@ -90,7 +89,7 @@ export default class TaskCreator extends React.PureComponent<{}, State> {
   /**
    * Focus on the task name, if possible.
    */
-  focusTaskName = () => {
+  private focusTaskName = () => {
     if (this.addTask) {
       this.addTask.focus();
     }
@@ -101,7 +100,7 @@ export default class TaskCreator extends React.PureComponent<{}, State> {
    *
    * @param e the event that signals a potential save action.
    */
-  handleSave = (e?: SyntheticEvent<HTMLElement>) => {
+  private handleSave = (e?: SyntheticEvent<HTMLElement>) => {
     if (e != null) {
       e.preventDefault();
     }
@@ -140,7 +139,7 @@ export default class TaskCreator extends React.PureComponent<{}, State> {
    *
    * @param e the event that contains the new task name.
    */
-  editTaskName = (e: SyntheticEvent<HTMLInputElement>) => this.setState(
+  private editTaskName = (e: SyntheticEvent<HTMLInputElement>) => this.setState(
     { name: e.currentTarget.value },
     this.focusTaskName,
   );
@@ -150,14 +149,16 @@ export default class TaskCreator extends React.PureComponent<{}, State> {
    *
    * @param {string} tag the new tag.
    */
-  editTag = (tag: string) => this.setState({ tag, tagPickerOpened: false }, this.focusTaskName);
+  private editTag = (tag: string) => this.setState(
+    { tag, tagPickerOpened: false }, this.focusTaskName,
+  );
 
   /**
    * Edit the date.
    *
    * @param {Date} date the new date, or null for today.
    */
-  editDate = (date: Date | null) => this.setState(
+  private editDate = (date: Date | null) => this.setState(
     { date: date || new Date(), datePickerOpened: false, datePicked: Boolean(date) },
     this.focusTaskName,
   );
@@ -166,14 +167,14 @@ export default class TaskCreator extends React.PureComponent<{}, State> {
    * Toggle the pin status.
    * @param {boolean} inFocus the new in-focus status.
    */
-  togglePin = (inFocus: boolean) => this.setState({ inFocus }, this.focusTaskName);
+  private togglePin = (inFocus: boolean) => this.setState({ inFocus }, this.focusTaskName);
 
   /**
    * Add a new subtask.
    *
    * @param e the event that contains the new name for new sub-task.
    */
-  addNewSubTask = (e: SyntheticEvent<HTMLInputElement>) => {
+  private addNewSubTask = (e: SyntheticEvent<HTMLInputElement>) => {
     const newSubTaskName = e.currentTarget.value;
     if (newSubTaskName === '') {
       return;
@@ -196,7 +197,7 @@ export default class TaskCreator extends React.PureComponent<{}, State> {
    * @param subTaskId id of the subtask to edit.
    * @return the event handler.
    */
-  editSubTask = (subTaskId: string) => (e: SyntheticEvent<HTMLInputElement>) => {
+  private editSubTask = (subTaskId: string) => (e: SyntheticEvent<HTMLInputElement>) => {
     const name = e.currentTarget.value;
     this.setState(({ subTasks }: State) => ({
       subTasks: subTasks.map(s => (s.id === subTaskId ? { ...s, name } : s)),
@@ -208,7 +209,7 @@ export default class TaskCreator extends React.PureComponent<{}, State> {
    *
    * @param e the keyboard event.
    */
-  submitSubTask = (e: KeyboardEvent<HTMLInputElement>) => {
+  private submitSubTask = (e: KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Enter') {
       this.handleSave();
     }
@@ -220,7 +221,7 @@ export default class TaskCreator extends React.PureComponent<{}, State> {
    * @param {string} subtaskId id of the subtask to delete.
    * @return {Function<SyntheticEvent<HTMLInputElement>, void>} the event handler.
    */
-  deleteSubTask = (subtaskId: string) => (e: SyntheticEvent<HTMLButtonElement>) => {
+  private deleteSubTask = (subtaskId: string) => (e: SyntheticEvent<HTMLButtonElement>) => {
     e.preventDefault();
     this.setState(({ subTasks }: State) => ({
       subTasks: subTasks.filter(s => s.id !== subtaskId),
@@ -230,16 +231,16 @@ export default class TaskCreator extends React.PureComponent<{}, State> {
   /**
    * Reset the task.
    */
-  resetTask = () => this.setState({ ...initialState() }, this.focusTaskName);
+  private resetTask = () => this.setState({ ...initialState() }, this.focusTaskName);
 
-  addTask: HTMLInputElement | null | undefined;
+  private addTask: HTMLInputElement | null | undefined;
 
   /**
    * Renders the editor for all the other info except main task name.
    *
    * @return the rendered other info editor.
    */
-  renderOtherInfoEditor(): ReactElement | null {
+  private renderOtherInfoEditor(): ReactElement | null {
     const { opened } = this.state;
     if (!opened) {
       return null;
@@ -248,8 +249,10 @@ export default class TaskCreator extends React.PureComponent<{}, State> {
       tag, date, inFocus, subTasks,
       tagPickerOpened, datePickerOpened, datePicked, needToSwitchFocus,
     } = this.state;
-    const existingSubTaskEditor = ({ id, name }: SubTask, i: number, arr: SubTask[]) => {
-      const refHandler = (inputElementRef: HTMLInputElement | null) => {
+    const existingSubTaskEditor = (
+      { id, name }: SubTask, i: number, arr: SubTask[],
+    ): ReactElement => {
+      const refHandler = (inputElementRef: HTMLInputElement | null): void => {
         if (i === arr.length - 1 && needToSwitchFocus && inputElementRef != null) {
           inputElementRef.focus();
           this.setState({ needToSwitchFocus: false });
@@ -301,7 +304,7 @@ export default class TaskCreator extends React.PureComponent<{}, State> {
     );
   }
 
-  render(): ReactElement {
+  public render(): ReactElement {
     const { name, opened } = this.state;
     const toggleDisplayStyle = opened ? {} : { display: 'none' };
     // Click this component, new task component closes.

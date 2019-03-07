@@ -43,7 +43,7 @@ export default (onFirstFetched: () => void): (() => void) => {
   let firstSubTasksFetched = false;
   let firstSettingsFetched = false;
   let courseJsonFetched = false;
-  const reportFirstFetchedIfAllFetched = () => {
+  const reportFirstFetchedIfAllFetched = (): void => {
     if (firstTagsFetched
       && firstTasksFetched
       && firstSubTasksFetched
@@ -68,7 +68,7 @@ export default (onFirstFetched: () => void): (() => void) => {
         if (data === undefined) {
           return;
         }
-        const { owner, ...rest } = <FirestoreTag>data;
+        const { owner, ...rest } = data as FirestoreTag;
         const tag: Tag = { id, ...rest };
         if (change.type === 'added') {
           created.push(tag);
@@ -96,7 +96,7 @@ export default (onFirstFetched: () => void): (() => void) => {
         if (data === undefined) {
           return;
         }
-        const { owner, date: timestamp, children, ...rest } = <FirestoreTask>data;
+        const { owner, date: timestamp, children, ...rest } = data as FirestoreTask;
         const task: Task = {
           id,
           date: timestamp instanceof Date ? timestamp : timestamp.toDate(),
@@ -129,7 +129,7 @@ export default (onFirstFetched: () => void): (() => void) => {
         if (data === undefined) {
           return;
         }
-        const { owner, ...rest } = <FirestoreSubTask>data;
+        const { owner, ...rest } = data as FirestoreSubTask;
         const subTask: SubTask = { id, ...rest };
         if (change.type === 'added') {
           created.push(subTask);
@@ -153,7 +153,7 @@ export default (onFirstFetched: () => void): (() => void) => {
     if (data === undefined) {
       return;
     }
-    const { completedOnboarding, theme } = <Settings>data;
+    const { completedOnboarding, theme } = data as Settings;
     store.dispatch(patchSettings({ completedOnboarding, theme }));
     firstSettingsFetched = true;
     reportFirstFetchedIfAllFetched();

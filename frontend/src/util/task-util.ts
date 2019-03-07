@@ -33,7 +33,7 @@ export const getFilteredInFocusTask = (
  * Used to keep track of the task diff to optimize edit speed.
  */
 export type TaskDiff = {
-  readonly mainTaskDiff: PartialMainTask,
+  readonly mainTaskDiff: PartialMainTask;
   readonly subtasksCreations: SubTask[];
   readonly subtasksEdits: [string, PartialSubTask][];
   readonly subtasksDeletions: string[];
@@ -75,7 +75,7 @@ export const taskDiffIsEmpty = (diff: TaskDiff): boolean => {
 
 export type TasksProgressProps = {
   readonly completedTasksCount: number;
-  readonly allTasksCount: number
+  readonly allTasksCount: number;
 };
 
 /**
@@ -98,7 +98,10 @@ export const computeTaskProgress = (
       allTasksCount += task.children.reduce(
         (acc, s) => {
           const subTask = subTasks.get(s);
-          return acc + (subTask == null ? 0 : (subTask.inFocus ? 1 : 0));
+          if (subTask == null) {
+            return acc;
+          }
+          return acc + (subTask.inFocus ? 1 : 0);
         }, 0,
       );
     }
@@ -108,7 +111,10 @@ export const computeTaskProgress = (
       completedTasksCount += task.children.reduce(
         (acc, s) => {
           const subTask = subTasks.get(s);
-          return acc + (subTask == null ? 0 : (subTask.complete ? 1 : 0));
+          if (subTask == null) {
+            return acc;
+          }
+          return acc + (subTask.complete ? 1 : 0);
         }, 0,
       );
     }

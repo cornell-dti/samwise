@@ -1,7 +1,6 @@
 import React, { ReactElement } from 'react';
-import { Icon } from 'semantic-ui-react';
+import { Icon, SemanticICONS } from 'semantic-ui-react';
 import styles from './SquareButtons.css';
-import { SemanticICONS } from 'semantic-ui-react';
 
 type Props = {
   readonly active: boolean;

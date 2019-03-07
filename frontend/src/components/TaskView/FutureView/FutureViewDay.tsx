@@ -9,8 +9,7 @@ import {
 } from './future-view-css-props';
 import { getTodayAtZeroAM } from '../../../util/datetime-util';
 import { error } from '../../../util/general-util';
-import { useWindowSize } from '../../../hooks/window-size-hook';
-import { WindowSize } from '../../../hooks/window-size-hook';
+import { useWindowSize, WindowSize } from '../../../hooks/window-size-hook';
 import FutureViewDayContent from './FutureViewDayContent';
 
 type Position = {
@@ -106,14 +105,14 @@ export default function FutureViewDay(props: Props): ReactElement {
   const windowSize = useWindowSize();
   const componentDivRef = React.useRef<HTMLDivElement>(null);
 
-  const onHeightChange = (doesOverflow: boolean, tasksHeight: number) => {
+  const onHeightChange = (doesOverflow: boolean, tasksHeight: number): void => {
     if (heightInfo.tasksHeight !== tasksHeight) {
       setHeightInfo({ doesOverflow, tasksHeight });
     }
   };
 
-  const openFloatingView = () => setFloatingViewOpened(true);
-  const closeFloatingView = () => setFloatingViewOpened(false);
+  const openFloatingView = (): void => setFloatingViewOpened(true);
+  const closeFloatingView = (): void => setFloatingViewOpened(false);
 
   const isToday: boolean = getTodayAtZeroAM().toDateString() === date.text;
   let wrapperCssClass: string;

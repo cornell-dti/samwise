@@ -1,5 +1,3 @@
-// @flow strict
-
 import { firestore } from 'firebase/app';
 import { Map, Set } from 'immutable';
 import {
@@ -192,7 +190,6 @@ export const removeTask = (task: Task, noUndo?: 'no-undo'): void => {
   task.children.forEach(id => batch.delete(subTasksCollection().doc(id)));
   batch.commit().then(() => {
     if (noUndo !== 'no-undo') {
-      // TODO
       const { children, ...rest } = task;
       const fullTask = { ...rest, children: deletedSubTasks };
       emitUndoRemoveTaskToast(fullTask);
@@ -304,7 +301,7 @@ export const importCourseExams = (): void => {
         const courseType = type === 'final' ? 'Final' : 'Prelim';
         const examName = `${course.subject} ${course.courseNumber} ${courseType}`;
         const t = new Date(time);
-        const filter = (task: Task) => {
+        const filter = (task: Task): boolean => {
           const { name, date } = task;
           return task.tag === tag.id && name === examName
             && date.getFullYear() === t.getFullYear()

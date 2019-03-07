@@ -25,9 +25,7 @@ export function clearLastAddedTask(performUndo: boolean): void {
 export function clearLastRemovedTask(performUndo: boolean): void {
   if (lastRemovedTask !== null) {
     if (performUndo) {
-      const {
-        id, order, children, ...rest
-      } = lastRemovedTask;
+      const { id, order, children, ...rest } = lastRemovedTask;
       addTask(rest, children.map(({ id: _, ...s }) => s), 'no-undo');
     }
     lastRemovedTask = null;

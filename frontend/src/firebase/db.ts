@@ -18,8 +18,10 @@ const collections = {
   SUBTASKS: 'samwise-subtasks',
 };
 
-export const orderManagerCollection = () => db().collection(collections.ORDER_MANAGER);
-export const settingsCollection = () => db().collection(collections.USER_SETTINGS);
-export const tagsCollection = () => db().collection(collections.TAGS);
-export const tasksCollection = () => db().collection(collections.TASKS);
-export const subTasksCollection = () => db().collection(collections.SUBTASKS);
+type Collection = firebase.firestore.CollectionReference;
+
+export const orderManagerCollection = (): Collection => db().collection(collections.ORDER_MANAGER);
+export const settingsCollection = (): Collection => db().collection(collections.USER_SETTINGS);
+export const tagsCollection = (): Collection => db().collection(collections.TAGS);
+export const tasksCollection = (): Collection => db().collection(collections.TASKS);
+export const subTasksCollection = (): Collection => db().collection(collections.SUBTASKS);

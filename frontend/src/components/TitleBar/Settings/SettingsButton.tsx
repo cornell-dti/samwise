@@ -7,8 +7,8 @@ import styles from './SettingsButton.css';
 export default function SettingsButton(): ReactElement {
   const [showSettings, setShowSettings] = React.useState(false);
 
-  const displayModal = () => setShowSettings(true);
-  const closeModal = () => setShowSettings(false);
+  const displayModal = (): void => setShowSettings(true);
+  const closeModal = (): void => setShowSettings(false);
 
   return (
     <div style={{ display: 'inline-block' }}>

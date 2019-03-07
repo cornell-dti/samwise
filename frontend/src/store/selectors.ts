@@ -1,8 +1,7 @@
 import { createSelector, createSelectorCreator, defaultMemoize } from 'reselect';
 import { Map, Set } from 'immutable';
 import { State, SubTask, Tag, Task } from './store-types';
-import { computeTaskProgress } from '../util/task-util';
-import { TasksProgressProps } from '../util/task-util';
+import { computeTaskProgress, TasksProgressProps } from '../util/task-util';
 import { NONE_TAG } from '../util/tag-util';
 
 /*
@@ -52,7 +51,7 @@ const getTasksInFocus: SelectorOf<Task[]> = createSelector(
   [getTasks, getSubTasks],
   (tasks, subTasks) => Array
     .from(tasks.values())
-    .filter(t => t.inFocus || t.children.some(id => {
+    .filter(t => t.inFocus || t.children.some((id) => {
       const subTask = subTasks.get(id);
       return subTask == null ? false : subTask.inFocus;
     })),

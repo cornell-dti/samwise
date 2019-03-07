@@ -9,7 +9,7 @@ type Props = {
 };
 
 export default function FocusPicker({ pinned, onPinChange }: Props): ReactElement {
-  const clickPicker = (e: SyntheticEvent<HTMLElement>) => {
+  const clickPicker = (e: SyntheticEvent<HTMLElement>): void => {
     e.stopPropagation();
     onPinChange(!pinned);
   };

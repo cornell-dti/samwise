@@ -2,7 +2,6 @@ import React, { ReactElement, SyntheticEvent, ReactNode } from 'react';
 import { connect } from 'react-redux';
 import Delete from '../../../assets/svgs/XLight.svg';
 import PinFilled from '../../../assets/svgs/pin-2-light-filled.svg';
-import PinOutlineDark from '../../../assets/svgs/pin-2-dark-outline.svg';
 import PinOutlineLight from '../../../assets/svgs/pin-2-light-outline.svg';
 import styles from './FutureViewTask.css';
 import FutureViewSubTask from './FutureViewSubTask';
@@ -61,6 +60,7 @@ function FutureViewTask(
    * @param {function(): void} opener the opener passed by the floating task editor.
    * @return {function} the onClick handler.
    */
+  // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
   const getOnClickHandler = (opener: () => void) => (event: SyntheticEvent<HTMLElement>): void => {
     if (event.target instanceof HTMLElement) {
       const elem: HTMLElement = event.target;
@@ -73,7 +73,7 @@ function FutureViewTask(
 
   const TaskCheckBox = (): ReactElement => {
     const { id, complete } = original;
-    const onChange = () => editMainTask(id, { complete: !complete });
+    const onChange = (): void => editMainTask(id, { complete: !complete });
     return <CheckBox className={styles.TaskCheckBox} checked={complete} onChange={onChange} />;
   };
   const TaskName = (): ReactElement => {
@@ -83,12 +83,12 @@ function FutureViewTask(
   };
 
   const RemoveTaskIcon = (): ReactElement => {
-    const handler = () => removeTask(original);
+    const handler = (): void => removeTask(original);
     return <Delete className={styles.TaskIcon} onClick={handler} />;
   };
   const PinIcon = (): ReactElement => {
     const { id, inFocus } = original;
-    const handler = () => editMainTask(id, { inFocus: !inFocus });
+    const handler = (): void => editMainTask(id, { inFocus: !inFocus });
     return (inFocus)
       ? <PinFilled className={styles.TaskIcon} onClick={handler} />
       : <PinOutlineLight className={styles.TaskIcon} onClick={handler} />;
@@ -122,7 +122,7 @@ function FutureViewTask(
   const overdueComponentOpt = overdueAlertPosition && (
     <OverdueAlert absolutePosition={overdueAlertPosition} />
   );
-  const refHandler = (divElement: HTMLDivElement | null) => {
+  const refHandler = (divElement: HTMLDivElement | null): void => {
     if (divElement != null) {
       const isOverdue = date < getTodayAtZeroAM() && !complete;
       if (isOverdue && overdueAlertPosition == null) {

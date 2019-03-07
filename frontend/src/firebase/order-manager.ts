@@ -1,7 +1,8 @@
 import { db, orderManagerCollection } from './db';
 import { getAppUser } from './auth';
 
-const managerRef = () => orderManagerCollection().doc(getAppUser().email);
+type DocRef = firebase.firestore.DocumentReference;
+const managerRef = (): DocRef => orderManagerCollection().doc(getAppUser().email);
 
 type Manager = {
   readonly tagsMaxOrder: number;
@@ -31,9 +32,9 @@ export default async function allocateNewOrder(
     }
     const manager = docInTransaction.data();
     if (manager === undefined) {
-      return;
+      throw new Error('Impossible!');
     }
-    const newOrder = forTags ? manager.tagsMaxOrder : manager.tasksMaxOrder;
+    const newOrder: number = forTags ? manager.tagsMaxOrder : manager.tasksMaxOrder;
     const update: PartialManager = forTags
       ? { tagsMaxOrder: newOrder + count }
       : { tasksMaxOrder: newOrder + count };

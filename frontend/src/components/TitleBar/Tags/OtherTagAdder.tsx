@@ -3,21 +3,21 @@ import styles from './TagItem.css';
 import ColorEditor from './ColorEditor';
 import { addTag } from '../../../firebase/actions';
 
-type State = { readonly name: string; readonly color: string; };
+type State = { readonly name: string; readonly color: string };
 
 const defaultColor = '#289de9';
 const initialState: State = { name: '', color: defaultColor };
 
 export default class OtherTagAdder extends React.PureComponent<{}, State> {
-  state: State = initialState;
+  public readonly state: State = initialState;
 
-  editColor = (color: string) => this.setState({ color });
+  private editColor = (color: string) => this.setState({ color });
 
-  editName = (event: SyntheticEvent<HTMLInputElement>) => this.setState({
+  private editName = (event: SyntheticEvent<HTMLInputElement>) => this.setState({
     name: event.currentTarget.value,
   });
 
-  onSubmit = (event: KeyboardEvent<HTMLInputElement>) => {
+  private onSubmit = (event: KeyboardEvent<HTMLInputElement>) => {
     if (event.key !== 'Enter') {
       return;
     }
@@ -28,7 +28,7 @@ export default class OtherTagAdder extends React.PureComponent<{}, State> {
     this.setState(initialState);
   };
 
-  render(): ReactElement {
+  public render(): ReactElement {
     const { name, color } = this.state;
     return (
       <li className={styles.ColorConfigItem}>

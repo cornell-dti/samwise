@@ -1,17 +1,16 @@
-import { useState, useEffect, useMemo } from 'react';
-import { ReactNode } from 'react';
+import { useState, useEffect, useMemo, ReactNode } from 'react';
 
-export type WindowSize = { readonly width: number; readonly height: number; };
+export type WindowSize = { readonly width: number; readonly height: number };
 type Listener = (windowSize: WindowSize) => void;
 
 const getWindowSize = (): WindowSize => ({ width: window.innerWidth, height: window.innerHeight });
 
 let cachedWindowSize: WindowSize = { width: 0, height: 0 };
-let hasUnreportedChange: boolean = false;
+let hasUnreportedChange = false;
 const listeners = new Map<number, Listener>();
 let listenerSize = 0;
 
-const windowSizeListener = () => {
+const windowSizeListener = (): void => {
   const newSize = getWindowSize();
   if (newSize.width === cachedWindowSize.width && newSize.height === cachedWindowSize.height) {
     return;
@@ -20,7 +19,7 @@ const windowSizeListener = () => {
   hasUnreportedChange = true;
 };
 
-const notifyAll = () => {
+const notifyAll = (): void => {
   if (hasUnreportedChange) {
     listeners.forEach(l => l(cachedWindowSize));
     hasUnreportedChange = false;

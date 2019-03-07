@@ -3,7 +3,7 @@
 // These components' API are NOT guaranteed to be stable.
 // You should only use this component from the outside.
 
-import React, { FocusEvent, ReactElement, ReactNode } from 'react';
+import React, { ReactElement, ReactNode } from 'react';
 import { connect } from 'react-redux';
 import {
   Tag,
@@ -87,14 +87,14 @@ function TaskEditor(
   const [subTaskToFocus, setSubTaskToFocus] = React.useState<TaskToFocus>(null);
 
   // called when the user types in the first char in the new subtask box. We need to shift now.
-  const handleNewSubTaskFirstType = (firstTypedValue: string) => {
+  const handleNewSubTaskFirstType = (firstTypedValue: string): void => {
     const order = subTasks.reduce((acc, s) => Math.max(acc, s.order), 0) + 1;
     addSubTask({
       id: randomId(),
       name: firstTypedValue,
       order,
       complete: false,
-      inFocus: newSubTaskAutoFocused === true ? true : false,
+      inFocus: newSubTaskAutoFocused === true,
     });
     setSubTaskToFocus(order);
   };
@@ -105,7 +105,7 @@ function TaskEditor(
    *
    * @param {'main-task' | number} caller the caller of the handler.
    */
-  const pressEnterHandler = (caller: 'main-task' | number) => {
+  const pressEnterHandler = (caller: 'main-task' | number): void => {
     const order = caller === 'main-task' ? -1 : caller;
     let focused = false;
     for (let i = 0; i < subTasks.length; i += 1) {
@@ -121,7 +121,7 @@ function TaskEditor(
       setSubTaskToFocus('new-subtask');
     }
   };
-  const clearNeedToFocus = () => setSubTaskToFocus(null);
+  const clearNeedToFocus = (): void => setSubTaskToFocus(null);
 
   const isOverdue = date < getTodayAtZeroAM() && !complete;
   const backgroundColor = getTag(tag).color;

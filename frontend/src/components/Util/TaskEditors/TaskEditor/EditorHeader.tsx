@@ -28,21 +28,21 @@ export default function EditorHeader({ tag, date, onChange, getTag }: Props): Re
     doesShowDateEditor: false,
   });
 
-  const toggleTagEditor = () => setEditorDisplayStatus(prev => ({
+  const toggleTagEditor = (): void => setEditorDisplayStatus(prev => ({
     doesShowTagEditor: !prev.doesShowTagEditor, doesShowDateEditor: false,
   }));
-  const toggleDateEditor = () => setEditorDisplayStatus(prev => ({
+  const toggleDateEditor = (): void => setEditorDisplayStatus(prev => ({
     doesShowTagEditor: false, doesShowDateEditor: !prev.doesShowDateEditor,
   }));
   const editTaskTag = (t: string): void => {
     onChange({ tag: t });
     setEditorDisplayStatus(prev => ({ ...prev, doesShowTagEditor: false }));
   };
-  const editTaskDate = (date: Date | Date[]): void => {
-    if (Array.isArray(date)) {
+  const editTaskDate = (d: Date | Date[]): void => {
+    if (Array.isArray(d)) {
       throw new Error('date is not an arry');
     }
-    onChange({ date });
+    onChange({ date: d });
     setEditorDisplayStatus(prev => ({ ...prev, doesShowDateEditor: false }));
   };
 

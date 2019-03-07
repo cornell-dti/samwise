@@ -14,7 +14,7 @@ import { completeOnboarding, importCourseExams } from '../../../firebase/actions
 
 const images = [Tutorial1, Tutorial2, Tutorial3, Tutorial4, Tutorial5, Tutorial6];
 
-type AddClassProps = { readonly classTags: Tag[]; readonly showNext: () => void; };
+type AddClassProps = { readonly classTags: Tag[]; readonly showNext: () => void };
 
 /**
  * Adding class as the first onboarding step.
@@ -100,9 +100,9 @@ function Onboard({ classTags, completedOnboarding }: Props): ReactElement | null
     return null;
   }
 
-  const showNext = () => setProgress(prev => prev + 1);
-  const goBack = () => setProgress(prev => (prev > 1 ? prev - 1 : prev));
-  const skipTutorial = () => setProgress(100);
+  const showNext = (): void => setProgress(prev => prev + 1);
+  const goBack = (): void => setProgress(prev => (prev > 1 ? prev - 1 : prev));
+  const skipTutorial = (): void => setProgress(100);
 
   const onboardingContainerStyle: CSSProperties | undefined = progress > 0
     ? { overflowY: 'hidden', background: 'rgba(0,0,0,0.8)' }

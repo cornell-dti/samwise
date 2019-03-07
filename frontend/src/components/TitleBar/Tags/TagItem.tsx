@@ -5,22 +5,22 @@ import styles from './TagItem.css';
 import ColorEditor from './ColorEditor';
 import { editTag, removeTag } from '../../../firebase/actions';
 
-type Props = { readonly tag: Tag; };
+type Props = { readonly tag: Tag };
 
 /**
  * The tag item component.
  */
 export default function TagItem({ tag }: Props): ReactElement {
-  const onRemove = () => {
+  const onRemove = (): void => {
     // eslint-disable-next-line no-restricted-globals, no-alert
     if (confirm('Do you want to remove this tag?')) {
       removeTag(tag.id);
     }
   };
-  const editColor = (color: string) => {
+  const editColor = (color: string): void => {
     editTag({ ...tag, color });
   };
-  const editName = (name: SyntheticEvent<HTMLInputElement>) => {
+  const editName = (name: SyntheticEvent<HTMLInputElement>): void => {
     editTag({ ...tag, name: name.currentTarget.value });
   };
   const { name, color, classId } = tag;

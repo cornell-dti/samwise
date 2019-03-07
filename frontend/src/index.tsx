@@ -1,5 +1,5 @@
 import '@babel/polyfill';
-import React from 'react';
+import React, { ReactElement } from 'react';
 import ReactDOM from 'react-dom';
 import './index.non-module.css';
 import { Provider as ReactReduxProvider } from 'react-redux';
@@ -10,7 +10,9 @@ import { store } from './store/store';
 import LoginBarrier from './components/Util/AppInit/LoginBarrier';
 import './util/ga-util';
 
-const appRenderer = () => <ReactReduxProvider store={store}><App /></ReactReduxProvider>;
+const appRenderer = (): ReactElement => (
+  <ReactReduxProvider store={store}><App /></ReactReduxProvider>
+);
 
 const root = document.getElementById('root');
 if (root == null) {

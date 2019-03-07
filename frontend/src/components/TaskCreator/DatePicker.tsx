@@ -18,13 +18,13 @@ export default function DatePicker(props: Props): ReactElement {
     date, opened, datePicked, onDateChange, onPickerOpened,
   } = props;
   // Controllers
-  const clickPicker = () => { onPickerOpened(); };
-  const reset = (e: SyntheticEvent<HTMLElement>) => {
+  const clickPicker = (): void => { onPickerOpened(); };
+  const reset = (e: SyntheticEvent<HTMLElement>): void => {
     e.stopPropagation();
     onDateChange(null);
   };
   // Nodes
-  const displayedNode = (isDefault: boolean) => {
+  const displayedNode = (isDefault: boolean): ReactElement => {
     const style = isDefault ? {} : { background: NONE_TAG.color };
     const internal = isDefault
       ? ((<Dark className={styles.CenterIcon} />))
@@ -40,22 +40,18 @@ export default function DatePicker(props: Props): ReactElement {
       </span>
     );
   };
-  const onChange = (date: Date | Date[]) => {
-    if (Array.isArray(date)) {
+  const onChange = (d: Date | Date[]): void => {
+    if (Array.isArray(d)) {
       return;
     }
-    onDateChange(date);
+    onDateChange(d);
   };
   return (
     <div className={styles.Main}>
       {displayedNode(!datePicked)}
       {opened && (
         <div className={styles.NewTaskDatePick}>
-          <Calendar
-            onChange={onChange}
-            value={date}
-            minDate={new Date()}
-          />
+          <Calendar onChange={onChange} value={date} minDate={new Date()} />
         </div>
       )}
     </div>

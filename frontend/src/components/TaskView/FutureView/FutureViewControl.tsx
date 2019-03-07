@@ -67,13 +67,14 @@ function getMonthlyViewHeaderTitle(monthOffset: number): string {
   return date2YearMonth(d);
 }
 
-function getBiWeeklyViewHeaderTitle(biweeklyOffest: number): string  {
+function getBiWeeklyViewHeaderTitle(biweeklyOffset: number): string {
   const s = new Date();
-  s.setDate(s.getDate()+ biweeklyOffest);
+  s.setDate(s.getDate() + biweeklyOffset);
   const e = new Date();
-  e.setDate(e.getDate()+ biweeklyOffest + 13);
-  return (s.getMonth()+1) + '/'+ s.getDate() + '/'+ s.getFullYear() +
-  ' - ' + (e.getMonth()+1)  + '/'+ e.getDate() + '/'+ e.getFullYear() ;
+  e.setDate(e.getDate() + biweeklyOffset + 13);
+  const startString = `${s.getMonth() + 1}/${s.getDate()}/${s.getFullYear()}`;
+  const endString = `${e.getMonth() + 1}/${e.getDate()}/${e.getFullYear()}`;
+  return `${startString} - ${endString}`;
 }
 
 /**
@@ -131,10 +132,10 @@ function NavControl(props: NavControlProps): ReactElement {
  */
 function DisplayOptionControl({ nDays, displayOption, offset, onChange }: Props): ReactElement {
   const { containerType, doesShowCompletedTasks } = displayOption;
-  const toggleCompletedTasks = () => onChange({
+  const toggleCompletedTasks = (): void => onChange({
     displayOption: { containerType, doesShowCompletedTasks: !doesShowCompletedTasks },
   });
-  const switchContainerType = (newContainerType: FutureViewContainerType) => {
+  const switchContainerType = (newContainerType: FutureViewContainerType): void => {
     let dayOffset: number;
     switch (containerType) {
       case 'N_DAYS':
@@ -168,7 +169,9 @@ function DisplayOptionControl({ nDays, displayOption, offset, onChange }: Props)
       offset: newOffset,
     });
   };
-  const renderContainerTypeSwitcherButton = (type: FutureViewContainerType, text: string) => {
+  const renderContainerTypeSwitcherButton = (
+    type: FutureViewContainerType, text: string,
+  ): ReactElement => {
     const className = containerType === type
       ? `${styles.ContainerTypeSwitcherButton} ${styles.ContainerTypeSwitcherActiveButton}`
       : styles.ContainerTypeSwitcherButton;
@@ -207,7 +210,7 @@ export default function FutureViewControl(props: Props): ReactElement {
   const { displayOption, offset, onChange } = props;
   const isSmallScreen = useMappedWindowSize(({ width }) => width <= 600);
   const { containerType } = displayOption;
-  const changeOffset = (instruction: ChangeOffsetInstruction) => () => {
+  const changeOffset = (instruction: ChangeOffsetInstruction): (() => void) => (): void => {
     const newOffset = instruction === 'TODAY' ? 0 : (offset + instruction);
     onChange({ offset: newOffset });
   };

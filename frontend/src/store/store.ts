@@ -1,5 +1,4 @@
-import { createStore } from 'redux';
-import { Store } from 'redux';
+import { createStore, Store } from 'redux';
 import rootReducer from './reducers';
 import { State } from './store-types';
 import { Action } from './action-types';

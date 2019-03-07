@@ -19,10 +19,10 @@ type Props = OwnProps & {
 
 function TagPicker({ tag, opened, onTagChange, onPickerOpened, getTag }: Props): ReactElement {
   // Controllers
-  const clickPicker = () => { onPickerOpened(); };
-  const reset = () => onTagChange(NONE_TAG_ID);
+  const clickPicker = (): void => { onPickerOpened(); };
+  const reset = (): void => onTagChange(NONE_TAG_ID);
   // Nodes
-  const displayedNode = (isDefault: boolean) => {
+  const displayedNode = (isDefault: boolean): ReactElement => {
     const { name, color, classId } = getTag(tag);
     const style = isDefault ? {} : { background: color };
     const internal = isDefault

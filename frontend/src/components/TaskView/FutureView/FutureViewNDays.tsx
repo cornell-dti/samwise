@@ -3,7 +3,7 @@ import FutureViewDay from './FutureViewDay';
 import styles from './FutureViewNDays.css';
 import { SimpleDate } from './future-view-types';
 
-type Props = { readonly days: SimpleDate[]; readonly doesShowCompletedTasks: boolean; };
+type Props = { readonly days: SimpleDate[]; readonly doesShowCompletedTasks: boolean };
 
 /**
  * The component used to contain all the backlog days in n-days mode.

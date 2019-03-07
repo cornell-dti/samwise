@@ -17,8 +17,8 @@ type Props = {
 };
 
 type TempSubTask =
-  | { readonly type: 'UNCOMMITTED', readonly subTask: SubTask }
-  | { readonly type: 'COMMITTED', readonly subTask: SubTask; readonly prevTempId: string; }
+  | { readonly type: 'UNCOMMITTED'; readonly subTask: SubTask }
+  | { readonly type: 'COMMITTED'; readonly subTask: SubTask; readonly prevTempId: string }
   | null;
 
 /**
@@ -33,8 +33,8 @@ export default function InlineTaskEditor({ original, filtered, className }: Prop
 
   const { id } = original;
   // To un-mount the editor when finished editing.
-  const onFocus = () => setDisabled(false);
-  const onBlur = () => {
+  const onFocus = (): void => setDisabled(false);
+  const onBlur = (): void => {
     if (tempSubTask !== null && tempSubTask.type === 'UNCOMMITTED') {
       const { id: prevTempId, ...rest } = tempSubTask.subTask;
       const newSubTask = addSubTask(id, rest);

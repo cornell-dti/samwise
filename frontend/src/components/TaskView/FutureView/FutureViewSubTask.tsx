@@ -16,14 +16,14 @@ type Props = {
 /**
  * The component used to render one subtask in future view day.
  */
-function FutureViewSubTask({ subTask, mainTaskId, mainTaskCompleted}: Props): ReactElement {
+function FutureViewSubTask({ subTask, mainTaskId, mainTaskCompleted }: Props): ReactElement | null {
   if (subTask == null) {
     return null;
   }
   const { name, complete, inFocus } = subTask;
-  const onCompleteChange = () => editSubTask(subTask.id, { complete: !complete });
-  const onFocusChange = () => editSubTask(subTask.id, { inFocus: !inFocus });
-  const onRemove = () => removeSubTask(mainTaskId, subTask.id);
+  const onCompleteChange = (): void => editSubTask(subTask.id, { complete: !complete });
+  const onFocusChange = (): void => editSubTask(subTask.id, { inFocus: !inFocus });
+  const onRemove = (): void => removeSubTask(mainTaskId, subTask.id);
   return (
     <div className={styles.SubTask}>
       <CheckBox

@@ -31,7 +31,7 @@ let appUser: AppUser | null = null;
 /**
  * Cache the given user in the memory.
  */
-export function cacheAppUser(user: AppUser) {
+export function cacheAppUser(user: AppUser): void {
   appUser = user;
 }
 
@@ -49,5 +49,5 @@ export function getAppUser(): AppUser {
  * Sign out from firebase auth.
  */
 export function firebaseSignOut(): void {
-  firebase.auth().signOut().then(() => {});
+  firebase.auth().signOut().then(() => { });
 }

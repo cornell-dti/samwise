@@ -9,7 +9,7 @@ import { getTaskIdOrderList } from '../../../store/selectors';
 
 const focusViewDroppableId = 'focus-view-droppable';
 
-const tasksRenderer = ({ id }: { readonly id: string }, index: number) => (
+const tasksRenderer = ({ id }: { readonly id: string }, index: number): ReactElement => (
   <FocusTask key={id} id={id} order={index} />
 );
 
@@ -24,7 +24,7 @@ function FocusView({ idOrderList }: { readonly idOrderList: IdOrder[] }): ReactE
     setLocalList(idOrderList);
   }
 
-  const onDragEnd = (result: DropResult) => {
+  const onDragEnd = (result: DropResult): void => {
     const { source, destination } = result;
     if (destination == null || destination.droppableId !== focusViewDroppableId) {
       // drop outside of the list

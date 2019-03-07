@@ -1,8 +1,5 @@
 {
-  "extends": [
-    "airbnb",
-    "plugin:@typescript-eslint/recommended"
-  ],
+  "extends": ["airbnb", "plugin:@typescript-eslint/recommended"],
   "parser": "@typescript-eslint/parser",
   "plugins": ["@typescript-eslint"],
   "env": {
@@ -10,15 +7,56 @@
     "node": true
   },
   "parserOptions": {
-    "project": "./tsconfig.json"
+    "project": "./tsconfig.json",
+    "ecmaFeatures": {
+      "jsx": true
+    }
   },
   "rules": {
     "object-curly-newline": [
       "error", {
-      "ObjectExpression": { "minProperties": 10, "multiline": true, "consistent": true },
-      "ObjectPattern": { "minProperties": 10, "multiline": true, "consistent": true },
-      "ImportDeclaration": { "minProperties": 10, "multiline": true, "consistent": true },
-      "ExportDeclaration": { "minProperties": 10, "multiline": true, "consistent": true }
-    }]
+        "ObjectExpression": {
+          "minProperties": 10,
+          "multiline": true,
+          "consistent": true
+        },
+        "ObjectPattern": {
+          "minProperties": 10,
+          "multiline": true,
+          "consistent": true
+        },
+        "ImportDeclaration": {
+          "minProperties": 10,
+          "multiline": true,
+          "consistent": true
+        },
+        "ExportDeclaration": {
+          "minProperties": 10,
+          "multiline": true,
+          "consistent": true
+        }
+      }
+    ],
+    "react/jsx-filename-extension": ["error", {
+      "extensions": [".jsx", ".tsx"]
+    }],
+    "import/extensions": [".js", ".mjs", ".jsx", ".ts", ".tsx"],
+    "indent": "off",
+    "@typescript-eslint/indent": ["error", 2],
+    "@typescript-eslint/prefer-interface": "off",
+    "@typescript-eslint/no-unused-vars": [
+      "error", {
+        "vars": "all",
+        "args": "after-used",
+        "ignoreRestSiblings": true
+      }
+    ]
+  },
+  "settings": {
+    "import/resolver": {
+      "node": {
+        "extensions": [".mjs", ".js", ".json", ".ts", ".tsx"]
+      }
+    }
   }
 }

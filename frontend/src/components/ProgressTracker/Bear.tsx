@@ -11,4 +11,4 @@ export default ({ completedTasksCount, allTasksCount }: TasksProgressProps): Rea
   const allCompleted = completedTasksCount === allTasksCount;
   const style = { backgroundImage: `url(${allCompleted ? HappyBear : RegularBear})` };
   return <div className={styles.Bear} style={style} />;
-}
+};

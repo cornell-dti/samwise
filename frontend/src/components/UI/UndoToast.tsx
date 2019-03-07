@@ -14,7 +14,7 @@ type Config = Props & { readonly onDismiss: () => void };
  * The component for the undo toast.
  */
 function UndoToast({ toastId, message, onUndo }: Props): ReactElement {
-  const handleToastClick = (e: MouseEvent<HTMLSpanElement>) => {
+  const handleToastClick = (e: MouseEvent<HTMLSpanElement>): void => {
     e.stopPropagation();
     if (e.target instanceof HTMLButtonElement) {
       onUndo();

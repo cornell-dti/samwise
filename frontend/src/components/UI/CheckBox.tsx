@@ -22,7 +22,7 @@ export default function CheckBox(props: Props): ReactElement {
   if (inverted) {
     allClassNames = `${allClassNames} ${styles.InvertedCheckBox}`;
   }
-  const handleClick = (e: MouseEvent<HTMLInputElement>) => {
+  const handleClick = (e: MouseEvent<HTMLInputElement>): void => {
     e.stopPropagation();
     if (!disabled) {
       onChange(!checked);
@@ -42,5 +42,4 @@ export default function CheckBox(props: Props): ReactElement {
   );
 }
 
-// eslint-disable-next-line react/default-props-match-prop-types
 CheckBox.defaultProps = { disabled: false, inverted: false, className: null };

@@ -7,17 +7,15 @@ import { FloatingPosition, TaskWithSubTasks } from './editors-types';
 import TaskEditor from './TaskEditor';
 import styles from './FloatingTaskEditor.css';
 import TaskEditorStyle from './TaskEditor/TaskEditor.css';
-import { EMPTY_TASK_DIFF, taskDiffIsEmpty } from '../../../util/task-util';
-import { TaskDiff } from '../../../util/task-util';
+import { EMPTY_TASK_DIFF, taskDiffIsEmpty, TaskDiff } from '../../../util/task-util';
 import { editTask, removeTask as removeTaskAction } from '../../../firebase/actions';
-import { useWindowSizeCallback } from '../../../hooks/window-size-hook';
-import { WindowSize } from '../../../hooks/window-size-hook';
+import { useWindowSizeCallback, WindowSize } from '../../../hooks/window-size-hook';
 
 const updateFloatingEditorPosition = (
   editorElement: HTMLFormElement | null | undefined,
   windowSize: WindowSize,
   position: FloatingPosition,
-) => {
+): void => {
   const editorPosDiv = editorElement;
   if (editorPosDiv == null) {
     return;
@@ -101,8 +99,8 @@ function FloatingTaskEditor(
     updateFloatingEditorPosition(editorRef.current, windowSize, position);
   });
 
-  const openPopup = () => setState(prev => ({ ...prev, open: true }));
-  const closePopup = () => setState(prev => ({
+  const openPopup = (): void => setState(prev => ({ ...prev, open: true }));
+  const closePopup = (): void => setState(prev => ({
     ...prev, open: false, diff: EMPTY_TASK_DIFF, uncommittedSubTask: null,
   }));
 
@@ -135,7 +133,7 @@ function FloatingTaskEditor(
     closePopup();
   };
 
-  const editMainTask = (partialMainTask: PartialMainTask) => {
+  const editMainTask = (partialMainTask: PartialMainTask): void => {
     setState(
       (state: ComponentState) => {
         const newTask = { ...state.task, ...partialMainTask };
@@ -147,7 +145,7 @@ function FloatingTaskEditor(
     );
   };
 
-  const editSubTask = (subTaskId: string, partialSubTask: PartialSubTask) => {
+  const editSubTask = (subTaskId: string, partialSubTask: PartialSubTask): void => {
     if (uncommittedSubTask !== null && subTaskId === uncommittedSubTask.id) {
       const newSubTask: SubTask = { ...uncommittedSubTask, ...partialSubTask };
       setState((state: ComponentState) => commitUncommittedTask(newSubTask, state));
@@ -185,13 +183,13 @@ function FloatingTaskEditor(
     });
   };
 
-  const addSubTask = (subTask: SubTask) => {
+  const addSubTask = (subTask: SubTask): void => {
     setState((state: ComponentState) => ({ ...state, uncommittedSubTask: subTask }));
   };
 
-  const removeTask = () => removeTaskAction(initialTask);
+  const removeTask = (): void => removeTaskAction(initialTask);
 
-  const removeSubTask = (subTaskId: string) => {
+  const removeSubTask = (subTaskId: string): void => {
     if (uncommittedSubTask !== null && subTaskId === uncommittedSubTask.id) {
       setState((state: ComponentState) => ({ ...state, uncommittedSubTask: null }));
       return;

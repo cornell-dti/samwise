@@ -1,4 +1,6 @@
 import React, { useState, ReactElement } from 'react';
+import { Map } from 'immutable';
+// @ts-ignore we need to rewrite the entire component!
 import ReactSearchBox from 'react-search-box';
 import { connect } from 'react-redux';
 import styles from './TagAdder.css';
@@ -6,7 +8,7 @@ import { Course, State } from '../../../store/store-types';
 import { addTag } from '../../../firebase/actions';
 import getUnusedColor from './rotation-color-picker';
 
-type Props = { readonly courses: Map<string, Course[]>; };
+type Props = { readonly courses: Map<string, Course[]> };
 
 type SimpleCourse = {
   readonly key: number;
@@ -24,7 +26,7 @@ type SimpleCourse = {
  * @return {SimpleCourse[]} course options.
  */
 function getCourseOptions(courseMap: Map<string, Course[]>): SimpleCourse[] {
-  const courseOptions = [];
+  const courseOptions: SimpleCourse[] = [];
   let i = 0;
   courseMap.forEach((courses: Course[]) => {
     courses.forEach((course: Course) => {
@@ -46,7 +48,7 @@ function getCourseOptions(courseMap: Map<string, Course[]>): SimpleCourse[] {
  * The configs for fuse searcher. Essential for fuzzy search.
  * You may need to tune this further, but it's usable right now.
  */
-const fuseConfigs: { keys: string[], location: number, threshold: number } = {
+const fuseConfigs: { keys: string[]; location: number; threshold: number } = {
   keys: [
     'value', // useful for search the full name as we display
     'subject', // useful for finding a list of all [subject] classes
@@ -59,17 +61,13 @@ const fuseConfigs: { keys: string[], location: number, threshold: number } = {
 
 /**
  * The class tag adder.
- *
- * @param {Map<number, Course[]>} courses all courses.
- * @return {Node} the rendered node.
- * @constructor
  */
-function ClassTagAdder({ courses }: Props): ReactElement {
+function ClassTagAdder({ courses }: Props): ReactElement | null {
   const [key, setKey] = useState(0);
   if (courses.size === 0) {
     return null;
   }
-  const changeClass = (option: SimpleCourse) => {
+  const changeClass = (option: SimpleCourse): void => {
     const { value, classId } = option;
     addTag({
       name: value, color: getUnusedColor(), classId,
@@ -91,7 +89,6 @@ function ClassTagAdder({ courses }: Props): ReactElement {
   );
 }
 
-const ConnectedClassTagAdder = connect(
-  ({ courses }: State) => ({ courses }),
-)(React.memo(ClassTagAdder));
-export default ConnectedClassTagAdder;
+const Memoized = React.memo<Props>(ClassTagAdder);
+const Connected = connect(({ courses }: State) => ({ courses }))(Memoized);
+export default Connected;

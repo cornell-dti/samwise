@@ -25,7 +25,7 @@ const ClassAdder = (): ReactElement => (
   </div>
 );
 
-const ExamImporter = () => (
+const ExamImporter = (): ReactElement => (
   <div className={styles.SettingsSection}>
     <p className={styles.SettingsSectionTitle}>Auto Import Exams</p>
     <div className={`${styles.SettingsButton} ${styles.SettingsSectionContent}`}>
@@ -103,6 +103,7 @@ function SettingsPage({ tags }: Props): ReactElement {
             className={styles.FeedbackButton}
             href="https://goo.gl/forms/PZUZ1Ze6kN82EmcD2"
             target="_blank"
+            rel="noopener noreferrer"
           >
             Give Feedback
           </a>

@@ -117,7 +117,7 @@ export default function FutureView({ config, onConfigChange }: Props): ReactElem
     if (width > 500) { return 2; }
     return 1;
   });
-  const controlOnChange = (change: Partial<FutureViewConfig>) => {
+  const controlOnChange = (change: Partial<FutureViewConfig>): void => {
     onConfigChange({ ...config, ...change });
   };
 

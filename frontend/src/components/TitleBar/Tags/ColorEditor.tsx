@@ -5,7 +5,7 @@ import colMap from './ListColors';
 import styles from './ColorEditor.css';
 
 type Props = {
-  readonly color: string,
+  readonly color: string;
   readonly onChange: (color: string) => void;
 };
 
@@ -14,8 +14,8 @@ const colArray: string[] = Object.keys(colMap);
 export default function ColorEditor({ color, onChange }: Props): ReactElement {
   const [doesShowEditor, setDoesShowEditor] = React.useState(false);
 
-  const toggleEditor = () => setDoesShowEditor(s => !s);
-  const onChangeComplete = (e: { hex: string }) => {
+  const toggleEditor = (): void => setDoesShowEditor(s => !s);
+  const onChangeComplete = (e: { hex: string }): void => {
     onChange(e.hex);
     setDoesShowEditor(false);
   };
