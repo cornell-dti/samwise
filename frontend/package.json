@@ -6,8 +6,7 @@
     "start": "webpack-dev-server --open --config webpack.dev.js",
     "build:stage": "webpack --config webpack.stage.js",
     "build": "webpack --config webpack.prod.js",
-    "flow": "flow",
-    "flow-typed-install": "flow-typed install"
+    "tsc": "tsc -p tsconfig.json"
   },
   "dependencies": {
     "@babel/polyfill": "^7.2.5",
