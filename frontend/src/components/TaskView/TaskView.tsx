@@ -28,8 +28,10 @@ export default function TaskView(): ReactElement {
     const onChange = (c: FutureViewConfig): void => { setConfig(c); };
     return (
       <div className={styles.FuturePanel}>
-        {children}
-        <FutureView config={config} onConfigChange={onChange} />
+        <div className={styles.FuturePanelContainer}>
+          {children}
+          <FutureView config={config} onConfigChange={onChange} />
+        </div>
       </div>
     );
   };
@@ -53,7 +55,7 @@ export default function TaskView(): ReactElement {
   const showFocusView = inNDaysView || doesShowFocusViewInWideScreen;
 
   const WideScreenFocusViewToggle = (): ReactElement => {
-    const wrapperStyle = doesShowFocusViewInWideScreen ? { left: '-4em' } : { left: '-1em' };
+    const wrapperStyle = doesShowFocusViewInWideScreen ? { left: '-4em' } : { left: '0' };
     const buttonStyle = doesShowFocusViewInWideScreen ? { left: '2em' } : {};
     const iconName = doesShowFocusViewInWideScreen ? 'chevron left' : 'chevron right';
     const iconClass = doesShowFocusViewInWideScreen

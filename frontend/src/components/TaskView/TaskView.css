@@ -19,9 +19,12 @@
 }
 
 .FuturePanel {
-  position: relative;
   flex: auto;
   margin-left: 2em;
+}
+
+.FuturePanelContainer {
+  position: relative;
 }
 
 .FocusViewToggleWrapper {
@@ -41,7 +44,7 @@
   align-content: center;
   cursor: pointer;
   top: 0;
-  left: -1em;
+  left: -2em;
   width: 4em;
   height: 4em;
   color: white;
