@@ -69,9 +69,9 @@ function getMonthlyViewHeaderTitle(monthOffset: number): string {
 
 function getBiWeeklyViewHeaderTitle(biweeklyOffset: number): string {
   const s = new Date();
-  s.setDate(s.getDate() + biweeklyOffset);
-  const e = new Date();
-  e.setDate(e.getDate() + biweeklyOffset + 13);
+  s.setDate(s.getDate() + biweeklyOffset * 14 - s.getDay()); // minus day offset
+  const e = new Date(s);
+  e.setDate(e.getDate() + 13);
   const startString = `${s.getMonth() + 1}/${s.getDate()}/${s.getFullYear()}`;
   const endString = `${e.getMonth() + 1}/${e.getDate()}/${e.getFullYear()}`;
   return `${startString} - ${endString}`;
