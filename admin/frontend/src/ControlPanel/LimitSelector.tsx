@@ -9,12 +9,11 @@ type Props = {
 };
 
 export default ({ limit, onLimitChange }: Props): ReactElement => {
-  const [value, setValue] = useState<number>(limit);
-  const onChange = (e: ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
-    const rawValue = e.currentTarget.value;
+  const [value, setValue] = useState<string>(String(limit));
+  const submitOnClick = () => {
     let newValue: number;
     try {
-      newValue = parseInt(rawValue, 10);
+      newValue = parseInt(value, 10);
     } catch (e) {
       newValue = 1;
     }
@@ -24,7 +23,7 @@ export default ({ limit, onLimitChange }: Props): ReactElement => {
     if (newValue < 1) {
       newValue = 1;
     }
-    setValue(newValue);
+    onLimitChange(newValue);
   };
 
   return (
@@ -32,14 +31,14 @@ export default ({ limit, onLimitChange }: Props): ReactElement => {
       <TextField
         label="Limit"
         value={value}
-        onChange={onChange}
+        onChange={e => setValue(e.currentTarget.value)}
         type="number"
         InputLabelProps={{
           shrink: true,
         }}
         margin="normal"
       />
-      <Button color="inherit" onClick={() => onLimitChange(value)}>Set Limit</Button>
+      <Button color="inherit" onClick={submitOnClick}>Set Limit</Button>
     </div>
   );
 }
