@@ -127,6 +127,7 @@ function FloatingTaskEditor(
       diffToUse = diff;
     }
     if (taskDiffIsEmpty(diffToUse)) {
+      closePopup();
       return;
     }
     editTask(task.id, diffToUse);
