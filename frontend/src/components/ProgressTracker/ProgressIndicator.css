@@ -34,5 +34,6 @@
   border-radius: 1em;
   background-color: #7ED321;
 
+  min-width:2em;
   transition: width 0.7s ease-in-out;
 }
