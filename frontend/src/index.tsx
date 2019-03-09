@@ -7,6 +7,7 @@ import App from './App';
 import './firebase'; // import and init
 import { error } from './util/general-util';
 import { store } from './store/store';
+import ErrorBoundary from './components/Util/ErrorBoundary';
 import LoginBarrier from './components/Util/AppInit/LoginBarrier';
 import './util/ga-util';
 
@@ -18,4 +19,4 @@ const root = document.getElementById('root');
 if (root == null) {
   error('The root is null. This is bad!');
 }
-ReactDOM.render(<LoginBarrier appRenderer={appRenderer} />, root);
+ReactDOM.render(<ErrorBoundary><LoginBarrier appRenderer={appRenderer} /></ErrorBoundary>, root);
