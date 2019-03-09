@@ -55,7 +55,11 @@ function FocusView({ idOrderList }: { readonly idOrderList: IdOrder[] }): ReactE
         <DragDropContext onDragEnd={onDragEnd}>
           <Droppable droppableId={focusViewDroppableId}>
             {provided => (
-              <div ref={provided.innerRef} {...provided.droppableProps}>
+              <div
+                ref={provided.innerRef}
+                className={styles.Droppable}
+                {...provided.droppableProps}
+              >
                 {localList.map(tasksRenderer)}
                 {provided.placeholder}
               </div>
