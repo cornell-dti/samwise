@@ -1,0 +1,10 @@
+runtime: nodejs10
+
+handlers:
+  - url: /.*
+    static_dir: public
+    login: admin
+
+  - url: /api/.*
+    script: auto
+    login: admin
