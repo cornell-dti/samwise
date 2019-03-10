@@ -25,13 +25,7 @@ function TagListPicker({ onTagChange, tags }: Props): ReactElement {
     if (a.classId == null && b.classId != null) { return 1; }
     return a.name.localeCompare(b.name);
   }).map(({ id, name, color, classId }: Tag) => (
-    <TagPickerItem
-      key={id}
-      id={id}
-      title={classId !== null ? name.split(':')[0] : name}
-      color={color}
-      onChange={onTagChange}
-    />
+    <TagPickerItem key={id} id={id} title={classId !== isNull ? name.split(':')[0] : name} color={color} onChange={onTagChange} />
   ));
   return (
     <ul className={styles.NewTaskClass}>
