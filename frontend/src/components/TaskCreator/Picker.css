@@ -36,11 +36,11 @@
   text-overflow: ellipsis;
   overflow:hidden;
   white-space: nowrap;
-  
+
   /* Any narrower and some long class tags will begin to be truncated. */
   max-width: 110px;
   display: inline-block;
-  
+
 }
 
 .CenterIcon {
@@ -89,12 +89,10 @@
   left: 0;
   z-index: 2;
   padding:10px;
-  border-radius:3px;
+  /*border-radius:3px;*/
   background:white;
   box-shadow:1px 1px 10px 5px rgba(0,0,0,0.15);
 }
-
-
 
 @media(max-width:1000px){
   .NewTaskDatePick{

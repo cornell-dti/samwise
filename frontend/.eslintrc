@@ -1,27 +1,62 @@
 {
-  "extends": [
-    "airbnb",
-    "plugin:flowtype/recommended"
-  ],
-  "parser": "babel-eslint",
-  "plugins": [
-    "flowtype"
-  ],
+  "extends": ["airbnb", "plugin:@typescript-eslint/recommended"],
+  "parser": "@typescript-eslint/parser",
+  "plugins": ["@typescript-eslint"],
   "env": {
     "browser": true,
     "node": true
   },
+  "parserOptions": {
+    "project": "./tsconfig.json",
+    "ecmaFeatures": {
+      "jsx": true
+    }
+  },
   "rules": {
-    "no-underscore-dangle": "off",
-    // too noisy for props declaration
     "object-curly-newline": [
       "error", {
-      "ObjectExpression": { "minProperties": 6, "multiline": true, "consistent": true },
-      "ObjectPattern": { "minProperties": 6, "multiline": true, "consistent": true },
-      "ImportDeclaration": { "minProperties": 6, "multiline": true, "consistent": true },
-      "ExportDeclaration": { "minProperties": 6, "multiline": true, "consistent": true }
+        "ObjectExpression": {
+          "minProperties": 10,
+          "multiline": true,
+          "consistent": true
+        },
+        "ObjectPattern": {
+          "minProperties": 10,
+          "multiline": true,
+          "consistent": true
+        },
+        "ImportDeclaration": {
+          "minProperties": 10,
+          "multiline": true,
+          "consistent": true
+        },
+        "ExportDeclaration": {
+          "minProperties": 10,
+          "multiline": true,
+          "consistent": true
+        }
+      }
+    ],
+    "react/jsx-filename-extension": ["error", {
+      "extensions": [".jsx", ".tsx"]
     }],
-    "react/default-props-match-prop-types": "off", // incompatible with flow
-    "react/require-default-props": "off" // incompatible with flow
+    "import/extensions": [".js", ".mjs", ".jsx", ".ts", ".tsx"],
+    "indent": "off",
+    "@typescript-eslint/indent": ["error", 2],
+    "@typescript-eslint/prefer-interface": "off",
+    "@typescript-eslint/no-unused-vars": [
+      "error", {
+        "vars": "all",
+        "args": "after-used",
+        "ignoreRestSiblings": true
+      }
+    ]
+  },
+  "settings": {
+    "import/resolver": {
+      "node": {
+        "extensions": [".mjs", ".js", ".json", ".ts", ".tsx"]
+      }
+    }
   }
 }

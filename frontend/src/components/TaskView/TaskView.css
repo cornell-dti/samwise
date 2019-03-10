@@ -1,6 +1,6 @@
 .TaskView {
-  height: calc(100vh - 260px);
-  padding: 0.5em;
+  height: calc(100vh - 202px);
+  padding: 1em;
   display: flex;
   flex-direction: row;
 }
@@ -19,15 +19,17 @@
 }
 
 .FuturePanel {
-  position: relative;
   flex: auto;
-  margin-left: 1em;
+}
+
+.FuturePanelContainer {
+  position: relative;
 }
 
 .FocusViewToggleWrapper {
   position: absolute;
   z-index: 1;
-  bottom: 0.5em;
+  bottom: -12px;
   width: 4em;
   height: 5em;
   overflow-x: hidden;
@@ -41,7 +43,7 @@
   align-content: center;
   cursor: pointer;
   top: 0;
-  left: -1em;
+  left: -2em;
   width: 4em;
   height: 4em;
   color: white;

@@ -7,9 +7,7 @@
 
 .OtherViews {
   position: relative;
-  margin: -1px 0 0 -1px;
-  background-color: white;
-  border: 1px solid #CCC;
+  background-color: #F7F7F7;
   height: 100%;
 }
 
@@ -33,14 +31,8 @@
   font-weight: normal;
 }
 
-.DateNumNDaysView {
+.DateNum {
   font-weight: bold;
-}
-
-.DateNumOtherViews {
-  font-weight: bold;
-  font-size: 16px;
-  color: #4A90E2;
 }
 
 .MoreTasksBar {

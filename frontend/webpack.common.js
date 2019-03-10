@@ -1,4 +1,4 @@
-/* eslint-disable import/no-extraneous-dependencies */
+/* eslint-disable import/no-extraneous-dependencies, @typescript-eslint/no-var-requires */
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const AppManifestWebpackPlugin = require('app-manifest-webpack-plugin');
@@ -13,18 +13,22 @@ module.exports = (webpackEnv) => {
 
   // common function to get style loaders
   const getStyleLoaders = options => [
-    isEnvDevelopment && { loader: require.resolve('style-loader') },
-    isEnvProduction && { loader: MiniCssExtractPlugin.loader },
+    isEnvDevelopment && {
+      loader: require.resolve('style-loader'),
+    },
+    isEnvProduction && {
+      loader: MiniCssExtractPlugin.loader,
+    },
     { loader: require.resolve('css-loader'), options },
   ].filter(Boolean);
 
   return {
     entry: [
       isEnvDevelopment && require.resolve('react-dev-utils/webpackHotDevClient'),
-      path.resolve(__dirname, './src/index.jsx'),
+      path.resolve(__dirname, './src/index.tsx'),
     ].filter(Boolean),
     resolve: {
-      extensions: ['.js', '.jsx'],
+      extensions: ['.js', '.jsx', '.ts', '.tsx'],
     },
     output: {
       filename: '[name].bundle.js',
@@ -53,7 +57,7 @@ module.exports = (webpackEnv) => {
     module: {
       rules: [
         {
-          test: /\.(js|jsx)$/,
+          test: /\.(js|jsx|ts|tsx)$/,
           loader: require.resolve('babel-loader'),
           exclude: /node_modules/,
         },
@@ -79,11 +83,17 @@ module.exports = (webpackEnv) => {
         },
         {
           test: /.svg$/,
-          use: { loader: require.resolve('@svgr/webpack'), options: { icon: true } },
+          use: {
+            loader: require.resolve('@svgr/webpack'),
+            options: { icon: true },
+          },
         },
         {
           test: /\.(png|jpg|gif)$/i,
-          use: { loader: require.resolve('url-loader'), options: { limit: 8192 } },
+          use: {
+            loader: require.resolve('url-loader'),
+            options: { limit: 8192 },
+          },
         },
         {
           test: /\.(eot|woff|woff2|ttf)$/,
@@ -101,28 +111,26 @@ module.exports = (webpackEnv) => {
       ],
     },
     plugins: [
-      new CleanWebpackPlugin(['dist']),
+      new CleanWebpackPlugin(),
       new HtmlWebpackPlugin(
-        Object.assign(
-          {},
-          { inject: true, template: './public/index.html' },
-          isEnvProduction
-            ? {
-              minify: {
-                removeComments: true,
-                collapseWhitespace: true,
-                removeRedundantAttributes: true,
-                useShortDoctype: true,
-                removeEmptyAttributes: true,
-                removeStyleLinkTypeAttributes: true,
-                keepClosingSlash: true,
-                minifyJS: true,
-                minifyCSS: true,
-                minifyURLs: true,
-              },
-            }
-            : {},
-        ),
+        Object.assign({}, {
+          inject: true,
+          template: './public/index.html',
+        },
+        isEnvProduction ? {
+          minify: {
+            removeComments: true,
+            collapseWhitespace: true,
+            removeRedundantAttributes: true,
+            useShortDoctype: true,
+            removeEmptyAttributes: true,
+            removeStyleLinkTypeAttributes: true,
+            keepClosingSlash: true,
+            minifyJS: true,
+            minifyCSS: true,
+            minifyURLs: true,
+          },
+        } : {}),
       ),
       isEnvProduction && new MiniCssExtractPlugin({
         // Options similar to the same options in webpackOptions.output

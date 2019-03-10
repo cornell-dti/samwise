@@ -46,7 +46,7 @@ export interface UserActionStat {
   readonly createSubTask: number;
   readonly deleteTask: number;
   readonly deleteSubTask: number;
-  readonly editTask: number
+  readonly editTask: number;
   readonly completeTask: number;
   readonly focusTask: number;
   readonly completeFocusedTask: number;

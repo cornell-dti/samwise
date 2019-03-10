@@ -12,7 +12,7 @@ Class Picker
   background:white;
 
   box-shadow:1px 1px 10px 5px rgba(0,0,0,0.15);
-  border-radius:3px;
+  /*border-radius:3px;*/
 }
 
 .NewTaskClass li{
@@ -22,9 +22,6 @@ Class Picker
 
   padding:1px 7px;
   margin-bottom:3px;
-  /*border-left:1px black solid;
-  border-right:1px black solid;
-  border-bottom:1px gray solid;*/
   border:none;
   border-radius:15px;
 
@@ -34,9 +31,12 @@ Class Picker
   width:130px;
 
   text-align:center;
-  
+
   color:white;
   background:var(--custom-color);
+
+  opacity:1;
+  transition: opacity 0.1s ease-in-out;
 }
 
 .NewTaskClass li:last-child{
@@ -46,7 +46,10 @@ Class Picker
 }
 
 .NewTaskClass li:hover {
-  font-weight: 900 !important;
+  opacity:0.8;
+}
+.NewTaskClass li:active {
+  opacity:1;
 }
 
 .NewTaskClass li input[type="checkbox"]{
@@ -57,16 +60,6 @@ Class Picker
   opacity:0;
   cursor:pointer;
 }
-/*
-.NewTaskClass li::before{
-  content:'';
-  display:block;
-  position:absolute;
-  left:5px;top:5px;
-  width:20px;height:20px;
-  background-color:var(--custom-color);
-}*/
-
 
 .NewTaskClass input[type="checkbox"]:checked+label+ul{
   display:block;

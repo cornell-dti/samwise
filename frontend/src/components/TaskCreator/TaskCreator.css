@@ -32,7 +32,7 @@
 
   height: initial;
   max-height: 44px;
-  margin-bottom: 20px;
+  margin-bottom: 0;
 }
 
 @media only screen and (min-width: 800px) {
