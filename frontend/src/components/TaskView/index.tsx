@@ -1,11 +1,12 @@
 import React, { ReactElement, ReactNode } from 'react';
 import { Icon } from 'semantic-ui-react';
+import { useMappedWindowSize } from '../../hooks/window-size-hook';
 import Calendar from '../../assets/svgs/dark.svg';
 import PinFilled from '../../assets/svgs/pin-2-light-filled.svg';
 import FocusView from './FocusView';
 import FutureView, { futureViewConfigProvider, FutureViewConfig } from './FutureView';
+import ProgressTracker from './ProgressTracker';
 import styles from './TaskView.css';
-import { useMappedWindowSize } from '../../hooks/window-size-hook';
 
 const FocusPanel = (): ReactElement => <div className={styles.FocusPanel}><FocusView /></div>;
 
@@ -40,15 +41,21 @@ export default function TaskView(): ReactElement {
   if (screenIsSmall) {
     return doesShowFutureViewInSmallScreen
       ? (
-        <div className={styles.TaskView}>
-          <FuturePanel />
-          <PinFilled className={styles.ViewSwitcher} onClick={switchView} />
-        </div>
+        <>
+          <div className={styles.TaskView}>
+            <FuturePanel />
+            <PinFilled className={styles.ViewSwitcher} onClick={switchView} />
+          </div>
+          <ProgressTracker inNDaysView />
+        </>
       ) : (
-        <div className={styles.TaskView}>
-          <FocusPanel />
-          <Calendar onClick={switchView} className={styles.ViewSwitcher} />
-        </div>
+        <>
+          <div className={styles.TaskView}>
+            <FocusPanel />
+            <Calendar onClick={switchView} className={styles.ViewSwitcher} />
+          </div>
+          <ProgressTracker inNDaysView />
+        </>
       );
   }
   const inNDaysView = futureViewConfigProvider.isInNDaysView(config);
@@ -78,11 +85,16 @@ export default function TaskView(): ReactElement {
   };
 
   return (
-    <div className={styles.TaskView}>
-      {showFocusView && <FocusPanel />}
-      <FuturePanel>
-        {!inNDaysView && <WideScreenFocusViewToggle />}
-      </FuturePanel>
-    </div>
+    <>
+      <div className={styles.TaskView}>
+        {!inNDaysView && <ProgressTracker inNDaysView={false} />}
+        {showFocusView && <FocusPanel />}
+        {showFocusView && <div style={{ width: '2em' }} />}
+        <FuturePanel>
+          {!inNDaysView && <WideScreenFocusViewToggle />}
+        </FuturePanel>
+      </div>
+      {inNDaysView && <ProgressTracker inNDaysView />}
+    </>
   );
 }

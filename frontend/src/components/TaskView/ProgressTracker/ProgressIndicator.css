@@ -1,7 +1,8 @@
 .ProgressIndicator {
-  flex: auto;
   display: flex;
   align-content: center;
+  align-items: center;
+  justify-content: center;
   margin: 1em;
 }
 
@@ -19,20 +20,17 @@
 
 .ProgressBarContainer {
   flex: auto;
-  margin-left: 1em;
   position: relative;
-  height: 2em;
   border-radius: 1em;
   background-color: rgba(155, 155, 155, 0.19);
 }
 
 .ProgressBarIndicator {
   position: absolute;
-  top: 0;
+  bottom: 0;
   left: 0;
-  height: 2em;
   border-radius: 1em;
   background-color: #7ED321;
 
-  transition: width 0.7s ease-in-out;
+  transition: all 0.7s ease-in-out;
 }

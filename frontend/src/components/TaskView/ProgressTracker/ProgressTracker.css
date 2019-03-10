@@ -1,0 +1,20 @@
+.ProgressTracker {
+  display: flex;
+  align-items: center;
+  align-content: center;
+  justify-content: center;
+  width: 100%;
+  padding-top: 10px;
+}
+
+.NDaysView {
+  flex-direction: row;
+  margin-top: 32px;
+}
+
+.OtherViews {
+  margin-top: 68px;
+  margin-bottom: -22px;
+  width: 70px;
+  flex-direction: column-reverse;
+}
