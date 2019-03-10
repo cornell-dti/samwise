@@ -47,7 +47,7 @@ function FocusView({ idOrderList }: { readonly idOrderList: IdOrder[] }): ReactE
   return (
     <div className={styles.FocusView}>
       <div className={styles.ControlBlock}>
-        <h3 className={styles.Title}>Focus</h3>
+        <h3 className={styles.Title}>{'Today\'s Focus'}</h3>
         <span className={styles.Padding} />
         <ClearFocus />
       </div>
