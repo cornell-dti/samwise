@@ -6,8 +6,13 @@
 
 [lints]
 all=error
+deprecated-type=warn
 deprecated-utility=warn
 dynamic-export=off
+sketchy-null=warn
+sketchy-number=warn
+unclear-type=warn
+untyped-import=warn
 [options]
 esproposal.class_instance_fields=enable
 esproposal.class_static_fields=enable
@@ -20,7 +25,6 @@ nonstrict-import
 unsafe-getters-setters
 untyped-import
 untyped-type-import
-sketchy-null
 sketchy-number
 unnecessary-optional-chain
 unnecessary-invariant

@@ -46,7 +46,7 @@ export default function NewSubTaskEditor(
       <input
         ref={editorRef}
         className={styles.TaskEditorFlexibleInput}
-        placeholder="A new subtask"
+        placeholder="Add a Subtask"
         value=""
         onChange={onInputChange}
         onKeyDown={onKeyDown}
