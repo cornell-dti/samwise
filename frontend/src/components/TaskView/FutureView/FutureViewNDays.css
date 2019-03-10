@@ -1,7 +1,7 @@
 .FutureViewNDays {
   display: grid;
   grid-gap: 0;
-  height: calc(100vh - 360px);
+  height: calc(100vh - 344px);
   grid-auto-rows: minmax(0, 1fr);
 }
 
