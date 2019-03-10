@@ -75,7 +75,7 @@ input.TaskEditorFlexibleInput:focus-within::placeholder {
   overflow: hidden;
 }
 
-.TaskEditorIcon:hover path {
+.TaskEditorIcon:hover > * {
   stroke-width: 4px !important;
   stroke-opacity: 0.9 !important;
 }
