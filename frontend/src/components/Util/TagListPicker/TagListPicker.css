@@ -34,6 +34,9 @@ Class Picker
 
   color:white;
   background:var(--custom-color);
+
+  opacity:1;
+  transition: opacity 0.1s ease-in-out;
 }
 
 .NewTaskClass li:last-child{
@@ -43,7 +46,10 @@ Class Picker
 }
 
 .NewTaskClass li:hover {
-  font-weight: 900 !important;
+  opacity:0.8;
+}
+.NewTaskClass li:active {
+  opacity:1;
 }
 
 .NewTaskClass li input[type="checkbox"]{
