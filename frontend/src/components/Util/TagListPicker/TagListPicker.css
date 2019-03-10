@@ -4,12 +4,15 @@ Class Picker
 */
 .NewTaskClass{
   position:absolute;
-  top:20px;left:-2px;
-  min-width:150px;
+  top:20px;right:-2px;
+  min-width:130px;
   margin:0;
-  padding:0;
+  padding:3px 5px 0 5px;
   list-style:none;
   background:white;
+
+  box-shadow:1px 1px 10px 5px rgba(0,0,0,0.15);
+  border-radius:3px;
 }
 
 .NewTaskClass li{
@@ -17,21 +20,36 @@ Class Picker
 
   text-align:left;
 
-  padding:5px 10px 5px 30px;
-  border-left:1px black solid;
-  border-right:1px black solid;
-  border-bottom:1px gray solid;
+  padding:1px 7px;
+  margin-bottom:3px;
+  border:none;
+  border-radius:15px;
 
-  background:white;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  width:130px;
+
+  text-align:center;
+
+  color:white;
+  background:var(--custom-color);
 }
 
+.NewTaskClass li:last-child{
+  background:white;
+  border:2px black solid;
+  color:black;
+}
+
+/*
 .NewTaskClass li:first-child{
   border-top:1px black solid;
 }
 .NewTaskClass li:last-child{
   border-bottom:1px black solid;
 }
-
+*/
 .NewTaskClass li input[type="checkbox"]{
   position:absolute;
   width:100%;height:100%;
@@ -39,17 +57,6 @@ Class Picker
   left:0;top:0;
   opacity:0;
   cursor:pointer;
-}
-
-.NewTaskClass li::before {
-  content: '';
-  display: block;
-  position: absolute;
-  top: 5px;
-  left: 5px;
-  width: 20px;
-  height: 20px;
-  background-color: var(--custom-color);
 }
 
 .NewTaskClass input[type="checkbox"]:checked+label+ul{

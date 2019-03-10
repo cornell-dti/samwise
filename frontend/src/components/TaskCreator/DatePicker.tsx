@@ -51,7 +51,7 @@ export default function DatePicker(props: Props): ReactElement {
       {displayedNode(!datePicked)}
       {opened && (
         <div className={styles.NewTaskDatePick}>
-          <Calendar onChange={onChange} value={date} minDate={new Date()} />
+          <Calendar onChange={onChange} value={date} minDate={new Date()} calendarType="US" />
         </div>
       )}
     </div>

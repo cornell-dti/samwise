@@ -1,0 +1,22 @@
+#!/bin/bash
+
+###
+### Note: this script is not working now due to missing billing account.
+###
+
+## build frontend
+cd frontend
+yarn
+yarn build
+cd ../
+
+## copy frontend build to backend public folder
+rm -rf backend/public/
+mkdir backend/public
+cp -R frontend/build/. backend/public
+
+## deploy
+cd backend
+yarn # build everything
+yarn deploy
+cd ../backend
