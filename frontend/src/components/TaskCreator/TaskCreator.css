@@ -57,7 +57,7 @@
 .CloseNewTask {
   position: fixed;
   background: black;
-  opacity: 0.4;
+  opacity: 0.2;
   z-index: 4;
   top: 0;
   left: 0;

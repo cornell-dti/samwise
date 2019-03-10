@@ -48,6 +48,7 @@ export default function DatePicker(props: Props) {
             onChange={onDateChange}
             value={date}
             minDate={new Date()}
+            calendarType="US"
           />
         </div>
       )}
