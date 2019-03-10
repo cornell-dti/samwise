@@ -4,7 +4,7 @@ import { OneStat } from './stat-types';
 import StatDisplay from './StatDisplay';
 
 export default (): ReactElement => {
-  const [limit, setLimit] = useState(7);
+  const [limit, setLimit] = useState(1);
   const [stat, setStat] = useState<OneStat[] | null>(null);
 
   useEffect(() => {
