@@ -19,18 +19,15 @@ export default ({ days, doesShowCompletedTasks }: Props): ReactElement => {
       date={date}
     />
   ));
-  let styleString = '40px';
+  let styleString = '';
   const numRows = Math.ceil(items.length / 7);
   const templateStyleString = ` minmax(0, ${1 / numRows}fr)`;
   for (let i = 0; i < numRows; i += 1) {
     styleString += templateStyleString;
   }
-  const gridStyle = { gridTemplateRows: styleString };
-  const weeklyBar = ['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT']
-    .map(s => <div key={s} className={styles.HeaderWeekday}>{s}</div>);
+  const gridStyle = { gridTemplateRows: styleString.trim() };
   return (
     <div className={styles.FutureViewSevenColumns} style={gridStyle}>
-      {weeklyBar}
       {items}
     </div>
   );

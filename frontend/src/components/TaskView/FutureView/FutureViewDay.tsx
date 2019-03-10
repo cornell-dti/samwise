@@ -44,7 +44,7 @@ const computeFloatingViewStyle = (props: PropsForPositionComputation): PositionS
     },
   } = props;
   // Compute the height of inner content
-  const headerHeight = inNDaysView ? nDaysViewHeaderHeight : otherViewsHeightHeader;
+  const headerHeight = inNDaysView ? nDaysViewHeaderHeight : nDaysViewHeaderHeight;
   const totalHeight = headerHeight + tasksHeight;
   // Decide the maximum allowed height and the actual height
   const maxAllowedHeight = inNDaysView ? 400 : 300;

@@ -1,7 +1,3 @@
-.NDaysView {
+.Container {
   height: calc(100% - 66px);
-}
-
-.OtherViews {
-  height: calc(100% - 47px);
 }

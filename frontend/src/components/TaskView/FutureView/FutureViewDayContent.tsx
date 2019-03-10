@@ -27,20 +27,15 @@ function FutureViewDayContent(
     onHeightChange,
   }: Props,
 ): ReactElement {
-  const dateNumCssClass = inNDaysView
-    ? styles.DateNumNDaysView
-    : styles.DateNumOtherViews;
   const containerStyle = (inNDaysView && inMainList) ? { paddingTop: '1em' } : {};
   const isToday: boolean = getTodayAtZeroAM().toDateString() === date.text;
   return (
     <>
       <div className={styles.DateInfo} style={containerStyle}>
-        {inNDaysView && (
-          <div className={styles.DateInfoDay}>
-            {isToday ? 'TODAY' : day2String(date.day)}
-          </div>
-        )}
-        <div className={dateNumCssClass}>{date.date}</div>
+        <div className={styles.DateInfoDay}>
+          {isToday ? 'TODAY' : day2String(date.day)}
+        </div>
+        <div className={styles.DateNum}>{date.date}</div>
       </div>
       <FutureViewDayTaskContainer
         date={date.text}

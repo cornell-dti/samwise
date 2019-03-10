@@ -60,12 +60,13 @@ function FutureViewDayTaskContainer(
       isInMainList={isInMainList}
     />
   ));
-  const className = inNDaysView ? styles.NDaysView : styles.OtherViews;
   if (isInMainList) {
     const style = { overflow: 'hidden' };
-    return <div className={className} style={style} ref={containerRef}>{taskListComponent}</div>;
+    return (
+      <div className={styles.Container} style={style} ref={containerRef}>{taskListComponent}</div>
+    );
   }
-  return <div className={className} ref={containerRef}>{taskListComponent}</div>;
+  return <div className={styles.Container} ref={containerRef}>{taskListComponent}</div>;
 }
 
 const Connected = connect(

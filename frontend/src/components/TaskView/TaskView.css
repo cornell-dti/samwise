@@ -30,7 +30,7 @@
 .FocusViewToggleWrapper {
   position: absolute;
   z-index: 1;
-  bottom: 0.5em;
+  bottom: -12px;
   width: 4em;
   height: 5em;
   overflow-x: hidden;
