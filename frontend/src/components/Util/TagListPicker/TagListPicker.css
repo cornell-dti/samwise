@@ -42,7 +42,10 @@ Class Picker
   color:black;
 }
 
-/*
+.NewTaskClass li:hover {
+  font-weight: 900 !important;
+}
+
 .NewTaskClass li:first-child{
   border-top:1px black solid;
 }
