@@ -4,7 +4,7 @@ Class Picker
 */
 .NewTaskClass{
   position:absolute;
-  top:20px;right:-2px;
+  top:21px;right: 90px;
   min-width:130px;
   margin:0;
   padding:3px 5px 0 5px;
