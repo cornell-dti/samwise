@@ -45,14 +45,10 @@ Class Picker
   color:black;
 }
 
-/*
-.NewTaskClass li:first-child{
-  border-top:1px black solid;
+.NewTaskClass li:hover {
+  font-weight: 900 !important;
 }
-.NewTaskClass li:last-child{
-  border-bottom:1px black solid;
-}
-*/
+
 .NewTaskClass li input[type="checkbox"]{
   position:absolute;
   width:100%;height:100%;

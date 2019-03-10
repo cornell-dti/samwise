@@ -5,7 +5,6 @@ import type { ComponentType, Node } from 'react';
 import { connect } from 'react-redux';
 import Delete from '../../../assets/svgs/XLight.svg';
 import PinFilled from '../../../assets/svgs/pin-2-light-filled.svg';
-import PinOutlineDark from '../../../assets/svgs/pin-2-dark-outline.svg';
 import PinOutlineLight from '../../../assets/svgs/pin-2-light-outline.svg';
 import styles from './FutureViewTask.css';
 import FutureViewSubTask from './FutureViewSubTask';

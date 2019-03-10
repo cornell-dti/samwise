@@ -48,6 +48,12 @@
   color: black;
 }
 
+.CenterIcon:hover path {
+  stroke-width: 3px !important;
+  stroke-opacity: 0.9 !important;
+}
+
+
 .ResetButton {
   background: none;
   display: inline-block;
@@ -71,10 +77,6 @@
 .NewTaskClassPick {
   color: black;
 }
-
-
-
-
 
 /*
   OVERRIDING REACT CALENDAR

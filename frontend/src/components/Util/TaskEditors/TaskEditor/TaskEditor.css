@@ -72,6 +72,12 @@ input.TaskEditorFlexibleInput:focus-within::placeholder {
   height: 16px;
   flex: none;
   cursor: pointer;
+  overflow: hidden;
+}
+
+.TaskEditorIcon:hover > * {
+  stroke-width: 4px !important;
+  stroke-opacity: 0.9 !important;
 }
 
 .TaskEditorIconLeftPad {
@@ -97,8 +103,16 @@ input.TaskEditorFlexibleInput:focus-within::placeholder {
   border-radius: 2px;
   color: white;
   cursor: pointer;
-  background-color: rgba(255, 255, 255, 0.15);
+  background-color: rgba(255, 255, 255, 0);
   border-color: transparent;
+
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.TaskEditorTag:hover {
+  background-color: rgba(255, 255, 255, 0.15);
 }
 
 .TaskEditorTagEditor {
