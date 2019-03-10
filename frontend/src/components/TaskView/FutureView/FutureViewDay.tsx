@@ -119,7 +119,7 @@ export default function FutureViewDay(props: Props): ReactElement {
   if (inNDaysView) {
     wrapperCssClass = isToday ? `${styles.NDaysView} ${styles.Today}` : styles.NDaysView;
   } else {
-    wrapperCssClass = styles.OtherViews;
+    wrapperCssClass = isToday ? `${styles.OtherViews} ${styles.Today}` : styles.OtherViews;
   }
   if (!floatingViewOpened) {
     return (
