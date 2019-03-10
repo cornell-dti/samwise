@@ -65,6 +65,7 @@ export default function EditorHeader({ tag, date, onChange, getTag }: Props): Re
       className={styles.TaskEditorCalendar}
       minDate={new Date()}
       onChange={editTaskDate}
+      calendarType="US"
     />
   );
   return (

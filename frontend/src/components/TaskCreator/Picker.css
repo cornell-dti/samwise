@@ -89,7 +89,7 @@
   left: 0;
   z-index: 2;
   padding:10px;
-  border-radius:3px;
+  /*border-radius:3px;*/
   background:white;
   box-shadow:1px 1px 10px 5px rgba(0,0,0,0.15);
 }
