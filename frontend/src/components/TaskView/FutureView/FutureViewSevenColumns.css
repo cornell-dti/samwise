@@ -3,7 +3,7 @@
   grid-gap: 0;
   grid-template-columns: 14.3% 14.3% 14.3% 14.3% 14.3% 14.3% 14.3%;
   grid-template-rows: minmax(0, 1fr);
-  height: calc(100vh - 312px);
+  height: calc(100vh - 224px);
 }
 
 .HeaderWeekday {
