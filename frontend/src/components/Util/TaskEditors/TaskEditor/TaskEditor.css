@@ -105,6 +105,10 @@ input.TaskEditorFlexibleInput:focus-within::placeholder {
   cursor: pointer;
   background-color: rgba(255, 255, 255, 0);
   border-color: transparent;
+
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .TaskEditorTag:hover {
