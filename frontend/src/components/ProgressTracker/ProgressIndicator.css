@@ -24,6 +24,7 @@
   height: 2em;
   border-radius: 1em;
   background-color: rgba(155, 155, 155, 0.19);
+  overflow:hidden;
 }
 
 .ProgressBarIndicator {
@@ -34,6 +35,6 @@
   border-radius: 1em;
   background-color: #7ED321;
 
-  min-width:2em;
+  /*min-width:2em;*/
   transition: width 0.7s ease-in-out;
 }
