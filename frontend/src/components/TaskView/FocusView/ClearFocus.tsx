@@ -4,7 +4,6 @@ import { connect } from 'react-redux';
 import { SubTask, Task, State } from '../../../store/store-types';
 import SquareTextButton from '../../UI/SquareTextButton';
 import { clearFocus } from '../../../firebase/actions';
-import styles from './FocusView.css';
 
 type Props = {
   readonly tasks: Map<string, Task>;
