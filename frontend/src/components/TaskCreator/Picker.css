@@ -12,6 +12,10 @@
   z-index:2;
 }
 
+.Main svg{
+  transform:translateY(2.5px);
+}
+
 .Label {
   background: none;
   border-radius: 10px;
@@ -36,7 +40,7 @@
 
 .DateDisplay {
   display: inline;
-  padding: 0 5px;
+  padding: 0 5px 0 10px;
 }
 
 .TagDisplay {
