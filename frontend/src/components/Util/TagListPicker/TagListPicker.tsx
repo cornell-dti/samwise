@@ -1,6 +1,5 @@
 import React, { ReactElement } from 'react';
 import { connect } from 'react-redux';
-import { isNull } from 'util';
 import TagPickerItem from './TagPickerItem';
 import styles from './TagListPicker.css';
 import { State, Tag } from '../../../store/store-types';
