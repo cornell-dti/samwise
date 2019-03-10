@@ -98,16 +98,14 @@ function SettingsPage({ tags }: Props): ReactElement {
             Sign Out
           </button>
         </div>
-        <div>
-          <a
-            className={styles.FeedbackButton}
-            href="https://goo.gl/forms/PZUZ1Ze6kN82EmcD2"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Give Feedback
-          </a>
-        </div>
+        <a
+          className={styles.FeedbackButton}
+          href="https://goo.gl/forms/PZUZ1Ze6kN82EmcD2"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          Give Feedback
+        </a>
         <span className={styles.Padding} />
         <div className={styles.SettingsButton}>
           <button

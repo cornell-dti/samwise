@@ -39,6 +39,7 @@ p.SettingsSectionTitle {
 }
 
 .FinalRowButtonContainer {
+  position: relative;
   display: flex;
 }
 
@@ -61,9 +62,9 @@ p.SettingsSectionTitle {
   text-decoration: underline #83c1ff;
   color: #83c1ff;
   margin-left: 1em;
-  position: relative;
+  position: absolute;
   top: 67px;
-  left: 76.5vw;
+  right: 16px;
 }
 
 .ReplayTutorialButton {
