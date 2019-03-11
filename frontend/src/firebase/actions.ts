@@ -1,7 +1,7 @@
 import { firestore } from 'firebase/app';
 import { Map, Set } from 'immutable';
 import {
-  Course, PartialMainTask, PartialSubTask, SubTask, Tag, Task,
+  Course, PartialMainTask, PartialSubTask, SubTask, Tag, Task, BannerMessageIds,
 } from '../store/store-types';
 import { FirestoreCommon, FirestoreTag, FirestoreTask, FirestoreSubTask } from './firestore-types';
 import { getAppUser } from './auth';
@@ -11,6 +11,7 @@ import {
   subTasksCollection,
   tagsCollection,
   tasksCollection,
+  bannerMessageStatusCollection,
 } from './db';
 import { error, ignore } from '../util/general-util';
 import { TaskDiff } from '../util/task-util';
@@ -283,6 +284,18 @@ export const completeOnboarding = (completedOnboarding: boolean): void => {
   settingsCollection().doc(getAppUser().email)
     .update({ completedOnboarding })
     .then(ignore);
+};
+
+export const readBannerMessage = (bannerMessageId: BannerMessageIds, isRead: boolean): void => {
+  const docRef = bannerMessageStatusCollection().doc(getAppUser().email);
+  db().runTransaction(async (transaction) => {
+    const doc = await transaction.get(docRef);
+    if (doc.exists) {
+      transaction.update(docRef, { [bannerMessageId]: isRead });
+    } else {
+      transaction.set(docRef, { [bannerMessageId]: isRead });
+    }
+  });
 };
 
 export const importCourseExams = (): void => {

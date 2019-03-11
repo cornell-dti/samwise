@@ -50,6 +50,13 @@ export type Settings = {
   readonly theme: 'light' | 'dark';
 };
 
+export type BannerMessageIds =
+  | '2019-03-10-quota-exceeded-incident';
+
+export type BannerMessageStatus = {
+  readonly [I in BannerMessageIds]?: boolean;
+};
+
 /**
  * The type of a course info entry.
  */
@@ -71,5 +78,6 @@ export type State = {
   readonly subTasks: Map<string, SubTask>;
   readonly taskChildrenMap: Map<string, Set<string>>;
   readonly settings: Settings;
+  readonly bannerMessageStatus: BannerMessageStatus;
   readonly courses: Map<string, Course[]>;
 };

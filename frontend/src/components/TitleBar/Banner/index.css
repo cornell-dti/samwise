@@ -1,0 +1,26 @@
+.Banner {
+  position: absolute;
+  align-items: center;
+  align-content: center;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: auto;
+  display: flex;
+  color: white;
+  padding: 1em;
+  background-color: #7fbdff;
+}
+
+.Text {
+  flex: auto;
+}
+
+.DismissButton {
+  color: white;
+  background: none;
+  padding: 8px;
+  border: 1px solid white;
+  border-radius: 5px;
+  cursor: pointer;
+}

@@ -1,5 +1,6 @@
 import { Map } from 'immutable';
-import { Course, Settings, SubTask, Tag, Task } from './store-types';
+import { Course, Settings, SubTask, Tag, Task, BannerMessageStatus } from './store-types';
+import { type } from 'os';
 
 export type PatchTags = {
   readonly type: 'PATCH_TAGS';
@@ -27,6 +28,11 @@ export type PatchSettings = {
   readonly settings: Settings;
 };
 
+export type PatchBannerMessageStatus = {
+  readonly type: 'PATCH_BANNER_MESSAGES';
+  readonly change: BannerMessageStatus;
+};
+
 export type PatchCourses = {
   readonly type: 'PATCH_COURSES';
   readonly courses: Map<string, Course[]>;
@@ -37,4 +43,5 @@ export type Action =
   | PatchTasks
   | PatchSubTasks
   | PatchSettings
+  | PatchBannerMessageStatus
   | PatchCourses;

@@ -5,8 +5,9 @@ import {
   PatchTags,
   PatchTasks,
   PatchSettings,
+  PatchBannerMessageStatus,
 } from './action-types';
-import { Course, Tag, Task, SubTask, Settings } from './store-types';
+import { Course, Tag, Task, SubTask, Settings, BannerMessageStatus } from './store-types';
 
 export const patchTags = (created: Tag[], edited: Tag[], deleted: string[]): PatchTags => ({
   type: 'PATCH_TAGS', created, edited, deleted,
@@ -24,6 +25,12 @@ export const patchSubTasks = (
 
 export const patchSettings = (settings: Settings): PatchSettings => ({
   type: 'PATCH_SETTINGS', settings,
+});
+
+export const patchBannerMessageStatus = (
+  change: BannerMessageStatus,
+): PatchBannerMessageStatus => ({
+  type: 'PATCH_BANNER_MESSAGES', change,
 });
 
 export const patchCourses = (courses: Map<string, Course[]>): PatchCourses => ({
