@@ -1,14 +1,15 @@
 import { Map, Set } from 'immutable';
-import { subTasksCollection, tagsCollection, tasksCollection, settingsCollection } from './db';
+import { subTasksCollection, tagsCollection, tasksCollection, settingsCollection, bannerMessageStatusCollection } from './db';
 import { getAppUser } from './auth';
 import { FirestoreSubTask, FirestoreTag, FirestoreTask } from './firestore-types';
-import { Course, SubTask, Tag, Task, Settings } from '../store/store-types';
+import { Course, SubTask, Tag, Task, Settings, BannerMessageStatus } from '../store/store-types';
 import {
   patchCourses,
   patchSettings,
   patchSubTasks,
   patchTags,
   patchTasks,
+  patchBannerMessageStatus,
 } from '../store/actions';
 // @ts-ignore
 import coursesJson from '../assets/json/sp19-courses-with-exams-min.json';
@@ -33,6 +34,9 @@ const listenSubTasksChange = (
 const listenSettingsChange = (
   email: string, listener: (snapshot: DocumentSnapshot) => void,
 ): UnmountCallback => settingsCollection().doc(email).onSnapshot(listener);
+const listenBannerMessageChange = (
+  email: string, listener: (snapshot: DocumentSnapshot) => void,
+): UnmountCallback => bannerMessageStatusCollection().doc(email).onSnapshot(listener);
 
 /**
  * Initialize listeners bind to firestore.
@@ -42,12 +46,14 @@ export default (onFirstFetched: () => void): (() => void) => {
   let firstTasksFetched = false;
   let firstSubTasksFetched = false;
   let firstSettingsFetched = false;
+  let firstBannerStatusFetched = false;
   let courseJsonFetched = false;
   const reportFirstFetchedIfAllFetched = (): void => {
     if (firstTagsFetched
       && firstTasksFetched
       && firstSubTasksFetched
       && firstSettingsFetched
+      && firstBannerStatusFetched
       && courseJsonFetched) {
       onFirstFetched();
     }
@@ -159,6 +165,14 @@ export default (onFirstFetched: () => void): (() => void) => {
     reportFirstFetchedIfAllFetched();
   });
 
+  const unmountBannerStatusListener = listenBannerMessageChange(ownerEmail, (snapshot) => {
+    const data = snapshot.exists ? snapshot.data() : undefined;
+    const bannerMessageStatus = data as BannerMessageStatus || {};
+    store.dispatch(patchBannerMessageStatus(bannerMessageStatus));
+    firstBannerStatusFetched = true;
+    reportFirstFetchedIfAllFetched();
+  });
+
   // @ts-ignore ts cannot decide that this imported json is resolved into a string.
   fetch(coursesJson)
     .then((resp: Response) => resp.json())
@@ -176,5 +190,6 @@ export default (onFirstFetched: () => void): (() => void) => {
     unmountTasksListener();
     unmountSubTasksListener();
     unmountSettingsListener();
+    unmountBannerStatusListener();
   };
 };

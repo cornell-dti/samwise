@@ -4,15 +4,19 @@ service cloud.firestore {
     	return request.resource.data.owner == request.auth.token.email;
     }
     function canReadWriteDelete() {
-    	return request.auth.token.email == resource.data.owner
+    	return request.auth.token.email == resource.data.owner;
+    }
+    function canOperateOnEmailIdDocs(userEmail) {
+    	return request.auth.token.email == userEmail;
     }
     match /samwise-order-manager/{userEmail} {
-    	allow create: if request.auth.token.email == userEmail
-        allow read, write, delete: if request.auth.token.email == userEmail
+    	allow create, read, write, delete: if canOperateOnEmailIdDocs(userEmail)
     }
     match /samwise-settings/{userEmail} {
-    	allow create: if request.auth.token.email == userEmail
-        allow read, write, delete: if request.auth.token.email == userEmail
+    	allow create, read, write, delete: if canOperateOnEmailIdDocs(userEmail)
+    }
+    match /samwise-banner-message/{userEmail} {
+    	allow create, read, write, delete: if canOperateOnEmailIdDocs(userEmail)
     }
   	match /samwise-tags/{tag} {
     	allow create: if canCreate()

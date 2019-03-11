@@ -6,6 +6,7 @@ import {
   PatchTasks,
   PatchSubTasks,
   PatchSettings,
+  PatchBannerMessageStatus,
 } from './action-types';
 import { State } from './store-types';
 import { NONE_TAG_ID, NONE_TAG } from '../util/tag-util';
@@ -23,6 +24,7 @@ const initialState: State = {
   subTasks: Map(),
   taskChildrenMap: Map(),
   settings: { completedOnboarding: true, theme: 'light' },
+  bannerMessageStatus: {},
   courses: Map(),
 };
 
@@ -92,6 +94,10 @@ function patchSettings(state: State, { settings }: PatchSettings): State {
   return { ...state, settings };
 }
 
+function patchBannerMessageStatus(state: State, { change }: PatchBannerMessageStatus): State {
+  return { ...state, bannerMessageStatus: { ...state.bannerMessageStatus, ...change } };
+}
+
 function patchCourses(state: State, { courses }: PatchCourses): State {
   return { ...state, courses };
 }
@@ -106,6 +112,8 @@ export default function rootReducer(state: State = initialState, action: Action)
       return patchSubTasks(state, action);
     case 'PATCH_SETTINGS':
       return patchSettings(state, action);
+    case 'PATCH_BANNER_MESSAGES':
+      return patchBannerMessageStatus(state, action);
     case 'PATCH_COURSES':
       return patchCourses(state, action);
     default:

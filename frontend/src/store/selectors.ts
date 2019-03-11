@@ -1,8 +1,9 @@
 import { createSelector, createSelectorCreator, defaultMemoize } from 'reselect';
 import { Map, Set } from 'immutable';
-import { State, SubTask, Tag, Task } from './store-types';
+import { State, SubTask, Tag, Task, BannerMessageStatus } from './store-types';
 import { computeTaskProgress, TasksProgressProps } from '../util/task-util';
 import { NONE_TAG } from '../util/tag-util';
+import findMessageToDisplay, { MessageWithId } from '../components/TitleBar/Banner/messages';
 
 /*
  * --------------------------------------------------------------------------------
@@ -28,6 +29,9 @@ const getTags = ({ tags }: State): Map<string, Tag> => tags;
 const getTasks = ({ tasks }: State): Map<string, Task> => tasks;
 const getDateTaskMap = ({ dateTaskMap }: State): Map<string, Set<string>> => dateTaskMap;
 const getSubTasks = ({ subTasks }: State): Map<string, SubTask> => subTasks;
+const getBannerMessageStatus = (
+  { bannerMessageStatus }: State,
+): BannerMessageStatus => bannerMessageStatus;
 
 const getTasksId = ({ tasks }: State): Set<string> => Set(tasks.keys());
 
@@ -92,4 +96,9 @@ export const createGetIdOrderListByDate = (
 
 export const getProgress: SelectorOf<TasksProgressProps> = createSelector(
   [getTasksInFocus, getSubTasks], computeTaskProgress,
+);
+
+type BannerProps = { readonly message: MessageWithId | null };
+export const getBannerMessage: SelectorOf<BannerProps> = createSelector(
+  getBannerMessageStatus, status => ({ message: findMessageToDisplay(status) }),
 );
