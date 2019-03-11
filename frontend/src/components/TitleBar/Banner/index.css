@@ -1,10 +1,11 @@
 .Banner {
-  position: absolute;
+  position: fixed;
   align-items: center;
   align-content: center;
   top: 0;
   left: 0;
   right: 0;
+  z-index: 20;
   height: auto;
   display: flex;
   color: white;
