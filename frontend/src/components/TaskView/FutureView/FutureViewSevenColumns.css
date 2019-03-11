@@ -1,7 +1,7 @@
 .FutureViewSevenColumns {
   display: grid;
   grid-gap: 0;
-  grid-template-columns: 14% 14% 14% 14% 14% 14% 14%;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
   grid-template-rows: minmax(0, 1fr);
   column-gap: 4px;
   row-gap: 4px;
