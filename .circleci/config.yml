@@ -1,0 +1,48 @@
+version: 2.1
+jobs:
+  tsc-frontend:
+    description: Run TypeScript type-checker on frontend
+    docker:
+      - image: circleci/node:lts
+    working_directory: ~/repo
+    steps:
+      - checkout
+      - restore_cache:
+          keys:
+            - frontend-dependencies-{{ .Branch }}-{{ checksum "frontend/yarn.lock" }}
+            - frontend-dependencies-{{ .Branch }}-
+            - frontend-dependencies-
+      - run: cd main-site-frontend && yarn install
+      - save_cache:
+          paths:
+            - frontend/node_modules
+          key: frontend-dependencies-{{ .Branch }}-{{ checksum "frontend/yarn.lock" }}
+      # run typescript compiler
+      - run: cd frontend && yarn tsc
+  deploy-frontend:
+    description: Deploy frontend to firebase hosting
+    docker:
+      - image: circleci/node:jessie-browsers
+    working_directory: ~/repo
+    steps:
+      - checkout
+      - run:
+          name: Deploy to Firebase
+          command: |
+            if [ "${CIRCLE_BRANCH}" = "master" ]; then
+              cd main-site-frontend
+              yarn
+              yarn build
+              ./node_modules/.bin/firebase deploy --token=$FIREBASE_TOKEN --non-interactive --only hosting
+              cd ../
+            else
+              echo "Not master branch, do not deploy"
+            fi
+workflows:
+  version: 2
+  build-and-deploy:
+    jobs:
+      - tsc-frontend
+      - deploy-frontend:
+          requires:
+            - tsc-frontend
