@@ -1,8 +1,9 @@
-import React, { ReactElement } from 'react';
+import React, { ReactElement, useState } from 'react';
 import { DragDropContext, Droppable, DropResult } from 'react-beautiful-dnd';
 import { connect } from 'react-redux';
 import styles from './FocusView.css';
 import ClearFocus from './ClearFocus';
+import CompletedSeparator from './CompletedSeparator';
 import FocusTask from './FocusTask';
 import { reorder } from '../../../firebase/actions';
 import { getFocusViewProps, FocusViewProps } from '../../../store/selectors';
@@ -20,13 +21,13 @@ type IdOrder = { readonly id: string; readonly order: number };
  * The focus view component.
  */
 function FocusView(
-  { focusedCompletedIdOrderList, focusedUncompletedIdOrderList }: FocusViewProps,
+  { focusedCompletedIdOrderList, focusedUncompletedIdOrderList, progress }: FocusViewProps,
 ): ReactElement {
-  const [localList, setLocalList] = React.useState<IdOrder[]>(focusedUncompletedIdOrderList);
+  const [localList, setLocalList] = useState<IdOrder[]>(focusedUncompletedIdOrderList);
+  const [doesShowCompletedTasks, setDoesShowCompletedTasks] = useState(false);
   if (localList !== focusedUncompletedIdOrderList) {
     setLocalList(focusedUncompletedIdOrderList);
   }
-
   const onDragEnd = (result: DropResult): void => {
     const { source, destination } = result;
     if (destination == null || destination.droppableId !== focusViewNotCompletedDroppableId) {
@@ -37,14 +38,13 @@ function FocusView(
       // drop at the same place.
       return;
     }
-    const newList = reorder(
-      'tasks',
-      localList,
-      localList[source.index].order,
-      localList[destination.index].order,
-    );
+    const sourceOrder = localList[source.index].order;
+    const destinationOrder = localList[destination.index].order;
+    const newList = reorder('tasks', localList, sourceOrder, destinationOrder);
     setLocalList(newList);
   };
+
+  const onDoesShowCompletedTasksChange = (): void => setDoesShowCompletedTasks(prev => !prev);
 
   return (
     <div className={styles.FocusView}>
@@ -59,7 +59,7 @@ function FocusView(
             {provided => (
               <div
                 ref={provided.innerRef}
-                className={styles.Droppable}
+                className={focusedCompletedIdOrderList.length === 0 ? styles.Droppable : undefined}
                 {...provided.droppableProps}
               >
                 {localList.map(tasksRenderer)}
@@ -72,13 +72,14 @@ function FocusView(
               {provided => (
                 <div
                   ref={provided.innerRef}
-                  className={styles.Droppable}
                   {...provided.droppableProps}
                 >
-                  <div>
-                    {`Completed: (${focusedCompletedIdOrderList.length})`}
-                  </div>
-                  {focusedCompletedIdOrderList.map(tasksRenderer)}
+                  <CompletedSeparator
+                    count={progress.completedTasksCount}
+                    doesShowCompletedTasks={doesShowCompletedTasks}
+                    onDoesShowCompletedTasksChange={onDoesShowCompletedTasksChange}
+                  />
+                  {doesShowCompletedTasks && focusedCompletedIdOrderList.map(tasksRenderer)}
                   {provided.placeholder}
                 </div>
               )}

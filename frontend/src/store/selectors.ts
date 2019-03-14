@@ -1,5 +1,6 @@
 import { createSelector, createSelectorCreator, defaultMemoize } from 'reselect';
 import { Map, Set } from 'immutable';
+import { ProgressProps } from 'semantic-ui-react';
 import { State, SubTask, Tag, Task, BannerMessageStatus } from './store-types';
 import { computeTaskProgress, TasksProgressProps, getFilteredInFocusTask } from '../util/task-util';
 import { NONE_TAG } from '../util/tag-util';
@@ -67,21 +68,39 @@ export const getTaskIds: SelectorOf<{ readonly ids: string[] }> = createSetEqual
 
 type IdOrder = { readonly id: string; readonly order: number };
 type IdOrderListProps = { readonly idOrderList: IdOrder[] };
-export const getTaskIdOrderList: SelectorOf<IdOrderListProps> = createSelector(
-  getTasks, tasks => ({
-    idOrderList: Array.from(tasks.values())
-      .map(({ id, order }) => ({ id, order }))
-      .sort((a, b) => a.order - b.order),
-  }),
+
+
+export const createGetIdOrderListByDate = (
+  date: string,
+): SelectorOf<IdOrderListProps> => createSelector(
+  [getTasks, getDateTaskMap], (tasks, dateTaskMap) => {
+    const set = dateTaskMap.get(date);
+    if (set == null) {
+      return { idOrderList: [] };
+    }
+    const list: IdOrder[] = [];
+    set.forEach((id) => {
+      const task = tasks.get(id);
+      if (task != null) {
+        const { order } = task;
+        list.push({ id, order });
+      }
+    });
+    return { idOrderList: list.sort((a, b) => a.order - b.order) };
+  },
 );
 
+export const getProgress: SelectorOf<TasksProgressProps> = createSelector(
+  [getTasksInFocus, getSubTasks], computeTaskProgress,
+);
 export type FocusViewProps = {
   readonly focusedUncompletedIdOrderList: IdOrder[];
   readonly focusedCompletedIdOrderList: IdOrder[];
+  readonly progress: TasksProgressProps;
 };
 
 export const getFocusViewProps: SelectorOf<FocusViewProps> = createSelector(
-  [getTasks, getSubTasks], (tasks, subTasks) => {
+  [getTasks, getSubTasks, getProgress], (tasks, subTasks, progress) => {
     const focusedUncompletedIdOrderList: IdOrder[] = [];
     const focusedCompletedIdOrderList: IdOrder[] = [];
     Array.from(tasks.values()).sort((a, b) => a.order - b.order).forEach((task) => {
@@ -107,32 +126,8 @@ export const getFocusViewProps: SelectorOf<FocusViewProps> = createSelector(
         focusedCompletedIdOrderList.push({ id, order });
       }
     });
-    return { focusedUncompletedIdOrderList, focusedCompletedIdOrderList };
+    return { focusedUncompletedIdOrderList, focusedCompletedIdOrderList, progress };
   },
-);
-
-export const createGetIdOrderListByDate = (
-  date: string,
-): SelectorOf<IdOrderListProps> => createSelector(
-  [getTasks, getDateTaskMap], (tasks, dateTaskMap) => {
-    const set = dateTaskMap.get(date);
-    if (set == null) {
-      return { idOrderList: [] };
-    }
-    const list: IdOrder[] = [];
-    set.forEach((id) => {
-      const task = tasks.get(id);
-      if (task != null) {
-        const { order } = task;
-        list.push({ id, order });
-      }
-    });
-    return { idOrderList: list.sort((a, b) => a.order - b.order) };
-  },
-);
-
-export const getProgress: SelectorOf<TasksProgressProps> = createSelector(
-  [getTasksInFocus, getSubTasks], computeTaskProgress,
 );
 
 type BannerProps = { readonly message: MessageWithId | null };
