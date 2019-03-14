@@ -3,6 +3,8 @@
 }
 
 .FocusTaskContainer {
+  display: flex;
+  flex-direction: column;
   height: calc(100% - 54px);
   overflow-y: scroll;
   overflow-x: hidden;
@@ -23,5 +25,5 @@
 }
 
 .Droppable {
-  height: 100%;
+  flex: auto;
 }

@@ -14,9 +14,9 @@ type Props = OwnProps & {
   readonly filtered: TaskWithSubTasks | null;
 };
 
-function FocusTask({ id, order, original, filtered }: Props): ReactElement | null {
+function FocusTask({ id, order, original, filtered }: Props): ReactElement {
   if (filtered === null) {
-    return null;
+    throw new Error(`The filtered task should not be null! id: ${id}, order: ${order}`);
   }
   return (
     <Draggable draggableId={id} index={order}>
