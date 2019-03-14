@@ -2,11 +2,7 @@ import React, { ReactElement } from 'react';
 import { SimpleDate } from './future-view-types';
 import { FloatingPosition } from '../../Util/TaskEditors/editors-types';
 import styles from './FutureViewDay.css';
-import {
-  floatingViewWidth,
-  nDaysViewHeaderHeight,
-  otherViewsHeightHeader,
-} from './future-view-css-props';
+import { floatingViewWidth, headerHeight } from './future-view-css-props';
 import { getTodayAtZeroAM } from '../../../util/datetime-util';
 import { error } from '../../../util/general-util';
 import { useWindowSize, WindowSize } from '../../../hooks/window-size-hook';
@@ -44,7 +40,6 @@ const computeFloatingViewStyle = (props: PropsForPositionComputation): PositionS
     },
   } = props;
   // Compute the height of inner content
-  const headerHeight = inNDaysView ? nDaysViewHeaderHeight : nDaysViewHeaderHeight;
   const totalHeight = headerHeight + tasksHeight;
   // Decide the maximum allowed height and the actual height
   const maxAllowedHeight = inNDaysView ? 400 : 300;
