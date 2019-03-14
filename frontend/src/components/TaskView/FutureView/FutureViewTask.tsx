@@ -11,8 +11,6 @@ import CheckBox from '../../UI/CheckBox';
 import { FloatingPosition } from '../../Util/TaskEditors/editors-types';
 import { getTodayAtZeroAM } from '../../../util/datetime-util';
 import OverdueAlert from '../../UI/OverdueAlert';
-import { headerHeight } from './future-view-css-props';
-import { error } from '../../../util/general-util';
 import { editMainTask, removeTask } from '../../../firebase/actions';
 import { useMappedWindowSize } from '../../../hooks/window-size-hook';
 import { NONE_TAG } from '../../../util/tag-util';
@@ -57,8 +55,8 @@ function FutureViewTask(
    * Get an onClickHandler when the element is clicked.
    * This methods ensure that only clicking on task text counts.
    *
-   * @param {function(): void} opener the opener passed by the floating task editor.
-   * @return {function} the onClick handler.
+   * @param opener the opener passed by the floating task editor.
+   * @return the onClick handler.
    */
   // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
   const getOnClickHandler = (opener: () => void) => (event: SyntheticEvent<HTMLElement>): void => {
@@ -119,23 +117,9 @@ function FutureViewTask(
   ));
 
   const { date, complete } = original;
-  const overdueComponentOpt = overdueAlertPosition && (
-    <OverdueAlert absolutePosition={overdueAlertPosition} />
+  const overdueComponentOpt = (date < getTodayAtZeroAM() && !complete) && (
+    <OverdueAlert target="future-view-task" />
   );
-  const refHandler = (divElement: HTMLDivElement | null): void => {
-    if (divElement != null) {
-      const isOverdue = date < getTodayAtZeroAM() && !complete;
-      if (isOverdue && overdueAlertPosition == null) {
-        const { top } = divElement.getBoundingClientRect();
-        const parent = divElement.parentElement || error('Corrupted DOM!');
-        const parentRect = parent.getBoundingClientRect();
-        setOverdueAlertPosition({
-          top: top - parentRect.top + headerHeight,
-          right: 0,
-        });
-      }
-    }
-  };
   // Construct the trigger for the floating task editor.
   const trigger = (opened: boolean, opener: () => void): ReactElement => {
     const onClickHandler = getOnClickHandler(opener);
@@ -145,13 +129,7 @@ function FutureViewTask(
       : renderMainTaskInfo(isSmallScreen);
     const subtasks = inNDaysView ? renderSubTasks() : null;
     return (
-      <div
-        role="presentation"
-        className={styles.Task}
-        style={style}
-        onClick={onClickHandler}
-        ref={refHandler}
-      >
+      <div role="presentation" className={styles.Task} style={style} onClick={onClickHandler}>
         {overdueComponentOpt}
         {mainTasks}
         {subtasks}

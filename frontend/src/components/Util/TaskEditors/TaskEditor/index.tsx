@@ -140,7 +140,7 @@ function TaskEditor(
       onBlur={ignore}
       ref={editorRef}
     >
-      {isOverdue && <OverdueAlert />}
+      {isOverdue && <OverdueAlert target="task-card" />}
       <div>
         <EditorHeader tag={tag} date={date} onChange={editMainTask} getTag={getTag} />
         <MainTaskEditor

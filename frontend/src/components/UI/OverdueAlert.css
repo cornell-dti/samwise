@@ -1,5 +1,7 @@
-.OverdueAlertRelative {
+.OverdueAlertInTaskCard {
   position: absolute;
+  top: -5px;
+  right: -5px;
   width: 2em;
   height: 2em;
   background-color: #D0021B;
@@ -7,15 +9,12 @@
   text-align: center;
   font-weight: bold;
   font-size: 1em;
-
-  /* Proposed Experimental Change */
-  top: -0.3em;
-  right: -0.3em;
-  /*border-bottom-left-radius: 1em;*/
 }
 
-.OverdueAlertAbsolute {
+.OverdueAlertInFutureView {
   position: absolute;
+  top: 0;
+  right: 0;
   z-index: 1;
   width: 1em;
   height: 1em;
