@@ -3,6 +3,7 @@
   position: relative;
   height: 16px;
   width: 16px;
+  min-width: 16px;
   cursor: pointer;
   border: 2px solid white;
   user-select: none;

@@ -1,4 +1,6 @@
-/* eslint-disable import/no-extraneous-dependencies, @typescript-eslint/no-var-requires */
+/* eslint-disable import/no-extraneous-dependencies */
+/* eslint-disable @typescript-eslint/no-var-requires */
+/* eslint-disable @typescript-eslint/camelcase */
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const AppManifestWebpackPlugin = require('app-manifest-webpack-plugin');
@@ -13,12 +15,8 @@ module.exports = (webpackEnv) => {
 
   // common function to get style loaders
   const getStyleLoaders = options => [
-    isEnvDevelopment && {
-      loader: require.resolve('style-loader'),
-    },
-    isEnvProduction && {
-      loader: MiniCssExtractPlugin.loader,
-    },
+    isEnvDevelopment && { loader: require.resolve('style-loader') },
+    isEnvProduction && { loader: MiniCssExtractPlugin.loader },
     { loader: require.resolve('css-loader'), options },
   ].filter(Boolean);
 

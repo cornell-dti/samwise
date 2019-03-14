@@ -53,6 +53,7 @@ type NavControlProps = {
   readonly containerType: FutureViewContainerType;
   readonly futureViewOffset: number;
   readonly changeOffset: (instruction: ChangeOffsetInstruction) => () => void;
+  readonly isSmallScreen: boolean;
 };
 
 /**
@@ -81,7 +82,7 @@ function getBiWeeklyViewHeaderTitle(biweeklyOffset: number): string {
  * The component to control nav.
  */
 function NavControl(props: NavControlProps): ReactElement {
-  const { containerType, futureViewOffset, changeOffset } = props;
+  const { containerType, futureViewOffset, changeOffset, isSmallScreen } = props;
   const prevHandler = changeOffset(-1);
   const nextHandler = changeOffset(+1);
   if (containerType === 'N_DAYS') {
@@ -111,7 +112,7 @@ function NavControl(props: NavControlProps): ReactElement {
   if (containerType === 'MONTHLY') {
     return (
       <React.Fragment>
-        <Padding />
+        {!isSmallScreen && <Padding />}
         {futureViewOffset >= 1 && prev}
         <Title text={getMonthlyViewHeaderTitle(futureViewOffset)} />
         {next}
@@ -217,13 +218,6 @@ export default function FutureViewControl(props: Props): ReactElement {
   const today = offset !== 0 && (
     <SquareTextButton text="Today" onClick={changeOffset('TODAY')} />
   );
-  const navControl = (
-    <NavControl
-      containerType={containerType}
-      futureViewOffset={offset}
-      changeOffset={changeOffset}
-    />
-  );
   if (isSmallScreen) {
     return (
       <div>
@@ -235,7 +229,12 @@ export default function FutureViewControl(props: Props): ReactElement {
         </div>
         <div className={styles.FutureViewControl}>
           <Padding />
-          {navControl}
+          <NavControl
+            containerType={containerType}
+            futureViewOffset={offset}
+            changeOffset={changeOffset}
+            isSmallScreen
+          />
           <Padding />
         </div>
       </div>
@@ -244,7 +243,12 @@ export default function FutureViewControl(props: Props): ReactElement {
   return (
     <div className={styles.FutureViewControl}>
       <Title text="Future" />
-      {navControl}
+      <NavControl
+        containerType={containerType}
+        futureViewOffset={offset}
+        changeOffset={changeOffset}
+        isSmallScreen={false}
+      />
       <Padding />
       {today}
       <DisplayOptionControl {...props} />
