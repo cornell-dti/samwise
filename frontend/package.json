@@ -7,7 +7,7 @@
     "build:stage": "webpack --config webpack.stage.js",
     "build": "webpack --config webpack.prod.js",
     "tsc": "tsc -p tsconfig.json",
-    "test": "jest",
+    "test": "jest --config jest.config.js",
     "lint": "eslint ."
   },
   "dependencies": {
@@ -47,6 +47,7 @@
     "@typescript-eslint/parser": "^1.4.2",
     "app-manifest-webpack-plugin": "^1.2.0",
     "babel-eslint": "^10.0.1",
+    "babel-jest": "^24.5.0",
     "babel-loader": "^8.0.5",
     "babel-plugin-transform-class-properties": "^6.24.1",
     "clean-webpack-plugin": "^2.0.0",
@@ -60,6 +61,8 @@
     "file-loader": "^3.0.1",
     "html-webpack-plugin": "^4.0.0-beta.5",
     "jest": "^24.5.0",
+    "jest-config": "^24.5.0",
+    "jest-css-modules-transform": "^2.1.1",
     "mini-css-extract-plugin": "0.5.0",
     "optimize-css-assets-webpack-plugin": "^5.0.1",
     "resolve": "^1.10.0",

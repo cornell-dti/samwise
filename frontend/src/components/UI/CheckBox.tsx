@@ -14,10 +14,9 @@ type Props = {
 /**
  * This is the checkbox that implements designers' minimalist design.
  */
-export default function CheckBox(props: Props): ReactElement {
-  const {
-    checked, onChange, disabled, inverted, className,
-  } = props;
+export default function CheckBox(
+  { checked, onChange, disabled, inverted, className }: Props,
+): ReactElement {
   let allClassNames = className === null ? styles.CheckBox : `${className} ${styles.CheckBox}`;
   if (inverted) {
     allClassNames = `${allClassNames} ${styles.InvertedCheckBox}`;
