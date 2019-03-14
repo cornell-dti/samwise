@@ -5,9 +5,10 @@ import styles from './FocusView.css';
 import ClearFocus from './ClearFocus';
 import FocusTask from './FocusTask';
 import { reorder } from '../../../firebase/actions';
-import { getTaskIdOrderList } from '../../../store/selectors';
+import { getFocusViewProps, FocusViewProps } from '../../../store/selectors';
 
-const focusViewDroppableId = 'focus-view-droppable';
+const focusViewNotCompletedDroppableId = 'focus-view-not-completed-droppable';
+const focusViewCompletedDroppableId = 'focus-view-completed-droppable';
 
 const tasksRenderer = ({ id }: { readonly id: string }, index: number): ReactElement => (
   <FocusTask key={id} id={id} order={index} />
@@ -18,15 +19,17 @@ type IdOrder = { readonly id: string; readonly order: number };
 /**
  * The focus view component.
  */
-function FocusView({ idOrderList }: { readonly idOrderList: IdOrder[] }): ReactElement {
-  const [localList, setLocalList] = React.useState<IdOrder[]>(idOrderList);
-  if (localList !== idOrderList) {
-    setLocalList(idOrderList);
+function FocusView(
+  { focusedCompletedIdOrderList, focusedUncompletedIdOrderList }: FocusViewProps,
+): ReactElement {
+  const [localList, setLocalList] = React.useState<IdOrder[]>(focusedUncompletedIdOrderList);
+  if (localList !== focusedUncompletedIdOrderList) {
+    setLocalList(focusedUncompletedIdOrderList);
   }
 
   const onDragEnd = (result: DropResult): void => {
     const { source, destination } = result;
-    if (destination == null || destination.droppableId !== focusViewDroppableId) {
+    if (destination == null || destination.droppableId !== focusViewNotCompletedDroppableId) {
       // drop outside of the list
       return;
     }
@@ -34,7 +37,6 @@ function FocusView({ idOrderList }: { readonly idOrderList: IdOrder[] }): ReactE
       // drop at the same place.
       return;
     }
-    // TODO has problem when there is a gap in order
     const newList = reorder(
       'tasks',
       localList,
@@ -53,7 +55,7 @@ function FocusView({ idOrderList }: { readonly idOrderList: IdOrder[] }): ReactE
       </div>
       <div className={styles.FocusTaskContainer}>
         <DragDropContext onDragEnd={onDragEnd}>
-          <Droppable droppableId={focusViewDroppableId}>
+          <Droppable droppableId={focusViewNotCompletedDroppableId}>
             {provided => (
               <div
                 ref={provided.innerRef}
@@ -65,11 +67,28 @@ function FocusView({ idOrderList }: { readonly idOrderList: IdOrder[] }): ReactE
               </div>
             )}
           </Droppable>
+          {focusedCompletedIdOrderList.length > 0 && (
+            <Droppable droppableId={focusViewCompletedDroppableId}>
+              {provided => (
+                <div
+                  ref={provided.innerRef}
+                  className={styles.Droppable}
+                  {...provided.droppableProps}
+                >
+                  <div>
+                    {`Completed: (${focusedCompletedIdOrderList.length})`}
+                  </div>
+                  {focusedCompletedIdOrderList.map(tasksRenderer)}
+                  {provided.placeholder}
+                </div>
+              )}
+            </Droppable>
+          )}
         </DragDropContext>
       </div>
     </div>
   );
 }
 
-const Connected = connect(getTaskIdOrderList)(FocusView);
+const Connected = connect(getFocusViewProps)(FocusView);
 export default Connected;

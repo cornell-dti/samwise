@@ -1,7 +1,7 @@
 import { createSelector, createSelectorCreator, defaultMemoize } from 'reselect';
 import { Map, Set } from 'immutable';
 import { State, SubTask, Tag, Task, BannerMessageStatus } from './store-types';
-import { computeTaskProgress, TasksProgressProps } from '../util/task-util';
+import { computeTaskProgress, TasksProgressProps, getFilteredInFocusTask } from '../util/task-util';
 import { NONE_TAG } from '../util/tag-util';
 import findMessageToDisplay, { MessageWithId } from '../components/TitleBar/Banner/messages';
 
@@ -74,6 +74,43 @@ export const getTaskIdOrderList: SelectorOf<IdOrderListProps> = createSelector(
       .sort((a, b) => a.order - b.order),
   }),
 );
+
+export type FocusViewProps = {
+  readonly focusedUncompletedIdOrderList: IdOrder[];
+  readonly focusedCompletedIdOrderList: IdOrder[];
+};
+
+export const getFocusViewProps: SelectorOf<FocusViewProps> = createSelector(
+  [getTasks, getSubTasks], (tasks, subTasks) => {
+    const focusedUncompletedIdOrderList: IdOrder[] = [];
+    const focusedCompletedIdOrderList: IdOrder[] = [];
+    Array.from(tasks.values()).sort((a, b) => a.order - b.order).forEach((task) => {
+      const filteredTask = getFilteredInFocusTask(task, subTasks);
+      if (filteredTask == null) {
+        return;
+      }
+      const { id, order, inFocus, complete } = filteredTask;
+      if (inFocus) {
+        // it's in focus because the main task is in focus
+        if (complete) {
+          focusedCompletedIdOrderList.push({ id, order });
+        } else {
+          focusedUncompletedIdOrderList.push({ id, order });
+        }
+        return;
+      }
+      // it's in focus because one of the subtask is in focus
+      if (filteredTask.subTasks.some(s => !s.complete)) {
+        // if any subtask not completed, the task is not completed!
+        focusedUncompletedIdOrderList.push({ id, order });
+      } else {
+        focusedCompletedIdOrderList.push({ id, order });
+      }
+    });
+    return { focusedUncompletedIdOrderList, focusedCompletedIdOrderList };
+  },
+);
+
 export const createGetIdOrderListByDate = (
   date: string,
 ): SelectorOf<IdOrderListProps> => createSelector(
