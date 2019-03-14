@@ -1,14 +1,17 @@
-/* eslint-disable react/no-find-dom-node */
 import React from 'react';
-import * as TestUtils from 'react-dom/test-utils';
+import { renderIntoDocument } from 'react-dom/test-utils';
 import CheckBox from './CheckBox';
 
-it('check box can render', () => {
-  let checked = false;
-  const onChange = (): void => {
-    checked = !checked;
-  };
-  TestUtils.renderIntoDocument(<CheckBox checked={checked} onChange={onChange} />);
-  onChange();
-  TestUtils.renderIntoDocument(<CheckBox checked={checked} onChange={onChange} inverted />);
+it('CheckBox can render', () => {
+  const onChange = (): void => { };
+  renderIntoDocument(<CheckBox checked onChange={onChange} />);
+  renderIntoDocument(<CheckBox checked={false} onChange={onChange} />);
+  renderIntoDocument(<CheckBox checked onChange={onChange} inverted={false} />);
+  renderIntoDocument(<CheckBox checked={false} onChange={onChange} inverted={false} />);
+  renderIntoDocument(<CheckBox checked onChange={onChange} inverted />);
+  renderIntoDocument(<CheckBox checked={false} onChange={onChange} inverted />);
+  renderIntoDocument(<CheckBox checked onChange={onChange} disabled={false} />);
+  renderIntoDocument(<CheckBox checked={false} onChange={onChange} disabled={false} />);
+  renderIntoDocument(<CheckBox checked onChange={onChange} disabled />);
+  renderIntoDocument(<CheckBox checked={false} onChange={onChange} disabled />);
 });
