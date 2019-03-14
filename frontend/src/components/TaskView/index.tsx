@@ -2,7 +2,7 @@ import React, { ReactElement, ReactNode } from 'react';
 import { Icon } from 'semantic-ui-react';
 import { useMappedWindowSize } from '../../hooks/window-size-hook';
 import Calendar from '../../assets/svgs/dark.svg';
-import PinFilled from '../../assets/svgs/pin-2-light-filled.svg';
+import PinFilled from '../../assets/svgs/pin-2-dark-filled.svg';
 import FocusView from './FocusView';
 import FutureView, { futureViewConfigProvider, FutureViewConfig } from './FutureView';
 import ProgressTracker from './ProgressTracker';
@@ -21,7 +21,7 @@ export default function TaskView(): ReactElement {
     futureViewConfigProvider.initialValue,
   );
 
-  const screenIsSmall = useMappedWindowSize(size => size.width <= 800);
+  const screenIsSmall = useMappedWindowSize(size => size.width <= 840);
   const toggleFocusViewInWideScreen = (): void => setDoesShowFocusViewInWideScreen(prev => !prev);
   const switchView = (): void => setDoesShowFutureViewInSmallScreen(prev => !prev);
 

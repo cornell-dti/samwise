@@ -8,6 +8,24 @@
   height: calc(100vh - 224px);
 }
 
+@media only screen and (min-width: 700px) and (max-width: 840px) {
+  .FutureViewSevenColumns {
+    height: calc(100vh - 284px);
+  }
+}
+
+@media only screen and (min-width: 600px) and (max-width: 700px) {
+  .FutureViewSevenColumns {
+    height: calc(100vh - 314px);
+  }
+}
+
+@media only screen and (max-width: 600px) {
+  .FutureViewSevenColumns {
+    height: calc(100vh - 354px);
+  }
+}
+
 .HeaderWeekday {
   line-height: 2em;
   text-align: center;
