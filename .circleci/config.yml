@@ -19,6 +19,8 @@ jobs:
           key: frontend-dependencies-{{ .Branch }}-{{ checksum "frontend/yarn.lock" }}
       # run typescript compiler
       - run: cd frontend && yarn tsc
+      # run linter
+      - run: cd frontend && yarn lint
   deploy-frontend:
     description: Deploy frontend to firebase hosting
     docker:
