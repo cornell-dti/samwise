@@ -33,8 +33,6 @@ type Props = OwnProps & {
   readonly compoundTask: CompoundTask | null;
 };
 
-type AlertPos = { readonly top: number; readonly right: number };
-
 /**
  * The component used to render one task in backlog day.
  */
