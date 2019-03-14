@@ -43,7 +43,6 @@ function FutureViewTask(
     compoundTask, inNDaysView, taskEditorPosition, isInMainList,
   }: Props,
 ): ReactElement | null {
-  const [overdueAlertPosition, setOverdueAlertPosition] = React.useState<AlertPos | null>(null);
   const isSmallScreen = useMappedWindowSize(({ width }) => width <= 768);
 
   if (compoundTask === null) {
