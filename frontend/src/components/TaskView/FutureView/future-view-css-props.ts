@@ -1,11 +1,7 @@
 /**
- * Header height in n-days view.
+ * Header height.
  */
-export const nDaysViewHeaderHeight = 66;
-/**
- * Header height in other views.
- */
-export const otherViewsHeightHeader = 47;
+export const headerHeight = 66;
 
 /**
  * Height of each task line in display.

@@ -11,7 +11,7 @@ import CheckBox from '../../UI/CheckBox';
 import { FloatingPosition } from '../../Util/TaskEditors/editors-types';
 import { getTodayAtZeroAM } from '../../../util/datetime-util';
 import OverdueAlert from '../../UI/OverdueAlert';
-import { nDaysViewHeaderHeight, otherViewsHeightHeader } from './future-view-css-props';
+import { headerHeight } from './future-view-css-props';
 import { error } from '../../../util/general-util';
 import { editMainTask, removeTask } from '../../../firebase/actions';
 import { useMappedWindowSize } from '../../../hooks/window-size-hook';
@@ -129,10 +129,9 @@ function FutureViewTask(
         const { top } = divElement.getBoundingClientRect();
         const parent = divElement.parentElement || error('Corrupted DOM!');
         const parentRect = parent.getBoundingClientRect();
-        const headerHeight = inNDaysView ? nDaysViewHeaderHeight : otherViewsHeightHeader;
         setOverdueAlertPosition({
-          top: top - parentRect.top + headerHeight - 3,
-          right: -5,
+          top: top - parentRect.top + headerHeight,
+          right: 0,
         });
       }
     }

@@ -1,10 +1,7 @@
 .OverdueAlertRelative {
   position: absolute;
-  /*top: -1em;
-  right: -1em;*/
   width: 2em;
   height: 2em;
-  /*border-radius: 1em;*/
   background-color: #D0021B;
   line-height: 2em;
   text-align: center;
@@ -12,7 +9,8 @@
   font-size: 1em;
 
   /* Proposed Experimental Change */
-  top:-0.3em; right:-0.3em;
+  top: -0.3em;
+  right: -0.3em;
   /*border-bottom-left-radius: 1em;*/
 }
 
@@ -21,11 +19,9 @@
   z-index: 1;
   width: 1em;
   height: 1em;
-  border-radius: 0.5em;
   background-color: #D0021B;
   line-height: 1em;
   text-align: center;
   font-weight: bold;
   font-size: 0.5em;
-  box-shadow: 1px 1px 2px 0 rgba(0, 0, 0, 0.5);
 }
