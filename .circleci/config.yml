@@ -12,7 +12,7 @@ jobs:
             - frontend-dependencies-{{ .Branch }}-{{ checksum "frontend/yarn.lock" }}
             - frontend-dependencies-{{ .Branch }}-
             - frontend-dependencies-
-      - run: cd main-site-frontend && yarn install
+      - run: cd frontend && yarn install
       - save_cache:
           paths:
             - frontend/node_modules
