@@ -1,4 +1,4 @@
-import React, { ReactElement, CSSProperties } from 'react';
+import React, { ReactElement } from 'react';
 import { connect } from 'react-redux';
 import { TasksProgressProps } from '../../../util/task-util';
 import Bear from './Bear';
@@ -6,30 +6,30 @@ import ProgressIndicator from './ProgressIndicator';
 import styles from './ProgressTracker.css';
 import { getProgress } from '../../../store/selectors';
 
-const nDaysViewStyle = `${styles.ProgressTracker} ${styles.NDaysView}`;
-const otherViewStyle = `${styles.ProgressTracker} ${styles.OtherViews}`;
+const mobileViewStyle = `${styles.ProgressTracker} ${styles.MobileView}`;
+const desktopViewStyle = `${styles.ProgressTracker} ${styles.DesktopView}`;
 
-type Props = TasksProgressProps & { readonly inNDaysView: boolean };
+type Props = TasksProgressProps & { readonly inMobileView: boolean };
 
 /**
  * The progress tracker component.
  * It is a wrapper component designed to pass down the progress object.
  */
 function ProgressTracker(
-  { completedTasksCount, allTasksCount, inNDaysView }: Props,
+  { completedTasksCount, allTasksCount, inMobileView }: Props,
 ): ReactElement {
-  const containerClass = inNDaysView ? nDaysViewStyle : otherViewStyle;
+  const containerClass = inMobileView ? mobileViewStyle : desktopViewStyle;
   return (
     <div className={containerClass}>
       <Bear
         completedTasksCount={completedTasksCount}
         allTasksCount={allTasksCount}
-        inNDaysView={inNDaysView}
+        inMobileView={inMobileView}
       />
       <ProgressIndicator
         completedTasksCount={completedTasksCount}
         allTasksCount={allTasksCount}
-        inNDaysView={inNDaysView}
+        inMobileView={inMobileView}
       />
     </div>
   );
