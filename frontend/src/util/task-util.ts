@@ -114,7 +114,7 @@ export const computeTaskProgress = (
           if (subTask == null) {
             return acc;
           }
-          return acc + (subTask.inFocus && subTask.complete ? 1 : 0);
+          return acc + ((task.inFocus || subTask.inFocus) && subTask.complete ? 1 : 0);
         }, 0,
       );
     }
