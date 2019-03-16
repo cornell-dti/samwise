@@ -87,14 +87,14 @@ export default function TaskView(): ReactElement {
   return (
     <>
       <div className={styles.TaskView}>
-        {!inNDaysView && <ProgressTracker inNDaysView={false} />}
+        {(!inNDaysView || (inNDaysView && !screenIsSmall)) && <ProgressTracker inNDaysView={false} />}
         {showFocusView && <FocusPanel />}
         {showFocusView && <div style={{ width: '2em' }} />}
         <FuturePanel>
           {!inNDaysView && <WideScreenFocusViewToggle />}
         </FuturePanel>
       </div>
-      {inNDaysView && <ProgressTracker inNDaysView />}
+      {(inNDaysView && screenIsSmall) && <ProgressTracker inNDaysView />}
     </>
   );
 }

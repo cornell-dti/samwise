@@ -1,4 +1,4 @@
-import React, { ReactElement, CSSProperties } from 'react';
+import React, { ReactElement } from 'react';
 import { connect } from 'react-redux';
 import { TasksProgressProps } from '../../../util/task-util';
 import Bear from './Bear';
