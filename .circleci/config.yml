@@ -21,6 +21,8 @@ jobs:
       - run: cd frontend && yarn tsc
       # run linter
       - run: cd frontend && yarn lint
+      # run tests
+      - run: cd frontend && yarn test
   deploy-frontend:
     description: Deploy frontend to firebase hosting
     docker:
@@ -32,7 +34,7 @@ jobs:
           name: Deploy to Firebase
           command: |
             if [ "${CIRCLE_BRANCH}" = "master" ]; then
-              cd main-site-frontend
+              cd frontend
               yarn
               yarn build
               ./node_modules/.bin/firebase deploy --token=$FIREBASE_TOKEN --non-interactive --only hosting
