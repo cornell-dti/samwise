@@ -38,6 +38,9 @@ export default function TaskView(): ReactElement {
   };
   FuturePanel.defaultProps = { children: null };
 
+  const inNDaysView = futureViewConfigProvider.isInNDaysView(config);
+  const showFocusView = inNDaysView || doesShowFocusViewInWideScreen;
+
   if (screenIsSmall) {
     return doesShowFutureViewInSmallScreen
       ? (
@@ -46,7 +49,7 @@ export default function TaskView(): ReactElement {
             <FuturePanel />
             <PinFilled className={styles.ViewSwitcher} onClick={switchView} />
           </div>
-          <ProgressTracker inNDaysView />
+          <ProgressTracker inMobileView={inNDaysView} />
         </>
       ) : (
         <>
@@ -54,12 +57,10 @@ export default function TaskView(): ReactElement {
             <FocusPanel />
             <Calendar onClick={switchView} className={styles.ViewSwitcher} />
           </div>
-          <ProgressTracker inNDaysView />
+          <ProgressTracker inMobileView={inNDaysView} />
         </>
       );
   }
-  const inNDaysView = futureViewConfigProvider.isInNDaysView(config);
-  const showFocusView = inNDaysView || doesShowFocusViewInWideScreen;
 
   const WideScreenFocusViewToggle = (): ReactElement => {
     const wrapperStyle = doesShowFocusViewInWideScreen ? { left: '-4em' } : { left: '0' };
@@ -87,14 +88,17 @@ export default function TaskView(): ReactElement {
   return (
     <>
       <div className={styles.TaskView}>
-        {!inNDaysView && <ProgressTracker inNDaysView={false} />}
+        {
+          (!inNDaysView || (inNDaysView && !screenIsSmall))
+          && <ProgressTracker inMobileView={false} />
+        }
         {showFocusView && <FocusPanel />}
         {showFocusView && <div style={{ width: '2em' }} />}
         <FuturePanel>
           {!inNDaysView && <WideScreenFocusViewToggle />}
         </FuturePanel>
       </div>
-      {inNDaysView && <ProgressTracker inNDaysView />}
+      {(inNDaysView && screenIsSmall) && <ProgressTracker inMobileView={inNDaysView} />}
     </>
   );
 }

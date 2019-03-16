@@ -3,7 +3,7 @@ import { TasksProgressProps } from '../../../util/task-util';
 import styles from './ProgressIndicator.css';
 
 type ProgressBarProps = TasksProgressProps & {
-  readonly inNDaysView: boolean;
+  readonly inMobileView: boolean;
   readonly children?: ReactNode;
 };
 
@@ -11,13 +11,13 @@ type ProgressBarProps = TasksProgressProps & {
  * A simple progress bar with optional children.
  */
 function ProgressBar(
-  { completedTasksCount, allTasksCount, inNDaysView, children }: ProgressBarProps,
+  { completedTasksCount, allTasksCount, inMobileView, children }: ProgressBarProps,
 ): ReactElement {
   const percentage = allTasksCount === 0 ? 0 : completedTasksCount / allTasksCount * 100;
-  const containerStyle: CSSProperties = inNDaysView
+  const containerStyle: CSSProperties = inMobileView
     ? { height: '2em', marginLeft: '1em' }
     : { width: '2em', marginBottom: '1em' };
-  const innerStyle: CSSProperties = inNDaysView
+  const innerStyle: CSSProperties = inMobileView
     ? { height: '2em', width: `${percentage}%` }
     : { width: '2em', height: `${percentage}%` };
   return (
@@ -30,18 +30,18 @@ function ProgressBar(
 
 ProgressBar.defaultProps = { children: null };
 
-type Props = TasksProgressProps & { readonly inNDaysView: boolean };
+type Props = TasksProgressProps & { readonly inMobileView: boolean };
 
 /**
  * The progress indicator.
  */
 export default function ProgressIndicator(
-  { completedTasksCount, allTasksCount, inNDaysView }: Props,
+  { completedTasksCount, allTasksCount, inMobileView }: Props,
 ): ReactElement {
-  const containerStyle: CSSProperties = inNDaysView
+  const containerStyle: CSSProperties = inMobileView
     ? { flex: 'auto', height: '2em' }
     : { flexDirection: 'column-reverse', margin: '0', width: '2em', height: '100%' };
-  const textStyle: CSSProperties = inNDaysView ? {} : { width: '70px', marginBottom: '8px' };
+  const textStyle: CSSProperties = inMobileView ? {} : { width: '70px', marginBottom: '8px' };
   const fractionString = `${completedTasksCount}/${allTasksCount}`;
   return (
     <div className={styles.ProgressIndicator} style={containerStyle}>
@@ -52,7 +52,7 @@ export default function ProgressIndicator(
       <ProgressBar
         completedTasksCount={completedTasksCount}
         allTasksCount={allTasksCount}
-        inNDaysView={inNDaysView}
+        inMobileView={inMobileView}
       />
     </div>
   );
