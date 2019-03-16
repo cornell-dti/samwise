@@ -10,7 +10,7 @@
 .NDaysView {
   flex-direction: row;
   margin-top: 16px;
-  transform:translateY(-60px);
+  transform:translateY(-50px);
 }
 
 .OtherViews {
@@ -19,5 +19,5 @@
   margin-bottom: -82px;
   width: 70px;
   flex-direction: column-reverse;
-  transform:translate(-5px, -35px);
+  transform:translate(-10px, -35px);
 }
