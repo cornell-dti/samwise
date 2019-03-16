@@ -37,6 +37,7 @@ jobs:
               cd frontend
               yarn
               yarn build
+              ./node_modules/.bin/firebase use default
               ./node_modules/.bin/firebase deploy --token=$FIREBASE_TOKEN --non-interactive --only hosting
               cd ../
             else
