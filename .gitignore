@@ -1,5 +1,4 @@
 # Lock Files (we probably need to comment out these later)
-**/yarn.lock
 **/package-lock.json
 
 # Cache & History
