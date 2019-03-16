@@ -6,8 +6,8 @@ import ProgressIndicator from './ProgressIndicator';
 import styles from './ProgressTracker.css';
 import { getProgress } from '../../../store/selectors';
 
-const nDaysViewStyle = `${styles.ProgressTracker} ${styles.NDaysView}`;
-const otherViewStyle = `${styles.ProgressTracker} ${styles.OtherViews}`;
+const mobileViewStyle = `${styles.ProgressTracker} ${styles.MobileView}`;
+const desktopViewStyle = `${styles.ProgressTracker} ${styles.DesktopView}`;
 
 type Props = TasksProgressProps & { readonly inNDaysView: boolean };
 
@@ -18,7 +18,7 @@ type Props = TasksProgressProps & { readonly inNDaysView: boolean };
 function ProgressTracker(
   { completedTasksCount, allTasksCount, inNDaysView }: Props,
 ): ReactElement {
-  const containerClass = inNDaysView ? nDaysViewStyle : otherViewStyle;
+  const containerClass = inNDaysView ? mobileViewStyle : desktopViewStyle;
   return (
     <div className={containerClass}>
       <Bear

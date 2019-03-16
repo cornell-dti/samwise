@@ -7,13 +7,13 @@
   padding-top: 10px;
 }
 
-.NDaysView {
+.MobileView {
   flex-direction: row;
   margin-top: 16px;
   transform:translateY(-50px);
 }
 
-.OtherViews {
+.DesktopView {
   margin-right: 16px;
   margin-top: 68px;
   margin-bottom: -82px;
