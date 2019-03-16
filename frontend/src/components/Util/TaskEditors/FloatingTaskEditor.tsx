@@ -6,7 +6,6 @@ import {
 import { FloatingPosition, TaskWithSubTasks } from './editors-types';
 import TaskEditor from './TaskEditor';
 import styles from './FloatingTaskEditor.css';
-import TaskEditorStyle from './TaskEditor/TaskEditor.css';
 import { EMPTY_TASK_DIFF, taskDiffIsEmpty, TaskDiff } from '../../../util/task-util';
 import { editTask, removeTask as removeTaskAction } from '../../../firebase/actions';
 import { useWindowSizeCallback, WindowSize } from '../../../hooks/window-size-hook';
@@ -53,8 +52,11 @@ const updateFloatingEditorPosition = (
 };
 
 type OwnProps = {
+  // the position of the editor
   readonly position: FloatingPosition;
+  // the initial task to edit
   readonly initialTask: Task;
+  // the trigger function to open the editor
   readonly trigger: (opened: boolean, opener: () => void) => ReactNode;
 };
 
@@ -226,7 +228,7 @@ function FloatingTaskEditor(
   const { id: _, subTasks, ...mainTask } = task;
 
   return (
-    <React.Fragment>
+    <>
       {trigger(open, openPopup)}
       {open && (
         <div className={styles.BackgroundBlocker} role="presentation" onClick={saveEditedTask} />
@@ -239,16 +241,9 @@ function FloatingTaskEditor(
           actions={actions}
           className={styles.Editor}
           editorRef={editorRef}
-        >
-          <div className={styles.SaveButtonRow}>
-            <span className={TaskEditorStyle.TaskEditorFlexiblePadding} />
-            <div role="presentation" className={styles.SaveButton} onClick={saveEditedTask}>
-              <span className={styles.SaveButtonText}>Save</span>
-            </div>
-          </div>
-        </TaskEditor>
+        />
       )}
-    </React.Fragment>
+    </>
   );
 }
 

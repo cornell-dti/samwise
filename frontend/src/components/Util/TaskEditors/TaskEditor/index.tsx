@@ -1,5 +1,5 @@
 // NOTE:
-// Other Components in this folder are only designed to be used by TaskEditors.
+// Other Components in this folder are only designed to be used by this file.
 // These components' API are NOT guaranteed to be stable.
 // You should only use this component from the outside.
 
@@ -38,6 +38,7 @@ type Actions = {
   readonly editSubTask: (subtaskId: string, partialSubTask: PartialSubTask) => void;
   // add a subtask, but cache the subtask locally.
   readonly addSubTask: (subTask: SubTask) => void;
+  // remove the entire task to be edited.
   readonly removeTask: () => void;
   // remove the subtask, which can be the one created but cached locally!
   readonly removeSubTask: (subtaskId: string) => void;
