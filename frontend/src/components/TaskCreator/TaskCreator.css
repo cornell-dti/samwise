@@ -212,3 +212,11 @@
 .ResetButton:active {
   background: none;
 }
+
+
+.TagPickWrap{
+  display:inline-block;
+}
+.TagPickWrap ul{
+  transform:translateX(100px);
+}

@@ -276,12 +276,14 @@ export default class TaskCreator extends React.PureComponent<{}, State> {
     return (
       <div className={styles.NewTaskActive}>
         <FocusPicker pinned={inFocus} onPinChange={this.togglePin} />
-        <TagPicker
-          tag={tag}
-          opened={tagPickerOpened}
-          onTagChange={this.editTag}
-          onPickerOpened={this.openTagPicker}
-        />
+        <div className={styles.TagPickWrap}>
+          <TagPicker
+            tag={tag}
+            opened={tagPickerOpened}
+            onTagChange={this.editTag}
+            onPickerOpened={this.openTagPicker}
+          />
+        </div>
         <DatePicker
           date={date}
           opened={datePickerOpened}
