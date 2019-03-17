@@ -14,7 +14,7 @@ const messages: MessagesType = {
 // sorted in decreasing order of date
 const messageIdCollection: BannerMessageIds[] = [
   // comment out the messages that no longer need to be displayed.
-  '2019-03-10-quota-exceeded-incident',
+  // '2019-03-10-quota-exceeded-incident',
 ];
 
 export type MessageWithId = { readonly id: BannerMessageIds; readonly message: string };
