@@ -1,4 +1,4 @@
-import React, { ReactElement, ReactNode } from 'react';
+import React, { ReactElement, ReactNode, useState } from 'react';
 import { Icon } from 'semantic-ui-react';
 import { useMappedWindowSize } from '../../hooks/window-size-hook';
 import Calendar from '../../assets/svgs/dark.svg';
@@ -11,15 +11,9 @@ import styles from './TaskView.css';
 const FocusPanel = (): ReactElement => <div className={styles.FocusPanel}><FocusView /></div>;
 
 export default function TaskView(): ReactElement {
-  const [
-    doesShowFocusViewInWideScreen, setDoesShowFocusViewInWideScreen,
-  ] = React.useState(false);
-  const [
-    doesShowFutureViewInSmallScreen, setDoesShowFutureViewInSmallScreen,
-  ] = React.useState(false);
-  const [config, setConfig] = React.useState<FutureViewConfig>(
-    futureViewConfigProvider.initialValue,
-  );
+  const [doesShowFocusViewInWideScreen, setDoesShowFocusViewInWideScreen] = useState(false);
+  const [doesShowFutureViewInSmallScreen, setDoesShowFutureViewInSmallScreen] = useState(false);
+  const [config, setConfig] = useState<FutureViewConfig>(futureViewConfigProvider.initialValue);
 
   const screenIsSmall = useMappedWindowSize(size => size.width <= 840);
   const toggleFocusViewInWideScreen = (): void => setDoesShowFocusViewInWideScreen(prev => !prev);
@@ -42,24 +36,24 @@ export default function TaskView(): ReactElement {
   const showFocusView = inNDaysView || doesShowFocusViewInWideScreen;
 
   if (screenIsSmall) {
-    return doesShowFutureViewInSmallScreen
+    const taskView = doesShowFutureViewInSmallScreen
       ? (
-        <>
-          <div className={styles.TaskView}>
-            <FuturePanel />
-            <PinFilled className={styles.ViewSwitcher} onClick={switchView} />
-          </div>
-          <ProgressTracker inMobileView={inNDaysView} />
-        </>
+        <div className={styles.TaskView}>
+          <FuturePanel />
+          <PinFilled className={styles.ViewSwitcher} onClick={switchView} />
+        </div>
       ) : (
-        <>
-          <div className={styles.TaskView}>
-            <FocusPanel />
-            <Calendar onClick={switchView} className={styles.ViewSwitcher} />
-          </div>
-          <ProgressTracker inMobileView={inNDaysView} />
-        </>
+        <div className={styles.TaskView}>
+          <FocusPanel />
+          <Calendar onClick={switchView} className={styles.ViewSwitcher} />
+        </div>
       );
+    return (
+      <>
+        {taskView}
+        <ProgressTracker inMobileView={false} />
+      </>
+    );
   }
 
   const WideScreenFocusViewToggle = (): ReactElement => {
@@ -88,17 +82,13 @@ export default function TaskView(): ReactElement {
   return (
     <>
       <div className={styles.TaskView}>
-        {
-          (!inNDaysView || (inNDaysView && !screenIsSmall))
-          && <ProgressTracker inMobileView={false} />
-        }
+        <ProgressTracker inMobileView={false} />
         {showFocusView && <FocusPanel />}
         {showFocusView && <div style={{ width: '2em' }} />}
         <FuturePanel>
           {!inNDaysView && <WideScreenFocusViewToggle />}
         </FuturePanel>
       </div>
-      {(inNDaysView && screenIsSmall) && <ProgressTracker inMobileView={inNDaysView} />}
     </>
   );
 }

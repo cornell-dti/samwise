@@ -14,7 +14,6 @@ import {
   bannerMessageStatusCollection,
 } from './db';
 import { error, ignore } from '../util/general-util';
-import { TaskDiff } from '../util/task-util';
 import { emitUndoAddTaskToast, emitUndoRemoveTaskToast } from '../util/undo-util';
 import allocateNewOrder from './order-manager';
 import { store } from '../store/store';
@@ -117,8 +116,8 @@ export const addTask = (
   })();
 };
 
-export const addSubTask = (taskId: string, subTask: WithoutId<SubTask>): SubTask => {
-  const newSubTaskDoc = subTasksCollection().doc();
+export const addSubTask = (taskId: string, subTask: SubTask): void => {
+  const newSubTaskDoc = subTasksCollection().doc(subTask.id);
   const firebaseSubTask: FirestoreSubTask = mergeWithOwner(subTask);
   const batch = db().batch();
   batch.set(newSubTaskDoc, firebaseSubTask);
@@ -126,48 +125,6 @@ export const addSubTask = (taskId: string, subTask: WithoutId<SubTask>): SubTask
     children: firestore.FieldValue.arrayUnion(newSubTaskDoc.id),
   });
   batch.commit().then(ignore);
-  return { ...subTask, id: newSubTaskDoc.id };
-};
-
-/**
- * @see TaskDiff
- */
-export const editTask = (taskId: string, diff: TaskDiff): void => {
-  const {
-    mainTaskDiff, subtasksCreations, subtasksEdits, subtasksDeletions,
-  } = diff;
-  const batch = db().batch();
-  // Handle subtasksCreations
-  const createdSubTaskIds: string[] = [];
-  subtasksCreations.forEach((creation) => {
-    const { id, ...rest } = creation;
-    const firebaseSubTask: FirestoreSubTask = mergeWithOwner(rest);
-    const subTaskDocRef = subTasksCollection().doc();
-    createdSubTaskIds.push(subTaskDocRef.id);
-    batch.set(subTaskDocRef, firebaseSubTask);
-  });
-  // Handle subtasksEdits
-  subtasksEdits.forEach(([subtaskId, edit]) => {
-    batch.set(subTasksCollection().doc(subtaskId), edit, { merge: true });
-  });
-  // Handle subtasksDeletions
-  subtasksDeletions.forEach(id => batch.delete(tasksCollection().doc(id)));
-  batch.commit().then(() => {
-    const b = db().batch();
-    if (createdSubTaskIds.length > 0) {
-      b.update(tasksCollection().doc(taskId), {
-        ...mainTaskDiff, children: firestore.FieldValue.arrayUnion(...createdSubTaskIds),
-      });
-    } else {
-      b.update(tasksCollection().doc(taskId), { ...mainTaskDiff });
-    }
-    if (subtasksDeletions.length > 0) {
-      b.update(tasksCollection().doc(taskId), {
-        children: firestore.FieldValue.arrayRemove(...subtasksDeletions),
-      });
-    }
-    b.commit().then(ignore);
-  });
 };
 
 export const editMainTask = (taskId: string, partialMainTask: PartialMainTask): void => {

@@ -29,50 +29,6 @@ export const getFilteredInFocusTask = (
   return { ...rest, subTasks: newSubTasks.sort((a, b) => a.order - b.order) };
 };
 
-/**
- * Used to keep track of the task diff to optimize edit speed.
- */
-export type TaskDiff = {
-  readonly mainTaskDiff: PartialMainTask;
-  readonly subtasksCreations: SubTask[];
-  readonly subtasksEdits: [string, PartialSubTask][];
-  readonly subtasksDeletions: string[];
-};
-
-/**
- * The empty task diff.
- * @type {TaskDiff}
- */
-export const EMPTY_TASK_DIFF: TaskDiff = {
-  mainTaskDiff: Object.freeze({}),
-  subtasksEdits: [],
-  subtasksCreations: [],
-  subtasksDeletions: [],
-};
-
-/**
- * Detect whether diff is empty.
- *
- * @param {TaskDiff} diff the diff to check.
- * @return {boolean} whether diff is empty.
- */
-export const taskDiffIsEmpty = (diff: TaskDiff): boolean => {
-  const {
-    mainTaskDiff, subtasksCreations, subtasksEdits, subtasksDeletions,
-  } = diff;
-  const {
-    name, tag, date, complete, inFocus,
-  } = mainTaskDiff;
-  const mainTaskEmpty = name == null
-    && tag == null && date == null && complete == null && inFocus == null;
-  if (!mainTaskEmpty) {
-    return false;
-  }
-  return subtasksCreations.length === 0
-    && subtasksEdits.length === 0
-    && subtasksDeletions.length === 0;
-};
-
 export type TasksProgressProps = {
   readonly completedTasksCount: number;
   readonly allTasksCount: number;

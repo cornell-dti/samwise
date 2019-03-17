@@ -1,6 +1,5 @@
 import { createSelector, createSelectorCreator, defaultMemoize } from 'reselect';
 import { Map, Set } from 'immutable';
-import { ProgressProps } from 'semantic-ui-react';
 import { State, SubTask, Tag, Task, BannerMessageStatus } from './store-types';
 import { computeTaskProgress, TasksProgressProps, getFilteredInFocusTask } from '../util/task-util';
 import { NONE_TAG } from '../util/tag-util';
