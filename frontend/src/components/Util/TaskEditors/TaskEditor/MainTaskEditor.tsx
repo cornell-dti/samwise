@@ -36,10 +36,10 @@ function MainTaskEditor(
     setNameCache({ cached: name, originalPropsName: name });
   }
 
-  const editComplete = () => onChange({ complete: !complete });
-  const editInFocus = () => onChange({ inFocus: !inFocus });
+  const editComplete = (): void => onChange({ complete: !complete });
+  const editInFocus = (): void => onChange({ inFocus: !inFocus });
 
-  const onKeyDown = (event: KeyboardEvent<HTMLInputElement>) => {
+  const onKeyDown = (event: KeyboardEvent<HTMLInputElement>): void => {
     if (event.key !== 'Enter') {
       return;
     }
@@ -71,6 +71,7 @@ function MainTaskEditor(
         onKeyDown={onKeyDown}
         onChange={onInputChange}
         onBlur={onBlur}
+        onMouseLeave={onBlur}
       />
       {inFocus
         ? <Pin className={styles.TaskEditorIcon} onClick={editInFocus} />

@@ -18,6 +18,12 @@ import styles from './TaskEditor.css';
 import { NONE_TAG } from '../../../../util/tag-util';
 import { ignore } from '../../../../util/general-util';
 import { getTodayAtZeroAM } from '../../../../util/datetime-util';
+import {
+  addSubTask as addSubTaskAction,
+  editMainTask as editMainTaskAction,
+  editSubTask,
+  removeSubTask as removeSubTaskAction,
+} from '../../../../firebase/actions';
 import EditorHeader from './EditorHeader';
 import MainTaskEditor from './MainTaskEditor';
 import NewSubTaskEditor from './NewSubTaskEditor';
@@ -34,19 +40,13 @@ type DefaultProps = {
   readonly editorRef?: { current: HTMLFormElement | null }; // the ref of the editor
 };
 type Actions = {
-  readonly editMainTask: (partialMainTask: PartialMainTask) => void;
-  // edit a subtask, which can be the one created but cached locally!
-  readonly editSubTask: (subtaskId: string, partialSubTask: PartialSubTask) => void;
-  // add a subtask, but cache the subtask locally.
-  readonly addSubTask: (subTask: SubTask) => void;
   // remove the entire task to be edited.
   readonly removeTask: () => void;
-  // remove the subtask, which can be the one created but cached locally!
-  readonly removeSubTask: (subtaskId: string) => void;
   // save all the edits. remember also to save the locally cached new subtask.
   readonly onSave: () => void;
 };
 type OwnProps = DefaultProps & {
+  readonly id: string;
   readonly mainTask: MainTask; // The task given to the editor at this point.
   readonly subTasks: SubTask[];
   readonly actions: Actions; // The actions to perform under different events
@@ -66,6 +66,7 @@ type TaskToFocus = number | 'new-subtask' | null;
  */
 function TaskEditor(
   {
+    id,
     mainTask,
     subTasks,
     actions,
@@ -80,12 +81,24 @@ function TaskEditor(
   }: Props,
 ): ReactElement {
   const { name, tag, date, complete, inFocus } = mainTask;
-  const {
-    editMainTask, editSubTask, addSubTask, removeTask, removeSubTask, onSave,
-  } = actions;
+  const { removeTask, onSave } = actions;
 
   const [tempSubTask, setTempSubTask] = useState<SubTask | null>(null);
   const [subTaskToFocus, setSubTaskToFocus] = useState<TaskToFocus>(null);
+
+  // actions to perform
+  const editMainTask = (change: PartialMainTask): void => editMainTaskAction(id, change);
+  const addSubTask = (subTask: SubTask): void => addSubTaskAction(id, subTask);
+  const removeSubTask = (subtaskId: string): void => removeSubTaskAction(id, subtaskId);
+
+  const onMouseLeave = (): void => {
+    if (tempSubTask != null) {
+      addSubTask(tempSubTask);
+    }
+    if (onBlur) {
+      onBlur();
+    }
+  };
 
   // called when the user types in the first char in the new subtask box. We need to shift now.
   const handleNewSubTaskFirstType = (firstTypedValue: string): void => {
@@ -143,7 +156,7 @@ function TaskEditor(
       className={actualClassName}
       style={formStyle}
       onMouseEnter={onFocus}
-      onMouseLeave={onBlur}
+      onMouseLeave={onMouseLeave}
       onFocus={onFocus}
       onBlur={ignore}
       ref={editorRef}

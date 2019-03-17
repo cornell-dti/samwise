@@ -1,13 +1,7 @@
 import React, { ReactElement } from 'react';
-import { PartialMainTask, PartialSubTask, SubTask, Task } from '../../../store/store-types';
+import { Task } from '../../../store/store-types';
 import TaskEditor from './TaskEditor';
-import {
-  addSubTask,
-  editMainTask,
-  editSubTask,
-  removeSubTask,
-  removeTask,
-} from '../../../firebase/actions';
+import { removeTask } from '../../../firebase/actions';
 import { TaskWithSubTasks } from './editors-types';
 
 type Props = {
@@ -25,26 +19,15 @@ export default function InlineTaskEditor({ original, filtered, className }: Prop
   const { id } = original;
   // To un-mount the editor when finished editing.
   const onFocus = (): void => setDisabled(false);
-  const onBlur = (): void => {
-    /*
-    if (tempSubTask !== null) {
-      addSubTask(id, tempSubTask);
-      setTempSubTask(null);
-    }
-    */
-    setDisabled(true);
-  };
+  const onBlur = (): void => setDisabled(true);
   const actions = {
-    editMainTask: (partialMainTask: PartialMainTask) => editMainTask(id, partialMainTask),
-    editSubTask,
-    addSubTask: (subTask: SubTask) => addSubTask(id, subTask),
     removeTask: () => removeTask(original),
-    removeSubTask: (subTaskId: string) => removeSubTask(id, subTaskId),
     onSave: onBlur,
   };
   const { id: _, subTasks, ...mainTask } = filtered;
   return (
     <TaskEditor
+      id={id}
       className={className}
       mainTask={mainTask}
       subTasks={subTasks}

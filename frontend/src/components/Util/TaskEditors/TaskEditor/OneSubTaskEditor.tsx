@@ -92,6 +92,7 @@ function OneSubTaskEditor(
         onKeyDown={onKeyDown}
         onChange={onInputChange}
         onBlur={onBlur}
+        onMouseLeave={onBlur}
         style={{ width: 'calc(100% - 70px)' }}
       />
       {subTask.inFocus
