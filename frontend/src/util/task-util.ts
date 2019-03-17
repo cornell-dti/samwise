@@ -17,7 +17,7 @@ export const getFilteredNotCompletedInFocusTask = (
   if (task.inFocus) {
     if (!task.complete) {
       childrenArray.forEach((s) => {
-        if (s != null) { newSubTasks.push(s); }
+        if (s != null && !s.complete) { newSubTasks.push(s); }
       });
     } else {
       return null;
@@ -45,7 +45,9 @@ export const getFilteredCompletedInFocusTask = (
         if (s != null) { newSubTasks.push(s); }
       });
     } else {
-      return null;
+      childrenArray.forEach((s) => {
+        if (s != null && s.complete) { newSubTasks.push(s); }
+      });
     }
   } else {
     childrenArray.forEach((s) => {
@@ -91,7 +93,15 @@ export const computeTaskProgress = (
       );
     }
     if (task.complete) {
-      completedTasksCount += task.children.size + 1;
+      completedTasksCount += task.children.reduce(
+        (acc, s) => {
+          const subTask = subTasks.get(s);
+          if (subTask == null) {
+            return acc;
+          }
+          return acc + ((task.inFocus || subTask.inFocus) ? 1 : 0);
+        }, task.inFocus ? 1 : 0,
+      );
     } else {
       completedTasksCount += task.children.reduce(
         (acc, s) => {
