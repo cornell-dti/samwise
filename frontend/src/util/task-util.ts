@@ -48,6 +48,9 @@ export const getFilteredCompletedInFocusTask = (
       childrenArray.forEach((s) => {
         if (s != null && s.complete) { newSubTasks.push(s); }
       });
+      if (newSubTasks.length === 0) {
+        return null;
+      }
     }
   } else {
     childrenArray.forEach((s) => {
