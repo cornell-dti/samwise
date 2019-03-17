@@ -24,7 +24,7 @@ export const getFilteredNotCompletedInFocusTask = (
     }
   } else {
     childrenArray.forEach((s) => {
-      if (s != null && s.inFocus && !s.complete) { newSubTasks.push(s); }
+      if (s != null && s.inFocus && !task.complete && !s.complete) { newSubTasks.push(s); }
     });
     if (newSubTasks.length === 0) {
       return null;
@@ -49,7 +49,7 @@ export const getFilteredCompletedInFocusTask = (
     }
   } else {
     childrenArray.forEach((s) => {
-      if (s != null && s.inFocus && s.complete) { newSubTasks.push(s); }
+      if (s != null && s.inFocus && (task.complete || s.complete)) { newSubTasks.push(s); }
     });
     if (newSubTasks.length === 0) {
       return null;
