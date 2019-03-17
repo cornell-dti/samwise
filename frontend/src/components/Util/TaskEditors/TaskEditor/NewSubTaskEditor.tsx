@@ -13,14 +13,14 @@ export default function NewSubTaskEditor(
     onChange, needToBeFocused, afterFocusedCallback, onPressEnter,
   }: Props,
 ): ReactElement {
-  const onInputChange = (event: SyntheticEvent<HTMLInputElement>) => {
+  const onInputChange = (event: SyntheticEvent<HTMLInputElement>): void => {
     event.stopPropagation();
     const newSubTaskValue: string = event.currentTarget.value.trim();
     if (newSubTaskValue.length > 0) {
       onChange(newSubTaskValue);
     }
   };
-  const onKeyDown = (event: KeyboardEvent<HTMLInputElement>) => {
+  const onKeyDown = (event: KeyboardEvent<HTMLInputElement>): void => {
     if (event.key === 'Enter') {
       onPressEnter();
     }

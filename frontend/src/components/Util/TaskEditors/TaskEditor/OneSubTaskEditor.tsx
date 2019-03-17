@@ -42,11 +42,11 @@ function OneSubTaskEditor(
     setNameCache({ cached: subTask.name, originalPropsName: subTask.name });
   }
 
-  const onCompleteChange = () => editSubTask(subTask.id, { complete: !subTask.complete });
-  const onInFocusChange = () => editSubTask(subTask.id, { inFocus: !subTask.inFocus });
-  const onRemove = () => removeSubTask(subTask.id);
+  const onCompleteChange = (): void => editSubTask(subTask.id, { complete: !subTask.complete });
+  const onInFocusChange = (): void => editSubTask(subTask.id, { inFocus: !subTask.inFocus });
+  const onRemove = (): void => removeSubTask(subTask.id);
 
-  const onKeyDown = (event: KeyboardEvent<HTMLInputElement>) => {
+  const onKeyDown = (event: KeyboardEvent<HTMLInputElement>): void => {
     if (event.key !== 'Enter') {
       return;
     }

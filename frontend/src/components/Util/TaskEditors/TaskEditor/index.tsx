@@ -3,7 +3,7 @@
 // These components' API are NOT guaranteed to be stable.
 // You should only use this component from the outside.
 
-import React, { ReactElement, ReactNode } from 'react';
+import React, { ReactElement, ReactNode, useState } from 'react';
 import { connect } from 'react-redux';
 import {
   Tag,
@@ -16,12 +16,13 @@ import {
 import OverdueAlert from '../../../UI/OverdueAlert';
 import styles from './TaskEditor.css';
 import { NONE_TAG } from '../../../../util/tag-util';
-import { ignore, randomId } from '../../../../util/general-util';
+import { ignore } from '../../../../util/general-util';
 import { getTodayAtZeroAM } from '../../../../util/datetime-util';
 import EditorHeader from './EditorHeader';
 import MainTaskEditor from './MainTaskEditor';
 import NewSubTaskEditor from './NewSubTaskEditor';
 import OneSubTaskEditor from './OneSubTaskEditor';
+import { getNewSubTaskId } from '../../../../firebase/id-provider';
 
 type DefaultProps = {
   readonly className?: string;
@@ -48,7 +49,6 @@ type Actions = {
 type OwnProps = DefaultProps & {
   readonly mainTask: MainTask; // The task given to the editor at this point.
   readonly subTasks: SubTask[];
-  readonly tempSubTask: SubTask | null;
   readonly actions: Actions; // The actions to perform under different events
 };
 type Props = OwnProps & {
@@ -68,7 +68,6 @@ function TaskEditor(
   {
     mainTask,
     subTasks,
-    tempSubTask,
     actions,
     getTag,
     className,
@@ -85,19 +84,27 @@ function TaskEditor(
     editMainTask, editSubTask, addSubTask, removeTask, removeSubTask, onSave,
   } = actions;
 
-  const [subTaskToFocus, setSubTaskToFocus] = React.useState<TaskToFocus>(null);
+  const [tempSubTask, setTempSubTask] = useState<SubTask | null>(null);
+  const [subTaskToFocus, setSubTaskToFocus] = useState<TaskToFocus>(null);
 
   // called when the user types in the first char in the new subtask box. We need to shift now.
   const handleNewSubTaskFirstType = (firstTypedValue: string): void => {
     const order = subTasks.reduce((acc, s) => Math.max(acc, s.order), 0) + 1;
-    addSubTask({
-      id: randomId(),
+    setTempSubTask({
+      id: getNewSubTaskId(),
       name: firstTypedValue,
       order,
       complete: false,
       inFocus: newSubTaskAutoFocused === true,
     });
     setSubTaskToFocus(order);
+  };
+
+  const handleNewSubTaskEdit = (_: string, partialSubTask: PartialSubTask): void => {
+    if (tempSubTask != null) {
+      addSubTask({ ...tempSubTask, ...partialSubTask });
+      setTempSubTask(null);
+    }
   };
 
   /**
@@ -172,8 +179,8 @@ function TaskEditor(
             mainTaskComplete={complete}
             needToBeFocused={subTaskToFocus === tempSubTask.order}
             afterFocusedCallback={clearNeedToFocus}
-            editSubTask={editSubTask}
-            removeSubTask={removeSubTask}
+            editSubTask={handleNewSubTaskEdit}
+            removeSubTask={() => setTempSubTask(null)}
             onPressEnter={pressEnterHandler}
           />
         )}

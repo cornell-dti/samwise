@@ -65,7 +65,6 @@ type Props = OwnProps & { readonly fullInitialTask: TaskWithSubTasks };
 type ComponentState = {
   readonly task: TaskWithSubTasks;
   readonly diff: TaskDiff;
-  readonly uncommittedSubTask: SubTask | null;
   readonly open: boolean;
   readonly prevFullTask: TaskWithSubTasks;
 };
@@ -80,17 +79,15 @@ function FloatingTaskEditor(
   const [componentState, setState] = React.useState<ComponentState>({
     task: fullInitialTask,
     diff: EMPTY_TASK_DIFF,
-    uncommittedSubTask: null,
     open: false,
     prevFullTask: fullInitialTask,
   });
-  const { task, diff, uncommittedSubTask, open, prevFullTask } = componentState;
+  const { task, diff, open, prevFullTask } = componentState;
   if (prevFullTask !== fullInitialTask) {
     setState(prev => ({
       ...prev,
       task: fullInitialTask,
       diff: EMPTY_TASK_DIFF,
-      uncommittedSubTask: null,
       prevFullTask: fullInitialTask,
     }));
   }
@@ -106,33 +103,15 @@ function FloatingTaskEditor(
     ...prev, open: false, diff: EMPTY_TASK_DIFF, uncommittedSubTask: null,
   }));
 
-  const commitUncommittedTask = (
-    tempUncommittedTask: SubTask, state: ComponentState,
-  ): ComponentState => ({
-    ...state,
-    task: { ...state.task, subTasks: [...state.task.subTasks, tempUncommittedTask] },
-    diff: {
-      ...state.diff,
-      subtasksCreations: [...state.diff.subtasksCreations, tempUncommittedTask],
-    },
-    uncommittedSubTask: null, // just committed here!
-  });
-
   const saveEditedTask = (): void => {
     if (task.name.trim().length === 0) {
       return;
     }
-    let diffToUse: TaskDiff;
-    if (uncommittedSubTask !== null) {
-      diffToUse = commitUncommittedTask(uncommittedSubTask, componentState).diff;
-    } else {
-      diffToUse = diff;
-    }
-    if (taskDiffIsEmpty(diffToUse)) {
+    if (taskDiffIsEmpty(diff)) {
       closePopup();
       return;
     }
-    editTask(task.id, diffToUse);
+    editTask(task.id, diff);
     closePopup();
   };
 
@@ -149,11 +128,6 @@ function FloatingTaskEditor(
   };
 
   const editSubTask = (subTaskId: string, partialSubTask: PartialSubTask): void => {
-    if (uncommittedSubTask !== null && subTaskId === uncommittedSubTask.id) {
-      const newSubTask: SubTask = { ...uncommittedSubTask, ...partialSubTask };
-      setState((state: ComponentState) => commitUncommittedTask(newSubTask, state));
-      return;
-    }
     setState((state: ComponentState) => {
       const newSubTasks = state.task.subTasks.map(
         s => (s.id === subTaskId ? { ...s, ...partialSubTask } : s),
@@ -193,10 +167,6 @@ function FloatingTaskEditor(
   const removeTask = (): void => removeTaskAction(initialTask);
 
   const removeSubTask = (subTaskId: string): void => {
-    if (uncommittedSubTask !== null && subTaskId === uncommittedSubTask.id) {
-      setState((state: ComponentState) => ({ ...state, uncommittedSubTask: null }));
-      return;
-    }
     setState((state: ComponentState) => {
       const newTask = {
         ...state.task,
@@ -211,10 +181,8 @@ function FloatingTaskEditor(
           subtasksCreations.push(s);
         }
       });
-      let subtasksDeletions: string[];
-      if (foundInNew) {
-        subtasksDeletions = [];
-      } else {
+      let { subtasksDeletions } = state.diff;
+      if (!foundInNew) {
         subtasksDeletions = [...state.diff.subtasksDeletions, subTaskId];
       }
       const newDiff = { ...state.diff, subtasksCreations, subtasksDeletions };
@@ -237,7 +205,6 @@ function FloatingTaskEditor(
         <TaskEditor
           mainTask={mainTask}
           subTasks={subTasks}
-          tempSubTask={uncommittedSubTask}
           actions={actions}
           className={styles.Editor}
           editorRef={editorRef}

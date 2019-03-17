@@ -117,8 +117,8 @@ export const addTask = (
   })();
 };
 
-export const addSubTask = (taskId: string, subTask: WithoutId<SubTask>): SubTask => {
-  const newSubTaskDoc = subTasksCollection().doc();
+export const addSubTask = (taskId: string, subTask: SubTask): void => {
+  const newSubTaskDoc = subTasksCollection().doc(subTask.id);
   const firebaseSubTask: FirestoreSubTask = mergeWithOwner(subTask);
   const batch = db().batch();
   batch.set(newSubTaskDoc, firebaseSubTask);
@@ -126,7 +126,6 @@ export const addSubTask = (taskId: string, subTask: WithoutId<SubTask>): SubTask
     children: firestore.FieldValue.arrayUnion(newSubTaskDoc.id),
   });
   batch.commit().then(ignore);
-  return { ...subTask, id: newSubTaskDoc.id };
 };
 
 /**
@@ -151,7 +150,7 @@ export const editTask = (taskId: string, diff: TaskDiff): void => {
     batch.set(subTasksCollection().doc(subtaskId), edit, { merge: true });
   });
   // Handle subtasksDeletions
-  subtasksDeletions.forEach(id => batch.delete(tasksCollection().doc(id)));
+  subtasksDeletions.forEach(id => batch.delete(subTasksCollection().doc(id)));
   batch.commit().then(() => {
     const b = db().batch();
     if (createdSubTaskIds.length > 0) {
