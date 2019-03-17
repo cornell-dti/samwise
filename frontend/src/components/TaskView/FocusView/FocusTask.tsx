@@ -21,12 +21,12 @@ type Props = OwnProps & {
   readonly filtered: TaskWithSubTasks | null;
 };
 
-function FocusTask({ id, order, original, filtered }: Props): ReactElement {
+function FocusTask({ id, order, filterCompleted, original, filtered }: Props): ReactElement {
   if (filtered === null) {
     throw new Error(`The filtered task should not be null! id: ${id}, order: ${order}`);
   }
   return (
-    <Draggable draggableId={id} index={order}>
+    <Draggable draggableId={`${id}-${filterCompleted}`} index={order}>
       {provided => (
         <div ref={provided.innerRef} {...provided.draggableProps} {...provided.dragHandleProps}>
           <InlineTaskEditor

@@ -5,7 +5,7 @@ import styles from './FocusView.css';
 import ClearFocus from './ClearFocus';
 import CompletedSeparator from './CompletedSeparator';
 import FocusTask from './FocusTask';
-import { reorder } from '../../../firebase/actions';
+import { reorder, completeTaskInFocus } from '../../../firebase/actions';
 import { getFocusViewProps, FocusViewProps } from '../../../store/selectors';
 
 const focusViewNotCompletedDroppableId = 'focus-view-not-completed-droppable';
@@ -35,7 +35,7 @@ function FocusView(
     localCompletedList: focusedCompletedIdOrderList,
   });
   const { localUncompletedList, localCompletedList } = localLists;
-  const [doesShowCompletedTasks, setDoesShowCompletedTasks] = useState(false);
+  const [doesShowCompletedTasks, setDoesShowCompletedTasks] = useState(true);
   if (localUncompletedList !== focusedUncompletedIdOrderList
     || localCompletedList !== focusedCompletedIdOrderList) {
     setLocalLists({
@@ -59,14 +59,12 @@ function FocusView(
       return;
     }
     if (destination.droppableId === focusViewCompletedDroppableId) {
-      destinationOrder = localCompletedList[destination.index].order;
+      const dest = localCompletedList[destination.index];
+      destinationOrder = dest == null ? sourceOrder : dest.order;
     } else if (destination.droppableId === focusViewNotCompletedDroppableId) {
-      destinationOrder = localUncompletedList[destination.index].order;
+      const dest = localUncompletedList[destination.index];
+      destinationOrder = dest == null ? sourceOrder : dest.order;
     } else {
-      return;
-    }
-    if (sourceOrder === destinationOrder) {
-      // drop at the same place.
       return;
     }
     if (source.droppableId === focusViewCompletedDroppableId
@@ -82,7 +80,11 @@ function FocusView(
     } else if (source.droppableId === focusViewNotCompletedDroppableId
       && destination.droppableId === focusViewCompletedDroppableId) {
       // drag from not completed and drop to completed.
-      // TODO
+      const completedTaskIdOrder: IdOrder = localUncompletedList[source.index];
+      const { completedList, uncompletedList } = completeTaskInFocus(
+        completedTaskIdOrder, localCompletedList, localUncompletedList,
+      );
+      setLocalLists({ localCompletedList: completedList, localUncompletedList: uncompletedList });
     } else if (source.droppableId === focusViewCompletedDroppableId
       && destination.droppableId === focusViewNotCompletedDroppableId) {
       // drag from completed and drop to not completed.
@@ -107,7 +109,6 @@ function FocusView(
             {provided => (
               <div
                 ref={provided.innerRef}
-                className={focusedCompletedIdOrderList.length === 0 ? styles.Droppable : undefined}
                 {...provided.droppableProps}
               >
                 {renderTaskList(localUncompletedList, false)}
@@ -115,24 +116,23 @@ function FocusView(
               </div>
             )}
           </Droppable>
-          {localCompletedList.length > 0 && (
-            <Droppable droppableId={focusViewCompletedDroppableId}>
-              {provided => (
-                <div
-                  ref={provided.innerRef}
-                  {...provided.droppableProps}
-                >
-                  <CompletedSeparator
-                    count={progress.completedTasksCount}
-                    doesShowCompletedTasks={doesShowCompletedTasks}
-                    onDoesShowCompletedTasksChange={onDoesShowCompletedTasksChange}
-                  />
-                  {doesShowCompletedTasks && renderTaskList(localCompletedList, true)}
-                  {provided.placeholder}
-                </div>
-              )}
-            </Droppable>
-          )}
+          <Droppable droppableId={focusViewCompletedDroppableId}>
+            {provided => (
+              <div
+                ref={provided.innerRef}
+                className={styles.Droppable}
+                {...provided.droppableProps}
+              >
+                <CompletedSeparator
+                  count={progress.completedTasksCount}
+                  doesShowCompletedTasks={doesShowCompletedTasks}
+                  onDoesShowCompletedTasksChange={onDoesShowCompletedTasksChange}
+                />
+                {doesShowCompletedTasks && renderTaskList(localCompletedList, true)}
+                {provided.placeholder}
+              </div>
+            )}
+          </Droppable>
         </DragDropContext>
       </div>
     </div>
