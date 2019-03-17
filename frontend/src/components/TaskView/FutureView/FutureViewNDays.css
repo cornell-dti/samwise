@@ -5,6 +5,12 @@
   grid-auto-rows: minmax(0, 1fr);
 }
 
+@media only screen and (max-width: 840px) {
+  .FutureViewNDays {
+    height: calc(100vh - 286px);
+  }
+}
+
 .Column {
   margin: 0;
 }
