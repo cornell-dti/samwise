@@ -164,6 +164,12 @@ export const removeSubTask = (taskId: string, subtaskId: string): void => {
   batch.commit().then(ignore);
 };
 
+/*
+ * --------------------------------------------------------------------------------
+ * Section 3: Other Compound Actions
+ * --------------------------------------------------------------------------------
+ */
+
 /**
  * Clear all the completed tasks in focus view.
  */
@@ -174,20 +180,53 @@ export const clearFocus = (taskIds: string[], subTaskIds: string[]): void => {
   batch.commit().then(ignore);
 };
 
-/*
- * --------------------------------------------------------------------------------
- * Section 3: Other Compound Actions
- * --------------------------------------------------------------------------------
+/**
+ * Declare a task is complete in focus view by dragging it to completed section.
+ *
+ * @param completedTaskIdOrder the id and order of the completed task.
+ * @param completedList the id order list of completed tasks.
+ * @param uncompletedList the id order list of not completed tasks.
+ * @returns an object of updated completed and not completed task list.
  */
+export function completeTaskInFocus<T extends { readonly id: string; readonly order: number }>(
+  completedTaskIdOrder: T,
+  completedList: T[],
+  uncompletedList: T[],
+): { readonly completedList: T[]; readonly uncompletedList: T[] } {
+  const newUncompletedList = uncompletedList.filter(item => item.id !== completedTaskIdOrder.id);
+  let newCompletedList = [completedTaskIdOrder];
+  completedList.forEach((item) => {
+    if (item.order < completedTaskIdOrder.order) {
+      newCompletedList.push(item);
+    } else if (item.order >= completedTaskIdOrder.order) {
+      newCompletedList.push({ ...item, order: item.order + 1 });
+    }
+  });
+  newCompletedList = newCompletedList.sort((a, b) => a.order - b.order);
+  const { tasks, subTasks } = store.getState();
+  const task = tasks.get(completedTaskIdOrder.id) || error('bad');
+  const batch = db().batch();
+  if (task.inFocus) {
+    batch.update(tasksCollection().doc(task.id), { complete: true });
+  }
+  task.children.forEach((id) => {
+    const s = subTasks.get(id);
+    if (s != null && s.inFocus) {
+      batch.update(subTasksCollection().doc(id), { complete: true });
+    }
+  });
+  batch.commit().then(ignore);
+  return { completedList: newCompletedList, uncompletedList: newUncompletedList };
+}
 
 /**
  * Reorder a list of items by swapping items with order sourceOrder and destinationOrder
  *
- * @param {'tags' | 'tasks'} orderFor whether the reorder is for tags or tasks.
- * @param {array} originalList the original list as a reference.
- * @param {number} sourceOrder where is the dragged item from.
- * @param {number} destinationOrder where the dragged item goes.
- * @return {array} a new list with updated orders.
+ * @param orderFor whether the reorder is for tags or tasks.
+ * @param originalList the original list as a reference.
+ * @param sourceOrder where is the dragged item from.
+ * @param destinationOrder where the dragged item goes.
+ * @return a new list with updated orders.
  */
 export function reorder<T extends { readonly id: string; readonly order: number }>(
   orderFor: 'tags' | 'tasks',

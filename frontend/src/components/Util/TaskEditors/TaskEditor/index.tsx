@@ -31,6 +31,7 @@ import OneSubTaskEditor from './OneSubTaskEditor';
 import { getNewSubTaskId } from '../../../../firebase/id-provider';
 
 type DefaultProps = {
+  readonly displayGrabber?: boolean;
   readonly className?: string;
   readonly children?: ReactNode;
   readonly newSubTaskAutoFocused?: boolean; // whether to auto focus the new subtask
@@ -70,6 +71,7 @@ function TaskEditor(
     mainTask,
     subTasks,
     actions,
+    displayGrabber,
     getTag,
     className,
     children,
@@ -170,7 +172,13 @@ function TaskEditor(
     >
       {isOverdue && <OverdueAlert target="task-card" />}
       <div>
-        <EditorHeader tag={tag} date={date} onChange={editMainTask} getTag={getTag} />
+        <EditorHeader
+          tag={tag}
+          date={date}
+          onChange={editMainTask}
+          getTag={getTag}
+          displayGrabber={displayGrabber == null ? false : displayGrabber}
+        />
         <MainTaskEditor
           name={name}
           complete={complete}

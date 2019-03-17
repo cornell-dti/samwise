@@ -1,5 +1,6 @@
 import React, { ReactElement } from 'react';
 import Calendar from 'react-calendar';
+import Grabber from '../../../../assets/svgs/grabbers.svg';
 import LightCalendar from '../../../../assets/svgs/light.svg';
 import styles from './TaskEditor.css';
 import TagListPicker from '../../TagListPicker/TagListPicker';
@@ -13,6 +14,7 @@ type TagAndDate = {
 type Props = TagAndDate & {
   readonly onChange: (change: Partial<TagAndDate>) => void;
   readonly getTag: (id: string) => Tag;
+  readonly displayGrabber: boolean;
 };
 
 type EditorDisplayStatus = {
@@ -22,7 +24,9 @@ type EditorDisplayStatus = {
 
 const calendarIconClass = [styles.TaskEditorIconButton, styles.TaskEditorIcon].join(' ');
 
-export default function EditorHeader({ tag, date, onChange, getTag }: Props): ReactElement {
+export default function EditorHeader(
+  { tag, date, onChange, getTag, displayGrabber }: Props,
+): ReactElement {
   const [editorDisplayStatus, setEditorDisplayStatus] = React.useState<EditorDisplayStatus>({
     doesShowTagEditor: false,
     doesShowDateEditor: false,
@@ -70,6 +74,7 @@ export default function EditorHeader({ tag, date, onChange, getTag }: Props): Re
   );
   return (
     <div className={headerClassName}>
+      {displayGrabber && <Grabber className={styles.TaskEditorGrabberIcon} />}
       {tagDisplay}
       {tagEditor}
       <span className={styles.TaskEditorFlexiblePadding} />

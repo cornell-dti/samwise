@@ -8,6 +8,12 @@
   height: calc(100vh - 224px);
 }
 
+@media only screen and (max-width: 840px) {
+  .FutureViewSevenColumns {
+    height: calc(100vh - 286px);
+  }
+}
+
 @media only screen and (min-width: 700px) and (max-width: 840px) {
   .FutureViewSevenColumns {
     height: calc(100vh - 284px);

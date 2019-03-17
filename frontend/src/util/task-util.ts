@@ -1,5 +1,5 @@
 import { Map } from 'immutable';
-import { PartialMainTask, PartialSubTask, SubTask, Task } from '../store/store-types';
+import { SubTask, Task } from '../store/store-types';
 import { TaskWithSubTasks } from '../components/Util/TaskEditors/editors-types';
 
 /**
@@ -8,19 +8,50 @@ import { TaskWithSubTasks } from '../components/Util/TaskEditors/editors-types';
  * Other modules should try to call functions in this module instead of implementing their own.
  */
 
-export const getFilteredInFocusTask = (
+export const getFilteredNotCompletedInFocusTask = (
   task: Task, subTasks: Map<string, SubTask>,
 ): TaskWithSubTasks | null => {
   const { children, ...rest } = task;
   const childrenArray = children.map(id => subTasks.get(id)).filter(s => s != null);
   const newSubTasks: SubTask[] = [];
   if (task.inFocus) {
-    childrenArray.forEach((s) => {
-      if (s != null) { newSubTasks.push(s); }
-    });
+    if (!task.complete) {
+      childrenArray.forEach((s) => {
+        if (s != null && !s.complete) { newSubTasks.push(s); }
+      });
+    } else {
+      return null;
+    }
   } else {
     childrenArray.forEach((s) => {
-      if (s != null && s.inFocus) { newSubTasks.push(s); }
+      if (s != null && s.inFocus && !task.complete && !s.complete) { newSubTasks.push(s); }
+    });
+    if (newSubTasks.length === 0) {
+      return null;
+    }
+  }
+  return { ...rest, subTasks: newSubTasks.sort((a, b) => a.order - b.order) };
+};
+
+export const getFilteredCompletedInFocusTask = (
+  task: Task, subTasks: Map<string, SubTask>,
+): TaskWithSubTasks | null => {
+  const { children, ...rest } = task;
+  const childrenArray = children.map(id => subTasks.get(id)).filter(s => s != null);
+  const newSubTasks: SubTask[] = [];
+  if (task.inFocus) {
+    if (task.complete) {
+      childrenArray.forEach((s) => {
+        if (s != null) { newSubTasks.push(s); }
+      });
+    } else {
+      childrenArray.forEach((s) => {
+        if (s != null && s.complete) { newSubTasks.push(s); }
+      });
+    }
+  } else {
+    childrenArray.forEach((s) => {
+      if (s != null && s.inFocus && (task.complete || s.complete)) { newSubTasks.push(s); }
     });
     if (newSubTasks.length === 0) {
       return null;
@@ -62,7 +93,15 @@ export const computeTaskProgress = (
       );
     }
     if (task.complete) {
-      completedTasksCount += task.children.size + 1;
+      completedTasksCount += task.children.reduce(
+        (acc, s) => {
+          const subTask = subTasks.get(s);
+          if (subTask == null) {
+            return acc;
+          }
+          return acc + ((task.inFocus || subTask.inFocus) ? 1 : 0);
+        }, task.inFocus ? 1 : 0,
+      );
     } else {
       completedTasksCount += task.children.reduce(
         (acc, s) => {

@@ -5,14 +5,14 @@
   flex-direction: row;
 }
 
-@media only screen and (min-width: 768px) {
+@media only screen and (min-width: 840px) {
   .FocusPanel {
     min-width: 250px;
     max-width: 250px;
   }
 }
 
-@media only screen and (max-width: 768px) {
+@media only screen and (max-width: 840px) {
   .FocusPanel {
     width: 100%;
   }
