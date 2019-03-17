@@ -5,10 +5,17 @@ import InlineTaskEditor from '../../Util/TaskEditors/InlineTaskEditor';
 import styles from './FocusTask.css';
 import { State, Task } from '../../../store/store-types';
 import { error } from '../../../util/general-util';
-import { getFilteredInFocusTask } from '../../../util/task-util';
+import {
+  getFilteredNotCompletedInFocusTask,
+  getFilteredCompletedInFocusTask,
+} from '../../../util/task-util';
 import { TaskWithSubTasks } from '../../Util/TaskEditors/editors-types';
 
-type OwnProps = { readonly id: string; readonly order: number };
+type OwnProps = {
+  readonly id: string;
+  readonly order: number;
+  readonly filterCompleted: boolean;
+};
 type Props = OwnProps & {
   readonly original: Task;
   readonly filtered: TaskWithSubTasks | null;
@@ -34,9 +41,11 @@ function FocusTask({ id, order, original, filtered }: Props): ReactElement {
 }
 
 const Connected = connect(
-  ({ tasks, subTasks }: State, { id }: OwnProps) => {
+  ({ tasks, subTasks }: State, { id, filterCompleted }: OwnProps) => {
     const original = tasks.get(id) || error();
-    const filtered = getFilteredInFocusTask(original, subTasks);
+    const filtered = filterCompleted
+      ? getFilteredCompletedInFocusTask(original, subTasks)
+      : getFilteredNotCompletedInFocusTask(original, subTasks);
     return { original, filtered };
   },
 )(FocusTask);

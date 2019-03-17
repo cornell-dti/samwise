@@ -1,4 +1,4 @@
-import React, { ReactElement, useState } from 'react';
+import React, { ReactElement, useState, ReactNode } from 'react';
 import { DragDropContext, Droppable, DropResult } from 'react-beautiful-dnd';
 import { connect } from 'react-redux';
 import styles from './FocusView.css';
@@ -11,11 +11,13 @@ import { getFocusViewProps, FocusViewProps } from '../../../store/selectors';
 const focusViewNotCompletedDroppableId = 'focus-view-not-completed-droppable';
 const focusViewCompletedDroppableId = 'focus-view-completed-droppable';
 
-const tasksRenderer = ({ id }: { readonly id: string }, index: number): ReactElement => (
-  <FocusTask key={id} id={id} order={index} />
-);
-
 type IdOrder = { readonly id: string; readonly order: number };
+
+const renderTaskList = (
+  list: IdOrder[], filterCompleted: boolean,
+): ReactNode => list.map(({ id }, index) => (
+  <FocusTask key={id} id={id} order={index} filterCompleted={filterCompleted} />
+));
 
 /**
  * The focus view component.
@@ -62,7 +64,7 @@ function FocusView(
                 className={focusedCompletedIdOrderList.length === 0 ? styles.Droppable : undefined}
                 {...provided.droppableProps}
               >
-                {localList.map(tasksRenderer)}
+                {renderTaskList(localList, false)}
                 {provided.placeholder}
               </div>
             )}
@@ -79,7 +81,7 @@ function FocusView(
                     doesShowCompletedTasks={doesShowCompletedTasks}
                     onDoesShowCompletedTasksChange={onDoesShowCompletedTasksChange}
                   />
-                  {doesShowCompletedTasks && focusedCompletedIdOrderList.map(tasksRenderer)}
+                  {doesShowCompletedTasks && renderTaskList(focusedCompletedIdOrderList, true)}
                   {provided.placeholder}
                 </div>
               )}
