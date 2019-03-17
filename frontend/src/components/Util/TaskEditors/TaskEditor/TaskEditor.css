@@ -36,6 +36,12 @@
   flex: 1 1 auto;
 }
 
+.TaskEditorGrabberIcon {
+  width: 20px;
+  height: 20px;
+  margin-right: -10px;
+}
+
 input.TaskEditorFlexibleInput {
   flex: 1 1 auto;
   margin-left: 0.5em !important;

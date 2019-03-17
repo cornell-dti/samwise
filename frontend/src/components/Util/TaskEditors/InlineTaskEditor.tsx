@@ -32,6 +32,7 @@ export default function InlineTaskEditor({ original, filtered, className }: Prop
       mainTask={mainTask}
       subTasks={subTasks}
       actions={actions}
+      displayGrabber
       newSubTaskAutoFocused={!original.inFocus}
       newSubTaskDisabled={disabled}
       onFocus={onFocus}
