@@ -86,6 +86,14 @@ function TaskEditor(
   const [tempSubTask, setTempSubTask] = useState<SubTask | null>(null);
   const [subTaskToFocus, setSubTaskToFocus] = useState<TaskToFocus>(null);
 
+  if (tempSubTask != null) {
+    subTasks.forEach((oneSubTask) => {
+      if (oneSubTask.id === tempSubTask.id) {
+        setTempSubTask(null);
+      }
+    });
+  }
+
   // actions to perform
   const editMainTask = (change: PartialMainTask): void => editMainTaskAction(id, change);
   const addSubTask = (subTask: SubTask): void => addSubTaskAction(id, subTask);
@@ -116,7 +124,6 @@ function TaskEditor(
   const handleNewSubTaskEdit = (_: string, partialSubTask: PartialSubTask): void => {
     if (tempSubTask != null) {
       addSubTask({ ...tempSubTask, ...partialSubTask });
-      setTempSubTask(null);
     }
   };
 
