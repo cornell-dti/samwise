@@ -18,7 +18,7 @@ type Props = {
   readonly onPressEnter: (id: 'main-task' | number) => void;
 };
 
-type NameCache = { readonly cached: string; readonly originalPropsName: string; };
+type NameCache = { readonly cached: string; readonly originalPropsName: string };
 
 const className = [styles.TaskEditorFlexibleContainer, styles.TaskEditorSubtaskCheckBox].join(' ');
 const deleteIconClass = [styles.TaskEditorIcon, styles.TaskEditorIconLeftPad].join(' ');
