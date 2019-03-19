@@ -14,7 +14,6 @@ oldTasks = tasks.where(u'date', u'<', cutoff).get()
 
 for task in oldTasks:
     for subtask in task.get(u'children'):
-        #TODO: Fix delete children by name not reference
         subtask = db.collection(u'samwise-subtasks').document(subtask).get()
         subtask.delete()
     print(u'Document data: {}'.format(task.to_dict()))
