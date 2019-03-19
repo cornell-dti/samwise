@@ -8,7 +8,6 @@ import {
   SimpleDate,
 } from './future-view-types';
 import { useMappedWindowSize } from '../../../hooks/window-size-hook';
-import {CalendarPosition} from "../../Util/TaskEditors/editors-types";
 
 export type FutureViewConfig = {
   readonly displayOption: FutureViewDisplayOption;
@@ -40,7 +39,7 @@ export const futureViewConfigProvider: FutureViewConfigProvider = {
  */
 function computeStartAndEndDay(
   nDays: number, containerType: FutureViewContainerType, offset: number,
-): { readonly startDate: Date; readonly endDate: Date; } {
+): { readonly startDate: Date; readonly endDate: Date } {
   // Compute start date (the first date to display)
   const startDate = new Date();
   let hasAdditionalDays = false;
@@ -108,10 +107,11 @@ function buildDaysInFutureView(nDays: number, config: FutureViewConfig): SimpleD
 type Props = {
   readonly config: FutureViewConfig;
   readonly onConfigChange: (config: FutureViewConfig) => void;
-  readonly calendarPosition: CalendarPosition
 };
 
-export default function FutureView({ config, onConfigChange, calendarPosition }: Props): ReactElement {
+export default function FutureView(
+  { config, onConfigChange }: Props,
+): ReactElement {
   // the number of days in n-days mode.
   const nDays = useMappedWindowSize(({ width }) => {
     if (width > 960) { return 5; }
@@ -126,7 +126,7 @@ export default function FutureView({ config, onConfigChange, calendarPosition }:
   const { displayOption, offset } = config;
   const { containerType, doesShowCompletedTasks } = displayOption;
   const daysContainer = containerType === 'N_DAYS'
-    ? <FutureViewNDays days={days} doesShowCompletedTasks={doesShowCompletedTasks} calendarPosition={calendarPosition} />
+    ? <FutureViewNDays days={days} doesShowCompletedTasks={doesShowCompletedTasks} />
     : <FutureViewSevenColumns days={days} doesShowCompletedTasks={doesShowCompletedTasks} />;
   return (
     <div>

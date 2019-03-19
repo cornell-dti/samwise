@@ -1,7 +1,7 @@
 import React, { ReactElement, ReactNode } from 'react';
 import { connect } from 'react-redux';
 import { State, SubTask, Task } from '../../../store/store-types';
-import {CalendarPosition, FloatingPosition, TaskWithSubTasks} from './editors-types';
+import { CalendarPosition, FloatingPosition, TaskWithSubTasks } from './editors-types';
 import TaskEditor from './TaskEditor';
 import styles from './FloatingTaskEditor.css';
 import { removeTask as removeTaskAction } from '../../../firebase/actions';
@@ -11,7 +11,6 @@ const updateFloatingEditorPosition = (
   editorElement: HTMLFormElement | null | undefined,
   windowSize: WindowSize,
   position: FloatingPosition,
-  calendarPosition: CalendarPosition
 ): void => {
   const editorPosDiv = editorElement;
   if (editorPosDiv == null) {
@@ -74,7 +73,7 @@ function FloatingTaskEditor(
   const editorRef = React.useRef(null);
 
   useWindowSizeCallback((windowSize) => {
-    updateFloatingEditorPosition(editorRef.current, windowSize, position, calendarPosition);
+    updateFloatingEditorPosition(editorRef.current, windowSize, position);
   });
 
   const openPopup = (): void => setOpen(true);

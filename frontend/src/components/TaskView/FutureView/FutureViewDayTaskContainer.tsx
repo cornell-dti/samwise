@@ -1,6 +1,6 @@
 import React, { ReactElement } from 'react';
 import { connect } from 'react-redux';
-import {CalendarPosition, FloatingPosition} from '../../Util/TaskEditors/editors-types';
+import { CalendarPosition, FloatingPosition } from '../../Util/TaskEditors/editors-types';
 import FutureViewTask from './FutureViewTask';
 import styles from './FutureViewDayTaskContainer.css';
 import { useWindowSizeCallback } from '../../../hooks/window-size-hook';

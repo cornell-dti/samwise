@@ -1,5 +1,3 @@
-// @flow strict
-
 import React, { KeyboardEvent, ReactElement, SyntheticEvent } from 'react';
 import Delete from '../../../../assets/svgs/XLight.svg';
 import PinOutline from '../../../../assets/svgs/pin-2-light-outline.svg';

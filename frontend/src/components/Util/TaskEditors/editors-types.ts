@@ -7,7 +7,7 @@
 import { SubTask } from '../../../store/store-types';
 
 export type FloatingPosition = 'left' | 'right';
-export type CalendarPosition = "top" | "bottom";
+export type CalendarPosition = 'top' | 'bottom';
 
 export type TaskWithSubTasks = {
   readonly id: string;

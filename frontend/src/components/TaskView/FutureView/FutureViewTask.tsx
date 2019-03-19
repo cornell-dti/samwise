@@ -39,7 +39,7 @@ type Props = OwnProps & {
  */
 function FutureViewTask(
   {
-    compoundTask, inNDaysView, taskEditorPosition, isInMainList, calendarPosition
+    compoundTask, inNDaysView, taskEditorPosition, isInMainList, calendarPosition,
   }: Props,
 ): ReactElement | null {
   const isSmallScreen = useMappedWindowSize(({ width }) => width <= 768);

@@ -29,7 +29,7 @@ import MainTaskEditor from './MainTaskEditor';
 import NewSubTaskEditor from './NewSubTaskEditor';
 import OneSubTaskEditor from './OneSubTaskEditor';
 import { getNewSubTaskId } from '../../../../firebase/id-provider';
-import {CalendarPosition} from "../editors-types";
+import { CalendarPosition } from '../editors-types';
 
 type DefaultProps = {
   readonly displayGrabber?: boolean;

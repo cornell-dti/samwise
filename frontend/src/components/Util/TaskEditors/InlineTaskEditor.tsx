@@ -2,7 +2,7 @@ import React, { ReactElement } from 'react';
 import { Task } from '../../../store/store-types';
 import TaskEditor from './TaskEditor';
 import { removeTask } from '../../../firebase/actions';
-import {CalendarPosition, TaskWithSubTasks} from './editors-types';
+import { CalendarPosition, TaskWithSubTasks } from './editors-types';
 
 type Props = {
   readonly original: Task;
@@ -14,7 +14,9 @@ type Props = {
 /**
  * The task editor used to edit task inline, activated on focus.
  */
-export default function InlineTaskEditor({ original, filtered, className, calendarPosition }: Props): ReactElement {
+export default function InlineTaskEditor(
+  { original, filtered, className, calendarPosition }: Props,
+): ReactElement {
   const [disabled, setDisabled] = React.useState(true);
 
   const { id } = original;

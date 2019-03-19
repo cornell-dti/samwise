@@ -31,7 +31,7 @@ function FocusTask({ id, order, filterCompleted, original, filtered }: Props): R
         <div ref={provided.innerRef} {...provided.draggableProps} {...provided.dragHandleProps}>
           <InlineTaskEditor
             className={styles.FocusTask}
-            calendarPosition={'bottom'}
+            calendarPosition="bottom"
             original={original}
             filtered={filtered}
           />

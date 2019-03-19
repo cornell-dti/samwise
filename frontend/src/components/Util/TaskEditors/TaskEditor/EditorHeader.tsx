@@ -5,7 +5,7 @@ import LightCalendar from '../../../../assets/svgs/light.svg';
 import styles from './TaskEditor.css';
 import TagListPicker from '../../TagListPicker/TagListPicker';
 import { Tag } from '../../../../store/store-types';
-import {CalendarPosition} from "../editors-types";
+import { CalendarPosition } from '../editors-types';
 
 type TagAndDate = {
   readonly tag: string;
@@ -68,8 +68,11 @@ export default function EditorHeader(
   const dateEditor = doesShowDateEditor && (
     <Calendar
       value={date}
-      className={ (calendarPosition === 'top') ?
-        styles.TaskEditorCalendarTop : styles.TaskEditorCalendarBottom}
+      className={
+        calendarPosition === 'top'
+          ? styles.TaskEditorCalendarTop
+          : styles.TaskEditorCalendarBottom
+      }
       minDate={new Date()}
       onChange={editTaskDate}
       calendarType="US"
