@@ -109,7 +109,9 @@ type Props = {
   readonly onConfigChange: (config: FutureViewConfig) => void;
 };
 
-export default function FutureView({ config, onConfigChange }: Props): ReactElement {
+export default function FutureView(
+  { config, onConfigChange }: Props,
+): ReactElement {
   // the number of days in n-days mode.
   const nDays = useMappedWindowSize(({ width }) => {
     if (width > 960) { return 5; }

@@ -1,6 +1,6 @@
 import React, { ReactElement } from 'react';
 import { SimpleDate } from './future-view-types';
-import { FloatingPosition } from '../../Util/TaskEditors/editors-types';
+import { CalendarPosition, FloatingPosition } from '../../Util/TaskEditors/editors-types';
 import styles from './FutureViewDay.css';
 import { floatingViewWidth, headerHeight } from './future-view-css-props';
 import { getTodayAtZeroAM } from '../../../util/datetime-util';
@@ -84,6 +84,7 @@ type Props = {
   readonly date: SimpleDate;
   readonly inNDaysView: boolean;
   readonly taskEditorPosition: FloatingPosition;
+  readonly calendarPosition: CalendarPosition;
   readonly doesShowCompletedTasks: boolean;
 };
 

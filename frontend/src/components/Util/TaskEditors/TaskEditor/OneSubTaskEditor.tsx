@@ -1,5 +1,3 @@
-// @flow strict
-
 import React, { KeyboardEvent, ReactElement, SyntheticEvent } from 'react';
 import Delete from '../../../../assets/svgs/XLight.svg';
 import PinOutline from '../../../../assets/svgs/pin-2-light-outline.svg';
@@ -18,7 +16,7 @@ type Props = {
   readonly onPressEnter: (id: 'main-task' | number) => void;
 };
 
-type NameCache = { readonly cached: string; readonly originalPropsName: string; };
+type NameCache = { readonly cached: string; readonly originalPropsName: string };
 
 const className = [styles.TaskEditorFlexibleContainer, styles.TaskEditorSubtaskCheckBox].join(' ');
 const deleteIconClass = [styles.TaskEditorIcon, styles.TaskEditorIconLeftPad].join(' ');

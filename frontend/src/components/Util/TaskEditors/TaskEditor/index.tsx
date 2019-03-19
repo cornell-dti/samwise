@@ -29,6 +29,7 @@ import MainTaskEditor from './MainTaskEditor';
 import NewSubTaskEditor from './NewSubTaskEditor';
 import OneSubTaskEditor from './OneSubTaskEditor';
 import { getNewSubTaskId } from '../../../../firebase/id-provider';
+import { CalendarPosition } from '../editors-types';
 
 type DefaultProps = {
   readonly displayGrabber?: boolean;
@@ -51,6 +52,7 @@ type OwnProps = DefaultProps & {
   readonly mainTask: MainTask; // The task given to the editor at this point.
   readonly subTasks: SubTask[];
   readonly actions: Actions; // The actions to perform under different events
+  readonly calendarPosition: CalendarPosition;
 };
 type Props = OwnProps & {
   // subscribed from redux store.
@@ -80,6 +82,7 @@ function TaskEditor(
     onFocus,
     onBlur,
     editorRef,
+    calendarPosition,
   }: Props,
 ): ReactElement {
   const { name, tag, date, complete, inFocus } = mainTask;
@@ -87,6 +90,7 @@ function TaskEditor(
 
   const [tempSubTask, setTempSubTask] = useState<SubTask | null>(null);
   const [subTaskToFocus, setSubTaskToFocus] = useState<TaskToFocus>(null);
+  const calPosition = calendarPosition;
 
   if (tempSubTask != null) {
     subTasks.forEach((oneSubTask) => {
@@ -177,6 +181,7 @@ function TaskEditor(
           date={date}
           onChange={editMainTask}
           getTag={getTag}
+          calendarPosition={calPosition}
           displayGrabber={displayGrabber == null ? false : displayGrabber}
         />
         <MainTaskEditor

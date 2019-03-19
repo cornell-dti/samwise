@@ -131,11 +131,18 @@ input.TaskEditorFlexibleInput:focus-within::placeholder {
   background: white;
 }
 
-.TaskEditorCalendar {
+.TaskEditorCalendarTop {
   position: absolute;
   right: -8px;
-  top: 36px;
+  bottom: 30px;
   z-index: 4;
+}
+
+.TaskEditorCalendarBottom {
+  position: absolute;
+  right: -8px;
+  z-index: 4;
+  top: 36px;
 }
 
 .TaskEditorCalendar div>abbr{

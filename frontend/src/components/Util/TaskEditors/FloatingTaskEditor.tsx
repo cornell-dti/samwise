@@ -1,7 +1,7 @@
 import React, { ReactElement, ReactNode } from 'react';
 import { connect } from 'react-redux';
 import { State, SubTask, Task } from '../../../store/store-types';
-import { FloatingPosition, TaskWithSubTasks } from './editors-types';
+import { CalendarPosition, FloatingPosition, TaskWithSubTasks } from './editors-types';
 import TaskEditor from './TaskEditor';
 import styles from './FloatingTaskEditor.css';
 import { removeTask as removeTaskAction } from '../../../firebase/actions';
@@ -55,6 +55,8 @@ type OwnProps = {
   readonly initialTask: Task;
   // the trigger function to open the editor
   readonly trigger: (opened: boolean, opener: () => void) => ReactNode;
+  // the position of the calendar
+  readonly calendarPosition: CalendarPosition;
 };
 
 type Props = OwnProps & { readonly fullInitialTask: TaskWithSubTasks };
@@ -64,7 +66,7 @@ type Props = OwnProps & { readonly fullInitialTask: TaskWithSubTasks };
  * It is triggered from a click on a specified element.
  */
 function FloatingTaskEditor(
-  { position, initialTask, fullInitialTask: task, trigger }: Props,
+  { position, calendarPosition, initialTask, fullInitialTask: task, trigger }: Props,
 ): ReactElement {
   const [open, setOpen] = React.useState<boolean>(false);
 
@@ -97,6 +99,7 @@ function FloatingTaskEditor(
           actions={actions}
           className={styles.Editor}
           editorRef={editorRef}
+          calendarPosition={calendarPosition}
         />
       )}
     </>

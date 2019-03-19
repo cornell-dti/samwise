@@ -8,7 +8,7 @@ import FutureViewSubTask from './FutureViewSubTask';
 import FloatingTaskEditor from '../../Util/TaskEditors/FloatingTaskEditor';
 import { State, SubTask, Task } from '../../../store/store-types';
 import CheckBox from '../../UI/CheckBox';
-import { FloatingPosition } from '../../Util/TaskEditors/editors-types';
+import { FloatingPosition, CalendarPosition } from '../../Util/TaskEditors/editors-types';
 import { getTodayAtZeroAM } from '../../../util/datetime-util';
 import OverdueAlert from '../../UI/OverdueAlert';
 import { editMainTask, removeTask } from '../../../firebase/actions';
@@ -25,6 +25,7 @@ type OwnProps = {
   readonly taskId: string;
   readonly inNDaysView: boolean;
   readonly taskEditorPosition: FloatingPosition;
+  readonly calendarPosition: CalendarPosition;
   readonly doesShowCompletedTasks: boolean;
   readonly isInMainList: boolean;
 };
@@ -38,7 +39,7 @@ type Props = OwnProps & {
  */
 function FutureViewTask(
   {
-    compoundTask, inNDaysView, taskEditorPosition, isInMainList,
+    compoundTask, inNDaysView, taskEditorPosition, isInMainList, calendarPosition,
   }: Props,
 ): ReactElement | null {
   const isSmallScreen = useMappedWindowSize(({ width }) => width <= 768);
@@ -136,6 +137,7 @@ function FutureViewTask(
   return (
     <FloatingTaskEditor
       position={taskEditorPosition}
+      calendarPosition={calendarPosition}
       initialTask={original}
       trigger={trigger}
     />

@@ -5,6 +5,7 @@ import LightCalendar from '../../../../assets/svgs/light.svg';
 import styles from './TaskEditor.css';
 import TagListPicker from '../../TagListPicker/TagListPicker';
 import { Tag } from '../../../../store/store-types';
+import { CalendarPosition } from '../editors-types';
 
 type TagAndDate = {
   readonly tag: string;
@@ -15,6 +16,7 @@ type Props = TagAndDate & {
   readonly onChange: (change: Partial<TagAndDate>) => void;
   readonly getTag: (id: string) => Tag;
   readonly displayGrabber: boolean;
+  readonly calendarPosition: CalendarPosition;
 };
 
 type EditorDisplayStatus = {
@@ -25,7 +27,7 @@ type EditorDisplayStatus = {
 const calendarIconClass = [styles.TaskEditorIconButton, styles.TaskEditorIcon].join(' ');
 
 export default function EditorHeader(
-  { tag, date, onChange, getTag, displayGrabber }: Props,
+  { tag, date, onChange, getTag, displayGrabber, calendarPosition }: Props,
 ): ReactElement {
   const [editorDisplayStatus, setEditorDisplayStatus] = React.useState<EditorDisplayStatus>({
     doesShowTagEditor: false,
@@ -66,7 +68,11 @@ export default function EditorHeader(
   const dateEditor = doesShowDateEditor && (
     <Calendar
       value={date}
-      className={styles.TaskEditorCalendar}
+      className={
+        calendarPosition === 'top'
+          ? styles.TaskEditorCalendarTop
+          : styles.TaskEditorCalendarBottom
+      }
       minDate={new Date()}
       onChange={editTaskDate}
       calendarType="US"
