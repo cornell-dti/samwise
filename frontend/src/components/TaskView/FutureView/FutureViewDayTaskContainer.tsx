@@ -1,6 +1,6 @@
 import React, { ReactElement } from 'react';
 import { connect } from 'react-redux';
-import { FloatingPosition } from '../../Util/TaskEditors/editors-types';
+import {CalendarPosition, FloatingPosition} from '../../Util/TaskEditors/editors-types';
 import FutureViewTask from './FutureViewTask';
 import styles from './FutureViewDayTaskContainer.css';
 import { useWindowSizeCallback } from '../../../hooks/window-size-hook';
@@ -12,6 +12,7 @@ type OwnProps = {
   readonly date: string;
   readonly inNDaysView: boolean;
   readonly taskEditorPosition: FloatingPosition;
+  readonly calendarPosition: CalendarPosition;
   readonly doesShowCompletedTasks: boolean;
   readonly isInMainList: boolean;
   readonly onHeightChange: (doesOverflow: boolean, tasksHeight: number) => void;
@@ -30,6 +31,7 @@ function FutureViewDayTaskContainer(
     inNDaysView,
     taskEditorPosition,
     doesShowCompletedTasks,
+    calendarPosition,
     isInMainList,
     onHeightChange,
   }: Props,
@@ -56,6 +58,7 @@ function FutureViewDayTaskContainer(
       taskId={id}
       inNDaysView={inNDaysView}
       taskEditorPosition={taskEditorPosition}
+      calendarPosition={calendarPosition}
       doesShowCompletedTasks={doesShowCompletedTasks}
       isInMainList={isInMainList}
     />

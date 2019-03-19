@@ -1,6 +1,6 @@
 import React, { ReactElement } from 'react';
 import { SimpleDate } from './future-view-types';
-import { FloatingPosition } from '../../Util/TaskEditors/editors-types';
+import {CalendarPosition, FloatingPosition} from '../../Util/TaskEditors/editors-types';
 import styles from './FutureViewDay.css';
 import { day2String, getTodayAtZeroAM } from '../../../util/datetime-util';
 import FutureViewDayTaskContainer from './FutureViewDayTaskContainer';
@@ -9,6 +9,7 @@ type Props = {
   readonly date: SimpleDate;
   readonly inNDaysView: boolean;
   readonly taskEditorPosition: FloatingPosition;
+  readonly calendarPosition: CalendarPosition;
   readonly doesShowCompletedTasks: boolean;
   readonly inMainList: boolean;
   readonly onHeightChange: (doesOverflow: boolean, tasksHeight: number) => void;
@@ -22,6 +23,7 @@ function FutureViewDayContent(
     date,
     inNDaysView,
     taskEditorPosition,
+    calendarPosition,
     doesShowCompletedTasks,
     inMainList,
     onHeightChange,
@@ -41,6 +43,7 @@ function FutureViewDayContent(
         date={date.text}
         inNDaysView={inNDaysView}
         taskEditorPosition={taskEditorPosition}
+        calendarPosition={calendarPosition}
         doesShowCompletedTasks={doesShowCompletedTasks}
         isInMainList={inMainList}
         onHeightChange={onHeightChange}

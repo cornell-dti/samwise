@@ -138,6 +138,13 @@ input.TaskEditorFlexibleInput:focus-within::placeholder {
   z-index: 4;
 }
 
+.TaskEditorCalendarBottom {
+  position: absolute;
+  right: -8px;
+  z-index: 4;
+  bottom: 30px;
+}
+
 .TaskEditorCalendar div>abbr{
   color: black;
 }
