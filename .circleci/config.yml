@@ -1,6 +1,6 @@
 version: 2.1
 jobs:
-  tsc-frontend:
+  frontend-code-quality-check:
     description: Run TypeScript type-checker on frontend
     docker:
       - image: circleci/node:lts
@@ -43,10 +43,10 @@ workflows:
   version: 2
   build-and-deploy:
     jobs:
-      - tsc-frontend
+      - frontend-code-quality-check
       - deploy-frontend:
           requires:
-            - tsc-frontend
+            - frontend-code-quality-check
           filters:
             branches:
               only: master
