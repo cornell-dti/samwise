@@ -2,13 +2,18 @@ import React, { ReactElement } from 'react';
 import FutureViewDay from './FutureViewDay';
 import styles from './FutureViewNDays.css';
 import { SimpleDate } from './future-view-types';
+import {CalendarPosition} from "../../Util/TaskEditors/editors-types";
 
-type Props = { readonly days: SimpleDate[]; readonly doesShowCompletedTasks: boolean };
+type Props = {
+  readonly days: SimpleDate[];
+  readonly doesShowCompletedTasks: boolean;
+  readonly calendarPosition: CalendarPosition;
+};
 
 /**
  * The component used to contain all the backlog days in n-days mode.
  */
-export default function FutureViewNDays({ days, doesShowCompletedTasks }: Props): ReactElement {
+export default function FutureViewNDays({ days, doesShowCompletedTasks, calendarPosition }: Props): ReactElement {
   const nDays = days.length;
   const containerStyle = { gridTemplateColumns: `${100.0 / nDays}% `.repeat(nDays).trim() };
   return (
@@ -21,6 +26,7 @@ export default function FutureViewNDays({ days, doesShowCompletedTasks }: Props)
               inNDaysView
               taskEditorPosition={taskEditorPosition}
               doesShowCompletedTasks={doesShowCompletedTasks}
+              calendarPosition={calendarPosition}
               date={date}
             />
           </div>
