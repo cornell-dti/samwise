@@ -19,13 +19,13 @@ export default function TaskView(): ReactElement {
   const toggleFocusViewInWideScreen = (): void => setDoesShowFocusViewInWideScreen(prev => !prev);
   const switchView = (): void => setDoesShowFutureViewInSmallScreen(prev => !prev);
 
-  const FuturePanel = ({ children }: { readonly children?: ReactNode }): ReactElement => {
+  const FuturePanel = ({ children }: { readonly children?: ReactNode; }): ReactElement => {
     const onChange = (c: FutureViewConfig): void => { setConfig(c); };
     return (
       <div className={styles.FuturePanel}>
         <div className={styles.FuturePanelContainer}>
           {children}
-          <FutureView config={config} onConfigChange={onChange} />
+          <FutureView calendarPosition={"bottom"} config={config} onConfigChange={onChange} />
         </div>
       </div>
     );
