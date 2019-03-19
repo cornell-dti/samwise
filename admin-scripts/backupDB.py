@@ -26,6 +26,6 @@ for task in backupTasks:
 
 print(u'Backup data: {}'.format(backup))
 
-
-with open('result.json', 'w') as fp:
+#not sure if should append or write new
+with open('result.json', 'a') as fp:
     json.dump(backup, fp, indent=4)
