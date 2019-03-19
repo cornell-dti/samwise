@@ -33,16 +33,12 @@ jobs:
       - run:
           name: Deploy to Firebase
           command: |
-            if [ "${CIRCLE_BRANCH}" = "master" ]; then
-              cd frontend
-              yarn
-              yarn build:stage
-              ./node_modules/.bin/firebase use default
-              ./node_modules/.bin/firebase deploy --token=$FIREBASE_TOKEN --non-interactive --only hosting
-              cd ../
-            else
-              echo "Not master branch, do not deploy"
-            fi
+            cd frontend
+            yarn
+            yarn build:stage
+            ./node_modules/.bin/firebase use default
+            ./node_modules/.bin/firebase deploy --token=$FIREBASE_TOKEN --non-interactive --only hosting
+            cd ../
 workflows:
   version: 2
   build-and-deploy:
@@ -51,3 +47,6 @@ workflows:
       - deploy-frontend:
           requires:
             - tsc-frontend
+          filters:
+            branches:
+              only: master
