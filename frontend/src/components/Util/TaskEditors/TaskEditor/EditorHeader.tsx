@@ -69,7 +69,7 @@ export default function EditorHeader(
     <Calendar
       value={date}
       className={ (calendarPosition === 'top') ?
-        styles.TaskEditorCalendar : styles.TaskEditorCalendarBottom}
+        styles.TaskEditorCalendarTop : styles.TaskEditorCalendarBottom}
       minDate={new Date()}
       onChange={editTaskDate}
       calendarType="US"

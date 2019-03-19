@@ -16,7 +16,7 @@ export default ({ days, doesShowCompletedTasks }: Props): ReactElement => {
       key={date.text}
       inNDaysView={false}
       taskEditorPosition={(i % 7) < 4 ? 'right' : 'left'}
-      calendarPosition={ ((interval === '2W' && i / 7 < 2) || (interval === 'Monthly' && i / 7 < 3)) ? 'top':'bottom' }
+      calendarPosition={ ((interval === '2W' && i / 7 < 1) || (interval === 'Monthly' && i / 7 < 3)) ? 'bottom':'top' }
       doesShowCompletedTasks={doesShowCompletedTasks}
       date={date}
     />

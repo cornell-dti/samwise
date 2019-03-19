@@ -24,9 +24,9 @@ export default function FutureViewNDays({ days, doesShowCompletedTasks, calendar
           <div key={date.text} className={styles.Column}>
             <FutureViewDay
               inNDaysView
+              calendarPosition={"bottom"}
               taskEditorPosition={taskEditorPosition}
               doesShowCompletedTasks={doesShowCompletedTasks}
-              calendarPosition={calendarPosition}
               date={date}
             />
           </div>
