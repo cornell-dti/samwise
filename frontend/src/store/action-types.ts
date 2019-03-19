@@ -1,6 +1,5 @@
 import { Map } from 'immutable';
 import { Course, Settings, SubTask, Tag, Task, BannerMessageStatus } from './store-types';
-import { type } from 'os';
 
 export type PatchTags = {
   readonly type: 'PATCH_TAGS';

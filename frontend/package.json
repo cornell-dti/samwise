@@ -8,7 +8,7 @@
     "build": "webpack --config webpack.prod.js",
     "tsc": "tsc -p tsconfig.json",
     "test": "jest --config jest.config.js",
-    "lint": "eslint ."
+    "lint": "eslint . --ext .js --ext .ts --ext .jsx --ext .tsx"
   },
   "dependencies": {
     "@babel/polyfill": "^7.2.5",
