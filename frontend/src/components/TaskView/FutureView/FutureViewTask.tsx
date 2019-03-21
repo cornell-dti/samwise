@@ -73,6 +73,7 @@ function FutureViewTask(
   };
   const TaskName = (): ReactElement => {
     const { name, complete } = original;
+    const new_name = (name.length > 20) ? name.substring(0,20) + "..." : name;
     const tagStyle = complete ? { textDecoration: 'line-through' } : {};
     return <span className={styles.TaskText} style={tagStyle}>{name}</span>;
   };
