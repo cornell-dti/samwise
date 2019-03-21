@@ -1,6 +1,6 @@
 # Project Samwise v1.0
 
-_Last updated **02/04/2019**_.
+_Last updated **03/20/2019**_.
 
 ## Contents
 
@@ -8,11 +8,10 @@ _Last updated **02/04/2019**_.
   - [Contents](#contents)
   - [About](#about)
   - [Getting Started](#getting-started)
-    - [Frontend](#frontend)
     - [Contribution](#contribution)
   - [Dependencies & Libraries](#dependencies--libraries)
-    - [Frontend](#frontend-1)
-  - [External Documentation](#external-documentation)
+    - [Frontend](#frontend)
+  - [Documentation](#documentation)
   - [Screenshots](#screenshots)
   - [Contributors](#contributors)
     - [Since 2016](#since-2016)
@@ -26,11 +25,8 @@ A web application designed to help Cornell students plan their semesters.
 
 ## Getting Started
 
-### Frontend
-
-To run the frontend, go to the frontend folder and run `yarn start` or `npm run start`. To build the
-frontend, run `yarn build` or `npm run build`. Although Yarn and NPM are both supported, we
-recommend Yarn because it's much faster and deterministic.
+To run the webapp, go to the frontend folder and run `yarn start`. To build the frontend for
+deployment, run `yarn build`.
 
 We use various tools to ensure the quality of our frontend code. They should be installed and
 properly configured with your IDE or text editor.
@@ -41,7 +37,8 @@ We disabled everyone's ability to directly commit to master branch to ensure cod
 changes to the code, you can create a new branch, have some changes in your branch, and create it
 a pull request with good changelog.
 
-You are expected to follow the [Style Guide](docs/style-guide.md) in your contributed code.
+You are expected to follow the
+[Style Guide](https://github.com/cornell-dti/samwise/wiki/Style-Guide) in your contributed code.
 
 ## Dependencies & Libraries
 
@@ -62,7 +59,7 @@ To know about the specific versions of these dependencies, go to [package.json](
 
 ## Documentation
 
-Check the [docs](./docs) folder to see a list of all documentations.
+Check our [wiki](https://github.com/cornell-dti/samwise/wiki) folder to see a list of all documentations.
 
 ## Screenshots
 
