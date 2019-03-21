@@ -63,7 +63,7 @@ Check our [wiki](https://github.com/cornell-dti/samwise/wiki) folder to see a li
 
 ## Screenshots
 
-<img src="./screenshots/placeholder1.png" width="250px" style="margin: 10px; border: 1px rgba(0,0,0,0.4) solid;">
+<img src="./screenshots/app.png" width="300px" style="margin: 1em" />
 
 ## Contributors
 
