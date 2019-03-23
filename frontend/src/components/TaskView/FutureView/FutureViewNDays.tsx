@@ -10,7 +10,7 @@ type Props = { readonly days: SimpleDate[]; readonly doesShowCompletedTasks: boo
  */
 export default function FutureViewNDays({ days, doesShowCompletedTasks }: Props): ReactElement {
   const nDays = days.length;
-  const containerStyle = { gridTemplateColumns: ` repeat(${nDays}, minmax(0, 1fr))`};
+  const containerStyle = { gridTemplateColumns: `repeat(${nDays}, minmax(0, 1fr))` };
   return (
     <div className={styles.FutureViewNDays} style={containerStyle}>
       {days.map((date: SimpleDate, index: number) => {
