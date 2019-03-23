@@ -15,7 +15,7 @@ export default function FutureViewNDays(
   { days, doesShowCompletedTasks }: Props,
 ): ReactElement {
   const nDays = days.length;
-  const containerStyle = { gridTemplateColumns: `${100.0 / nDays}% `.repeat(nDays).trim() };
+  const containerStyle = { gridTemplateColumns: `repeat(${nDays}, minmax(0, 1fr))` };
   return (
     <div className={styles.FutureViewNDays} style={containerStyle}>
       {days.map((date: SimpleDate, index: number) => {
