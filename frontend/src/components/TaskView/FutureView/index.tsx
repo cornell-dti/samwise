@@ -114,8 +114,9 @@ export default function FutureView(
 ): ReactElement {
   // the number of days in n-days mode.
   const nDays = useMappedWindowSize(({ width }) => {
-    if (width > 960) { return 5; }
-    if (width > 840) { return 4; }
+    if (width > 1280) { return 5; }
+    if (width > 960) { return 4; }
+    if (width > 840) { return 3; }
     return 1;
   });
   const controlOnChange = (change: Partial<FutureViewConfig>): void => {
