@@ -1,6 +1,7 @@
 import React, { ReactElement } from 'react';
 import { ToastContainer } from 'react-toastify';
 import styles from './App.module.css';
+import AllComplete from './components/Popup/AllComplete';
 import Onboard from './components/TitleBar/Onboarding/Onboard';
 import TaskCreator from './components/TaskCreator/TaskCreator';
 import TaskView from './components/TaskView';
@@ -17,6 +18,7 @@ export default function App(): ReactElement {
       <TitleBar />
       <TaskCreator />
       <TaskView />
+      <AllComplete />
     </div>
   );
 }
