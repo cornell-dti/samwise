@@ -21,7 +21,7 @@ export default function NewSubTaskEditor(
     }
   };
   const onKeyDown = (event: KeyboardEvent<HTMLInputElement>): void => {
-    if (event.key === 'Enter') {
+    if (event.key === 'Enter' || event.key === 'Tab') {
       onPressEnter();
     }
   };

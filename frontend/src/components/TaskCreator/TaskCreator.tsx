@@ -115,9 +115,7 @@ export default class TaskCreator extends React.PureComponent<{}, State> {
       // normalize orders: use current sequence as order;; remove useless id
       .map(({ id, ...rest }, order) => ({ ...rest, order }));
     const autoInFocus = inFocus || isToday(date); // Put task in focus is the due date is today.
-    const newTask = {
-      name, tag, date, complete, inFocus: autoInFocus,
-    };
+    const newTask = { name, tag, date, complete, inFocus: autoInFocus };
     // Add the task to the store.
     addTask(newTask, newSubTasks);
     // Reset the state.
@@ -190,6 +188,18 @@ export default class TaskCreator extends React.PureComponent<{}, State> {
       needToSwitchFocus: true,
     }));
   };
+
+  /**
+   * Handle a keypress event in a new subtask box.
+   * It can potentially make the form to lose focus to exit.
+   *
+   * @param e the event that contains the key pressed in the new subtask input box.
+   */
+  private newSubTaskKeyPress = (e: KeyboardEvent<HTMLInputElement>): void => {
+    if (e.key === 'Tab') {
+      this.closeNewTask();
+    }
+  }
 
   /**
    * Edit a subtask.
@@ -297,7 +307,13 @@ export default class TaskCreator extends React.PureComponent<{}, State> {
         <div className={styles.NewTaskModal}>
           <ul>{subTasks.map(existingSubTaskEditor)}</ul>
           <Icon name="plus" />
-          <input type="text" placeholder="Add a Subtask" value="" onChange={this.addNewSubTask} />
+          <input
+            type="text"
+            placeholder="Add a Subtask"
+            value=""
+            onChange={this.addNewSubTask}
+            onKeyDown={this.newSubTaskKeyPress}
+          />
           <button type="button" className={styles.ResetButton} onClick={this.resetTask}>
             {'Clear'}
           </button>
@@ -309,31 +325,28 @@ export default class TaskCreator extends React.PureComponent<{}, State> {
   public render(): ReactElement {
     const { name, opened } = this.state;
     const toggleDisplayStyle = opened ? {} : { display: 'none' };
-    // Click this component, new task component closes.
-    const newTaskCloser = (
-      <div
-        onClick={this.closeNewTask}
-        role="presentation"
-        className={styles.CloseNewTask}
-        style={toggleDisplayStyle}
-      />
-    );
-    const mainTaskNameEditor = (
-      <input
-        required
-        type="text"
-        value={name}
-        onChange={this.editTaskName}
-        className={styles.NewTaskComponent}
-        placeholder={opened ? '' : PLACEHOLDER_TEXT}
-        ref={(e) => { this.addTask = e; }}
-      />
-    );
     return (
       <div>
-        {newTaskCloser}
-        <form className={styles.NewTaskWrap} onSubmit={this.handleSave} onFocus={this.openNewTask}>
-          {mainTaskNameEditor}
+        <div
+          onClick={this.closeNewTask}
+          role="presentation"
+          className={styles.CloseNewTask}
+          style={toggleDisplayStyle}
+        />
+        <form
+          className={styles.NewTaskWrap}
+          onSubmit={this.handleSave}
+          onFocus={this.openNewTask}
+        >
+          <input
+            required
+            type="text"
+            value={name}
+            onChange={this.editTaskName}
+            className={styles.NewTaskComponent}
+            placeholder={opened ? '' : PLACEHOLDER_TEXT}
+            ref={(e) => { this.addTask = e; }}
+          />
           {this.renderOtherInfoEditor()}
         </form>
       </div>
