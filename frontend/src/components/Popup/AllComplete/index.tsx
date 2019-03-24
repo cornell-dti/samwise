@@ -11,17 +11,28 @@ type Props = { readonly focusTasks: Task[] };
  * The all tasks complete page. Displays after a user completes all focused tasks.
  */
 function AllComplete({ focusTasks }: Props): ReactElement | null {
-  const [completed, setCompleted] = React.useState<boolean>(false);
+  // Simple FSM. 0 = initial, 1 = saw unfinished tasks, 2 = finished all, 3 = hidden
+  const [progress, setProgress] = React.useState<number>(0);
 
-  /* if (completed) {
-    // the conditions not to display the screen
-    return null;
-  } */
-  // const showConfetti = false;
-  const completedTasks = focusTasks.length > 0 && focusTasks.every(t => t.complete);
-  const shouldShow = !completedTasks || completed;
+  switch (progress) {
+    case 0:
+      if ((focusTasks.length > 0) && focusTasks.some(t => !t.complete)) {
+        setProgress(1);
+      }
+      break;
+    case 1:
+      if (focusTasks.length > 0 && focusTasks.every(t => t.complete)) {
+        setProgress(2);
+      }
+      break;
+    case 3:
+      return null;
+    default:
+  }
 
-  const hidePopup = (): void => setCompleted(true);
+  const shouldShow = progress === 2;
+
+  const hidePopup = (): void => setProgress(3);
 
   const confettiConfig = {
     angle: 0,
@@ -37,7 +48,7 @@ function AllComplete({ focusTasks }: Props): ReactElement | null {
   };
 
   return (
-    <div className={styles.Main} style={{ display: shouldShow ? 'none' : undefined }}>
+    <div className={styles.Main} style={{ display: shouldShow ? undefined : 'none' }}>
       <img src={Bear} alt="Happy Sam" />
       <div>
         <h1>You Did It!</h1>
@@ -45,7 +56,7 @@ function AllComplete({ focusTasks }: Props): ReactElement | null {
         <p>Why not take a well deserved break?</p>
         <p>Once you&apos;re back, consider getting a head-start on tomorrow.</p>
         <span className={styles.ConfWrap}>
-          <Confetti active={!shouldShow} config={confettiConfig} />
+          <Confetti active={shouldShow} config={confettiConfig} />
         </span>
         <button onClick={hidePopup} type="button">Alright</button>
       </div>
