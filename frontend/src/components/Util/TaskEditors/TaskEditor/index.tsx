@@ -44,12 +44,13 @@ type DefaultProps = {
 type Actions = {
   // remove the entire task to be edited.
   readonly removeTask: () => void;
-  // save all the edits. remember also to save the locally cached new subtask.
+  // save all the edits.
   readonly onSave: () => void;
 };
 type OwnProps = DefaultProps & {
   readonly id: string;
-  readonly mainTask: MainTask; // The task given to the editor at this point.
+  readonly mainTask: MainTask; // The task given to the editor.
+  // The subtask given to the editor. It should only contain those that should be displayed.
   readonly subTasks: SubTask[];
   readonly actions: Actions; // The actions to perform under different events
   readonly calendarPosition: CalendarPosition;

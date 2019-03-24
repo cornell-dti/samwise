@@ -1,8 +1,7 @@
 import React, { ReactElement } from 'react';
-import Settings from '../../../assets/svgs/settings.svg';
-import Delete from '../../../assets/svgs/XLight.svg';
 import SettingsPage from './SettingsPage';
 import styles from './SettingsButton.css';
+import SamwiseIcon from '../../UI/SamwiseIcon';
 
 export default function SettingsButton(): ReactElement {
   const [showSettings, setShowSettings] = React.useState(false);
@@ -13,12 +12,12 @@ export default function SettingsButton(): ReactElement {
   return (
     <div style={{ display: 'inline-block' }}>
       <button type="submit" onClick={displayModal}>
-        <Settings className={styles.SettingsButton} />
+        <SamwiseIcon iconName="settings" className={styles.SettingsButton} />
       </button>
       {showSettings && (
         <div className={styles.SettingsModal}>
           <button className={styles.CloseButton} type="submit" onClick={closeModal}>
-            <Delete />
+            <SamwiseIcon iconName="x-light" />
           </button>
           <section className={styles.ContentWrap}>
             <h2>Settings</h2>

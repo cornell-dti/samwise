@@ -1,11 +1,9 @@
 import React, { ReactElement } from 'react';
-import PinFilled from '../../../assets/svgs/pin-2-dark-filled.svg';
-import PinOutline from '../../../assets/svgs/pin-2-dark-outline.svg';
-import DeleteDark from '../../../assets/svgs/XDark.svg';
 import styles from './FutureViewTask.css';
 import { SubTask } from '../../../store/store-types';
 import CheckBox from '../../UI/CheckBox';
 import { editSubTask, removeSubTask } from '../../../firebase/actions';
+import SamwiseIcon from '../../UI/SamwiseIcon';
 
 type Props = {
   readonly subTask: SubTask;
@@ -39,11 +37,12 @@ function FutureViewSubTask({ subTask, mainTaskId, mainTaskCompleted }: Props): R
       >
         {name}
       </span>
-      {inFocus
-        ? <PinFilled onClick={onFocusChange} className={styles.TaskIcon} />
-        : <PinOutline onClick={onFocusChange} className={styles.TaskIcon} />
-      }
-      <DeleteDark className={styles.TaskIcon} onClick={onRemove} />
+      <SamwiseIcon
+        iconName={inFocus ? 'pin-dark-filled' : 'pin-dark-outline'}
+        onClick={onFocusChange}
+        className={styles.TaskIcon}
+      />
+      <SamwiseIcon iconName="x-dark" className={styles.TaskIcon} onClick={onRemove} />
     </div>
   );
 }

@@ -1,6 +1,6 @@
 import React, { ReactElement } from 'react';
-import HideOrShowToggle from '../../../assets/svgs/v.svg';
 import styles from './CompletedSeparator.module.css';
+import SamwiseIcon from '../../UI/SamwiseIcon';
 
 type Props = {
   readonly count: number;
@@ -17,7 +17,8 @@ export default (
 ): ReactElement => (
   <div className={styles.Separator}>
     <span className={styles.Text}>{`Completed: (${count})`}</span>
-    <HideOrShowToggle
+    <SamwiseIcon
+      iconName="dropdown"
       className={getIconClassName(doesShowCompletedTasks)}
       onClick={onDoesShowCompletedTasksChange}
     />
