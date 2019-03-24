@@ -8,6 +8,7 @@ import SquareIconToggle from '../../UI/SquareIconToggle';
 import { date2YearMonth } from '../../../util/datetime-util';
 import styles from './FutureViewControl.css';
 import { useMappedWindowSize } from '../../../hooks/window-size-hook';
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 /*
  * --------------------------------------------------------------------------------
@@ -81,6 +82,7 @@ function getBiWeeklyViewHeaderTitle(biweeklyOffset: number): string {
 /**
  * The component to control nav.
  */
+// <Icon className={className} style={nextStyle} name="chevron right" onClick={nextHandler} />
 function NavControl(props: NavControlProps): ReactElement {
   const { containerType, futureViewOffset, changeOffset, isSmallScreen } = props;
   const prevHandler = changeOffset(-1);

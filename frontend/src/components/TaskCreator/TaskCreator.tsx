@@ -11,6 +11,7 @@ import { Task, SubTask } from '../../store/store-types';
 import { NONE_TAG_ID } from '../../util/tag-util';
 import { isToday } from '../../util/datetime-util';
 import { addTask } from '../../firebase/actions';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 
 type SimpleTask = Pick<Task, Exclude<keyof Task, 'order' | 'children'>>;
 
@@ -292,11 +293,11 @@ export default class TaskCreator extends React.PureComponent<{}, State> {
           onPickerOpened={this.openDatePicker}
         />
         <button tabIndex={-1} type="submit" className={styles.SubmitNewTask}>
-          <Icon name="arrow alternate circle right outline" color="black" />
+          <FontAwesomeIcon icon={"arrow-alt-circle-right"}/>
         </button>
         <div className={styles.NewTaskModal}>
           <ul>{subTasks.map(existingSubTaskEditor)}</ul>
-          <Icon name="plus" />
+          <FontAwesomeIcon icon="plus" />
           <input type="text" placeholder="Add a Subtask" value="" onChange={this.addNewSubTask} />
           <button type="button" className={styles.ResetButton} onClick={this.resetTask}>
             {'Clear'}
