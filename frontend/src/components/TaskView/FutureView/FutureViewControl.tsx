@@ -87,27 +87,33 @@ function NavControl(props: NavControlProps): ReactElement {
   if (containerType === 'N_DAYS') {
     const className = `${styles.NavButton} ${styles.NavButtonNDays}`;
     const prevStyle = { left: 0 };
-    const nextStyle = { right: -25 };
+    const nextStyle = { right: '-25px' };
     return (
       <React.Fragment>
         {futureViewOffset >= 1 && (
-          <span onClick={prevHandler}>
+          <button type="button" onClick={prevHandler}>
             <FontAwesomeIcon icon={faChevronLeft} className={className} style={prevStyle} />
-          </span>
+          </button>
         )}
-        <span onClick={nextHandler}>
+        <button type="button" onClick={nextHandler}>
           <FontAwesomeIcon icon={faChevronRight} className={className} style={nextStyle} />
-        </span>
+        </button>
       </React.Fragment>
     );
   }
 
-  const prev = <span onClick={prevHandler}>
-                <FontAwesomeIcon icon={faChevronLeft} className={styles.NavButton} />
-              </span>;
-  const next = <span onClick={nextHandler}>
-                <FontAwesomeIcon icon={faChevronRight} className={styles.NavButton} />
-               </span>;
+  const prev = (<button type="button" onClick={prevHandler}>
+    <FontAwesomeIcon
+      icon={faChevronLeft}
+      className={styles.NavButton}
+    />
+  </button>);
+  const next =
+  (
+    <button type="button" onClick={prevHandler}>
+      <FontAwesomeIcon icon={faChevronRight} className={styles.NavButton} />
+    </button>
+  );
   if (containerType === 'BIWEEKLY') {
     return (
       <React.Fragment>
