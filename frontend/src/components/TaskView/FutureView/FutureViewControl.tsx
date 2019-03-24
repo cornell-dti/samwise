@@ -85,8 +85,8 @@ function NavControl(props: NavControlProps): ReactElement {
   const nextHandler = changeOffset(+1);
   if (containerType === 'N_DAYS') {
     const className = `${styles.NavButton} ${styles.NavButtonNDays}`;
-    const prevStyle = { left: 0 };
-    const nextStyle = { right: 0 };
+    const prevStyle = { left: -35 };
+    const nextStyle = { right: -35 };
     return (
       <React.Fragment>
         {futureViewOffset >= 1 && (
