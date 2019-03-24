@@ -1,10 +1,15 @@
-import React, { KeyboardEvent, ReactElement, SyntheticEvent } from 'react';
-import Delete from '../../../../assets/svgs/XLight.svg';
-import PinOutline from '../../../../assets/svgs/pin-2-light-outline.svg';
-import Pin from '../../../../assets/svgs/pin-2-light-filled.svg';
+import React, {
+  KeyboardEvent,
+  ReactElement,
+  SyntheticEvent,
+  useEffect,
+  useState,
+  useRef,
+} from 'react';
 import styles from './TaskEditor.css';
 import CheckBox from '../../../UI/CheckBox';
 import { PartialSubTask, SubTask } from '../../../../store/store-types';
+import SamwiseIcon from '../../../UI/SamwiseIcon';
 
 type Props = {
   readonly subTask: SubTask; // the subtask to edit
@@ -32,7 +37,7 @@ function OneSubTaskEditor(
     onPressEnter,
   }: Props,
 ): ReactElement {
-  const [nameCache, setNameCache] = React.useState<NameCache>({
+  const [nameCache, setNameCache] = useState<NameCache>({
     cached: subTask.name,
     originalPropsName: subTask.name,
   });
@@ -62,9 +67,9 @@ function OneSubTaskEditor(
     }
   };
 
-  const editorRef = React.useRef<HTMLInputElement | null>(null);
+  const editorRef = useRef<HTMLInputElement | null>(null);
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (needToBeFocused) {
       const currentElement = editorRef.current;
       if (currentElement != null) {
@@ -93,11 +98,12 @@ function OneSubTaskEditor(
         onMouseLeave={onBlur}
         style={{ width: 'calc(100% - 70px)' }}
       />
-      {subTask.inFocus
-        ? <Pin className={styles.TaskEditorIcon} onClick={onInFocusChange} />
-        : <PinOutline className={styles.TaskEditorIcon} onClick={onInFocusChange} />
-      }
-      <Delete onClick={onRemove} className={deleteIconClass} />
+      <SamwiseIcon
+        iconName={subTask.inFocus ? 'pin-light-filled' : 'pin-light-outline'}
+        className={styles.TaskEditorIcon}
+        onClick={onInFocusChange}
+      />
+      <SamwiseIcon iconName="x-light" onClick={onRemove} className={deleteIconClass} />
     </div>
   );
 }

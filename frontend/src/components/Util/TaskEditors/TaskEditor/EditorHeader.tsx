@@ -1,11 +1,10 @@
 import React, { ReactElement } from 'react';
 import Calendar from 'react-calendar';
-import Grabber from '../../../../assets/svgs/grabbers.svg';
-import LightCalendar from '../../../../assets/svgs/light.svg';
 import styles from './TaskEditor.css';
 import TagListPicker from '../../TagListPicker/TagListPicker';
 import { Tag } from '../../../../store/store-types';
 import { CalendarPosition } from '../editors-types';
+import SamwiseIcon from '../../../UI/SamwiseIcon';
 
 type TagAndDate = {
   readonly tag: string;
@@ -80,11 +79,14 @@ export default function EditorHeader(
   );
   return (
     <div className={headerClassName}>
-      {displayGrabber && <Grabber className={styles.TaskEditorGrabberIcon} />}
+      {displayGrabber && (
+        <SamwiseIcon iconName="grabber" className={styles.TaskEditorGrabberIcon} />
+      )}
       {tagDisplay}
       {tagEditor}
       <span className={styles.TaskEditorFlexiblePadding} />
-      <LightCalendar
+      <SamwiseIcon
+        iconName="calendar-light"
         className={calendarIconClass}
         style={{ marginRight: '8px' }}
         onClick={toggleDateEditor}
