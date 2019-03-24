@@ -1,4 +1,4 @@
-import React, { KeyboardEvent, ReactElement, SyntheticEvent } from 'react';
+import React, { KeyboardEvent, ReactElement, SyntheticEvent, useEffect, useRef } from 'react';
 import styles from './TaskEditor.css';
 
 type Props = {
@@ -21,14 +21,14 @@ export default function NewSubTaskEditor(
     }
   };
   const onKeyDown = (event: KeyboardEvent<HTMLInputElement>): void => {
-    if (event.key === 'Enter') {
+    if (event.key === 'Enter' || event.key === 'Tab') {
       onPressEnter();
     }
   };
 
-  const editorRef = React.useRef<HTMLInputElement | null>(null);
+  const editorRef = useRef<HTMLInputElement | null>(null);
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (needToBeFocused) {
       const currentElement = editorRef.current;
       if (currentElement != null) {

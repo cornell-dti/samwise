@@ -23,6 +23,7 @@
     "react-color": "^2.17.0",
     "react-dev-utils": "^7.0.4",
     "react-dom": "^16.8.4",
+    "react-dom-confetti": "^0.1.0",
     "react-firebaseui": "^3.1.2",
     "react-ga": "^2.5.7",
     "react-live-clock": "^3.1.0",
