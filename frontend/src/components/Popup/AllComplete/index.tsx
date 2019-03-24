@@ -19,7 +19,7 @@ function AllComplete({ focusTasks }: Props): ReactElement | null {
       if ((focusTasks.length > 0) && focusTasks.some(t => !t.complete)) {
         setProgress(1);
       }
-      break;
+      return null;
     case 1:
       if (focusTasks.length > 0 && focusTasks.every(t => t.complete)) {
         setProgress(2);
@@ -47,8 +47,10 @@ function AllComplete({ focusTasks }: Props): ReactElement | null {
     colors: ['#a864fd', '#29cdff', '#78ff44', '#ff718d', '#fdff6a'],
   };
 
+  const showClass = shouldShow ? styles.Main : `${styles.Main} ${styles.Hidden}`;
+
   return (
-    <div className={styles.Main} style={{ display: shouldShow ? undefined : 'none' }}>
+    <div className={showClass}>
       <img src={Bear} alt="Happy Sam" />
       <div>
         <h1>You Did It!</h1>
