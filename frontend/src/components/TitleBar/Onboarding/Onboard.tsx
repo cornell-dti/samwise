@@ -1,4 +1,4 @@
-import React, { ReactElement, CSSProperties } from 'react';
+import React, { ReactElement, CSSProperties, useState } from 'react';
 import { connect } from 'react-redux';
 import TagItem from '../Tags/TagItem';
 import ClassTagAdder from '../Tags/ClassTagAdder';
@@ -12,7 +12,34 @@ import Tutorial5 from '../../../assets/tutorial/t5.png';
 import Tutorial6 from '../../../assets/tutorial/t6.png';
 import { completeOnboarding, importCourseExams } from '../../../firebase/actions';
 
-const images = [Tutorial1, Tutorial2, Tutorial3, Tutorial4, Tutorial5, Tutorial6];
+type TaggedImage = { readonly src: string; readonly alt: string }
+
+const taggedImages: TaggedImage[] = [
+  {
+    src: Tutorial1,
+    alt: 'Sam is your personal assistant.',
+  },
+  {
+    src: Tutorial2,
+    alt: 'Add tasks in the box \'What do you have to do?\'',
+  },
+  {
+    src: Tutorial3,
+    alt: 'Press the pin icon to move a task to focus view. Press the unpin icon to remove it.',
+  },
+  {
+    src: Tutorial4,
+    alt: 'Tasks added will go into future view',
+  },
+  {
+    src: Tutorial5,
+    alt: 'You can track the progress in the progress bar',
+  },
+  {
+    src: Tutorial6,
+    alt: 'You can review the tutorial and edit tags and classes in settings',
+  },
+];
 
 type AddClassProps = { readonly classTags: Tag[]; readonly showNext: () => void };
 
@@ -69,12 +96,13 @@ type SlidesProps = {
  * Showing slides as the second onboarding step.
  */
 function SlidesOnBoarding({ progress, showNext, goBack, skipTutorial }: SlidesProps): ReactElement {
+  const { src, alt } = taggedImages[progress - 1];
   return (
     <div className={styles.ModalWrap}>
       <h2>Tutorial</h2>
       <div className={styles.TutorialModal}>
         <button type="button" onClick={goBack}>&lsaquo;</button>
-        <img className={styles.TutorialImg} src={images[progress - 1]} alt="Tutorial" />
+        <img className={styles.TutorialImg} src={src} alt={alt} />
         <button type="button" onClick={showNext}>&rsaquo;</button>
       </div>
       <p className={styles.ModalOptions}>
@@ -92,7 +120,7 @@ type Props = { readonly classTags: Tag[]; readonly completedOnboarding: boolean 
  * The onboarding page. Displayed only if the user chooses to do so or during first landing.
  */
 function Onboard({ classTags, completedOnboarding }: Props): ReactElement | null {
-  const [progress, setProgress] = React.useState<number>(0);
+  const [progress, setProgress] = useState<number>(0);
 
   if (completedOnboarding || progress >= 7) {
     completeOnboarding(true);
