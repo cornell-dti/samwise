@@ -2,15 +2,15 @@ import React, { ReactElement } from 'react';
 import { connect } from 'react-redux';
 import Confetti from 'react-dom-confetti';
 import styles from './Celebrate.css';
-import { State, Tag } from '../../../store/store-types';
+import { State, Task } from '../../../store/store-types';
 import Bear from '../../../assets/bear/happy-bear.png';
 
-type Props = { readonly classTags: Tag[]; readonly completedOnboarding: boolean };
+type Props = { readonly focusTasks: Task[] };
 
 /**
  * The all tasks complete page. Displays after a user completes all focused tasks.
  */
-function AllComplete(): ReactElement | null {
+function AllComplete({ focusTasks }: Props): ReactElement | null {
   const [completed, setCompleted] = React.useState<boolean>(false);
 
   /* if (completed) {
@@ -18,6 +18,8 @@ function AllComplete(): ReactElement | null {
     return null;
   } */
   // const showConfetti = false;
+  const completedTasks = focusTasks.length > 0 && focusTasks.every(t => t.complete);
+  const shouldShow = !completedTasks || completed;
 
   const hidePopup = (): void => setCompleted(true);
 
@@ -35,7 +37,7 @@ function AllComplete(): ReactElement | null {
   };
 
   return (
-    <div className={styles.Main}>
+    <div className={styles.Main} style={{ display: shouldShow ? 'none' : undefined }}>
       <img src={Bear} alt="Happy Sam" />
       <div>
         <h1>You Did It!</h1>
@@ -43,7 +45,7 @@ function AllComplete(): ReactElement | null {
         <p>Why not take a well deserved break?</p>
         <p>Once you&apos;re back, consider getting a head-start on tomorrow.</p>
         <span className={styles.ConfWrap}>
-          <Confetti active={completed} config={confettiConfig} />
+          <Confetti active={!shouldShow} config={confettiConfig} />
         </span>
         <button onClick={hidePopup} type="button">Alright</button>
       </div>
@@ -52,9 +54,9 @@ function AllComplete(): ReactElement | null {
 }
 
 const Connected = connect(
-  ({ tags, settings: { completedOnboarding } }: State): Props => {
-    const classTags: Tag[] = Array.from(tags.values()).filter(t => t.classId != null);
-    return { classTags, completedOnboarding };
+  ({ tasks }: State): Props => {
+    const focusTasks: Task[] = Array.from(tasks.values()).filter(t => t.inFocus);
+    return { focusTasks };
   },
 )(AllComplete);
 export default Connected;
