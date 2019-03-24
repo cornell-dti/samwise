@@ -16,6 +16,7 @@ function AllComplete({ focusTasks }: Props): ReactElement | null {
 
   switch (progress) {
     case 0:
+    case 3:
       if ((focusTasks.length > 0) && focusTasks.some(t => !t.complete)) {
         setProgress(1);
       }
@@ -25,8 +26,6 @@ function AllComplete({ focusTasks }: Props): ReactElement | null {
         setProgress(2);
       }
       break;
-    case 3:
-      return null;
     default:
   }
 
