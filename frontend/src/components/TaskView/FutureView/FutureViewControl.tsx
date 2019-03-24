@@ -1,14 +1,12 @@
 import React, { ReactElement } from 'react';
-import { Icon } from 'semantic-ui-react';
-// import Show from '../../../assets/svgs/show.svg';
-// import Hide from '../../../assets/svgs/hide.svg';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faChevronRight, faChevronLeft } from '@fortawesome/free-solid-svg-icons';
 import { FutureViewContainerType, FutureViewDisplayOption } from './future-view-types';
 import SquareTextButton from '../../UI/SquareTextButton';
 import SquareIconToggle from '../../UI/SquareIconToggle';
 import { date2YearMonth } from '../../../util/datetime-util';
 import styles from './FutureViewControl.css';
 import { useMappedWindowSize } from '../../../hooks/window-size-hook';
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 /*
  * --------------------------------------------------------------------------------
@@ -82,7 +80,6 @@ function getBiWeeklyViewHeaderTitle(biweeklyOffset: number): string {
 /**
  * The component to control nav.
  */
-// <Icon className={className} style={nextStyle} name="chevron right" onClick={nextHandler} />
 function NavControl(props: NavControlProps): ReactElement {
   const { containerType, futureViewOffset, changeOffset, isSmallScreen } = props;
   const prevHandler = changeOffset(-1);
@@ -90,18 +87,27 @@ function NavControl(props: NavControlProps): ReactElement {
   if (containerType === 'N_DAYS') {
     const className = `${styles.NavButton} ${styles.NavButtonNDays}`;
     const prevStyle = { left: 0 };
-    const nextStyle = { right: 0 };
+    const nextStyle = { right: -25 };
     return (
       <React.Fragment>
         {futureViewOffset >= 1 && (
-          <Icon className={className} style={prevStyle} name="chevron left" onClick={prevHandler} />
+          <span onClick={prevHandler}>
+            <FontAwesomeIcon icon={faChevronLeft} className={className} style={prevStyle} />
+          </span>
         )}
-        <Icon className={className} style={nextStyle} name="chevron right" onClick={nextHandler} />
+        <span onClick={nextHandler}>
+          <FontAwesomeIcon icon={faChevronRight} className={className} style={nextStyle} />
+        </span>
       </React.Fragment>
     );
   }
-  const prev = <Icon className={styles.NavButton} name="chevron left" onClick={prevHandler} />;
-  const next = <Icon className={styles.NavButton} name="chevron right" onClick={nextHandler} />;
+
+  const prev = <span onClick={prevHandler}>
+                <FontAwesomeIcon icon={faChevronLeft} className={styles.NavButton} />
+              </span>;
+  const next = <span onClick={nextHandler}>
+                <FontAwesomeIcon icon={faChevronRight} className={styles.NavButton} />
+               </span>;
   if (containerType === 'BIWEEKLY') {
     return (
       <React.Fragment>

@@ -220,3 +220,10 @@
 .TagPickWrap ul{
   transform:translateX(100px);
 }
+
+.PlusIcon {
+  font-size: 2em;
+  position: relative;
+  left: 25px;
+  color: grey;
+}

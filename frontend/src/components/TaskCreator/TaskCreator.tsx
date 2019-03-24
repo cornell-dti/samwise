@@ -1,5 +1,6 @@
 import React, { KeyboardEvent, SyntheticEvent, ReactElement } from 'react';
-import { Icon } from 'semantic-ui-react';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faPlus, faArrowAltCircleRight } from '@fortawesome/free-solid-svg-icons';
 import Delete from '../../assets/svgs/XDark.svg';
 import 'react-toastify/dist/ReactToastify.css';
 import styles from './TaskCreator.css';
@@ -11,7 +12,6 @@ import { Task, SubTask } from '../../store/store-types';
 import { NONE_TAG_ID } from '../../util/tag-util';
 import { isToday } from '../../util/datetime-util';
 import { addTask } from '../../firebase/actions';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 
 type SimpleTask = Pick<Task, Exclude<keyof Task, 'order' | 'children'>>;
 
@@ -293,11 +293,11 @@ export default class TaskCreator extends React.PureComponent<{}, State> {
           onPickerOpened={this.openDatePicker}
         />
         <button tabIndex={-1} type="submit" className={styles.SubmitNewTask}>
-          <FontAwesomeIcon icon={"arrow-alt-circle-right"}/>
+          <FontAwesomeIcon icon={faArrowAltCircleRight} />
         </button>
         <div className={styles.NewTaskModal}>
           <ul>{subTasks.map(existingSubTaskEditor)}</ul>
-          <FontAwesomeIcon icon="plus" />
+          <FontAwesomeIcon icon={faPlus} className={styles.PlusIcon} />
           <input type="text" placeholder="Add a Subtask" value="" onChange={this.addNewSubTask} />
           <button type="button" className={styles.ResetButton} onClick={this.resetTask}>
             {'Clear'}
