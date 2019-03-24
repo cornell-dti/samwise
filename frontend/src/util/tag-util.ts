@@ -9,5 +9,5 @@ export const NONE_TAG_ID = 'THE_GLORIOUS_NONE_TAG';
  * The none tag.
  */
 export const NONE_TAG: Tag = {
-  id: NONE_TAG_ID, order: 0, name: 'None', color: 'gray', classId: null,
+  id: NONE_TAG_ID, order: 0, name: 'None', color: '#a6a6a6', classId: null,
 };
