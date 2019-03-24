@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import Confetti from 'react-dom-confetti';
 import styles from './Celebrate.css';
 import { State, Task } from '../../../store/store-types';
-import Bear from '../../../assets/bear/happy-bear.png';
+// import Bear from '../../../assets/bear/happy-bear.png';
 
 type Props = { readonly focusTasks: Task[] };
 
@@ -26,12 +26,17 @@ function AllComplete({ focusTasks }: Props): ReactElement | null {
         setProgress(2);
       }
       break;
+    case 2:
+      if ((focusTasks.length > 0) && focusTasks.some(t => !t.complete)) {
+        setProgress(1);
+      }
+      break;
     default:
   }
 
   const shouldShow = progress === 2;
 
-  const hidePopup = (): void => setProgress(3);
+  // const hidePopup = (): void => setProgress(3);
 
   const confettiConfig = {
     angle: 0,
@@ -50,17 +55,17 @@ function AllComplete({ focusTasks }: Props): ReactElement | null {
 
   return (
     <div className={showClass}>
-      <img src={Bear} alt="Happy Sam" />
+      {/* <img src={Bear} alt="Happy Sam" />
       <div>
         <h1>You Did It!</h1>
         <p>You completed all your tasks for today!</p>
         <p>Why not take a well deserved break?</p>
-        <p>Once you&apos;re back, consider getting a head-start on tomorrow.</p>
-        <span className={styles.ConfWrap}>
-          <Confetti active={shouldShow} config={confettiConfig} />
-        </span>
-        <button onClick={hidePopup} type="button">Alright</button>
-      </div>
+        <p>Once you&apos;re back, consider getting a head-start on tomorrow.</p> */}
+      <span className={styles.ConfWrap}>
+        <Confetti active={shouldShow} config={confettiConfig} />
+      </span>
+      {/* <button onClick={hidePopup} type="button">Alright</button>
+      </div> */}
     </div>
   );
 }

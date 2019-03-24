@@ -1,6 +1,6 @@
 .Main{
   position:fixed;
-  display:flex;
+  /*display:flex;
   align-items:center;
   background:white !important;
   overflow-y:visible !important;
@@ -16,22 +16,23 @@
   padding: 20px;
   width:65vw;
 
-  transition: transform 0.5s ease-out, opacity 0.2s ease-out;
+  transition: transform 0.5s ease-out, opacity 0.2s ease-out;*/
 }
 
 .Hidden{
-  pointer-events: none;
+  display:none;
+  /*pointer-events: none;
   opacity:0;
-  transform:translate(-50%, -50%)scale(0);
+  transform:translate(-50%, -50%)scale(0);*/
 }
 
-.Main div{
+/*.Main div{
   display:block;
   margin-left:20px;
-}
+}*/
 
 /* Transparent Background for the Modal */
-.Main::before{
+/*.Main::before{
   content:'';
   z-index:-2;
   position:fixed;
@@ -39,10 +40,10 @@
   width:200vw;
   height:200vh;
   background:rgba(0,0,0,0.5);
-}
+}*/
 
 /* Hack to get white background in front of the transparent backing */
-.Main::after{
+/*.Main::after{
   content:'';
   z-index:-1;
   position:fixed;
@@ -81,11 +82,12 @@
 }
 
 
-
+*/
 .ConfWrap{
   position:fixed;
   z-index:999;
   top:30%;
-  left:50%;
+  /*left:50%;*/
+  left: 250px;
   pointer-events:none;
 }
