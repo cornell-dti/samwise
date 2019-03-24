@@ -1,9 +1,7 @@
-import React, { KeyboardEvent, ReactElement, SyntheticEvent } from 'react';
-import Delete from '../../../../assets/svgs/XLight.svg';
-import PinOutline from '../../../../assets/svgs/pin-2-light-outline.svg';
-import Pin from '../../../../assets/svgs/pin-2-light-filled.svg';
+import React, { KeyboardEvent, ReactElement, SyntheticEvent, useState } from 'react';
 import styles from './TaskEditor.css';
 import CheckBox from '../../../UI/CheckBox';
+import SamwiseIcon from '../../../UI/SamwiseIcon';
 
 type NameCompleteInFocus = {
   readonly name: string;
@@ -28,10 +26,7 @@ function MainTaskEditor(
     name, complete, inFocus, onChange, onRemove, onPressEnter,
   }: Props,
 ): ReactElement {
-  const [nameCache, setNameCache] = React.useState<NameCache>({
-    cached: name,
-    originalPropsName: name,
-  });
+  const [nameCache, setNameCache] = useState<NameCache>({ cached: name, originalPropsName: name });
   if (name !== nameCache.originalPropsName) {
     setNameCache({ cached: name, originalPropsName: name });
   }
@@ -73,11 +68,12 @@ function MainTaskEditor(
         onBlur={onBlur}
         onMouseLeave={onBlur}
       />
-      {inFocus
-        ? <Pin className={styles.TaskEditorIcon} onClick={editInFocus} />
-        : <PinOutline className={styles.TaskEditorIcon} onClick={editInFocus} />
-      }
-      <Delete className={deleteIconClass} onClick={onRemove} />
+      <SamwiseIcon
+        iconName={inFocus ? 'pin-light-filled' : 'pin-light-outline'}
+        className={styles.TaskEditorIcon}
+        onClick={editInFocus}
+      />
+      <SamwiseIcon iconName="x-light" className={deleteIconClass} onClick={onRemove} />
     </div>
   );
 }

@@ -1,8 +1,5 @@
 import React, { ReactElement, SyntheticEvent, ReactNode } from 'react';
 import { connect } from 'react-redux';
-import Delete from '../../../assets/svgs/XLight.svg';
-import PinFilled from '../../../assets/svgs/pin-2-light-filled.svg';
-import PinOutlineLight from '../../../assets/svgs/pin-2-light-outline.svg';
 import styles from './FutureViewTask.css';
 import FutureViewSubTask from './FutureViewSubTask';
 import FloatingTaskEditor from '../../Util/TaskEditors/FloatingTaskEditor';
@@ -14,6 +11,7 @@ import OverdueAlert from '../../UI/OverdueAlert';
 import { editMainTask, removeTask } from '../../../firebase/actions';
 import { useMappedWindowSize } from '../../../hooks/window-size-hook';
 import { NONE_TAG } from '../../../util/tag-util';
+import SamwiseIcon from '../../UI/SamwiseIcon';
 
 type CompoundTask = {
   readonly original: Task;
@@ -80,14 +78,18 @@ function FutureViewTask(
 
   const RemoveTaskIcon = (): ReactElement => {
     const handler = (): void => removeTask(original);
-    return <Delete className={styles.TaskIcon} onClick={handler} />;
+    return <SamwiseIcon iconName="x-light" className={styles.TaskIcon} onClick={handler} />;
   };
   const PinIcon = (): ReactElement => {
     const { id, inFocus } = original;
     const handler = (): void => editMainTask(id, { inFocus: !inFocus });
-    return (inFocus)
-      ? <PinFilled className={styles.TaskIcon} onClick={handler} />
-      : <PinOutlineLight className={styles.TaskIcon} onClick={handler} />;
+    return (
+      <SamwiseIcon
+        iconName={inFocus ? 'pin-light-filled' : 'pin-light-outline'}
+        className={styles.TaskIcon}
+        onClick={handler}
+      />
+    );
   };
 
   const renderMainTaskInfo = (simplified: boolean = false): ReactElement => {

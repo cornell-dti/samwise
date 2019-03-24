@@ -1,7 +1,5 @@
 import React, { ReactElement } from 'react';
 import { Icon } from 'semantic-ui-react';
-// import Show from '../../../assets/svgs/show.svg';
-// import Hide from '../../../assets/svgs/hide.svg';
 import { FutureViewContainerType, FutureViewDisplayOption } from './future-view-types';
 import SquareTextButton from '../../UI/SquareTextButton';
 import SquareIconToggle from '../../UI/SquareIconToggle';

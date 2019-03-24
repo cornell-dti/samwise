@@ -1,6 +1,5 @@
 import React, { KeyboardEvent, SyntheticEvent, ReactElement } from 'react';
 import { Icon } from 'semantic-ui-react';
-import Delete from '../../assets/svgs/XDark.svg';
 import 'react-toastify/dist/ReactToastify.css';
 import styles from './TaskCreator.css';
 import TagPicker from './TagPicker';
@@ -11,6 +10,7 @@ import { Task, SubTask } from '../../store/store-types';
 import { NONE_TAG_ID } from '../../util/tag-util';
 import { isToday } from '../../util/datetime-util';
 import { addTask } from '../../firebase/actions';
+import SamwiseIcon from '../UI/SamwiseIcon';
 
 type SimpleTask = Pick<Task, Exclude<keyof Task, 'order' | 'children'>>;
 
@@ -261,7 +261,7 @@ export default class TaskCreator extends React.PureComponent<{}, State> {
       return (
         <li key={id}>
           <button type="button" tabIndex={-1} onClick={this.deleteSubTask(id)}>
-            <Delete />
+            <SamwiseIcon iconName="x-dark" />
           </button>
           <input
             type="text"

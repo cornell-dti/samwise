@@ -1,10 +1,10 @@
 import React, { ReactElement } from 'react';
 import { connect } from 'react-redux';
-import TagIcon from '../../assets/svgs/tag.svg';
 import TagListPicker from '../Util/TagListPicker/TagListPicker';
 import styles from './Picker.css';
 import { NONE_TAG, NONE_TAG_ID } from '../../util/tag-util';
 import { State, Tag } from '../../store/store-types';
+import SamwiseIcon from '../UI/SamwiseIcon';
 
 type OwnProps = {
   readonly tag: string;
@@ -26,12 +26,12 @@ function TagPicker({ tag, opened, onTagChange, onPickerOpened, getTag }: Props):
     const { name, color, classId } = getTag(tag);
     const style = isDefault ? {} : { background: color };
     const internal = isDefault
-      ? (<TagIcon className={styles.CenterIcon} />)
+      ? <SamwiseIcon iconName="tag" className={styles.CenterIcon} />
       : (
-        <React.Fragment>
+        <>
           <span className={styles.TagDisplay}>{classId != null ? name.split(':')[0] : name}</span>
           <button type="button" className={styles.ResetButton} onClick={reset}>&times;</button>
-        </React.Fragment>
+        </>
       );
     return (
       <span role="presentation" onClick={clickPicker} className={styles.Label} style={style}>

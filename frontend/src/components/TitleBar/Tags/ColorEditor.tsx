@@ -1,8 +1,8 @@
 import React, { ReactElement } from 'react';
 import { GithubPicker } from 'react-color';
-import Down from '../../../assets/svgs/v.svg';
 import colMap from './ListColors';
 import styles from './ColorEditor.css';
+import SamwiseIcon from '../../UI/SamwiseIcon';
 
 type Props = {
   readonly color: string;
@@ -25,7 +25,7 @@ export default function ColorEditor({ color, onChange }: Props): ReactElement {
       <button type="button" className={styles.ColorEdit} onClick={toggleEditor}>
         {colMap[color.toLowerCase()]}
         <span className={styles.ColorDisplay} style={{ backgroundColor: color }} />
-        <Down className={styles.Arrow} />
+        <SamwiseIcon iconName="dropdown" className={styles.Arrow} />
       </button>
       {doesShowEditor && (
         <div className={styles.ColorPicker}>

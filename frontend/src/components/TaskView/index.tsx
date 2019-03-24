@@ -1,12 +1,11 @@
 import React, { ReactElement, ReactNode, useState } from 'react';
 import { Icon } from 'semantic-ui-react';
 import { useMappedWindowSize } from '../../hooks/window-size-hook';
-import Calendar from '../../assets/svgs/dark.svg';
-import PinFilled from '../../assets/svgs/pin-2-dark-filled.svg';
 import FocusView from './FocusView';
 import FutureView, { futureViewConfigProvider, FutureViewConfig } from './FutureView';
 import ProgressTracker from './ProgressTracker';
 import styles from './TaskView.css';
+import SamwiseIcon from '../UI/SamwiseIcon';
 
 const FocusPanel = (): ReactElement => <div className={styles.FocusPanel}><FocusView /></div>;
 
@@ -40,12 +39,20 @@ export default function TaskView(): ReactElement {
       ? (
         <div className={styles.TaskView}>
           <FuturePanel />
-          <PinFilled className={styles.ViewSwitcher} onClick={switchView} />
+          <SamwiseIcon
+            iconName="pin-dark-filled"
+            className={styles.ViewSwitcher}
+            onClick={switchView}
+          />
         </div>
       ) : (
         <div className={styles.TaskView}>
           <FocusPanel />
-          <Calendar onClick={switchView} className={styles.ViewSwitcher} />
+          <SamwiseIcon
+            iconName="calendar-dark"
+            className={styles.ViewSwitcher}
+            onClick={switchView}
+          />
         </div>
       );
     return (
