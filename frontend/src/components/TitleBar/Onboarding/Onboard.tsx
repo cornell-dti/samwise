@@ -123,6 +123,9 @@ function Onboard({ classTags, completedOnboarding }: Props): ReactElement | null
   const [progress, setProgress] = useState<number>(0);
 
   if (completedOnboarding || progress >= 7) {
+    if (progress >= 7) {
+      setProgress(0);
+    }
     completeOnboarding(true);
     // the conditions not to display the tutorial
     return null;
