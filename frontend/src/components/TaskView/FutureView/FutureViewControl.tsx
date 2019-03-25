@@ -100,7 +100,8 @@ function NavControl(props: NavControlProps): ReactElement {
             style={prevStyle}
           />
         )}
-        { /* // @ts-ignore need onClick */ }
+        {/*
+         // @ts-ignore */}
         <Icon onClick={nextHandler} icon={faChevronRight} className={className} style={nextStyle} />
       </React.Fragment>
     );
