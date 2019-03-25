@@ -1,5 +1,6 @@
 import React, { ReactElement, ReactNode, useState } from 'react';
-import { Icon } from 'semantic-ui-react';
+import { FontAwesomeIcon as Icon } from '@fortawesome/react-fontawesome';
+import { faChevronRight, faChevronLeft } from '@fortawesome/free-solid-svg-icons';
 import { useMappedWindowSize } from '../../hooks/window-size-hook';
 import FocusView from './FocusView';
 import FutureView, { futureViewConfigProvider, FutureViewConfig } from './FutureView';
@@ -66,7 +67,7 @@ export default function TaskView(): ReactElement {
   const WideScreenFocusViewToggle = (): ReactElement => {
     const wrapperStyle = doesShowFocusViewInWideScreen ? { left: '-4em' } : { left: '0' };
     const buttonStyle = doesShowFocusViewInWideScreen ? { left: '2em' } : {};
-    const iconName = doesShowFocusViewInWideScreen ? 'chevron left' : 'chevron right';
+    const iconName = doesShowFocusViewInWideScreen ? faChevronLeft : faChevronRight;
     const iconClass = doesShowFocusViewInWideScreen
       ? styles.FocusViewToggleIconFocusViewShow
       : styles.FocusViewToggleIconFocusViewHide;
@@ -80,7 +81,7 @@ export default function TaskView(): ReactElement {
           onClick={toggleFocusViewInWideScreen}
           onKeyDown={toggleFocusViewInWideScreen}
         >
-          <Icon name={iconName} className={iconClass} />
+          <Icon icon={iconName} className={iconClass} />
         </div>
       </div>
     );

@@ -1,5 +1,6 @@
 import React, { KeyboardEvent, SyntheticEvent, ReactElement } from 'react';
-import { Icon } from 'semantic-ui-react';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faPlus, faArrowAltCircleRight } from '@fortawesome/free-solid-svg-icons';
 import 'react-toastify/dist/ReactToastify.css';
 import styles from './TaskCreator.css';
 import TagPicker from './TagPicker';
@@ -302,18 +303,12 @@ export default class TaskCreator extends React.PureComponent<{}, State> {
           onPickerOpened={this.openDatePicker}
         />
         <button tabIndex={-1} type="submit" className={styles.SubmitNewTask}>
-          <Icon name="arrow alternate circle right outline" color="black" />
+          <FontAwesomeIcon icon={faArrowAltCircleRight} />
         </button>
         <div className={styles.NewTaskModal}>
           <ul>{subTasks.map(existingSubTaskEditor)}</ul>
-          <Icon name="plus" />
-          <input
-            type="text"
-            placeholder="Add a Subtask"
-            value=""
-            onChange={this.addNewSubTask}
-            onKeyDown={this.newSubTaskKeyPress}
-          />
+          <FontAwesomeIcon icon={faPlus} className={styles.PlusIcon} />
+          <input type="text" placeholder="Add a Subtask" value="" onChange={this.addNewSubTask} />
           <button type="button" className={styles.ResetButton} onClick={this.resetTask}>
             {'Clear'}
           </button>

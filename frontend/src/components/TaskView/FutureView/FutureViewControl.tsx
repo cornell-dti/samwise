@@ -1,5 +1,6 @@
 import React, { ReactElement } from 'react';
-import { Icon } from 'semantic-ui-react';
+import { FontAwesomeIcon as Icon } from '@fortawesome/react-fontawesome';
+import { faChevronRight, faChevronLeft, faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
 import { FutureViewContainerType, FutureViewDisplayOption } from './future-view-types';
 import SquareTextButton from '../../UI/SquareTextButton';
 import SquareIconToggle from '../../UI/SquareIconToggle';
@@ -88,16 +89,28 @@ function NavControl(props: NavControlProps): ReactElement {
     const prevStyle = { left: -35 };
     const nextStyle = { right: -35 };
     return (
+      // @ts-ignore need onClick
       <React.Fragment>
         {futureViewOffset >= 1 && (
-          <Icon className={className} style={prevStyle} name="chevron left" onClick={prevHandler} />
+          // @ts-ignore
+          <Icon
+            onClick={prevHandler}
+            icon={faChevronLeft}
+            className={className}
+            style={prevStyle}
+          />
         )}
-        <Icon className={className} style={nextStyle} name="chevron right" onClick={nextHandler} />
+        {/*
+         // @ts-ignore */}
+        <Icon onClick={nextHandler} icon={faChevronRight} className={className} style={nextStyle} />
       </React.Fragment>
     );
   }
-  const prev = <Icon className={styles.NavButton} name="chevron left" onClick={prevHandler} />;
-  const next = <Icon className={styles.NavButton} name="chevron right" onClick={nextHandler} />;
+
+  // @ts-ignore need onClick
+  const prev = (<Icon onClick={prevHandler} icon={faChevronLeft} className={styles.NavButton} />);
+  // @ts-ignore need onClick
+  const next = (<Icon onClick={nextHandler} icon={faChevronRight} className={styles.NavButton} />);
   if (containerType === 'BIWEEKLY') {
     return (
       <React.Fragment>
@@ -184,7 +197,7 @@ function DisplayOptionControl({ nDays, displayOption, offset, onChange }: Props)
     <React.Fragment>
       <SquareIconToggle
         active={doesShowCompletedTasks}
-        iconNames={['eye slash', 'eye']}
+        iconNames={[faEyeSlash, faEye]}
         onToggle={toggleCompletedTasks}
       />
       <div className={styles.ContainerTypeSwitcher}>

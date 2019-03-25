@@ -1,10 +1,13 @@
 import React, { ReactElement } from 'react';
-import { Icon, SemanticICONS } from 'semantic-ui-react';
+import { FontAwesomeIcon as Icon } from '@fortawesome/react-fontawesome';
+import {
+  IconLookup,
+} from '@fortawesome/fontawesome-svg-core';
 import styles from './SquareButtons.css';
 
 type Props = {
   readonly active: boolean;
-  readonly iconNames: [SemanticICONS, SemanticICONS];
+  readonly iconNames: [IconLookup, IconLookup];
   readonly onToggle: () => void;
 };
 
@@ -24,7 +27,10 @@ export default function SquareIconToggle({ active, iconNames, onToggle }: Props)
     : `${styles.SquareButton} ${styles.SquareButtonIconButton} ${styles.active}`;
   return (
     <button className={className} type="button" onClick={onToggle}>
-      <Icon className={styles.SquareButtonText} name={active ? activeIconName : inactiveIconName} />
+      <Icon
+        className={styles.SquareButtonText}
+        icon={active ? activeIconName : inactiveIconName}
+      />
     </button>
   );
 }
