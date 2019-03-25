@@ -1,6 +1,6 @@
 import React, { ReactElement } from 'react';
 import { FontAwesomeIcon as Icon } from '@fortawesome/react-fontawesome';
-import { faChevronRight, faChevronLeft } from '@fortawesome/free-solid-svg-icons';
+import { faChevronRight, faChevronLeft, faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
 import { FutureViewContainerType, FutureViewDisplayOption } from './future-view-types';
 import SquareTextButton from '../../UI/SquareTextButton';
 import SquareIconToggle from '../../UI/SquareIconToggle';
@@ -197,7 +197,7 @@ function DisplayOptionControl({ nDays, displayOption, offset, onChange }: Props)
     <React.Fragment>
       <SquareIconToggle
         active={doesShowCompletedTasks}
-        iconNames={['eye slash', 'eye']}
+        iconNames={[faEyeSlash, faEye]}
         onToggle={toggleCompletedTasks}
       />
       <div className={styles.ContainerTypeSwitcher}>

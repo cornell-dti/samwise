@@ -31,8 +31,7 @@
     "react-search-box": "^2.0.1",
     "react-toastify": "^4.5.2",
     "redux": "^4.0.1",
-    "reselect": "^4.0.0",
-    "semantic-ui-react": "^0.85.0"
+    "reselect": "^4.0.0"
   },
   "devDependencies": {
     "@babel/core": "^7.3.4",
