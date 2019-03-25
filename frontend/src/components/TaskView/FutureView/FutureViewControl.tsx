@@ -1,5 +1,5 @@
 import React, { ReactElement } from 'react';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { FontAwesomeIcon as Icon } from '@fortawesome/react-fontawesome';
 import { faChevronRight, faChevronLeft } from '@fortawesome/free-solid-svg-icons';
 import { FutureViewContainerType, FutureViewDisplayOption } from './future-view-types';
 import SquareTextButton from '../../UI/SquareTextButton';
@@ -89,31 +89,27 @@ function NavControl(props: NavControlProps): ReactElement {
     const prevStyle = { left: -35 };
     const nextStyle = { right: -35 };
     return (
+      // @ts-ignore need onClick
       <React.Fragment>
         {futureViewOffset >= 1 && (
-          <button type="button" onClick={prevHandler}>
-            <FontAwesomeIcon icon={faChevronLeft} className={className} style={prevStyle} />
-          </button>
+          // @ts-ignore
+          <Icon
+            onClick={prevHandler}
+            icon={faChevronLeft}
+            className={className}
+            style={prevStyle}
+          />
         )}
-        <button type="button" onClick={nextHandler}>
-          <FontAwesomeIcon icon={faChevronRight} className={className} style={nextStyle} />
-        </button>
+        { /* // @ts-ignore need onClick */ }
+        <Icon onClick={nextHandler} icon={faChevronRight} className={className} style={nextStyle} />
       </React.Fragment>
     );
   }
 
-  const prev = (<button type="button" onClick={prevHandler}>
-    <FontAwesomeIcon
-      icon={faChevronLeft}
-      className={styles.NavButton}
-    />
-  </button>);
-  const next =
-  (
-    <button type="button" onClick={prevHandler}>
-      <FontAwesomeIcon icon={faChevronRight} className={styles.NavButton} />
-    </button>
-  );
+  // @ts-ignore need onClick
+  const prev = (<Icon onClick={prevHandler} icon={faChevronLeft} className={styles.NavButton} />);
+  // @ts-ignore need onClick
+  const next = (<Icon onClick={nextHandler} icon={faChevronRight} className={styles.NavButton} />);
   if (containerType === 'BIWEEKLY') {
     return (
       <React.Fragment>
