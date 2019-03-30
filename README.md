@@ -1,5 +1,7 @@
 # Project Samwise v1.0
 
+[![CircleCI](https://circleci.com/gh/cornell-dti/samwise.svg?style=svg)](https://circleci.com/gh/cornell-dti/samwise)
+
 _Last updated **03/20/2019**_.
 
 ## Contents
