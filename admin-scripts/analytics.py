@@ -58,7 +58,20 @@ def productivity_by_tag(tasks, period, tag):
     tasks = db.collection(u'samwise-tasks').where(u'tag', u'==', tag).get()
     return time_saved_in_period(tasks, period)
 
-# TODO: def days_overdue_in_period():
+def days_overdue_in_period(tasks, period):
+    cutoff = datetime.datetime.today() - datetime.timedelta(days=(period))
+    tasks = db.collection(u'samwise-tasks').where(
+        u'added', u'>=', cutoff).where(u'complete', u'==', False).where(
+            'date', '<=', 'dateCompleted')).get()
+
+    hours_overdue = 0
+    for task in tasks:
+        due = task.get(u'date')
+        completed = task.get(u'dateCompleted')
+        date_difference = completed - due
+        hours_saved += date_difference.seconds // 3600
+
+    return hours_overdue
 
 def most_productive_day(db, period):
     cutoff = datetime.datetime.today() - datetime.timedelta(days=(period))
