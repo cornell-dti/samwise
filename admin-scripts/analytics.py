@@ -54,7 +54,9 @@ def most_completed_tag(db, period):
 
     return tag
 
-# TODO: def productivity_by_tag(tasks, period, tag):
+def productivity_by_tag(tasks, period, tag):
+    tasks = db.collection(u'samwise-tasks').where(u'tag', u'==', tag).get()
+    return time_saved_in_period(tasks, period)
 
 # TODO: def days_overdue_in_period():
 
