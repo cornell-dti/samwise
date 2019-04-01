@@ -60,6 +60,18 @@ def productivity_by_tag(tasks, period, tag):
 
 # TODO: def days_overdue_in_period():
 
-# TODO: def most_completed_day():
+def most_productive_day(db, period):
+    cutoff = datetime.datetime.today() - datetime.timedelta(days=(period))
+    tasks = db.collection(u'samwise-tasks').where(
+        u'added', u'>=', cutoff).where(u'complete', u'==', True).get()
+    dates = {}
 
+    for task in tasks:
+        date = task.get('dateCompleted').weekday()
+        if not date in dates:
+            dates[date] = 1
+        else:
+            dates[date] += 1
+
+    return key_max_val(dates)
 
