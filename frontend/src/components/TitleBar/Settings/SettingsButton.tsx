@@ -2,6 +2,7 @@ import React, { ReactElement } from 'react';
 import SettingsPage from './SettingsPage';
 import styles from './SettingsButton.css';
 import SamwiseIcon from '../../UI/SamwiseIcon';
+import Tooltip from '../../UI/Tooltip';
 
 export default function SettingsButton(): ReactElement {
   const [showSettings, setShowSettings] = React.useState(false);
@@ -12,7 +13,7 @@ export default function SettingsButton(): ReactElement {
   return (
     <div style={{ display: 'inline-block' }}>
       <button type="submit" onClick={displayModal}>
-        <SamwiseIcon iconName="settings" className={styles.SettingsButton} />
+        <Tooltip name="Settings Button" iconName="settings" />
       </button>
       {showSettings && (
         <div className={styles.SettingsModal}>

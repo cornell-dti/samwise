@@ -22,27 +22,7 @@ import UncheckedComponent from '../../assets/svgs/unchecked.svg';
 import DropDownComponent from '../../assets/svgs/v.svg';
 import XDarkComponent from '../../assets/svgs/XDark.svg';
 import XLightComponent from '../../assets/svgs/XLight.svg';
-
-type IconName =
-  | 'alert'
-  | 'calendar-dark'
-  | 'calendar-light'
-  | 'checked-dark'
-  | 'checked-light'
-  | 'clock'
-  | 'grabber'
-  | 'hide'
-  | 'pin-dark-filled'
-  | 'pin-dark-outline'
-  | 'pin-light-filled'
-  | 'pin-light-outline'
-  | 'settings'
-  | 'show'
-  | 'tag'
-  | 'unchecked'
-  | 'dropdown'
-  | 'x-dark'
-  | 'x-light';
+import { IconName } from './Samwise-icon-types';
 
 type SvgProps = SVGAttributes<SVGElement>;
 
@@ -51,6 +31,7 @@ type Props = SvgProps & { readonly iconName: IconName };
 export default ({ iconName, ...otherProps }: Props): ReactElement => {
   let SvgComponent: StatelessComponent<SvgProps>;
   let altText: string;
+
   switch (iconName) {
     case 'alert':
       SvgComponent = AlertComponent;
