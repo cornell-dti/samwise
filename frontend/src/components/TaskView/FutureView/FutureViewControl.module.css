@@ -19,13 +19,13 @@
 
 .Title {
   font-size: 24px;
-  margin: 1em 0.5em !important;
+  margin: 1em 0.5em;
 }
 
 .NavButton {
   cursor: pointer;
-  margin-left: 0.5em !important;
-  font-size: 1.5em !important;
+  margin-left: 0.5em;
+  font-size: 1.5em;
 }
 
 .NavButtonNDays {
@@ -66,7 +66,7 @@
 
 .ContainerTypeSwitcherButtonText {
   font-size: 12px;
-  margin: 0 auto !important;
+  margin: 0 auto;
 }
 
 .ContainerTypeSwitcherActiveButton {
