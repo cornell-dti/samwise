@@ -3,6 +3,7 @@
  */
 
 import React, { ReactElement, StatelessComponent, SVGAttributes } from 'react';
+import { IconName } from './samwise-icon-types';
 import { ReactComponent as AlertComponent } from '../../assets/svgs/alert.svg';
 import { ReactComponent as CalendarDarkComponent } from '../../assets/svgs/calendar-dark.svg';
 import { ReactComponent as CalendarLightComponent } from '../../assets/svgs/calendar-light.svg';
@@ -29,27 +30,6 @@ import { ReactComponent as DropDownComponent } from '../../assets/svgs/v.svg';
 import { ReactComponent as XDarkComponent } from '../../assets/svgs/XDark.svg';
 import { ReactComponent as XLightComponent } from '../../assets/svgs/XLight.svg';
 
-type IconName =
-  | 'alert'
-  | 'calendar-dark'
-  | 'calendar-light'
-  | 'checked-dark'
-  | 'checked-light'
-  | 'clock'
-  | 'grabber'
-  | 'hide'
-  | 'pin-dark-filled'
-  | 'pin-dark-outline'
-  | 'pin-light-filled'
-  | 'pin-light-outline'
-  | 'settings'
-  | 'show'
-  | 'tag'
-  | 'unchecked'
-  | 'dropdown'
-  | 'x-dark'
-  | 'x-light';
-
 type SvgProps = SVGAttributes<SVGElement>;
 
 type Props = SvgProps & { readonly iconName: IconName };
@@ -57,6 +37,7 @@ type Props = SvgProps & { readonly iconName: IconName };
 export default ({ iconName, ...otherProps }: Props): ReactElement => {
   let SvgComponent: StatelessComponent<SvgProps>;
   let altText: string;
+
   switch (iconName) {
     case 'alert':
       SvgComponent = AlertComponent;

@@ -174,6 +174,7 @@ const getCompoundTask = (
   filteredSubTasks = filteredSubTasks.sort((a, b) => a.order - b.order);
   return { original, filteredSubTasks, color };
 };
+
 const mapStateToProps = (
   state: State, ownProps: OwnProps,
 ): { readonly compoundTask: CompoundTask | null } => ({
