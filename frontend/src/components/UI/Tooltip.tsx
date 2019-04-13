@@ -1,6 +1,5 @@
 import React, { Component, ReactElement } from 'react';
 import SamwiseIcon from './SamwiseIcon';
-// @ts-ignore
 import { IconName } from './samwise-icon-types';
 import styles from './Tooltip.css';
 
@@ -16,6 +15,7 @@ export default class Tooltip extends Component<Props, State> {
   public readonly state: State = { hover: false };
 
   private handleMouseIn = () => this.setState({ hover: true });
+
   private handleMouseOut = () => this.setState({ hover: false });
 
   public render(): ReactElement {
