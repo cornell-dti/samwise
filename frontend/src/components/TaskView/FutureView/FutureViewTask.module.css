@@ -43,6 +43,11 @@
   height: 16px;
 }
 
+.TaskIcon:hover {
+  opacity: 0.85;
+  stroke-width: 3px;
+}
+
 .TaskText {
   flex: 1 1 auto;
   margin-left: 3px;
