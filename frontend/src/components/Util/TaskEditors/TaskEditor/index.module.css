@@ -81,6 +81,7 @@ input.TaskEditorFlexibleInput:focus-within::placeholder {
 }
 
 .TaskEditorIcon:hover > * {
+  opacity: 0.85;
   stroke-width: 3px;
 }
 
