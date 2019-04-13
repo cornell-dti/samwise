@@ -5,7 +5,7 @@ import AllComplete from './components/Popup/AllComplete';
 import Onboard from './components/TitleBar/Onboarding/Onboard';
 import TaskCreator from './components/TaskCreator';
 import TaskView from './components/TaskView';
-import TitleBar from './components/TitleBar/TitleBar';
+import TitleBar from './components/TitleBar';
 
 /**
  * The top level app component.

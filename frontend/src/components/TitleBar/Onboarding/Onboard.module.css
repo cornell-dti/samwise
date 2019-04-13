@@ -25,7 +25,7 @@
 }
 
 p.SettingsSectionTitle {
-  display: none !important;
+  display: none;
 }
 
 .SettingsSectionContent {
@@ -58,12 +58,12 @@ p.SettingsSectionTitle {
 
 .SignButton {
   background: white !important;
-  border: none !important;
+  border: none;
   border-radius: 20px;
   font-size: 16px;
   padding: 10px 20px;
   cursor: pointer;
-  display: inline-block !important;
+  display: inline-block;
   margin-top: 40px;
 }
 

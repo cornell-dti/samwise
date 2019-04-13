@@ -1,5 +1,5 @@
 import React, { ReactElement } from 'react';
-import styles from './Loading.css';
+import styles from './Loading.module.css';
 
 export default (): ReactElement => (
   <div className={styles.LoadingTextWrapper}>

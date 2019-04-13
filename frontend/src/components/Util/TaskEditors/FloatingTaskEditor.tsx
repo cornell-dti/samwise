@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { State, SubTask, Task } from '../../../store/store-types';
 import { CalendarPosition, FloatingPosition, TaskWithSubTasks } from './editors-types';
 import TaskEditor from './TaskEditor';
-import styles from './FloatingTaskEditor.css';
+import styles from './FloatingTaskEditor.module.css';
 import { removeTask as removeTaskAction } from '../../../firebase/actions';
 import { useWindowSizeCallback, WindowSize } from '../../../hooks/window-size-hook';
 

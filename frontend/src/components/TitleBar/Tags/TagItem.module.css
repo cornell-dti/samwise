@@ -37,6 +37,7 @@
 
 .TagEdit{
   width: calc(100% - 150px);
+  font-size: 14px;
   background: none;
   border: none;
   color: white;

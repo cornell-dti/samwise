@@ -14,7 +14,7 @@ import {
   MainTask,
 } from '../../../../store/store-types';
 import OverdueAlert from '../../../UI/OverdueAlert';
-import styles from './TaskEditor.css';
+import styles from './index.module.css';
 import { NONE_TAG } from '../../../../util/tag-util';
 import { ignore } from '../../../../util/general-util';
 import { getTodayAtZeroAM } from '../../../../util/datetime-util';
