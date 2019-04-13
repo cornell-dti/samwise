@@ -1,5 +1,5 @@
 import React, { KeyboardEvent, SyntheticEvent, ReactElement } from 'react';
-import styles from './TagItem.css';
+import styles from './TagItem.module.css';
 import ColorEditor from './ColorEditor';
 import { addTag } from '../../../firebase/actions';
 

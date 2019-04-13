@@ -1,7 +1,7 @@
 import React, { ReactElement } from 'react';
 import { GithubPicker } from 'react-color';
 import colMap from './ListColors';
-import styles from './ColorEditor.css';
+import styles from './ColorEditor.module.css';
 import SamwiseIcon from '../../UI/SamwiseIcon';
 
 type Props = {

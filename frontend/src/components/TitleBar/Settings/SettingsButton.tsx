@@ -1,6 +1,6 @@
 import React, { ReactElement } from 'react';
 import SettingsPage from './SettingsPage';
-import styles from './SettingsButton.css';
+import styles from './SettingsButton.module.css';
 import SamwiseIcon from '../../UI/SamwiseIcon';
 
 export default function SettingsButton(): ReactElement {

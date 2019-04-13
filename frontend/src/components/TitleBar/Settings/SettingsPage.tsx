@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import TagItem from '../Tags/TagItem';
 import ClassTagAdder from '../Tags/ClassTagAdder';
 import OtherTagAdder from '../Tags/OtherTagAdder';
-import styles from './SettingsPage.css';
+import styles from './SettingsPage.module.css';
 import { Tag, State } from '../../../store/store-types';
 import { completeOnboarding, importCourseExams } from '../../../firebase/actions';
 import { firebaseSignOut } from '../../../firebase/auth';

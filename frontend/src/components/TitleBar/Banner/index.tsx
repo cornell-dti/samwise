@@ -2,7 +2,7 @@ import React, { ReactElement } from 'react';
 import { connect } from 'react-redux';
 import { getBannerMessage } from '../../../store/selectors';
 import { State } from '../../../store/store-types';
-import styles from './index.css';
+import styles from './index.module.css';
 import { readBannerMessage } from '../../../firebase/actions';
 import { MessageWithId } from './messages';
 

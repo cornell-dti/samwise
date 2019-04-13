@@ -2,7 +2,7 @@ import React, { ReactElement, CSSProperties } from 'react';
 import { TasksProgressProps } from '../../../util/task-util';
 import HappyBear from '../../../assets/bear/happy-bear.png';
 import RegularBear from '../../../assets/bear/regular-bear.png';
-import styles from './Bear.css';
+import styles from './Bear.module.css';
 
 type Props = TasksProgressProps & { readonly inMobileView: boolean };
 

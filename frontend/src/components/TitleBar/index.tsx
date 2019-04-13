@@ -3,7 +3,7 @@ import React, { ReactElement } from 'react';
 import Clock from 'react-live-clock';
 import Banner from './Banner';
 import { date2FullDateString } from '../../util/datetime-util';
-import styles from './TitleBar.css';
+import styles from './index.module.css';
 import SettingsButton from './Settings/SettingsButton';
 
 /**
