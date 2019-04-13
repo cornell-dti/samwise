@@ -1,8 +1,14 @@
-import { Map, Set } from 'immutable';
-import { subTasksCollection, tagsCollection, tasksCollection, settingsCollection, bannerMessageStatusCollection } from './db';
+import { Set } from 'immutable';
+import {
+  subTasksCollection,
+  tagsCollection,
+  tasksCollection,
+  settingsCollection,
+  bannerMessageStatusCollection,
+} from './db';
 import { getAppUser } from './auth';
 import { FirestoreSubTask, FirestoreTag, FirestoreTask } from './firestore-types';
-import { Course, SubTask, Tag, Task, Settings, BannerMessageStatus } from '../store/store-types';
+import { SubTask, Tag, Task, Settings, BannerMessageStatus } from '../store/store-types';
 import {
   patchCourses,
   patchSettings,
@@ -11,7 +17,7 @@ import {
   patchTasks,
   patchBannerMessageStatus,
 } from '../store/actions';
-// @ts-ignore
+
 import coursesJson from '../assets/json/sp19-courses-with-exams-min.json';
 import buildCoursesMap from '../util/courses-util';
 import { store } from '../store/store';
@@ -47,14 +53,12 @@ export default (onFirstFetched: () => void): (() => void) => {
   let firstSubTasksFetched = false;
   let firstSettingsFetched = false;
   let firstBannerStatusFetched = false;
-  let courseJsonFetched = false;
   const reportFirstFetchedIfAllFetched = (): void => {
     if (firstTagsFetched
       && firstTasksFetched
       && firstSubTasksFetched
       && firstSettingsFetched
-      && firstBannerStatusFetched
-      && courseJsonFetched) {
+      && firstBannerStatusFetched) {
       onFirstFetched();
     }
   };
@@ -174,13 +178,7 @@ export default (onFirstFetched: () => void): (() => void) => {
   });
 
   // @ts-ignore ts cannot decide that this imported json is resolved into a string.
-  fetch(coursesJson)
-    .then((resp: Response) => resp.json())
-    .then(buildCoursesMap).then((courseMap: Map<string, Course[]>) => {
-      store.dispatch(patchCourses(courseMap));
-      courseJsonFetched = true;
-      reportFirstFetchedIfAllFetched();
-    });
+  store.dispatch(patchCourses(buildCoursesMap(coursesJson)));
 
   return () => {
     // Suppressed because it's likely that this block of code will never be run.

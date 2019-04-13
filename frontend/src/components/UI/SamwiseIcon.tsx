@@ -3,25 +3,31 @@
  */
 
 import React, { ReactElement, StatelessComponent, SVGAttributes } from 'react';
-import AlertComponent from '../../assets/svgs/alert.svg';
-import CalendarDarkComponent from '../../assets/svgs/calendar-dark.svg';
-import CalendarLightComponent from '../../assets/svgs/calendar-light.svg';
-import CheckedDarkComponent from '../../assets/svgs/checked-dark.svg';
-import CheckedLightComponent from '../../assets/svgs/checked.svg';
-import ClockComponent from '../../assets/svgs/clock.svg';
-import GrabberComponent from '../../assets/svgs/grabbers.svg';
-import HideComponent from '../../assets/svgs/hide.svg';
-import PinDarkFilledComponent from '../../assets/svgs/pin-2-dark-filled.svg';
-import PinDarkOutlineComponent from '../../assets/svgs/pin-2-dark-outline.svg';
-import PinLightFilledComponent from '../../assets/svgs/pin-2-light-filled.svg';
-import PinLightOutlineComponent from '../../assets/svgs/pin-2-light-outline.svg';
-import SettingsComponent from '../../assets/svgs/settings.svg';
-import ShowComponent from '../../assets/svgs/show.svg';
-import TagComponent from '../../assets/svgs/tag.svg';
-import UncheckedComponent from '../../assets/svgs/unchecked.svg';
-import DropDownComponent from '../../assets/svgs/v.svg';
-import XDarkComponent from '../../assets/svgs/XDark.svg';
-import XLightComponent from '../../assets/svgs/XLight.svg';
+import { ReactComponent as AlertComponent } from '../../assets/svgs/alert.svg';
+import { ReactComponent as CalendarDarkComponent } from '../../assets/svgs/calendar-dark.svg';
+import { ReactComponent as CalendarLightComponent } from '../../assets/svgs/calendar-light.svg';
+import { ReactComponent as CheckedDarkComponent } from '../../assets/svgs/checked-dark.svg';
+import { ReactComponent as CheckedLightComponent } from '../../assets/svgs/checked.svg';
+import { ReactComponent as ClockComponent } from '../../assets/svgs/clock.svg';
+import { ReactComponent as GrabberComponent } from '../../assets/svgs/grabbers.svg';
+import { ReactComponent as HideComponent } from '../../assets/svgs/hide.svg';
+import { ReactComponent as PinDarkFilledComponent } from '../../assets/svgs/pin-2-dark-filled.svg';
+import {
+  ReactComponent as PinDarkOutlineComponent,
+} from '../../assets/svgs/pin-2-dark-outline.svg';
+import {
+  ReactComponent as PinLightFilledComponent,
+} from '../../assets/svgs/pin-2-light-filled.svg';
+import {
+  ReactComponent as PinLightOutlineComponent,
+} from '../../assets/svgs/pin-2-light-outline.svg';
+import { ReactComponent as SettingsComponent } from '../../assets/svgs/settings.svg';
+import { ReactComponent as ShowComponent } from '../../assets/svgs/show.svg';
+import { ReactComponent as TagComponent } from '../../assets/svgs/tag.svg';
+import { ReactComponent as UncheckedComponent } from '../../assets/svgs/unchecked.svg';
+import { ReactComponent as DropDownComponent } from '../../assets/svgs/v.svg';
+import { ReactComponent as XDarkComponent } from '../../assets/svgs/XDark.svg';
+import { ReactComponent as XLightComponent } from '../../assets/svgs/XLight.svg';
 
 type IconName =
   | 'alert'
