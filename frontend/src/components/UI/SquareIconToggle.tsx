@@ -1,9 +1,7 @@
 import React, { ReactElement } from 'react';
 import { FontAwesomeIcon as Icon } from '@fortawesome/react-fontawesome';
-import {
-  IconLookup,
-} from '@fortawesome/fontawesome-svg-core';
-import styles from './SquareButtons.css';
+import { IconLookup } from '@fortawesome/fontawesome-svg-core';
+import styles from './SquareButtons.module.css';
 
 type Props = {
   readonly active: boolean;

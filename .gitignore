@@ -16,9 +16,6 @@
 **/node_modules
 **/bower_components
 
-# flow-typed
-**/flow-typed
-
 # Coverage
 lib-cov
 coverage
@@ -104,6 +101,7 @@ yarn-error.log*
 # IDE Configs
 **/.vs
 **/.vscode
+*.code-workspace
 **/.idea
 
 # Misc

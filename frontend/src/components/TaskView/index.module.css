@@ -53,11 +53,11 @@
 }
 
 .FocusViewToggleIconFocusViewShow {
-  margin: 0 0 3px 6px !important;
+  margin: 0 0 3px 6px;
 }
 
 .FocusViewToggleIconFocusViewHide {
-  margin: 0 0 3px 31px !important;
+  margin: 0 0 3px 31px;
 }
 
 .ControlButton {
@@ -69,8 +69,7 @@
   cursor: pointer;
   bottom: 90px;
   right: 0.5em;
-  font-size: 2em !important;
+  font-size: 2em;
   color: #84BCF6;
-
   z-index: 2;
 }

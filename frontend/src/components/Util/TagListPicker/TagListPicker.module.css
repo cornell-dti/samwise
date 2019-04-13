@@ -1,41 +1,40 @@
 
 /*
-Class Picker
-*/
+ * Class Picker
+ */
 .NewTaskClass{
-  position:absolute;
-  top:21px;right: 90px;
-  min-width:130px;
-  margin:0;
-  padding:3px 5px 0 5px;
-  list-style:none;
-  background:white;
-
-  box-shadow:1px 1px 10px 5px rgba(0,0,0,0.15);
-  /*border-radius:3px;*/
+  position: absolute;
+  top: 21px;
+  right: 90px;
+  min-width: 130px;
+  margin: 0;
+  padding: 3px 5px 0 5px;
+  list-style: none;
+  background: white;
+  box-shadow: 1px 1px 10px 5px rgba(0,0,0,0.15);
 }
 
 .NewTaskClass li{
-  position:relative;
+  position: relative;
 
-  text-align:left;
+  text-align: left;
 
-  padding:1px 7px;
-  margin-bottom:3px;
-  border:none;
-  border-radius:15px;
+  padding: 1px 7px;
+  margin-bottom: 3px;
+  border: none;
+  border-radius: 15px;
 
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  width:130px;
+  width: 130px;
 
-  text-align:center;
+  text-align: center;
 
-  color:white;
-  background:var(--custom-color);
+  color: white;
+  background: var(--custom-color);
 
-  opacity:1;
+  opacity: 1;
   transition: opacity 0.1s ease-in-out;
 }
 

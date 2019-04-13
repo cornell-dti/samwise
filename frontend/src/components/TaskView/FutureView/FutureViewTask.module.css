@@ -44,7 +44,8 @@
 }
 
 .TaskIcon:hover {
-  height: 18px;
+  opacity: 0.85;
+  stroke-width: 3px;
 }
 
 .TaskText {

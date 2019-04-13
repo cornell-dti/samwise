@@ -1,7 +1,7 @@
 /* eslint-disable jsx-a11y/label-has-associated-control,jsx-a11y/label-has-for */
 
 import React, { MouseEvent, ReactElement } from 'react';
-import styles from './CheckBox.css';
+import styles from './CheckBox.module.css';
 
 type Props = {
   readonly checked: boolean; // whether the box is initially checked

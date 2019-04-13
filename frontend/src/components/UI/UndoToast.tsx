@@ -1,6 +1,6 @@
 import React, { MouseEvent, ReactElement } from 'react';
 import { toast } from 'react-toastify';
-import styles from './UndoToast.css';
+import styles from './UndoToast.module.css';
 
 type Props = {
   readonly toastId: string;

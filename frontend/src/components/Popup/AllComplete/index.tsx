@@ -1,7 +1,7 @@
 import React, { ReactElement } from 'react';
 import { connect } from 'react-redux';
 import Confetti from 'react-dom-confetti';
-import styles from './Celebrate.css';
+import styles from './Celebrate.module.css';
 import { State, Task } from '../../../store/store-types';
 // import Bear from '../../../assets/bear/happy-bear.png';
 
@@ -12,7 +12,7 @@ type Props = { readonly focusTasks: Task[] };
  */
 function AllComplete({ focusTasks }: Props): ReactElement | null {
   // Simple FSM. 0 = initial, 1 = saw unfinished tasks, 2 = finished all, 3 = hidden
-  const [progress, setProgress] = React.useState<number>(0);
+  const [progress, setProgress] = React.useState<0 | 1 | 2 | 3>(0);
 
   switch (progress) {
     case 0:

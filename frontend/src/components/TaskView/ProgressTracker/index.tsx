@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { TasksProgressProps } from '../../../util/task-util';
 import Bear from './Bear';
 import ProgressIndicator from './ProgressIndicator';
-import styles from './ProgressTracker.css';
+import styles from './index.module.css';
 import { getProgress } from '../../../store/selectors';
 
 const mobileViewStyle = `${styles.ProgressTracker} ${styles.MobileView}`;

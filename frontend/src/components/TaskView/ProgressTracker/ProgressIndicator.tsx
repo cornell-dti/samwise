@@ -1,6 +1,6 @@
 import React, { ReactNode, ReactElement, CSSProperties } from 'react';
 import { TasksProgressProps } from '../../../util/task-util';
-import styles from './ProgressIndicator.css';
+import styles from './ProgressIndicator.module.css';
 
 type ProgressBarProps = TasksProgressProps & {
   readonly inMobileView: boolean;
