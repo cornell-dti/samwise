@@ -22,7 +22,7 @@ import UncheckedComponent from '../../assets/svgs/unchecked.svg';
 import DropDownComponent from '../../assets/svgs/v.svg';
 import XDarkComponent from '../../assets/svgs/XDark.svg';
 import XLightComponent from '../../assets/svgs/XLight.svg';
-import { IconName } from './Samwise-icon-types';
+import { IconName } from './samwise-icon-types';
 
 type SvgProps = SVGAttributes<SVGElement>;
 
