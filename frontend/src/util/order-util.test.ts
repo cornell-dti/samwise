@@ -1,5 +1,4 @@
 import { sortByOrder, reorder } from './order-util';
-import { error } from './general-util';
 
 it('sortByOrder works', () => {
   const originalList = [{ order: 3 }, { order: 2 }, { order: 1 }];
@@ -8,19 +7,6 @@ it('sortByOrder works', () => {
 });
 
 type IdOrder = { readonly id: string; readonly order: number };
-
-/**
- * Test whether the given list is sorted by increasing order.
- *
- * @param list the list to test whether things are sorted.
- */
-function testSorted(list: IdOrder[]): void {
-  for (let i = 0; i < list.length - 1; i += 1) {
-    const item = list[i];
-    const next = list[i + 1];
-    expect(item.order).toBeLessThan(next.order);
-  }
-}
 
 type ListInfo = {
   readonly idOrderMap: Map<string, number>;
@@ -69,8 +55,8 @@ function testReorderContract(list: IdOrder[]): void {
         ordersInBetween.push(order);
       }
     });
-    const { sortedList, reorderMap } = reorder(list, srcOrder, destOrder);
-    const { idOrderMap: newIdOrderMap, allOrders: allNewOrders } = getInfoFromList(sortedList);
+    const reorderedList = reorder(list, srcOrder, destOrder);
+    const { idOrderMap: newIdOrderMap, allOrders: allNewOrders } = getInfoFromList(reorderedList);
     const getNewOrder = (oldOrder: number): number => {
       const id = originalOrderIdMap.get(oldOrder);
       if (id == null) {

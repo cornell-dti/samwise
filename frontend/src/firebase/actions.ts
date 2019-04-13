@@ -1,5 +1,5 @@
 import { firestore } from 'firebase/app';
-import { Map, Set } from 'immutable';
+import { Map } from 'immutable';
 import {
   Course, PartialMainTask, PartialSubTask, SubTask, Tag, Task, BannerMessageIds,
 } from '../store/store-types';
@@ -186,9 +186,7 @@ export const clearFocus = (taskIds: string[], subTaskIds: string[]): void => {
 export function completeTaskInFocus<T extends { readonly id: string; readonly order: number }>(
   completedTaskIdOrder: T,
   completedList: T[],
-  uncompletedList: T[],
-): { readonly completedList: T[]; readonly uncompletedList: T[] } {
-  const newUncompletedList = uncompletedList.filter(item => item.id !== completedTaskIdOrder.id);
+): void {
   let newCompletedList = [completedTaskIdOrder];
   completedList.forEach((item) => {
     if (item.order < completedTaskIdOrder.order) {
@@ -211,7 +209,6 @@ export function completeTaskInFocus<T extends { readonly id: string; readonly or
     }
   });
   batch.commit().then(ignore);
-  return { completedList: newCompletedList, uncompletedList: newUncompletedList };
 }
 
 /**

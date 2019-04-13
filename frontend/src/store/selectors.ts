@@ -9,7 +9,6 @@ import {
 } from '../util/task-util';
 import { NONE_TAG } from '../util/tag-util';
 import findMessageToDisplay, { MessageWithId } from '../components/TitleBar/Banner/messages';
-import { sortByOrder } from '../util/order-util';
 
 /*
  * --------------------------------------------------------------------------------
@@ -74,7 +73,6 @@ export const getTaskIds: SelectorOf<{ readonly ids: string[] }> = createSetEqual
 type IdOrder = { readonly id: string; readonly order: number };
 type IdOrderListProps = { readonly idOrderList: IdOrder[] };
 
-
 export const createGetIdOrderListByDate = (
   date: string,
 ): SelectorOf<IdOrderListProps> => createSelector(
@@ -98,29 +96,34 @@ export const createGetIdOrderListByDate = (
 export const getProgress: SelectorOf<TasksProgressProps> = createSelector(
   [getTasksInFocus, getSubTasks], computeTaskProgress,
 );
+
+export type FocusViewTaskMetaData = IdOrder & {
+  readonly inFocusView: boolean; // whether the task is in the focus view
+  readonly inCompleteFocusView: boolean; // whether the task in in the complete focus view
+};
 export type FocusViewProps = {
-  readonly focusedUncompletedIdOrderList: IdOrder[];
-  readonly focusedCompletedIdOrderList: IdOrder[];
+  readonly tasks: FocusViewTaskMetaData[];
   readonly progress: TasksProgressProps;
 };
 
 export const getFocusViewProps: SelectorOf<FocusViewProps> = createSelector(
   [getTasks, getSubTasks, getProgress], (tasks, subTasks, progress) => {
-    const focusedUncompletedIdOrderList: IdOrder[] = [];
-    const focusedCompletedIdOrderList: IdOrder[] = [];
-    sortByOrder(Array.from(tasks.values())).forEach((task) => {
+    const taskMetaDataList: FocusViewTaskMetaData[] = [];
+    Array.from(tasks.values()).sort((a, b) => a.order - b.order).forEach((task) => {
       const filteredUncompletedTask = getFilteredNotCompletedInFocusTask(task, subTasks);
       const filteredCompletedTask = getFilteredCompletedInFocusTask(task, subTasks);
-      if (filteredUncompletedTask != null) {
-        const { id, order } = filteredUncompletedTask;
-        focusedUncompletedIdOrderList.push({ id, order });
-      }
-      if (filteredCompletedTask != null) {
-        const { id, order } = filteredCompletedTask;
-        focusedCompletedIdOrderList.push({ id, order });
+      const { id, order } = task;
+      if (filteredCompletedTask != null && filteredUncompletedTask != null) {
+        throw new Error();
+      } else if (filteredCompletedTask != null) {
+        taskMetaDataList.push({ id, order, inFocusView: true, inCompleteFocusView: true });
+      } else if (filteredUncompletedTask != null) {
+        taskMetaDataList.push({ id, order, inFocusView: true, inCompleteFocusView: false });
+      } else {
+        taskMetaDataList.push({ id, order, inFocusView: false, inCompleteFocusView: false });
       }
     });
-    return { focusedUncompletedIdOrderList, focusedCompletedIdOrderList, progress };
+    return { tasks: taskMetaDataList, progress };
   },
 );
 
