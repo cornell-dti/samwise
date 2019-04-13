@@ -2,7 +2,7 @@ import React, { KeyboardEvent, SyntheticEvent, ReactElement } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlus, faArrowAltCircleRight } from '@fortawesome/free-solid-svg-icons';
 import 'react-toastify/dist/ReactToastify.css';
-import styles from './TaskCreator.css';
+import styles from './index.module.css';
 import TagPicker from './TagPicker';
 import DatePicker from './DatePicker';
 import FocusPicker from './FocusPicker';

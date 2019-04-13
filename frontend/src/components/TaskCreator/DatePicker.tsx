@@ -1,6 +1,6 @@
 import React, { ReactElement, SyntheticEvent } from 'react';
 import Calendar from 'react-calendar';
-import styles from './Picker.css';
+import styles from './Picker.module.css';
 import { date2String } from '../../util/datetime-util';
 import { NONE_TAG } from '../../util/tag-util';
 import SamwiseIcon from '../UI/SamwiseIcon';
