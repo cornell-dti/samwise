@@ -13,7 +13,7 @@ export default function SettingsButton(): ReactElement {
   return (
     <div style={{ display: 'inline-block' }}>
       <button type="submit" onClick={displayModal}>
-        <Tooltip name="Settings Button" iconName="settings" />
+        <Tooltip text="Settings Button" iconName="settings" />
       </button>
       {showSettings && (
         <div className={styles.SettingsModal}>

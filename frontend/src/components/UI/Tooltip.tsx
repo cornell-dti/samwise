@@ -4,7 +4,7 @@ import { IconName } from './Samwise-icon-types';
 import styles from './Tooltip.css';
 
 type Props = {
-  readonly name: string;
+  readonly text: string;
   readonly iconName: IconName;
 }
 type State = {
@@ -23,7 +23,7 @@ export default class Tooltip extends React.Component<Props, State> {
   };
 
   public render(): ReactElement {
-    const { name, iconName } = this.props;
+    const { text, iconName } = this.props;
     const { hover } = this.state;
     const tooltipStyle = {
       display: hover ? 'block' : 'none',
@@ -35,12 +35,10 @@ export default class Tooltip extends React.Component<Props, State> {
           onMouseOver={this.handleMouseIn}
           onMouseOut={this.handleMouseOut}
         >
-          <SamwiseIcon iconName={iconName}>
-            {name}
-          </SamwiseIcon>
+          <SamwiseIcon iconName={iconName} />
         </div>
         <div className={styles.tooltip}>
-          <div className={styles.tooltiptext} style={tooltipStyle}>Open Settings</div>
+          <div className={styles.tooltiptext} style={tooltipStyle}>{text}</div>
         </div>
       </div>
     );
