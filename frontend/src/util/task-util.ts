@@ -9,7 +9,8 @@ import { TaskWithSubTasks } from '../components/Util/TaskEditors/editors-types';
  */
 
 export const getFilteredNotCompletedInFocusTask = (
-  task: Task, subTasks: Map<string, SubTask>,
+  task: Task,
+  subTasks: Map<string, SubTask>,
 ): TaskWithSubTasks | null => {
   const { children, ...rest } = task;
   const childrenArray = children.map(id => subTasks.get(id)).filter(s => s != null);
@@ -17,14 +18,18 @@ export const getFilteredNotCompletedInFocusTask = (
   if (task.inFocus) {
     if (!task.complete) {
       childrenArray.forEach((s) => {
-        if (s != null && !s.complete) { newSubTasks.push(s); }
+        if (s != null && !s.complete) {
+          newSubTasks.push(s);
+        }
       });
     } else {
       return null;
     }
   } else {
     childrenArray.forEach((s) => {
-      if (s != null && s.inFocus && !task.complete && !s.complete) { newSubTasks.push(s); }
+      if (s != null && s.inFocus && !task.complete && !s.complete) {
+        newSubTasks.push(s);
+      }
     });
     if (newSubTasks.length === 0) {
       return null;
@@ -34,7 +39,8 @@ export const getFilteredNotCompletedInFocusTask = (
 };
 
 export const getFilteredCompletedInFocusTask = (
-  task: Task, subTasks: Map<string, SubTask>,
+  task: Task,
+  subTasks: Map<string, SubTask>,
 ): TaskWithSubTasks | null => {
   const { children, ...rest } = task;
   const childrenArray = children.map(id => subTasks.get(id)).filter(s => s != null);
@@ -42,11 +48,15 @@ export const getFilteredCompletedInFocusTask = (
   if (task.inFocus) {
     if (task.complete) {
       childrenArray.forEach((s) => {
-        if (s != null) { newSubTasks.push(s); }
+        if (s != null) {
+          newSubTasks.push(s);
+        }
       });
     } else {
       childrenArray.forEach((s) => {
-        if (s != null && s.complete) { newSubTasks.push(s); }
+        if (s != null && s.complete) {
+          newSubTasks.push(s);
+        }
       });
       if (newSubTasks.length === 0) {
         return null;
@@ -54,13 +64,15 @@ export const getFilteredCompletedInFocusTask = (
     }
   } else {
     childrenArray.forEach((s) => {
-      if (s != null && s.inFocus && (task.complete || s.complete)) { newSubTasks.push(s); }
+      if (s != null && s.inFocus && (task.complete || s.complete)) {
+        newSubTasks.push(s);
+      }
     });
     if (newSubTasks.length === 0) {
       return null;
     }
   }
-  return { ...rest, subTasks: newSubTasks.sort((a, b) => a.order - b.order) };
+  return { ...rest, subTasks: newSubTasks.sort((a, b): number => a.order - b.order) };
 };
 
 export type TasksProgressProps = {
@@ -76,7 +88,8 @@ export type TasksProgressProps = {
  * @return {TasksProgressProps} the progress.
  */
 export const computeTaskProgress = (
-  inFocusTasks: Task[], subTasks: Map<string, SubTask>,
+  inFocusTasks: Task[],
+  subTasks: Map<string, SubTask>,
 ): TasksProgressProps => {
   let completedTasksCount = 0;
   let allTasksCount = 0;
@@ -85,15 +98,13 @@ export const computeTaskProgress = (
     if (task.inFocus) {
       allTasksCount += task.children.size + 1;
     } else {
-      allTasksCount += task.children.reduce(
-        (acc, s) => {
-          const subTask = subTasks.get(s);
-          if (subTask == null) {
-            return acc;
-          }
-          return acc + (subTask.inFocus ? 1 : 0);
-        }, 0,
-      );
+      allTasksCount += task.children.reduce((acc, s) => {
+        const subTask = subTasks.get(s);
+        if (subTask == null) {
+          return acc;
+        }
+        return acc + (subTask.inFocus ? 1 : 0);
+      }, 0);
     }
     if (task.complete) {
       completedTasksCount += task.children.reduce(
@@ -102,19 +113,18 @@ export const computeTaskProgress = (
           if (subTask == null) {
             return acc;
           }
-          return acc + ((task.inFocus || subTask.inFocus) ? 1 : 0);
-        }, task.inFocus ? 1 : 0,
+          return acc + (task.inFocus || subTask.inFocus ? 1 : 0);
+        },
+        task.inFocus ? 1 : 0,
       );
     } else {
-      completedTasksCount += task.children.reduce(
-        (acc, s) => {
-          const subTask = subTasks.get(s);
-          if (subTask == null) {
-            return acc;
-          }
-          return acc + ((task.inFocus || subTask.inFocus) && subTask.complete ? 1 : 0);
-        }, 0,
-      );
+      completedTasksCount += task.children.reduce((acc, s) => {
+        const subTask = subTasks.get(s);
+        if (subTask == null) {
+          return acc;
+        }
+        return acc + ((task.inFocus || subTask.inFocus) && subTask.complete ? 1 : 0);
+      }, 0);
     }
   }
   return { completedTasksCount, allTasksCount };

@@ -1,6 +1,6 @@
 import React, { ReactElement, SyntheticEvent, ReactNode } from 'react';
 import { connect } from 'react-redux';
-import styles from './FutureViewTask.css';
+import styles from './FutureViewTask.module.css';
 import FutureViewSubTask from './FutureViewSubTask';
 import FloatingTaskEditor from '../../Util/TaskEditors/FloatingTaskEditor';
 import { State, SubTask, Task } from '../../../store/store-types';

@@ -2,7 +2,7 @@ import React, { ReactElement, CSSProperties, useState } from 'react';
 import { connect } from 'react-redux';
 import TagItem from '../Tags/TagItem';
 import ClassTagAdder from '../Tags/ClassTagAdder';
-import styles from './Onboard.css';
+import styles from './Onboard.module.css';
 import { State, Tag } from '../../../store/store-types';
 import Tutorial1 from '../../../assets/tutorial/t1.png';
 import Tutorial2 from '../../../assets/tutorial/t2.png';

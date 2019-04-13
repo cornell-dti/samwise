@@ -1,5 +1,5 @@
 import React, { ReactElement } from 'react';
-import styles from './OverdueAlert.css';
+import styles from './OverdueAlert.module.css';
 
 type Props = { readonly target: 'task-card' | 'future-view-task' };
 

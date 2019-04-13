@@ -6,7 +6,7 @@ import React, {
   useState,
   useRef,
 } from 'react';
-import styles from './TaskEditor.css';
+import styles from './index.module.css';
 import CheckBox from '../../../UI/CheckBox';
 import { PartialSubTask, SubTask } from '../../../../store/store-types';
 import SamwiseIcon from '../../../UI/SamwiseIcon';

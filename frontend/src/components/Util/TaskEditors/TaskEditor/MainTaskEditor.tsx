@@ -1,5 +1,5 @@
 import React, { KeyboardEvent, ReactElement, SyntheticEvent, useState } from 'react';
-import styles from './TaskEditor.css';
+import styles from './index.module.css';
 import CheckBox from '../../../UI/CheckBox';
 import SamwiseIcon from '../../../UI/SamwiseIcon';
 

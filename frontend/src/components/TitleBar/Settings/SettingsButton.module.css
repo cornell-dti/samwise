@@ -6,11 +6,6 @@
   font-size: 30px;
 }
 
-/*!*.CloseButton:hover path {*!*/
-  /*stroke-width: 3px !important;*/
-  /*stroke-opacity: 0.9 !important;*/
-/*}*/
-
 .ChangesSaved {
   position: absolute;
   top: 40px;
@@ -43,6 +38,5 @@
 }
 
 .SettingsButton:hover path {
-  stroke-width: 4px !important;
-  /*stroke-opacity: 0.9 !important;*/
+  stroke-width: 4px;
 }
