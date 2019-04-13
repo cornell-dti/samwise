@@ -1,4 +1,5 @@
-import { sortByOrder } from './order-util';
+import { sortByOrder, reorder } from './order-util';
+import { error } from './general-util';
 
 it('sortByOrder works', () => {
   const originalList = [{ order: 3 }, { order: 2 }, { order: 1 }];
@@ -6,7 +7,121 @@ it('sortByOrder works', () => {
   expect(sortByOrder(originalList)).toEqual(sortedList);
 });
 
-it('reorder works', () => {
-  // TODO: FIXME
-  console.log('hi');
-});
+type IdOrder = { readonly id: string; readonly order: number };
+
+/**
+ * Test whether the given list is sorted by increasing order.
+ *
+ * @param list the list to test whether things are sorted.
+ */
+function testSorted(list: IdOrder[]): void {
+  for (let i = 0; i < list.length - 1; i += 1) {
+    const item = list[i];
+    const next = list[i + 1];
+    expect(item.order).toBeLessThan(next.order);
+  }
+}
+
+type ListInfo = {
+  readonly idOrderMap: Map<string, number>;
+  readonly orderIdMap: Map<number, string>;
+  readonly allOrders: readonly number[];
+};
+
+function getInfoFromList(list: IdOrder[]): ListInfo {
+  const idOrderMap = new Map<string, number>();
+  const orderIdMap = new Map<number, string>();
+  const allOrders: number[] = [];
+  list.forEach(({ id, order }) => {
+    idOrderMap.set(id, order);
+    orderIdMap.set(order, id);
+    allOrders.push(order);
+  });
+  return { idOrderMap, orderIdMap, allOrders };
+}
+
+/**
+ * Test the contract for the reorder function (written in the function doc).
+ *
+ * @param list the list to run the test on. It must be sorted by order in increasing order.
+ */
+function testReorderContract(list: IdOrder[]): void {
+  const { orderIdMap: originalOrderIdMap, allOrders: originalAllOrders } = getInfoFromList(list);
+  const test = (srcOrder: number, destOrder: number): void => {
+    let small: number;
+    let big: number;
+    if (srcOrder < destOrder) {
+      small = srcOrder;
+      big = destOrder;
+    } else {
+      small = destOrder;
+      big = srcOrder;
+    }
+    const ordersBeforeSmall: number[] = [];
+    const ordersAfterBig: number[] = [];
+    const ordersInBetween: number[] = [];
+    originalAllOrders.forEach((order) => {
+      if (order < small) {
+        ordersBeforeSmall.push(order);
+      } else if (order > big) {
+        ordersAfterBig.push(order);
+      } else if (order > small && order < big) {
+        ordersInBetween.push(order);
+      }
+    });
+    const { sortedList, reorderMap } = reorder(list, srcOrder, destOrder);
+    const { idOrderMap: newIdOrderMap, allOrders: allNewOrders } = getInfoFromList(sortedList);
+    const getNewOrder = (oldOrder: number): number => {
+      const id = originalOrderIdMap.get(oldOrder);
+      if (id == null) {
+        throw new Error();
+      }
+      const newOrder = newIdOrderMap.get(id);
+      if (newOrder == null) {
+        throw new Error();
+      }
+      return newOrder;
+    };
+    const checkOrderUnchanged = (order: number): void => {
+      expect(getNewOrder(order)).toEqual(order);
+    };
+    // check all orders before small are unchanged
+    ordersBeforeSmall.forEach(checkOrderUnchanged);
+    // check all orders after large are unchanged
+    ordersAfterBig.forEach(checkOrderUnchanged);
+    // check the relative order of in between items are unchanged
+    const newOrdersInBetween = ordersInBetween.map(getNewOrder);
+    newOrdersInBetween.forEach((newOrder, i, newOrders) => {
+      if (i > 0) {
+        const lastOrder = newOrders[i - 1];
+        expect(lastOrder).toBeLessThan(newOrder);
+      }
+    });
+    // check the moved item get the desired order
+    expect(getNewOrder(srcOrder)).toEqual(destOrder);
+    // check the correct order between dest order and in between elements
+    if (srcOrder < destOrder) {
+      newOrdersInBetween.forEach((newInBetweenOrder) => {
+        expect(newInBetweenOrder).toBeLessThan(destOrder);
+      });
+    } else {
+      newOrdersInBetween.forEach((newInBetweenOrder) => {
+        expect(newInBetweenOrder).toBeGreaterThan(destOrder);
+      });
+    }
+    // check no duplicate orders
+    expect(new Set(allNewOrders).size).toEqual(allNewOrders.length);
+  };
+  originalAllOrders.forEach(src => originalAllOrders.forEach(dest => test(src, dest)));
+}
+
+for (let i = 1; i < 5; i += 1) {
+  const list: IdOrder[] = [];
+  for (let order = 1; order <= i; order += 1) {
+    const item = { id: String(order), order };
+    list.push(item);
+  }
+  it(`reorder works on lists of size ${i}`, () => {
+    testReorderContract(list);
+  });
+}

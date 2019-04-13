@@ -5,11 +5,22 @@ import { Map } from 'immutable';
  * @returns the sorted list in increasing order.
  */
 export function sortByOrder<T extends { readonly order: number }>(list: T[]): T[] {
-  return list.sort((a, b) => a.order - b.order);
+  return [...list].sort((a, b) => a.order - b.order);
 }
 
 /**
- * Reorder a list of items by swapping items with order sourceOrder and destinationOrder
+ * Reorder a list of items by swapping items with order sourceOrder and destinationOrder.
+ *
+ * Contract:
+ * - The original list will not be mutated.
+ * - The returned sorted list will satisfy these properties:
+ *   - It is sorted in increaing order.
+ *   - Only the order field is changed.
+ *   - The order field of the original list items is maintained, except that
+ *     - the order field of the swapped items are reversed.
+ *     - the relative order of one of the items and all items in between the swapped items are
+ *       reversed.
+ * - The returned reorder map compactly describes all the order changes in an immutable map.
  *
  * @param originalList the original list as a reference.
  * @param sourceOrder where is the dragged item from.
