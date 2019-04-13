@@ -5,8 +5,9 @@ import styles from './FocusView.css';
 import ClearFocus from './ClearFocus';
 import CompletedSeparator from './CompletedSeparator';
 import FocusTask from './FocusTask';
-import { reorder, completeTaskInFocus } from '../../../firebase/actions';
+import { applyReorder, completeTaskInFocus } from '../../../firebase/actions';
 import { getFocusViewProps, FocusViewProps } from '../../../store/selectors';
+import { reorder } from '../../../util/order-util';
 
 const focusViewNotCompletedDroppableId = 'focus-view-not-completed-droppable';
 const focusViewCompletedDroppableId = 'focus-view-completed-droppable';
@@ -70,13 +71,15 @@ function FocusView(
     if (source.droppableId === focusViewCompletedDroppableId
       && destination.droppableId === focusViewCompletedDroppableId) {
       // drag and drop with in completed region
-      const newList = reorder('tasks', localCompletedList, sourceOrder, destinationOrder);
-      setLocalLists(prev => ({ ...prev, localCompletedList: newList }));
+      const { sortedList, reorderMap } = reorder(localCompletedList, sourceOrder, destinationOrder);
+      setLocalLists(prev => ({ ...prev, localCompletedList: sortedList }));
+      applyReorder('tasks', reorderMap);
     } else if (source.droppableId === focusViewNotCompletedDroppableId
       && destination.droppableId === focusViewNotCompletedDroppableId) {
       // drag and drop with in uncompleted region
-      const newList = reorder('tasks', localUncompletedList, sourceOrder, destinationOrder);
-      setLocalLists(prev => ({ ...prev, localCompletedList: newList }));
+      const { sortedList, reorderMap } = reorder(localCompletedList, sourceOrder, destinationOrder);
+      setLocalLists(prev => ({ ...prev, localCompletedList: sortedList }));
+      applyReorder('tasks', reorderMap);
     } else if (source.droppableId === focusViewNotCompletedDroppableId
       && destination.droppableId === focusViewCompletedDroppableId) {
       // drag from not completed and drop to completed.

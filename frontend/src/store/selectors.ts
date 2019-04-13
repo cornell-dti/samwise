@@ -9,6 +9,7 @@ import {
 } from '../util/task-util';
 import { NONE_TAG } from '../util/tag-util';
 import findMessageToDisplay, { MessageWithId } from '../components/TitleBar/Banner/messages';
+import { sortByOrder } from '../util/order-util';
 
 /*
  * --------------------------------------------------------------------------------
@@ -107,7 +108,7 @@ export const getFocusViewProps: SelectorOf<FocusViewProps> = createSelector(
   [getTasks, getSubTasks, getProgress], (tasks, subTasks, progress) => {
     const focusedUncompletedIdOrderList: IdOrder[] = [];
     const focusedCompletedIdOrderList: IdOrder[] = [];
-    Array.from(tasks.values()).sort((a, b) => a.order - b.order).forEach((task) => {
+    sortByOrder(Array.from(tasks.values())).forEach((task) => {
       const filteredUncompletedTask = getFilteredNotCompletedInFocusTask(task, subTasks);
       const filteredCompletedTask = getFilteredCompletedInFocusTask(task, subTasks);
       if (filteredUncompletedTask != null) {
