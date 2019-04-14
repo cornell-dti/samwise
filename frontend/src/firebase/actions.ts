@@ -296,6 +296,6 @@ export const importCourseExams = (): void => {
         batch.set(tasksCollection().doc(), transformedTask);
       });
       // eslint-disable-next-line no-alert
-      batch.commit().then(() => alert('Exams Added!'));
+      batch.commit().then(() => alert('Exams Added Successfully!'));
     });
 };

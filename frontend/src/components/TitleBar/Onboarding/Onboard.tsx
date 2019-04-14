@@ -41,12 +41,22 @@ const taggedImages: TaggedImage[] = [
   },
 ];
 
-type AddClassProps = { readonly classTags: Tag[]; readonly showNext: () => void };
+type AddClassProps = {
+  readonly classTags: Tag[];
+  readonly showNext: (shouldImport: boolean) => void;
+};
 
 /**
  * Adding class as the first onboarding step.
  */
 function AddClassOnBoarding({ classTags, showNext }: AddClassProps): ReactElement {
+  const [addExam, setAddExam] = React.useState<boolean>(true);
+
+  const clickBox = (e: React.FormEvent<HTMLInputElement>): void => (
+    setAddExam((e.target as HTMLInputElement).checked)
+  );
+  const allDone = (): void => showNext(addExam);
+
   return (
     <div style={{ padding: '60px 40px' }}>
       {/* some random intro */}
@@ -62,22 +72,27 @@ function AddClassOnBoarding({ classTags, showNext }: AddClassProps): ReactElemen
         </div>
       </div>
       {/* display all class tags */}
-      <h2>Class Tags</h2>
+      <h2>My Classes</h2>
       <div className={styles.SettingsSection}>
-        <p className={styles.SettingsSectionTitle}>Class Tags</p>
         <div className={styles.SettingsSectionContent}>
           <ul className={styles.ColorConfigItemList}>
             {classTags.map(tag => <TagItem key={tag.id} tag={tag} />)}
           </ul>
         </div>
       </div>
+      <p className={styles.ImportExamContainer}>
+        <label htmlFor="onboardImportClass">
+          <input type="checkbox" id="onboardImportClass" checked={addExam} onChange={clickBox} />
+          Yes, please automatically import registrar-scheduled exams for my classes.
+        </label>
+      </p>
       {/* buttons */}
       <div className={styles.SignButtonContainer}>
-        <button type="button" onClick={importCourseExams} className={styles.SignButton}>
+        {/* <button type="button" onClick={importCourseExams} className={styles.SignButton}>
           Import Exams
-        </button>
+        </button> */}
         <span className={styles.Padding} />
-        <button type="button" className={styles.SignButton} onClick={showNext}>
+        <button type="button" className={styles.SignButton} onClick={allDone}>
           {classTags.length > 0 ? 'Done' : 'Skip Adding Classes'}
         </button>
       </div>
@@ -123,8 +138,8 @@ function Onboard({ classTags, completedOnboarding }: Props): ReactElement | null
   const [progress, setProgress] = useState<number>(0);
 
   if (completedOnboarding || progress >= 7) {
-    if (progress >= 7) {
-      setProgress(0);
+    if (progress !== 1) {
+      setProgress(1);
     }
     completeOnboarding(true);
     // the conditions not to display the tutorial
@@ -132,6 +147,12 @@ function Onboard({ classTags, completedOnboarding }: Props): ReactElement | null
   }
 
   const showNext = (): void => setProgress(prev => prev + 1);
+  const showNextImport = (shouldImport: boolean): void => {
+    if (shouldImport) {
+      importCourseExams();
+    }
+    showNext();
+  };
   const goBack = (): void => setProgress(prev => (prev > 1 ? prev - 1 : prev));
   const skipTutorial = (): void => setProgress(100);
 
@@ -140,7 +161,7 @@ function Onboard({ classTags, completedOnboarding }: Props): ReactElement | null
     : undefined;
   return (
     <div className={styles.Hero} style={onboardingContainerStyle}>
-      {progress === 0 && <AddClassOnBoarding classTags={classTags} showNext={showNext} />}
+      {progress === 0 && <AddClassOnBoarding classTags={classTags} showNext={showNextImport} />}
       {progress > 0 && (
         <SlidesOnBoarding
           progress={progress}
