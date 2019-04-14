@@ -3,26 +3,26 @@
  */
 
 import React, { ReactElement, StatelessComponent, SVGAttributes } from 'react';
-import AlertComponent from '../../assets/svgs/alert.svg';
-import CalendarDarkComponent from '../../assets/svgs/calendar-dark.svg';
-import CalendarLightComponent from '../../assets/svgs/calendar-light.svg';
-import CheckedDarkComponent from '../../assets/svgs/checked-dark.svg';
-import CheckedLightComponent from '../../assets/svgs/checked.svg';
-import ClockComponent from '../../assets/svgs/clock.svg';
-import GrabberComponent from '../../assets/svgs/grabbers.svg';
-import HideComponent from '../../assets/svgs/hide.svg';
-import PinDarkFilledComponent from '../../assets/svgs/pin-2-dark-filled.svg';
-import PinDarkOutlineComponent from '../../assets/svgs/pin-2-dark-outline.svg';
-import PinLightFilledComponent from '../../assets/svgs/pin-2-light-filled.svg';
-import PinLightOutlineComponent from '../../assets/svgs/pin-2-light-outline.svg';
-import SettingsComponent from '../../assets/svgs/settings.svg';
-import ShowComponent from '../../assets/svgs/show.svg';
-import TagComponent from '../../assets/svgs/tag.svg';
-import UncheckedComponent from '../../assets/svgs/unchecked.svg';
-import DropDownComponent from '../../assets/svgs/v.svg';
-import XDarkComponent from '../../assets/svgs/XDark.svg';
-import XLightComponent from '../../assets/svgs/XLight.svg';
 import { IconName } from './samwise-icon-types';
+import { ReactComponent as Alert } from '../../assets/svgs/alert.svg';
+import { ReactComponent as CalendarDark } from '../../assets/svgs/calendar-dark.svg';
+import { ReactComponent as CalendarLight } from '../../assets/svgs/calendar-light.svg';
+import { ReactComponent as CheckedDark } from '../../assets/svgs/checked-dark.svg';
+import { ReactComponent as CheckedLight } from '../../assets/svgs/checked.svg';
+import { ReactComponent as Clock } from '../../assets/svgs/clock.svg';
+import { ReactComponent as Grabber } from '../../assets/svgs/grabbers.svg';
+import { ReactComponent as Hide } from '../../assets/svgs/hide.svg';
+import { ReactComponent as PinDarkFilled } from '../../assets/svgs/pin-2-dark-filled.svg';
+import { ReactComponent as PinDarkOutline } from '../../assets/svgs/pin-2-dark-outline.svg';
+import { ReactComponent as PinLightFilled } from '../../assets/svgs/pin-2-light-filled.svg';
+import { ReactComponent as PinLightOutline } from '../../assets/svgs/pin-2-light-outline.svg';
+import { ReactComponent as Settings } from '../../assets/svgs/settings.svg';
+import { ReactComponent as Show } from '../../assets/svgs/show.svg';
+import { ReactComponent as Tag } from '../../assets/svgs/tag.svg';
+import { ReactComponent as Unchecked } from '../../assets/svgs/unchecked.svg';
+import { ReactComponent as DropDown } from '../../assets/svgs/v.svg';
+import { ReactComponent as XDark } from '../../assets/svgs/XDark.svg';
+import { ReactComponent as XLight } from '../../assets/svgs/XLight.svg';
 
 type SvgProps = SVGAttributes<SVGElement>;
 
@@ -34,84 +34,84 @@ export default ({ iconName, ...otherProps }: Props): ReactElement => {
 
   switch (iconName) {
     case 'alert':
-      SvgComponent = AlertComponent;
+      SvgComponent = Alert;
       altText = 'alert';
       break;
     case 'calendar-dark':
-      SvgComponent = CalendarDarkComponent;
+      SvgComponent = CalendarDark;
       altText = 'calendar';
       break;
     case 'calendar-light':
-      SvgComponent = CalendarLightComponent;
+      SvgComponent = CalendarLight;
       altText = 'calendar';
       break;
     case 'checked-dark':
-      SvgComponent = CheckedDarkComponent;
+      SvgComponent = CheckedDark;
       altText = 'checked';
       break;
     case 'checked-light':
-      SvgComponent = CheckedLightComponent;
+      SvgComponent = CheckedLight;
       altText = 'checked';
       break;
     case 'clock':
-      SvgComponent = ClockComponent;
+      SvgComponent = Clock;
       altText = 'clock';
       break;
     case 'grabber':
-      SvgComponent = GrabberComponent;
+      SvgComponent = Grabber;
       altText = 'grabber';
       break;
     case 'hide':
-      SvgComponent = HideComponent;
+      SvgComponent = Hide;
       altText = 'hide';
       break;
     case 'pin-dark-filled':
-      SvgComponent = PinDarkFilledComponent;
+      SvgComponent = PinDarkFilled;
       altText = 'pin-filled';
       break;
     case 'pin-dark-outline':
-      SvgComponent = PinDarkOutlineComponent;
+      SvgComponent = PinDarkOutline;
       altText = 'pin-outline';
       break;
     case 'pin-light-filled':
-      SvgComponent = PinLightFilledComponent;
+      SvgComponent = PinLightFilled;
       altText = 'pin-filled';
       break;
     case 'pin-light-outline':
-      SvgComponent = PinLightOutlineComponent;
+      SvgComponent = PinLightOutline;
       altText = 'pin-outline';
       break;
     case 'settings':
-      SvgComponent = SettingsComponent;
+      SvgComponent = Settings;
       altText = 'settings';
       break;
     case 'show':
-      SvgComponent = ShowComponent;
+      SvgComponent = Show;
       altText = 'hide';
       break;
     case 'tag':
-      SvgComponent = TagComponent;
+      SvgComponent = Tag;
       altText = 'tag';
       break;
     case 'unchecked':
-      SvgComponent = UncheckedComponent;
+      SvgComponent = Unchecked;
       altText = 'unchecked';
       break;
     case 'dropdown':
-      SvgComponent = DropDownComponent;
+      SvgComponent = DropDown;
       altText = 'dropdown';
       break;
     case 'x-dark':
-      SvgComponent = XDarkComponent;
+      SvgComponent = XDark;
       altText = 'delete';
       break;
     case 'x-light':
-      SvgComponent = XLightComponent;
+      SvgComponent = XLight;
       altText = 'delete';
       break;
     default:
       throw new Error(`Unrecognized icon name: ${iconName}`);
   }
-  const allPropsToSvg = { ...otherProps, alt: altText };
+  const allPropsToSvg = { width: '1em', height: '1em', alt: altText, ...otherProps };
   return <SvgComponent {...allPropsToSvg} />;
 };

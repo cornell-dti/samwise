@@ -1,18 +1,1 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<svg width="20px" height="20px" viewBox="0 0 20 20" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-    <!-- Generator: Sketch 52.4 (67378) - http://www.bohemiancoding.com/sketch -->
-    <title>icon/Checkbox/unchecked</title>
-    <desc>Created with Sketch.</desc>
-    <defs>
-        <path d="M2.5,20 L0,20 L0,0 L2.5,0 L17.5,0 L20,0 L20,20 L17.5,20 L2.5,20 Z M2.5,17.5 L17.5,17.5 L17.5,2.5 L2.5,2.5 L2.5,17.5 Z" id="path-1"></path>
-    </defs>
-    <g id="icon/Checkbox/unchecked" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-        <mask id="mask-2" fill="white">
-            <use xlink:href="#path-1"></use>
-        </mask>
-        <use id="Combined-Shape" fill="#FFFFFF" fill-rule="nonzero" xlink:href="#path-1"></use>
-        <g id="color/white" mask="url(#mask-2)" fill="#FFFFFF" fill-rule="nonzero">
-            <rect id="Rectangle" x="0" y="0" width="20" height="20"></rect>
-        </g>
-    </g>
-</svg>
+<svg viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><defs><path d="M2.5 20H0V0h20v20H2.5zm0-2.5h15v-15h-15v15z" id="unchecked_svg__a"/></defs><g fill="none" fill-rule="evenodd"><mask id="unchecked_svg__b" fill="#fff"><use xlink:href="#unchecked_svg__a"/></mask><use fill="#FFF" fill-rule="nonzero" xlink:href="#unchecked_svg__a"/><g mask="url(#unchecked_svg__b)" fill="#FFF" fill-rule="nonzero"><path d="M0 0h20v20H0z"/></g></g></svg>
