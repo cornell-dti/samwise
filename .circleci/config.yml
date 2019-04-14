@@ -17,12 +17,8 @@ jobs:
           paths:
             - frontend/node_modules
           key: frontend-dependencies-{{ .Branch }}-{{ checksum "frontend/yarn.lock" }}
-      # run typescript compiler
-      - run: cd frontend && yarn tsc
-      # run linter
-      - run: cd frontend && yarn lint
-      # run tests
-      - run: cd frontend && yarn test
+      # run typescript compiler, linter, and tests
+      - run: cd frontend && yarn tsc && yarn lint && yarn test
   deploy-frontend:
     description: Deploy frontend to firebase hosting
     docker:

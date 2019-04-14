@@ -6,9 +6,9 @@
     "start": "react-scripts start",
     "build:stage": "REACT_APP_IS_STAGING=true react-scripts build",
     "build": "react-scripts build",
+    "test": "react-scripts test --no-watch",
     "optimize-svg": "svgo --disable=removeViewBox --enable=prefixIds,removeDimensions src/assets/svgs/*.svg",
     "tsc": "tsc -p tsconfig.json",
-    "test": "jest --config jest.config.js",
     "lint": "eslint . --ext .js --ext .ts --ext .jsx --ext .tsx"
   },
   "dependencies": {
@@ -51,9 +51,6 @@
     "eslint-plugin-jsx-a11y": "^6.2.1",
     "eslint-plugin-react": "^7.12.4",
     "firebase-tools": "^6.6.0",
-    "jest": "^24.7.1",
-    "jest-config": "^24.7.1",
-    "jest-css-modules-transform": "^2.1.1",
     "react-scripts": "^2.1.8",
     "svgo": "^1.2.1",
     "typescript": "^3.4.3"
