@@ -4,12 +4,8 @@
     "indexes": "firestore.indexes.json"
   },
   "hosting": {
-    "public": "frontend/dist",
-    "ignore": [
-      "firebase.json",
-      "**/.*",
-      "**/node_modules/**"
-    ],
+    "public": "frontend/build",
+    "ignore": ["firebase.json", "**/.*", "**/node_modules/**"],
     "rewrites": [
       {
         "source": "**",
@@ -19,9 +15,6 @@
   },
   "functions": {
     "source": "functions/",
-    "predeploy": [
-      "cd \"$RESOURCE_DIR\"; yarn run lint",
-      "cd \"$RESOURCE_DIR\"; yarn run build"
-    ]
+    "predeploy": ["cd \"$RESOURCE_DIR\"; yarn run lint", "cd \"$RESOURCE_DIR\"; yarn run build"]
   }
 }
