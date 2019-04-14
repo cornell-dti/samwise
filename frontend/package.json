@@ -6,6 +6,7 @@
     "start": "react-scripts start",
     "build:stage": "webpack --config webpack.stage.js",
     "build": "webpack --config webpack.prod.js",
+    "optimize-svg": "svgo --disable=removeViewBox --enable=prefixIds,removeDimensions src/assets/svgs/*.svg",
     "tsc": "tsc -p tsconfig.json",
     "test": "jest --config jest.config.js",
     "lint": "eslint . --ext .js --ext .ts --ext .jsx --ext .tsx"
@@ -73,6 +74,7 @@
     "resolve": "^1.10.0",
     "sass-loader": "7.1.0",
     "style-loader": "0.23.1",
+    "svgo": "^1.2.1",
     "terser-webpack-plugin": "^1.2.3",
     "typescript": "^3.4.3",
     "url-loader": "^1.1.2",
