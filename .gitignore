@@ -58,14 +58,6 @@ coverage.xml
 *$py.class
 *.so
 
-# Environment Variables Config
-.env
-.env.production
-.env.local
-.env.development.local
-.env.test.local
-.env.production.local
-
 # VirtualEnv
 .venv
 venv/
