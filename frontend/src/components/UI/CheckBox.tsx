@@ -1,6 +1,6 @@
 /* eslint-disable jsx-a11y/label-has-associated-control,jsx-a11y/label-has-for */
 
-import React, { KeyboardEvent, ReactElement, useRef } from 'react';
+import React, { ReactElement } from 'react';
 import styles from './CheckBox.module.css';
 
 type Props = {
