@@ -308,7 +308,13 @@ export default class TaskCreator extends React.PureComponent<{}, State> {
         <div className={styles.NewTaskModal}>
           <ul>{subTasks.map(existingSubTaskEditor)}</ul>
           <FontAwesomeIcon icon={faPlus} className={styles.PlusIcon} />
-          <input type="text" placeholder="Add a Subtask" value="" onChange={this.addNewSubTask} />
+          <input
+            type="text"
+            placeholder="Add a Subtask"
+            value=""
+            onChange={this.addNewSubTask}
+            onKeyDown={this.newSubTaskKeyPress}
+          />
           <button type="button" className={styles.ResetButton} onClick={this.resetTask}>
             {'Clear'}
           </button>
