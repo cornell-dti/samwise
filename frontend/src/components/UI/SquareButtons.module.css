@@ -4,11 +4,13 @@
   cursor: pointer;
   width: 32px;
   height: 32px;
-  border: solid 1px #5A5A5A;
+  border: solid 1px #5a5a5a;
 }
 
-:focus {
-  outline: none;
+.SquareButton:hover,
+.SquareButton:focus-within {
+  border-width: 2px;
+  border-color: #5a5a5aaa;
 }
 
 .SquareButtonIconButton {
@@ -34,7 +36,7 @@
 
 .SquareButton .Icon .active {
   color: white;
-  background-color: #5A5A5A;
+  background-color: #5a5a5a;
 }
 
 .SquareButtonText {

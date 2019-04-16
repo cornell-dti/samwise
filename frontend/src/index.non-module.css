@@ -33,6 +33,10 @@ body {
 
 /* Border-Box */
 
+:focus {
+  outline: none;
+}
+
 input[type="text"],
 input[type="email"],
 input[type="search"],

@@ -138,7 +138,7 @@ function TaskEditor(
    * The event handler that handles an press enter event.
    * It will switch the focus as expected.
    *
-   * @param {'main-task' | number} caller the caller of the handler.
+   * @param caller the caller of the handler.
    */
   const pressEnterHandler = (caller: 'main-task' | number): void => {
     const order = caller === 'main-task' ? -1 : caller;

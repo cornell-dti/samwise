@@ -5,8 +5,12 @@
   width: 16px;
   min-width: 16px;
   cursor: pointer;
-  border: 2px solid white;
+  border: 1px solid white;
   user-select: none;
+}
+
+.CheckBox:focus-within {
+  border-width: 2px;
 }
 
 .InvertedCheckBox {
@@ -26,8 +30,8 @@
   cursor: pointer;
   top: 0;
   left: 0;
-  height: 12px;
-  width: 12px;
+  height: 14px;
+  width: 14px;
   background-color: transparent;
 }
 
@@ -45,8 +49,8 @@
 }
 
 .CheckBox .CheckBoxCheckMark:after {
-  left: 4px;
-  top: 0;
+  left: 5px;
+  top: 1px;
   width: 5px;
   height: 10px;
   border: solid white;
