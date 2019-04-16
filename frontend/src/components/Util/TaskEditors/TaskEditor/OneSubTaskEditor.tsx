@@ -111,6 +111,7 @@ function OneSubTaskEditor(
 const Memoized = React.memo(
   OneSubTaskEditor,
   (prev, curr) => prev.subTask === curr.subTask
+    && prev.needToBeFocused === curr.needToBeFocused
     && prev.mainTaskComplete === curr.mainTaskComplete,
 );
 export default Memoized;

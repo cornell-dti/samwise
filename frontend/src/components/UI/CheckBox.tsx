@@ -1,6 +1,6 @@
 /* eslint-disable jsx-a11y/label-has-associated-control,jsx-a11y/label-has-for */
 
-import React, { MouseEvent, ReactElement } from 'react';
+import React, { KeyboardEvent, ReactElement } from 'react';
 import styles from './CheckBox.module.css';
 
 type Props = {
@@ -21,18 +21,24 @@ export default function CheckBox(
   if (inverted) {
     allClassNames = `${allClassNames} ${styles.InvertedCheckBox}`;
   }
-  const handleClick = (e: MouseEvent<HTMLInputElement>): void => {
-    e.stopPropagation();
+  const handleClick = (): void => {
     if (!disabled) {
       onChange(!checked);
+    }
+  };
+  const handleKeyboardControl = (e: KeyboardEvent<HTMLInputElement>): void => {
+    e.stopPropagation();
+    if (e.key === ' ') {
+      handleClick();
     }
   };
   return (
     <label className={allClassNames}>
       <input
-        tabIndex={-1}
+        tabIndex={0}
         defaultChecked={checked}
         onClick={handleClick}
+        onKeyDown={handleKeyboardControl}
         disabled={disabled}
         type="checkbox"
       />

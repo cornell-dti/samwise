@@ -9,6 +9,10 @@
   user-select: none;
 }
 
+.CheckBox:focus, .CheckBox:focus-within {
+  border-width: 3px;
+}
+
 .InvertedCheckBox {
   border-color: #333333;
 }

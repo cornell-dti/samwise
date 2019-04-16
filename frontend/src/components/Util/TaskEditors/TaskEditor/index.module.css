@@ -68,8 +68,8 @@ input.TaskEditorFlexibleInput:focus-within::placeholder {
   margin-right: 0;
 }
 
-.TaskEditorSubtaskCheckBox label{
-  min-width:16px;
+.TaskEditorSubtaskCheckBox label {
+  min-width: 16px;
 }
 
 .TaskEditorIcon {
@@ -80,7 +80,9 @@ input.TaskEditorFlexibleInput:focus-within::placeholder {
   overflow: hidden;
 }
 
-.TaskEditorIcon:hover > * {
+.TaskEditorIcon:hover > *,
+.TaskEditorIcon:focus > *,
+.TaskEditorIcon:focus-within > * {
   opacity: 0.85;
   stroke-width: 3px;
 }
@@ -144,7 +146,7 @@ input.TaskEditorFlexibleInput:focus-within::placeholder {
   top: 36px;
 }
 
-.TaskEditorCalendar div>abbr{
+.TaskEditorCalendar div > abbr {
   color: black;
 }
 
@@ -158,9 +160,10 @@ input.TaskEditorFlexibleInput:focus-within::placeholder {
   margin-left: 2em;
 }
 
-.SubtaskHide{
-  max-height:50px;
+.SubtaskHide {
+  max-height: 50px;
   transition: max-height 0.2s ease-in-out;
-  overflow:hidden;
-  margin:-15px 0 20px 0;padding:0;
+  overflow: hidden;
+  margin: -15px 0 20px 0;
+  padding: 0;
 }
