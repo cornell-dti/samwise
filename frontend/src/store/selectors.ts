@@ -114,7 +114,8 @@ export const getFocusViewProps: SelectorOf<FocusViewProps> = createSelector(
       const filteredCompletedTask = getFilteredCompletedInFocusTask(task, subTasks);
       const { id, order } = task;
       if (filteredCompletedTask != null && filteredUncompletedTask != null) {
-        throw new Error();
+        taskMetaDataList.push({ id, order, inFocusView: true, inCompleteFocusView: true });
+        taskMetaDataList.push({ id, order, inFocusView: true, inCompleteFocusView: false });
       } else if (filteredCompletedTask != null) {
         taskMetaDataList.push({ id, order, inFocusView: true, inCompleteFocusView: true });
       } else if (filteredUncompletedTask != null) {
