@@ -7,6 +7,10 @@
   font-weight: 500;
 }
 
+.Task:focus {
+  opacity: 0.9;
+}
+
 .TaskMainWrapper {
   display: flex;
   padding: 3px;
@@ -43,7 +47,8 @@
   height: 16px;
 }
 
-.TaskIcon:hover {
+.TaskIcon:hover,
+.TaskIcon:focus {
   opacity: 0.85;
   stroke-width: 3px;
 }

@@ -82,7 +82,7 @@ input.TaskEditorFlexibleInput:focus-within::placeholder {
 
 .TaskEditorIcon:hover > *,
 .TaskEditorIcon:focus > *,
-.TaskEditorIcon:focus-within > * {
+.TaskEditorGrabberIcon:focus > * {
   opacity: 0.85;
   stroke-width: 3px;
 }

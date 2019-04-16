@@ -50,9 +50,9 @@
   align-content: center;
   width: 98px;
   height: 34px;
-  color: #5A5A5A;
+  color: #5a5a5a;
   border-radius: 2px;
-  border: solid 1px #5A5A5A;
+  border: solid 1px #5a5a5a;
 }
 
 .ContainerTypeSwitcherButton {
@@ -61,7 +61,12 @@
   cursor: pointer;
   width: 32px;
   height: 32px;
-  border: solid 1px #5A5A5A;
+  border: solid 1px #5a5a5a;
+}
+
+.ContainerTypeSwitcherButton:hover,
+.ContainerTypeSwitcherButton:focus-within {
+  background-color: #EEEEEE;
 }
 
 .ContainerTypeSwitcherButtonText {
@@ -71,5 +76,10 @@
 
 .ContainerTypeSwitcherActiveButton {
   color: white;
-  background-color: #5A5A5A;
+  background-color: #5a5a5a;
+}
+
+.ContainerTypeSwitcherActiveButton:hover,
+.ContainerTypeSwitcherActiveButton:focus-within {
+  background-color: #333333;
 }

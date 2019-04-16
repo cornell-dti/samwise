@@ -117,7 +117,7 @@ export default ({ iconName, ...otherProps }: Props): ReactElement => {
     height: '1em',
     alt: altText,
     tabIndex: 0,
-    onKeyDown: (e: KeyboardEvent<SVGElement>) => {
+    onKeyUp: (e: KeyboardEvent<SVGElement>) => {
       e.stopPropagation();
       if (e.key === ' ' && otherProps.onClick != null) {
         // hacky way to convert space to click. Potentially unsafe but generally OK.

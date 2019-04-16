@@ -1,4 +1,4 @@
-import React, { ReactElement, SyntheticEvent, ReactNode } from 'react';
+import React, { KeyboardEvent, ReactElement, SyntheticEvent, ReactNode } from 'react';
 import { connect } from 'react-redux';
 import styles from './FutureViewTask.module.css';
 import FutureViewSubTask from './FutureViewSubTask';
@@ -55,7 +55,11 @@ function FutureViewTask(
    * @return the onClick handler.
    */
   // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-  const getOnClickHandler = (opener: () => void) => (event: SyntheticEvent<HTMLElement>): void => {
+  const getOnClickHandler = (opener: () => void) => (event?: SyntheticEvent<HTMLElement>): void => {
+    if (event == null) {
+      opener();
+      return;
+    }
     if (event.target instanceof HTMLElement) {
       const elem: HTMLElement = event.target;
       // only accept click on text.
@@ -123,13 +127,25 @@ function FutureViewTask(
   // Construct the trigger for the floating task editor.
   const trigger = (opened: boolean, opener: () => void): ReactElement => {
     const onClickHandler = getOnClickHandler(opener);
+    const onSpaceHandler = (e: KeyboardEvent<HTMLDivElement>): void => {
+      if (e.key === ' ') {
+        onClickHandler();
+      }
+    };
     const style = opened ? { zIndex: 8 } : {};
     const mainTasks = inNDaysView
       ? renderMainTaskInfo()
       : renderMainTaskInfo(isSmallScreen);
     const subtasks = inNDaysView ? renderSubTasks() : null;
     return (
-      <div role="presentation" className={styles.Task} style={style} onClick={onClickHandler}>
+      <div
+        role="button"
+        tabIndex={0}
+        className={styles.Task}
+        style={style}
+        onClick={onClickHandler}
+        onKeyUp={onSpaceHandler}
+      >
         {overdueComponentOpt}
         {mainTasks}
         {subtasks}

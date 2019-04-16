@@ -1,6 +1,6 @@
 /* eslint-disable jsx-a11y/label-has-associated-control,jsx-a11y/label-has-for */
 
-import React, { KeyboardEvent, ReactElement } from 'react';
+import React, { KeyboardEvent, ReactElement, useRef } from 'react';
 import styles from './CheckBox.module.css';
 
 type Props = {
@@ -14,9 +14,13 @@ type Props = {
 /**
  * This is the checkbox that implements designers' minimalist design.
  */
-export default function CheckBox(
-  { checked, onChange, disabled, inverted, className }: Props,
-): ReactElement {
+export default function CheckBox({
+  checked,
+  onChange,
+  disabled,
+  inverted,
+  className,
+}: Props): ReactElement {
   let allClassNames = className === null ? styles.CheckBox : `${className} ${styles.CheckBox}`;
   if (inverted) {
     allClassNames = `${allClassNames} ${styles.InvertedCheckBox}`;
@@ -26,23 +30,16 @@ export default function CheckBox(
       onChange(!checked);
     }
   };
-  const handleKeyboardControl = (e: KeyboardEvent<HTMLInputElement>): void => {
-    e.stopPropagation();
-    if (e.key === ' ') {
-      handleClick();
-    }
-  };
   return (
     <label className={allClassNames}>
       <input
         tabIndex={0}
         defaultChecked={checked}
         onClick={handleClick}
-        onKeyDown={handleKeyboardControl}
         disabled={disabled}
         type="checkbox"
       />
-      {checked && (<span className={styles.CheckBoxCheckMark} />)}
+      {checked && <span className={styles.CheckBoxCheckMark} />}
     </label>
   );
 }
