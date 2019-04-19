@@ -2,7 +2,6 @@ import React, { ReactElement } from 'react';
 import SettingsPage from './SettingsPage';
 import styles from './SettingsButton.module.css';
 import SamwiseIcon from '../../UI/SamwiseIcon';
-import Tooltip from '../../UI/Tooltip';
 
 export default function SettingsButton(): ReactElement {
   const [showSettings, setShowSettings] = React.useState(false);
@@ -13,11 +12,11 @@ export default function SettingsButton(): ReactElement {
   return (
     <div style={{ display: 'inline-block' }}>
       <button type="submit" onClick={displayModal}>
-        <Tooltip text="Settings Button" iconName="settings" />
+        <p title="Settings Button"><SamwiseIcon iconName="settings" /></p>
       </button>
       {showSettings && (
         <div className={styles.SettingsModal}>
-          <button className={styles.CloseButton} type="submit" onClick={closeModal}>
+          <button className={styles.CloseButton} type="submit" title="Close Settings" onClick={closeModal}>
             <SamwiseIcon iconName="x-light" />
           </button>
           <section className={styles.ContentWrap}>

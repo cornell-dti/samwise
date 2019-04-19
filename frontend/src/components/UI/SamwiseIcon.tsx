@@ -31,6 +31,7 @@ type Props = SvgProps & { readonly iconName: IconName };
 export default ({ iconName, ...otherProps }: Props): ReactElement => {
   let SvgComponent: StatelessComponent<SvgProps>;
   let altText: string;
+  // let title: string;
 
   switch (iconName) {
     case 'alert':
@@ -117,6 +118,7 @@ export default ({ iconName, ...otherProps }: Props): ReactElement => {
     height: '1em',
     alt: altText,
     tabIndex: 0,
+    title: altText,
     onKeyUp: (e: KeyboardEvent<SVGElement>) => {
       e.stopPropagation();
       if (e.key === ' ' && otherProps.onClick != null) {
@@ -127,5 +129,5 @@ export default ({ iconName, ...otherProps }: Props): ReactElement => {
     },
     ...otherProps,
   };
-  return <SvgComponent {...allPropsToSvg} />;
+  return <span title={altText}><SvgComponent {...allPropsToSvg} /></span>;
 };

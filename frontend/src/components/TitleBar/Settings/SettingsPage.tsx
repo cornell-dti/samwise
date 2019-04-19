@@ -33,7 +33,7 @@ const ExamImporter = (): ReactElement => (
       from your classes into your planner. We will only import those that
       appears on Cornell prelim/final schedule webpage.
       <br />
-      <button type="button" onClick={importCourseExams}>Reimport Exams</button>
+      <button type="button" title="Reimport Exams" onClick={importCourseExams}>Reimport Exams</button>
     </div>
   </div>
 );
@@ -94,6 +94,7 @@ function SettingsPage({ tags }: Props): ReactElement {
             type="button"
             className={[styles.FinalRowButton, styles.SignButton].join(' ')}
             onClick={firebaseSignOut}
+            title="Sign out of Samwise"
           >
             Sign Out
           </button>
@@ -103,6 +104,7 @@ function SettingsPage({ tags }: Props): ReactElement {
           href="https://goo.gl/forms/PZUZ1Ze6kN82EmcD2"
           target="_blank"
           rel="noopener noreferrer"
+          title="Link to Feedback form"
         >
           Give Feedback
         </a>
@@ -112,6 +114,7 @@ function SettingsPage({ tags }: Props): ReactElement {
             type="button"
             className={[styles.FinalRowButton, styles.ReplayTutorialButton].join(' ')}
             onClick={() => completeOnboarding(false)}
+            title="Click to replay tutorial"
           >
             Replay Tutorial
           </button>
