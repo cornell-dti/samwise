@@ -14,8 +14,8 @@ import SettingsButton from './Settings/SettingsButton';
 export default (): ReactElement => (
   <header className={styles.Main}>
     <Banner />
-    <span className={styles.Time}><Clock format="h:mm A" ticking /></span>
-    <span className={styles.Date}>{date2FullDateString(new Date())}</span>
+    <span title="time" className={styles.Time}><Clock format="h:mm A" ticking /></span>
+    <span title="date" className={styles.Date}>{date2FullDateString(new Date())}</span>
     <span className={styles.Links}><SettingsButton /></span>
   </header>
 );
