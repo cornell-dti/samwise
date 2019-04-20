@@ -1,3 +1,5 @@
+@import '../../../colors.scss';
+
 .ProgressIndicator {
   display: flex;
   align-content: center;
@@ -15,7 +17,7 @@
 }
 
 .ProgressOtherText {
-  color: #9B9B9B;
+  color: $warm-grey-two;
 }
 
 .ProgressBarContainer {

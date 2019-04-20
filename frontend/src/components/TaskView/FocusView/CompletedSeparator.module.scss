@@ -1,3 +1,5 @@
+@import '../../../colors.scss';
+
 .Separator {
   display: flex;
   align-items: center;
@@ -7,7 +9,7 @@
 }
 
 .Text {
-  color: #9b9b9b;
+  color: $warm-grey-two;
 }
 
 .Icon {
@@ -30,5 +32,5 @@
   margin-left: 8px;
   flex: auto;
   height: 1px;
-  background-color: #9b9b9b;
+  background-color: $warm-grey-two;
 }
