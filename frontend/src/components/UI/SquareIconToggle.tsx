@@ -24,7 +24,7 @@ export default function SquareIconToggle({ active, iconNames, onToggle }: Props)
     ? `${styles.SquareButton} ${styles.SquareButtonIconButton}`
     : `${styles.SquareButton} ${styles.SquareButtonIconButton} ${styles.active}`;
   return (
-    <button className={className} type="button" onClick={onToggle}>
+    <button className={className} title="eye" type="button" onClick={onToggle}>
       <Icon
         className={styles.SquareButtonText}
         icon={active ? activeIconName : inactiveIconName}

@@ -76,7 +76,7 @@ function ClassTagAdder({ courses }: Props): ReactElement | null {
     setKey(prev => prev + 1);
   };
   return (
-    <div className={`${styles.TagColorConfigItemAdder} ${styles.SearchClasses}`}>
+    <div className={`${styles.TagColorConfigItemAdder} ${styles.SearchClasses}`} title="Search for a class">
       <ReactSearchBox
         data={getCourseOptions(courses)}
         value=""

@@ -11,7 +11,7 @@ const className = [styles.SquareButton, styles.SquareButtonTextButton].join(' ')
  */
 export default function SquareTextButton({ text, onClick }: Props): ReactElement {
   return (
-    <button className={className} type="button" onClick={onClick}>
+    <button className={className} title={text} type="button" onClick={onClick}>
       <span className={styles.SquareButtonText}>{text}</span>
     </button>
   );

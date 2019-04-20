@@ -48,7 +48,7 @@
   color: black;
 }
 
-.CenterIcon:hover path {
+.CenterIcon:hover path, .CenterIcon:focus path {
   stroke-width: 3px;
   stroke-opacity: 0.9;
 }
