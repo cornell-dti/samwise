@@ -16,7 +16,7 @@ export default function SettingsButton(): ReactElement {
       </button>
       {showSettings && (
         <div className={styles.SettingsModal}>
-          <button className={styles.CloseButton} type="submit" title="Close Settings" onClick={closeModal}>
+          <button className={styles.CloseButton} type="submit" title="Close Settings" onClick={closeModal} tabIndex={-1}>
             <SamwiseIcon iconName="x-light" />
           </button>
           <section className={styles.ContentWrap}>
