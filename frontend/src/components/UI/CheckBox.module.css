@@ -1,0 +1,63 @@
+.CheckBox {
+  display: inline-block;
+  position: relative;
+  height: 16px;
+  width: 16px;
+  min-width: 16px;
+  cursor: pointer;
+  border: 1px solid white;
+  user-select: none;
+}
+
+.CheckBox:focus-within {
+  border-width: 2px;
+}
+
+.InvertedCheckBox {
+  border-color: #333333;
+}
+
+.CheckBox input {
+  position: absolute;
+  cursor: pointer;
+  opacity: 0;
+  height: 0;
+  width: 0;
+}
+
+.CheckBoxCheckMark {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  height: 14px;
+  width: 14px;
+  background-color: transparent;
+}
+
+.CheckBox:hover input ~ .CheckBoxCheckMark {
+  background-color: rgba(255, 255, 255, 0.15);
+}
+
+.CheckBox input:checked ~ .CheckBoxCheckMark {
+  background-color: rgba(255, 255, 255, 0.15);
+}
+
+.CheckBoxCheckMark:after {
+  position: absolute;
+  content: "";
+}
+
+.CheckBox .CheckBoxCheckMark:after {
+  left: 5px;
+  top: 1px;
+  width: 5px;
+  height: 10px;
+  border: solid white;
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg);
+}
+
+.InvertedCheckBox .CheckBoxCheckMark:after {
+  border-color: #333333;
+}

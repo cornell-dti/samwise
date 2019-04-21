@@ -2,7 +2,7 @@ import React, { ReactElement } from 'react';
 import { Draggable } from 'react-beautiful-dnd';
 import { connect } from 'react-redux';
 import InlineTaskEditor from '../../Util/TaskEditors/InlineTaskEditor';
-import styles from './FocusTask.css';
+import styles from './FocusTask.module.css';
 import { State, Task } from '../../../store/store-types';
 import { error } from '../../../util/general-util';
 import {

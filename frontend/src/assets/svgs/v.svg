@@ -1,18 +1,1 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<svg width="20px" height="20px" viewBox="0 0 20 20" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-    <!-- Generator: Sketch 52.4 (67378) - http://www.bohemiancoding.com/sketch -->
-    <title>icon/v</title>
-    <desc>Created with Sketch.</desc>
-    <defs>
-        <path d="M10.1397166,13.1426913 L16.7461175,6.53629043 C16.9548541,6.32755377 17.2932831,6.32755377 17.5020198,6.53629043 C17.7107564,6.74502708 17.7107564,7.08345606 17.5020198,7.29219271 L10.5333157,14.2608968 C10.4249672,14.3692452 10.2816756,14.4213535 10.1397166,14.4172216 C9.99775753,14.4213535 9.85446592,14.3692452 9.74611747,14.2608968 L2.77741339,7.29219271 C2.56867674,7.08345606 2.56867674,6.74502708 2.77741339,6.53629043 C2.98615004,6.32755377 3.32457902,6.32755377 3.53331568,6.53629043 L10.1397166,13.1426913 Z" id="path-1"></path>
-    </defs>
-    <g id="icon/v" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-        <mask id="mask-2" fill="white">
-            <use xlink:href="#path-1"></use>
-        </mask>
-        <use id="Combined-Shape" stroke="#9B9B9B" fill="#9B9B9B" fill-rule="nonzero" stroke-linecap="round" xlink:href="#path-1"></use>
-        <g id="color/light-grey" mask="url(#mask-2)" fill="transparent" fill-rule="nonzero">
-            <rect id="Rectangle" x="0" y="0" width="20" height="20"></rect>
-        </g>
-    </g>
-</svg>
+<svg viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><defs><path d="M10.14 13.143l6.606-6.607a.535.535 0 0 1 .756.756l-6.969 6.969a.533.533 0 0 1-.393.156.533.533 0 0 1-.394-.156L2.777 7.292a.535.535 0 1 1 .756-.756l6.607 6.607z" id="v_svg__a"/></defs><g fill="none" fill-rule="evenodd"><mask id="v_svg__b" fill="#fff"><use xlink:href="#v_svg__a"/></mask><use stroke="#9B9B9B" fill="#9B9B9B" fill-rule="nonzero" stroke-linecap="round" xlink:href="#v_svg__a"/><g mask="url(#v_svg__b)" fill="transparent" fill-rule="nonzero"><path d="M0 0h20v20H0z"/></g></g></svg>

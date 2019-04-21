@@ -1,5 +1,5 @@
 import React, { ReactElement, SyntheticEvent } from 'react';
-import styles from './Picker.css';
+import styles from './Picker.module.css';
 import SamwiseIcon from '../UI/SamwiseIcon';
 
 type Props = {

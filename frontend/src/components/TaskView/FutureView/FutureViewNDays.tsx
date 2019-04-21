@@ -1,6 +1,6 @@
 import React, { ReactElement } from 'react';
 import FutureViewDay from './FutureViewDay';
-import styles from './FutureViewNDays.css';
+import styles from './FutureViewNDays.module.css';
 import { SimpleDate } from './future-view-types';
 
 type Props = {

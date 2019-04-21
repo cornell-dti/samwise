@@ -1,7 +1,7 @@
 import React, { ReactElement } from 'react';
 import { SimpleDate } from './future-view-types';
 import { CalendarPosition, FloatingPosition } from '../../Util/TaskEditors/editors-types';
-import styles from './FutureViewDay.css';
+import styles from './FutureViewDay.module.scss';
 import { floatingViewWidth, headerHeight } from './future-view-css-props';
 import { getTodayAtZeroAM } from '../../../util/datetime-util';
 import { error } from '../../../util/general-util';
@@ -126,7 +126,7 @@ export default function FutureViewDay(props: Props): ReactElement {
           {...props}
         />
         {heightInfo.doesOverflow && (
-          <button type="button" className={styles.MoreTasksBar} onClick={openFloatingView}>
+          <button type="button" className={styles.MoreTasksBar} onClick={openFloatingView} tabIndex={0}>
             More Tasks...
           </button>
         )}

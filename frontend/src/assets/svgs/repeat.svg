@@ -1,12 +1,1 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<svg width="20px" height="20px" viewBox="0 0 20 20" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-    <!-- Generator: Sketch 52.4 (67378) - http://www.bohemiancoding.com/sketch -->
-    <title>icon/repeat</title>
-    <desc>Created with Sketch.</desc>
-    <g id="icon/repeat" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" stroke-linecap="round" stroke-linejoin="round">
-        <g id="Group" transform="translate(3.000000, 2.500000)" fill-rule="nonzero" stroke="#5A5A5A" stroke-width="2">
-            <path d="M0,8 C0,11.8659932 3.13400675,15 7,15 C10.8659932,15 14,11.8659932 14,8 C14,4.13400675 10.8659932,1 7,1 C5.06529168,1 3.31390421,1.78488991 2.04688849,3.05361885" id="Path"></path>
-            <polyline id="Path-12" transform="translate(3.398642, 2.398642) rotate(13.000000) translate(-3.398642, -2.398642) " points="5.39864224 4.39864224 1.39864224 4.39864224 1.39864224 0.398642238"></polyline>
-        </g>
-    </g>
-</svg>
+<svg viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><g fill-rule="nonzero" stroke="#5A5A5A" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5a7 7 0 1 0 2.047-4.946M7.897 7.297L4 6.397 4.9 2.5"/></g></svg>

@@ -14,7 +14,7 @@ import {
   MainTask,
 } from '../../../../store/store-types';
 import OverdueAlert from '../../../UI/OverdueAlert';
-import styles from './TaskEditor.css';
+import styles from './index.module.css';
 import { NONE_TAG } from '../../../../util/tag-util';
 import { ignore } from '../../../../util/general-util';
 import { getTodayAtZeroAM } from '../../../../util/datetime-util';
@@ -138,7 +138,7 @@ function TaskEditor(
    * The event handler that handles an press enter event.
    * It will switch the focus as expected.
    *
-   * @param {'main-task' | number} caller the caller of the handler.
+   * @param caller the caller of the handler.
    */
   const pressEnterHandler = (caller: 'main-task' | number): void => {
     const order = caller === 'main-task' ? -1 : caller;

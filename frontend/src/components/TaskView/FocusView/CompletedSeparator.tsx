@@ -1,5 +1,5 @@
 import React, { ReactElement } from 'react';
-import styles from './CompletedSeparator.module.css';
+import styles from './CompletedSeparator.module.scss';
 import SamwiseIcon from '../../UI/SamwiseIcon';
 
 type Props = {

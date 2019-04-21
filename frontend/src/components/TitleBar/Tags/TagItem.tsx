@@ -1,6 +1,6 @@
 import React, { SyntheticEvent, ReactElement } from 'react';
 import { Tag } from '../../../store/store-types';
-import styles from './TagItem.css';
+import styles from './TagItem.module.css';
 import ColorEditor from './ColorEditor';
 import { editTag, removeTag } from '../../../firebase/actions';
 import SamwiseIcon from '../../UI/SamwiseIcon';
@@ -41,7 +41,7 @@ export default function TagItem({ tag }: Props): ReactElement {
     <li className={styles.ColorConfigItem}>
       {nameNode}
       <ColorEditor color={color} onChange={editColor} />
-      <button type="button" className={styles.DeleteTag} onClick={onRemove}>
+      <button type="button" className={styles.DeleteTag} onClick={onRemove} tabIndex={0}>
         <SamwiseIcon iconName="x-light" />
       </button>
     </li>

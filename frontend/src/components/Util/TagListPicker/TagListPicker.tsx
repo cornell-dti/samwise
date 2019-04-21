@@ -1,7 +1,7 @@
 import React, { ReactElement } from 'react';
 import { connect } from 'react-redux';
 import TagPickerItem from './TagPickerItem';
-import styles from './TagListPicker.css';
+import styles from './TagListPicker.module.css';
 import { State, Tag } from '../../../store/store-types';
 import { NONE_TAG_ID } from '../../../util/tag-util';
 import { getOrderedTags } from '../../../store/selectors';

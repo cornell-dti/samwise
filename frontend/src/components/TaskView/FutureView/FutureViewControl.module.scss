@@ -1,0 +1,92 @@
+@import '../../../colors.scss';
+
+/*
+ * --------------------------------------------------------------------------------
+ * Higher Level Classes
+ * --------------------------------------------------------------------------------
+ */
+
+.FutureViewControl {
+  position: relative;
+  display: flex;
+  width: calc(100% - 6px);
+  align-items: center;
+}
+
+/*
+ * --------------------------------------------------------------------------------
+ * Helper Component Classes
+ * --------------------------------------------------------------------------------
+ */
+
+.Title {
+  font-size: 24px;
+  margin: 1em 0.5em;
+}
+
+.NavButton {
+  cursor: pointer;
+  margin-left: 0.5em;
+  font-size: 1.5em;
+}
+
+.NavButton:hover,
+.NavButton:focus {
+  color: #5a5a5a;
+}
+
+.NavButtonNDays {
+  position: absolute;
+  z-index: 1;
+  top: 250px;
+}
+
+.ControlPadding {
+  flex: auto;
+}
+
+/*
+ * --------------------------------------------------------------------------------
+ * ContainerTypeSwitcher
+ * --------------------------------------------------------------------------------
+ */
+
+.ContainerTypeSwitcher {
+  display: flex;
+  flex-direction: row;
+  align-content: center;
+  width: 98px;
+  height: 34px;
+  color: $typeface-grey;
+  border-radius: 2px;
+  border: solid 1px $typeface-grey;
+}
+
+.ContainerTypeSwitcherButton {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  width: 32px;
+  height: 32px;
+  border: solid 1px $typeface-grey;
+}
+
+.ContainerTypeSwitcherButton:hover,
+.ContainerTypeSwitcherButton:focus-within {
+  background-color: #eeeeee;
+}
+
+.ContainerTypeSwitcherButtonText {
+  font-size: 12px;
+  margin: 0 auto;
+}
+
+.ContainerTypeSwitcherActiveButton {
+  color: white;
+  background-color: $typeface-grey;
+}
+
+.ContainerTypeSwitcherActiveButton:hover,
+.ContainerTypeSwitcherActiveButton:focus-within {
+  background-color: $very-dark-grey;
+}
