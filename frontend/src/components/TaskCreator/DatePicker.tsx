@@ -13,17 +13,18 @@ type Props = {
   readonly opened: boolean;
   readonly datePicked: boolean;
   readonly onPickerOpened: () => void;
+  readonly onClearPicker: () => void;
 };
 
 export default function DatePicker(props: Props): ReactElement {
   const {
-    date, opened, datePicked, onDateChange, onPickerOpened,
+    date, opened, datePicked, onDateChange, onPickerOpened, onClearPicker,
   } = props;
   // Controllers
   const clickPicker = (): void => { onPickerOpened(); };
   const reset = (e: SyntheticEvent<HTMLElement>): void => {
     e.stopPropagation();
-    onDateChange(null);
+    onClearPicker();
   };
   // Nodes
   const displayedNode = (isDefault: boolean): ReactElement => {
@@ -41,12 +42,6 @@ export default function DatePicker(props: Props): ReactElement {
         {internal}
       </span>
     );
-  };
-  const onChange = (d: Date | Date[]): void => {
-    if (Array.isArray(d)) {
-      return;
-    }
-    onDateChange(d);
   };
 
   /**
@@ -69,16 +64,25 @@ export default function DatePicker(props: Props): ReactElement {
     </button>
   );
 
+  /**
+   * The state to keep track of which days the user would like to repeat
+   */
   const [checkedWeeks, setCheckedWeeks] = React.useState<boolean[]>(
     new Array(7).fill(false),
   );
 
+  /**
+   * Event handler when checking or unchecking a weekday for repeating
+   */
   const handleClickWeekday = (e: ChangeEvent): void => {
     const { value, checked } = e.target as HTMLInputElement;
     const val = parseInt(value, 10);
     setCheckedWeeks(checkedWeeks.map((x, i) => (i === val ? checked : x)));
   };
 
+  /**
+   * The list of labels and inputs making up the seven weekdays users can check and uncheck
+   */
   const weekdayPickers = ['S', 'M', 'T', 'W', 'T', 'F', 'S'].reduce(
     (a, x, i) => (
       <>
@@ -103,13 +107,24 @@ export default function DatePicker(props: Props): ReactElement {
     ), <></>,
   );
 
+  /**
+   * The state to keep track of which repeat end option the user has chosen.
+   * -1 means the user has not selected an option yet
+   */
   const [endOption, setEndOption] = React.useState<number>(-1);
 
+  /**
+   * Event handler for choosing a repeat end option
+   * @param e The onchange event
+   */
   const handleClickEnd = (e: ChangeEvent): void => {
     const { value } = e.target as HTMLInputElement;
     setEndOption(parseInt(value, 10));
   };
 
+  /**
+   * The list of li elements for all the repeat end options
+   */
   const endPicker = [
     <>At the end of the semester</>,
     <>
@@ -158,6 +173,45 @@ export default function DatePicker(props: Props): ReactElement {
     </div>
   );
 
+  /**
+   * State keeping track of the selected date
+   */
+  const [currDate, setCurrDate] = React.useState<Date>(date);
+
+  /**
+   * Resets all the react states regarding repeating tasks
+   */
+  const resetRepeats = (): void => {
+    setCheckedWeeks(new Array(7).fill(false));
+    setEndOption(-1);
+    setIsRepeat(false);
+  };
+
+  /**
+   * Event handler for when the user changes the calendar date
+   */
+  const onChange = (d: Date | Date[]): void => {
+    if (Array.isArray(d)) {
+      return;
+    }
+    setCurrDate(d);
+  };
+
+  /**
+   * Event handler for when the user tries to save
+   */
+  const onSubmit = (): void => {
+    resetRepeats();
+    onDateChange(currDate);
+  };
+
+  /**
+   * Event handler for when the user tries to cancel
+   */
+  const onCancel = (): void => {
+    resetRepeats();
+    onDateChange(null);
+  };
 
   return (
     <div className={styles.Main}>
@@ -168,8 +222,8 @@ export default function DatePicker(props: Props): ReactElement {
           {!isRepeat && unopenedRepeat}
           {isRepeat && openedRepeat}
           <p className={styles.NewTaskDateSave}>
-            <button type="button">Cancel</button>
-            <button type="button">Done</button>
+            <button type="button" onClick={onCancel}>Cancel</button>
+            <button type="button" onClick={onSubmit}>Done</button>
           </p>
         </div>
       )}

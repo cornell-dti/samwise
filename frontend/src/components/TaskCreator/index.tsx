@@ -157,10 +157,30 @@ export default class TaskCreator extends React.PureComponent<{}, State> {
    *
    * @param {Date} date the new date, or null for today.
    */
-  private editDate = (date: Date | null) => this.setState(
-    { date: date || new Date(), datePickerOpened: false, datePicked: Boolean(date) },
-    this.focusTaskName,
-  );
+  private editDate = (date: Date | null) => {
+    const { datePicked } = this.state;
+    if (datePicked && date === null) {
+      this.setState(
+        { datePickerOpened: false },
+        this.focusTaskName,
+      );
+    } else {
+      this.setState(
+        { date: date || new Date(), datePickerOpened: false, datePicked: Boolean(date) },
+        this.focusTaskName,
+      );
+    }
+  };
+
+  /**
+   * Reset the date picker
+   */
+  private clearDate = () => {
+    this.setState(
+      { date: new Date(), datePickerOpened: false, datePicked: false },
+      this.focusTaskName,
+    );
+  }
 
   /**
    * Toggle the pin status.
@@ -300,6 +320,7 @@ export default class TaskCreator extends React.PureComponent<{}, State> {
           opened={datePickerOpened}
           datePicked={datePicked}
           onDateChange={this.editDate}
+          onClearPicker={this.clearDate}
           onPickerOpened={this.openDatePicker}
         />
         <button tabIndex={-1} type="submit" className={styles.SubmitNewTask}>
