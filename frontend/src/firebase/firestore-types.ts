@@ -1,6 +1,7 @@
 export type FirestoreCommon = {
   readonly owner: string;
   readonly order: number;
+  readonly lastEdited: Date | { readonly toDate: () => Date };
 };
 
 export type FirestoreTag = FirestoreCommon & {
@@ -16,7 +17,6 @@ export type FirestoreTask = FirestoreCommon & {
   readonly complete: boolean;
   readonly inFocus: boolean;
   readonly children: string[];
-  readonly lastEdited: Date | { readonly toDate: () => Date };
 };
 
 export type FirestoreSubTask = FirestoreCommon & {
