@@ -38,8 +38,13 @@ async function createFirestoreObject<T>(
   };
 }
 
+const mergeWithLastUpdated = <T>(obj: T): T & { readonly lastEdited: firestore.FieldValue } => ({
+  lastEdited: firestore.FieldValue.serverTimestamp(),
+  ...obj,
+});
+
 type OwnerAndLastEdited = { readonly owner: string; readonly lastEdited: firestore.FieldValue };
-const mergeWithOwner = <T>(obj: T): T & OwnerAndLastEdited => ({
+const mergeWithOwnerAndLastUpdated = <T>(obj: T): T & OwnerAndLastEdited => ({
   owner: getAppUser().email,
   lastEdited: firestore.FieldValue.serverTimestamp(),
   ...obj,
@@ -70,7 +75,7 @@ export const editTag = (tag: Tag): void => {
   const { id, ...rest } = tag;
   tagsCollection()
     .doc(id)
-    .update(rest)
+    .update(mergeWithLastUpdated(rest))
     .then(ignore);
 };
 
@@ -84,7 +89,7 @@ export const removeTag = (id: string): void => {
       s.docs
         .filter(doc => doc.data().type === 'TASK')
         .forEach((doc) => {
-          batch.update(tasksCollection().doc(doc.id), { tag: NONE_TAG_ID });
+          batch.update(tasksCollection().doc(doc.id), mergeWithLastUpdated({ tag: NONE_TAG_ID }));
         });
       batch.delete(tagsCollection().doc(id));
       batch.commit().then(ignore);
@@ -106,7 +111,7 @@ export const addTask = (
     // Step 1: Create SubTasks
     const batch = db().batch();
     const createdSubTasks: SubTask[] = subTasks.map((subtask) => {
-      const firebaseSubTask: FirestoreSubTask = mergeWithOwner(subtask);
+      const firebaseSubTask: FirestoreSubTask = mergeWithOwnerAndLastUpdated(subtask);
       const subtaskDoc = subTasksCollection().doc();
       batch.set(subtaskDoc, firebaseSubTask);
       return { ...subtask, id: subtaskDoc.id };
@@ -132,26 +137,29 @@ export const addTask = (
 
 export const addSubTask = (taskId: string, subTask: SubTask): void => {
   const newSubTaskDoc = subTasksCollection().doc(subTask.id);
-  const firebaseSubTask: FirestoreSubTask = mergeWithOwner(subTask);
+  const firebaseSubTask: FirestoreSubTask = mergeWithOwnerAndLastUpdated(subTask);
   const batch = db().batch();
   batch.set(newSubTaskDoc, firebaseSubTask);
-  batch.update(tasksCollection().doc(taskId), {
-    children: firestore.FieldValue.arrayUnion(newSubTaskDoc.id),
-  });
+  batch.update(
+    tasksCollection().doc(taskId),
+    mergeWithLastUpdated({
+      children: firestore.FieldValue.arrayUnion(newSubTaskDoc.id),
+    }),
+  );
   batch.commit().then(ignore);
 };
 
 export const editMainTask = (taskId: string, partialMainTask: PartialMainTask): void => {
   tasksCollection()
     .doc(taskId)
-    .update(partialMainTask)
+    .update(mergeWithLastUpdated(partialMainTask))
     .then(ignore);
 };
 
 export const editSubTask = (subtaskId: string, partialSubTask: PartialSubTask): void => {
   subTasksCollection()
     .doc(subtaskId)
-    .update(partialSubTask)
+    .update(mergeWithLastUpdated(partialSubTask))
     .then(ignore);
 };
 
@@ -177,9 +185,12 @@ export const removeTask = (task: Task, noUndo?: 'no-undo'): void => {
 
 export const removeSubTask = (taskId: string, subtaskId: string): void => {
   const batch = db().batch();
-  batch.update(tasksCollection().doc(taskId), {
-    children: firestore.FieldValue.arrayRemove(subtaskId),
-  });
+  batch.update(
+    tasksCollection().doc(taskId),
+    mergeWithLastUpdated({
+      children: firestore.FieldValue.arrayRemove(subtaskId),
+    }),
+  );
   batch.delete(subTasksCollection().doc(subtaskId));
   batch.commit().then(ignore);
 };
@@ -195,8 +206,12 @@ export const removeSubTask = (taskId: string, subtaskId: string): void => {
  */
 export const clearFocus = (taskIds: string[], subTaskIds: string[]): void => {
   const batch = db().batch();
-  taskIds.forEach(id => batch.update(tasksCollection().doc(id), { inFocus: false }));
-  subTaskIds.forEach(id => batch.update(subTasksCollection().doc(id), { inFocus: false }));
+  taskIds.forEach(
+    id => batch.update(tasksCollection().doc(id), mergeWithLastUpdated({ inFocus: false })),
+  );
+  subTaskIds.forEach(
+    id => batch.update(subTasksCollection().doc(id), mergeWithLastUpdated({ inFocus: false })),
+  );
   batch.commit().then(ignore);
 };
 
@@ -225,12 +240,12 @@ export function completeTaskInFocus<T extends { readonly id: string; readonly or
   const task = tasks.get(completedTaskIdOrder.id) || error('bad');
   const batch = db().batch();
   if (task.inFocus) {
-    batch.update(tasksCollection().doc(task.id), { complete: true });
+    batch.update(tasksCollection().doc(task.id), mergeWithLastUpdated({ complete: true }));
   }
   task.children.forEach((id) => {
     const s = subTasks.get(id);
     if (s != null && s.inFocus) {
-      batch.update(subTasksCollection().doc(id), { complete: true });
+      batch.update(subTasksCollection().doc(id), mergeWithLastUpdated({ complete: true }));
     }
   });
   batch.commit().then(ignore);
@@ -249,7 +264,7 @@ export function applyReorder(orderFor: 'tags' | 'tasks', reorderMap: Map<string,
     : (id: string) => tasksCollection().doc(id);
   const batch = db().batch();
   reorderMap.forEach((order, id) => {
-    batch.update(collection(id), { order });
+    batch.update(collection(id), mergeWithLastUpdated({ order }));
   });
   batch.commit().then(ignore);
 }
@@ -257,7 +272,7 @@ export function applyReorder(orderFor: 'tags' | 'tasks', reorderMap: Map<string,
 export const completeOnboarding = (completedOnboarding: boolean): void => {
   settingsCollection()
     .doc(getAppUser().email)
-    .update({ completedOnboarding })
+    .update(mergeWithLastUpdated({ completedOnboarding }))
     .then(ignore);
 };
 
@@ -266,9 +281,9 @@ export const readBannerMessage = (bannerMessageId: BannerMessageIds, isRead: boo
   db().runTransaction(async (transaction) => {
     const doc = await transaction.get(docRef);
     if (doc.exists) {
-      transaction.update(docRef, { [bannerMessageId]: isRead });
+      transaction.update(docRef, mergeWithLastUpdated({ [bannerMessageId]: isRead }));
     } else {
-      transaction.set(docRef, { [bannerMessageId]: isRead });
+      transaction.set(docRef, mergeWithLastUpdated({ [bannerMessageId]: isRead }));
     }
   });
 };
@@ -317,7 +332,9 @@ export const importCourseExams = (): void => {
     const newOrderedTasks = newTasks.map((t, i) => ({ ...t, order: i + startOrder }));
     const batch = db().batch();
     newOrderedTasks.forEach((orderedTask) => {
-      const transformedTask: FirestoreTask = mergeWithOwner({ ...orderedTask, children: [] });
+      const transformedTask: FirestoreTask = mergeWithOwnerAndLastUpdated({
+        ...orderedTask, children: [],
+      });
       batch.set(tasksCollection().doc(), transformedTask);
     });
     // eslint-disable-next-line no-alert
