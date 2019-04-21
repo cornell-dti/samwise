@@ -1,13 +1,15 @@
+@import '../../../colors.scss';
+
 .NDaysView {
   position: relative;
   margin: -1em 4px 0 4px;
-  background-color: #F7F7F7;
+  background-color: $card-grey;
   height: 100%;
 }
 
 .OtherViews {
   position: relative;
-  background-color: #F7F7F7;
+  background-color: $card-grey;
   height: 100%;
 }
 
@@ -44,7 +46,7 @@
   cursor: pointer;
   background-color: #ffffff;
   opacity: 1;
-  color: #333333;
+  color: $very-dark-grey;
   border: 0;
   box-shadow: 0 -1px 1px rgba(0,0,0,0.1);
   text-align: center;
