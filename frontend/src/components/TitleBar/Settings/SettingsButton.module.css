@@ -6,6 +6,12 @@
   font-size: 30px;
 }
 
+.CloseButton:hover > *,
+.CloseButton:focus > * {
+  opacity: 0.65;
+  stroke-width: 2px;
+}
+
 .ChangesSaved {
   position: absolute;
   top: 40px;

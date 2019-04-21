@@ -26,7 +26,8 @@
 
 .DeleteTag:hover,
 .DeleteTag:focus {
-  font-size: 1.1em;
+  opacity: 0.85;
+  stroke-width: 3px;
 }
 
 .AddTagName {
