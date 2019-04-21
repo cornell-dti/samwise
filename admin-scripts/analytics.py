@@ -122,7 +122,7 @@ def days_overdue_in_period(tasks, period):
     cutoff = datetime.datetime.today() - datetime.timedelta(days=(period))
     tasks = db.collection(u'samwise-tasks').where(
         u'added', u'>=', cutoff).where(u'complete', u'==', False).where(
-            'date', '<=', 'dateCompleted')).get()
+            'date', '<=', 'dateCompleted').get()
 
     hours_overdue = 0
     for task in tasks:
