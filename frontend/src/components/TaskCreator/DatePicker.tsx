@@ -111,14 +111,21 @@ export default function DatePicker(props: Props): ReactElement {
       <FontAwesomeIcon icon={faPlus} className={styles.CloseIcon} />
       <div className={styles.RepeatOpenedInner}>
         <p className={styles.RepeatPickDayWrap}>
-          Repeats every week on<br />
+          Repeats every week on
+          <br />
           {weekdayPickers}
         </p>
         <p className={styles.RepeatPickEndWrap}>
           Stops
           <ul>
             <li>At the end of the semester</li>
-            <li>After <input min="1" max="30" step="1" type="number" /> occurances</li>
+            <li>
+              After
+              {' '}
+              <input min="1" max="30" step="1" type="number" />
+              {' '}
+              occurances
+            </li>
           </ul>
         </p>
       </div>
