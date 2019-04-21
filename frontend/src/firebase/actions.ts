@@ -325,6 +325,7 @@ export const importCourseExams = (): void => {
             date: t,
             complete: false,
             inFocus: false,
+            lastEdited: new Date(Date.now()),
           };
           newTasks.push(newTask);
         }

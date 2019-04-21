@@ -16,6 +16,7 @@ export type FirestoreTask = FirestoreCommon & {
   readonly complete: boolean;
   readonly inFocus: boolean;
   readonly children: string[];
+  readonly lastEdited: Date | { readonly toDate: () => Date };
 };
 
 export type FirestoreSubTask = FirestoreCommon & {
