@@ -38,6 +38,11 @@ p.SettingsSectionTitle {
   margin-top: 5px;
 }
 
+.SettingsButton button:hover,
+.SettingsButton button:focus {
+  border: 2px white solid;
+}
+
 .FinalRowButtonContainer {
   position: relative;
   display: flex;
@@ -58,6 +63,11 @@ p.SettingsSectionTitle {
    background: #e93838 !important;
  }
 
+.SignButton:hover,
+.SignButton:focus {
+  background: #e93838db !important;
+}
+
 .FeedbackButton {
   text-decoration: underline #83c1ff;
   color: #83c1ff;
@@ -67,9 +77,19 @@ p.SettingsSectionTitle {
   right: 16px;
 }
 
+.FeedbackButton:hover,
+.FeedbackButton:focus {
+  color: #6bb5ff;
+}
+
 .ReplayTutorialButton {
   color: #333333 !important;
   background: white !important;
+}
+
+.ReplayTutorialButton:hover,
+.ReplayTutorialButton:focus {
+  background: #ece9e9 !important;
 }
 
 .ColorConfigItemList {

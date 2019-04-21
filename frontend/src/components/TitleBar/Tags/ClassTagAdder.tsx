@@ -78,6 +78,7 @@ function ClassTagAdder({ courses }: Props): ReactElement | null {
   return (
     <div className={`${styles.TagColorConfigItemAdder} ${styles.SearchClasses}`} title="Search for a class">
       <ReactSearchBox
+        tabIndex={0}
         data={getCourseOptions(courses)}
         value=""
         fuseConfigs={fuseConfigs}

@@ -41,7 +41,7 @@ export default function TagItem({ tag }: Props): ReactElement {
     <li className={styles.ColorConfigItem}>
       {nameNode}
       <ColorEditor color={color} onChange={editColor} />
-      <button type="button" className={styles.DeleteTag} onClick={onRemove}>
+      <button type="button" className={styles.DeleteTag} onClick={onRemove} tabIndex={0}>
         <SamwiseIcon iconName="x-light" />
       </button>
     </li>

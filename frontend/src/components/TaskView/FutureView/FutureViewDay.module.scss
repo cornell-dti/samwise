@@ -54,6 +54,11 @@
   font-size: 1em;
 }
 
+.MoreTasksBar:hover,
+.MoreTasksBar:focus {
+  background-color: #fbfafa;
+}
+
 .FloatingViewPrevPadding {
   margin: 1em;
 }

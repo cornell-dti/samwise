@@ -30,6 +30,11 @@
   font-size: 1.5em;
 }
 
+.NavButton:hover,
+.NavButton:focus {
+  color: #5a5a5a;
+}
+
 .NavButtonNDays {
   position: absolute;
   z-index: 1;
