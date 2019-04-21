@@ -1,1 +1,28 @@
-<svg id="Layer_1" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 9.43 7.64"><defs><style>.cls-1{fill:#ce844b;}.cls-2{fill:#bb7a47;}.cls-3,.cls-6{fill:#59361a;}.cls-4{fill:#f0ee90;}.cls-5{fill:#55371b;}.cls-6{stroke:#603913;stroke-miterlimit:10;stroke-width:0.1px;}</style></defs><title>Bear icon final</title><path class="cls-1" d="M7.22,12.63" transform="translate(-0.3 -2.36)"/><path class="cls-2" d="M10.1,21" transform="translate(-0.3 -2.36)"/><circle class="cls-1" cx="1.15" cy="1.15" r="1.15"/><circle class="cls-1" cx="8.28" cy="1.2" r="1.15"/><circle class="cls-3" cx="8.28" cy="1.2" r="0.73"/><circle class="cls-3" cx="1.15" cy="1.2" r="0.73"/><path class="cls-1" d="M9.31,10c0-1.26-.56-4.4-.56-4.4l-.14-.81A1.46,1.46,0,0,0,7.29,3.46l-4.11,0s-1.79-.1-1.95,1.52-.55,5-.55,5" transform="translate(-0.3 -2.36)"/><path class="cls-1" d="M7.46,11.38" transform="translate(-0.3 -2.36)"/><ellipse class="cls-4" cx="4.69" cy="5.36" rx="1.2" ry="1.68"/><circle class="cls-5" cx="6.64" cy="3.41" r="0.36"/><path class="cls-5" d="M5,7.16s.31,0,.58-.4-.34-.53-.34-.53H4.86c-1.11.11-.11.83-.11.83A.45.45,0,0,0,5,7.16Z" transform="translate(-0.3 -2.36)"/><rect class="cls-5" x="4.61" y="4.69" width="0.16" height="1.91"/><circle class="cls-5" cx="2.64" cy="3.41" r="0.36"/><path class="cls-6" d="M4.44,8.81a.82.82,0,0,0,1.15,0V8.69a.78.78,0,0,1-1.15,0Z" transform="translate(-0.3 -2.36)"/></svg>
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Generator: Adobe Illustrator 22.1.0, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
+<svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+	 viewBox="0 0 9.4 9.4" style="enable-background:new 0 0 9.4 9.4;" xml:space="preserve">
+<style type="text/css">
+	.st0{fill:#CE844B;}
+	.st1{fill:#BB7A47;}
+	.st2{fill:#59361A;}
+	.st3{fill:#F0EE90;}
+	.st4{fill:#55371B;}
+	.st5{fill:#59361A;stroke:#603913;stroke-width:0.1;stroke-miterlimit:10;}
+</style>
+<title>Bear icon final</title>
+<path class="st0" d="M6.9,12.1"/>
+<path class="st1" d="M9.8,20.4"/>
+<circle class="st0" cx="1.2" cy="2.9" r="1.1"/>
+<circle class="st0" cx="8.3" cy="3" r="1.1"/>
+<circle class="st2" cx="8.3" cy="3" r="0.7"/>
+<circle class="st2" cx="1.2" cy="3" r="0.7"/>
+<path class="st0" d="M9,9.4C9,8.2,8.5,5,8.5,5L8.3,4.2C8.3,3.5,7.7,3,7,2.9H2.9c0,0-1.8-0.1-1.9,1.5s-0.6,5-0.6,5"/>
+<path class="st0" d="M7.2,10.8"/>
+<ellipse class="st3" cx="4.7" cy="7.2" rx="1.2" ry="1.7"/>
+<circle class="st4" cx="6.7" cy="5.2" r="0.4"/>
+<path class="st4" d="M4.7,6.6c0,0,0.3,0,0.6-0.4S5,5.7,5,5.7H4.6C3.5,5.8,4.5,6.5,4.5,6.5C4.5,6.5,4.6,6.6,4.7,6.6z"/>
+<rect x="4.6" y="6.5" class="st4" width="0.2" height="1.9"/>
+<circle class="st4" cx="2.7" cy="5.2" r="0.4"/>
+<path class="st5" d="M4.2,8.2c0.3,0.3,0.8,0.3,1.2,0V8.1C5,8.4,4.5,8.5,4.2,8.2c0-0.1,0-0.1,0-0.1V8.2z"/>
+</svg>

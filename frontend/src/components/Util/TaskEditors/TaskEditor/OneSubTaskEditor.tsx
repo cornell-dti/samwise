@@ -6,7 +6,7 @@ import React, {
   useState,
   useRef,
 } from 'react';
-import styles from './TaskEditor.css';
+import styles from './index.module.css';
 import CheckBox from '../../../UI/CheckBox';
 import { PartialSubTask, SubTask } from '../../../../store/store-types';
 import SamwiseIcon from '../../../UI/SamwiseIcon';
@@ -111,6 +111,7 @@ function OneSubTaskEditor(
 const Memoized = React.memo(
   OneSubTaskEditor,
   (prev, curr) => prev.subTask === curr.subTask
+    && prev.needToBeFocused === curr.needToBeFocused
     && prev.mainTaskComplete === curr.mainTaskComplete,
 );
 export default Memoized;

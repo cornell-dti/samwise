@@ -1,33 +1,36 @@
 import React, { ReactElement } from 'react';
 import { connect } from 'react-redux';
 import Confetti from 'react-dom-confetti';
-import styles from './Celebrate.css';
-import { State, Task } from '../../../store/store-types';
+import { TasksProgressProps } from '../../../util/task-util';
+import styles from './Celebrate.module.css';
+import { getProgress } from '../../../store/selectors';
 // import Bear from '../../../assets/bear/happy-bear.png';
 
-type Props = { readonly focusTasks: Task[] };
+type Props = TasksProgressProps;
 
 /**
  * The all tasks complete page. Displays after a user completes all focused tasks.
  */
-function AllComplete({ focusTasks }: Props): ReactElement | null {
+function AllComplete({ completedTasksCount, allTasksCount }: Props): ReactElement | null {
   // Simple FSM. 0 = initial, 1 = saw unfinished tasks, 2 = finished all, 3 = hidden
-  const [progress, setProgress] = React.useState<number>(0);
+  const [progress, setProgress] = React.useState<0 | 1 | 2 | 3>(0);
+
+  const percent = completedTasksCount / allTasksCount;
 
   switch (progress) {
     case 0:
     case 3:
-      if ((focusTasks.length > 0) && focusTasks.some(t => !t.complete)) {
+      if (allTasksCount > 0 && percent < 1) {
         setProgress(1);
       }
       return null;
     case 1:
-      if (focusTasks.length > 0 && focusTasks.every(t => t.complete)) {
+      if (allTasksCount > 0 && percent >= 1) {
         setProgress(2);
       }
       break;
     case 2:
-      if ((focusTasks.length > 0) && focusTasks.some(t => !t.complete)) {
+      if (allTasksCount > 0 && percent < 1) {
         setProgress(1);
       }
       break;
@@ -70,10 +73,5 @@ function AllComplete({ focusTasks }: Props): ReactElement | null {
   );
 }
 
-const Connected = connect(
-  ({ tasks }: State): Props => {
-    const focusTasks: Task[] = Array.from(tasks.values()).filter(t => t.inFocus);
-    return { focusTasks };
-  },
-)(AllComplete);
+const Connected = connect(getProgress)(AllComplete);
 export default Connected;

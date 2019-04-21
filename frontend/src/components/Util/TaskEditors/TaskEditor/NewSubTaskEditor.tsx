@@ -1,5 +1,5 @@
 import React, { KeyboardEvent, ReactElement, SyntheticEvent, useEffect, useRef } from 'react';
-import styles from './TaskEditor.css';
+import styles from './index.module.css';
 
 type Props = {
   readonly onChange: (change: string) => void;

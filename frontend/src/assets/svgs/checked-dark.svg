@@ -1,12 +1,1 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<svg width="20px" height="20px" viewBox="0 0 20 20" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-    <!-- Generator: Sketch 52.4 (67378) - http://www.bohemiancoding.com/sketch -->
-    <title>icon/Checkbox/checked-dark</title>
-    <desc>Created with Sketch.</desc>
-    <g id="icon/Checkbox/checked-dark" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-        <g id="color/dark-grey" fill="#5A5A5A" fill-rule="nonzero">
-            <rect id="Rectangle" x="0" y="0" width="20" height="20"></rect>
-        </g>
-        <polygon id="Shape" fill="#FFFFFF" fill-rule="nonzero" points="7.84805421 11.8503129 4.13385774 8.9765594 2.2767812 11.3826603 7.04830367 15.0697459 8.10562967 15.8830736 9.0477234 14.9409581 17.7232188 6.26546709 15.5814559 4.11692643"></polygon>
-    </g>
-</svg>
+<svg viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><g fill="none" fill-rule="nonzero"><path d="M0 0h20v20H0z" fill="#5A5A5A"/><path fill="#FFF" d="M7.848 11.85L4.134 8.977l-1.857 2.406 4.771 3.687 1.058.813.942-.942 8.675-8.676-2.142-2.148z"/></g></svg>

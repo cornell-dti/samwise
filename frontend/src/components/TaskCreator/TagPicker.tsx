@@ -1,7 +1,7 @@
 import React, { ReactElement } from 'react';
 import { connect } from 'react-redux';
 import TagListPicker from '../Util/TagListPicker/TagListPicker';
-import styles from './Picker.css';
+import styles from './Picker.module.css';
 import { NONE_TAG, NONE_TAG_ID } from '../../util/tag-util';
 import { State, Tag } from '../../store/store-types';
 import SamwiseIcon from '../UI/SamwiseIcon';

@@ -1,0 +1,51 @@
+.ColorConfigItem {
+  position: relative;
+  width: 100%;
+  margin: 0;
+  padding: 16px 0;
+  border-bottom: 2px solid white;
+}
+
+.TagName {
+  display: inline-block;
+  font-weight: bold;
+  width:150px;
+}
+
+.ClassExpandedTitle {
+  display: inline-block;
+  width: calc(100% - 150px);
+}
+
+.DeleteTag {
+  width: 50px;
+  margin: 0;
+  padding: 0;
+  color: white;
+}
+
+.DeleteTag:hover,
+.DeleteTag:focus {
+  opacity: 0.85;
+  stroke-width: 3px;
+}
+
+.AddTagName {
+  width: calc(100% - 175px);
+  background: none;
+  border: none;
+  color: white;
+}
+
+.AddTagName::placeholder {
+  color: rgb(188, 188, 188);
+}
+
+.TagEdit{
+  width: calc(100% - 150px);
+  font-size: 14px;
+  background: none;
+  border: none;
+  color: white;
+  font-weight:bold;
+}

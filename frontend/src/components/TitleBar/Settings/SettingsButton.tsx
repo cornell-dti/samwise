@@ -1,6 +1,6 @@
 import React, { ReactElement } from 'react';
 import SettingsPage from './SettingsPage';
-import styles from './SettingsButton.css';
+import styles from './SettingsButton.module.css';
 import SamwiseIcon from '../../UI/SamwiseIcon';
 
 export default function SettingsButton(): ReactElement {
@@ -12,11 +12,11 @@ export default function SettingsButton(): ReactElement {
   return (
     <div style={{ display: 'inline-block' }}>
       <button type="submit" onClick={displayModal}>
-        <SamwiseIcon iconName="settings" className={styles.SettingsButton} />
+        <p title="Settings Button"><SamwiseIcon iconName="settings" /></p>
       </button>
       {showSettings && (
         <div className={styles.SettingsModal}>
-          <button className={styles.CloseButton} type="submit" onClick={closeModal}>
+          <button className={styles.CloseButton} type="submit" title="Close Settings" onClick={closeModal} tabIndex={-1}>
             <SamwiseIcon iconName="x-light" />
           </button>
           <section className={styles.ContentWrap}>

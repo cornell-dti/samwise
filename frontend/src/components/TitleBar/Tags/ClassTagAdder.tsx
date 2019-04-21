@@ -3,7 +3,7 @@ import { Map } from 'immutable';
 // @ts-ignore we need to rewrite the entire component!
 import ReactSearchBox from 'react-search-box';
 import { connect } from 'react-redux';
-import styles from './TagAdder.css';
+import styles from './TagAdder.module.css';
 import { Course, State } from '../../../store/store-types';
 import { addTag } from '../../../firebase/actions';
 import getUnusedColor from './rotation-color-picker';
@@ -76,8 +76,9 @@ function ClassTagAdder({ courses }: Props): ReactElement | null {
     setKey(prev => prev + 1);
   };
   return (
-    <div className={`${styles.TagColorConfigItemAdder} ${styles.SearchClasses}`}>
+    <div className={`${styles.TagColorConfigItemAdder} ${styles.SearchClasses}`} title="Search for a class">
       <ReactSearchBox
+        tabIndex={0}
         data={getCourseOptions(courses)}
         value=""
         fuseConfigs={fuseConfigs}

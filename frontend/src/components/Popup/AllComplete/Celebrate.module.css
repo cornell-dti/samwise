@@ -1,0 +1,94 @@
+.Main{
+  position:fixed;
+  /*display:flex;
+  align-items:center;
+  background:white !important;
+  overflow-y:visible !important;
+  color:black;
+  font-size:200%;
+  z-index:11;
+
+  top:50%;
+  left:50%;
+  transform:translate(-50%, -50%)scale(1);
+  opacity:1;
+
+  padding: 20px;
+  width:65vw;
+
+  transition: transform 0.5s ease-out, opacity 0.2s ease-out;*/
+}
+
+.Hidden{
+  display:none;
+  /*pointer-events: none;
+  opacity:0;
+  transform:translate(-50%, -50%)scale(0);*/
+}
+
+
+.ConfWrap{
+  position:fixed;
+  z-index:999;
+  top:30%;
+  /*left:50%;*/
+  left: 250px;
+  pointer-events:none;
+}
+
+
+/*.Main div{
+  display:block;
+  margin-left:20px;
+}*/
+
+/* Transparent Background for the Modal */
+/*.Main::before{
+  content:'';
+  z-index:-2;
+  position:fixed;
+  top:-50vh;left:-50vw;
+  width:200vw;
+  height:200vh;
+  background:rgba(0,0,0,0.5);
+}*/
+
+/* Hack to get white background in front of the transparent backing */
+/*.Main::after{
+  content:'';
+  z-index:-1;
+  position:fixed;
+  top:0;left:0;
+  width:100%;
+  height:100%;
+  background:white;
+
+  box-shadow: rgba(0,0,0,0.2) 5px 5px 20px 5px;
+}
+
+.Main img{
+  max-height:60vh;
+  float:left;
+}
+
+.Main h1{
+  font-size:250%;
+}
+
+.Main button{
+  background:white;
+  border: 1px black solid;
+  padding: 5px 10px;
+  cursor:pointer;
+
+  transition: background 0.2s ease-in-out;
+}
+
+.Main button:hover{
+  background: #ddd;
+}
+
+.Main button:active{
+  background:white;
+}
+*/

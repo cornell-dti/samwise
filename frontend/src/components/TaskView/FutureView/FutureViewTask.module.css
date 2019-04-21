@@ -1,0 +1,67 @@
+.Task {
+  position: relative;
+  color: white;
+  cursor: pointer;
+  margin: 0;
+  padding: 0;
+  font-weight: 500;
+}
+
+.Task:focus {
+  opacity: 0.9;
+}
+
+.TaskMainWrapper {
+  display: flex;
+  padding: 3px;
+  align-items: center;
+  font-size: 12px;
+  font-weight: 300;
+}
+
+.SubTask {
+  display: flex;
+  padding: 3px;
+  align-items: center;
+  color: #666666;
+  background-color: white;
+  font-size: 12px;
+  font-weight: 300;
+}
+
+.TaskCheckBox {
+  margin-left: 8px;
+  margin-right: 5px;
+}
+
+.TaskCheckBoxPlaceHolder {
+  margin-left: 8px;
+  width: 16px;
+  margin-right: 5px;
+}
+
+.TaskIcon {
+  flex: none;
+  cursor: pointer;
+  margin: 0 4px 0 0;
+  padding-top: 3px;
+  height: 16px;
+}
+
+.TaskIcon:hover,
+.TaskIcon:focus {
+  opacity: 0.85;
+  stroke-width: 3px;
+}
+
+.TaskText {
+  flex: 1 1 auto;
+  margin-left: 3px;
+  margin-right: 3px;
+  font-size: 12px;
+  height: 19px;
+  font-weight: normal;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}

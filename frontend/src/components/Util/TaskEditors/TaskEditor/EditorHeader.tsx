@@ -1,6 +1,6 @@
 import React, { ReactElement } from 'react';
 import Calendar from 'react-calendar';
-import styles from './TaskEditor.css';
+import styles from './index.module.css';
 import TagListPicker from '../../TagListPicker/TagListPicker';
 import { Tag } from '../../../../store/store-types';
 import { CalendarPosition } from '../editors-types';

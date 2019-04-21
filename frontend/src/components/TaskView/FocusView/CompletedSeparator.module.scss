@@ -1,0 +1,36 @@
+@import '../../../colors.scss';
+
+.Separator {
+  display: flex;
+  align-items: center;
+  align-content: center;
+  width: 100%;
+  margin-bottom: 8px;
+}
+
+.Text {
+  color: $warm-grey-two;
+}
+
+.Icon {
+  margin-left: 8px;
+  cursor: pointer;
+}
+
+.Icon:hover,
+.Icon:focus {
+  opacity: 0.85;
+  stroke-width: 3px;
+}
+
+.Inverted {
+  transform: scale(1, -1);
+}
+
+.Line {
+  display: inline-flex;
+  margin-left: 8px;
+  flex: auto;
+  height: 1px;
+  background-color: $warm-grey-two;
+}

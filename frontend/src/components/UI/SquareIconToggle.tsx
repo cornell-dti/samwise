@@ -1,9 +1,7 @@
 import React, { ReactElement } from 'react';
 import { FontAwesomeIcon as Icon } from '@fortawesome/react-fontawesome';
-import {
-  IconLookup,
-} from '@fortawesome/fontawesome-svg-core';
-import styles from './SquareButtons.css';
+import { IconLookup } from '@fortawesome/fontawesome-svg-core';
+import styles from './SquareButtons.module.css';
 
 type Props = {
   readonly active: boolean;
@@ -26,7 +24,7 @@ export default function SquareIconToggle({ active, iconNames, onToggle }: Props)
     ? `${styles.SquareButton} ${styles.SquareButtonIconButton}`
     : `${styles.SquareButton} ${styles.SquareButtonIconButton} ${styles.active}`;
   return (
-    <button className={className} type="button" onClick={onToggle}>
+    <button className={className} title="eye" type="button" onClick={onToggle}>
       <Icon
         className={styles.SquareButtonText}
         icon={active ? activeIconName : inactiveIconName}

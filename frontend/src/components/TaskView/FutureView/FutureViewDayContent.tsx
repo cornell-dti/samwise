@@ -1,7 +1,7 @@
 import React, { ReactElement } from 'react';
 import { SimpleDate } from './future-view-types';
 import { CalendarPosition, FloatingPosition } from '../../Util/TaskEditors/editors-types';
-import styles from './FutureViewDay.css';
+import styles from './FutureViewDay.module.scss';
 import { day2String, getTodayAtZeroAM } from '../../../util/datetime-util';
 import FutureViewDayTaskContainer from './FutureViewDayTaskContainer';
 
