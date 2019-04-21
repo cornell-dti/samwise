@@ -1,7 +1,13 @@
 import { firestore } from 'firebase/app';
 import { Map } from 'immutable';
 import {
-  Course, PartialMainTask, PartialSubTask, SubTask, Tag, Task, BannerMessageIds,
+  Course,
+  PartialMainTask,
+  PartialSubTask,
+  SubTask,
+  Tag,
+  Task,
+  BannerMessageIds,
 } from '../store/store-types';
 import { FirestoreCommon, FirestoreTag, FirestoreTask, FirestoreSubTask } from './firestore-types';
 import { getAppUser } from './auth';
@@ -20,19 +26,23 @@ import { store } from '../store/store';
 import { NONE_TAG_ID } from '../util/tag-util';
 
 async function createFirestoreObject<T>(
-  orderFor: 'tags' | 'tasks', source: T,
+  orderFor: 'tags' | 'tasks',
+  source: T,
 ): Promise<T & FirestoreCommon> {
   const order = await allocateNewOrder(orderFor);
-  return { 
-    ...source, 
-    owner: getAppUser().email, 
-    order, 
+  return {
+    ...source,
+    owner: getAppUser().email,
+    order,
     lastEdited: firestore.FieldValue.serverTimestamp(),
-   };
+  };
 }
 
-const mergeWithOwner = <T>(obj: T): T & { readonly owner: string } => ({
-  owner: getAppUser().email, ...obj,
+type OwnerAndLastEdited = { readonly owner: string; readonly lastEdited: firestore.FieldValue };
+const mergeWithOwner = <T>(obj: T): T & OwnerAndLastEdited => ({
+  owner: getAppUser().email,
+  lastEdited: firestore.FieldValue.serverTimestamp(),
+  ...obj,
 });
 
 type WithoutIdOrder<Props> = Pick<Props, Exclude<keyof Props, 'id' | 'order'>>;
@@ -58,7 +68,10 @@ export const addTag = (tag: WithoutIdOrder<Tag>): void => {
 
 export const editTag = (tag: Tag): void => {
   const { id, ...rest } = tag;
-  tagsCollection().doc(id).update(rest).then(ignore);
+  tagsCollection()
+    .doc(id)
+    .update(rest)
+    .then(ignore);
 };
 
 export const removeTag = (id: string): void => {
@@ -68,7 +81,8 @@ export const removeTag = (id: string): void => {
     .get()
     .then((s) => {
       const batch = db().batch();
-      s.docs.filter(doc => doc.data().type === 'TASK')
+      s.docs
+        .filter(doc => doc.data().type === 'TASK')
         .forEach((doc) => {
           batch.update(tasksCollection().doc(doc.id), { tag: NONE_TAG_ID });
         });
@@ -128,11 +142,17 @@ export const addSubTask = (taskId: string, subTask: SubTask): void => {
 };
 
 export const editMainTask = (taskId: string, partialMainTask: PartialMainTask): void => {
-  tasksCollection().doc(taskId).update(partialMainTask).then(ignore);
+  tasksCollection()
+    .doc(taskId)
+    .update(partialMainTask)
+    .then(ignore);
 };
 
 export const editSubTask = (subtaskId: string, partialSubTask: PartialSubTask): void => {
-  subTasksCollection().doc(subtaskId).update(partialSubTask).then(ignore);
+  subTasksCollection()
+    .doc(subtaskId)
+    .update(partialSubTask)
+    .then(ignore);
 };
 
 export const removeTask = (task: Task, noUndo?: 'no-undo'): void => {
@@ -223,13 +243,10 @@ export function completeTaskInFocus<T extends { readonly id: string; readonly or
  * @param reorderMap the map that maps the id of changed order items to new order ids.
  * @return a new list with updated orders.
  */
-export function applyReorder(
-  orderFor: 'tags' | 'tasks',
-  reorderMap: Map<string, number>,
-): void {
-  const collection = orderFor === 'tags'
-    ? (id: string) => tagsCollection().doc(id)
-    : (id: string) => tasksCollection().doc(id);
+export function applyReorder(orderFor: 'tags' | 'tasks', reorderMap: Map<string, number>): void {
+  const collection =    orderFor === 'tags'
+      ? (id: string) => tagsCollection().doc(id)
+      : (id: string) => tasksCollection().doc(id);
   const batch = db().batch();
   reorderMap.forEach((order, id) => {
     batch.update(collection(id), { order });
@@ -238,7 +255,8 @@ export function applyReorder(
 }
 
 export const completeOnboarding = (completedOnboarding: boolean): void => {
-  settingsCollection().doc(getAppUser().email)
+  settingsCollection()
+    .doc(getAppUser().email)
     .update({ completedOnboarding })
     .then(ignore);
 };
@@ -273,11 +291,14 @@ export const importCourseExams = (): void => {
         const t = new Date(time);
         const filter = (task: Task): boolean => {
           const { name, date } = task;
-          return task.tag === tag.id && name === examName
+          return (
+            task.tag === tag.id
+            && name === examName
             && date.getFullYear() === t.getFullYear()
             && date.getMonth() === t.getMonth()
             && date.getDate() === t.getDate()
-            && date.getHours() === t.getHours();
+            && date.getHours() === t.getHours()
+          );
         };
         if (!Array.from(tasks.values()).some(filter)) {
           const newTask: TaskWithoutIdOrderChildren = {
@@ -292,15 +313,14 @@ export const importCourseExams = (): void => {
       });
     });
   });
-  allocateNewOrder('tasks', newTasks.length)
-    .then((startOrder: number) => {
-      const newOrderedTasks = newTasks.map((t, i) => ({ ...t, order: i + startOrder }));
-      const batch = db().batch();
-      newOrderedTasks.forEach((orderedTask) => {
-        const transformedTask: FirestoreTask = mergeWithOwner({ ...orderedTask, children: [] });
-        batch.set(tasksCollection().doc(), transformedTask);
-      });
-      // eslint-disable-next-line no-alert
-      batch.commit().then(() => alert('Exams Added Successfully!'));
+  allocateNewOrder('tasks', newTasks.length).then((startOrder: number) => {
+    const newOrderedTasks = newTasks.map((t, i) => ({ ...t, order: i + startOrder }));
+    const batch = db().batch();
+    newOrderedTasks.forEach((orderedTask) => {
+      const transformedTask: FirestoreTask = mergeWithOwner({ ...orderedTask, children: [] });
+      batch.set(tasksCollection().doc(), transformedTask);
     });
+    // eslint-disable-next-line no-alert
+    batch.commit().then(() => alert('Exams Added Successfully!'));
+  });
 };
