@@ -1,7 +1,7 @@
 import '@babel/polyfill';
 import React, { ReactElement } from 'react';
 import ReactDOM from 'react-dom';
-import './index.non-module.css';
+import './index.scss';
 import { Provider as ReactReduxProvider } from 'react-redux';
 import App from './App';
 import './firebase'; // import and init
