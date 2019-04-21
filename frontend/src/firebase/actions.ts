@@ -244,9 +244,9 @@ export function completeTaskInFocus<T extends { readonly id: string; readonly or
  * @return a new list with updated orders.
  */
 export function applyReorder(orderFor: 'tags' | 'tasks', reorderMap: Map<string, number>): void {
-  const collection =    orderFor === 'tags'
-      ? (id: string) => tagsCollection().doc(id)
-      : (id: string) => tasksCollection().doc(id);
+  const collection = orderFor === 'tags'
+    ? (id: string) => tagsCollection().doc(id)
+    : (id: string) => tasksCollection().doc(id);
   const batch = db().batch();
   reorderMap.forEach((order, id) => {
     batch.update(collection(id), { order });
