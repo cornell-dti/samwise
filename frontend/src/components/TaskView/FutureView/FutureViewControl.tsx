@@ -100,6 +100,7 @@ function NavControl(props: NavControlProps): ReactElement {
               icon={faChevronLeft}
               className={className}
               style={prevStyle}
+              tabIndex={0}
             />
           </span>
         )}
@@ -111,6 +112,7 @@ function NavControl(props: NavControlProps): ReactElement {
             icon={faChevronRight}
             className={className}
             style={nextStyle}
+            tabIndex={0}
           />
         </span>
       </React.Fragment>
@@ -118,9 +120,9 @@ function NavControl(props: NavControlProps): ReactElement {
   }
 
   // @ts-ignore need onClick
-  const prev = (<span title="Go back"><Icon onClick={prevHandler} icon={faChevronLeft} className={styles.NavButton} /></span>);
+  const prev = (<span title="Go back"><Icon onClick={prevHandler} icon={faChevronLeft} className={styles.NavButton} tabIndex={0} /></span>);
   // @ts-ignore need onClick
-  const next = (<span title="Go forward"><Icon onClick={nextHandler} icon={faChevronRight} className={styles.NavButton} /></span>);
+  const next = (<span title="Go forward"><Icon onClick={nextHandler} icon={faChevronRight} className={styles.NavButton} tabIndex={0} /></span>);
   if (containerType === 'BIWEEKLY') {
     return (
       <React.Fragment>

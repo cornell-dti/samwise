@@ -126,7 +126,7 @@ export default function FutureViewDay(props: Props): ReactElement {
           {...props}
         />
         {heightInfo.doesOverflow && (
-          <button type="button" className={styles.MoreTasksBar} onClick={openFloatingView}>
+          <button type="button" className={styles.MoreTasksBar} onClick={openFloatingView} tabIndex={0}>
             More Tasks...
           </button>
         )}
