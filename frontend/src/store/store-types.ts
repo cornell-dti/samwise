@@ -14,13 +14,12 @@ export type SubTask = {
   readonly name: string; // Example: "SubTask 1 Name"
   readonly complete: boolean;
   readonly inFocus: boolean; // Whether the subtask is in focus
-  readonly lastEdited: Date;
 };
 
 /**
  * The subtask type without id and with every field as optional.
  */
-export type PartialSubTask = Partial<Pick<SubTask, 'order' | 'name' | 'complete' | 'inFocus' | 'lastEdited'>>;
+export type PartialSubTask = Partial<Pick<SubTask, 'order' | 'name' | 'complete' | 'inFocus'>>;
 
 export type Task = {
   readonly id: string;
@@ -31,10 +30,9 @@ export type Task = {
   readonly complete: boolean;
   readonly inFocus: boolean; // Whether the task is in focus
   readonly children: Set<string>;
-  readonly lastEdited: Date;
 };
 
-type MainTaskProperties = 'order' | 'name' | 'tag' | 'date' | 'complete' | 'inFocus' | 'lastEdited';
+type MainTaskProperties = 'order' | 'name' | 'tag' | 'date' | 'complete' | 'inFocus';
 /**
  * The task type without id and subtask.
  */

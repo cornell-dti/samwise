@@ -23,7 +23,12 @@ async function createFirestoreObject<T>(
   orderFor: 'tags' | 'tasks', source: T,
 ): Promise<T & FirestoreCommon> {
   const order = await allocateNewOrder(orderFor);
-  return { ...source, owner: getAppUser().email, order };
+  return { 
+    ...source, 
+    owner: getAppUser().email, 
+    order, 
+    lastEdited: firestore.FieldValue.serverTimestamp(),
+   };
 }
 
 const mergeWithOwner = <T>(obj: T): T & { readonly owner: string } => ({
@@ -325,7 +330,6 @@ export const importCourseExams = (): void => {
             date: t,
             complete: false,
             inFocus: false,
-            lastEdited: new Date(Date.now()),
           };
           newTasks.push(newTask);
         }
