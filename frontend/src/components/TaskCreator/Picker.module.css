@@ -140,3 +140,106 @@
 .NewTaskDatePick button[class~="react-calendar__month-view__days__day--weekend"]{
   color:rgba(150,0,0,1);
 }
+
+.NewTaskDateSave{
+  margin-top:10px;
+  margin-bottom:0;
+  text-align:right;
+}
+
+.NewTaskDateSave button{
+  padding:3px 10px;
+  background:none;
+  border-radius:3px;
+  border:none;
+  cursor:pointer;
+}
+.NewTaskDateSave button:last-child{
+  border: 1px black solid;
+}
+
+
+/*
+=============================
+    Repeating Tasks Boxes
+=============================
+*/
+
+.RepeatClosed{
+  background:#eee;
+  color:#5a5a5a;
+  padding:10px 15px;
+  text-align:left;
+  display:block;
+  width:100%;
+  border:none;
+  margin-top:10px;
+  cursor:pointer;
+}
+
+.PlusIcon{
+  margin-right:10px;
+  vertical-align:top;
+  transform:translateY(0) !important;
+}
+
+
+
+.RepeatOpened{
+  margin-top:10px;
+  background:#9b9b9b;
+  text-align:left;
+  padding: 10px 15px 0 15px;
+}
+
+.RepeatOpened p{
+  margin-top:0;
+}
+
+.CloseIcon{
+  display:inline-block;
+  margin-right:10px;
+}
+
+.RepeatOpenedInner{
+  display:inline-block;
+}
+
+.RepeatPickDayWrap label{
+  padding:0;
+  border: 1px white solid;
+  margin-right:2px;
+  position:relative;
+  top:3px;
+  width:30px;
+  height:30px;
+  line-height:27px;
+  color:white;
+  text-align:center;
+  display:inline-block;
+
+  background:none;
+  cursor:pointer;
+  border-radius:3px;
+}
+
+.RepeatPickDayWrap input{
+  display:none;
+}
+
+
+.RepeatPickEndWrap{
+  margin: 10px 0;
+}
+.RepeatPickEndWrap ul{
+  list-style:none;
+  margin:5px 0 0 0;padding:0;
+}
+
+.RepeatPickEndWrap input[type="number"]{
+  width:40px;
+}
+
+.RepeatPickEndWrap input[type="radio"]{
+  margin-right:5px;
+}
