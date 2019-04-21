@@ -70,7 +70,7 @@ export default function DatePicker(props: Props): ReactElement {
   );
 
   const [checkedWeeks, setCheckedWeeks] = React.useState<boolean[]>(
-    [false, false, false, false, false, false, false],
+    new Array(7).fill(false),
   );
 
   const handleClickWeekday = (e: ChangeEvent): void => {
@@ -96,12 +96,47 @@ export default function DatePicker(props: Props): ReactElement {
             value={i}
             onChange={handleClickWeekday}
             type="checkbox"
-            name="week"
+            name="repeatWeek"
           />
         </label>
       </>
     ), <></>,
   );
+
+  const [endOption, setEndOption] = React.useState<number>(-1);
+
+  const handleClickEnd = (e: ChangeEvent): void => {
+    const { value } = e.target as HTMLInputElement;
+    setEndOption(parseInt(value, 10));
+  };
+
+  const endPicker = [
+    <>At the end of the semester</>,
+    <>
+      After
+      {' '}
+      <input min="1" max="30" step="1" type="number" />
+      {' '}
+      occurances
+    </>,
+  ].reduce((a, x, i) => (
+    <>
+      {a}
+      <li>
+        <label htmlFor={`newTaskRepeatEndRadio${i}`}>
+          <input
+            type="radio"
+            name="repeatEnd"
+            id={`newTaskRepeatEndRadio${i}`}
+            value={i}
+            checked={i === endOption}
+            onChange={handleClickEnd}
+          />
+          {x}
+        </label>
+      </li>
+    </>
+  ), <></>);
 
   /**
    * The component to display when the repeating task box is open
@@ -115,19 +150,10 @@ export default function DatePicker(props: Props): ReactElement {
           <br />
           {weekdayPickers}
         </p>
-        <p className={styles.RepeatPickEndWrap}>
+        <div className={styles.RepeatPickEndWrap}>
           Stops
-          <ul>
-            <li>At the end of the semester</li>
-            <li>
-              After
-              {' '}
-              <input min="1" max="30" step="1" type="number" />
-              {' '}
-              occurances
-            </li>
-          </ul>
-        </p>
+          <ul>{endPicker}</ul>
+        </div>
       </div>
     </div>
   );
@@ -141,6 +167,10 @@ export default function DatePicker(props: Props): ReactElement {
           <Calendar onChange={onChange} value={date} minDate={new Date()} calendarType="US" />
           {!isRepeat && unopenedRepeat}
           {isRepeat && openedRepeat}
+          <p className={styles.NewTaskDateSave}>
+            <button type="button">Cancel</button>
+            <button type="button">Done</button>
+          </p>
         </div>
       )}
     </div>

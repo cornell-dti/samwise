@@ -141,6 +141,23 @@
   color:rgba(150,0,0,1);
 }
 
+.NewTaskDateSave{
+  margin-top:10px;
+  margin-bottom:0;
+  text-align:right;
+}
+
+.NewTaskDateSave button{
+  padding:3px 10px;
+  background:none;
+  border-radius:3px;
+  border:none;
+  cursor:pointer;
+}
+.NewTaskDateSave button:last-child{
+  border: 1px black solid;
+}
+
 
 /*
 =============================
@@ -211,7 +228,18 @@
 }
 
 
+.RepeatPickEndWrap{
+  margin: 10px 0;
+}
+.RepeatPickEndWrap ul{
+  list-style:none;
+  margin:5px 0 0 0;padding:0;
+}
 
 .RepeatPickEndWrap input[type="number"]{
   width:40px;
+}
+
+.RepeatPickEndWrap input[type="radio"]{
+  margin-right:5px;
 }
