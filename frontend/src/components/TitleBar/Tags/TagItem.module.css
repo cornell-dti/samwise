@@ -24,6 +24,11 @@
   color: white;
 }
 
+.DeleteTag:hover,
+.DeleteTag:focus {
+  font-size: 1.1em;
+}
+
 .AddTagName {
   width: calc(100% - 175px);
   background: none;
