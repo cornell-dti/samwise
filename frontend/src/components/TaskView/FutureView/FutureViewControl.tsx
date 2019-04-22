@@ -90,44 +90,40 @@ function NavControl(props: NavControlProps): ReactElement {
     return (
       <>
         {futureViewOffset >= 0 && (
-          <span title="Go back">
-            <SamwiseIcon
-              iconName="dropdown"
-              className={`${styles.NavButtonPrev} ${styles.NavButtonNDays}`}
-              style={prevStyle}
-              onClick={prevHandler}
-            />
-          </span>
-        )}
-        <span title="Go forward">
           <SamwiseIcon
             iconName="dropdown"
-            className={`${styles.NavButtonNext} ${styles.NavButtonNDays}`}
-            style={nextStyle}
-            onClick={nextHandler}
+            title="Go back"
+            className={`${styles.NavButtonPrev} ${styles.NavButtonNDays}`}
+            style={prevStyle}
+            onClick={prevHandler}
           />
-        </span>
+        )}
+        <SamwiseIcon
+          iconName="dropdown"
+          title="Go forward"
+          className={`${styles.NavButtonNext} ${styles.NavButtonNDays}`}
+          style={nextStyle}
+          onClick={nextHandler}
+        />
       </>
     );
   }
 
   const prev = (
-    <span title="Go back">
-      <SamwiseIcon
-        iconName="dropdown"
-        className={styles.NavButtonPrev}
-        onClick={prevHandler}
-      />
-    </span>
+    <SamwiseIcon
+      iconName="dropdown"
+      title="Go back"
+      className={styles.NavButtonPrev}
+      onClick={prevHandler}
+    />
   );
   const next = (
-    <span title="Go forward">
-      <SamwiseIcon
-        iconName="dropdown"
-        className={styles.NavButtonNext}
-        onClick={nextHandler}
-      />
-    </span>
+    <SamwiseIcon
+      iconName="dropdown"
+      title="Go forward"
+      className={styles.NavButtonNext}
+      onClick={nextHandler}
+    />
   );
   if (containerType === 'BIWEEKLY') {
     return (

@@ -26,9 +26,9 @@ import { ReactComponent as XLight } from '../../assets/svgs/XLight.svg';
 
 type SvgProps = SVGAttributes<SVGElement>;
 
-type Props = SvgProps & { readonly iconName: IconName };
+type Props = SvgProps & { readonly iconName: IconName; readonly title: string | undefined };
 
-export default ({ iconName, ...otherProps }: Props): ReactElement => {
+const SamwiseIcon = ({ iconName, title, ...otherProps }: Props): ReactElement => {
   let SvgComponent: StatelessComponent<SvgProps>;
   let altText: string;
   // let title: string;
@@ -129,5 +129,13 @@ export default ({ iconName, ...otherProps }: Props): ReactElement => {
     },
     ...otherProps,
   };
-  return <span title={altText}><SvgComponent {...allPropsToSvg} /></span>;
+  return (
+    <span title={title == null ? altText : title}>
+      <SvgComponent {...allPropsToSvg} />
+    </span>
+  );
 };
+
+SamwiseIcon.defaultProps = { title: undefined };
+
+export default SamwiseIcon;
