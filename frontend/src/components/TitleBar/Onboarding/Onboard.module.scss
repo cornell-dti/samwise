@@ -1,4 +1,4 @@
-@import '../../../colors.scss';
+@import "../../../colors.scss";
 
 .Hero {
   position: fixed;
@@ -81,13 +81,11 @@ p.SettingsSectionTitle {
   list-style: none;
 }
 
-
 /*
 
     TUTORIAL
 
 */
-
 
 .TutorialImg {
   width: calc(100% - 120px);
@@ -96,7 +94,6 @@ p.SettingsSectionTitle {
   object-fit: contain;
   object-position: center center;
 }
-
 
 .TutorialModal {
   width: 100%;
@@ -160,25 +157,22 @@ p.SettingsSectionTitle {
   cursor: pointer;
 }
 
-
-
-
-.ImportExamContainer{
-  margin-top:30px;
-  font-size:16px;
-  line-height:20px;
+.ImportExamContainer {
+  margin-top: 30px;
+  font-size: 16px;
+  line-height: 20px;
   cursor: pointer;
 }
 
-.ImportExamContainer input{
-  width:20px;
-  height:20px;
-  border-radius:3px;
+.ImportExamContainer input {
+  width: 20px;
+  height: 20px;
+  border-radius: 3px;
   vertical-align: middle;
-  margin-right:10px;
-  cursor:pointer;
+  margin-right: 10px;
+  cursor: pointer;
 }
 
-.ImportExamContainer label{
-  cursor:pointer;
+.ImportExamContainer label {
+  cursor: pointer;
 }
