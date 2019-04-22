@@ -1,12 +1,12 @@
 import React, { ReactElement } from 'react';
-import { FontAwesomeIcon as Icon } from '@fortawesome/react-fontawesome';
-import { faChevronRight, faChevronLeft, faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
+import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
 import { FutureViewContainerType, FutureViewDisplayOption } from './future-view-types';
 import SquareTextButton from '../../UI/SquareTextButton';
 import SquareIconToggle from '../../UI/SquareIconToggle';
 import { date2YearMonth } from '../../../util/datetime-util';
 import styles from './FutureViewControl.module.scss';
 import { useMappedWindowSize } from '../../../hooks/window-size-hook';
+import SamwiseIcon from '../../UI/SamwiseIcon';
 
 /*
  * --------------------------------------------------------------------------------
@@ -85,34 +85,26 @@ function NavControl(props: NavControlProps): ReactElement {
   const prevHandler = changeOffset(-1);
   const nextHandler = changeOffset(+1);
   if (containerType === 'N_DAYS') {
-    const className = `${styles.NavButton} ${styles.NavButtonNDays}`;
     const prevStyle = { left: -35 };
     const nextStyle = { right: -35 };
     return (
-      // @ts-ignore need onClick
       <>
         {futureViewOffset >= 0 && (
           <span title="Go back">
-            {/*
-            // @ts-ignore */}
-            <Icon
-              onClick={prevHandler}
-              icon={faChevronLeft}
-              className={className}
+            <SamwiseIcon
+              iconName="dropdown"
+              className={`${styles.NavButtonPrev} ${styles.NavButtonNDays}`}
               style={prevStyle}
-              tabIndex={0}
+              onClick={prevHandler}
             />
           </span>
         )}
         <span title="Go forward">
-          {/*
-           // @ts-ignore */}
-          <Icon
-            onClick={nextHandler}
-            icon={faChevronRight}
-            className={className}
+          <SamwiseIcon
+            iconName="dropdown"
+            className={`${styles.NavButtonNext} ${styles.NavButtonNDays}`}
             style={nextStyle}
-            tabIndex={0}
+            onClick={nextHandler}
           />
         </span>
       </>
@@ -121,26 +113,19 @@ function NavControl(props: NavControlProps): ReactElement {
 
   const prev = (
     <span title="Go back">
-      {/*
-        // @ts-ignore */}
-      <Icon
+      <SamwiseIcon
+        iconName="dropdown"
+        className={styles.NavButtonPrev}
         onClick={prevHandler}
-        icon={faChevronLeft}
-        className={styles.NavButton}
-        tabIndex={0}
       />
     </span>
   );
-  // @ts-ignore need onClick
   const next = (
     <span title="Go forward">
-      {/*
-        // @ts-ignore */}
-      <Icon
+      <SamwiseIcon
+        iconName="dropdown"
+        className={styles.NavButtonNext}
         onClick={nextHandler}
-        icon={faChevronRight}
-        className={styles.NavButton}
-        tabIndex={0}
       />
     </span>
   );
