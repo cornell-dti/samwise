@@ -1,8 +1,8 @@
-import React, { ReactElement, CSSProperties, useState } from 'react';
+import React, { ReactElement, CSSProperties, useState, useRef, useEffect } from 'react';
 import { connect } from 'react-redux';
 import TagItem from '../Tags/TagItem';
 import ClassTagAdder from '../Tags/ClassTagAdder';
-import styles from './Onboard.module.css';
+import styles from './Onboard.module.scss';
 import { State, Tag } from '../../../store/store-types';
 import Tutorial1 from '../../../assets/tutorial/t1.png';
 import Tutorial2 from '../../../assets/tutorial/t2.png';
@@ -50,7 +50,7 @@ type AddClassProps = {
  * Adding class as the first onboarding step.
  */
 function AddClassOnBoarding({ classTags, showNext }: AddClassProps): ReactElement {
-  const [addExam, setAddExam] = React.useState<boolean>(true);
+  const [addExam, setAddExam] = useState<boolean>(true);
 
   const clickBox = (e: React.FormEvent<HTMLInputElement>): void => (
     setAddExam((e.target as HTMLInputElement).checked)
@@ -88,9 +88,6 @@ function AddClassOnBoarding({ classTags, showNext }: AddClassProps): ReactElemen
       </p>
       {/* buttons */}
       <div className={styles.SignButtonContainer}>
-        {/* <button type="button" onClick={importCourseExams} className={styles.SignButton}>
-          Import Exams
-        </button> */}
         <span className={styles.Padding} />
         <button type="button" className={styles.SignButton} onClick={allDone}>
           {classTags.length > 0 ? 'Done' : 'Skip Adding Classes'}
@@ -111,14 +108,21 @@ type SlidesProps = {
  * Showing slides as the second onboarding step.
  */
 function SlidesOnBoarding({ progress, showNext, goBack, skipTutorial }: SlidesProps): ReactElement {
+  const nextButtonRef = useRef<HTMLButtonElement>(null);
   const { src, alt } = taggedImages[progress - 1];
+  useEffect(() => {
+    const buttonDOM = nextButtonRef.current;
+    if (buttonDOM) {
+      buttonDOM.focus();
+    }
+  }, []);
   return (
     <div className={styles.ModalWrap}>
       <h2>Tutorial</h2>
       <div className={styles.TutorialModal}>
         <button type="button" onClick={goBack}>&lsaquo;</button>
         <img className={styles.TutorialImg} src={src} alt={alt} />
-        <button type="button" onClick={showNext}>&rsaquo;</button>
+        <button type="button" ref={nextButtonRef} onClick={showNext}>&rsaquo;</button>
       </div>
       <p className={styles.ModalOptions}>
         <button type="button" onClick={skipTutorial} style={{ marginRight: '30px' }}>
