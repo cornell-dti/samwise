@@ -90,8 +90,8 @@ function NavControl(props: NavControlProps): ReactElement {
     const nextStyle = { right: -35 };
     return (
       // @ts-ignore need onClick
-      <React.Fragment>
-        {futureViewOffset >= 1 && (
+      <>
+        {futureViewOffset >= 0 && (
           <span title="Go back">
             {/*
             // @ts-ignore */}
@@ -115,31 +115,52 @@ function NavControl(props: NavControlProps): ReactElement {
             tabIndex={0}
           />
         </span>
-      </React.Fragment>
+      </>
     );
   }
 
+  const prev = (
+    <span title="Go back">
+      {/*
+        // @ts-ignore */}
+      <Icon
+        onClick={prevHandler}
+        icon={faChevronLeft}
+        className={styles.NavButton}
+        tabIndex={0}
+      />
+    </span>
+  );
   // @ts-ignore need onClick
-  const prev = (<span title="Go back"><Icon onClick={prevHandler} icon={faChevronLeft} className={styles.NavButton} tabIndex={0} /></span>);
-  // @ts-ignore need onClick
-  const next = (<span title="Go forward"><Icon onClick={nextHandler} icon={faChevronRight} className={styles.NavButton} tabIndex={0} /></span>);
+  const next = (
+    <span title="Go forward">
+      {/*
+        // @ts-ignore */}
+      <Icon
+        onClick={nextHandler}
+        icon={faChevronRight}
+        className={styles.NavButton}
+        tabIndex={0}
+      />
+    </span>
+  );
   if (containerType === 'BIWEEKLY') {
     return (
-      <React.Fragment>
+      <>
         {futureViewOffset >= 0 && prev}
         <Title text={getBiWeeklyViewHeaderTitle(futureViewOffset)} />
         {next}
-      </React.Fragment>
+      </>
     );
   }
   if (containerType === 'MONTHLY') {
     return (
-      <React.Fragment>
+      <>
         {!isSmallScreen && <Padding />}
-        {futureViewOffset >= 1 && prev}
+        {futureViewOffset >= 0 && prev}
         <Title text={getMonthlyViewHeaderTitle(futureViewOffset)} />
         {next}
-      </React.Fragment>
+      </>
     );
   }
   throw new Error('Bad display option.');
@@ -200,7 +221,12 @@ function DisplayOptionControl({ nDays, displayOption, offset, onChange }: Props)
       ? `${styles.ContainerTypeSwitcherButton} ${styles.ContainerTypeSwitcherActiveButton}`
       : styles.ContainerTypeSwitcherButton;
     return (
-      <button type="button" title={`Change to ${text} view`} className={className} onClick={() => switchContainerType(type)}>
+      <button
+        type="button"
+        title={`Change to ${text} view`}
+        className={className}
+        onClick={() => switchContainerType(type)}
+      >
         <span className={styles.ContainerTypeSwitcherButtonText}>{text}</span>
       </button>
     );

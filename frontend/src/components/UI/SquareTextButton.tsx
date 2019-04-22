@@ -1,5 +1,5 @@
 import React, { ReactElement } from 'react';
-import styles from './SquareButtons.module.css';
+import styles from './SquareButtons.module.scss';
 
 type Props = { readonly text: string; readonly onClick: () => void };
 
