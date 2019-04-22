@@ -30,7 +30,38 @@ export type Task = {
   readonly complete: boolean;
   readonly inFocus: boolean; // Whether the task is in focus
   readonly children: Set<string>;
+  readonly type: 'ONE_TIME' | null; // Null for legacy
 };
+
+/**
+ * The task type without id and every field optional.
+ * Fields that are filled represent differences from master template
+ */
+
+export type PartialTask = Partial<Pick<Task, MainTaskProperties | 'children' | 'type' >>;
+
+export type RepeatMetaData = {
+  readonly startDate: Date;
+  readonly endDate: Date;
+  readonly pattern: RepeatingPattern;
+}
+
+export type ForkedTask = PartialTask & {
+  readonly masterID: string;
+  readonly forkId: string | null;
+  readonly replaceDate: Date;
+}
+
+export type RepeatingTask = Task & {
+  readonly type: 'MASTER_TEMPLATE';
+  readonly repeats: RepeatMetaData;
+  readonly forks: ForkedTask[];
+}
+
+export type RepeatingPattern =
+  | { readonly type: 'WEEKLY'; readonly bitSet: number /* 7-bit */ }
+  | { readonly type: 'BIWEEKLY'; readonly bitSet: number /* 14-bit */ }
+  | { readonly type: 'MONTHLY'; readonly bitSet: number /* 31-bit */ };
 
 type MainTaskProperties = 'order' | 'name' | 'tag' | 'date' | 'complete' | 'inFocus';
 /**
