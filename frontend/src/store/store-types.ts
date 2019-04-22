@@ -21,7 +21,7 @@ export type SubTask = {
  */
 export type PartialSubTask = Partial<Pick<SubTask, 'order' | 'name' | 'complete' | 'inFocus'>>;
 
-export type Task = {
+export type CommonTask = {
   readonly id: string;
   readonly order: number;
   readonly name: string; // Example: "Task 1 name"
@@ -30,32 +30,36 @@ export type Task = {
   readonly complete: boolean;
   readonly inFocus: boolean; // Whether the task is in focus
   readonly children: Set<string>;
-  readonly type: 'ONE_TIME' | null; // Null for legacy
 };
+
+export type LegacyTask = CommonTask;
+
+export type OneTimeTask = CommonTask & {
+  readonly type: 'ONE_TIME';
+}
 
 /**
  * The task type without id and every field optional.
  * Fields that are filled represent differences from master template
  */
 
-export type PartialTask = Partial<Pick<Task, MainTaskProperties | 'children' | 'type' >>;
+export type PartialTask = Partial<Pick<CommonTask, MainTaskProperties | 'children' >>;
 
 export type RepeatMetaData = {
   readonly startDate: Date;
-  readonly endDate: Date;
+  readonly endDate: Date | null;
   readonly pattern: RepeatingPattern;
 }
 
-export type ForkedTask = PartialTask & {
-  readonly masterID: string;
+export type ForkedTaskMetaData = PartialTask & {
   readonly forkId: string | null;
   readonly replaceDate: Date;
 }
 
-export type RepeatingTask = Task & {
+export type RepeatingTask = CommonTask & {
   readonly type: 'MASTER_TEMPLATE';
   readonly repeats: RepeatMetaData;
-  readonly forks: ForkedTask[];
+  readonly forks: ForkedTaskMetaData[];
 }
 
 export type RepeatingPattern =
@@ -67,7 +71,7 @@ type MainTaskProperties = 'order' | 'name' | 'tag' | 'date' | 'complete' | 'inFo
 /**
  * The task type without id and subtask.
  */
-export type MainTask = Readonly<Pick<Task, MainTaskProperties>>;
+export type MainTask = Readonly<Pick<CommonTask, MainTaskProperties>>;
 /**
  * The task type without id and subtask, and with all properties as optional.
  */
@@ -104,7 +108,7 @@ export type Course = {
  */
 export type State = {
   readonly tags: Map<string, Tag>;
-  readonly tasks: Map<string, Task>;
+  readonly tasks: Map<string, CommonTask>;
   readonly dateTaskMap: Map<string, Set<string>>;
   readonly subTasks: Map<string, SubTask>;
   readonly taskChildrenMap: Map<string, Set<string>>;
