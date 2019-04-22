@@ -108,7 +108,7 @@ export type Course = {
  */
 export type State = {
   readonly tags: Map<string, Tag>;
-  readonly tasks: Map<string, CommonTask>;
+  readonly tasks: Map<string, LegacyTask | OneTimeTask | RepeatingTask >;
   readonly dateTaskMap: Map<string, Set<string>>;
   readonly subTasks: Map<string, SubTask>;
   readonly taskChildrenMap: Map<string, Set<string>>;
