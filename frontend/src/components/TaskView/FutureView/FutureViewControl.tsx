@@ -1,4 +1,4 @@
-import React, { ReactElement } from 'react';
+import React, { KeyboardEvent, ReactElement } from 'react';
 import { FontAwesomeIcon as Icon } from '@fortawesome/react-fontawesome';
 import { faChevronRight, faChevronLeft, faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
 import { FutureViewContainerType, FutureViewDisplayOption } from './future-view-types';
@@ -123,7 +123,12 @@ function NavControl(props: NavControlProps): ReactElement {
     <span title="Go back">
       {/*
         // @ts-ignore */}
-      <Icon onClick={prevHandler} icon={faChevronLeft} className={styles.NavButton} tabIndex={0} />
+      <Icon
+        onClick={prevHandler}
+        icon={faChevronLeft}
+        className={styles.NavButton}
+        tabIndex={0}
+      />
     </span>
   );
   // @ts-ignore need onClick
@@ -131,7 +136,12 @@ function NavControl(props: NavControlProps): ReactElement {
     <span title="Go forward">
       {/*
         // @ts-ignore */}
-      <Icon onClick={nextHandler} icon={faChevronRight} className={styles.NavButton} tabIndex={0} />
+      <Icon
+        onClick={nextHandler}
+        icon={faChevronRight}
+        className={styles.NavButton}
+        tabIndex={0}
+      />
     </span>
   );
   if (containerType === 'BIWEEKLY') {
