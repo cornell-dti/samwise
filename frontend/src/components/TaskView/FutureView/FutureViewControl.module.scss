@@ -1,4 +1,4 @@
-@import '../../../colors.scss';
+@import "../../../colors.scss";
 
 /*
  * --------------------------------------------------------------------------------
@@ -24,15 +24,31 @@
   margin: 1em 0.5em;
 }
 
-.NavButton {
+%NavButtonCommon {
+  color: $very-dark-grey;
   cursor: pointer;
   margin-left: 0.5em;
   font-size: 1.5em;
 }
 
-.NavButton:hover,
-.NavButton:focus {
-  color: $warm-grey;
+%NavButtonCommon > * > * {
+  stroke-width: 2px;
+  stroke: $very-dark-grey !important;
+}
+
+%NavButtonCommon:hover > * > *,
+%NavButtonCommon:focus > * > * {
+  stroke: $warm-grey !important;
+}
+
+.NavButtonPrev {
+  @extend %NavButtonCommon;
+  transform: rotate(90deg);
+}
+
+.NavButtonNext {
+  @extend %NavButtonCommon;
+  transform: rotate(270deg);
 }
 
 .NavButtonNDays {
