@@ -32,7 +32,7 @@
 
 .NavButton:hover,
 .NavButton:focus {
-  color: #5a5a5a;
+  color: $warm-grey;
 }
 
 .NavButtonNDays {
@@ -73,7 +73,7 @@
 
 .ContainerTypeSwitcherButton:hover,
 .ContainerTypeSwitcherButton:focus-within {
-  background-color: #eeeeee;
+  background-color: $pinkish-grey;
 }
 
 .ContainerTypeSwitcherButtonText {
@@ -88,5 +88,5 @@
 
 .ContainerTypeSwitcherActiveButton:hover,
 .ContainerTypeSwitcherActiveButton:focus-within {
-  background-color: $very-dark-grey;
+  background-color: black;
 }

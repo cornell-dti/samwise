@@ -11,7 +11,7 @@ import SamwiseIcon from '../UI/SamwiseIcon';
 const FocusPanel = (): ReactElement => <div className={styles.FocusPanel}><FocusView /></div>;
 
 export default function TaskView(): ReactElement {
-  const [doesShowFocusViewInWideScreen, setDoesShowFocusViewInWideScreen] = useState(false);
+  const [doesShowFocusViewInWideScreen, setDoesShowFocusViewInWideScreen] = useState(true);
   const [doesShowFutureViewInSmallScreen, setDoesShowFutureViewInSmallScreen] = useState(false);
   const [config, setConfig] = useState<FutureViewConfig>(futureViewConfigProvider.initialValue);
 

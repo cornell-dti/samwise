@@ -45,7 +45,7 @@ if (cachedWindowSize.width === 0) {
  */
 export function useWindowSize(): WindowSize {
   const [size, setSize] = useState(getWindowSize);
-  useEffect(() => bindListener(setSize));
+  useEffect(() => bindListener(setSize), []);
   return size;
 }
 
@@ -54,11 +54,8 @@ export function useWindowSize(): WindowSize {
  */
 export function useWindowSizeCallback(onChange: (windowSize: WindowSize) => void): void {
   const [size, setSize] = useState(getWindowSize);
-  useEffect(() => {
-    const l = bindListener(setSize);
-    onChange(size);
-    return l;
-  });
+  useEffect(() => bindListener(setSize), []);
+  useEffect(() => onChange(size));
 }
 
 /**
