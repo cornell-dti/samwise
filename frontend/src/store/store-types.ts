@@ -36,7 +36,7 @@ export type LegacyTask = CommonTask;
 
 export type OneTimeTask = CommonTask & {
   readonly type: 'ONE_TIME';
-}
+};
 
 /**
  * The task type without id and every field optional.
@@ -45,27 +45,29 @@ export type OneTimeTask = CommonTask & {
 
 export type PartialTask = Partial<Pick<CommonTask, MainTaskProperties | 'children' >>;
 
+export type RepeatingPattern =
+  | { readonly type: 'WEEKLY'; readonly bitSet: number /* 7-bit */ }
+  | { readonly type: 'BIWEEKLY'; readonly bitSet: number /* 14-bit */ }
+  | { readonly type: 'MONTHLY'; readonly bitSet: number /* 31-bit */ };
+
 export type RepeatMetaData = {
   readonly startDate: Date;
   readonly endDate: Date | null;
   readonly pattern: RepeatingPattern;
-}
+};
 
 export type ForkedTaskMetaData = PartialTask & {
   readonly forkId: string | null;
   readonly replaceDate: Date;
-}
+};
 
 export type RepeatingTask = CommonTask & {
   readonly type: 'MASTER_TEMPLATE';
   readonly repeats: RepeatMetaData;
   readonly forks: ForkedTaskMetaData[];
-}
+};
 
-export type RepeatingPattern =
-  | { readonly type: 'WEEKLY'; readonly bitSet: number /* 7-bit */ }
-  | { readonly type: 'BIWEEKLY'; readonly bitSet: number /* 14-bit */ }
-  | { readonly type: 'MONTHLY'; readonly bitSet: number /* 31-bit */ };
+export type Task = LegacyTask | OneTimeTask | RepeatingTask;
 
 type MainTaskProperties = 'order' | 'name' | 'tag' | 'date' | 'complete' | 'inFocus';
 /**
@@ -108,7 +110,7 @@ export type Course = {
  */
 export type State = {
   readonly tags: Map<string, Tag>;
-  readonly tasks: Map<string, LegacyTask | OneTimeTask | RepeatingTask >;
+  readonly tasks: Map<string, Task>;
   readonly dateTaskMap: Map<string, Set<string>>;
   readonly subTasks: Map<string, SubTask>;
   readonly taskChildrenMap: Map<string, Set<string>>;
