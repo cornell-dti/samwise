@@ -18,9 +18,7 @@ const updateFloatingEditorPosition = (
   if (editorPosDiv == null) {
     return;
   }
-  const taskElement = editorPosDiv.previousElementSibling == null
-    ? null
-    : editorPosDiv.previousElementSibling.previousElementSibling;
+  const taskElement = editorPosDiv.previousElementSibling;
   if (taskElement === null || !(taskElement instanceof HTMLDivElement)) {
     throw new Error('Task element must be a div!');
   }
@@ -49,6 +47,7 @@ const updateFloatingEditorPosition = (
   }
   editorPosDiv.style.top = `${posTop}px`;
   editorPosDiv.style.left = `${posLeft}px`;
+  editorPosDiv.style.display = 'block';
 };
 
 type OwnProps = {
@@ -93,7 +92,6 @@ function FloatingTaskEditor(
       {trigger(open, openPopup)}
       {open && (
         <>
-          <div className={styles.BackgroundBlocker} role="presentation" onClick={closePopup} />
           <TaskEditor
             id={task.id}
             mainTask={mainTask}
@@ -103,6 +101,7 @@ function FloatingTaskEditor(
             editorRef={editorRef}
             calendarPosition={calendarPosition}
           />
+          <div className={styles.BackgroundBlocker} role="presentation" onClick={closePopup} />
         </>
       )}
     </>
