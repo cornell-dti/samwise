@@ -16,10 +16,12 @@ export type SubTask = {
   readonly inFocus: boolean; // Whether the subtask is in focus
 };
 
+export type SubTaskWithoutId = Pick<SubTask, 'order' | 'name' | 'complete' | 'inFocus'>;
+export type SubTaskWithoutIdOrder = Pick<SubTask, 'name' | 'complete' | 'inFocus'>;
 /**
- * The subtask type without id and with every field as optional.
+ * The subtask type without id order and with every field as optional.
  */
-export type PartialSubTask = Partial<Pick<SubTask, 'order' | 'name' | 'complete' | 'inFocus'>>;
+export type PartialSubTask = Partial<SubTaskWithoutIdOrder>;
 
 export type CommonTask = {
   readonly id: string;
