@@ -124,19 +124,6 @@ export const addTask = (
   })();
 };
 
-/*
-export const addSubTask = (taskId: string, subTask: SubTask): void => {
-  const newSubTaskDoc = subTasksCollection().doc(subTask.id);
-  const firebaseSubTask: FirestoreSubTask = mergeWithOwner(subTask);
-  const batch = db().batch();
-  batch.set(newSubTaskDoc, firebaseSubTask);
-  batch.update(tasksCollection().doc(taskId), {
-    children: firestore.FieldValue.arrayUnion(newSubTaskDoc.id),
-  });
-  batch.commit().then(ignore);
-};
-*/
-
 export const removeAllForks = (taskId: string): void => {
   const { tasks } = store.getState();
   const task = tasks.get(taskId) || error('bad!');
@@ -182,7 +169,7 @@ export const editTaskWithDiff = (
         replaceDate: mainTaskEdits.date !== undefined ? mainTaskEdits.date : repeatingTask.date,
       };
       batch.update(tasksCollection().doc(taskId), {
-        forks: { ...repeatingTask.forks, newForkMetaData },
+        forks: [...repeatingTask.forks, newForkMetaData],
       });
       updateTaskId = addedDoc.id;
     })();
