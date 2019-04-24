@@ -154,11 +154,20 @@ export const removeAllForks = (taskId: string): void => {
 
 export const editTaskWithDiff = (
   taskId: string,
-  forMasterTemplate: boolean,
+  forMasterTemplate: 'EDITING_MASTER_TEMPLATE'|'EDITING_ONE_TIME_TASK'|'FORKING_MASTER_TEMPLATE',
   { mainTaskEdits, subTaskCreations, subTaskEdits, subTaskDeletions }: Diff,
 ): void => {
   const batch = db().batch();
-  if (forMasterTemplate) {
+  if (forMasterTemplate === 'FORKING_MASTER_TEMPLATE') {
+    const { tasks } = store.getState();
+    const repeatingTask = tasks.get(taskId) as RepeatingTask;
+    const newForkMetaData = {
+      forkId: taskId,
+      replaceDate: mainTaskEdits.date !== undefined ? mainTaskEdits.date : repeatingTask.date,
+    };
+    repeatingTask.forks.push(newForkMetaData);
+  }
+  if (forMasterTemplate === 'EDITING_MASTER_TEMPLATE') {
     removeAllForks(taskId);
   }
   if (subTaskCreations.size !== 0) {
