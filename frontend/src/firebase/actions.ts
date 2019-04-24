@@ -152,13 +152,15 @@ export const removeAllForks = (taskId: string): void => {
   batch.commit().then(ignore);
 };
 
+type EditType = 'EDITING_MASTER_TEMPLATE' | 'EDITING_ONE_TIME_TASK' | 'FORKING_MASTER_TEMPLATE';
+
 export const editTaskWithDiff = (
   taskId: string,
-  forMasterTemplate: 'EDITING_MASTER_TEMPLATE'|'EDITING_ONE_TIME_TASK'|'FORKING_MASTER_TEMPLATE',
+  editType: EditType,
   { mainTaskEdits, subTaskCreations, subTaskEdits, subTaskDeletions }: Diff,
 ): void => {
   const batch = db().batch();
-  if (forMasterTemplate === 'FORKING_MASTER_TEMPLATE') {
+  if (editType === 'FORKING_MASTER_TEMPLATE') {
     const { tasks } = store.getState();
     const repeatingTask = tasks.get(taskId) as RepeatingTask;
     const newForkMetaData = {
@@ -167,7 +169,7 @@ export const editTaskWithDiff = (
     };
     repeatingTask.forks.push(newForkMetaData);
   }
-  if (forMasterTemplate === 'EDITING_MASTER_TEMPLATE') {
+  if (editType === 'EDITING_MASTER_TEMPLATE') {
     removeAllForks(taskId);
   }
   if (subTaskCreations.size !== 0) {
@@ -214,9 +216,9 @@ export const removeTask = (task: Task, noUndo?: 'no-undo'): void => {
 };
 
 export const editMainTask = (
-  taskId: string, forMasterTemplate: boolean, mainTaskEdits: PartialMainTask,
+  taskId: string, editType: EditType, mainTaskEdits: PartialMainTask,
 ): void => {
-  editTaskWithDiff(taskId, forMasterTemplate, {
+  editTaskWithDiff(taskId, editType, {
     mainTaskEdits,
     subTaskCreations: Map(),
     subTaskEdits: Map(),
@@ -225,9 +227,9 @@ export const editMainTask = (
 };
 
 export const editSubTask = (
-  taskId: string, subtaskId: string, forMasterTemplate: boolean, partialSubTask: PartialSubTask,
+  taskId: string, subtaskId: string, editType: EditType, partialSubTask: PartialSubTask,
 ): void => {
-  editTaskWithDiff(taskId, forMasterTemplate, {
+  editTaskWithDiff(taskId, editType, {
     mainTaskEdits: {},
     subTaskCreations: Map(),
     subTaskEdits: Map<string, PartialSubTask>().set(subtaskId, partialSubTask),
@@ -236,9 +238,9 @@ export const editSubTask = (
 };
 
 export const removeSubTask = (
-  taskId: string, subtaskId: string, forMasterTemplate: boolean,
+  taskId: string, subtaskId: string, editType: EditType,
 ): void => {
-  editTaskWithDiff(taskId, forMasterTemplate, {
+  editTaskWithDiff(taskId, editType, {
     mainTaskEdits: {},
     subTaskCreations: Map(),
     subTaskEdits: Map(),
