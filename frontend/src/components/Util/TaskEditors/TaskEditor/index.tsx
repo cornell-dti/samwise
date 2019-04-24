@@ -73,7 +73,7 @@ function TaskEditor(
   const {
     mainTask,
     subTasks,
-    diff,
+    // diff,
     dispatchEditMainTask,
     dispatchAddSubTask,
     dispatchEditSubTask,
