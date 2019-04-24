@@ -1,9 +1,19 @@
 import { firestore } from 'firebase/app';
 import { Map } from 'immutable';
 import {
-  Course, PartialMainTask, PartialSubTask, SubTask, Tag, Task, BannerMessageIds,
+  Course,
+  SubTask,
+  Tag,
+  Task,
+  BannerMessageIds,
+  RepeatingTask,
 } from '../store/store-types';
-import { FirestoreCommon, FirestoreTag, FirestoreTask, FirestoreSubTask } from './firestore-types';
+import {
+  FirestoreCommon,
+  FirestoreTag,
+  FirestoreTask,
+  FirestoreSubTask,
+} from './firestore-types';
 import { getAppUser } from './auth';
 import {
   db,
@@ -14,10 +24,11 @@ import {
   bannerMessageStatusCollection,
 } from './db';
 import { error, ignore } from '../util/general-util';
-import { emitUndoAddTaskToast, emitUndoRemoveTaskToast } from '../util/undo-util';
+import { emitUndoAddTaskToast } from '../util/undo-util';
 import allocateNewOrder from './order-manager';
 import { store } from '../store/store';
 import { NONE_TAG_ID } from '../util/tag-util';
+import { Diff } from '../components/Util/TaskEditors/TaskEditor/task-diff-reducer';
 
 async function createFirestoreObject<T>(
   orderFor: 'tags' | 'tasks', source: T,
@@ -65,7 +76,7 @@ export const removeTag = (id: string): void => {
       const batch = db().batch();
       s.docs.filter(doc => doc.data().type === 'TASK')
         .forEach((doc) => {
-          batch.update(tasksCollection().doc(doc.id), { tag: NONE_TAG_ID });
+          batch.update(tasksCollection().doc(doc.id), {tag: NONE_TAG_ID});
         });
       batch.delete(tagsCollection().doc(id));
       batch.commit().then(ignore);
@@ -111,6 +122,7 @@ export const addTask = (
   })();
 };
 
+/*
 export const addSubTask = (taskId: string, subTask: SubTask): void => {
   const newSubTaskDoc = subTasksCollection().doc(subTask.id);
   const firebaseSubTask: FirestoreSubTask = mergeWithOwner(subTask);
@@ -121,9 +133,67 @@ export const addSubTask = (taskId: string, subTask: SubTask): void => {
   });
   batch.commit().then(ignore);
 };
+*/
 
+export const removeAllForks = (taskId: string): void => {
+  const { tasks } = store.getState();
+  const task = tasks.get(taskId) || error('bad!');
+  const repeatingTask = task as RepeatingTask;
+  const forkIds = repeatingTask.forks.map(fork => fork.forkId);
+  const batch = db().batch();
+  forkIds.forEach((id) => {
+    if (id !== null) {
+      batch.delete(tasksCollection().doc(id));
+    }
+  });
+  batch.set(tasksCollection().doc(taskId), { forks: [] }, { merge: true });
+  batch.commit().then(ignore);
+};
+
+export const editTaskWithDiff = (
+  taskId: string,
+  { mainTaskEdits, subTaskCreations, subTaskEdits, subTaskDeletions }: Diff,
+  forMasterTemplate: boolean,
+): void => {
+  const batch = db().batch();
+  if (forMasterTemplate) {
+    removeAllForks(taskId);
+  }
+  if (subTaskCreations.size !== 0) {
+    subTaskCreations.forEach((subTask, id) => {
+      const newSubTaskDoc = subTasksCollection().doc(id);
+      const firebaseSubTask: FirestoreSubTask = mergeWithOwner(subTask);
+      batch.set(newSubTaskDoc, firebaseSubTask);
+      batch.update(tasksCollection().doc(taskId), {
+        children: firestore.FieldValue.arrayUnion(newSubTaskDoc.id),
+      });
+    });
+  }
+  if (subTaskEdits.size !== 0) {
+    subTaskEdits.forEach((partialSubTask, id) => {
+      batch.set(subTasksCollection().doc(id), partialSubTask, { merge: true });
+    });
+  }
+  if (subTaskDeletions.size !== 0) {
+    subTaskDeletions.forEach((id) => {
+      batch.delete(subTasksCollection().doc(id));
+    });
+  }
+  batch.set(tasksCollection().doc(taskId), mainTaskEdits, { merge: true });
+};
+
+
+/*
 export const editMainTask = (taskId: string, partialMainTask: PartialMainTask): void => {
-  tasksCollection().doc(taskId).update(partialMainTask).then(ignore);
+  if (typeof partialMainTask LegacyTask) {
+    tasksCollection().doc(taskId).update(partialMainTask).then(ignore);
+  }
+  else if (partialMainTask.type = 'ONE_TIME') {
+
+  }
+  else if (partialMainTask.type = 'MASTER_TEMPLATE') {
+
+  }
 };
 
 export const editSubTask = (subtaskId: string, partialSubTask: PartialSubTask): void => {
@@ -143,12 +213,13 @@ export const removeTask = (task: Task, noUndo?: 'no-undo'): void => {
   task.children.forEach(id => batch.delete(subTasksCollection().doc(id)));
   batch.commit().then(() => {
     if (noUndo !== 'no-undo') {
-      const { children, ...rest } = task;
-      const fullTask = { ...rest, children: deletedSubTasks };
+      const {children, ...rest} = task;
+      const fullTask = {...rest, children: deletedSubTasks};
       emitUndoRemoveTaskToast(fullTask);
     }
   });
 };
+
 
 export const removeSubTask = (taskId: string, subtaskId: string): void => {
   const batch = db().batch();
@@ -158,6 +229,8 @@ export const removeSubTask = (taskId: string, subtaskId: string): void => {
   batch.delete(subTasksCollection().doc(subtaskId));
   batch.commit().then(ignore);
 };
+*/
+
 
 /*
  * --------------------------------------------------------------------------------
