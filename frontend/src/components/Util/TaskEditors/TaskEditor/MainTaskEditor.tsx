@@ -1,4 +1,4 @@
-import React, { KeyboardEvent, ReactElement, SyntheticEvent, useState } from 'react';
+import React, { KeyboardEvent, ReactElement, SyntheticEvent } from 'react';
 import styles from './index.module.css';
 import CheckBox from '../../../UI/CheckBox';
 import SamwiseIcon from '../../../UI/SamwiseIcon';

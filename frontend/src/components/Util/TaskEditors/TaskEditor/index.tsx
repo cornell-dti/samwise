@@ -3,7 +3,7 @@
 // These components' API are NOT guaranteed to be stable.
 // You should only use this component from the outside.
 
-import React, { ReactElement, ReactNode, useState } from 'react';
+import React, { ReactElement, useState } from 'react';
 import { connect } from 'react-redux';
 import { MainTask, State, SubTask, Tag } from '../../../../store/store-types';
 import OverdueAlert from '../../../UI/OverdueAlert';
@@ -91,7 +91,8 @@ function TaskEditor(
     }
   };
   const onSaveClicked = (): void => {
-    console.log(diff);
+    // TODO: prompt user to decide
+    // console.log(diff);
     onSave();
   };
 
