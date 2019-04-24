@@ -1,11 +1,13 @@
 import { firestore } from 'firebase/app';
-import { Map } from 'immutable';
+import { Map, Set } from 'immutable';
 import {
   Course,
   SubTask,
   Tag,
   Task,
   BannerMessageIds,
+  PartialMainTask,
+  PartialSubTask,
   RepeatingTask,
 } from '../store/store-types';
 import {
@@ -24,7 +26,7 @@ import {
   bannerMessageStatusCollection,
 } from './db';
 import { error, ignore } from '../util/general-util';
-import { emitUndoAddTaskToast } from '../util/undo-util';
+import { emitUndoAddTaskToast, emitUndoRemoveTaskToast } from '../util/undo-util';
 import allocateNewOrder from './order-manager';
 import { store } from '../store/store';
 import { NONE_TAG_ID } from '../util/tag-util';
@@ -76,7 +78,7 @@ export const removeTag = (id: string): void => {
       const batch = db().batch();
       s.docs.filter(doc => doc.data().type === 'TASK')
         .forEach((doc) => {
-          batch.update(tasksCollection().doc(doc.id), {tag: NONE_TAG_ID});
+          batch.update(tasksCollection().doc(doc.id), { tag: NONE_TAG_ID });
         });
       batch.delete(tagsCollection().doc(id));
       batch.commit().then(ignore);
@@ -152,8 +154,8 @@ export const removeAllForks = (taskId: string): void => {
 
 export const editTaskWithDiff = (
   taskId: string,
-  { mainTaskEdits, subTaskCreations, subTaskEdits, subTaskDeletions }: Diff,
   forMasterTemplate: boolean,
+  { mainTaskEdits, subTaskCreations, subTaskEdits, subTaskDeletions }: Diff,
 ): void => {
   const batch = db().batch();
   if (forMasterTemplate) {
@@ -182,24 +184,6 @@ export const editTaskWithDiff = (
   batch.set(tasksCollection().doc(taskId), mainTaskEdits, { merge: true });
 };
 
-
-/*
-export const editMainTask = (taskId: string, partialMainTask: PartialMainTask): void => {
-  if (typeof partialMainTask LegacyTask) {
-    tasksCollection().doc(taskId).update(partialMainTask).then(ignore);
-  }
-  else if (partialMainTask.type = 'ONE_TIME') {
-
-  }
-  else if (partialMainTask.type = 'MASTER_TEMPLATE') {
-
-  }
-};
-
-export const editSubTask = (subtaskId: string, partialSubTask: PartialSubTask): void => {
-  subTasksCollection().doc(subtaskId).update(partialSubTask).then(ignore);
-};
-
 export const removeTask = (task: Task, noUndo?: 'no-undo'): void => {
   const { subTasks } = store.getState();
   const deletedSubTasks = task.children
@@ -213,24 +197,45 @@ export const removeTask = (task: Task, noUndo?: 'no-undo'): void => {
   task.children.forEach(id => batch.delete(subTasksCollection().doc(id)));
   batch.commit().then(() => {
     if (noUndo !== 'no-undo') {
-      const {children, ...rest} = task;
-      const fullTask = {...rest, children: deletedSubTasks};
+      const { children, ...rest } = task;
+      const fullTask = { ...rest, children: deletedSubTasks };
       emitUndoRemoveTaskToast(fullTask);
     }
   });
 };
 
-
-export const removeSubTask = (taskId: string, subtaskId: string): void => {
-  const batch = db().batch();
-  batch.update(tasksCollection().doc(taskId), {
-    children: firestore.FieldValue.arrayRemove(subtaskId),
+export const editMainTask = (
+  taskId: string, forMasterTemplate: boolean, mainTaskEdits: PartialMainTask,
+): void => {
+  editTaskWithDiff(taskId, forMasterTemplate, {
+    mainTaskEdits,
+    subTaskCreations: Map(),
+    subTaskEdits: Map(),
+    subTaskDeletions: Set(),
   });
-  batch.delete(subTasksCollection().doc(subtaskId));
-  batch.commit().then(ignore);
 };
-*/
 
+export const editSubTask = (
+  taskId: string, subtaskId: string, forMasterTemplate: boolean, partialSubTask: PartialSubTask,
+): void => {
+  editTaskWithDiff(taskId, forMasterTemplate, {
+    mainTaskEdits: {},
+    subTaskCreations: Map(),
+    subTaskEdits: Map<string, PartialSubTask>().set(subtaskId, partialSubTask),
+    subTaskDeletions: Set(),
+  });
+};
+
+export const removeSubTask = (
+  taskId: string, subtaskId: string, forMasterTemplate: boolean,
+): void => {
+  editTaskWithDiff(taskId, forMasterTemplate, {
+    mainTaskEdits: {},
+    subTaskCreations: Map(),
+    subTaskEdits: Map(),
+    subTaskDeletions: Set(subtaskId),
+  });
+};
 
 /*
  * --------------------------------------------------------------------------------
