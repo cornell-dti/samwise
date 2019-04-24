@@ -1,9 +1,21 @@
 import { firestore } from 'firebase/app';
-import { Map } from 'immutable';
+import { Map, Set } from 'immutable';
 import {
-  Course, PartialMainTask, PartialSubTask, SubTask, Tag, Task, BannerMessageIds,
+  Course,
+  SubTask,
+  Tag,
+  Task,
+  BannerMessageIds,
+  PartialMainTask,
+  PartialSubTask,
+  RepeatingTask,
 } from '../store/store-types';
-import { FirestoreCommon, FirestoreTag, FirestoreTask, FirestoreSubTask } from './firestore-types';
+import {
+  FirestoreCommon,
+  FirestoreTag,
+  FirestoreTask,
+  FirestoreSubTask,
+} from './firestore-types';
 import { getAppUser } from './auth';
 import {
   db,
@@ -18,6 +30,7 @@ import { emitUndoAddTaskToast, emitUndoRemoveTaskToast } from '../util/undo-util
 import allocateNewOrder from './order-manager';
 import { store } from '../store/store';
 import { NONE_TAG_ID } from '../util/tag-util';
+import { Diff } from '../components/Util/TaskEditors/TaskEditor/task-diff-reducer';
 
 async function createFirestoreObject<T>(
   orderFor: 'tags' | 'tasks', source: T,
@@ -111,6 +124,7 @@ export const addTask = (
   })();
 };
 
+/*
 export const addSubTask = (taskId: string, subTask: SubTask): void => {
   const newSubTaskDoc = subTasksCollection().doc(subTask.id);
   const firebaseSubTask: FirestoreSubTask = mergeWithOwner(subTask);
@@ -121,13 +135,53 @@ export const addSubTask = (taskId: string, subTask: SubTask): void => {
   });
   batch.commit().then(ignore);
 };
+*/
 
-export const editMainTask = (taskId: string, partialMainTask: PartialMainTask): void => {
-  tasksCollection().doc(taskId).update(partialMainTask).then(ignore);
+export const removeAllForks = (taskId: string): void => {
+  const { tasks } = store.getState();
+  const task = tasks.get(taskId) || error('bad!');
+  const repeatingTask = task as RepeatingTask;
+  const forkIds = repeatingTask.forks.map(fork => fork.forkId);
+  const batch = db().batch();
+  forkIds.forEach((id) => {
+    if (id !== null) {
+      batch.delete(tasksCollection().doc(id));
+    }
+  });
+  batch.set(tasksCollection().doc(taskId), { forks: [] }, { merge: true });
+  batch.commit().then(ignore);
 };
 
-export const editSubTask = (subtaskId: string, partialSubTask: PartialSubTask): void => {
-  subTasksCollection().doc(subtaskId).update(partialSubTask).then(ignore);
+export const editTaskWithDiff = (
+  taskId: string,
+  forMasterTemplate: boolean,
+  { mainTaskEdits, subTaskCreations, subTaskEdits, subTaskDeletions }: Diff,
+): void => {
+  const batch = db().batch();
+  if (forMasterTemplate) {
+    removeAllForks(taskId);
+  }
+  if (subTaskCreations.size !== 0) {
+    subTaskCreations.forEach((subTask, id) => {
+      const newSubTaskDoc = subTasksCollection().doc(id);
+      const firebaseSubTask: FirestoreSubTask = mergeWithOwner(subTask);
+      batch.set(newSubTaskDoc, firebaseSubTask);
+      batch.update(tasksCollection().doc(taskId), {
+        children: firestore.FieldValue.arrayUnion(newSubTaskDoc.id),
+      });
+    });
+  }
+  if (subTaskEdits.size !== 0) {
+    subTaskEdits.forEach((partialSubTask, id) => {
+      batch.set(subTasksCollection().doc(id), partialSubTask, { merge: true });
+    });
+  }
+  if (subTaskDeletions.size !== 0) {
+    subTaskDeletions.forEach((id) => {
+      batch.delete(subTasksCollection().doc(id));
+    });
+  }
+  batch.set(tasksCollection().doc(taskId), mainTaskEdits, { merge: true });
 };
 
 export const removeTask = (task: Task, noUndo?: 'no-undo'): void => {
@@ -150,13 +204,37 @@ export const removeTask = (task: Task, noUndo?: 'no-undo'): void => {
   });
 };
 
-export const removeSubTask = (taskId: string, subtaskId: string): void => {
-  const batch = db().batch();
-  batch.update(tasksCollection().doc(taskId), {
-    children: firestore.FieldValue.arrayRemove(subtaskId),
+export const editMainTask = (
+  taskId: string, forMasterTemplate: boolean, mainTaskEdits: PartialMainTask,
+): void => {
+  editTaskWithDiff(taskId, forMasterTemplate, {
+    mainTaskEdits,
+    subTaskCreations: Map(),
+    subTaskEdits: Map(),
+    subTaskDeletions: Set(),
   });
-  batch.delete(subTasksCollection().doc(subtaskId));
-  batch.commit().then(ignore);
+};
+
+export const editSubTask = (
+  taskId: string, subtaskId: string, forMasterTemplate: boolean, partialSubTask: PartialSubTask,
+): void => {
+  editTaskWithDiff(taskId, forMasterTemplate, {
+    mainTaskEdits: {},
+    subTaskCreations: Map(),
+    subTaskEdits: Map<string, PartialSubTask>().set(subtaskId, partialSubTask),
+    subTaskDeletions: Set(),
+  });
+};
+
+export const removeSubTask = (
+  taskId: string, subtaskId: string, forMasterTemplate: boolean,
+): void => {
+  editTaskWithDiff(taskId, forMasterTemplate, {
+    mainTaskEdits: {},
+    subTaskCreations: Map(),
+    subTaskEdits: Map(),
+    subTaskDeletions: Set(subtaskId),
+  });
 };
 
 /*
