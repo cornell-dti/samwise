@@ -8,7 +8,7 @@ import {
   BannerMessageIds,
   PartialMainTask,
   PartialSubTask,
-  RepeatingTask, SubTaskWithoutId,
+  RepeatingTask,
 } from '../store/store-types';
 import {
   FirestoreCommon,
@@ -26,7 +26,7 @@ import {
   tasksCollection,
   bannerMessageStatusCollection,
 } from './db';
-import { getNewTaskId } from "./id-provider";
+import { getNewTaskId } from './id-provider';
 import { error, ignore } from '../util/general-util';
 import { emitUndoAddTaskToast, emitUndoRemoveTaskToast } from '../util/undo-util';
 import allocateNewOrder from './order-manager';
@@ -192,7 +192,6 @@ export const editTaskWithDiff = (
         batch.set(newSubTaskDoc, firebaseSubTask);
         return newSubTaskDoc.id;
       });
-      await batch.commit();
       const subtaskIds: string[] = Array.from(createdSubTasks);
       const newTaskId = getNewTaskId();
       const newOneTimeTask: FirestoreOneTimeTask = {
