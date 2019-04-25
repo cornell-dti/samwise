@@ -15,6 +15,7 @@ import {
   FirestoreTag,
   FirestoreTask,
   FirestoreSubTask,
+  FirestoreOneTimeTask,
 } from './firestore-types';
 import { getAppUser } from './auth';
 import {
@@ -181,11 +182,23 @@ export const editTaskWithDiff = (
   const batch = db().batch();
   if (editType === 'FORKING_MASTER_TEMPLATE') {
     (async () => {
-      const { tasks } = store.getState();
+      const { tasks, subTasks } = store.getState();
       const repeatingTaskMaster = tasks.get(taskId) as RepeatingTask;
-      const { id, ...taskWithoutID } = repeatingTaskMaster;
+      const { id, type, children, ...taskWithoutId } = repeatingTaskMaster;
+      const createdSubTasks: Set<string> = children.map((subTaskId) => {
+        const subTask = subTasks.get(subTaskId);
+        const newSubTaskDoc = subTasksCollection().doc(subTaskId);
+        const firebaseSubTask: FirestoreSubTask = mergeWithOwner(subTask);
+        batch.set(newSubTaskDoc, firebaseSubTask);
+        return newSubTaskDoc.id;
+      });
+      await batch.commit();
+      const subtaskIds: string[] = Array.from(createdSubTasks);
       const newTaskId = getNewTaskId();
-      batch.set(tasksCollection().doc(newTaskId), { newTaskId, ...taskWithoutID }, { merge: true });
+      const newOneTimeTask: FirestoreOneTimeTask = {
+        owner: taskId, type: 'ONE_TIME', children: subtaskIds, ...taskWithoutId,
+      };
+      batch.set(tasksCollection().doc(newTaskId), newOneTimeTask, { merge: true });
       await batch.commit();
       handleTaskDiffs(newTaskId,
         {
