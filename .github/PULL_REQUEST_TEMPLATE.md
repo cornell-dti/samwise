@@ -12,10 +12,9 @@
 <!--- List any important or subtle points, future considerations, or other items of note. -->
 
 ### Breaking Changes
-<!-- Put an `x` in all the boxes that apply: -->
-- [ ] Database schema change (anything that changes Postgres)
-- [ ] I updated existing types in `/src/components/types/`
-- [ ] Other change that could cause problems (Detailed in notes)
+<!-- Keep items that apply: -->
+- Database schema change (anything that changes Firestore collection structure)
+- Other change that could cause problems (Detailed in notes)
 
 ### Checklist:
 <!-- Go over all the following points, and put an `x` in all the boxes that apply. -->
@@ -23,7 +22,6 @@
 - [ ] My code follows the code style of this project.
 - [ ] My changes requires a change to the documentation.
 - [ ] I have updated the documentation accordingly.
-- [ ] My PR adds a @ts-ignore
-- [ ] I tested affected functionality
-- [ ] I resolved any merge conflicts
-- [ ] My PR is ready for review
+- [ ] I tested affected functionality.
+- [ ] I resolved any merge conflicts.
+- [ ] My PR is ready for review.
