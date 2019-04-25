@@ -66,7 +66,7 @@ export type ForkedTaskMetaData = PartialTask & {
 export type RepeatingTask = CommonTask & {
   readonly type: 'MASTER_TEMPLATE';
   readonly repeats: RepeatMetaData;
-  readonly forks: ForkedTaskMetaData[];
+  readonly forks: readonly ForkedTaskMetaData[];
 };
 
 export type Task = LegacyTask | OneTimeTask | RepeatingTask;
