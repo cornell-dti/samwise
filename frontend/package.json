@@ -12,25 +12,26 @@
     "lint": "eslint . --ext .js --ext .ts --ext .jsx --ext .tsx"
   },
   "dependencies": {
-    "@babel/polyfill": "^7.4.3",
+    "@babel/polyfill": "^7.4.4",
     "@fortawesome/fontawesome-svg-core": "^1.2.17",
     "@fortawesome/free-solid-svg-icons": "^5.8.1",
     "@fortawesome/react-fontawesome": "^0.1.4",
-    "firebase": "^5.9.4",
+    "firebase": "^5.10.1",
     "immutable": "^4.0.0-rc.12",
     "react": "^16.8.6",
-    "react-beautiful-dnd": "^10.0.4",
+    "react-beautiful-dnd": "^11.0.1",
     "react-calendar": "^2.18.1",
-    "react-color": "^2.17.0",
-    "react-dev-utils": "^8.0.0",
+    "react-color": "^2.17.2",
+    "react-dev-utils": "^9.0.0",
     "react-dom": "^16.8.6",
     "react-dom-confetti": "^0.1.0",
     "react-firebaseui": "^3.1.2",
     "react-ga": "^2.5.7",
     "react-live-clock": "^3.1.0",
+    "react-modal": "^3.8.1",
     "react-redux": "^7.0.2",
     "react-search-box": "^2.0.1",
-    "react-toastify": "^5.0.1",
+    "react-toastify": "^5.1.0",
     "redux": "^4.0.1",
     "reselect": "^4.0.0"
   },
@@ -41,6 +42,7 @@
     "@types/react-beautiful-dnd": "^10.1.1",
     "@types/react-color": "^3.0.0",
     "@types/react-dom": "^16.8.4",
+    "@types/react-modal": "^3.8.2",
     "@types/react-redux": "^7.0.6",
     "@typescript-eslint/eslint-plugin": "^1.6.0",
     "@typescript-eslint/parser": "^1.6.0",
@@ -50,16 +52,22 @@
     "eslint-plugin-jest": "^22.4.1",
     "eslint-plugin-jsx-a11y": "^6.2.1",
     "eslint-plugin-react": "^7.12.4",
-    "firebase-tools": "^6.6.0",
-    "node-sass": "^4.11.0",
-    "react-scripts": "^2.1.8",
-    "svgo": "^1.2.1",
-    "typescript": "^3.4.3"
+    "firebase-tools": "^6.7.1",
+    "node-sass": "^4.12.0",
+    "react-scripts": "^3.0.0",
+    "svgo": "^1.2.2",
+    "typescript": "^3.4.5"
   },
-  "browserslist": [
-    ">0.2%",
-    "not dead",
-    "not ie <= 11",
-    "not op_mini all"
-  ]
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  }
 }
