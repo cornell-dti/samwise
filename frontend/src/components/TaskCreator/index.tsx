@@ -122,6 +122,9 @@ export default class TaskCreator extends React.PureComponent<{}, State> {
     const autoInFocus = inFocus || isToday(date); // Put task in focus is the due date is today.
     const newTask = { type, name, tag, date, complete, inFocus: autoInFocus };
     // Add the task to the store.
+    // TODO: @mt-xing
+    // implement the task editor properly, remove the ts - ignore and make it type check
+    // @ts-ignore
     addTask(newTask, newSubTasks);
     // Reset the state.
     this.setState({ ...initialState() });
