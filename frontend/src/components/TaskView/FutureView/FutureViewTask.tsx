@@ -69,9 +69,12 @@ function FutureViewTask(
     }
   };
 
+  const inlineEditType = original.type === 'ONE_TIME'
+    ? 'EDITING_ONE_TIME_TASK'
+    : 'FORKING_MASTER_TEMPLATE';
   const TaskCheckBox = (): ReactElement => {
     const { id, complete } = original;
-    const onChange = (): void => editMainTask(id, { complete: !complete });
+    const onChange = (): void => editMainTask(id, inlineEditType, { complete: !complete });
     return <CheckBox className={styles.TaskCheckBox} checked={complete} onChange={onChange} />;
   };
   const TaskName = (): ReactElement => {
@@ -86,7 +89,7 @@ function FutureViewTask(
   };
   const PinIcon = (): ReactElement => {
     const { id, inFocus } = original;
-    const handler = (): void => editMainTask(id, { inFocus: !inFocus });
+    const handler = (): void => editMainTask(id, inlineEditType, { inFocus: !inFocus });
     return (
       <SamwiseIcon
         iconName={inFocus ? 'pin-light-filled' : 'pin-light-outline'}
@@ -116,6 +119,7 @@ function FutureViewTask(
       key={s.id}
       subTask={s}
       mainTaskId={original.id}
+      mainTaskEditType={inlineEditType}
       mainTaskCompleted={original.complete}
     />
   ));

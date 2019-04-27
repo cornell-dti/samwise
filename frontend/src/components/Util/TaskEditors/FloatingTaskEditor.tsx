@@ -85,7 +85,7 @@ function FloatingTaskEditor(
     removeTask: (): void => removeTaskAction(initialTask),
     onSave: closePopup,
   };
-  const { id: _, subTasks, ...mainTask } = task;
+  const { id: _, type, subTasks, ...mainTask } = task;
 
   return (
     <>
@@ -94,6 +94,7 @@ function FloatingTaskEditor(
         <>
           <TaskEditor
             id={task.id}
+            type={type}
             mainTask={mainTask}
             subTasks={subTasks}
             actions={actions}

@@ -30,7 +30,10 @@
   },
   "settings": {
     "import/resolver": {
-      "node": { "extensions": [".mjs", ".js", ".json", ".ts", ".tsx"] }
+      "node": {
+        "extensions": [".mjs", ".js", ".json", ".ts", ".tsx"],
+        "paths": ["src"]
+      }
     }
   }
 }

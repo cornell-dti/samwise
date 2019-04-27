@@ -10,7 +10,7 @@ import { store } from './store/store';
 import ErrorBoundary from './components/Util/ErrorBoundary';
 import LoginBarrier from './components/Util/AppInit/LoginBarrier';
 import './util/ga-util'; // import and init google analytics
-import './components/Util/Modals'; // import and init react modal
+import { initModal } from './components/Util/Modals';
 import * as serviceWorker from './serviceWorker';
 
 const appRenderer = (): ReactElement => (
@@ -19,6 +19,7 @@ const appRenderer = (): ReactElement => (
 
 const root = document.getElementById('root') || error('The root is null. This is bad!');
 ReactDOM.render(<ErrorBoundary><LoginBarrier appRenderer={appRenderer} /></ErrorBoundary>, root);
+initModal();
 
 // If you want your app to work offline and load faster, you can change
 // unregister() to register() below. Note this comes with some pitfalls.

@@ -34,8 +34,6 @@ export type CommonTask = {
   readonly children: Set<string>;
 };
 
-export type LegacyTask = CommonTask;
-
 export type OneTimeTask = CommonTask & {
   readonly type: 'ONE_TIME';
 };
@@ -69,7 +67,7 @@ export type RepeatingTask = CommonTask & {
   readonly forks: readonly ForkedTaskMetaData[];
 };
 
-export type Task = LegacyTask | OneTimeTask | RepeatingTask;
+export type Task = OneTimeTask | RepeatingTask;
 
 type MainTaskProperties = 'order' | 'name' | 'tag' | 'date' | 'complete' | 'inFocus';
 /**

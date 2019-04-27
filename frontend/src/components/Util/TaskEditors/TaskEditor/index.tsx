@@ -5,11 +5,13 @@
 
 import React, { ReactElement, useState } from 'react';
 import { connect } from 'react-redux';
-import { MainTask, State, SubTask, Tag } from '../../../../store/store-types';
-import OverdueAlert from '../../../UI/OverdueAlert';
+import { MainTask, State, SubTask, Tag } from 'store/store-types';
+import OverdueAlert from 'components/UI/OverdueAlert';
+import { NONE_TAG } from 'util/tag-util';
+import { ignore } from 'util/general-util';
+import { promptRepeatedTaskEditChoice } from 'util/task-util';
+import { editTaskWithDiff } from 'firebase/actions';
 import styles from './index.module.css';
-import { NONE_TAG } from '../../../../util/tag-util';
-import { ignore } from '../../../../util/general-util';
 import { getTodayAtZeroAM } from '../../../../util/datetime-util';
 import EditorHeader from './EditorHeader';
 import MainTaskEditor from './MainTaskEditor';
@@ -35,9 +37,10 @@ type Actions = {
 };
 type OwnProps = DefaultProps & {
   readonly id: string;
+  readonly type: 'MASTER_TEMPLATE' | 'ONE_TIME';
   readonly mainTask: MainTask; // The task given to the editor.
   // The subtask given to the editor. It should only contain those that should be displayed.
-  readonly subTasks: SubTask[];
+  readonly subTasks: readonly SubTask[];
   readonly actions: Actions; // The actions to perform under different events
   readonly calendarPosition: CalendarPosition;
 };
@@ -56,6 +59,8 @@ type TaskToFocus = number | 'new-subtask' | null;
  */
 function TaskEditor(
   {
+    id,
+    type,
     mainTask: initMainTask,
     subTasks: initSubTasks,
     actions,
@@ -73,7 +78,7 @@ function TaskEditor(
   const {
     mainTask,
     subTasks,
-    // diff,
+    diff,
     dispatchEditMainTask,
     dispatchAddSubTask,
     dispatchEditSubTask,
@@ -91,8 +96,23 @@ function TaskEditor(
     }
   };
   const onSaveClicked = (): void => {
-    // TODO: prompt user to decide
-    // console.log(diff);
+    if (type === 'ONE_TIME') {
+      editTaskWithDiff(id, 'EDITING_ONE_TIME_TASK', diff);
+      return;
+    }
+    (async () => {
+      const saveChoice = await promptRepeatedTaskEditChoice();
+      switch (saveChoice) {
+        case 'CHANGE_MASTER_TEMPLATE':
+          editTaskWithDiff(id, 'EDITING_MASTER_TEMPLATE', diff);
+          break;
+        case 'FORK':
+          editTaskWithDiff(id, 'FORKING_MASTER_TEMPLATE', diff);
+          break;
+        default:
+          throw new Error();
+      }
+    })();
     onSave();
   };
 
