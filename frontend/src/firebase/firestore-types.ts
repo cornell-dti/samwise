@@ -15,7 +15,7 @@ export type FirestoreTag = FirestoreCommon & {
 export type FirestoreCommonTask = FirestoreCommon & {
   readonly name: string;
   readonly tag: string;
-  readonly date: Date | { readonly toDate: () => Date };
+  readonly date: Date | firestore.Timestamp;
   readonly complete: boolean;
   readonly inFocus: boolean;
   readonly children: readonly string[];
@@ -29,15 +29,15 @@ export type FirestoreSubTask = FirestoreCommon & {
 
 export type ForkedTaskMetaData = {
   readonly forkId: string | null; // null means one of the repetition is deleted
-  readonly replaceDate: firestore.Timestamp;
+  readonly replaceDate: Date | firestore.Timestamp;
 };
 
 export type FirestoreMasterTask = FirestoreCommonTask & {
   readonly type: 'MASTER_TEMPLATE';
   // in master task, we only use the time component of the date
   readonly repeats: {
-    readonly startDate: firestore.Timestamp | null;
-    readonly endDate: firestore.Timestamp | null;
+    readonly startDate: Date | firestore.Timestamp;
+    readonly endDate: Date | firestore.Timestamp | null;
     readonly pattern: RepeatingPattern;
   };
   // fork id can only points to a one time task
