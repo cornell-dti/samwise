@@ -6,13 +6,12 @@ import {
   PartialSubTask,
   SubTask,
   SubTaskWithoutId,
-  SubTaskWithoutIdOrder,
 } from '../../../../store/store-types';
 import { getNewSubTaskId } from '../../../../firebase/id-provider';
 
 type Action =
   | { readonly type: 'EDIT_MAIN_TASK'; readonly change: PartialMainTask }
-  | { readonly type: 'ADD_SUBTASK'; readonly newSubTask: SubTaskWithoutIdOrder }
+  | { readonly type: 'ADD_SUBTASK'; readonly newSubTask: SubTaskWithoutId }
   | { readonly type: 'EDIT_SUBTASK'; readonly subTaskId: string; readonly change: PartialSubTask }
   | { readonly type: 'DELETE_SUBTASK'; readonly subtaskId: string }
   | { readonly type: 'RESET'; readonly mainTask: MainTask; readonly subTasks: readonly SubTask[] };
@@ -31,7 +30,7 @@ type State = FullTask & { readonly prevFullTask: FullTask; readonly diff: Diff }
 type TaskDiffActions = FullTask & {
   readonly diff: Diff;
   readonly dispatchEditMainTask: (change: PartialMainTask) => void;
-  readonly dispatchAddSubTask: (newSubTask: SubTaskWithoutIdOrder) => void;
+  readonly dispatchAddSubTask: (newSubTask: SubTaskWithoutId) => void;
   readonly dispatchEditSubTask: (subTaskId: string, change: PartialSubTask) => void;
   readonly dispatchDeleteSubTask: (subtaskId: string) => void;
 };
@@ -40,10 +39,24 @@ const emptyDiff: Diff = {
   mainTaskEdits: {}, subTaskCreations: Map(), subTaskEdits: Map(), subTaskDeletions: Set(),
 };
 
+/**
+ * Lazy initializer for the initial state of task editor.
+ *
+ * @param mainTask the main task for initial state.
+ * @param subTasks an array of subtask for initial state.
+ * @returns the initial state.
+ */
 function initializer([mainTask, subTasks]: [MainTask, readonly SubTask[]]): State {
   return { mainTask, subTasks, prevFullTask: { mainTask, subTasks }, diff: emptyDiff };
 }
 
+/**
+ * The reducer that applies the editing changes specified in action.
+ *
+ * @param state the previous state.
+ * @param action the edit action.
+ * @returns the new state after editing.
+ */
 function reducer(state: State, action: Action): State {
   switch (action.type) {
     case 'EDIT_MAIN_TASK': {
@@ -55,11 +68,9 @@ function reducer(state: State, action: Action): State {
       const { subTasks, diff, ...restState } = state;
       const { newSubTask } = action;
       const id = getNewSubTaskId();
-      const order = subTasks.reduce((acc, subTask) => Math.max(acc, subTask.order), 0) + 1;
-      const newSubTasks = [...subTasks, { id, order, ...newSubTask }];
-      const newSubTaskWithoutId = { ...newSubTask, order };
+      const newSubTasks = [...subTasks, { id, ...newSubTask }];
       const newDiff = {
-        ...diff, subTaskCreations: diff.subTaskCreations.set(id, newSubTaskWithoutId),
+        ...diff, subTaskCreations: diff.subTaskCreations.set(id, newSubTask),
       };
       return { ...restState, subTasks: newSubTasks, diff: newDiff };
     }
@@ -67,14 +78,31 @@ function reducer(state: State, action: Action): State {
       const { subTasks, diff, ...restState } = state;
       const { subTaskId, change } = action;
       const newSubTasks = subTasks.map(s => (s.id === subTaskId ? { ...s, ...change } : s));
-      const newDiff = { ...diff, subTaskEdits: diff.subTaskEdits.set(subTaskId, change) };
+      let newDiff: Diff;
+      const createdSubTask = diff.subTaskCreations.get(subTaskId);
+      if (createdSubTask != null) {
+        newDiff = {
+          ...diff,
+          subTaskCreations: diff.subTaskCreations.set(subTaskId, { ...createdSubTask, ...change }),
+        };
+      } else {
+        const subTaskEdits = diff.subTaskEdits.update(
+          subTaskId, change, prevChange => ({ ...prevChange, ...change }),
+        );
+        newDiff = { ...diff, subTaskEdits };
+      }
       return { ...restState, subTasks: newSubTasks, diff: newDiff };
     }
     case 'DELETE_SUBTASK': {
       const { subTasks, diff, ...restState } = state;
       const { subtaskId } = action;
       const newSubTasks = subTasks.filter(({ id }) => id !== subtaskId);
-      const newDiff = { ...diff, subTaskDeletions: diff.subTaskDeletions.add(subtaskId) };
+      let newDiff: Diff;
+      if (diff.subTaskCreations.has(subtaskId)) {
+        newDiff = { ...diff, subTaskCreations: diff.subTaskCreations.remove(subtaskId) };
+      } else {
+        newDiff = { ...diff, subTaskDeletions: diff.subTaskDeletions.add(subtaskId) };
+      }
       return { ...restState, subTasks: newSubTasks, diff: newDiff };
     }
     case 'RESET': {
@@ -91,8 +119,8 @@ export default function useTaskDiffReducer(
 ): TaskDiffActions {
   const [state, dispatch] = useReducer(reducer, [initMainTask, initSubTasks], initializer);
   const { mainTask, subTasks, prevFullTask, diff } = state;
-  if (prevFullTask.mainTask !== mainTask || prevFullTask.subTasks !== subTasks) {
-    dispatch({ type: 'RESET', mainTask, subTasks });
+  if (prevFullTask.mainTask !== initMainTask || prevFullTask.subTasks !== initSubTasks) {
+    dispatch({ type: 'RESET', mainTask: initMainTask, subTasks: initSubTasks });
   }
   return {
     mainTask,
@@ -101,7 +129,7 @@ export default function useTaskDiffReducer(
     dispatchEditMainTask: (change: PartialMainTask): void => dispatch({
       type: 'EDIT_MAIN_TASK', change,
     }),
-    dispatchAddSubTask: (newSubTask: SubTaskWithoutIdOrder): void => dispatch({
+    dispatchAddSubTask: (newSubTask: SubTaskWithoutId): void => dispatch({
       type: 'ADD_SUBTASK', newSubTask,
     }),
     dispatchEditSubTask: (subTaskId: string, change: PartialSubTask): void => dispatch({

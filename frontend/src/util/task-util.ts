@@ -1,6 +1,7 @@
 import { Map } from 'immutable';
-import { SubTask, Task } from '../store/store-types';
-import { TaskWithSubTasks } from '../components/Util/TaskEditors/editors-types';
+import { TaskWithSubTasks } from 'components/Util/TaskEditors/editors-types';
+import { promptChoice } from 'components/Util/Modals';
+import { SubTask, Task } from 'store/store-types';
 
 /**
  * This is the utility module for array of tasks and subtasks.
@@ -129,3 +130,12 @@ export const computeTaskProgress = (
   }
   return { completedTasksCount, allTasksCount };
 };
+
+const repeatedTaskEditChoices = {
+  CHANGE_MASTER_TEMPLATE: 'Change master template',
+  FORK: 'Fork',
+};
+
+export function promptRepeatedTaskEditChoice(): Promise<keyof typeof repeatedTaskEditChoices> {
+  return promptChoice('Do you want to change master template or fork', repeatedTaskEditChoices);
+}

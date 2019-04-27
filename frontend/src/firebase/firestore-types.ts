@@ -1,4 +1,4 @@
-import { firestore } from 'firebase';
+import { firestore } from 'firebase/app';
 import { RepeatingPattern } from '../store/store-types';
 
 export type FirestoreCommon = {
@@ -18,7 +18,7 @@ export type FirestoreCommonTask = FirestoreCommon & {
   readonly date: Date | { readonly toDate: () => Date };
   readonly complete: boolean;
   readonly inFocus: boolean;
-  readonly children: string[];
+  readonly children: readonly string[];
 };
 
 export type FirestoreSubTask = FirestoreCommon & {
@@ -41,13 +41,11 @@ export type FirestoreMasterTask = FirestoreCommonTask & {
     readonly pattern: RepeatingPattern;
   };
   // fork id can only points to a one time task
-  readonly forks: ForkedTaskMetaData[];
+  readonly forks: readonly ForkedTaskMetaData[];
 };
 
 export type FirestoreOneTimeTask = FirestoreCommonTask & { readonly type: 'ONE_TIME' }
 
-export type FirestoreLegacyTask = FirestoreCommonTask & {};
-
 // all these tasks stay in 'samwise-tasks'
 // FirestoreLegacyTask should eventually be converted to FirestoreOneTimeTask.
-export type FirestoreTask = FirestoreMasterTask | FirestoreOneTimeTask | FirestoreLegacyTask;
+export type FirestoreTask = FirestoreMasterTask | FirestoreOneTimeTask;

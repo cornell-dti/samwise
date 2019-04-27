@@ -27,10 +27,11 @@ export default function InlineTaskEditor(
     removeTask: () => removeTask(original),
     onSave: onBlur,
   };
-  const { id: _, subTasks, ...mainTask } = filtered;
+  const { id: _, type, subTasks, ...mainTask } = filtered;
   return (
     <TaskEditor
       id={id}
+      type={type}
       className={className}
       mainTask={mainTask}
       subTasks={subTasks}

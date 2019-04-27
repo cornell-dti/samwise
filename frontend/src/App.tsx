@@ -6,6 +6,7 @@ import Onboard from './components/TitleBar/Onboarding/Onboard';
 import TaskCreator from './components/TaskCreator';
 import TaskView from './components/TaskView';
 import TitleBar from './components/TitleBar';
+import { ModalsContainer } from './components/Util/Modals';
 
 /**
  * The top level app component.
@@ -15,6 +16,7 @@ export default function App(): ReactElement {
     <div>
       <Onboard />
       <ToastContainer className={styles.Toast} />
+      <ModalsContainer />
       <TitleBar />
       <TaskCreator />
       <TaskView />

@@ -9,6 +9,7 @@ import {
   PartialMainTask,
   PartialSubTask,
   RepeatingTask,
+  OneTimeTask,
 } from '../store/store-types';
 import {
   FirestoreCommon,
@@ -47,7 +48,12 @@ const mergeWithOwner = <T>(obj: T): T & { readonly owner: string } => ({
 
 type WithoutIdOrder<Props> = Pick<Props, Exclude<keyof Props, 'id' | 'order'>>;
 type WithoutId<Props> = Pick<Props, Exclude<keyof Props, 'id'>>;
-type TaskWithoutIdOrderChildren = Pick<Task, Exclude<keyof Task, 'id' | 'order' | 'children'>>;
+type CommonTaskWithoutIdOrderChildren<T> = Pick<T, Exclude<keyof T, 'id' | 'order' | 'children'>>;
+type OneTimeTaskWithoutIdOrderChildren = CommonTaskWithoutIdOrderChildren<OneTimeTask>;
+type RepeatedTaskWithoutIdOrderChildren = CommonTaskWithoutIdOrderChildren<RepeatingTask>;
+type TaskWithoutIdOrderChildren =
+  | OneTimeTaskWithoutIdOrderChildren
+  | RepeatedTaskWithoutIdOrderChildren;
 
 /*
  * --------------------------------------------------------------------------------
@@ -363,7 +369,7 @@ export const readBannerMessage = (bannerMessageId: BannerMessageIds, isRead: boo
 
 export const importCourseExams = (): void => {
   const { tags, tasks, courses } = store.getState();
-  const newTasks: TaskWithoutIdOrderChildren[] = [];
+  const newTasks: OneTimeTaskWithoutIdOrderChildren[] = [];
   tags.forEach((tag: Tag) => {
     if (tag.classId === null) {
       return;
@@ -386,7 +392,8 @@ export const importCourseExams = (): void => {
             && date.getHours() === t.getHours();
         };
         if (!Array.from(tasks.values()).some(filter)) {
-          const newTask: TaskWithoutIdOrderChildren = {
+          const newTask: OneTimeTaskWithoutIdOrderChildren = {
+            type: 'ONE_TIME',
             name: examName,
             tag: tag.id,
             date: t,
