@@ -1,5 +1,5 @@
 {
-  "extends": ["airbnb", "plugin:@typescript-eslint/recommended"],
+  "extends": ["airbnb", "plugin:@typescript-eslint/recommended", "react-app"],
   "parser": "@typescript-eslint/parser",
   "plugins": ["@typescript-eslint", "jest"],
   "env": { "browser": true, "node": true, "jest/globals": true },

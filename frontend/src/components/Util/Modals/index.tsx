@@ -3,7 +3,7 @@ import Modal from 'react-modal';
 import ChoiceModal, { ChoiceObj, ChoiceModalProps } from './ChoiceModal';
 
 export function initModal(): void {
-  Modal.setAppElement('#main');
+  Modal.setAppElement('#root');
 }
 
 const dummyChoiceModalProps: ChoiceModalProps<ChoiceObj> = {
@@ -36,7 +36,7 @@ export function ModalsContainer(): ReactElement {
   useEffect(() => {
     // register modal setter
     currentChoiceModalSetter = setChoiceModalProps;
-  });
+  }, []);
   return (
     <>
       <ChoiceModal {...choiceModalProps} />
