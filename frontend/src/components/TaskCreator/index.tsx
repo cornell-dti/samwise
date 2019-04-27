@@ -7,13 +7,16 @@ import TagPicker from './TagPicker';
 import DatePicker from './DatePicker';
 import FocusPicker from './FocusPicker';
 import { randomId } from '../../util/general-util';
-import { Task, SubTask } from '../../store/store-types';
+import { OneTimeTask, RepeatingTask, SubTask } from '../../store/store-types';
 import { NONE_TAG_ID } from '../../util/tag-util';
 import { isToday } from '../../util/datetime-util';
 import { addTask } from '../../firebase/actions';
 import SamwiseIcon from '../UI/SamwiseIcon';
 
-type SimpleTask = Pick<Task, Exclude<keyof Task, 'order' | 'children'>>;
+type SimpleTaskMapper<T> = Pick<T, Exclude<keyof T, 'order' | 'children'>>
+type OneTimeSimpleTask = SimpleTaskMapper<OneTimeTask>;
+type RepeatedSimpleTask = SimpleTaskMapper<RepeatingTask>
+type SimpleTask = OneTimeSimpleTask | RepeatedSimpleTask;
 
 type State = SimpleTask & {
   readonly subTasks: SubTask[];
@@ -33,6 +36,7 @@ const PLACEHOLDER_TEXT = 'What do you have to do?';
  */
 const initialState = (): State => ({
   id: randomId(),
+  type: 'ONE_TIME',
   name: '',
   tag: NONE_TAG_ID, // the id of the None tag.
   date: new Date(),
@@ -106,7 +110,7 @@ export default class TaskCreator extends React.PureComponent<{}, State> {
       e.preventDefault();
     }
     const {
-      name, tag, date, complete, inFocus, subTasks,
+      type, name, tag, date, complete, inFocus, subTasks,
     } = this.state;
     if (name === '') {
       return;
@@ -116,7 +120,7 @@ export default class TaskCreator extends React.PureComponent<{}, State> {
       // normalize orders: use current sequence as order;; remove useless id
       .map(({ id, ...rest }, order) => ({ ...rest, order }));
     const autoInFocus = inFocus || isToday(date); // Put task in focus is the due date is today.
-    const newTask = { name, tag, date, complete, inFocus: autoInFocus };
+    const newTask = { type, name, tag, date, complete, inFocus: autoInFocus };
     // Add the task to the store.
     addTask(newTask, newSubTasks);
     // Reset the state.
