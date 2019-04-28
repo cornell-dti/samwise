@@ -1,6 +1,9 @@
+import { firestore } from 'firebase/app';
+
 export type FirestoreCommon = {
   readonly owner: string;
   readonly order: number;
+  readonly lastEdited: firestore.FieldValue;
 };
 
 export type FirestoreTag = FirestoreCommon & {
