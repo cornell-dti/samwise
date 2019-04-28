@@ -121,6 +121,36 @@ export default function DatePicker(props: Props): ReactElement {
    */
   const handleClickRepeatCal = (): void => { setCalOpened(!calOpened); };
 
+  /**
+   * When to end the repeating task if the user chooses to end on a date.
+   */
+  const [repeatEndDate, setRepeatEndDate] = React.useState<Date>(new Date());
+  /**
+   * Event handler for choosing a date to end the repeat
+   * @param d The date chosen from the Calendar component
+   */
+  const handleSetRepeatEndDate = (d: Date | Date[]): void => {
+    setCalOpened(false);
+    setRepeatEndDate(d instanceof Array ? d[0] : d);
+    setEndOption(1);
+  };
+
+
+  /**
+   * When to end the repeating task if the user chooses to end after a
+   * certain number of times.
+   */
+  const [repeatNumber, setRepeatNumber] = React.useState<number>(0);
+  /**
+   * Event handler for choosing a repeat end option
+   * @param e The onchange event
+   */
+  const handleSetRepeatNumber = (e: ChangeEvent): void => {
+    const { value } = e.target as HTMLInputElement;
+    setRepeatNumber(parseInt(value, 10));
+    setEndOption(2);
+  };
+
 
   /**
    * The list of li elements for all the repeat end options
@@ -135,14 +165,24 @@ export default function DatePicker(props: Props): ReactElement {
         className={dateStyles.SubtleBtn}
         onClick={handleClickRepeatCal}
       >
-        April 19, 2019
+        {repeatEndDate.toLocaleDateString()}
       </button>
-      {calOpened && <Calendar minDate={new Date()} calendarType="US" />}
+      {
+        calOpened
+        && (
+          <Calendar
+            value={repeatEndDate}
+            minDate={new Date()}
+            onChange={handleSetRepeatEndDate}
+            calendarType="US"
+          />
+        )
+      }
     </>,
     <>
       After
       {' '}
-      <input min="1" max="30" step="1" type="number" />
+      <input value={repeatNumber} onChange={handleSetRepeatNumber} min="1" max="30" step="1" type="number" />
       {' '}
       occurances
     </>,
