@@ -112,6 +112,17 @@ export default function DatePicker(props: Props): ReactElement {
   };
 
   /**
+   * Whether or not this task is a repeating task.
+   */
+  const [calOpened, setCalOpened] = React.useState<boolean>(false);
+
+  /**
+   * Event handler for when the user starts the repeat box
+   */
+  const handleClickRepeatCal = (): void => { setCalOpened(!calOpened); };
+
+
+  /**
    * The list of li elements for all the repeat end options
    */
   const endPicker = [
@@ -119,7 +130,14 @@ export default function DatePicker(props: Props): ReactElement {
     <>
       On
       {' '}
-      <button type="button">April 19, 2019</button>
+      <button
+        type="button"
+        className={dateStyles.SubtleBtn}
+        onClick={handleClickRepeatCal}
+      >
+        April 19, 2019
+      </button>
+      {calOpened && <Calendar minDate={new Date()} calendarType="US" />}
     </>,
     <>
       After
