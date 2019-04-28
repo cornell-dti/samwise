@@ -52,7 +52,7 @@ export type RepeatingPattern =
 
 export type RepeatMetaData = {
   readonly startDate: Date;
-  readonly endDate: Date | null;
+  readonly endDate: Date | number;
   readonly pattern: RepeatingPattern;
 };
 
@@ -111,8 +111,9 @@ export type Course = {
 export type State = {
   readonly tags: Map<string, Tag>;
   readonly tasks: Map<string, Task>;
-  readonly dateTaskMap: Map<string, Set<string>>;
   readonly subTasks: Map<string, SubTask>;
+  readonly dateTaskMap: Map<string, Set<string>>;
+  readonly repeatedTaskSet: Set<string>;
   readonly taskChildrenMap: Map<string, Set<string>>;
   readonly settings: Settings;
   readonly bannerMessageStatus: BannerMessageStatus;

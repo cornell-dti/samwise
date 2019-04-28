@@ -20,8 +20,9 @@ import { error } from '../util/general-util';
 const initialState: State = {
   tags: Map({ [NONE_TAG_ID]: NONE_TAG }),
   tasks: Map(),
-  dateTaskMap: Map(),
   subTasks: Map(),
+  dateTaskMap: Map(),
+  repeatedTaskSet: Set(),
   taskChildrenMap: Map(),
   settings: { completedOnboarding: true, theme: 'light' },
   bannerMessageStatus: {},
@@ -40,6 +41,9 @@ function patchTags(state: State, { created, edited, deleted }: PatchTags): State
 function patchTasks(state: State, { created, edited, deleted }: PatchTasks): State {
   const newDateTaskMap = state.dateTaskMap.withMutations((m) => {
     created.forEach((t) => {
+      if (t.type === 'MASTER_TEMPLATE') {
+        return;
+      }
       const key = t.date.toDateString();
       const set = m.get(key);
       if (set == null) {
@@ -49,6 +53,9 @@ function patchTasks(state: State, { created, edited, deleted }: PatchTasks): Sta
       }
     });
     edited.forEach((t) => {
+      if (t.type === 'MASTER_TEMPLATE') {
+        return;
+      }
       const key = t.date.toDateString();
       const oldTask = state.tasks.get(t.id) || error();
       const oldKey = oldTask.date.toDateString();
@@ -65,7 +72,10 @@ function patchTasks(state: State, { created, edited, deleted }: PatchTasks): Sta
       }
     });
     deleted.forEach((id) => {
-      const oldTask = state.tasks.get(id) || error('impossible');
+      const oldTask = state.tasks.get(id);
+      if (oldTask == null) {
+        return;
+      }
       const key = oldTask.date.toDateString();
       const set = m.get(key);
       if (set != null) {
@@ -73,12 +83,22 @@ function patchTasks(state: State, { created, edited, deleted }: PatchTasks): Sta
       }
     });
   });
+  const newRepeatedTaskSet = state.repeatedTaskSet.withMutations((s) => {
+    created.forEach((t) => {
+      if (t.type === 'MASTER_TEMPLATE') {
+        s.add(t.id);
+      }
+    });
+    deleted.forEach(id => s.remove(id));
+  });
   const newTasks = state.tasks.withMutations((tasks) => {
     created.forEach(t => tasks.set(t.id, t));
     edited.forEach(t => tasks.set(t.id, t));
     deleted.forEach(id => tasks.delete(id));
   });
-  return { ...state, tasks: newTasks, dateTaskMap: newDateTaskMap };
+  return {
+    ...state, tasks: newTasks, dateTaskMap: newDateTaskMap, repeatedTaskSet: newRepeatedTaskSet,
+  };
 }
 
 function patchSubTasks(state: State, { created, edited, deleted }: PatchSubTasks): State {
