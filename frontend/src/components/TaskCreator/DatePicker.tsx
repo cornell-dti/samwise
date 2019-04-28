@@ -4,10 +4,11 @@ import styles from './Picker.module.css';
 import dateStyles from './DatePicker.module.css';
 import { date2String } from '../../util/datetime-util';
 import { NONE_TAG } from '../../util/tag-util';
+import { RepeatMetaData } from '../../store/store-types';
 import SamwiseIcon from '../UI/SamwiseIcon';
 
 type Props = {
-  readonly onDateChange: (date: Date | null) => void;
+  readonly onDateChange: (date: Date | RepeatMetaData | null) => void;
   readonly date: Date;
   readonly opened: boolean;
   readonly datePicked: boolean;
@@ -98,9 +99,8 @@ export default function DatePicker(props: Props): ReactElement {
 
   /**
    * The state to keep track of which repeat end option the user has chosen.
-   * -1 means the user has not selected an option yet
    */
-  const [endOption, setEndOption] = React.useState<number>(-1);
+  const [endOption, setEndOption] = React.useState<number>(0);
 
   /**
    * Event handler for choosing a repeat end option
@@ -184,7 +184,7 @@ export default function DatePicker(props: Props): ReactElement {
       {' '}
       <input value={repeatNumber} onChange={handleSetRepeatNumber} min="1" max="30" step="1" type="number" />
       {' '}
-      occurances
+      weeks
     </>,
   ].reduce((a, x, i) => (
     <>
@@ -232,7 +232,10 @@ export default function DatePicker(props: Props): ReactElement {
    */
   const resetRepeats = (): void => {
     setCheckedWeeks(new Array(7).fill(false));
-    setEndOption(-1);
+    setCalOpened(false);
+    setRepeatNumber(0);
+    setRepeatEndDate(new Date());
+    setEndOption(0);
     setIsRepeat(false);
   };
 
@@ -250,8 +253,46 @@ export default function DatePicker(props: Props): ReactElement {
    * Event handler for when the user tries to save
    */
   const onSubmit = (): void => {
-    resetRepeats();
-    onDateChange(currDate);
+    if (isRepeat) {
+      let bitSet = 0;
+      checkedWeeks.forEach((x, i) => {
+        if (x) {
+          // eslint-disable-next-line no-bitwise
+          bitSet |= 1 << (checkedWeeks.length - i - 1);
+        }
+      });
+
+      // If they didn't pick any days to repeat on, don't save.
+      if (bitSet === 0) { return; }
+
+      let endDate;
+
+      switch (endOption) {
+        case 0:
+          // Just set 6 months from now; we'll wipe the database when the time comes
+          endDate = new Date(new Date().getTime() + (1000 * 60 * 60 * 24 * 31 * 6));
+          break;
+        case 1:
+          endDate = repeatEndDate;
+          break;
+        case 2:
+          endDate = new Date(1000 * 60 * 60 * 24 * 7 * repeatNumber);
+          // checkedWeeks.reduce((acc, x) => acc + (x ? 1 : 0), 0));
+          break;
+        default:
+          // Illegal state
+          return;
+      }
+
+      const repData: RepeatMetaData = {
+        startDate: new Date(),
+        endDate,
+        pattern: { type: 'WEEKLY', bitSet },
+      };
+      onDateChange(repData);
+    } else {
+      onDateChange(currDate);
+    }
   };
 
   /**

@@ -7,7 +7,7 @@ import TagPicker from './TagPicker';
 import DatePicker from './DatePicker';
 import FocusPicker from './FocusPicker';
 import { randomId } from '../../util/general-util';
-import { OneTimeTask, RepeatingTask, SubTask } from '../../store/store-types';
+import { OneTimeTask, RepeatingTask, RepeatMetaData, SubTask } from '../../store/store-types';
 import { NONE_TAG_ID } from '../../util/tag-util';
 import { isToday } from '../../util/datetime-util';
 import { addTask } from '../../firebase/actions';
@@ -25,6 +25,7 @@ type State = SimpleTask & {
   readonly datePickerOpened: boolean;
   readonly datePicked: boolean;
   readonly needToSwitchFocus: boolean;
+  readonly repeatData: RepeatMetaData | null;
 };
 
 /**
@@ -48,6 +49,7 @@ const initialState = (): State => ({
   datePickerOpened: false,
   datePicked: false,
   needToSwitchFocus: false,
+  repeatData: null,
 });
 
 export default class TaskCreator extends React.PureComponent<{}, State> {
@@ -162,18 +164,23 @@ export default class TaskCreator extends React.PureComponent<{}, State> {
   /**
    * Edit the date.
    *
-   * @param {Date} date the new date, or null for today.
+   * @param {Date} date the new date, or null for cancel.
    */
-  private editDate = (date: Date | null) => {
+  private editDate = (date: Date | RepeatMetaData | null) => {
     const { datePicked } = this.state;
     if (datePicked && date === null) {
       this.setState(
         { datePickerOpened: false },
         this.focusTaskName,
       );
-    } else {
+    } else if (date instanceof Date || date === null) {
       this.setState(
         { date: date || new Date(), datePickerOpened: false, datePicked: Boolean(date) },
+        this.focusTaskName,
+      );
+    } else {
+      this.setState(
+        { date: new Date(), datePickerOpened: false, datePicked: Boolean(date), repeatData: date },
         this.focusTaskName,
       );
     }
@@ -184,7 +191,7 @@ export default class TaskCreator extends React.PureComponent<{}, State> {
    */
   private clearDate = () => {
     this.setState(
-      { date: new Date(), datePickerOpened: false, datePicked: false },
+      { date: new Date(), datePickerOpened: false, datePicked: false, repeatData: null },
       this.focusTaskName,
     );
   }
