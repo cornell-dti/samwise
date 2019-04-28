@@ -159,7 +159,7 @@ export default function DatePicker(props: Props): ReactElement {
       </p>
       <div className={styles.RepeatPickEndWrap}>
           Stops
-        <ul>{endPicker}</ul>
+        <ul className={dateStyles.EndPicker}>{endPicker}</ul>
       </div>
     </div>
   );

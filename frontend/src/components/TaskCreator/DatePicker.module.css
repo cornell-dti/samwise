@@ -12,3 +12,12 @@
   border:2px #5a5a5a solid;
   color:#5a5a5a;
 }
+
+
+.EndPicker button{
+  background:#eee;
+  color:#5a5a5a;
+  border:none;
+  cursor:pointer;
+  border-radius:5px;
+}
