@@ -17,15 +17,19 @@ const SUBTASK_DOC = 'samwise-subtasks/{subTaskId}';
 const userActions = () => firestore().collection('samwise-user-actions');
 
 const getTime = (context: EventContext): firestore.Timestamp => {
+  // makes a new Date object and sets it to 0 microseconds
   const d = new Date(context.timestamp);
   d.setUTCMinutes(0, 0, 0);
+  // returns the time since 0 microseconds (since d)
   return firestore.Timestamp.fromDate(d);
 };
 
 const getUserActionQuery = (user: string, time: firestore.Timestamp): firestore.Query => {
   let q: firestore.Query = userActions();
+  // querying the samwiwse-user-actions for the specific user and time
   q = q.where('user', '==', user);
   q = q.where('time', '==', time);
+  // returns the resulting actions of the given user at the specific time
   return q;
 };
 
@@ -47,6 +51,7 @@ const updateRecord = (
   user: string, context: EventContext,
   getNewActionStat: () => UserActionStat,
   updateActionStat: (actions: UserActionStat) => UserActionStat
+  // passing UserActionStats as an input and returning the updated UserActionStat
 ): void => {
   const time = getTime(context);
   firestore().runTransaction(async (transaction) => {
@@ -63,6 +68,7 @@ const updateRecord = (
   }).then(() => {
     // Do nothing here
   }).catch(reason => console.log(reason));
+  // prints out the reason the Promise was not kept
 };
 
 /*
