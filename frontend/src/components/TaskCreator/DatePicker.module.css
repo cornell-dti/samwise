@@ -1,0 +1,14 @@
+
+.SelectTypeWrap{
+  text-align: right;
+  margin:0;
+}
+
+.SelectType{
+  padding: 2px 5px;
+  margin-bottom:15px;
+  border-radius:5px;
+  cursor:pointer;
+  border:2px #5a5a5a solid;
+  color:#5a5a5a;
+}
