@@ -130,12 +130,15 @@ export default (onFirstFetched: () => void): (() => void) => {
             forkId: firestoreFork.forkId,
             replaceDate: transformDate(firestoreFork.replaceDate),
           }));
-          const repeats: RepeatMetaData = {
-            startDate: transformDate(firestoreRepeats.startDate),
-            endDate: firestoreRepeats.endDate === null
-              ? null : transformDate(firestoreRepeats.endDate),
-            pattern: firestoreRepeats.pattern,
-          };
+          const startDate = transformDate(firestoreRepeats.startDate);
+          let endDate: Date | number;
+          if (typeof firestoreRepeats.endDate === 'number') {
+            // eslint-disable-next-line prefer-destructuring
+            endDate = firestoreRepeats.endDate;
+          } else {
+            endDate = transformDate(firestoreRepeats.endDate);
+          }
+          const repeats: RepeatMetaData = { startDate, endDate, pattern: firestoreRepeats.pattern };
           task = { ...taskCommon, ...otherTaskProps, forks, repeats };
         }
         if (change.type === 'added') {

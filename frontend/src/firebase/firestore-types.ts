@@ -37,7 +37,7 @@ export type FirestoreMasterTask = FirestoreCommonTask & {
   // in master task, we only use the time component of the date
   readonly repeats: {
     readonly startDate: Date | firestore.Timestamp;
-    readonly endDate: Date | firestore.Timestamp | null;
+    readonly endDate: number | Date | firestore.Timestamp;
     readonly pattern: RepeatingPattern;
   };
   // fork id can only points to a one time task

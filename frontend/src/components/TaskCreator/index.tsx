@@ -169,18 +169,31 @@ export default class TaskCreator extends React.PureComponent<{}, State> {
   private editDate = (date: Date | RepeatMetaData | null) => {
     const { datePicked } = this.state;
     if (datePicked && date === null) {
+      // User cancelled, but date was already picked
       this.setState(
         { datePickerOpened: false },
         this.focusTaskName,
       );
     } else if (date instanceof Date || date === null) {
+      // Selecting a date, or user cancelled while date was not picked
       this.setState(
-        { date: date || new Date(), datePickerOpened: false, datePicked: Boolean(date) },
+        {
+          date: date || new Date(),
+          datePickerOpened: false,
+          datePicked: Boolean(date),
+          repeatData: null,
+        },
         this.focusTaskName,
       );
     } else {
+      // Repeating task
       this.setState(
-        { date: new Date(), datePickerOpened: false, datePicked: Boolean(date), repeatData: date },
+        {
+          date: new Date(),
+          datePickerOpened: false,
+          datePicked: true,
+          repeatData: date,
+        },
         this.focusTaskName,
       );
     }
@@ -293,6 +306,7 @@ export default class TaskCreator extends React.PureComponent<{}, State> {
     const {
       tag, date, inFocus, subTasks,
       tagPickerOpened, datePickerOpened, datePicked, needToSwitchFocus,
+      repeatData,
     } = this.state;
     const existingSubTaskEditor = (
       { id, name }: SubTask, i: number, arr: SubTask[],
@@ -330,7 +344,7 @@ export default class TaskCreator extends React.PureComponent<{}, State> {
           />
         </div>
         <DatePicker
-          date={date}
+          date={repeatData || date}
           opened={datePickerOpened}
           datePicked={datePicked}
           onDateChange={this.editDate}
