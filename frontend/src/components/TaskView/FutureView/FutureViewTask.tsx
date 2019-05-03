@@ -21,6 +21,7 @@ type CompoundTask = {
 
 type OwnProps = {
   readonly taskId: string;
+  readonly containerDate: string;
   readonly inNDaysView: boolean;
   readonly taskEditorPosition: FloatingPosition;
   readonly calendarPosition: CalendarPosition;
@@ -37,7 +38,7 @@ type Props = OwnProps & {
  */
 function FutureViewTask(
   {
-    compoundTask, inNDaysView, taskEditorPosition, isInMainList, calendarPosition,
+    compoundTask, containerDate, inNDaysView, taskEditorPosition, isInMainList, calendarPosition,
   }: Props,
 ): ReactElement | null {
   const isSmallScreen = useMappedWindowSize(({ width }) => width <= 768);
@@ -161,6 +162,7 @@ function FutureViewTask(
       position={taskEditorPosition}
       calendarPosition={calendarPosition}
       initialTask={original}
+      taskAppearedDate={containerDate}
       trigger={trigger}
     />
   );

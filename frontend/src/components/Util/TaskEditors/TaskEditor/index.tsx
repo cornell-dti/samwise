@@ -12,13 +12,13 @@ import { ignore } from 'util/general-util';
 import { promptRepeatedTaskEditChoice } from 'util/task-util';
 import { editTaskWithDiff } from 'firebase/actions';
 import styles from './index.module.css';
-import { getTodayAtZeroAM } from '../../../../util/datetime-util';
+import { getTodayAtZeroAM, setDateByDateString } from '../../../../util/datetime-util';
 import EditorHeader from './EditorHeader';
 import MainTaskEditor from './MainTaskEditor';
 import NewSubTaskEditor from './NewSubTaskEditor';
 import OneSubTaskEditor from './OneSubTaskEditor';
 import { CalendarPosition } from '../editors-types';
-import useTaskDiffReducer from './task-diff-reducer';
+import useTaskDiffReducer, { diffIsEmpty } from './task-diff-reducer';
 
 type DefaultProps = {
   readonly displayGrabber?: boolean;
@@ -38,6 +38,8 @@ type Actions = {
 type OwnProps = DefaultProps & {
   readonly id: string;
   readonly type: 'MASTER_TEMPLATE' | 'ONE_TIME';
+  // the date string that specifies when the task appears (useful for repeated task)
+  readonly taskAppearedDate: string;
   readonly mainTask: MainTask; // The task given to the editor.
   // The subtask given to the editor. It should only contain those that should be displayed.
   readonly subTasks: readonly SubTask[];
@@ -61,6 +63,7 @@ function TaskEditor(
   {
     id,
     type,
+    taskAppearedDate,
     mainTask: initMainTask,
     subTasks: initSubTasks,
     actions,
@@ -109,9 +112,16 @@ function TaskEditor(
         case 'CHANGE_MASTER_TEMPLATE':
           editTaskWithDiff(id, 'EDITING_MASTER_TEMPLATE', diff);
           break;
-        case 'FORK':
-          editTaskWithDiff(id, 'FORKING_MASTER_TEMPLATE', diff);
+        case 'FORK': {
+          const correctedDate = diff.mainTaskEdits.date
+            || setDateByDateString(new Date(date), taskAppearedDate);
+          const newDiffWithCorrectDateInfo = {
+            ...diff,
+            mainTaskEdits: { ...diff.mainTaskEdits, date: correctedDate },
+          };
+          editTaskWithDiff(id, 'FORKING_MASTER_TEMPLATE', newDiffWithCorrectDateInfo);
           break;
+        }
         default:
           throw new Error();
       }
@@ -215,7 +225,7 @@ function TaskEditor(
       </div>
       <div
         className={styles.SaveButtonRow}
-        style={newSubTaskDisabled === true ? { maxHeight: 0, padding: 0 } : undefined}
+        style={diffIsEmpty(diff) ? { maxHeight: 0, padding: 0 } : undefined}
       >
         <span className={styles.TaskEditorFlexiblePadding} />
         <div role="presentation" className={styles.SaveButton} onClick={onSaveClicked}>

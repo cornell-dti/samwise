@@ -32,6 +32,7 @@ export default function InlineTaskEditor(
     <TaskEditor
       id={id}
       type={type}
+      taskAppearedDate={mainTask.date.toDateString() /* TODO: fix this hack */}
       className={className}
       mainTask={mainTask}
       subTasks={subTasks}

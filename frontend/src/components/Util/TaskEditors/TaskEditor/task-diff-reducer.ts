@@ -42,6 +42,15 @@ const emptyDiff: Diff = {
 };
 
 /**
+ * @param diff diff to check.
+ * @returns whether the given diff is empty.
+ */
+export function diffIsEmpty(diff: Diff): boolean {
+  // since things are immutable, we can use referential equality!
+  return diff === emptyDiff;
+}
+
+/**
  * Lazy initializer for the initial state of task editor.
  *
  * @param mainTask the main task for initial state.

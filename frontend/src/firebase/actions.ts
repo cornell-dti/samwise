@@ -169,15 +169,18 @@ export const handleTaskDiffs = (
   }
   if (subTaskEdits.size !== 0) {
     subTaskEdits.forEach((partialSubTask, id) => {
-      batch.set(subTasksCollection().doc(id), partialSubTask, { merge: true });
+      batch.update(subTasksCollection().doc(id), partialSubTask);
     });
   }
   if (subTaskDeletions.size !== 0) {
     subTaskDeletions.forEach((id) => {
       batch.delete(subTasksCollection().doc(id));
+      batch.update(tasksCollection().doc(taskId), {
+        children: firestore.FieldValue.arrayRemove(id),
+      });
     });
   }
-  batch.set(tasksCollection().doc(taskId), mainTaskEdits, { merge: true });
+  batch.update(tasksCollection().doc(taskId), mainTaskEdits);
   batch.commit();
 };
 
@@ -223,10 +226,7 @@ export const editTaskWithDiff = (
       if (editType === 'EDITING_MASTER_TEMPLATE') {
         await removeAllForks(taskId);
       }
-      handleTaskDiffs(taskId,
-        {
-          subTaskCreations, subTaskEdits, subTaskDeletions, mainTaskEdits,
-        });
+      handleTaskDiffs(taskId, { subTaskCreations, subTaskEdits, subTaskDeletions, mainTaskEdits });
     })();
   }
 };
