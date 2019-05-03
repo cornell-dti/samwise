@@ -30,9 +30,11 @@ const updateFloatingEditorPosition = (
   const windowWidth = windowSize.width;
   const windowHeight = windowSize.height;
   let posTop: number;
-  let posLeft: number;
+  let posLeft: number | undefined;
+  let posRight: number | undefined;
   if (windowWidth <= 768) {
     posTop = (windowHeight - myHeight) / 2;
+    editorPosDiv.style.left = `${windowWidth - EDITOR_WIDTH}px`;
     posLeft = (windowWidth - EDITOR_WIDTH) / 2;
   } else {
     const { y, left, right } = taskElementBoundingRect;
@@ -40,14 +42,15 @@ const updateFloatingEditorPosition = (
     if (position === 'right') {
       posLeft = right;
     } else if (position === 'left') {
-      posLeft = left - editorPosDiv.offsetWidth;
+      posRight = windowWidth - left;
     } else {
       throw new Error('Bad floating position!');
     }
   }
   editorPosDiv.style.top = `${posTop}px`;
-  editorPosDiv.style.left = `${posLeft}px`;
-  editorPosDiv.style.display = 'block';
+  editorPosDiv.style.left = posLeft === undefined ? 'initial' : `${posLeft}px`;
+  editorPosDiv.style.right = posRight === undefined ? 'initial' : `${posRight}px`;
+  editorPosDiv.style.width = '300px';
 };
 
 type OwnProps = {

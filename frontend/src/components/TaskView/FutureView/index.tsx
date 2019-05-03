@@ -86,7 +86,7 @@ function computeStartAndEndDay(
  * @param {FutureViewConfig} config the display config.
  * @return {Date[]} an array of backlog days information.
  */
-function buildDaysInFutureView(nDays: number, config: FutureViewConfig): SimpleDate[] {
+function buildDaysInFutureView(nDays: number, config: FutureViewConfig): readonly SimpleDate[] {
   const { displayOption: { containerType }, offset } = config;
   const { startDate, endDate } = computeStartAndEndDay(nDays, containerType, offset);
   // Adding the days to array

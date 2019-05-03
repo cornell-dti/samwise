@@ -4,7 +4,7 @@ import styles from './FutureViewNDays.module.css';
 import { SimpleDate } from './future-view-types';
 
 type Props = {
-  readonly days: SimpleDate[];
+  readonly days: readonly SimpleDate[];
   readonly doesShowCompletedTasks: boolean;
 };
 
