@@ -1,11 +1,12 @@
 import { createSelector, createSelectorCreator, defaultMemoize } from 'reselect';
 import { Map, Set } from 'immutable';
-import { State, SubTask, Tag, Task, BannerMessageStatus } from './store-types';
+import { State, SubTask, Tag, Task, BannerMessageStatus, RepeatingTask } from './store-types';
 import {
   computeTaskProgress,
   TasksProgressProps,
   getFilteredCompletedInFocusTask,
   getFilteredNotCompletedInFocusTask,
+  dateMatchRepeats,
 } from '../util/task-util';
 import { NONE_TAG } from '../util/tag-util';
 import findMessageToDisplay, { MessageWithId } from '../components/TitleBar/Banner/messages';
@@ -33,6 +34,7 @@ type SelectorOf<T, Props = void> = (state: State, ownProps: Props) => T;
 const getTags = ({ tags }: State): Map<string, Tag> => tags;
 const getTasks = ({ tasks }: State): Map<string, Task> => tasks;
 const getDateTaskMap = ({ dateTaskMap }: State): Map<string, Set<string>> => dateTaskMap;
+const getRepeatedTaskSet = ({ repeatedTaskSet }: State): Set<string> => repeatedTaskSet;
 const getSubTasks = ({ subTasks }: State): Map<string, SubTask> => subTasks;
 const getBannerMessageStatus = (
   { bannerMessageStatus }: State,
@@ -76,16 +78,30 @@ type IdOrderListProps = { readonly idOrderList: IdOrder[] };
 export const createGetIdOrderListByDate = (
   date: string,
 ): SelectorOf<IdOrderListProps> => createSelector(
-  [getTasks, getDateTaskMap], (tasks, dateTaskMap) => {
+  [getTasks, getDateTaskMap, getRepeatedTaskSet], (tasks, dateTaskMap, repeatedTaskSet) => {
     const set = dateTaskMap.get(date);
     if (set == null) {
       return { idOrderList: [] };
     }
     const list: IdOrder[] = [];
+    // date matches
     set.forEach((id) => {
       const task = tasks.get(id);
       if (task != null) {
         const { order } = task;
+        list.push({ id, order });
+      }
+    });
+    // repeat matches
+    const dateObj = new Date(date);
+    repeatedTaskSet.forEach((id) => {
+      const task = tasks.get(id);
+      if (task == null) {
+        return;
+      }
+      const repeatedTask = task as RepeatingTask;
+      if (dateMatchRepeats(dateObj, repeatedTask.repeats, repeatedTask.forks)) {
+        const { order } = repeatedTask;
         list.push({ id, order });
       }
     });

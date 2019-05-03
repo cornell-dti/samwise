@@ -1,5 +1,6 @@
 import { Map, Set } from 'immutable';
 import { useReducer } from 'react';
+import { shallowEqual, shallowArrayEqual } from 'util/general-util';
 import {
   MainTask,
   PartialMainTask,
@@ -8,7 +9,6 @@ import {
   SubTaskWithoutId,
 } from '../../../../store/store-types';
 import { getNewSubTaskId } from '../../../../firebase/id-provider';
-import { shallowEqual, shallowArrayEqual } from 'util/general-util';
 
 type Action =
   | { readonly type: 'EDIT_MAIN_TASK'; readonly change: PartialMainTask }

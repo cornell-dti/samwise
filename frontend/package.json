@@ -6,10 +6,11 @@
     "start": "react-scripts start",
     "build:stage": "REACT_APP_IS_STAGING=true react-scripts build",
     "build": "react-scripts build",
-    "test": "react-scripts test --no-watch",
+    "test": "react-scripts test --watchAll=false",
     "optimize-svg": "svgo --disable=removeViewBox --enable=prefixIds,removeDimensions src/assets/svgs/*.svg",
     "tsc": "tsc -p tsconfig.json",
-    "lint": "eslint . --ext .js --ext .ts --ext .jsx --ext .tsx"
+    "lint": "eslint . --ext .js --ext .ts --ext .jsx --ext .tsx",
+    "check-all": "yarn tsc && yarn lint && yarn test"
   },
   "dependencies": {
     "@fortawesome/fontawesome-svg-core": "^1.2.17",

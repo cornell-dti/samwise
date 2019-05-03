@@ -56,7 +56,7 @@ export type RepeatMetaData = {
   readonly pattern: RepeatingPattern;
 };
 
-export type ForkedTaskMetaData = PartialTask & {
+export type ForkedTaskMetaData = {
   readonly forkId: string | null;
   readonly replaceDate: Date;
 };
