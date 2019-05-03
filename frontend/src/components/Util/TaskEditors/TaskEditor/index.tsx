@@ -83,6 +83,7 @@ function TaskEditor(
     dispatchAddSubTask,
     dispatchEditSubTask,
     dispatchDeleteSubTask,
+    reset,
   } = useTaskDiffReducer(initMainTask, initSubTasks);
 
   const { name, tag, date, complete, inFocus } = mainTask;
@@ -102,6 +103,9 @@ function TaskEditor(
     }
     promptRepeatedTaskEditChoice().then((saveChoice) => {
       switch (saveChoice) {
+        case 'CANCEL_CHANGES':
+          reset();
+          break;
         case 'CHANGE_MASTER_TEMPLATE':
           editTaskWithDiff(id, 'EDITING_MASTER_TEMPLATE', diff);
           break;
@@ -199,7 +203,7 @@ function TaskEditor(
         ))}
         <div
           className={styles.SubtaskHide}
-          style={{ maxHeight: newSubTaskDisabled === true ? 0 : 50 }}
+          style={newSubTaskDisabled === true ? { maxHeight: 0 } : undefined}
         >
           <NewSubTaskEditor
             onChange={handleNewSubTaskFirstType}
@@ -209,7 +213,10 @@ function TaskEditor(
           />
         </div>
       </div>
-      <div className={styles.SaveButtonRow}>
+      <div
+        className={styles.SaveButtonRow}
+        style={newSubTaskDisabled === true ? { maxHeight: 0, padding: 0 } : undefined}
+      >
         <span className={styles.TaskEditorFlexiblePadding} />
         <div role="presentation" className={styles.SaveButton} onClick={onSaveClicked}>
           <span className={styles.SaveButtonText}>Save</span>

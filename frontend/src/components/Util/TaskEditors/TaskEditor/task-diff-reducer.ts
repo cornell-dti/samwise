@@ -34,6 +34,7 @@ type TaskDiffActions = FullTask & {
   readonly dispatchAddSubTask: (newSubTask: SubTaskWithoutId) => void;
   readonly dispatchEditSubTask: (subTaskId: string, change: PartialSubTask) => void;
   readonly dispatchDeleteSubTask: (subtaskId: string) => void;
+  readonly reset: () => void;
 };
 
 const emptyDiff: Diff = {
@@ -141,5 +142,6 @@ export default function useTaskDiffReducer(
     dispatchDeleteSubTask: (subtaskId: string): void => dispatch({
       type: 'DELETE_SUBTASK', subtaskId,
     }),
+    reset: (): void => dispatch({ type: 'RESET', mainTask: initMainTask, subTasks: initSubTasks }),
   };
 }

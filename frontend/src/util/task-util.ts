@@ -193,10 +193,11 @@ export function dateMatchRepeats(
 }
 
 const repeatedTaskEditChoices = {
-  CHANGE_MASTER_TEMPLATE: 'Change master template',
+  CANCEL_CHANGES: 'Cancel',
+  CHANGE_MASTER_TEMPLATE: 'Change master',
   FORK: 'Fork',
 };
 
 export function promptRepeatedTaskEditChoice(): Promise<keyof typeof repeatedTaskEditChoices> {
-  return promptChoice('Do you want to change master template or fork', repeatedTaskEditChoices);
+  return promptChoice('Do you want to change master or fork?', repeatedTaskEditChoices);
 }

@@ -176,6 +176,7 @@ input.TaskEditorFlexibleInput:focus-within::placeholder {
 
 .SaveButtonRow {
   display: flex;
+  overflow: hidden;
   padding: 0.5em;
 }
 
