@@ -100,8 +100,7 @@ function TaskEditor(
       editTaskWithDiff(id, 'EDITING_ONE_TIME_TASK', diff);
       return;
     }
-    (async () => {
-      const saveChoice = await promptRepeatedTaskEditChoice();
+    promptRepeatedTaskEditChoice().then((saveChoice) => {
       switch (saveChoice) {
         case 'CHANGE_MASTER_TEMPLATE':
           editTaskWithDiff(id, 'EDITING_MASTER_TEMPLATE', diff);
@@ -112,7 +111,7 @@ function TaskEditor(
         default:
           throw new Error();
       }
-    })();
+    });
     onSave();
   };
 

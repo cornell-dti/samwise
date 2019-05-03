@@ -1,4 +1,4 @@
-import React, { ReactElement } from 'react';
+import React, { ReactElement, useState } from 'react';
 import { Task } from '../../../store/store-types';
 import TaskEditor from './TaskEditor';
 import { removeTask } from '../../../firebase/actions';
@@ -17,7 +17,7 @@ type Props = {
 export default function InlineTaskEditor(
   { original, filtered, className, calendarPosition }: Props,
 ): ReactElement {
-  const [disabled, setDisabled] = React.useState(true);
+  const [disabled, setDisabled] = useState(true);
 
   const { id } = original;
   // To un-mount the editor when finished editing.

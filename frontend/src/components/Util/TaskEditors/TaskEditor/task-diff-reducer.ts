@@ -1,5 +1,6 @@
 import { Map, Set } from 'immutable';
 import { useReducer } from 'react';
+import { shallowEqual, shallowArrayEqual } from 'util/general-util';
 import {
   MainTask,
   PartialMainTask,
@@ -62,7 +63,8 @@ function reducer(state: State, action: Action): State {
     case 'EDIT_MAIN_TASK': {
       const { mainTask, diff, ...restState } = state;
       const { change } = action;
-      return { ...restState, mainTask: { ...mainTask, ...change }, diff: { ...diff, ...change } };
+      const newDiff = { ...diff, mainTaskEdits: { ...diff.mainTaskEdits, ...change } };
+      return { ...restState, mainTask: { ...mainTask, ...change }, diff: newDiff };
     }
     case 'ADD_SUBTASK': {
       const { subTasks, diff, ...restState } = state;
@@ -119,7 +121,8 @@ export default function useTaskDiffReducer(
 ): TaskDiffActions {
   const [state, dispatch] = useReducer(reducer, [initMainTask, initSubTasks], initializer);
   const { mainTask, subTasks, prevFullTask, diff } = state;
-  if (prevFullTask.mainTask !== initMainTask || prevFullTask.subTasks !== initSubTasks) {
+  if (!shallowEqual(prevFullTask.mainTask, initMainTask)
+    || !shallowArrayEqual(prevFullTask.subTasks, initSubTasks)) {
     dispatch({ type: 'RESET', mainTask: initMainTask, subTasks: initSubTasks });
   }
   return {

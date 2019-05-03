@@ -56,7 +56,7 @@ export type RepeatMetaData = {
   readonly pattern: RepeatingPattern;
 };
 
-export type ForkedTaskMetaData = PartialTask & {
+export type ForkedTaskMetaData = {
   readonly forkId: string | null;
   readonly replaceDate: Date;
 };
@@ -69,7 +69,7 @@ export type RepeatingTask = CommonTask & {
 
 export type Task = OneTimeTask | RepeatingTask;
 
-type MainTaskProperties = 'order' | 'name' | 'tag' | 'date' | 'complete' | 'inFocus';
+type MainTaskProperties = 'name' | 'tag' | 'date' | 'complete' | 'inFocus';
 /**
  * The task type without id and subtask.
  */
