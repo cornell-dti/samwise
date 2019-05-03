@@ -75,39 +75,49 @@ export const getTaskIds: SelectorOf<{ readonly ids: string[] }> = createSetEqual
 type IdOrder = { readonly id: string; readonly order: number };
 type IdOrderListProps = { readonly idOrderList: IdOrder[] };
 
+let createGetIdOrderListByDateSelectors = Map<string, SelectorOf<IdOrderListProps>>();
+
 export const createGetIdOrderListByDate = (
   date: string,
-): SelectorOf<IdOrderListProps> => createSelector(
-  [getTasks, getDateTaskMap, getRepeatedTaskSet], (tasks, dateTaskMap, repeatedTaskSet) => {
-    const set = dateTaskMap.get(date);
-    if (set == null) {
-      return { idOrderList: [] };
-    }
-    const list: IdOrder[] = [];
-    // date matches
-    set.forEach((id) => {
-      const task = tasks.get(id);
-      if (task != null) {
-        const { order } = task;
-        list.push({ id, order });
+): SelectorOf<IdOrderListProps> => {
+  const existingSelector = createGetIdOrderListByDateSelectors.get(date);
+  if (existingSelector != null) {
+    return existingSelector;
+  }
+  const selector: SelectorOf<IdOrderListProps> = createSelector(
+    [getTasks, getDateTaskMap, getRepeatedTaskSet], (tasks, dateTaskMap, repeatedTaskSet) => {
+      const set = dateTaskMap.get(date);
+      const list: IdOrder[] = [];
+      if (set != null) {
+        // date matches
+        set.forEach((id) => {
+          const task = tasks.get(id);
+          if (task != null) {
+            const { order } = task;
+            list.push({ id, order });
+          }
+        });
       }
-    });
-    // repeat matches
-    const dateObj = new Date(date);
-    repeatedTaskSet.forEach((id) => {
-      const task = tasks.get(id);
-      if (task == null) {
-        return;
-      }
-      const repeatedTask = task as RepeatingTask;
-      if (dateMatchRepeats(dateObj, repeatedTask.repeats, repeatedTask.forks)) {
-        const { order } = repeatedTask;
-        list.push({ id, order });
-      }
-    });
-    return { idOrderList: list.sort((a, b) => a.order - b.order) };
-  },
-);
+      // repeat matches
+      const dateObj = new Date(date);
+      console.log(date, dateObj);
+      repeatedTaskSet.forEach((id) => {
+        const task = tasks.get(id);
+        if (task == null) {
+          return;
+        }
+        const repeatedTask = task as RepeatingTask;
+        if (dateMatchRepeats(dateObj, repeatedTask.repeats, repeatedTask.forks)) {
+          const { order } = repeatedTask;
+          list.push({ id, order });
+        }
+      });
+      return { idOrderList: list.sort((a, b) => a.order - b.order) };
+    },
+  );
+  createGetIdOrderListByDateSelectors = createGetIdOrderListByDateSelectors.set(date, selector);
+  return selector;
+}
 
 export const getProgress: SelectorOf<TasksProgressProps> = createSelector(
   [getTasksInFocus, getSubTasks], computeTaskProgress,
