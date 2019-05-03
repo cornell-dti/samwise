@@ -116,7 +116,7 @@ export const createGetIdOrderListByDate = (
   );
   createGetIdOrderListByDateSelectors = createGetIdOrderListByDateSelectors.set(date, selector);
   return selector;
-}
+};
 
 export const getProgress: SelectorOf<TasksProgressProps> = createSelector(
   [getTasksInFocus, getSubTasks], computeTaskProgress,
