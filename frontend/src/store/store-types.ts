@@ -69,7 +69,7 @@ export type RepeatingTask = CommonTask & {
 
 export type Task = OneTimeTask | RepeatingTask;
 
-type MainTaskProperties = 'order' | 'name' | 'tag' | 'date' | 'complete' | 'inFocus';
+type MainTaskProperties = 'name' | 'tag' | 'date' | 'complete' | 'inFocus';
 /**
  * The task type without id and subtask.
  */

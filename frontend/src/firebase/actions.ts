@@ -16,7 +16,6 @@ import {
   FirestoreTag,
   FirestoreTask,
   FirestoreSubTask,
-  FirestoreOneTimeTask,
 } from './firestore-types';
 import { getAppUser } from './auth';
 import {
@@ -103,7 +102,8 @@ export const addTask = (
   task: TaskWithoutIdOrderChildren,
   subTasks: WithoutId<SubTask>[],
   noUndo?: 'no-undo',
-): void => {
+): string => {
+  const newTaskId = getNewTaskId();
   (async () => {
     // Step 1: Create SubTasks
     const batch = db().batch();
@@ -118,18 +118,19 @@ export const addTask = (
     // Step 2: Create Task
     const taskWithChildren = { ...task, children: subtaskIds };
     const firestoreTask: FirestoreTask = await createFirestoreObject('tasks', taskWithChildren);
-    const addedDoc = await tasksCollection().add(firestoreTask);
+    await tasksCollection().doc(newTaskId).set(firestoreTask);
     // Step 3: Handle optional UNDO
     if (noUndo !== 'no-undo') {
       const fullTask = {
         ...task,
-        id: addedDoc.id,
+        id: newTaskId,
         order: firestoreTask.order,
         children: createdSubTasks,
       };
       emitUndoAddTaskToast(fullTask);
     }
   })();
+  return newTaskId;
 };
 
 export const removeAllForks = (taskId: string): void => {
@@ -185,31 +186,38 @@ export const editTaskWithDiff = (
   editType: EditType,
   { mainTaskEdits, subTaskCreations, subTaskEdits, subTaskDeletions }: Diff,
 ): void => {
-  const batch = db().batch();
   if (editType === 'FORKING_MASTER_TEMPLATE') {
-    (async () => {
-      const { tasks, subTasks } = store.getState();
-      const repeatingTaskMaster = tasks.get(taskId) as RepeatingTask;
-      const { id, type, children, ...taskWithoutId } = repeatingTaskMaster;
-      const createdSubTasks: Set<string> = children.map((subTaskId) => {
-        const subTask = subTasks.get(subTaskId);
-        const newSubTaskDoc = subTasksCollection().doc(subTaskId);
-        const firebaseSubTask: FirestoreSubTask = mergeWithOwner(subTask);
-        batch.set(newSubTaskDoc, firebaseSubTask);
-        return newSubTaskDoc.id;
-      });
-      const subtaskIds: string[] = Array.from(createdSubTasks);
-      const newTaskId = getNewTaskId();
-      const newOneTimeTask: FirestoreOneTimeTask = {
-        owner: taskId, type: 'ONE_TIME', children: subtaskIds, ...taskWithoutId,
-      };
-      batch.set(tasksCollection().doc(newTaskId), newOneTimeTask, { merge: true });
-      await batch.commit();
-      handleTaskDiffs(newTaskId,
-        {
-          subTaskCreations, subTaskEdits, subTaskDeletions, mainTaskEdits,
-        });
-    })();
+    const { tasks, subTasks } = store.getState();
+    const repeatingTaskMaster = tasks.get(taskId) as RepeatingTask;
+    const {
+      id, order, type, children, repeats, forks, ...originalTaskWithoutId
+    } = repeatingTaskMaster;
+    const newMainTask: TaskWithoutIdOrderChildren = {
+      ...originalTaskWithoutId, ...mainTaskEdits, type: 'ONE_TIME',
+    };
+    const newSubTasks: WithoutId<SubTask>[] = [];
+    subTaskCreations.forEach(s => newSubTasks.push(s));
+    children.forEach((childrenId) => {
+      if (subTaskDeletions.has(childrenId)) {
+        return;
+      }
+      const subTask = subTasks.get(childrenId);
+      if (subTask == null) {
+        return;
+      }
+      const { id: _, ...subTaskContent } = subTask;
+      const subTaskEdit = subTaskEdits.get(childrenId);
+      if (subTaskEdit != null) {
+        newSubTasks.push({ ...subTaskContent, ...subTaskEdit });
+      } else {
+        newSubTasks.push(subTaskContent);
+      }
+    });
+    const forkId = addTask(newMainTask, newSubTasks, 'no-undo');
+    const replaceDate = newMainTask.date;
+    tasksCollection().doc(id).update({
+      forks: firestore.FieldValue.arrayUnion({ forkId, replaceDate }),
+    });
   } else {
     (async () => {
       if (editType === 'EDITING_MASTER_TEMPLATE') {

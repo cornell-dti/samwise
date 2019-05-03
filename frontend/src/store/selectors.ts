@@ -100,7 +100,6 @@ export const createGetIdOrderListByDate = (
       }
       // repeat matches
       const dateObj = new Date(date);
-      console.log(date, dateObj);
       repeatedTaskSet.forEach((id) => {
         const task = tasks.get(id);
         if (task == null) {
