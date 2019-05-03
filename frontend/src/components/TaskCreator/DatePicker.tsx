@@ -36,7 +36,9 @@ export default function DatePicker(props: Props): ReactElement {
       ? <SamwiseIcon iconName="calendar-dark" className={styles.CenterIcon} />
       : (
         <>
-          <span className={styles.DateDisplay}>{date instanceof Date ? date2String(date) : 'Repeat 🔁'}</span>
+          <span className={styles.DateDisplay}>
+            {date instanceof Date ? date2String(date) : 'Repeat 🔁'}
+          </span>
           <button type="button" className={styles.ResetButton} onClick={reset}>&times;</button>
         </>
       );

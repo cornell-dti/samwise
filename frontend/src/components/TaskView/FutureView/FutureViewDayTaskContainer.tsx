@@ -27,6 +27,7 @@ type Props = OwnProps & {
  */
 function FutureViewDayTaskContainer(
   {
+    date,
     idOrderList,
     inNDaysView,
     taskEditorPosition,
@@ -56,6 +57,7 @@ function FutureViewDayTaskContainer(
     <FutureViewTask
       key={id}
       taskId={id}
+      containerDate={date}
       inNDaysView={inNDaysView}
       taskEditorPosition={taskEditorPosition}
       calendarPosition={calendarPosition}

@@ -1,5 +1,6 @@
 import React, { ReactElement } from 'react';
 import Modal from 'react-modal';
+import styles from './ChoiceModal.module.css';
 
 export type ChoiceObj = { readonly [key: string]: string };
 
@@ -36,11 +37,17 @@ export default function ChoiceModal<Choices extends ChoiceObj>(
   { open, message, choices, onChoicePick }: ChoiceModalProps<Choices>,
 ): ReactElement {
   return (
-    <Modal isOpen={open} contentLabel="Choice Dialog">
-      <div>{message}</div>
-      <div>
+    <Modal isOpen={open} className={styles.ChoiceModal} contentLabel="Choice Dialog">
+      <div className={styles.TextContainer}>{message}</div>
+      <div className={styles.ButtonContainer}>
+        <span className={styles.Filler} />
         {Object.keys(choices).map(key => (
-          <button type="button" key={key} onClick={() => onChoicePick(key)}>
+          <button
+            key={key}
+            type="button"
+            className={styles.ChoiceButton}
+            onClick={() => onChoicePick(key)}
+          >
             {choices[key]}
           </button>
         ))}

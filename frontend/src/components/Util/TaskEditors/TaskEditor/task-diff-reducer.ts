@@ -34,11 +34,21 @@ type TaskDiffActions = FullTask & {
   readonly dispatchAddSubTask: (newSubTask: SubTaskWithoutId) => void;
   readonly dispatchEditSubTask: (subTaskId: string, change: PartialSubTask) => void;
   readonly dispatchDeleteSubTask: (subtaskId: string) => void;
+  readonly reset: () => void;
 };
 
 const emptyDiff: Diff = {
   mainTaskEdits: {}, subTaskCreations: Map(), subTaskEdits: Map(), subTaskDeletions: Set(),
 };
+
+/**
+ * @param diff diff to check.
+ * @returns whether the given diff is empty.
+ */
+export function diffIsEmpty(diff: Diff): boolean {
+  // since things are immutable, we can use referential equality!
+  return diff === emptyDiff;
+}
 
 /**
  * Lazy initializer for the initial state of task editor.
@@ -141,5 +151,6 @@ export default function useTaskDiffReducer(
     dispatchDeleteSubTask: (subtaskId: string): void => dispatch({
       type: 'DELETE_SUBTASK', subtaskId,
     }),
+    reset: (): void => dispatch({ type: 'RESET', mainTask: initMainTask, subTasks: initSubTasks }),
   };
 }

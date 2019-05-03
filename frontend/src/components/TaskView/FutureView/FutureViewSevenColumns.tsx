@@ -3,7 +3,7 @@ import FutureViewDay from './FutureViewDay';
 import styles from './FutureViewSevenColumns.module.css';
 import { SimpleDate } from './future-view-types';
 
-type Props = { readonly days: SimpleDate[]; readonly doesShowCompletedTasks: boolean };
+type Props = { readonly days: readonly SimpleDate[]; readonly doesShowCompletedTasks: boolean };
 
 /**
  * The component used to contain all the backlog days in 7 columns.
