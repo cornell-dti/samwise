@@ -126,7 +126,7 @@ export default class TaskCreator extends React.PureComponent<{}, State> {
     if (repeatData === null) {
       newTask = { ...commonTask, type: 'ONE_TIME' };
     } else {
-      newTask = { ...commonTask, type: 'MASTER_TEMPLATE', forks: [], repeats: repeatData };
+      newTask = { ...commonTask, type: 'MASTER_TEMPLATE', forks: [], repeats: repeatData, inFocus: false };
     }
     // Add the task to the store.
     addTask(newTask, newSubTasks);
@@ -336,7 +336,7 @@ export default class TaskCreator extends React.PureComponent<{}, State> {
     };
     return (
       <div className={styles.NewTaskActive}>
-        <FocusPicker pinned={inFocus} onPinChange={this.togglePin} />
+        {repeatData === null && <FocusPicker pinned={inFocus} onPinChange={this.togglePin} />}
         <div className={styles.TagPickWrap}>
           <TagPicker
             tag={tag}
