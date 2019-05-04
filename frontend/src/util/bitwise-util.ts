@@ -5,16 +5,34 @@
  */
 export const DAYS_IN_WEEK = 7;
 
+/**
+ * Whether a certain bit in a bitset is set
+ * @param bit The bitset to check
+ * @param d The position of the bit (zero-indexed from the LEFT)
+ * @param totalLen The length of the bitset
+ */
 export const isBitSet = (bit: number, d: number, totalLen: number): boolean => (
-  (bit & (1 << (totalLen - d))) !== 0
+  (bit & (1 << (totalLen - 1 - d))) !== 0
 );
 
+/**
+ * Return a bitset with a certain bit set
+ * @param bit The bitset to modify
+ * @param index The position of the bit to set (zero-indexed from the LEFT)
+ * @param totalLen The length of the bitset
+ */
 export const setBit = (bit: number, index: number, totalLen: number): number => (
-  bit | (1 << (totalLen - index))
+  bit | (1 << (totalLen - 1 - index))
 );
 
+/**
+ * Return a bitset with a certain bit unset
+ * @param bit The bitset to modify
+ * @param index The position of the bit to unset (zero-indexed from the LEFT)
+ * @param totalLen The length of the bitset
+ */
 export const unsetBit = (bit: number, index: number, totalLen: number): number => (
-  bit & (~(1 << (totalLen - index)))
+  bit & (~(1 << (totalLen - 1 - index)))
 );
 
 /**
