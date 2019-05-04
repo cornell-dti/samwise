@@ -7,7 +7,7 @@ import { NONE_TAG } from '../../util/tag-util';
 import { RepeatMetaData } from '../../store/store-types';
 import SamwiseIcon from '../UI/SamwiseIcon';
 import { LAST_DAY_OF_CLASS, LAST_DAY_OF_EXAMS } from '../../util/const-util';
-import { setDayOfWeek, unsetDayOfWeek, isDayOfWeekSet } from '../../util/bitwise-util';
+import { setDayOfWeek, unsetDayOfWeek, isDayOfWeekSet, DAYS_IN_WEEK } from '../../util/bitwise-util';
 
 type Props = {
   readonly onDateChange: (date: Date | RepeatMetaData | null) => void;
@@ -29,6 +29,20 @@ export default function DatePicker(props: Props): ReactElement {
     onClearPicker();
   };
 
+  /**
+   * Generates the date string of the next valid day in a bitset pattern
+   */
+  const genNextValidDay = (bitset: number): string => {
+    const currDay = new Date().getDay();
+    for (let i = 0; i < DAYS_IN_WEEK; i += 1) {
+      const checkDay = (i + currDay) % DAYS_IN_WEEK;
+      if (isDayOfWeekSet(bitset, checkDay)) {
+        return date2String(new Date(+(new Date()) + 1000 * 60 * 60 * 24 * i));
+      }
+    }
+    return '';
+  };
+
   // Nodes
   const displayedNode = (isDefault: boolean): ReactElement => {
     const style = isDefault ? {} : { background: NONE_TAG.color };
@@ -37,7 +51,7 @@ export default function DatePicker(props: Props): ReactElement {
       : (
         <>
           <span className={styles.DateDisplay}>
-            {date instanceof Date ? date2String(date) : 'Repeat 🔁'}
+            {date instanceof Date ? date2String(date) : `${genNextValidDay(date.pattern.bitSet)}🔁`}
           </span>
           <button type="button" className={styles.ResetButton} onClick={reset}>&times;</button>
         </>
@@ -308,7 +322,7 @@ export default function DatePicker(props: Props): ReactElement {
           endDate = repeatEndDate;
           break;
         case 1:
-          endDate = new Date(1000 * 60 * 60 * 24 * 7 * repeatNumber);
+          endDate = new Date(+(new Date()) + 1000 * 60 * 60 * 24 * 7 * repeatNumber);
           // checkedWeeks.reduce((acc, x) => acc + (x ? 1 : 0), 0));
           break;
         default:
