@@ -142,15 +142,22 @@ export const removeAllForks = (taskId: string): void => {
     const batch = db().batch();
     forkIds.forEach((id) => {
       if (id !== null) {
+        // delete forked main task
         batch.delete(tasksCollection().doc(id));
+        // delete forked subtasks
+        const forkedTask = tasks.get(id);
+        if (forkedTask != null) {
+          forkedTask.children.forEach(
+            subTaskId => batch.delete(subTasksCollection().doc(subTaskId)),
+          );
+        }
       }
     });
-    batch.set(tasksCollection().doc(taskId), { forks: [] }, { merge: true });
+    // clear the forked array
+    batch.update(tasksCollection().doc(taskId), { forks: [] });
     batch.commit().then(ignore);
   })();
 };
-
-type EditType = 'EDITING_MASTER_TEMPLATE' | 'EDITING_ONE_TIME_TASK' | 'FORKING_MASTER_TEMPLATE';
 
 export const handleTaskDiffs = (
   taskId: string,
@@ -184,51 +191,56 @@ export const handleTaskDiffs = (
   batch.commit();
 };
 
+type EditType = 'EDITING_MASTER_TEMPLATE' | 'EDITING_ONE_TIME_TASK';
+
 export const editTaskWithDiff = (
   taskId: string,
   editType: EditType,
   { mainTaskEdits, subTaskCreations, subTaskEdits, subTaskDeletions }: Diff,
 ): void => {
-  if (editType === 'FORKING_MASTER_TEMPLATE') {
-    const { tasks, subTasks } = store.getState();
-    const repeatingTaskMaster = tasks.get(taskId) as RepeatingTask;
-    const {
-      id, order, type, children, repeats, forks, ...originalTaskWithoutId
-    } = repeatingTaskMaster;
-    const newMainTask: TaskWithoutIdOrderChildren = {
-      ...originalTaskWithoutId, ...mainTaskEdits, type: 'ONE_TIME',
-    };
-    const newSubTasks: WithoutId<SubTask>[] = [];
-    subTaskCreations.forEach(s => newSubTasks.push(s));
-    children.forEach((childrenId) => {
-      if (subTaskDeletions.has(childrenId)) {
-        return;
-      }
-      const subTask = subTasks.get(childrenId);
-      if (subTask == null) {
-        return;
-      }
-      const { id: _, ...subTaskContent } = subTask;
-      const subTaskEdit = subTaskEdits.get(childrenId);
-      if (subTaskEdit != null) {
-        newSubTasks.push({ ...subTaskContent, ...subTaskEdit });
-      } else {
-        newSubTasks.push(subTaskContent);
-      }
-    });
-    const forkId = addTask(newMainTask, newSubTasks, 'no-undo');
-    const replaceDate = newMainTask.date;
-    tasksCollection().doc(id).update({
-      forks: firestore.FieldValue.arrayUnion({ forkId, replaceDate }),
-    });
-  } else {
-    (async () => {
-      if (editType === 'EDITING_MASTER_TEMPLATE') {
-        await removeAllForks(taskId);
-      }
-      handleTaskDiffs(taskId, { subTaskCreations, subTaskEdits, subTaskDeletions, mainTaskEdits });
-    })();
-  }
+  (async () => {
+    if (editType === 'EDITING_MASTER_TEMPLATE') {
+      await removeAllForks(taskId);
+    }
+    handleTaskDiffs(taskId, { subTaskCreations, subTaskEdits, subTaskDeletions, mainTaskEdits });
+  })();
+};
+
+export const forkTaskWithDiff = (
+  taskId: string,
+  replaceDate: Date,
+  { mainTaskEdits, subTaskCreations, subTaskEdits, subTaskDeletions }: Diff,
+): void => {
+  const { tasks, subTasks } = store.getState();
+  const repeatingTaskMaster = tasks.get(taskId) as RepeatingTask;
+  const {
+    id, order, type, children, repeats, forks, ...originalTaskWithoutId
+  } = repeatingTaskMaster;
+  const newMainTask: TaskWithoutIdOrderChildren = {
+    ...originalTaskWithoutId, ...mainTaskEdits, type: 'ONE_TIME',
+  };
+  const newSubTasks: WithoutId<SubTask>[] = [];
+  subTaskCreations.forEach(s => newSubTasks.push(s));
+  children.forEach((childrenId) => {
+    if (subTaskDeletions.has(childrenId)) {
+      return;
+    }
+    const subTask = subTasks.get(childrenId);
+    if (subTask == null) {
+      return;
+    }
+    const { id: _, ...subTaskContent } = subTask;
+    const subTaskEdit = subTaskEdits.get(childrenId);
+    if (subTaskEdit != null) {
+      newSubTasks.push({ ...subTaskContent, ...subTaskEdit });
+    } else {
+      newSubTasks.push(subTaskContent);
+    }
+  });
+  const forkId = addTask(newMainTask, newSubTasks, 'no-undo');
+  tasksCollection().doc(id).update({
+    forks: firestore.FieldValue.arrayUnion({ forkId, replaceDate }),
+  });
 };
 
 export const removeTask = (task: Task, noUndo?: 'no-undo'): void => {
@@ -252,36 +264,51 @@ export const removeTask = (task: Task, noUndo?: 'no-undo'): void => {
 };
 
 export const editMainTask = (
-  taskId: string, editType: EditType, mainTaskEdits: PartialMainTask,
+  taskId: string, replaceDate: Date | null, mainTaskEdits: PartialMainTask,
 ): void => {
-  editTaskWithDiff(taskId, editType, {
+  const diff: Diff = {
     mainTaskEdits,
     subTaskCreations: Map(),
     subTaskEdits: Map(),
     subTaskDeletions: Set(),
-  });
+  };
+  if (replaceDate === null) {
+    editTaskWithDiff(taskId, 'EDITING_ONE_TIME_TASK', diff);
+  } else {
+    forkTaskWithDiff(taskId, replaceDate, diff);
+  }
 };
 
 export const editSubTask = (
-  taskId: string, subtaskId: string, editType: EditType, partialSubTask: PartialSubTask,
+  taskId: string, subtaskId: string, replaceDate: Date | null, partialSubTask: PartialSubTask,
 ): void => {
-  editTaskWithDiff(taskId, editType, {
+  const diff: Diff = {
     mainTaskEdits: {},
     subTaskCreations: Map(),
     subTaskEdits: Map<string, PartialSubTask>().set(subtaskId, partialSubTask),
     subTaskDeletions: Set(),
-  });
+  };
+  if (replaceDate === null) {
+    editTaskWithDiff(taskId, 'EDITING_ONE_TIME_TASK', diff);
+  } else {
+    forkTaskWithDiff(taskId, replaceDate, diff);
+  }
 };
 
 export const removeSubTask = (
-  taskId: string, subtaskId: string, editType: EditType,
+  taskId: string, subtaskId: string, replaceDate: Date | null,
 ): void => {
-  editTaskWithDiff(taskId, editType, {
+  const diff: Diff = {
     mainTaskEdits: {},
     subTaskCreations: Map(),
     subTaskEdits: Map(),
     subTaskDeletions: Set(subtaskId),
-  });
+  };
+  if (replaceDate === null) {
+    editTaskWithDiff(taskId, 'EDITING_ONE_TIME_TASK', diff);
+  } else {
+    forkTaskWithDiff(taskId, replaceDate, diff);
+  }
 };
 
 /*

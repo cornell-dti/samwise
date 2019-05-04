@@ -10,15 +10,15 @@ import OverdueAlert from 'components/UI/OverdueAlert';
 import { NONE_TAG } from 'util/tag-util';
 import { ignore } from 'util/general-util';
 import { promptRepeatedTaskEditChoice } from 'util/task-util';
-import { editTaskWithDiff } from 'firebase/actions';
+import { editTaskWithDiff, forkTaskWithDiff } from 'firebase/actions';
 import styles from './index.module.css';
-import { getTodayAtZeroAM, setDateByDateString } from '../../../../util/datetime-util';
+import { getTodayAtZeroAM, getDateWithDateString } from '../../../../util/datetime-util';
 import EditorHeader from './EditorHeader';
 import MainTaskEditor from './MainTaskEditor';
 import NewSubTaskEditor from './NewSubTaskEditor';
 import OneSubTaskEditor from './OneSubTaskEditor';
 import { CalendarPosition } from '../editors-types';
-import useTaskDiffReducer, { diffIsEmpty } from './task-diff-reducer';
+import useTaskDiffReducer, { diffIsEmpty, Diff } from './task-diff-reducer';
 
 type DefaultProps = {
   readonly displayGrabber?: boolean;
@@ -113,13 +113,12 @@ function TaskEditor(
           editTaskWithDiff(id, 'EDITING_MASTER_TEMPLATE', diff);
           break;
         case 'FORK': {
-          const correctedDate = diff.mainTaskEdits.date
-            || setDateByDateString(new Date(date), taskAppearedDate);
-          const newDiffWithCorrectDateInfo = {
-            ...diff,
-            mainTaskEdits: { ...diff.mainTaskEdits, date: correctedDate },
+          const replaceDate = getDateWithDateString(date, taskAppearedDate);
+          const correctDate = diff.mainTaskEdits.date || replaceDate;
+          const diffForFork: Diff = {
+            ...diff, mainTaskEdits: { ...diff.mainTaskEdits, date: correctDate },
           };
-          editTaskWithDiff(id, 'FORKING_MASTER_TEMPLATE', newDiffWithCorrectDateInfo);
+          forkTaskWithDiff(id, replaceDate, diffForFork);
           break;
         }
         default:
