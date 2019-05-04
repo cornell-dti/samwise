@@ -2,8 +2,8 @@ import { Map } from 'immutable';
 import { TaskWithSubTasks } from 'components/Util/TaskEditors/editors-types';
 import { promptChoice, promptConfirm } from 'components/Util/Modals';
 import { SubTask, Task, RepeatingPattern, RepeatMetaData, ForkedTaskMetaData } from 'store/store-types';
-import { isBitSet } from './bitwise-util';
 import { removeTask, removeOneRepeatedTask } from 'firebase/actions';
+import { isBitSet } from './bitwise-util';
 
 /**
  * This is the utility module for array of tasks and subtasks.
