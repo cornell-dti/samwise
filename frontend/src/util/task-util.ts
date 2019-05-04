@@ -1,7 +1,8 @@
 import { Map } from 'immutable';
 import { TaskWithSubTasks } from 'components/Util/TaskEditors/editors-types';
-import { promptChoice } from 'components/Util/Modals';
+import { promptChoice, promptConfirm } from 'components/Util/Modals';
 import { SubTask, Task, RepeatingPattern, RepeatMetaData, ForkedTaskMetaData } from 'store/store-types';
+import { removeTask, removeOneRepeatedTask } from 'firebase/actions';
 import { isBitSet } from './bitwise-util';
 
 /**
@@ -200,4 +201,36 @@ const repeatedTaskEditChoices = {
 
 export function promptRepeatedTaskEditChoice(): Promise<keyof typeof repeatedTaskEditChoices> {
   return promptChoice('Do you want to change master or fork?', repeatedTaskEditChoices);
+}
+
+const removeTaskChoices = {
+  CANCEL_REMOVE: 'Cancel',
+  REMOVE_ALL: 'Remove All',
+  REMOVE_ONE: 'Remove This One',
+};
+
+export function removeTaskWithPotentialPrompt(task: Task, replaceDate: Date): void {
+  if (task.type === 'ONE_TIME') {
+    promptConfirm('Do you really want to remove this task? The removed task cannot be recovered.')
+      .then((confirmed) => {
+        if (confirmed) {
+          removeTask(task, 'no-undo');
+        }
+      });
+  } else {
+    promptChoice('How do you want to remove this repeated task?', removeTaskChoices).then((c) => {
+      switch (c) {
+        case 'CANCEL_REMOVE':
+          return;
+        case 'REMOVE_ALL':
+          removeTask(task, 'no-undo');
+          return;
+        case 'REMOVE_ONE':
+          removeOneRepeatedTask(task.id, replaceDate);
+          return;
+        default:
+          throw new Error();
+      }
+    });
+  }
 }

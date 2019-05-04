@@ -31,6 +31,13 @@ export async function promptChoice<Choices extends ChoiceObj>(
   });
 }
 
+const confirmCancelChoices = { CONFIRM: 'Confirm', CANCEL: 'cancel' };
+
+export async function promptConfirm(message: string): Promise<boolean> {
+  const result = await promptChoice(message, confirmCancelChoices);
+  return result === 'CONFIRM';
+}
+
 export function ModalsContainer(): ReactElement {
   const [choiceModalProps, setChoiceModalProps] = useState(dummyChoiceModalProps);
   useEffect(() => {

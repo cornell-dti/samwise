@@ -8,7 +8,7 @@ import SamwiseIcon from '../../UI/SamwiseIcon';
 type Props = {
   readonly subTask: SubTask;
   readonly mainTaskId: string;
-  readonly mainTaskEditType: 'EDITING_ONE_TIME_TASK' | 'FORKING_MASTER_TEMPLATE';
+  readonly replaceDateForFork: Date | null;
   readonly mainTaskCompleted: boolean;
 };
 
@@ -16,19 +16,19 @@ type Props = {
  * The component used to render one subtask in future view day.
  */
 function FutureViewSubTask(
-  { subTask, mainTaskId, mainTaskEditType, mainTaskCompleted }: Props,
+  { subTask, mainTaskId, replaceDateForFork, mainTaskCompleted }: Props,
 ): ReactElement | null {
   if (subTask == null) {
     return null;
   }
   const { name, complete, inFocus } = subTask;
   const onCompleteChange = (): void => editSubTask(
-    mainTaskId, subTask.id, mainTaskEditType, { complete: !complete },
+    mainTaskId, subTask.id, replaceDateForFork, { complete: !complete },
   );
   const onFocusChange = (): void => editSubTask(
-    mainTaskId, subTask.id, mainTaskEditType, { inFocus: !inFocus },
+    mainTaskId, subTask.id, replaceDateForFork, { inFocus: !inFocus },
   );
-  const onRemove = (): void => removeSubTask(mainTaskId, subTask.id, mainTaskEditType);
+  const onRemove = (): void => removeSubTask(mainTaskId, subTask.id, replaceDateForFork);
   return (
     <div className={styles.SubTask}>
       <CheckBox

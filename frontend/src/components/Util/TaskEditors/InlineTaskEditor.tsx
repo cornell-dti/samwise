@@ -1,7 +1,8 @@
 import React, { ReactElement, useState } from 'react';
+import { removeTaskWithPotentialPrompt } from 'util/task-util';
+import { getDateWithDateString } from 'util/datetime-util';
 import { Task } from '../../../store/store-types';
 import TaskEditor from './TaskEditor';
-import { removeTask } from '../../../firebase/actions';
 import { CalendarPosition, TaskWithSubTasks } from './editors-types';
 
 type Props = {
@@ -18,21 +19,23 @@ export default function InlineTaskEditor(
   { original, filtered, className, calendarPosition }: Props,
 ): ReactElement {
   const [disabled, setDisabled] = useState(true);
-
   const { id } = original;
+  const { id: _, type, subTasks, ...mainTask } = filtered;
+  const taskAppearedDate = mainTask.date.toDateString(); // TODO: fix this hack
   // To un-mount the editor when finished editing.
   const onFocus = (): void => setDisabled(false);
   const onBlur = (): void => setDisabled(true);
   const actions = {
-    removeTask: () => removeTask(original),
+    removeTask: () => removeTaskWithPotentialPrompt(
+      original, getDateWithDateString(mainTask.date, taskAppearedDate),
+    ),
     onSave: onBlur,
   };
-  const { id: _, type, subTasks, ...mainTask } = filtered;
   return (
     <TaskEditor
       id={id}
       type={type}
-      taskAppearedDate={mainTask.date.toDateString() /* TODO: fix this hack */}
+      taskAppearedDate={taskAppearedDate}
       className={className}
       mainTask={mainTask}
       subTasks={subTasks}
