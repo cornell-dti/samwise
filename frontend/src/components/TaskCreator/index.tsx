@@ -10,10 +10,10 @@ import { randomId } from '../../util/general-util';
 import { OneTimeTask, RepeatingTask, RepeatMetaData, SubTask } from '../../store/store-types';
 import { NONE_TAG_ID } from '../../util/tag-util';
 import { isToday } from '../../util/datetime-util';
-import { addTask } from '../../firebase/actions';
+import { addTask, TaskWithoutIdOrderChildren } from '../../firebase/actions';
 import SamwiseIcon from '../UI/SamwiseIcon';
 
-type SimpleTaskMapper<T> = Pick<T, Exclude<keyof T, 'order' | 'children'>>
+type SimpleTaskMapper<T> = Pick<T, Exclude<keyof T, 'type' | 'order' | 'children'>>
 type OneTimeSimpleTask = SimpleTaskMapper<OneTimeTask>;
 type RepeatedSimpleTask = SimpleTaskMapper<RepeatingTask>
 type SimpleTask = OneTimeSimpleTask | RepeatedSimpleTask;
@@ -37,7 +37,6 @@ const PLACEHOLDER_TEXT = 'What do you have to do?';
  */
 const initialState = (): State => ({
   id: randomId(),
-  type: 'ONE_TIME',
   name: '',
   tag: NONE_TAG_ID, // the id of the None tag.
   date: new Date(),
@@ -112,7 +111,7 @@ export default class TaskCreator extends React.PureComponent<{}, State> {
       e.preventDefault();
     }
     const {
-      type, name, tag, date, complete, inFocus, subTasks,
+      name, tag, date, complete, inFocus, subTasks, repeatData,
     } = this.state;
     if (name === '') {
       return;
@@ -122,11 +121,14 @@ export default class TaskCreator extends React.PureComponent<{}, State> {
       // normalize orders: use current sequence as order;; remove useless id
       .map(({ id, ...rest }, order) => ({ ...rest, order }));
     const autoInFocus = inFocus || isToday(date); // Put task in focus is the due date is today.
-    const newTask = { type, name, tag, date, complete, inFocus: autoInFocus };
+    const commonTask = { name, tag, date, complete, inFocus: autoInFocus };
+    let newTask: TaskWithoutIdOrderChildren;
+    if (repeatData === null) {
+      newTask = { ...commonTask, type: 'ONE_TIME' };
+    } else {
+      newTask = { ...commonTask, type: 'MASTER_TEMPLATE', forks: [], repeats: repeatData };
+    }
     // Add the task to the store.
-    // TODO: @mt-xing
-    // implement the task editor properly, remove the ts - ignore and make it type check
-    // @ts-ignore
     addTask(newTask, newSubTasks);
     // Reset the state.
     this.setState({ ...initialState() });

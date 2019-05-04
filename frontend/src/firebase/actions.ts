@@ -50,7 +50,7 @@ type WithoutId<Props> = Pick<Props, Exclude<keyof Props, 'id'>>;
 type CommonTaskWithoutIdOrderChildren<T> = Pick<T, Exclude<keyof T, 'id' | 'order' | 'children'>>;
 type OneTimeTaskWithoutIdOrderChildren = CommonTaskWithoutIdOrderChildren<OneTimeTask>;
 type RepeatedTaskWithoutIdOrderChildren = CommonTaskWithoutIdOrderChildren<RepeatingTask>;
-type TaskWithoutIdOrderChildren =
+export type TaskWithoutIdOrderChildren =
   | OneTimeTaskWithoutIdOrderChildren
   | RepeatedTaskWithoutIdOrderChildren;
 
@@ -121,7 +121,7 @@ export const addTask = (
   task: TaskWithoutIdOrderChildren,
   subTasks: WithoutId<SubTask>[],
   noUndo?: 'no-undo',
-): string => {
+): void => {
   const newTaskId = getNewTaskId();
   const batch = db().batch();
   asyncAddTask(newTaskId, task, subTasks, batch).then(({ firestoreTask, createdSubTasks }) => {
@@ -136,7 +136,6 @@ export const addTask = (
     }
     batch.commit().then(ignore);
   });
-  return newTaskId;
 };
 
 export const removeAllForks = (taskId: string): void => {
