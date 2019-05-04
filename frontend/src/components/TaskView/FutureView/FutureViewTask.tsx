@@ -6,10 +6,11 @@ import CheckBox from 'components/UI/CheckBox';
 import { FloatingPosition, CalendarPosition } from 'components/Util/TaskEditors/editors-types';
 import { getTodayAtZeroAM, getDateWithDateString } from 'util/datetime-util';
 import OverdueAlert from 'components/UI/OverdueAlert';
-import { editMainTask, removeTask } from 'firebase/actions';
+import { editMainTask } from 'firebase/actions';
 import { useMappedWindowSize } from 'hooks/window-size-hook';
 import { NONE_TAG } from 'util/tag-util';
 import SamwiseIcon from 'components/UI/SamwiseIcon';
+import { removeTaskWithPotentialPrompt } from 'util/task-util';
 import FutureViewSubTask from './FutureViewSubTask';
 import styles from './FutureViewTask.module.css';
 
@@ -70,11 +71,11 @@ function FutureViewTask(
     }
   };
 
-  const replaceDateForFork = original.type === 'ONE_TIME'
-    ? null : getDateWithDateString(original.date, containerDate);
+  const replaceDateForFork = getDateWithDateString(original.date, containerDate);
+  const replaceDateForForkOpt = original.type === 'ONE_TIME' ? null : replaceDateForFork;
   const TaskCheckBox = (): ReactElement => {
     const { id, complete } = original;
-    const onChange = (): void => editMainTask(id, replaceDateForFork, { complete: !complete });
+    const onChange = (): void => editMainTask(id, replaceDateForForkOpt, { complete: !complete });
     return <CheckBox className={styles.TaskCheckBox} checked={complete} onChange={onChange} />;
   };
   const TaskName = (): ReactElement => {
@@ -84,12 +85,12 @@ function FutureViewTask(
   };
 
   const RemoveTaskIcon = (): ReactElement => {
-    const handler = (): void => removeTask(original);
+    const handler = (): void => removeTaskWithPotentialPrompt(original, replaceDateForFork);
     return <SamwiseIcon iconName="x-light" className={styles.TaskIcon} onClick={handler} />;
   };
   const PinIcon = (): ReactElement => {
     const { id, inFocus } = original;
-    const handler = (): void => editMainTask(id, replaceDateForFork, { inFocus: !inFocus });
+    const handler = (): void => editMainTask(id, replaceDateForForkOpt, { inFocus: !inFocus });
     return (
       <SamwiseIcon
         iconName={inFocus ? 'pin-light-filled' : 'pin-light-outline'}
@@ -119,7 +120,7 @@ function FutureViewTask(
       key={s.id}
       subTask={s}
       mainTaskId={original.id}
-      replaceDateForFork={replaceDateForFork}
+      replaceDateForFork={replaceDateForForkOpt}
       mainTaskCompleted={original.complete}
     />
   ));

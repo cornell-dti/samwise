@@ -1,11 +1,12 @@
 import React, { ReactElement, ReactNode } from 'react';
 import { connect } from 'react-redux';
-import { State, SubTask, Task } from '../../../store/store-types';
+import { getDateWithDateString } from 'util/datetime-util';
+import { removeTaskWithPotentialPrompt } from 'util/task-util';
+import { State, SubTask, Task } from 'store/store-types';
+import { useWindowSizeCallback, WindowSize } from 'hooks/window-size-hook';
 import { CalendarPosition, FloatingPosition, TaskWithSubTasks } from './editors-types';
 import TaskEditor from './TaskEditor';
 import styles from './FloatingTaskEditor.module.css';
-import { removeTask as removeTaskAction } from '../../../firebase/actions';
-import { useWindowSizeCallback, WindowSize } from '../../../hooks/window-size-hook';
 
 const EDITOR_WIDTH = 300;
 
@@ -93,11 +94,13 @@ function FloatingTaskEditor(
   const openPopup = (): void => setOpen(true);
   const closePopup = (): void => setOpen(false);
 
+  const { id: _, type, subTasks, ...mainTask } = task;
   const actions = {
-    removeTask: (): void => removeTaskAction(initialTask),
+    removeTask: (): void => removeTaskWithPotentialPrompt(
+      initialTask, getDateWithDateString(mainTask.date, taskAppearedDate),
+    ),
     onSave: closePopup,
   };
-  const { id: _, type, subTasks, ...mainTask } = task;
 
   return (
     <>

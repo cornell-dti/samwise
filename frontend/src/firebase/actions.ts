@@ -254,7 +254,7 @@ export const forkTaskWithDiff = (
 };
 
 export const removeTask = (task: Task, noUndo?: 'no-undo'): void => {
-  const { subTasks } = store.getState();
+  const { tasks, subTasks, repeatedTaskSet } = store.getState();
   const deletedSubTasks = task.children
     .map((id) => {
       const subTask = subTasks.get(id);
@@ -264,12 +264,55 @@ export const removeTask = (task: Task, noUndo?: 'no-undo'): void => {
   const batch = db().batch();
   batch.delete(tasksCollection().doc(task.id));
   task.children.forEach(id => batch.delete(subTasksCollection().doc(id)));
+  if (task.type === 'ONE_TIME') {
+    // remove fork mentions
+    repeatedTaskSet.forEach((repeatedTaskId) => {
+      const repeatedTask = tasks.get(repeatedTaskId) as RepeatingTask | null | undefined;
+      if (repeatedTask == null) {
+        return;
+      }
+      const oldForks = repeatedTask.forks;
+      let needUpdateFork = false;
+      const newForks = [];
+      for (let i = 0; i < oldForks.length; i += 1) {
+        const fork = oldForks[i];
+        if (fork.forkId === task.id) {
+          needUpdateFork = true;
+          newForks.push({ forkId: null, replaceDate: fork.replaceDate });
+        } else {
+          newForks.push(fork);
+        }
+      }
+      if (needUpdateFork) {
+        batch.update(tasksCollection().doc(repeatedTaskId), { forks: newForks });
+      }
+    });
+  } else {
+    // also delete all forks
+    task.forks.forEach((fork) => {
+      const { forkId } = fork;
+      if (forkId == null) {
+        return;
+      }
+      batch.delete(tasksCollection().doc(forkId));
+      const forkedTask = tasks.get(forkId);
+      if (forkedTask != null) {
+        forkedTask.children.forEach(id => batch.delete(subTasksCollection().doc(id)));
+      }
+    });
+  }
   batch.commit().then(() => {
     if (noUndo !== 'no-undo') {
       const { children, ...rest } = task;
       const fullTask = { ...rest, children: deletedSubTasks };
       emitUndoRemoveTaskToast(fullTask);
     }
+  });
+};
+
+export const removeOneRepeatedTask = (taskId: string, replaceDate: Date): void => {
+  tasksCollection().doc(taskId).update({
+    forks: firestore.FieldValue.arrayUnion({ forkId: null, replaceDate }),
   });
 };
 
