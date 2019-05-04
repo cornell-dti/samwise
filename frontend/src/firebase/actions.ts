@@ -302,7 +302,7 @@ export const removeSubTask = (
     mainTaskEdits: {},
     subTaskCreations: Map(),
     subTaskEdits: Map(),
-    subTaskDeletions: Set(subtaskId),
+    subTaskDeletions: Set.of(subtaskId),
   };
   if (replaceDate === null) {
     editTaskWithDiff(taskId, 'EDITING_ONE_TIME_TASK', diff);
