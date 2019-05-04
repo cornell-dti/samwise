@@ -11,7 +11,7 @@ cred = credentials.Certificate('firebaseadmin.json')
 firebase_admin.initialize_app(cred)
 
 db = firestore.client()
-actions = db.collection(u'samwise-user-actions')
+actions = db.collection(u'fake-user-actions')
 
 min_day = datetime.datetime(2019, 3, 3, )
 today = datetime.datetime.now()
