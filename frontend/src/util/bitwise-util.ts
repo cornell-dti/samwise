@@ -24,7 +24,7 @@ export const unsetBit = (bit: number, index: number, totalLen: number): number =
  * @param d The day of the week (zero-indexed from Sunday).
  * @param totalLen total length of the bitset.
  */
-export const setDayOfWeek = (bit: number, d: number): number => setBit(bit, d, DAYS_IN_WEEK);
+export const setDayOfWeek = (bit: number, d: number): number => setBit(bit, d, DAYS_IN_WEEK - 1);
 
 /**
  * Unsets a bit in a seven digit bitset representing week.
@@ -33,7 +33,9 @@ export const setDayOfWeek = (bit: number, d: number): number => setBit(bit, d, D
  * @param d The day of the week (zero-indexed from Sunday).
  * @param totalLen total length of the bitset.
  */
-export const unsetDayOfWeek = (bit: number, d: number): number => unsetBit(bit, d, DAYS_IN_WEEK);
+export const unsetDayOfWeek = (bit: number, d: number): number => (
+  unsetBit(bit, d, DAYS_IN_WEEK - 1)
+);
 
 /**
  * Whether a day of the week is set in a seven digit bitset.
@@ -42,4 +44,6 @@ export const unsetDayOfWeek = (bit: number, d: number): number => unsetBit(bit, 
  * @param d The day of the week (zero-indexed from Sunday).
  * @param totalLen total length of the bitset.
  */
-export const isDayOfWeekSet = (bit: number, d: number): boolean => isBitSet(bit, d, DAYS_IN_WEEK);
+export const isDayOfWeekSet = (bit: number, d: number): boolean => (
+  isBitSet(bit, d, DAYS_IN_WEEK - 1)
+);
