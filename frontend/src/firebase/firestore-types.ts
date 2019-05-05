@@ -4,6 +4,7 @@ import { RepeatingPattern } from '../store/store-types';
 export type FirestoreCommon = {
   readonly owner: string;
   readonly order: number;
+  readonly lastEdited: firestore.FieldValue;
 };
 
 export type FirestoreTag = FirestoreCommon & {
