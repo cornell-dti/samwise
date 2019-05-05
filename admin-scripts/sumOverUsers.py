@@ -38,6 +38,7 @@ for i in range(num_hours+1):
 
     for action in all_actions:
         result[action] += 0
+    #user is "all" to indicate a sum over all users. This name will not conflict with any user because real users use email ids.
     sum_day = {
         'actions': dict(result),
         'time': start,
