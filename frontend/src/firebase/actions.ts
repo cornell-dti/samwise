@@ -327,7 +327,9 @@ export const editMainTask = (
   if (replaceDate === null) {
     editTaskWithDiff(taskId, 'EDITING_ONE_TIME_TASK', diff);
   } else {
-    forkTaskWithDiff(taskId, replaceDate, diff);
+    const dateEdit = mainTaskEdits.date != null ? mainTaskEdits.date : replaceDate;
+    const newDiff = { ...diff, mainTaskEdits: { ...diff.mainTaskEdits, date: dateEdit } };
+    forkTaskWithDiff(taskId, replaceDate, newDiff);
   }
 };
 
@@ -335,7 +337,7 @@ export const editSubTask = (
   taskId: string, subtaskId: string, replaceDate: Date | null, partialSubTask: PartialSubTask,
 ): void => {
   const diff: Diff = {
-    mainTaskEdits: {},
+    mainTaskEdits: { date: replaceDate == null ? undefined : replaceDate },
     subTaskCreations: Map(),
     subTaskEdits: Map<string, PartialSubTask>().set(subtaskId, partialSubTask),
     subTaskDeletions: Set(),
@@ -351,7 +353,7 @@ export const removeSubTask = (
   taskId: string, subtaskId: string, replaceDate: Date | null,
 ): void => {
   const diff: Diff = {
-    mainTaskEdits: {},
+    mainTaskEdits: { date: replaceDate == null ? undefined : replaceDate },
     subTaskCreations: Map(),
     subTaskEdits: Map(),
     subTaskDeletions: Set.of(subtaskId),
