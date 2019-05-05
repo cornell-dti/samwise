@@ -7,7 +7,7 @@ import {
   UserActionRecord,
   UserActionStat
 } from './types';
-import {DateTime} from 'luxon';
+import { DateTime } from 'luxon';
 
 initializeApp();
 
@@ -19,29 +19,24 @@ const userActions = () => firestore().collection('samwise-user-actions');
 
 const getTime = (context: EventContext, duration: 'HOURLY' | 'DAILY' | 'WEEKLY' | 'MONTHLY'): firestore.Timestamp => {
   // makes a new Date object and sets it to 0 microseconds
-  const d = new Date(context.timestamp);
+  let d = new Date(context.timestamp);
+  let momentDate = DateTime.fromJSDate(d);
+  momentDate = momentDate.setZone('America/New_York');
   switch (duration) {
     case 'HOURLY':
-      d.setUTCMinutes(0, 0, 0);
+      momentDate = momentDate.set({ minute: 0, second: 0, millisecond: 0 });
       break;
     case 'DAILY':
-      d.setHours(0, 0, 0, 0);
+      momentDate = momentDate.set({ hour: 0, minute: 0, second: 0, millisecond: 0 });
       break;
     case 'WEEKLY':
-      const dayOffset = d.getDay();
-      d.setDate(d.getDate() - dayOffset);
-      d.setHours(0, 0, 0, 0);
+      momentDate =  momentDate.set({ weekday: 0, hour: 0, minute: 0, second: 0, millisecond: 0 });
       break;
     case 'MONTHLY':
-      d.setDate(1);
-      d.setHours(0, 0, 0, 0);
+      momentDate = momentDate.set({ day: 1, hour: 0, minute: 0, second: 0, millisecond: 0 });
       break;
   }
-  if (!((d.getTimezoneOffset() - 240) === 0)) {
-    const a = DateTime.local(d.getTimezoneOffset(), d.getMonth(), d.getDay()).setLocale('UTC-4');
-    
-  }
-
+  d = momentDate.toJSDate();
   // returns the time since 0 microseconds (since d)
   return firestore.Timestamp.fromDate(d);
 };
