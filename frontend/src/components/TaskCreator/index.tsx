@@ -124,9 +124,23 @@ export default class TaskCreator extends React.PureComponent<{}, State> {
     const commonTask = { name, tag, date, complete, inFocus: autoInFocus };
     let newTask: TaskWithoutIdOrderChildren;
     if (repeatData === null) {
-      newTask = { ...commonTask, type: 'ONE_TIME' };
+      date.setHours(23);
+      date.setMinutes(59);
+      date.setSeconds(59);
+      newTask = { ...commonTask, type: 'ONE_TIME', date };
     } else {
-      newTask = { ...commonTask, type: 'MASTER_TEMPLATE', forks: [], repeats: repeatData, inFocus: false };
+      const todayMidnight = new Date();
+      todayMidnight.setHours(23);
+      todayMidnight.setMinutes(59);
+      todayMidnight.setSeconds(59);
+      newTask = {
+        ...commonTask,
+        date: todayMidnight,
+        type: 'MASTER_TEMPLATE',
+        forks: [],
+        repeats: repeatData,
+        inFocus: false,
+      };
     }
     // Add the task to the store.
     addTask(newTask, newSubTasks);
