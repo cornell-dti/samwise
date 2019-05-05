@@ -7,6 +7,8 @@ import styles from './FloatingTaskEditor.module.css';
 import { removeTask as removeTaskAction } from '../../../firebase/actions';
 import { useWindowSizeCallback, WindowSize } from '../../../hooks/window-size-hook';
 
+const EDITOR_WIDTH = 300;
+
 const updateFloatingEditorPosition = (
   editorElement: HTMLFormElement | null | undefined,
   windowSize: WindowSize,
@@ -16,36 +18,36 @@ const updateFloatingEditorPosition = (
   if (editorPosDiv == null) {
     return;
   }
-  const taskElement = editorPosDiv.previousElementSibling == null
-    ? null
-    : editorPosDiv.previousElementSibling.previousElementSibling;
+  const taskElement = editorPosDiv.previousElementSibling;
   if (taskElement === null || !(taskElement instanceof HTMLDivElement)) {
     throw new Error('Task element must be a div!');
   }
-  editorPosDiv.style.position = 'fixed';
   const taskElementBoundingRect = taskElement.getBoundingClientRect();
   if (!(taskElementBoundingRect instanceof DOMRect)) {
     throw new Error('Bad taskElementBoundingRect!');
   }
-  const myWidth = editorPosDiv.offsetWidth;
   const myHeight = editorPosDiv.offsetHeight;
   const windowWidth = windowSize.width;
   const windowHeight = windowSize.height;
+  let posTop: number;
+  let posLeft: number;
   if (windowWidth <= 768) {
-    editorPosDiv.style.top = `${(windowHeight - myHeight) / 2}px`;
-    editorPosDiv.style.left = `${(windowWidth - myWidth) / 2}px`;
-    return;
-  }
-  const { y, left, right } = taskElementBoundingRect;
-  const topPos = (y + myHeight) > windowHeight ? windowHeight - myHeight : y;
-  editorPosDiv.style.top = `${topPos}px`;
-  if (position === 'right') {
-    editorPosDiv.style.left = `${right}px`;
-  } else if (position === 'left') {
-    editorPosDiv.style.left = `${left - editorPosDiv.offsetWidth}px`;
+    posTop = (windowHeight - myHeight) / 2;
+    posLeft = (windowWidth - EDITOR_WIDTH) / 2;
   } else {
-    throw new Error('Bad floating position!');
+    const { y, left, right } = taskElementBoundingRect;
+    posTop = (y + myHeight) > windowHeight ? windowHeight - myHeight : y;
+    if (position === 'right') {
+      posLeft = right;
+    } else if (position === 'left') {
+      posLeft = left - editorPosDiv.offsetWidth;
+    } else {
+      throw new Error('Bad floating position!');
+    }
   }
+  editorPosDiv.style.top = `${posTop}px`;
+  editorPosDiv.style.left = `${posLeft}px`;
+  editorPosDiv.style.display = 'block';
 };
 
 type OwnProps = {
@@ -89,18 +91,18 @@ function FloatingTaskEditor(
     <>
       {trigger(open, openPopup)}
       {open && (
-        <div className={styles.BackgroundBlocker} role="presentation" onClick={closePopup} />
-      )}
-      {open && (
-        <TaskEditor
-          id={task.id}
-          mainTask={mainTask}
-          subTasks={subTasks}
-          actions={actions}
-          className={styles.Editor}
-          editorRef={editorRef}
-          calendarPosition={calendarPosition}
-        />
+        <>
+          <TaskEditor
+            id={task.id}
+            mainTask={mainTask}
+            subTasks={subTasks}
+            actions={actions}
+            className={styles.Editor}
+            editorRef={editorRef}
+            calendarPosition={calendarPosition}
+          />
+          <div className={styles.BackgroundBlocker} role="presentation" onClick={closePopup} />
+        </>
       )}
     </>
   );

@@ -1,10 +1,12 @@
+@import '../../colors.scss';
+
 .SquareButton {
   display: flex;
   align-items: center;
   cursor: pointer;
   width: 32px;
   height: 32px;
-  border: solid 1px #5a5a5a;
+  border: solid 1px $typeface-grey;
 }
 
 .SquareButton:hover,
@@ -36,7 +38,7 @@
 
 .SquareButton .Icon .active {
   color: white;
-  background-color: #5a5a5a;
+  background-color: $typeface-grey;
 }
 
 .SquareButtonText {

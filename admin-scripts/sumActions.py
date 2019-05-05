@@ -21,7 +21,7 @@ usernames = set()
 for ob in actions.get():
     usernames.add(ob.get('user'))
 
-all_actions = ['editTask', 'editTag', 'deleteTag', 'createSubTask', 
+all_actions = ['editTask', 'editTag', 'deleteTag', 'createSubTask',
 'completeFocusedTask', 'deleteTask', 'createTag', 'focusTask', 'completeTask',
  'createTask', 'deleteSubTask']
 
@@ -49,12 +49,12 @@ for user in usernames:
             'actions': dict(result),
             'time': start,
             'user': user,
-            'type': 'DAILY' 
+            'type': 'DAILY'
         }
         db.collection('fake-user-actions').add(sum_day)
 
 print("starting weekly")
-idx = (min_day.weekday() + 1) % 7 
+idx = (min_day.weekday() + 1) % 7
 first_sun = min_day - datetime.timedelta(7+idx)
 
 end_goal = today + datetime.timedelta(days=(7))
@@ -84,15 +84,14 @@ for user in usernames:
             'actions': dict(result),
             'time': start,
             'user': user,
-            'type': 'WEEKLY' 
+            'type': 'WEEKLY'
         }
         db.collection('fake-user-actions').add(sum_day)
         end = end + datetime.timedelta(days=(7))
         end = end.replace(tzinfo=pytz.UTC)
 
-
 print("starting monthly")
-#adding monthly sum
+# adding monthly sum
 num_months = today.month - min_day.month
 first_month = min_day.month
 
@@ -119,6 +118,6 @@ for user in usernames:
             'actions': dict(result),
             'time': start,
             'user': user,
-            'type': 'MONTHLY' 
+            'type': 'MONTHLY'
         }
         db.collection('fake-user-actions').add(sum_day)

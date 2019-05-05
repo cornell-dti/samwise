@@ -1,4 +1,6 @@
 .Editor {
+  display: none;
+  position: fixed;
   width: 300px;
   z-index: 8;
   box-shadow: 0 5px 12px 0 rgba(0, 0, 0, 0.3);
