@@ -35,28 +35,14 @@ import { NONE_TAG_ID } from '../util/tag-util';
 import { Diff } from '../components/Util/TaskEditors/TaskEditor/task-diff-reducer';
 
 async function createFirestoreObject<T>(
-  orderFor: 'tags' | 'tasks',
-  source: T,
+  orderFor: 'tags' | 'tasks', source: T,
 ): Promise<T & FirestoreCommon> {
   const order = await allocateNewOrder(orderFor);
-  return {
-    ...source,
-    owner: getAppUser().email,
-    order,
-    lastEdited: firestore.FieldValue.serverTimestamp(),
-  };
+  return { ...source, owner: getAppUser().email, order };
 }
 
-const mergeWithLastUpdated = <T>(obj: T): T & { readonly lastEdited: firestore.FieldValue } => ({
-  lastEdited: firestore.FieldValue.serverTimestamp(),
-  ...obj,
-});
-
-type OwnerAndLastEdited = { readonly owner: string; readonly lastEdited: firestore.FieldValue };
-const mergeWithOwnerAndLastUpdated = <T>(obj: T): T & OwnerAndLastEdited => ({
-  owner: getAppUser().email,
-  lastEdited: firestore.FieldValue.serverTimestamp(),
-  ...obj,
+const mergeWithOwner = <T>(obj: T): T & { readonly owner: string } => ({
+  owner: getAppUser().email, ...obj,
 });
 
 type WithoutIdOrder<Props> = Pick<Props, Exclude<keyof Props, 'id' | 'order'>>;
@@ -87,10 +73,7 @@ export const addTag = (tag: WithoutIdOrder<Tag>): void => {
 
 export const editTag = (tag: Tag): void => {
   const { id, ...rest } = tag;
-  tagsCollection()
-    .doc(id)
-    .update(mergeWithLastUpdated(rest))
-    .then(ignore);
+  tagsCollection().doc(id).update(rest).then(ignore);
 };
 
 export const removeTag = (id: string): void => {
@@ -100,10 +83,9 @@ export const removeTag = (id: string): void => {
     .get()
     .then((s) => {
       const batch = db().batch();
-      s.docs
-        .filter(doc => doc.data().type === 'TASK')
+      s.docs.filter(doc => doc.data().type === 'TASK')
         .forEach((doc) => {
-          batch.update(tasksCollection().doc(doc.id), mergeWithLastUpdated({ tag: NONE_TAG_ID }));
+          batch.update(tasksCollection().doc(doc.id), { tag: NONE_TAG_ID });
         });
       batch.delete(tagsCollection().doc(id));
       batch.commit().then(ignore);
@@ -392,12 +374,8 @@ export const removeSubTask = (
  */
 export const clearFocus = (taskIds: string[], subTaskIds: string[]): void => {
   const batch = db().batch();
-  taskIds.forEach(
-    id => batch.update(tasksCollection().doc(id), mergeWithLastUpdated({ inFocus: false })),
-  );
-  subTaskIds.forEach(
-    id => batch.update(subTasksCollection().doc(id), mergeWithLastUpdated({ inFocus: false })),
-  );
+  taskIds.forEach(id => batch.update(tasksCollection().doc(id), { inFocus: false }));
+  subTaskIds.forEach(id => batch.update(subTasksCollection().doc(id), { inFocus: false }));
   batch.commit().then(ignore);
 };
 
@@ -426,12 +404,12 @@ export function completeTaskInFocus<T extends { readonly id: string; readonly or
   const task = tasks.get(completedTaskIdOrder.id) || error('bad');
   const batch = db().batch();
   if (task.inFocus) {
-    batch.update(tasksCollection().doc(task.id), mergeWithLastUpdated({ complete: true }));
+    batch.update(tasksCollection().doc(task.id), { complete: true });
   }
   task.children.forEach((id) => {
     const s = subTasks.get(id);
     if (s != null && s.inFocus) {
-      batch.update(subTasksCollection().doc(id), mergeWithLastUpdated({ complete: true }));
+      batch.update(subTasksCollection().doc(id), { complete: true });
     }
   });
   batch.commit().then(ignore);
@@ -444,21 +422,23 @@ export function completeTaskInFocus<T extends { readonly id: string; readonly or
  * @param reorderMap the map that maps the id of changed order items to new order ids.
  * @return a new list with updated orders.
  */
-export function applyReorder(orderFor: 'tags' | 'tasks', reorderMap: Map<string, number>): void {
+export function applyReorder(
+  orderFor: 'tags' | 'tasks',
+  reorderMap: Map<string, number>,
+): void {
   const collection = orderFor === 'tags'
     ? (id: string) => tagsCollection().doc(id)
     : (id: string) => tasksCollection().doc(id);
   const batch = db().batch();
   reorderMap.forEach((order, id) => {
-    batch.update(collection(id), mergeWithLastUpdated({ order }));
+    batch.update(collection(id), { order });
   });
   batch.commit().then(ignore);
 }
 
 export const completeOnboarding = (completedOnboarding: boolean): void => {
-  settingsCollection()
-    .doc(getAppUser().email)
-    .update(mergeWithLastUpdated({ completedOnboarding }))
+  settingsCollection().doc(getAppUser().email)
+    .update({ completedOnboarding })
     .then(ignore);
 };
 
@@ -467,9 +447,9 @@ export const readBannerMessage = (bannerMessageId: BannerMessageIds, isRead: boo
   db().runTransaction(async (transaction) => {
     const doc = await transaction.get(docRef);
     if (doc.exists) {
-      transaction.update(docRef, mergeWithLastUpdated({ [bannerMessageId]: isRead }));
+      transaction.update(docRef, { [bannerMessageId]: isRead });
     } else {
-      transaction.set(docRef, mergeWithLastUpdated({ [bannerMessageId]: isRead }));
+      transaction.set(docRef, { [bannerMessageId]: isRead });
     }
   });
 };
@@ -492,14 +472,11 @@ export const importCourseExams = (): void => {
         const t = new Date(time);
         const filter = (task: Task): boolean => {
           const { name, date } = task;
-          return (
-            task.tag === tag.id
-            && name === examName
+          return task.tag === tag.id && name === examName
             && date.getFullYear() === t.getFullYear()
             && date.getMonth() === t.getMonth()
             && date.getDate() === t.getDate()
-            && date.getHours() === t.getHours()
-          );
+            && date.getHours() === t.getHours();
         };
         if (!Array.from(tasks.values()).some(filter)) {
           const newTask: OneTimeTaskWithoutIdOrderChildren = {
@@ -515,16 +492,15 @@ export const importCourseExams = (): void => {
       });
     });
   });
-  allocateNewOrder('tasks', newTasks.length).then((startOrder: number) => {
-    const newOrderedTasks = newTasks.map((t, i) => ({ ...t, order: i + startOrder }));
-    const batch = db().batch();
-    newOrderedTasks.forEach((orderedTask) => {
-      const transformedTask: FirestoreTask = mergeWithOwnerAndLastUpdated({
-        ...orderedTask, children: [],
+  allocateNewOrder('tasks', newTasks.length)
+    .then((startOrder: number) => {
+      const newOrderedTasks = newTasks.map((t, i) => ({ ...t, order: i + startOrder }));
+      const batch = db().batch();
+      newOrderedTasks.forEach((orderedTask) => {
+        const transformedTask: FirestoreTask = mergeWithOwner({ ...orderedTask, children: [] });
+        batch.set(tasksCollection().doc(), transformedTask);
       });
-      batch.set(tasksCollection().doc(), transformedTask);
+      // eslint-disable-next-line no-alert
+      batch.commit().then(() => alert('Exams Added Successfully!'));
     });
-    // eslint-disable-next-line no-alert
-    batch.commit().then(() => alert('Exams Added Successfully!'));
-  });
 };
