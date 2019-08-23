@@ -7,6 +7,7 @@ import {
   UserActionRecord,
   UserActionStat
 } from './types';
+import { DateTime } from 'luxon';
 
 initializeApp();
 
@@ -16,16 +17,35 @@ const SUBTASK_DOC = 'samwise-subtasks/{subTaskId}';
 
 const userActions = () => firestore().collection('samwise-user-actions');
 
-const getTime = (context: EventContext): firestore.Timestamp => {
-  const d = new Date(context.timestamp);
-  d.setUTCMinutes(0, 0, 0);
+const getTime = (context: EventContext, duration: 'HOURLY' | 'DAILY' | 'WEEKLY' | 'MONTHLY'): firestore.Timestamp => {
+  // makes a new Date object and sets it to 0 microseconds
+  let d = new Date(context.timestamp);
+  let momentDate = DateTime.fromJSDate(d);
+  momentDate = momentDate.setZone('America/New_York');
+  switch (duration) {
+    case 'HOURLY':
+      momentDate = momentDate.set({ minute: 0, second: 0, millisecond: 0 });
+      break;
+    case 'DAILY':
+      momentDate = momentDate.set({ hour: 0, minute: 0, second: 0, millisecond: 0 });
+      break;
+    case 'WEEKLY':
+      momentDate =  momentDate.set({ weekday: 0, hour: 0, minute: 0, second: 0, millisecond: 0 });
+      break;
+    case 'MONTHLY':
+      momentDate = momentDate.set({ day: 1, hour: 0, minute: 0, second: 0, millisecond: 0 });
+      break;
+  }
+  d = momentDate.toJSDate();
+  // returns the time since 0 microseconds (since d)
   return firestore.Timestamp.fromDate(d);
 };
 
-const getUserActionQuery = (user: string, time: firestore.Timestamp): firestore.Query => {
+const getUserActionQuery = (user: string, time: firestore.Timestamp, duration: 'HOURLY' | 'DAILY' | 'WEEKLY' | 'MONTHLY'): firestore.Query => {
   let q: firestore.Query = userActions();
-  q = q.where('user', '==', user);
-  q = q.where('time', '==', time);
+  // querying the samwiwse-user-actions for the specific user and time
+  q = q.where('user', '==', user).where('time', '==', time).where('type', '==', duration);
+  // returns the resulting actions of the given user at the specific time
   return q;
 };
 
@@ -43,14 +63,15 @@ const emptyActions: UserActionStat = {
   completeFocusedTask: 0
 };
 
-const updateRecord = (
+const updateRecordForDuration = (
+  duration: 'HOURLY' | 'DAILY' | 'WEEKLY' | 'MONTHLY',
   user: string, context: EventContext,
   getNewActionStat: () => UserActionStat,
   updateActionStat: (actions: UserActionStat) => UserActionStat
 ): void => {
-  const time = getTime(context);
+  const time = getTime(context, duration);
   firestore().runTransaction(async (transaction) => {
-    const querySnapshot = await transaction.get(getUserActionQuery(user, time));
+    const querySnapshot = await transaction.get(getUserActionQuery(user, time, duration));
     if (querySnapshot.size === 0) {
       const record: UserActionRecord = { user, time, actions: getNewActionStat() };
       transaction.create(userActions().doc(), record);
@@ -63,6 +84,19 @@ const updateRecord = (
   }).then(() => {
     // Do nothing here
   }).catch(reason => console.log(reason));
+  // prints out the reason the Promise was not kept
+};
+
+const updateRecord = (
+  user: string, context: EventContext,
+  getNewActionStat: () => UserActionStat,
+  updateActionStat: (actions: UserActionStat) => UserActionStat
+  // passing UserActionStats as an input and returning the updated UserActionStat
+): void => {
+  updateRecordForDuration('HOURLY', user, context, getNewActionStat, updateActionStat);
+  updateRecordForDuration('DAILY', user, context, getNewActionStat, updateActionStat);
+  updateRecordForDuration('WEEKLY', user, context, getNewActionStat, updateActionStat);
+  updateRecordForDuration('MONTHLY', user, context, getNewActionStat, updateActionStat);
 };
 
 /*
