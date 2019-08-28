@@ -19,7 +19,7 @@ it('CheckBox can render', () => {
 
 function StatefulCheckBox({ disabled }: { readonly disabled: boolean }): ReactElement {
   const [checked, setChecked] = useState(false);
-  const onChange = (): void => setChecked(prev => !prev);
+  const onChange = (): void => setChecked((prev) => !prev);
   return (
     <CheckBox checked={checked} onChange={onChange} disabled={disabled} />
   );

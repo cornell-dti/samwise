@@ -83,7 +83,7 @@ export const removeTag = (id: string): void => {
     .get()
     .then((s) => {
       const batch = db().batch();
-      s.docs.filter(doc => doc.data().type === 'TASK')
+      s.docs.filter((doc) => doc.data().type === 'TASK')
         .forEach((doc) => {
           batch.update(tasksCollection().doc(doc.id), { tag: NONE_TAG_ID });
         });
@@ -111,7 +111,7 @@ const asyncAddTask = async (
     batch.set(subtaskDoc, firebaseSubTask);
     return { ...subtask, id: subtaskDoc.id };
   });
-  const subtaskIds = createdSubTasks.map(s => s.id);
+  const subtaskIds = createdSubTasks.map((s) => s.id);
   const firestoreTask: FirestoreTask = { ...baseTask, ...task, children: subtaskIds };
   batch.set(tasksCollection().doc(newTaskId), firestoreTask);
   return { firestoreTask, createdSubTasks };
@@ -143,7 +143,7 @@ export const removeAllForks = (taskId: string): void => {
     const { tasks } = store.getState();
     const task = tasks.get(taskId) || error('bad!');
     const repeatingTask = task as RepeatingTask;
-    const forkIds = repeatingTask.forks.map(fork => fork.forkId);
+    const forkIds = repeatingTask.forks.map((fork) => fork.forkId);
     const batch = db().batch();
     forkIds.forEach((id) => {
       if (id !== null) {
@@ -153,7 +153,7 @@ export const removeAllForks = (taskId: string): void => {
         const forkedTask = tasks.get(id);
         if (forkedTask != null) {
           forkedTask.children.forEach(
-            subTaskId => batch.delete(subTasksCollection().doc(subTaskId)),
+            (subTaskId) => batch.delete(subTasksCollection().doc(subTaskId)),
           );
         }
       }
@@ -225,7 +225,7 @@ export const forkTaskWithDiff = (
     ...originalTaskWithoutId, ...mainTaskEdits, type: 'ONE_TIME',
   };
   const newSubTasks: WithoutId<SubTask>[] = [];
-  subTaskCreations.forEach(s => newSubTasks.push(s));
+  subTaskCreations.forEach((s) => newSubTasks.push(s));
   children.forEach((childrenId) => {
     if (subTaskDeletions.has(childrenId)) {
       return;
@@ -262,7 +262,7 @@ export const removeTask = (task: Task, noUndo?: 'no-undo'): void => {
     .toArray();
   const batch = db().batch();
   batch.delete(tasksCollection().doc(task.id));
-  task.children.forEach(id => batch.delete(subTasksCollection().doc(id)));
+  task.children.forEach((id) => batch.delete(subTasksCollection().doc(id)));
   if (task.type === 'ONE_TIME') {
     // remove fork mentions
     repeatedTaskSet.forEach((repeatedTaskId) => {
@@ -296,7 +296,7 @@ export const removeTask = (task: Task, noUndo?: 'no-undo'): void => {
       batch.delete(tasksCollection().doc(forkId));
       const forkedTask = tasks.get(forkId);
       if (forkedTask != null) {
-        forkedTask.children.forEach(id => batch.delete(subTasksCollection().doc(id)));
+        forkedTask.children.forEach((id) => batch.delete(subTasksCollection().doc(id)));
       }
     });
   }
@@ -376,8 +376,8 @@ export const removeSubTask = (
  */
 export const clearFocus = (taskIds: string[], subTaskIds: string[]): void => {
   const batch = db().batch();
-  taskIds.forEach(id => batch.update(tasksCollection().doc(id), { inFocus: false }));
-  subTaskIds.forEach(id => batch.update(subTasksCollection().doc(id), { inFocus: false }));
+  taskIds.forEach((id) => batch.update(tasksCollection().doc(id), { inFocus: false }));
+  subTaskIds.forEach((id) => batch.update(subTasksCollection().doc(id), { inFocus: false }));
   batch.commit().then(ignore);
 };
 

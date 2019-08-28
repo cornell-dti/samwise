@@ -100,7 +100,7 @@ function FutureViewTask(
     );
   };
 
-  const renderMainTaskInfo = (simplified: boolean = false): ReactElement => {
+  const renderMainTaskInfo = (simplified = false): ReactElement => {
     if (simplified && isInMainList) {
       const style = { backgroundColor: color, height: '25px' };
       return <div className={styles.TaskMainWrapper} style={style} />;
@@ -115,7 +115,7 @@ function FutureViewTask(
     );
   };
 
-  const renderSubTasks = (): ReactNode => filteredSubTasks.map(s => (
+  const renderSubTasks = (): ReactNode => filteredSubTasks.map((s) => (
     <FutureViewSubTask
       key={s.id}
       subTask={s}

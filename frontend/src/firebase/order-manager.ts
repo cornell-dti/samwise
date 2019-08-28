@@ -19,7 +19,7 @@ type PartialManager = Partial<Manager>;
  * @return {Promise<number>} the promise of the order number.
  */
 export default async function allocateNewOrder(
-  orderFor: 'tags' | 'tasks', count: number = 1,
+  orderFor: 'tags' | 'tasks', count = 1,
 ): Promise<number> {
   const ref = managerRef();
   const forTags = orderFor === 'tags';

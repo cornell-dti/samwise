@@ -27,7 +27,7 @@ function FocusTask({ id, order, filterCompleted, original, filtered }: Props): R
   }
   return (
     <Draggable draggableId={`${id}-${filterCompleted}`} index={order}>
-      {provided => (
+      {(provided) => (
         <div ref={provided.innerRef} {...provided.draggableProps} {...provided.dragHandleProps}>
           <InlineTaskEditor
             className={styles.FocusTask}

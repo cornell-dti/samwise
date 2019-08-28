@@ -12,12 +12,12 @@ export default class ErrorBoundary extends React.PureComponent<Props, State> {
     return { hasError: true };
   }
 
-  private ignoreError = (): void => this.setState({ hasError: false });
-
   public componentDidCatch(error: Error | null, info: object): void {
     // eslint-disable-next-line no-console
     console.log({ error, info }); // necessary for error logging!
   }
+
+  private ignoreError = (): void => this.setState({ hasError: false });
 
   public render(): ReactElement {
     const { children } = this.props;
@@ -54,7 +54,7 @@ export default class ErrorBoundary extends React.PureComponent<Props, State> {
                 style={{ color: 'white', textDecoration: 'underline' }}
                 href="https://goo.gl/forms/PZUZ1Ze6kN82EmcD2"
               >
-                  Send Feedback
+                Send Feedback
               </a>
             </p>
             <button type="button" onClick={this.ignoreError}>

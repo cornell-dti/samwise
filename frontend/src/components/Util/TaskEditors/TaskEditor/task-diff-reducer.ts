@@ -89,7 +89,7 @@ function reducer(state: State, action: Action): State {
     case 'EDIT_SUBTASK': {
       const { subTasks, diff, ...restState } = state;
       const { subTaskId, change } = action;
-      const newSubTasks = subTasks.map(s => (s.id === subTaskId ? { ...s, ...change } : s));
+      const newSubTasks = subTasks.map((s) => (s.id === subTaskId ? { ...s, ...change } : s));
       let newDiff: Diff;
       const createdSubTask = diff.subTaskCreations.get(subTaskId);
       if (createdSubTask != null) {
@@ -99,7 +99,7 @@ function reducer(state: State, action: Action): State {
         };
       } else {
         const subTaskEdits = diff.subTaskEdits.update(
-          subTaskId, change, prevChange => ({ ...prevChange, ...change }),
+          subTaskId, change, (prevChange) => ({ ...prevChange, ...change }),
         );
         newDiff = { ...diff, subTaskEdits };
       }

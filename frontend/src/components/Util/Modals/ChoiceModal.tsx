@@ -41,7 +41,7 @@ export default function ChoiceModal<Choices extends ChoiceObj>(
       <div className={styles.TextContainer}>{message}</div>
       <div className={styles.ButtonContainer}>
         <span className={styles.Filler} />
-        {Object.keys(choices).map(key => (
+        {Object.keys(choices).map((key) => (
           <button
             key={key}
             type="button"

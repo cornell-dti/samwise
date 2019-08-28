@@ -88,7 +88,7 @@ function FocusView({ tasks, progress }: FocusViewProps): ReactElement {
         }
         return { ...t, inCompleteFocusView: true };
       };
-      setLocalTasks(prevTasks => prevTasks.map(taskReplacer));
+      setLocalTasks((prevTasks) => prevTasks.map(taskReplacer));
       completeTaskInFocus(completedTaskIdOrder, localCompletedList);
     } else if (
       source.droppableId === focusViewCompletedDroppableId
@@ -101,7 +101,7 @@ function FocusView({ tasks, progress }: FocusViewProps): ReactElement {
     }
   };
 
-  const onDoesShowCompletedTasksChange = (): void => setDoesShowCompletedTasks(prev => !prev);
+  const onDoesShowCompletedTasksChange = (): void => setDoesShowCompletedTasks((prev) => !prev);
 
   return (
     <div className={styles.FocusView}>
@@ -113,7 +113,7 @@ function FocusView({ tasks, progress }: FocusViewProps): ReactElement {
       <div className={styles.FocusTaskContainer}>
         <DragDropContext onDragEnd={onDragEnd}>
           <Droppable droppableId={focusViewNotCompletedDroppableId}>
-            {provided => (
+            {(provided) => (
               <div ref={provided.innerRef} {...provided.droppableProps}>
                 {renderTaskList(localUncompletedList, false)}
                 {provided.placeholder}
@@ -121,7 +121,7 @@ function FocusView({ tasks, progress }: FocusViewProps): ReactElement {
             )}
           </Droppable>
           <Droppable droppableId={focusViewCompletedDroppableId}>
-            {provided => (
+            {(provided) => (
               <div
                 ref={provided.innerRef}
                 className={styles.Droppable}

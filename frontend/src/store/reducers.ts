@@ -31,9 +31,9 @@ const initialState: State = {
 
 function patchTags(state: State, { created, edited, deleted }: PatchTags): State {
   const newTags = state.tags.withMutations((tags) => {
-    created.forEach(t => tags.set(t.id, t));
-    edited.forEach(t => tags.set(t.id, t));
-    deleted.forEach(id => tags.delete(id));
+    created.forEach((t) => tags.set(t.id, t));
+    edited.forEach((t) => tags.set(t.id, t));
+    deleted.forEach((id) => tags.delete(id));
   });
   return { ...state, tags: newTags };
 }
@@ -89,12 +89,12 @@ function patchTasks(state: State, { created, edited, deleted }: PatchTasks): Sta
         s.add(t.id);
       }
     });
-    deleted.forEach(id => s.remove(id));
+    deleted.forEach((id) => s.remove(id));
   });
   const newTasks = state.tasks.withMutations((tasks) => {
-    created.forEach(t => tasks.set(t.id, t));
-    edited.forEach(t => tasks.set(t.id, t));
-    deleted.forEach(id => tasks.delete(id));
+    created.forEach((t) => tasks.set(t.id, t));
+    edited.forEach((t) => tasks.set(t.id, t));
+    deleted.forEach((id) => tasks.delete(id));
   });
   return {
     ...state, tasks: newTasks, dateTaskMap: newDateTaskMap, repeatedTaskSet: newRepeatedTaskSet,
@@ -103,9 +103,9 @@ function patchTasks(state: State, { created, edited, deleted }: PatchTasks): Sta
 
 function patchSubTasks(state: State, { created, edited, deleted }: PatchSubTasks): State {
   const newSubTasks = state.subTasks.withMutations((subTasks) => {
-    created.forEach(t => subTasks.set(t.id, t));
-    edited.forEach(t => subTasks.set(t.id, t));
-    deleted.forEach(id => subTasks.delete(id));
+    created.forEach((t) => subTasks.set(t.id, t));
+    edited.forEach((t) => subTasks.set(t.id, t));
+    deleted.forEach((id) => subTasks.delete(id));
   });
   return { ...state, subTasks: newSubTasks };
 }

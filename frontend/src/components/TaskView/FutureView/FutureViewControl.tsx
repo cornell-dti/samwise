@@ -213,7 +213,7 @@ function DisplayOptionControl({ nDays, displayOption, offset, onChange }: Props)
     );
   };
   return (
-    <React.Fragment>
+    <>
       <SquareIconToggle
         active={doesShowCompletedTasks}
         iconNames={[faEyeSlash, faEye]}
@@ -224,7 +224,7 @@ function DisplayOptionControl({ nDays, displayOption, offset, onChange }: Props)
         {renderContainerTypeSwitcherButton('BIWEEKLY', '2W')}
         {renderContainerTypeSwitcherButton('MONTHLY', 'M')}
       </div>
-    </React.Fragment>
+    </>
   );
 }
 

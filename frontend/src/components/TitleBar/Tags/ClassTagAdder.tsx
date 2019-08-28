@@ -73,7 +73,7 @@ function ClassTagAdder({ courses }: Props): ReactElement | null {
       name: value, color: getUnusedColor(), classId,
     });
     // force the react search box to rerender due to its bug.
-    setKey(prev => prev + 1);
+    setKey((prev) => prev + 1);
   };
   return (
     <div className={`${styles.TagColorConfigItemAdder} ${styles.SearchClasses}`} title="Search for a class">

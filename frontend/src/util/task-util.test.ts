@@ -46,7 +46,7 @@ const exampleSubTasks: SubTask[] = [
 ];
 const [s1, s2, s3, s4] = exampleSubTasks;
 const commonSubTaskMap: Map<string, SubTask> = Map.of().withMutations((m: Map<string, SubTask>) => {
-  exampleSubTasks.forEach(s => m.set(s.id, s));
+  exampleSubTasks.forEach((s) => m.set(s.id, s));
 });
 
 type FilterResult = TaskWithSubTasks | null;
@@ -101,11 +101,11 @@ it('getFiltered(Completed|NotCompleted)InFocusTask are complementary', () => {
       let errorMessage = 'The subtasks in completed and uncompleted are not disjoint union.';
       errorMessage += ` Task: { complete: ${complete}, inFocus: ${inFocus}, chilren: ${children} }.`;
       errorMessage += ` Id Set: ${subTaskIdSet.toJS()}.`;
-      errorMessage += ` SubTasks: ${allSubTasks.map(s => s.id)}`;
+      errorMessage += ` SubTasks: ${allSubTasks.map((s) => s.id)}`;
       throw new Error(errorMessage);
     }
     // ensure allSubTasks are all in focus.
-    allSubTasks.forEach(subTask => expect(task.inFocus || subTask.inFocus).toBe(true));
+    allSubTasks.forEach((subTask) => expect(task.inFocus || subTask.inFocus).toBe(true));
   });
 });
 

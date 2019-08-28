@@ -1,4 +1,4 @@
-// eslint-disable-next-line import/prefer-default-export, reason: cannot export default type
+// eslint-disable-next-line import/prefer-default-export
 export type IconName =
   | 'alert'
   | 'calendar-dark'
