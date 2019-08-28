@@ -1,17 +1,18 @@
 import React, { KeyboardEvent, ReactElement, SyntheticEvent, ReactNode } from 'react';
 import { connect } from 'react-redux';
-import styles from './FutureViewTask.module.css';
+import FloatingTaskEditor from 'components/Util/TaskEditors/FloatingTaskEditor';
+import { State, SubTask, Task } from 'store/store-types';
+import CheckBox from 'components/UI/CheckBox';
+import { FloatingPosition, CalendarPosition } from 'components/Util/TaskEditors/editors-types';
+import { getTodayAtZeroAM, getDateWithDateString } from 'util/datetime-util';
+import OverdueAlert from 'components/UI/OverdueAlert';
+import { editMainTask } from 'firebase/actions';
+import { useMappedWindowSize } from 'hooks/window-size-hook';
+import { NONE_TAG } from 'util/tag-util';
+import SamwiseIcon from 'components/UI/SamwiseIcon';
+import { removeTaskWithPotentialPrompt } from 'util/task-util';
 import FutureViewSubTask from './FutureViewSubTask';
-import FloatingTaskEditor from '../../Util/TaskEditors/FloatingTaskEditor';
-import { State, SubTask, Task } from '../../../store/store-types';
-import CheckBox from '../../UI/CheckBox';
-import { FloatingPosition, CalendarPosition } from '../../Util/TaskEditors/editors-types';
-import { getTodayAtZeroAM } from '../../../util/datetime-util';
-import OverdueAlert from '../../UI/OverdueAlert';
-import { editMainTask, removeTask } from '../../../firebase/actions';
-import { useMappedWindowSize } from '../../../hooks/window-size-hook';
-import { NONE_TAG } from '../../../util/tag-util';
-import SamwiseIcon from '../../UI/SamwiseIcon';
+import styles from './FutureViewTask.module.css';
 
 type CompoundTask = {
   readonly original: Task;
@@ -21,6 +22,7 @@ type CompoundTask = {
 
 type OwnProps = {
   readonly taskId: string;
+  readonly containerDate: string;
   readonly inNDaysView: boolean;
   readonly taskEditorPosition: FloatingPosition;
   readonly calendarPosition: CalendarPosition;
@@ -37,7 +39,7 @@ type Props = OwnProps & {
  */
 function FutureViewTask(
   {
-    compoundTask, inNDaysView, taskEditorPosition, isInMainList, calendarPosition,
+    compoundTask, containerDate, inNDaysView, taskEditorPosition, isInMainList, calendarPosition,
   }: Props,
 ): ReactElement | null {
   const isSmallScreen = useMappedWindowSize(({ width }) => width <= 768);
@@ -69,9 +71,11 @@ function FutureViewTask(
     }
   };
 
+  const replaceDateForFork = getDateWithDateString(original.date, containerDate);
+  const replaceDateForForkOpt = original.type === 'ONE_TIME' ? null : replaceDateForFork;
   const TaskCheckBox = (): ReactElement => {
     const { id, complete } = original;
-    const onChange = (): void => editMainTask(id, { complete: !complete });
+    const onChange = (): void => editMainTask(id, replaceDateForForkOpt, { complete: !complete });
     return <CheckBox className={styles.TaskCheckBox} checked={complete} onChange={onChange} />;
   };
   const TaskName = (): ReactElement => {
@@ -81,12 +85,12 @@ function FutureViewTask(
   };
 
   const RemoveTaskIcon = (): ReactElement => {
-    const handler = (): void => removeTask(original);
+    const handler = (): void => removeTaskWithPotentialPrompt(original, replaceDateForFork);
     return <SamwiseIcon iconName="x-light" className={styles.TaskIcon} onClick={handler} />;
   };
   const PinIcon = (): ReactElement => {
     const { id, inFocus } = original;
-    const handler = (): void => editMainTask(id, { inFocus: !inFocus });
+    const handler = (): void => editMainTask(id, replaceDateForForkOpt, { inFocus: !inFocus });
     return (
       <SamwiseIcon
         iconName={inFocus ? 'pin-light-filled' : 'pin-light-outline'}
@@ -116,6 +120,7 @@ function FutureViewTask(
       key={s.id}
       subTask={s}
       mainTaskId={original.id}
+      replaceDateForFork={replaceDateForForkOpt}
       mainTaskCompleted={original.complete}
     />
   ));
@@ -157,6 +162,7 @@ function FutureViewTask(
       position={taskEditorPosition}
       calendarPosition={calendarPosition}
       initialTask={original}
+      taskAppearedDate={containerDate}
       trigger={trigger}
     />
   );

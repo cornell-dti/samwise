@@ -1,6 +1,9 @@
 import { Map } from 'immutable';
-import { SubTask, Task } from '../store/store-types';
-import { TaskWithSubTasks } from '../components/Util/TaskEditors/editors-types';
+import { TaskWithSubTasks } from 'components/Util/TaskEditors/editors-types';
+import { promptChoice, promptConfirm } from 'components/Util/Modals';
+import { SubTask, Task, RepeatingPattern, RepeatMetaData, ForkedTaskMetaData } from 'store/store-types';
+import { removeTask, removeOneRepeatedTask } from 'firebase/actions';
+import { isBitSet } from './bitwise-util';
 
 /**
  * This is the utility module for array of tasks and subtasks.
@@ -129,3 +132,105 @@ export const computeTaskProgress = (
   }
   return { completedTasksCount, allTasksCount };
 };
+
+/**
+ * @param date the date to check.
+ * @param pattern the repeats pattern to be checked against.
+ * @returns whether the repeating pattern matches the given date.
+ */
+function dateMatchRepeatPattern(date: Date, pattern: RepeatingPattern): boolean {
+  switch (pattern.type) {
+    case 'WEEKLY':
+      return isBitSet(pattern.bitSet, date.getDay(), 7);
+    case 'BIWEEKLY':
+      throw new Error('NOT_SUPPORTED_YET');
+    case 'MONTHLY':
+      return isBitSet(pattern.bitSet, date.getDate(), 31);
+    default:
+      throw new Error();
+  }
+}
+
+/**
+ * @param date the date to check.
+ * @param repeats the repeats metadata to be checked against.
+ * @param forks the forks of the repeating task to be checked against.
+ * @returns whether the given date can host a repeats given all the repeats info.
+ */
+export function dateMatchRepeats(
+  date: Date, repeats: RepeatMetaData, forks: readonly ForkedTaskMetaData[],
+): boolean {
+  const dateString = date.toDateString();
+  if (forks.some(({ replaceDate }) => replaceDate.toDateString() === dateString)) {
+    // it's a one time task or a fork, not a repeat
+    return false;
+  }
+  const { startDate, endDate, pattern } = repeats;
+  if (date < startDate) {
+    // before the start
+    return false;
+  }
+  if (endDate instanceof Date) {
+    if (date > endDate) {
+      // after the end
+      return false;
+    }
+    return dateMatchRepeatPattern(date, pattern);
+  }
+  const repeatCount: number = endDate;
+  let passedRepeats = 0;
+  const currentDate = new Date(startDate);
+  while (currentDate < date) {
+    if (dateMatchRepeatPattern(currentDate, pattern)) {
+      passedRepeats += 1;
+      currentDate.setDate(currentDate.getDate() + 1);
+    }
+    if (passedRepeats >= repeatCount) {
+      // after n occurences
+      return false;
+    }
+  }
+  return dateMatchRepeatPattern(date, pattern);
+}
+
+const repeatedTaskEditChoices = {
+  CANCEL_CHANGES: 'Cancel',
+  CHANGE_MASTER_TEMPLATE: 'Change master',
+  FORK: 'Fork',
+};
+
+export function promptRepeatedTaskEditChoice(): Promise<keyof typeof repeatedTaskEditChoices> {
+  return promptChoice('Do you want to change master or fork?', repeatedTaskEditChoices);
+}
+
+const removeTaskChoices = {
+  CANCEL_REMOVE: 'Cancel',
+  REMOVE_ALL: 'Remove All',
+  REMOVE_ONE: 'Remove This One',
+};
+
+export function removeTaskWithPotentialPrompt(task: Task, replaceDate: Date): void {
+  if (task.type === 'ONE_TIME') {
+    promptConfirm('Do you really want to remove this task? The removed task cannot be recovered.')
+      .then((confirmed) => {
+        if (confirmed) {
+          removeTask(task, 'no-undo');
+        }
+      });
+  } else {
+    promptChoice('How do you want to remove this repeated task?', removeTaskChoices).then((c) => {
+      switch (c) {
+        case 'CANCEL_REMOVE':
+          return;
+        case 'REMOVE_ALL':
+          removeTask(task, 'no-undo');
+          return;
+        case 'REMOVE_ONE':
+          removeOneRepeatedTask(task.id, replaceDate);
+          return;
+        default:
+          throw new Error();
+      }
+    });
+  }
+}

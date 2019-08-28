@@ -23,7 +23,7 @@ export type SubTaskWithoutIdOrder = Pick<SubTask, 'name' | 'complete' | 'inFocus
  */
 export type PartialSubTask = Partial<SubTaskWithoutIdOrder>;
 
-export type Task = {
+export type CommonTask = {
   readonly id: string;
   readonly order: number;
   readonly name: string; // Example: "Task 1 name"
@@ -34,11 +34,46 @@ export type Task = {
   readonly children: Set<string>;
 };
 
-type MainTaskProperties = 'order' | 'name' | 'tag' | 'date' | 'complete' | 'inFocus';
+export type OneTimeTask = CommonTask & {
+  readonly type: 'ONE_TIME';
+};
+
+/**
+ * The task type without id and every field optional.
+ * Fields that are filled represent differences from master template
+ */
+
+export type PartialTask = Partial<Pick<CommonTask, MainTaskProperties | 'children' >>;
+
+export type RepeatingPattern =
+  | { readonly type: 'WEEKLY'; readonly bitSet: number /* 7-bit */ }
+  | { readonly type: 'BIWEEKLY'; readonly bitSet: number /* 14-bit */ }
+  | { readonly type: 'MONTHLY'; readonly bitSet: number /* 31-bit */ };
+
+export type RepeatMetaData = {
+  readonly startDate: Date;
+  readonly endDate: Date | number;
+  readonly pattern: RepeatingPattern;
+};
+
+export type ForkedTaskMetaData = {
+  readonly forkId: string | null;
+  readonly replaceDate: Date;
+};
+
+export type RepeatingTask = CommonTask & {
+  readonly type: 'MASTER_TEMPLATE';
+  readonly repeats: RepeatMetaData;
+  readonly forks: readonly ForkedTaskMetaData[];
+};
+
+export type Task = OneTimeTask | RepeatingTask;
+
+type MainTaskProperties = 'name' | 'tag' | 'date' | 'complete' | 'inFocus';
 /**
  * The task type without id and subtask.
  */
-export type MainTask = Readonly<Pick<Task, MainTaskProperties>>;
+export type MainTask = Readonly<Pick<CommonTask, MainTaskProperties>>;
 /**
  * The task type without id and subtask, and with all properties as optional.
  */
@@ -76,8 +111,9 @@ export type Course = {
 export type State = {
   readonly tags: Map<string, Tag>;
   readonly tasks: Map<string, Task>;
-  readonly dateTaskMap: Map<string, Set<string>>;
   readonly subTasks: Map<string, SubTask>;
+  readonly dateTaskMap: Map<string, Set<string>>;
+  readonly repeatedTaskSet: Set<string>;
   readonly taskChildrenMap: Map<string, Set<string>>;
   readonly settings: Settings;
   readonly bannerMessageStatus: BannerMessageStatus;

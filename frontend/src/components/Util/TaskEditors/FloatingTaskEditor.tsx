@@ -1,11 +1,12 @@
 import React, { ReactElement, ReactNode } from 'react';
 import { connect } from 'react-redux';
-import { State, SubTask, Task } from '../../../store/store-types';
+import { getDateWithDateString } from 'util/datetime-util';
+import { removeTaskWithPotentialPrompt } from 'util/task-util';
+import { State, SubTask, Task } from 'store/store-types';
+import { useWindowSizeCallback, WindowSize } from 'hooks/window-size-hook';
 import { CalendarPosition, FloatingPosition, TaskWithSubTasks } from './editors-types';
 import TaskEditor from './TaskEditor';
 import styles from './FloatingTaskEditor.module.css';
-import { removeTask as removeTaskAction } from '../../../firebase/actions';
-import { useWindowSizeCallback, WindowSize } from '../../../hooks/window-size-hook';
 
 const EDITOR_WIDTH = 300;
 
@@ -30,9 +31,11 @@ const updateFloatingEditorPosition = (
   const windowWidth = windowSize.width;
   const windowHeight = windowSize.height;
   let posTop: number;
-  let posLeft: number;
+  let posLeft: number | undefined;
+  let posRight: number | undefined;
   if (windowWidth <= 768) {
     posTop = (windowHeight - myHeight) / 2;
+    editorPosDiv.style.left = `${windowWidth - EDITOR_WIDTH}px`;
     posLeft = (windowWidth - EDITOR_WIDTH) / 2;
   } else {
     const { y, left, right } = taskElementBoundingRect;
@@ -40,14 +43,15 @@ const updateFloatingEditorPosition = (
     if (position === 'right') {
       posLeft = right;
     } else if (position === 'left') {
-      posLeft = left - editorPosDiv.offsetWidth;
+      posRight = windowWidth - left;
     } else {
       throw new Error('Bad floating position!');
     }
   }
   editorPosDiv.style.top = `${posTop}px`;
-  editorPosDiv.style.left = `${posLeft}px`;
-  editorPosDiv.style.display = 'block';
+  editorPosDiv.style.left = posLeft === undefined ? 'initial' : `${posLeft}px`;
+  editorPosDiv.style.right = posRight === undefined ? 'initial' : `${posRight}px`;
+  editorPosDiv.style.width = '300px';
 };
 
 type OwnProps = {
@@ -55,6 +59,8 @@ type OwnProps = {
   readonly position: FloatingPosition;
   // the initial task to edit
   readonly initialTask: Task;
+  // the date string that specifies when the task appears (useful for repeated task)
+  readonly taskAppearedDate: string;
   // the trigger function to open the editor
   readonly trigger: (opened: boolean, opener: () => void) => ReactNode;
   // the position of the calendar
@@ -68,7 +74,14 @@ type Props = OwnProps & { readonly fullInitialTask: TaskWithSubTasks };
  * It is triggered from a click on a specified element.
  */
 function FloatingTaskEditor(
-  { position, calendarPosition, initialTask, fullInitialTask: task, trigger }: Props,
+  {
+    position,
+    calendarPosition,
+    initialTask,
+    fullInitialTask: task,
+    taskAppearedDate,
+    trigger,
+  }: Props,
 ): ReactElement {
   const [open, setOpen] = React.useState<boolean>(false);
 
@@ -81,11 +94,13 @@ function FloatingTaskEditor(
   const openPopup = (): void => setOpen(true);
   const closePopup = (): void => setOpen(false);
 
+  const { id: _, type, subTasks, ...mainTask } = task;
   const actions = {
-    removeTask: (): void => removeTaskAction(initialTask),
+    removeTask: (): void => removeTaskWithPotentialPrompt(
+      initialTask, getDateWithDateString(mainTask.date, taskAppearedDate),
+    ),
     onSave: closePopup,
   };
-  const { id: _, subTasks, ...mainTask } = task;
 
   return (
     <>
@@ -94,6 +109,8 @@ function FloatingTaskEditor(
         <>
           <TaskEditor
             id={task.id}
+            type={type}
+            taskAppearedDate={taskAppearedDate}
             mainTask={mainTask}
             subTasks={subTasks}
             actions={actions}

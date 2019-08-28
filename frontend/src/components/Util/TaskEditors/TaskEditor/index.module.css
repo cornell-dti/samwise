@@ -167,3 +167,34 @@ input.TaskEditorFlexibleInput:focus-within::placeholder {
   margin: -15px 0 20px 0;
   padding: 0;
 }
+
+/*
+ * --------------------------------------------------------------------------------
+ * Part 5: Components for save buttons
+ * --------------------------------------------------------------------------------
+ */
+
+.SaveButtonRow {
+  display: flex;
+  overflow: hidden;
+  padding: 0.5em;
+}
+
+.SaveButton {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  flex: 0;
+  width: auto;
+  height: 2em;
+  border-radius: 2px;
+  border: solid 2px white;
+  background-color: rgba(255, 255, 255, 0.15);
+}
+
+.SaveButtonText {
+  font-size: 12px;
+  color: white;
+  margin: 0 0.5em;
+}
+

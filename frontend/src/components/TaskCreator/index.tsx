@@ -7,13 +7,16 @@ import TagPicker from './TagPicker';
 import DatePicker from './DatePicker';
 import FocusPicker from './FocusPicker';
 import { randomId } from '../../util/general-util';
-import { Task, SubTask } from '../../store/store-types';
+import { OneTimeTask, RepeatingTask, RepeatMetaData, SubTask } from '../../store/store-types';
 import { NONE_TAG_ID } from '../../util/tag-util';
 import { isToday } from '../../util/datetime-util';
-import { addTask } from '../../firebase/actions';
+import { addTask, TaskWithoutIdOrderChildren } from '../../firebase/actions';
 import SamwiseIcon from '../UI/SamwiseIcon';
 
-type SimpleTask = Pick<Task, Exclude<keyof Task, 'order' | 'children'>>;
+type SimpleTaskMapper<T> = Pick<T, Exclude<keyof T, 'type' | 'order' | 'children'>>
+type OneTimeSimpleTask = SimpleTaskMapper<OneTimeTask>;
+type RepeatedSimpleTask = SimpleTaskMapper<RepeatingTask>
+type SimpleTask = OneTimeSimpleTask | RepeatedSimpleTask;
 
 type State = SimpleTask & {
   readonly subTasks: SubTask[];
@@ -22,6 +25,7 @@ type State = SimpleTask & {
   readonly datePickerOpened: boolean;
   readonly datePicked: boolean;
   readonly needToSwitchFocus: boolean;
+  readonly repeatData: RepeatMetaData | null;
 };
 
 /**
@@ -44,6 +48,7 @@ const initialState = (): State => ({
   datePickerOpened: false,
   datePicked: false,
   needToSwitchFocus: false,
+  repeatData: null,
 });
 
 export default class TaskCreator extends React.PureComponent<{}, State> {
@@ -106,7 +111,7 @@ export default class TaskCreator extends React.PureComponent<{}, State> {
       e.preventDefault();
     }
     const {
-      name, tag, date, complete, inFocus, subTasks,
+      name, tag, date, complete, inFocus, subTasks, repeatData,
     } = this.state;
     if (name === '') {
       return;
@@ -116,7 +121,27 @@ export default class TaskCreator extends React.PureComponent<{}, State> {
       // normalize orders: use current sequence as order;; remove useless id
       .map(({ id, ...rest }, order) => ({ ...rest, order }));
     const autoInFocus = inFocus || isToday(date); // Put task in focus is the due date is today.
-    const newTask = { name, tag, date, complete, inFocus: autoInFocus };
+    const commonTask = { name, tag, date, complete, inFocus: autoInFocus };
+    let newTask: TaskWithoutIdOrderChildren;
+    if (repeatData === null) {
+      date.setHours(23);
+      date.setMinutes(59);
+      date.setSeconds(59);
+      newTask = { ...commonTask, type: 'ONE_TIME', date };
+    } else {
+      const todayMidnight = new Date();
+      todayMidnight.setHours(23);
+      todayMidnight.setMinutes(59);
+      todayMidnight.setSeconds(59);
+      newTask = {
+        ...commonTask,
+        date: todayMidnight,
+        type: 'MASTER_TEMPLATE',
+        forks: [],
+        repeats: repeatData,
+        inFocus: false,
+      };
+    }
     // Add the task to the store.
     addTask(newTask, newSubTasks);
     // Reset the state.
@@ -155,12 +180,50 @@ export default class TaskCreator extends React.PureComponent<{}, State> {
   /**
    * Edit the date.
    *
-   * @param {Date} date the new date, or null for today.
+   * @param {Date} date the new date, or null for cancel.
    */
-  private editDate = (date: Date | null) => this.setState(
-    { date: date || new Date(), datePickerOpened: false, datePicked: Boolean(date) },
-    this.focusTaskName,
-  );
+  private editDate = (date: Date | RepeatMetaData | null) => {
+    const { datePicked } = this.state;
+    if (datePicked && date === null) {
+      // User cancelled, but date was already picked
+      this.setState(
+        { datePickerOpened: false },
+        this.focusTaskName,
+      );
+    } else if (date instanceof Date || date === null) {
+      // Selecting a date, or user cancelled while date was not picked
+      this.setState(
+        {
+          date: date || new Date(),
+          datePickerOpened: false,
+          datePicked: Boolean(date),
+          repeatData: null,
+        },
+        this.focusTaskName,
+      );
+    } else {
+      // Repeating task
+      this.setState(
+        {
+          date: new Date(),
+          datePickerOpened: false,
+          datePicked: true,
+          repeatData: date,
+        },
+        this.focusTaskName,
+      );
+    }
+  };
+
+  /**
+   * Reset the date picker
+   */
+  private clearDate = () => {
+    this.setState(
+      { date: new Date(), datePickerOpened: false, datePicked: false, repeatData: null },
+      this.focusTaskName,
+    );
+  }
 
   /**
    * Toggle the pin status.
@@ -259,6 +322,7 @@ export default class TaskCreator extends React.PureComponent<{}, State> {
     const {
       tag, date, inFocus, subTasks,
       tagPickerOpened, datePickerOpened, datePicked, needToSwitchFocus,
+      repeatData,
     } = this.state;
     const existingSubTaskEditor = (
       { id, name }: SubTask, i: number, arr: SubTask[],
@@ -286,7 +350,7 @@ export default class TaskCreator extends React.PureComponent<{}, State> {
     };
     return (
       <div className={styles.NewTaskActive}>
-        <FocusPicker pinned={inFocus} onPinChange={this.togglePin} />
+        {repeatData === null && <FocusPicker pinned={inFocus} onPinChange={this.togglePin} />}
         <div className={styles.TagPickWrap}>
           <TagPicker
             tag={tag}
@@ -296,10 +360,11 @@ export default class TaskCreator extends React.PureComponent<{}, State> {
           />
         </div>
         <DatePicker
-          date={date}
+          date={repeatData || date}
           opened={datePickerOpened}
           datePicked={datePicked}
           onDateChange={this.editDate}
+          onClearPicker={this.clearDate}
           onPickerOpened={this.openDatePicker}
         />
         <button tabIndex={-1} type="submit" className={styles.SubmitNewTask}>

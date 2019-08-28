@@ -9,12 +9,24 @@ import { Task, SubTask } from '../store/store-types';
 import { TaskWithSubTasks } from '../components/Util/TaskEditors/editors-types';
 
 // unimportant common attributes.
-const id = 'random-id';
 const order = 0;
 const name = 'name';
-const tag = 'TAG';
-const date = new Date();
-const testTaskCommon = { id, order, name, tag, date };
+type MainTaskTestCommon = {
+  readonly type: 'ONE_TIME';
+  readonly id: string;
+  readonly order: number;
+  readonly name: string;
+  readonly tag: string;
+  readonly date: Date;
+}
+const testTaskCommon: MainTaskTestCommon = {
+  type: 'ONE_TIME',
+  id: 'random-id',
+  order,
+  name,
+  tag: 'TAG',
+  date: new Date(),
+};
 
 const exampleTasks: Task[] = [
   { ...testTaskCommon, inFocus: true, complete: true, children: Set.of('s1', 's2', 's3', 's4') },

@@ -82,5 +82,5 @@ export function useMemoizedMappedWindowSize<T>(
   render: (t: T) => ReactNode,
 ): ReactNode {
   const value = f(useWindowSize());
-  return useMemo(() => render(value), [value]);
+  return useMemo(() => render(value), [render, value]);
 }

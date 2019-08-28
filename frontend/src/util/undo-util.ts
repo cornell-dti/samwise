@@ -1,12 +1,15 @@
 import { Set } from 'immutable';
-import { SubTask, Task } from '../store/store-types';
+import { SubTask, OneTimeTask, RepeatingTask } from '../store/store-types';
 import emitToast from '../components/UI/UndoToast';
 import { date2String } from './datetime-util';
 import { addTask, removeTask } from '../firebase/actions';
 
-type TaskWithFullChildren = Pick<Task, Exclude<keyof Task, 'children'>> & {
+type TaskWithFullChildrenMapper<T> = Pick<T, Exclude<keyof T, 'children'>> & {
   readonly children: SubTask[];
 };
+type OneTimeTaskWithFullChildren = TaskWithFullChildrenMapper<OneTimeTask>;
+type RepeatedTaskWithFullChildren = TaskWithFullChildrenMapper<RepeatingTask>;
+type TaskWithFullChildren = OneTimeTaskWithFullChildren | RepeatedTaskWithFullChildren;
 
 let lastAddedTask: TaskWithFullChildren | null = null;
 let lastRemovedTask: TaskWithFullChildren | null = null;

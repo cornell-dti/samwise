@@ -8,7 +8,14 @@ import {
 } from './db';
 import { getAppUser } from './auth';
 import { FirestoreSubTask, FirestoreTag, FirestoreTask } from './firestore-types';
-import { SubTask, Tag, Task, Settings, BannerMessageStatus } from '../store/store-types';
+import {
+  SubTask,
+  Tag,
+  Task,
+  Settings,
+  BannerMessageStatus,
+  RepeatMetaData,
+} from '../store/store-types';
 import {
   patchCourses,
   patchSettings,
@@ -17,13 +24,13 @@ import {
   patchTasks,
   patchBannerMessageStatus,
 } from '../store/actions';
-
 import coursesJson from '../assets/json/sp19-courses-with-exams-min.json';
 import buildCoursesMap from '../util/courses-util';
 import { store } from '../store/store';
 import { ignore } from '../util/general-util';
 
 // Some type alias
+type Timestamp = firebase.firestore.Timestamp;
 type DocumentSnapshot = firebase.firestore.DocumentSnapshot;
 type QuerySnapshot = firebase.firestore.QuerySnapshot;
 
@@ -43,6 +50,10 @@ const listenSettingsChange = (
 const listenBannerMessageChange = (
   email: string, listener: (snapshot: DocumentSnapshot) => void,
 ): UnmountCallback => bannerMessageStatusCollection().doc(email).onSnapshot(listener);
+
+const transformDate = (dateOrTimestamp: Date | Timestamp): Date => (
+  dateOrTimestamp instanceof Date ? dateOrTimestamp : dateOrTimestamp.toDate()
+);
 
 /**
  * Initialize listeners bind to firestore.
@@ -106,13 +117,30 @@ export default (onFirstFetched: () => void): (() => void) => {
         if (data === undefined) {
           return;
         }
-        const { owner, date: timestamp, children, ...rest } = data as FirestoreTask;
-        const task: Task = {
-          id,
-          date: timestamp instanceof Date ? timestamp : timestamp.toDate(),
-          children: Set(children),
-          ...rest,
-        };
+        const { owner, date: timestamp, children: childrenArr, ...rest } = data as FirestoreTask;
+        const date = transformDate(timestamp);
+        const children = Set(childrenArr);
+        const taskCommon = { id, date, children };
+        let task: Task;
+        if (rest.type === 'ONE_TIME') {
+          task = { ...taskCommon, ...rest };
+        } else {
+          const { forks: firestoreForks, repeats: firestoreRepeats, ...otherTaskProps } = rest;
+          const forks = firestoreForks.map(firestoreFork => ({
+            forkId: firestoreFork.forkId,
+            replaceDate: transformDate(firestoreFork.replaceDate),
+          }));
+          const startDate = transformDate(firestoreRepeats.startDate);
+          let endDate: Date | number;
+          if (typeof firestoreRepeats.endDate === 'number') {
+            // eslint-disable-next-line prefer-destructuring
+            endDate = firestoreRepeats.endDate;
+          } else {
+            endDate = transformDate(firestoreRepeats.endDate);
+          }
+          const repeats: RepeatMetaData = { startDate, endDate, pattern: firestoreRepeats.pattern };
+          task = { ...taskCommon, ...otherTaskProps, forks, repeats };
+        }
         if (change.type === 'added') {
           created.push(task);
         } else {

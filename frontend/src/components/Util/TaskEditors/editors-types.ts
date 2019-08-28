@@ -11,6 +11,7 @@ export type CalendarPosition = 'top' | 'bottom';
 
 export type TaskWithSubTasks = {
   readonly id: string;
+  readonly type: 'MASTER_TEMPLATE' | 'ONE_TIME';
   readonly order: number;
   readonly name: string;
   readonly tag: string;
