@@ -106,7 +106,7 @@ export const createGetIdOrderListByDate = (
           return;
         }
         const repeatedTask = task as RepeatingTask;
-        if (dateMatchRepeats(dateObj, repeatedTask.repeats, repeatedTask.forks)) {
+        if (dateMatchRepeats(dateObj, repeatedTask.date, repeatedTask.forks)) {
           const { order } = repeatedTask;
           list.push({ id, order });
         }

@@ -2,13 +2,13 @@ import React, { ReactElement } from 'react';
 import Calendar from 'react-calendar';
 import styles from './index.module.css';
 import TagListPicker from '../../TagListPicker/TagListPicker';
-import { Tag } from '../../../../store/store-types';
+import { Tag, RepeatMetaData } from '../../../../store/store-types';
 import { CalendarPosition } from '../editors-types';
 import SamwiseIcon from '../../../UI/SamwiseIcon';
 
 type TagAndDate = {
   readonly tag: string;
-  readonly date: Date;
+  readonly date: Date | RepeatMetaData;
 };
 
 type Props = TagAndDate & {
@@ -63,8 +63,10 @@ export default function EditorHeader(
       <TagListPicker onTagChange={editTaskTag} />
     </div>
   );
-  const dateDisplay = (<span>{`${date.getMonth() + 1}/${date.getDate()}`}</span>);
-  const dateEditor = doesShowDateEditor && (
+  const dateDisplay = date instanceof Date
+    ? <span>{`${date.getMonth() + 1}/${date.getDate()}`}</span>
+    : <span>Repeated</span>;
+  const dateEditor = doesShowDateEditor && date instanceof Date && (
     <Calendar
       value={date}
       className={

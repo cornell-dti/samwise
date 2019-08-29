@@ -23,18 +23,20 @@ export type SubTaskWithoutIdOrder = Pick<SubTask, 'name' | 'complete' | 'inFocus
  */
 export type PartialSubTask = Partial<SubTaskWithoutIdOrder>;
 
-export type CommonTask = {
+export type CommonTask<D> = {
   readonly id: string;
   readonly order: number;
   readonly name: string; // Example: "Task 1 name"
   readonly tag: string; // ID of the tag
-  readonly date: Date; // Example: new Date()
+  readonly date: D;
   readonly complete: boolean;
   readonly inFocus: boolean; // Whether the task is in focus
   readonly children: Set<string>;
 };
 
-export type OneTimeTask = CommonTask & {
+type FlexibleCommonTask = CommonTask<Date | RepeatMetaData>;
+
+export type OneTimeTask = CommonTask<Date> & {
   readonly type: 'ONE_TIME';
 };
 
@@ -43,7 +45,7 @@ export type OneTimeTask = CommonTask & {
  * Fields that are filled represent differences from master template
  */
 
-export type PartialTask = Partial<Pick<CommonTask, MainTaskProperties | 'children' >>;
+export type PartialTask = Partial<Pick<FlexibleCommonTask, MainTaskProperties | 'children' >>;
 
 export type RepeatingPattern =
   | { readonly type: 'WEEKLY'; readonly bitSet: number /* 7-bit */ }
@@ -61,9 +63,8 @@ export type ForkedTaskMetaData = {
   readonly replaceDate: Date;
 };
 
-export type RepeatingTask = CommonTask & {
+export type RepeatingTask = CommonTask<RepeatMetaData> & {
   readonly type: 'MASTER_TEMPLATE';
-  readonly repeats: RepeatMetaData;
   readonly forks: readonly ForkedTaskMetaData[];
 };
 
@@ -73,7 +74,7 @@ type MainTaskProperties = 'name' | 'tag' | 'date' | 'complete' | 'inFocus';
 /**
  * The task type without id and subtask.
  */
-export type MainTask = Readonly<Pick<CommonTask, MainTaskProperties>>;
+export type MainTask = Readonly<Pick<FlexibleCommonTask, MainTaskProperties>>;
 /**
  * The task type without id and subtask, and with all properties as optional.
  */

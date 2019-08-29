@@ -1,6 +1,5 @@
 import React, { ReactElement, useState } from 'react';
 import { removeTaskWithPotentialPrompt } from 'util/task-util';
-import { getDateWithDateString } from 'util/datetime-util';
 import { Task } from '../../../store/store-types';
 import TaskEditor from './TaskEditor';
 import { CalendarPosition, TaskWithSubTasks } from './editors-types';
@@ -21,14 +20,12 @@ export default function InlineTaskEditor(
   const [disabled, setDisabled] = useState(true);
   const { id } = original;
   const { id: _, type, subTasks, ...mainTask } = filtered;
-  const taskAppearedDate = mainTask.date.toDateString(); // TODO: fix this hack
+  const taskAppearedDate = mainTask.date instanceof Date ? mainTask.date.toDateString() : null;
   // To un-mount the editor when finished editing.
   const onFocus = (): void => setDisabled(false);
   const onBlur = (): void => setDisabled(true);
   const actions = {
-    removeTask: () => removeTaskWithPotentialPrompt(
-      original, getDateWithDateString(mainTask.date, taskAppearedDate),
-    ),
+    removeTask: () => removeTaskWithPotentialPrompt(original, null),
     onSave: onBlur,
   };
   return (

@@ -58,11 +58,13 @@ function patchTasks(state: State, { created, edited, deleted }: PatchTasks): Sta
       }
       const key = t.date.toDateString();
       const oldTask = state.tasks.get(t.id) || error();
-      const oldKey = oldTask.date.toDateString();
-      if (oldKey !== key) {
-        // remove first
-        const oldBucket = m.get(oldKey) || error('impossible!');
-        m.set(oldKey, oldBucket.remove(t.id));
+      if (oldTask.type === 'ONE_TIME') {
+        const oldKey = oldTask.date.toDateString();
+        if (oldKey !== key) {
+          // remove first
+          const oldBucket = m.get(oldKey) || error('impossible!');
+          m.set(oldKey, oldBucket.remove(t.id));
+        }
       }
       const set = m.get(key);
       if (set == null) {
@@ -76,10 +78,12 @@ function patchTasks(state: State, { created, edited, deleted }: PatchTasks): Sta
       if (oldTask == null) {
         return;
       }
-      const key = oldTask.date.toDateString();
-      const set = m.get(key);
-      if (set != null) {
-        m.set(key, set.remove(id));
+      if (oldTask.type === 'ONE_TIME') {
+        const key = oldTask.date.toDateString();
+        const set = m.get(key);
+        if (set != null) {
+          m.set(key, set.remove(id));
+        }
       }
     });
   });

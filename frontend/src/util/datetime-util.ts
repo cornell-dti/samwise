@@ -73,15 +73,19 @@ export function isToday(date: Date): boolean {
 }
 
 /**
- * @param date the date object to mutate.
+ * @param date the date object to provide time information.
  * @param dateString the date string to apply.
  * @returns a new date object with the date info in the date string applied.
  */
-export function getDateWithDateString(date: Date, dateString: string): Date {
-  const newDate = new Date(date);
+export function getDateWithDateString(date: Date | null, dateString: string): Date {
+  const newDate = date === null ? new Date() : new Date(date);
   const dateInfo = new Date(dateString);
   newDate.setFullYear(dateInfo.getFullYear());
   newDate.setMonth(dateInfo.getMonth());
   newDate.setDate(dateInfo.getDate());
+  if (date === null) {
+    // Default to last second of the day.
+    newDate.setHours(23, 59, 59);
+  }
   return newDate;
 }

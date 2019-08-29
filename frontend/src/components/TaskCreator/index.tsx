@@ -25,7 +25,6 @@ type State = SimpleTask & {
   readonly datePickerOpened: boolean;
   readonly datePicked: boolean;
   readonly needToSwitchFocus: boolean;
-  readonly repeatData: RepeatMetaData | null;
 };
 
 /**
@@ -48,7 +47,6 @@ const initialState = (): State => ({
   datePickerOpened: false,
   datePicked: false,
   needToSwitchFocus: false,
-  repeatData: null,
 });
 
 export default class TaskCreator extends React.PureComponent<{}, State> {
@@ -113,7 +111,7 @@ export default class TaskCreator extends React.PureComponent<{}, State> {
       e.preventDefault();
     }
     const {
-      name, tag, date, complete, inFocus, subTasks, repeatData,
+      name, tag, date, complete, inFocus, subTasks,
     } = this.state;
     if (name === '') {
       return;
@@ -122,25 +120,21 @@ export default class TaskCreator extends React.PureComponent<{}, State> {
       .filter((subTask) => subTask.name !== '') // remove empty subtasks
       // normalize orders: use current sequence as order;; remove useless id
       .map(({ id, ...rest }, order) => ({ ...rest, order }));
-    const autoInFocus = inFocus || isToday(date); // Put task in focus is the due date is today.
+    // Put task in focus is the due date is today.
+    const autoInFocus = inFocus || (date instanceof Date && isToday(date));
     const commonTask = { name, tag, date, complete, inFocus: autoInFocus };
     let newTask: TaskWithoutIdOrderChildren;
-    if (repeatData === null) {
+    if (date instanceof Date) {
       date.setHours(23);
       date.setMinutes(59);
       date.setSeconds(59);
       newTask = { ...commonTask, type: 'ONE_TIME', date };
     } else {
-      const todayMidnight = new Date();
-      todayMidnight.setHours(23);
-      todayMidnight.setMinutes(59);
-      todayMidnight.setSeconds(59);
       newTask = {
         ...commonTask,
-        date: todayMidnight,
         type: 'MASTER_TEMPLATE',
         forks: [],
-        repeats: repeatData,
+        date,
         inFocus: false,
       };
     }
@@ -199,7 +193,6 @@ export default class TaskCreator extends React.PureComponent<{}, State> {
           date: date || new Date(),
           datePickerOpened: false,
           datePicked: Boolean(date),
-          repeatData: null,
         },
         this.focusTaskName,
       );
@@ -207,10 +200,9 @@ export default class TaskCreator extends React.PureComponent<{}, State> {
       // Repeating task
       this.setState(
         {
-          date: new Date(),
+          date,
           datePickerOpened: false,
           datePicked: true,
-          repeatData: date,
         },
         this.focusTaskName,
       );
@@ -222,7 +214,7 @@ export default class TaskCreator extends React.PureComponent<{}, State> {
    */
   private clearDate = () => {
     this.setState(
-      { date: new Date(), datePickerOpened: false, datePicked: false, repeatData: null },
+      { date: new Date(), datePickerOpened: false, datePicked: false },
       this.focusTaskName,
     );
   }
@@ -322,7 +314,6 @@ export default class TaskCreator extends React.PureComponent<{}, State> {
     const {
       tag, date, inFocus, subTasks,
       tagPickerOpened, datePickerOpened, datePicked, needToSwitchFocus,
-      repeatData,
     } = this.state;
     const existingSubTaskEditor = (
       { id, name }: SubTask, i: number, arr: SubTask[],
@@ -350,7 +341,7 @@ export default class TaskCreator extends React.PureComponent<{}, State> {
     };
     return (
       <div className={styles.NewTaskActive}>
-        {repeatData === null && <FocusPicker pinned={inFocus} onPinChange={this.togglePin} />}
+        {date instanceof Date && <FocusPicker pinned={inFocus} onPinChange={this.togglePin} />}
         <div className={styles.TagPickWrap}>
           <TagPicker
             tag={tag}
@@ -360,7 +351,7 @@ export default class TaskCreator extends React.PureComponent<{}, State> {
           />
         </div>
         <DatePicker
-          date={repeatData || date}
+          date={date}
           opened={datePickerOpened}
           datePicked={datePicked}
           onDateChange={this.editDate}

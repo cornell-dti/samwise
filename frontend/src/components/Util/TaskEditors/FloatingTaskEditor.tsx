@@ -97,7 +97,8 @@ function FloatingTaskEditor(
   const { id: _, type, subTasks, ...mainTask } = task;
   const actions = {
     removeTask: (): void => removeTaskWithPotentialPrompt(
-      initialTask, getDateWithDateString(mainTask.date, taskAppearedDate),
+      initialTask,
+      getDateWithDateString(mainTask.date instanceof Date ? mainTask.date : null, taskAppearedDate),
     ),
     onSave: closePopup,
   };
