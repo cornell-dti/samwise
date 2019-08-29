@@ -219,10 +219,10 @@ export const forkTaskWithDiff = (
   const { tasks, subTasks } = store.getState();
   const repeatingTaskMaster = tasks.get(taskId) as RepeatingTask;
   const {
-    id, order, type, children, repeats, forks, ...originalTaskWithoutId
+    id, order, type, children, date, forks, ...originalTaskWithoutId
   } = repeatingTaskMaster;
   const newMainTask: TaskWithoutIdOrderChildren = {
-    ...originalTaskWithoutId, ...mainTaskEdits, type: 'ONE_TIME',
+    ...originalTaskWithoutId, ...mainTaskEdits, date: replaceDate, type: 'ONE_TIME',
   };
   const newSubTasks: WithoutId<SubTask>[] = [];
   subTaskCreations.forEach((s) => newSubTasks.push(s));
@@ -473,6 +473,9 @@ export const importCourseExams = (): void => {
         const examName = `${course.subject} ${course.courseNumber} ${courseType}`;
         const t = new Date(time);
         const filter = (task: Task): boolean => {
+          if (task.type === 'MASTER_TEMPLATE') {
+            return false;
+          }
           const { name, date } = task;
           return task.tag === tag.id && name === examName
             && date.getFullYear() === t.getFullYear()

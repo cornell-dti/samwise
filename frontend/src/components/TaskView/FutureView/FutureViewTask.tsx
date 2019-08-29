@@ -71,7 +71,9 @@ function FutureViewTask(
     }
   };
 
-  const replaceDateForFork = getDateWithDateString(original.date, containerDate);
+  const replaceDateForFork = getDateWithDateString(
+    original.type === 'ONE_TIME' ? original.date : null, containerDate,
+  );
   const replaceDateForForkOpt = original.type === 'ONE_TIME' ? null : replaceDateForFork;
   const TaskCheckBox = (): ReactElement => {
     const { id, complete } = original;

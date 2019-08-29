@@ -40,7 +40,9 @@ export function clearLastRemovedTask(performUndo: boolean): void {
  */
 export function emitUndoAddTaskToast(task: TaskWithFullChildren): void {
   lastAddedTask = task;
-  const message = `Added Task "${task.name}" on ${date2String(task.date)}.`;
+  const message = task.type === 'ONE_TIME'
+    ? `Added Task "${task.name}" on ${date2String(task.date)}.`
+    : `Added Repeating Task ${task.name}`;
   emitToast({
     toastId: 'task-management',
     message,
@@ -54,7 +56,9 @@ export function emitUndoAddTaskToast(task: TaskWithFullChildren): void {
  */
 export function emitUndoRemoveTaskToast(task: TaskWithFullChildren): void {
   lastRemovedTask = task;
-  const message = `Removed Task "${task.name}" on ${date2String(task.date)}.`;
+  const message = task.type === 'ONE_TIME'
+    ? `Removed Task "${task.name}" on ${date2String(task.date)}.`
+    : `Removed Repeating Task ${task.name}`;
   emitToast({
     toastId: 'task-management',
     message,

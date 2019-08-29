@@ -15,7 +15,6 @@ export type FirestoreTag = FirestoreCommon & {
 export type FirestoreCommonTask = FirestoreCommon & {
   readonly name: string;
   readonly tag: string;
-  readonly date: Date | firestore.Timestamp;
   readonly complete: boolean;
   readonly inFocus: boolean;
   readonly children: readonly string[];
@@ -35,7 +34,7 @@ export type ForkedTaskMetaData = {
 export type FirestoreMasterTask = FirestoreCommonTask & {
   readonly type: 'MASTER_TEMPLATE';
   // in master task, we only use the time component of the date
-  readonly repeats: {
+  readonly date: {
     readonly startDate: Date | firestore.Timestamp;
     readonly endDate: number | Date | firestore.Timestamp;
     readonly pattern: RepeatingPattern;
@@ -44,7 +43,10 @@ export type FirestoreMasterTask = FirestoreCommonTask & {
   readonly forks: readonly ForkedTaskMetaData[];
 };
 
-export type FirestoreOneTimeTask = FirestoreCommonTask & { readonly type: 'ONE_TIME' }
+export type FirestoreOneTimeTask = FirestoreCommonTask & {
+  readonly type: 'ONE_TIME';
+  readonly date: Date | firestore.Timestamp;
+};
 
 // all these tasks stay in 'samwise-tasks'
 // FirestoreLegacyTask should eventually be converted to FirestoreOneTimeTask.

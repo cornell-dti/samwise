@@ -4,19 +4,22 @@
  * - 'right': to the right the element.
  * - null: defaults to 'center'.
  */
-import { SubTask } from '../../../store/store-types';
+import { SubTask, RepeatMetaData } from '../../../store/store-types';
 
 export type FloatingPosition = 'left' | 'right';
 export type CalendarPosition = 'top' | 'bottom';
 
-export type TaskWithSubTasks = {
+type CommonTaskWithSubTasks<D> = {
   readonly id: string;
-  readonly type: 'MASTER_TEMPLATE' | 'ONE_TIME';
   readonly order: number;
   readonly name: string;
   readonly tag: string;
-  readonly date: Date;
+  readonly date: D;
   readonly complete: boolean;
   readonly inFocus: boolean;
   readonly subTasks: SubTask[];
 };
+
+export type TaskWithSubTasks =
+  | (CommonTaskWithSubTasks<Date> & { readonly type: 'ONE_TIME' })
+  | (CommonTaskWithSubTasks<RepeatMetaData> & { readonly type: 'MASTER_TEMPLATE' });

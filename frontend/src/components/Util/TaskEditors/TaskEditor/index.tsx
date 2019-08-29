@@ -9,7 +9,7 @@ import { MainTask, State, SubTask, Tag } from 'store/store-types';
 import OverdueAlert from 'components/UI/OverdueAlert';
 import { NONE_TAG } from 'util/tag-util';
 import { ignore } from 'util/general-util';
-import { promptRepeatedTaskEditChoice } from 'util/task-util';
+import { confirmRepeatedTaskEditMaster, promptRepeatedTaskEditChoice } from 'util/task-util';
 import { editTaskWithDiff, forkTaskWithDiff } from 'firebase/actions';
 import styles from './index.module.css';
 import { getTodayAtZeroAM, getDateWithDateString } from '../../../../util/datetime-util';
@@ -39,7 +39,7 @@ type OwnProps = DefaultProps & {
   readonly id: string;
   readonly type: 'MASTER_TEMPLATE' | 'ONE_TIME';
   // the date string that specifies when the task appears (useful for repeated task)
-  readonly taskAppearedDate: string;
+  readonly taskAppearedDate: string | null;
   readonly mainTask: MainTask; // The task given to the editor.
   // The subtask given to the editor. It should only contain those that should be displayed.
   readonly subTasks: readonly SubTask[];
@@ -104,27 +104,44 @@ function TaskEditor(
       editTaskWithDiff(id, 'EDITING_ONE_TIME_TASK', diff);
       return;
     }
-    promptRepeatedTaskEditChoice().then((saveChoice) => {
-      switch (saveChoice) {
-        case 'CANCEL_CHANGES':
-          reset();
-          break;
-        case 'CHANGE_MASTER_TEMPLATE':
-          editTaskWithDiff(id, 'EDITING_MASTER_TEMPLATE', diff);
-          break;
-        case 'FORK': {
-          const replaceDate = getDateWithDateString(date, taskAppearedDate);
-          const correctDate = diff.mainTaskEdits.date || replaceDate;
-          const diffForFork: Diff = {
-            ...diff, mainTaskEdits: { ...diff.mainTaskEdits, date: correctDate },
-          };
-          forkTaskWithDiff(id, replaceDate, diffForFork);
-          break;
+    if (taskAppearedDate === null) {
+      confirmRepeatedTaskEditMaster().then((saveChoice) => {
+        switch (saveChoice) {
+          case 'CANCEL_CHANGES':
+            reset();
+            break;
+          case 'CHANGE_MASTER_TEMPLATE':
+            editTaskWithDiff(id, 'EDITING_MASTER_TEMPLATE', diff);
+            break;
+          default:
+            throw new Error();
         }
-        default:
-          throw new Error();
-      }
-    });
+      });
+    } else {
+      promptRepeatedTaskEditChoice().then((saveChoice) => {
+        switch (saveChoice) {
+          case 'CANCEL_CHANGES':
+            reset();
+            break;
+          case 'CHANGE_MASTER_TEMPLATE':
+            editTaskWithDiff(id, 'EDITING_MASTER_TEMPLATE', diff);
+            break;
+          case 'FORK': {
+            const replaceDate = getDateWithDateString(
+              date instanceof Date ? date : null, taskAppearedDate,
+            );
+            const correctDate = diff.mainTaskEdits.date || replaceDate;
+            const diffForFork: Diff = {
+              ...diff, mainTaskEdits: { ...diff.mainTaskEdits, date: correctDate },
+            };
+            forkTaskWithDiff(id, replaceDate, diffForFork);
+            break;
+          }
+          default:
+            throw new Error();
+        }
+      });
+    }
     onSave();
   };
 

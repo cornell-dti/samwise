@@ -1,7 +1,7 @@
 import { Map } from 'immutable';
 import { TaskWithSubTasks } from 'components/Util/TaskEditors/editors-types';
 import { promptChoice, promptConfirm } from 'components/Util/Modals';
-import { SubTask, Task, RepeatingPattern, RepeatMetaData, ForkedTaskMetaData } from 'store/store-types';
+import { SubTask, Task, RepeatingPattern, RepeatMetaData, ForkedTaskMetaData, OneTimeTask, RepeatingTask } from 'store/store-types';
 import { removeTask, removeOneRepeatedTask } from 'firebase/actions';
 import { isBitSet } from './bitwise-util';
 
@@ -199,26 +199,56 @@ const repeatedTaskEditChoices = {
   FORK: 'Fork',
 };
 
+const repeatedTaskEditMasterConfirm = {
+  CANCEL_CHANGES: 'Cancel',
+  CHANGE_MASTER_TEMPLATE: 'Change master',
+};
+
 export function promptRepeatedTaskEditChoice(): Promise<keyof typeof repeatedTaskEditChoices> {
   return promptChoice('Do you want to change master or fork?', repeatedTaskEditChoices);
 }
 
-const removeTaskChoices = {
+export function confirmRepeatedTaskEditMaster(
+): Promise<keyof typeof repeatedTaskEditMasterConfirm> {
+  return promptChoice('Do you want to change master?', repeatedTaskEditMasterConfirm);
+}
+
+function removeOneTimeTask(task: OneTimeTask): void {
+  promptConfirm('Do you really want to remove this task? The removed task cannot be recovered.')
+    .then((confirmed) => {
+      if (confirmed) {
+        removeTask(task, 'no-undo');
+      }
+    });
+}
+
+const removeTaskFullChoices = {
   CANCEL_REMOVE: 'Cancel',
   REMOVE_ALL: 'Remove All',
   REMOVE_ONE: 'Remove This One',
 };
 
-export function removeTaskWithPotentialPrompt(task: Task, replaceDate: Date): void {
-  if (task.type === 'ONE_TIME') {
-    promptConfirm('Do you really want to remove this task? The removed task cannot be recovered.')
-      .then((confirmed) => {
-        if (confirmed) {
+const removeTaskPartialChoices = {
+  CANCEL_REMOVE: 'Cancel',
+  REMOVE_ALL: 'Remove All',
+};
+
+function removeRepeatingTask(task: RepeatingTask, replaceDate: Date | null): void {
+  const prompt = 'How do you want to remove this repeated task?';
+  if (replaceDate === null) {
+    promptChoice(prompt, removeTaskPartialChoices).then((c) => {
+      switch (c) {
+        case 'CANCEL_REMOVE':
+          return;
+        case 'REMOVE_ALL':
           removeTask(task, 'no-undo');
-        }
-      });
+          return;
+        default:
+          throw new Error();
+      }
+    });
   } else {
-    promptChoice('How do you want to remove this repeated task?', removeTaskChoices).then((c) => {
+    promptChoice(prompt, removeTaskFullChoices).then((c) => {
       switch (c) {
         case 'CANCEL_REMOVE':
           return;
@@ -232,5 +262,13 @@ export function removeTaskWithPotentialPrompt(task: Task, replaceDate: Date): vo
           throw new Error();
       }
     });
+  }
+}
+
+export function removeTaskWithPotentialPrompt(task: Task, replaceDate: Date | null): void {
+  if (task.type === 'ONE_TIME') {
+    removeOneTimeTask(task);
+  } else {
+    removeRepeatingTask(task, replaceDate);
   }
 }

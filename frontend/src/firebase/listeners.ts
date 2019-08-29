@@ -15,6 +15,7 @@ import {
   Settings,
   BannerMessageStatus,
   RepeatMetaData,
+  Course,
 } from '../store/store-types';
 import {
   patchCourses,
@@ -117,15 +118,16 @@ export default (onFirstFetched: () => void): (() => void) => {
         if (data === undefined) {
           return;
         }
-        const { owner, date: timestamp, children: childrenArr, ...rest } = data as FirestoreTask;
-        const date = transformDate(timestamp);
+        const { owner, children: childrenArr, ...rest } = data as FirestoreTask;
         const children = Set(childrenArr);
-        const taskCommon = { id, date, children };
+        const taskCommon = { id, children };
         let task: Task;
         if (rest.type === 'ONE_TIME') {
-          task = { ...taskCommon, ...rest };
+          const { date: timestamp, ...oneTimeTaskRest } = rest;
+          const date = transformDate(timestamp);
+          task = { ...taskCommon, date, ...oneTimeTaskRest };
         } else {
-          const { forks: firestoreForks, repeats: firestoreRepeats, ...otherTaskProps } = rest;
+          const { forks: firestoreForks, date: firestoreRepeats, ...otherTaskProps } = rest;
           const forks = firestoreForks.map((firestoreFork) => ({
             forkId: firestoreFork.forkId,
             replaceDate: transformDate(firestoreFork.replaceDate),
@@ -138,8 +140,8 @@ export default (onFirstFetched: () => void): (() => void) => {
           } else {
             endDate = transformDate(firestoreRepeats.endDate);
           }
-          const repeats: RepeatMetaData = { startDate, endDate, pattern: firestoreRepeats.pattern };
-          task = { ...taskCommon, ...otherTaskProps, forks, repeats };
+          const date: RepeatMetaData = { startDate, endDate, pattern: firestoreRepeats.pattern };
+          task = { ...taskCommon, ...otherTaskProps, forks, date };
         }
         if (change.type === 'added') {
           created.push(task);
@@ -205,8 +207,7 @@ export default (onFirstFetched: () => void): (() => void) => {
     reportFirstFetchedIfAllFetched();
   });
 
-  // @ts-ignore ts cannot decide that this imported json is resolved into a string.
-  store.dispatch(patchCourses(buildCoursesMap(coursesJson)));
+  store.dispatch(patchCourses(buildCoursesMap(coursesJson as Course[])));
 
   return () => {
     // Suppressed because it's likely that this block of code will never be run.
