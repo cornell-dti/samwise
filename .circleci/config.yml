@@ -22,7 +22,7 @@ jobs:
   deploy-frontend:
     description: Deploy frontend to firebase hosting
     docker:
-      - image: circleci/node:jessie-browsers
+      - image: circleci/node:lts-jessie-browsers
     working_directory: ~/repo
     steps:
       - checkout
