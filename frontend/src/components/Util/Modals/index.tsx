@@ -40,13 +40,12 @@ export async function promptConfirm(message: string): Promise<boolean> {
 
 export function ModalsContainer(): ReactElement {
   const [choiceModalProps, setChoiceModalProps] = useState(dummyChoiceModalProps);
+  const { open, message, choices, onChoicePick } = choiceModalProps;
   useEffect(() => {
     // register modal setter
     currentChoiceModalSetter = setChoiceModalProps;
   }, []);
   return (
-    <>
-      <ChoiceModal {...choiceModalProps} />
-    </>
+    <ChoiceModal open={open} message={message} choices={choices} onChoicePick={onChoicePick} />
   );
 }
