@@ -25,7 +25,7 @@ import {
   patchTasks,
   patchBannerMessageStatus,
 } from '../store/actions';
-import coursesJson from '../assets/json/sp19-courses-with-exams-min.json';
+import coursesJson from '../assets/json/fa19-courses-with-exams-min.json';
 import buildCoursesMap from '../util/courses-util';
 import { store } from '../store/store';
 import { ignore } from '../util/general-util';

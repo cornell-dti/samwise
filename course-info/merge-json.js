@@ -18,7 +18,7 @@ class Course {
     this.examTimes.forEach((type, time) => {
       examTimes.push({
         type,
-        time,
+        time
       });
     });
     return {
@@ -26,7 +26,7 @@ class Course {
       subject: this.subject,
       courseNumber: this.courseNumber,
       title: this.title,
-      examTimes,
+      examTimes
     };
   }
 }
@@ -52,11 +52,11 @@ function processExamInfoJson(map, json, type) {
 
 function main() {
   const map = new Map();
-  processCourseInfoJson(map, JSON.parse(fs.readFileSync('sp19-courses.json', 'utf8')));
+  processCourseInfoJson(map, JSON.parse(fs.readFileSync('fa19-courses.json', 'utf8')));
   processExamInfoJson(map, JSON.parse(fs.readFileSync('final-exams.json', 'utf8')), 'final');
   processExamInfoJson(map, JSON.parse(fs.readFileSync('prelim-exams.json', 'utf8')), 'prelim');
   const result = Array.from(map.values()).map(it => it.plainJs);
-  fs.writeFile('sp19-courses-with-exams-min.json', JSON.stringify(result), () => {
+  fs.writeFile('fa19-courses-with-exams-min.json', JSON.stringify(result), () => {
     console.log('Done');
   });
 }
