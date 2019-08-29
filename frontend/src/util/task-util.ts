@@ -195,22 +195,28 @@ export function dateMatchRepeats(
 
 const repeatedTaskEditChoices = {
   CANCEL_CHANGES: 'Cancel',
-  CHANGE_MASTER_TEMPLATE: 'Change master',
-  FORK: 'Fork',
+  CHANGE_MASTER_TEMPLATE: 'Edit All Occurences',
+  FORK: 'Edit This Instance',
 };
 
 const repeatedTaskEditMasterConfirm = {
   CANCEL_CHANGES: 'Cancel',
-  CHANGE_MASTER_TEMPLATE: 'Change master',
+  CHANGE_MASTER_TEMPLATE: 'Edit All Occurences',
 };
 
 export function promptRepeatedTaskEditChoice(): Promise<keyof typeof repeatedTaskEditChoices> {
-  return promptChoice('Do you want to change master or fork?', repeatedTaskEditChoices);
+  return promptChoice(
+    'Do you want to edit all occurences of this task or this instance?',
+    repeatedTaskEditChoices,
+  );
 }
 
 export function confirmRepeatedTaskEditMaster(
 ): Promise<keyof typeof repeatedTaskEditMasterConfirm> {
-  return promptChoice('Do you want to change master?', repeatedTaskEditMasterConfirm);
+  return promptChoice(
+    'Do you want to edit all occurences of this task?',
+    repeatedTaskEditMasterConfirm,
+  );
 }
 
 function removeOneTimeTask(task: OneTimeTask): void {
@@ -225,7 +231,7 @@ function removeOneTimeTask(task: OneTimeTask): void {
 const removeTaskFullChoices = {
   CANCEL_REMOVE: 'Cancel',
   REMOVE_ALL: 'Remove All',
-  REMOVE_ONE: 'Remove This One',
+  REMOVE_ONE: 'Remove This Instance',
 };
 
 const removeTaskPartialChoices = {
