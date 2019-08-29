@@ -2,8 +2,8 @@ const fs = require('fs');
 const fetch = require('node-fetch');
 const { JSDOM } = require('jsdom');
 
-const springPrelimUrl = 'https://registrar.cornell.edu/exams/spring-prelim-schedule';
-const springFinalUrl = 'https://registrar.cornell.edu/exams/spring-final-exam-schedule';
+const fallPrelimUrl = 'https://registrar.cornell.edu/exams/fall-prelim-exam-schedule';
+const fallFinalUrl = 'https://registrar.cornell.edu/exams/fall-final-exam-schedule';
 
 const currentYear = new Date().getFullYear();
 
@@ -34,18 +34,21 @@ function parsePrelimLine(line) {
     subject,
     courseNumber,
     sectionNumber: '',
-    time: date.getTime(),
+    time: date.getTime()
   };
 }
 
 function parseFinalLine(line) {
-  const segments = line.split(' ');
+  const segments = line.split(' ').filter(part => part !== '');
   const subject = segments[0];
   const courseNumber = segments[1];
   const sectionNumber = segments[2];
   let datetimeString = '';
   for (let i = 3; i < segments.length; i += 1) {
     const s = segments[i];
+    if (s === 'final') {
+      break;
+    }
     if (s !== '') {
       datetimeString += ` ${s}`;
     }
@@ -57,7 +60,7 @@ function parseFinalLine(line) {
     subject,
     courseNumber,
     sectionNumber,
-    time: date.getTime(),
+    time: date.getTime()
   };
 }
 
@@ -81,8 +84,8 @@ function createJson(url, isFinal, outFilename) {
 }
 
 function main() {
-  createJson(springFinalUrl, true, 'final-exams.json');
-  createJson(springPrelimUrl, false, 'prelim-exams.json');
+  createJson(fallFinalUrl, true, 'final-exams.json');
+  createJson(fallPrelimUrl, false, 'prelim-exams.json');
 }
 
 main();
