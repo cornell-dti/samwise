@@ -98,6 +98,7 @@ function TaskEditor(
     if (onBlur) {
       onBlur();
     }
+    onSave();
   };
   const onSaveClicked = (): void => {
     if (type === 'ONE_TIME') {
