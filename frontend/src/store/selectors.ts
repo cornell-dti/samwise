@@ -55,14 +55,14 @@ export const getSubTaskById = (
  */
 
 export const getOrderedTags: SelectorOf<Tag[]> = createSelector(
-  getTags, tags => Array.from(tags.values()).sort((a, b) => a.order - b.order),
+  getTags, (tags) => Array.from(tags.values()).sort((a, b) => a.order - b.order),
 );
 
 const getTasksInFocus: SelectorOf<Task[]> = createSelector(
   [getTasks, getSubTasks],
   (tasks, subTasks) => Array
     .from(tasks.values())
-    .filter(t => t.inFocus || t.children.some((id) => {
+    .filter((t) => t.inFocus || t.children.some((id) => {
       const subTask = subTasks.get(id);
       return subTask == null ? false : subTask.inFocus;
     })),
@@ -155,5 +155,5 @@ export const getFocusViewProps: SelectorOf<FocusViewProps> = createSelector(
 
 type BannerProps = { readonly message: MessageWithId | null };
 export const getBannerMessage: SelectorOf<BannerProps> = createSelector(
-  getBannerMessageStatus, status => ({ message: findMessageToDisplay(status) }),
+  getBannerMessageStatus, (status) => ({ message: findMessageToDisplay(status) }),
 );

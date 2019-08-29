@@ -15,9 +15,9 @@ export default function TaskView(): ReactElement {
   const [doesShowFutureViewInSmallScreen, setDoesShowFutureViewInSmallScreen] = useState(false);
   const [config, setConfig] = useState<FutureViewConfig>(futureViewConfigProvider.initialValue);
 
-  const screenIsSmall = useMappedWindowSize(size => size.width <= 840);
-  const toggleFocusViewInWideScreen = (): void => setDoesShowFocusViewInWideScreen(prev => !prev);
-  const switchView = (): void => setDoesShowFutureViewInSmallScreen(prev => !prev);
+  const screenIsSmall = useMappedWindowSize((size) => size.width <= 840);
+  const toggleFocusViewInWideScreen = (): void => setDoesShowFocusViewInWideScreen((prev) => !prev);
+  const switchView = (): void => setDoesShowFutureViewInSmallScreen((prev) => !prev);
 
   const FuturePanel = ({ children }: { readonly children?: ReactNode }): ReactElement => {
     const onChange = (c: FutureViewConfig): void => { setConfig(c); };

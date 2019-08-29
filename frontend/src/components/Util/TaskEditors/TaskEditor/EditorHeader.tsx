@@ -33,22 +33,22 @@ export default function EditorHeader(
     doesShowDateEditor: false,
   });
 
-  const toggleTagEditor = (): void => setEditorDisplayStatus(prev => ({
+  const toggleTagEditor = (): void => setEditorDisplayStatus((prev) => ({
     doesShowTagEditor: !prev.doesShowTagEditor, doesShowDateEditor: false,
   }));
-  const toggleDateEditor = (): void => setEditorDisplayStatus(prev => ({
+  const toggleDateEditor = (): void => setEditorDisplayStatus((prev) => ({
     doesShowTagEditor: false, doesShowDateEditor: !prev.doesShowDateEditor,
   }));
   const editTaskTag = (t: string): void => {
     onChange({ tag: t });
-    setEditorDisplayStatus(prev => ({ ...prev, doesShowTagEditor: false }));
+    setEditorDisplayStatus((prev) => ({ ...prev, doesShowTagEditor: false }));
   };
   const editTaskDate = (d: Date | Date[]): void => {
     if (Array.isArray(d)) {
       throw new Error('date is not an arry');
     }
     onChange({ date: d });
-    setEditorDisplayStatus(prev => ({ ...prev, doesShowDateEditor: false }));
+    setEditorDisplayStatus((prev) => ({ ...prev, doesShowDateEditor: false }));
   };
 
   const { doesShowTagEditor, doesShowDateEditor } = editorDisplayStatus;

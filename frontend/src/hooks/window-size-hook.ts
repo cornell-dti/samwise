@@ -21,7 +21,7 @@ const windowSizeListener = (): void => {
 
 const notifyAll = (): void => {
   if (hasUnreportedChange) {
-    listeners.forEach(l => l(cachedWindowSize));
+    listeners.forEach((l) => l(cachedWindowSize));
     hasUnreportedChange = false;
   }
 };

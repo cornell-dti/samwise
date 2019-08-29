@@ -76,10 +76,10 @@ export default function LoginBarrier({ appRenderer }: Props): ReactElement {
   }
   const loadingOrLogin = loginStatus === false
     ? (
-      <React.Fragment>
+      <>
         <FirebaseAuth uiConfig={uiConfig} firebaseAuth={firebase.auth()} />
         <div className={styles.LoginPadding} />
-      </React.Fragment>
+      </>
     )
     : (<h3>Loading...</h3>);
   return (

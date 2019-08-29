@@ -54,6 +54,8 @@ const initialState = (): State => ({
 export default class TaskCreator extends React.PureComponent<{}, State> {
   public readonly state: State = initialState();
 
+  private addTask: HTMLInputElement | null | undefined;
+
   /*
    * --------------------------------------------------------------------------------
    * Part 1: Openers & Closers
@@ -117,7 +119,7 @@ export default class TaskCreator extends React.PureComponent<{}, State> {
       return;
     }
     const newSubTasks = subTasks
-      .filter(subTask => subTask.name !== '') // remove empty subtasks
+      .filter((subTask) => subTask.name !== '') // remove empty subtasks
       // normalize orders: use current sequence as order;; remove useless id
       .map(({ id, ...rest }, order) => ({ ...rest, order }));
     const autoInFocus = inFocus || isToday(date); // Put task in focus is the due date is today.
@@ -274,7 +276,7 @@ export default class TaskCreator extends React.PureComponent<{}, State> {
   private editSubTask = (subTaskId: string) => (e: SyntheticEvent<HTMLInputElement>) => {
     const name = e.currentTarget.value;
     this.setState(({ subTasks }: State) => ({
-      subTasks: subTasks.map(s => (s.id === subTaskId ? { ...s, name } : s)),
+      subTasks: subTasks.map((s) => (s.id === subTaskId ? { ...s, name } : s)),
     }));
   };
 
@@ -298,7 +300,7 @@ export default class TaskCreator extends React.PureComponent<{}, State> {
   private deleteSubTask = (subtaskId: string) => (e: SyntheticEvent<HTMLButtonElement>) => {
     e.preventDefault();
     this.setState(({ subTasks }: State) => ({
-      subTasks: subTasks.filter(s => s.id !== subtaskId),
+      subTasks: subTasks.filter((s) => s.id !== subtaskId),
     }));
   };
 
@@ -306,8 +308,6 @@ export default class TaskCreator extends React.PureComponent<{}, State> {
    * Reset the task.
    */
   private resetTask = () => this.setState({ ...initialState() }, this.focusTaskName);
-
-  private addTask: HTMLInputElement | null | undefined;
 
   /**
    * Renders the editor for all the other info except main task name.

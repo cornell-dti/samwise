@@ -76,7 +76,7 @@ function AddClassOnBoarding({ classTags, showNext }: AddClassProps): ReactElemen
       <div className={styles.SettingsSection}>
         <div className={styles.SettingsSectionContent}>
           <ul className={styles.ColorConfigItemList}>
-            {classTags.map(tag => <TagItem key={tag.id} tag={tag} />)}
+            {classTags.map((tag) => <TagItem key={tag.id} tag={tag} />)}
           </ul>
         </div>
       </div>
@@ -150,14 +150,14 @@ function Onboard({ classTags, completedOnboarding }: Props): ReactElement | null
     return null;
   }
 
-  const showNext = (): void => setProgress(prev => prev + 1);
+  const showNext = (): void => setProgress((prev) => prev + 1);
   const showNextImport = (shouldImport: boolean): void => {
     if (shouldImport) {
       importCourseExams();
     }
     showNext();
   };
-  const goBack = (): void => setProgress(prev => (prev > 1 ? prev - 1 : prev));
+  const goBack = (): void => setProgress((prev) => (prev > 1 ? prev - 1 : prev));
   const skipTutorial = (): void => setProgress(100);
 
   const onboardingContainerStyle: CSSProperties | undefined = progress > 0
@@ -180,7 +180,7 @@ function Onboard({ classTags, completedOnboarding }: Props): ReactElement | null
 
 const Connected = connect(
   ({ tags, settings: { completedOnboarding } }: State): Props => {
-    const classTags: Tag[] = Array.from(tags.values()).filter(t => t.classId != null);
+    const classTags: Tag[] = Array.from(tags.values()).filter((t) => t.classId != null);
     return { classTags, completedOnboarding };
   },
 )(Onboard);

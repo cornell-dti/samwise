@@ -126,7 +126,7 @@ export default (onFirstFetched: () => void): (() => void) => {
           task = { ...taskCommon, ...rest };
         } else {
           const { forks: firestoreForks, repeats: firestoreRepeats, ...otherTaskProps } = rest;
-          const forks = firestoreForks.map(firestoreFork => ({
+          const forks = firestoreForks.map((firestoreFork) => ({
             forkId: firestoreFork.forkId,
             replaceDate: transformDate(firestoreFork.replaceDate),
           }));

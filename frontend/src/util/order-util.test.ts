@@ -98,7 +98,7 @@ function testReorderContract(list: IdOrder[]): void {
     // check no duplicate orders
     expect(new Set(allNewOrders).size).toEqual(allNewOrders.length);
   };
-  originalAllOrders.forEach(src => originalAllOrders.forEach(dest => test(src, dest)));
+  originalAllOrders.forEach((src) => originalAllOrders.forEach((dest) => test(src, dest)));
 }
 
 for (let i = 1; i < 5; i += 1) {

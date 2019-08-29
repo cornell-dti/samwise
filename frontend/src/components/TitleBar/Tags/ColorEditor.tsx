@@ -14,14 +14,14 @@ const colArray: string[] = Object.keys(colMap);
 export default function ColorEditor({ color, onChange }: Props): ReactElement {
   const [doesShowEditor, setDoesShowEditor] = React.useState(false);
 
-  const toggleEditor = (): void => setDoesShowEditor(s => !s);
+  const toggleEditor = (): void => setDoesShowEditor((s) => !s);
   const onChangeComplete = (e: { hex: string }): void => {
     onChange(e.hex);
     setDoesShowEditor(false);
   };
 
   return (
-    <React.Fragment>
+    <>
       <button type="button" className={styles.ColorEdit} onClick={toggleEditor} tabIndex={0}>
         {colMap[color.toLowerCase()]}
         <span className={styles.ColorDisplay} style={{ backgroundColor: color }} />
@@ -37,6 +37,6 @@ export default function ColorEditor({ color, onChange }: Props): ReactElement {
           />
         </div>
       )}
-    </React.Fragment>
+    </>
   );
 }
