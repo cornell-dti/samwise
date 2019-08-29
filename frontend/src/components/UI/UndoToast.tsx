@@ -41,8 +41,7 @@ function UndoToast({ toastId, message, onUndo }: Props): ReactElement {
  * @param {function(): void} onDismiss the function to be called when the toast is dismissed.
  */
 export default function emitToast({ toastId, message, onUndo, onDismiss }: Config): void {
-  const props = { toastId, message, onUndo };
-  toast.success((<UndoToast {...props} />), {
+  toast.success((<UndoToast toastId={toastId} message={message} onUndo={onUndo} />), {
     toastId,
     position: 'top-right',
     autoClose: 5000,

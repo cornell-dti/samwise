@@ -95,7 +95,7 @@ const dummyHeightInfo: HeightInfo = { doesOverflow: false, tasksHeight: 0 };
  * The component that renders all tasks on a certain day.
  */
 export default function FutureViewDay(props: Props): ReactElement {
-  const { date, inNDaysView } = props;
+  const { date, inNDaysView, taskEditorPosition, calendarPosition, doesShowCompletedTasks } = props;
   const [floatingViewOpened, setFloatingViewOpened] = React.useState(false);
   const [heightInfo, setHeightInfo] = React.useState<HeightInfo>(dummyHeightInfo);
   const windowSize = useWindowSize();
@@ -123,7 +123,11 @@ export default function FutureViewDay(props: Props): ReactElement {
         <FutureViewDayContent
           inMainList
           onHeightChange={onHeightChange}
-          {...props}
+          date={date}
+          inNDaysView={inNDaysView}
+          taskEditorPosition={taskEditorPosition}
+          calendarPosition={calendarPosition}
+          doesShowCompletedTasks={doesShowCompletedTasks}
         />
         {heightInfo.doesOverflow && (
           <button type="button" className={styles.MoreTasksBar} onClick={openFloatingView} tabIndex={0}>
@@ -162,7 +166,11 @@ export default function FutureViewDay(props: Props): ReactElement {
         <FutureViewDayContent
           inMainList={false}
           onHeightChange={onHeightChange}
-          {...props}
+          date={date}
+          inNDaysView={inNDaysView}
+          taskEditorPosition={taskEditorPosition}
+          calendarPosition={calendarPosition}
+          doesShowCompletedTasks={doesShowCompletedTasks}
         />
       </div>
     </div>

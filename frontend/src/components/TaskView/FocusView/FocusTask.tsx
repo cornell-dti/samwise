@@ -1,3 +1,4 @@
+/* eslint-disable react/jsx-props-no-spreading */
 import React, { ReactElement } from 'react';
 import { Draggable } from 'react-beautiful-dnd';
 import { connect } from 'react-redux';

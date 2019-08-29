@@ -238,7 +238,7 @@ function DisplayOptionControl({ nDays, displayOption, offset, onChange }: Props)
  * The controller component for the future view in task view.
  */
 export default function FutureViewControl(props: Props): ReactElement {
-  const { displayOption, offset, onChange } = props;
+  const { nDays, displayOption, offset, onChange } = props;
   const isSmallScreen = useMappedWindowSize(({ width }) => width <= 600);
   const { containerType } = displayOption;
   const changeOffset = (instruction: ChangeOffsetInstruction): (() => void) => (): void => {
@@ -255,7 +255,12 @@ export default function FutureViewControl(props: Props): ReactElement {
           <Title text="Future" />
           <Padding />
           {today}
-          <DisplayOptionControl {...props} />
+          <DisplayOptionControl
+            nDays={nDays}
+            displayOption={displayOption}
+            offset={offset}
+            onChange={onChange}
+          />
         </div>
         <div className={styles.FutureViewControl}>
           <Padding />
@@ -281,7 +286,12 @@ export default function FutureViewControl(props: Props): ReactElement {
       />
       <Padding />
       {today}
-      <DisplayOptionControl {...props} />
+      <DisplayOptionControl
+        nDays={nDays}
+        displayOption={displayOption}
+        offset={offset}
+        onChange={onChange}
+      />
     </div>
   );
 }

@@ -19,7 +19,9 @@ import findMessageToDisplay, { MessageWithId } from '../components/TitleBar/Bann
 
 const createSetEqualSelector = createSelectorCreator(
   defaultMemoize,
-  // @ts-ignore ts is a little stupid with generics. Probably a ts bug.
+  // Bug in reselect type definition: https://github.com/reduxjs/reselect/issues/384
+  // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
+  // @ts-ignore
   (a: Set<string>, b: Set<string>) => a.equals(b),
 );
 

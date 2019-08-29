@@ -2,7 +2,13 @@
  * The Icon Set for Samwise.
  */
 
-import React, { KeyboardEvent, ReactElement, StatelessComponent, SVGAttributes } from 'react';
+import React, {
+  KeyboardEvent,
+  MouseEvent,
+  ReactElement,
+  StatelessComponent,
+  SVGAttributes,
+} from 'react';
 import { IconName } from './samwise-icon-types';
 import { ReactComponent as Alert } from '../../assets/svgs/alert.svg';
 import { ReactComponent as CalendarDark } from '../../assets/svgs/calendar-dark.svg';
@@ -123,14 +129,14 @@ const SamwiseIcon = ({ iconName, title, ...otherProps }: Props): ReactElement =>
       e.stopPropagation();
       if (e.key === ' ' && otherProps.onClick != null) {
         // hacky way to convert space to click. Potentially unsafe but generally OK.
-        // @ts-ignore
-        otherProps.onClick();
+        otherProps.onClick(e as unknown as MouseEvent<SVGElement>);
       }
     },
     ...otherProps,
   };
   return (
     <span title={title == null ? altText : title}>
+      {/* eslint-disable-next-line react/jsx-props-no-spreading */}
       <SvgComponent {...allPropsToSvg} />
     </span>
   );
