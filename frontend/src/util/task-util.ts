@@ -3,6 +3,7 @@ import { TaskWithSubTasks } from 'components/Util/TaskEditors/editors-types';
 import { promptChoice, promptConfirm } from 'components/Util/Modals';
 import { SubTask, Task, RepeatingPattern, RepeatMetaData, ForkedTaskMetaData, OneTimeTask, RepeatingTask } from 'store/store-types';
 import { removeTask, removeOneRepeatedTask } from 'firebase/actions';
+import { store } from 'store/store';
 import { isBitSet } from './bitwise-util';
 
 /**
@@ -220,12 +221,32 @@ export function confirmRepeatedTaskEditMaster(
 }
 
 function removeOneTimeTask(task: OneTimeTask): void {
-  promptConfirm('Do you really want to remove this task? The removed task cannot be recovered.')
-    .then((confirmed) => {
-      if (confirmed) {
-        removeTask(task, 'no-undo');
+  const { tasks, repeatedTaskSet } = store.getState();
+  const isFork = Array.from(repeatedTaskSet).some((repeatedTaskId): boolean => {
+    const repeatedTask = tasks.get(repeatedTaskId) as RepeatingTask | null | undefined;
+    if (repeatedTask == null) {
+      return false;
+    }
+    const { forks } = repeatedTask;
+    for (let i = 0; i < forks.length; i += 1) {
+      const fork = forks[i];
+      if (fork.forkId === task.id) {
+        return true;
       }
-    });
+    }
+    return false;
+  });
+  if (!isFork) {
+    removeTask(task);
+    return;
+  }
+  promptConfirm(
+    'Do you really want to remove this forked task? The removed task cannot be recovered.',
+  ).then((confirmed) => {
+    if (confirmed) {
+      removeTask(task, 'no-undo');
+    }
+  });
 }
 
 const removeTaskFullChoices = {

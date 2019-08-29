@@ -29,6 +29,11 @@ export function clearLastRemovedTask(performUndo: boolean): void {
   if (lastRemovedTask !== null) {
     if (performUndo) {
       const { id, order, children, ...rest } = lastRemovedTask;
+      /*
+       * TODO:
+       * Also handle the case where the task is a forked one-time task and we need to add the
+       * metadata back to the master template.
+       */
       addTask(rest, children.map(({ id: _, ...s }) => s), 'no-undo');
     }
     lastRemovedTask = null;
