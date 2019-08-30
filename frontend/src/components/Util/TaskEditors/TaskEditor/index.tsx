@@ -98,11 +98,11 @@ function TaskEditor(
     if (onBlur) {
       onBlur();
     }
-    onSave();
   };
   const onSaveClicked = (): void => {
     if (type === 'ONE_TIME') {
       editTaskWithDiff(id, 'EDITING_ONE_TIME_TASK', diff);
+      onSave();
       return;
     }
     if (taskAppearedDate === null) {
