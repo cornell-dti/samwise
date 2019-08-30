@@ -18,6 +18,8 @@ type Props = {
   readonly onClearPicker: () => void;
 };
 
+const REPEATING_TASK_ENABLED: boolean = localStorage.getItem('REPEATING_TASK_ENABLED') != null;
+
 export default function DatePicker(props: Props): ReactElement {
   const {
     date, opened, datePicked, onDateChange, onPickerOpened, onClearPicker,
@@ -354,16 +356,18 @@ export default function DatePicker(props: Props): ReactElement {
       {displayedNode(!datePicked)}
       {opened && (
         <div className={styles.NewTaskDatePick}>
-          <p className={dateStyles.SelectTypeWrap}>
-            <select
-              className={dateStyles.SelectType}
-              value={isRepeat.toString()}
-              onChange={changeRepeat}
-            >
-              <option value="false">One-Time</option>
-              <option value="true">Repeating</option>
-            </select>
-          </p>
+          {REPEATING_TASK_ENABLED && (
+            <p className={dateStyles.SelectTypeWrap}>
+              <select
+                className={dateStyles.SelectType}
+                value={isRepeat.toString()}
+                onChange={changeRepeat}
+              >
+                <option value="false">One-Time</option>
+                <option value="true">Repeating</option>
+              </select>
+            </p>
+          )}
           {!isRepeat && <Calendar onChange={onChange} value={currDate} minDate={new Date()} calendarType="US" />}
           {isRepeat && openedRepeat}
           <p className={styles.NewTaskDateSave}>
