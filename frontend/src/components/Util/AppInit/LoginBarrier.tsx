@@ -2,7 +2,7 @@ import React, { ReactElement } from 'react';
 import firebase from 'firebase/app';
 import { FirebaseAuth } from 'react-firebaseui';
 import styles from './Login.module.css';
-import { cacheAppUser, toAppUser } from '../../../firebase/auth';
+import { cacheAppUser, toAppUser } from '../../../firebase/auth-util';
 import initListeners from '../../../firebase/listeners';
 
 const uiConfig = {
