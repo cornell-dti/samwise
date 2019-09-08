@@ -7,7 +7,7 @@ import OtherTagAdder from '../Tags/OtherTagAdder';
 import styles from './SettingsPage.module.css';
 import { Tag, State } from '../../../store/store-types';
 import { completeOnboarding, importCourseExams } from '../../../firebase/actions';
-import { firebaseSignOut } from '../../../firebase/auth';
+import { firebaseSignOut } from '../../../firebase/auth-util';
 
 /**
  * The class adder component.

@@ -1,5 +1,5 @@
 import { db, orderManagerCollection } from './db';
-import { getAppUser } from './auth';
+import { getAppUser } from './auth-util';
 
 type DocRef = firebase.firestore.DocumentReference;
 const managerRef = (): DocRef => orderManagerCollection().doc(getAppUser().email);

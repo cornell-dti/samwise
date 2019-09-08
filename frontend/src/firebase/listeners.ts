@@ -6,7 +6,7 @@ import {
   settingsCollection,
   bannerMessageStatusCollection,
 } from './db';
-import { getAppUser } from './auth';
+import { getAppUser } from './auth-util';
 import { FirestoreSubTask, FirestoreTag, FirestoreTask } from './firestore-types';
 import {
   SubTask,

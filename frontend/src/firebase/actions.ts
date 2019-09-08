@@ -17,7 +17,7 @@ import {
   FirestoreTask,
   FirestoreSubTask,
 } from './firestore-types';
-import { getAppUser } from './auth';
+import { getAppUser } from './auth-util';
 import {
   db,
   settingsCollection,
