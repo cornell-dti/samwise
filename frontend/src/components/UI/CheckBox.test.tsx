@@ -1,6 +1,7 @@
 import React, { ReactElement, useState } from 'react';
 import { render } from 'react-dom';
 import { act, renderIntoDocument } from 'react-dom/test-utils';
+import renderer from 'react-test-renderer';
 import CheckBox from './CheckBox';
 
 it('CheckBox can render', () => {
@@ -15,6 +16,12 @@ it('CheckBox can render', () => {
   renderIntoDocument(<CheckBox checked={false} onChange={onChange} disabled={false} />);
   renderIntoDocument(<CheckBox checked onChange={onChange} disabled />);
   renderIntoDocument(<CheckBox checked={false} onChange={onChange} disabled />);
+});
+
+it('CheckBox matches snapshot.', () => {
+  const onChange = (): void => { };
+  const tree = renderer.create(<CheckBox checked onChange={onChange} />).toJSON();
+  expect(tree).toMatchSnapshot();
 });
 
 function StatefulCheckBox({ disabled }: { readonly disabled: boolean }): ReactElement {

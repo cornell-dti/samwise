@@ -1,0 +1,18 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`CheckBox matches snapshot. 1`] = `
+<label
+  className="CheckBox"
+>
+  <input
+    defaultChecked={true}
+    disabled={false}
+    onClick={[Function]}
+    tabIndex={0}
+    type="checkbox"
+  />
+  <span
+    className="CheckBoxCheckMark"
+  />
+</label>
+`;

@@ -1,0 +1,13 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Loading matches snapshot. 1`] = `
+<div
+  className="LoadingTextWrapper"
+>
+  <div
+    className="LoadingText"
+  >
+    Loading...
+  </div>
+</div>
+`;

@@ -1,0 +1,17 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`OverdueAlert in future-view-task matches snapshot. 1`] = `
+<div
+  className="OverdueAlertInFutureView"
+>
+  !
+</div>
+`;
+
+exports[`OverdueAlert in task-card matches snapshot. 1`] = `
+<div
+  className="OverdueAlertInTaskCard"
+>
+  !
+</div>
+`;

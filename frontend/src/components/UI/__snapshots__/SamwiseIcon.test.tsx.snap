@@ -1,0 +1,324 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`SamwiseIcon matches snapshot. 1`] = `
+<span
+  title="alert"
+>
+  <svg
+    alt="alert"
+    height="1em"
+    onKeyUp={[Function]}
+    tabIndex={0}
+    title="alert"
+    width="1em"
+  >
+    alert.svg
+  </svg>
+</span>
+`;
+
+exports[`SamwiseIcon matches snapshot. 2`] = `
+<span
+  title="calendar"
+>
+  <svg
+    alt="calendar"
+    height="1em"
+    onKeyUp={[Function]}
+    tabIndex={0}
+    title="calendar"
+    width="1em"
+  >
+    calendar-dark.svg
+  </svg>
+</span>
+`;
+
+exports[`SamwiseIcon matches snapshot. 3`] = `
+<span
+  title="calendar"
+>
+  <svg
+    alt="calendar"
+    height="1em"
+    onKeyUp={[Function]}
+    tabIndex={0}
+    title="calendar"
+    width="1em"
+  >
+    calendar-light.svg
+  </svg>
+</span>
+`;
+
+exports[`SamwiseIcon matches snapshot. 4`] = `
+<span
+  title="checked"
+>
+  <svg
+    alt="checked"
+    height="1em"
+    onKeyUp={[Function]}
+    tabIndex={0}
+    title="checked"
+    width="1em"
+  >
+    checked-dark.svg
+  </svg>
+</span>
+`;
+
+exports[`SamwiseIcon matches snapshot. 5`] = `
+<span
+  title="checked"
+>
+  <svg
+    alt="checked"
+    height="1em"
+    onKeyUp={[Function]}
+    tabIndex={0}
+    title="checked"
+    width="1em"
+  >
+    checked.svg
+  </svg>
+</span>
+`;
+
+exports[`SamwiseIcon matches snapshot. 6`] = `
+<span
+  title="clock"
+>
+  <svg
+    alt="clock"
+    height="1em"
+    onKeyUp={[Function]}
+    tabIndex={0}
+    title="clock"
+    width="1em"
+  >
+    clock.svg
+  </svg>
+</span>
+`;
+
+exports[`SamwiseIcon matches snapshot. 7`] = `
+<span
+  title="grabber"
+>
+  <svg
+    alt="grabber"
+    height="1em"
+    onKeyUp={[Function]}
+    tabIndex={0}
+    title="grabber"
+    width="1em"
+  >
+    grabbers.svg
+  </svg>
+</span>
+`;
+
+exports[`SamwiseIcon matches snapshot. 8`] = `
+<span
+  title="hide"
+>
+  <svg
+    alt="hide"
+    height="1em"
+    onKeyUp={[Function]}
+    tabIndex={0}
+    title="hide"
+    width="1em"
+  >
+    hide.svg
+  </svg>
+</span>
+`;
+
+exports[`SamwiseIcon matches snapshot. 9`] = `
+<span
+  title="pin-filled"
+>
+  <svg
+    alt="pin-filled"
+    height="1em"
+    onKeyUp={[Function]}
+    tabIndex={0}
+    title="pin-filled"
+    width="1em"
+  >
+    pin-2-dark-filled.svg
+  </svg>
+</span>
+`;
+
+exports[`SamwiseIcon matches snapshot. 10`] = `
+<span
+  title="pin-outline"
+>
+  <svg
+    alt="pin-outline"
+    height="1em"
+    onKeyUp={[Function]}
+    tabIndex={0}
+    title="pin-outline"
+    width="1em"
+  >
+    pin-2-dark-outline.svg
+  </svg>
+</span>
+`;
+
+exports[`SamwiseIcon matches snapshot. 11`] = `
+<span
+  title="pin-filled"
+>
+  <svg
+    alt="pin-filled"
+    height="1em"
+    onKeyUp={[Function]}
+    tabIndex={0}
+    title="pin-filled"
+    width="1em"
+  >
+    pin-2-light-filled.svg
+  </svg>
+</span>
+`;
+
+exports[`SamwiseIcon matches snapshot. 12`] = `
+<span
+  title="pin-outline"
+>
+  <svg
+    alt="pin-outline"
+    height="1em"
+    onKeyUp={[Function]}
+    tabIndex={0}
+    title="pin-outline"
+    width="1em"
+  >
+    pin-2-light-outline.svg
+  </svg>
+</span>
+`;
+
+exports[`SamwiseIcon matches snapshot. 13`] = `
+<span
+  title="settings"
+>
+  <svg
+    alt="settings"
+    height="1em"
+    onKeyUp={[Function]}
+    tabIndex={0}
+    title="settings"
+    width="1em"
+  >
+    settings.svg
+  </svg>
+</span>
+`;
+
+exports[`SamwiseIcon matches snapshot. 14`] = `
+<span
+  title="hide"
+>
+  <svg
+    alt="hide"
+    height="1em"
+    onKeyUp={[Function]}
+    tabIndex={0}
+    title="hide"
+    width="1em"
+  >
+    show.svg
+  </svg>
+</span>
+`;
+
+exports[`SamwiseIcon matches snapshot. 15`] = `
+<span
+  title="tag"
+>
+  <svg
+    alt="tag"
+    height="1em"
+    onKeyUp={[Function]}
+    tabIndex={0}
+    title="tag"
+    width="1em"
+  >
+    tag.svg
+  </svg>
+</span>
+`;
+
+exports[`SamwiseIcon matches snapshot. 16`] = `
+<span
+  title="unchecked"
+>
+  <svg
+    alt="unchecked"
+    height="1em"
+    onKeyUp={[Function]}
+    tabIndex={0}
+    title="unchecked"
+    width="1em"
+  >
+    unchecked.svg
+  </svg>
+</span>
+`;
+
+exports[`SamwiseIcon matches snapshot. 17`] = `
+<span
+  title="dropdown"
+>
+  <svg
+    alt="dropdown"
+    height="1em"
+    onKeyUp={[Function]}
+    tabIndex={0}
+    title="dropdown"
+    width="1em"
+  >
+    v.svg
+  </svg>
+</span>
+`;
+
+exports[`SamwiseIcon matches snapshot. 18`] = `
+<span
+  title="delete"
+>
+  <svg
+    alt="delete"
+    height="1em"
+    onKeyUp={[Function]}
+    tabIndex={0}
+    title="delete"
+    width="1em"
+  >
+    XDark.svg
+  </svg>
+</span>
+`;
+
+exports[`SamwiseIcon matches snapshot. 19`] = `
+<span
+  title="delete"
+>
+  <svg
+    alt="delete"
+    height="1em"
+    onKeyUp={[Function]}
+    tabIndex={0}
+    title="delete"
+    width="1em"
+  >
+    XLight.svg
+  </svg>
+</span>
+`;
