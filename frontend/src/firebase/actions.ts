@@ -353,7 +353,7 @@ export const removeSubTask = (
   taskId: string, subtaskId: string, replaceDate: Date | null,
 ): void => {
   const diff: Diff = {
-    mainTaskEdits: { date: replaceDate == null ? undefined : replaceDate },
+    mainTaskEdits: replaceDate == null ? {} : { date: replaceDate },
     subTaskCreations: Map(),
     subTaskEdits: Map(),
     subTaskDeletions: Set.of(subtaskId),
