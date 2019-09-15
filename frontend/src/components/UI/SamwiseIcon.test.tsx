@@ -1,5 +1,4 @@
 import React from 'react';
-import { renderIntoDocument } from 'react-dom/test-utils';
 import renderer from 'react-test-renderer';
 import SamwiseIcon from './SamwiseIcon';
 import { IconName } from './samwise-icon-types';
@@ -27,7 +26,7 @@ const iconNames: readonly IconName[] = [
 ];
 
 it('SamwiseIcon matches snapshot.', () => {
-  iconNames.forEach(iconName => {
+  iconNames.forEach((iconName) => {
     const tree = renderer.create(<SamwiseIcon iconName={iconName} />).toJSON();
     expect(tree).toMatchSnapshot();
   });
