@@ -1,0 +1,375 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`ClassAdder matches snapshot. 1`] = `
+<div
+  className="SettingsSection"
+>
+  <p
+    className="SettingsSectionTitle"
+  >
+    Add Classes
+  </p>
+  <div
+    className="SettingsSectionContent"
+  >
+    <small>
+      Add classes to get upcoming prelims automatically added to your planner.
+    </small>
+  </div>
+</div>
+`;
+
+exports[`ExamImporter matches snapshot. 1`] = `
+<div
+  className="SettingsSection"
+>
+  <p
+    className="SettingsSectionTitle"
+  >
+    Auto Import Exams
+  </p>
+  <div
+    className="SettingsButton SettingsSectionContent"
+  >
+    Click the following button to reimport the prelims and finals from your classes into your planner. We will only import those that appears on Cornell prelim/final schedule webpage.
+    <br />
+    <button
+      onClick={[Function]}
+      tabIndex={0}
+      title="Reimport Exams"
+      type="button"
+    >
+      Reimport Exams
+    </button>
+  </div>
+</div>
+`;
+
+exports[`SettingsPage matches snapshot. 1`] = `
+<div>
+  <div
+    className="SettingsSection"
+  >
+    <p
+      className="SettingsSectionTitle"
+    >
+      Add Classes
+    </p>
+    <div
+      className="SettingsSectionContent"
+    >
+      <small>
+        Add classes to get upcoming prelims automatically added to your planner.
+      </small>
+    </div>
+  </div>
+  <div
+    className="SettingsSection"
+  >
+    <p
+      className="SettingsSectionTitle"
+    >
+      Class Tags
+    </p>
+    <div
+      className="SettingsSectionContent"
+    >
+      <ul
+        className="ColorConfigItemList"
+      >
+        <li
+          className="ColorConfigItem"
+        >
+          <span
+            style={
+              Object {
+                "display": "inline-block",
+                "width": "calc(100% - 175px)",
+              }
+            }
+          >
+            <span
+              className="TagName"
+            >
+              CS2112
+            </span>
+            <span
+              className="ClassExpandedTitle"
+            >
+              Critter
+            </span>
+          </span>
+          <button
+            className="ColorEdit"
+            onClick={[Function]}
+            tabIndex={0}
+            type="button"
+          >
+            <span
+              className="ColorDisplay"
+              style={
+                Object {
+                  "backgroundColor": "red",
+                }
+              }
+            />
+            <span
+              title="dropdown"
+            >
+              <svg
+                alt="dropdown"
+                className="Arrow"
+                height="1em"
+                onKeyUp={[Function]}
+                tabIndex={0}
+                title="dropdown"
+                width="1em"
+              >
+                v.svg
+              </svg>
+            </span>
+          </button>
+          <button
+            className="DeleteTag"
+            onClick={[Function]}
+            tabIndex={0}
+            type="button"
+          >
+            <span
+              title="delete"
+            >
+              <svg
+                alt="delete"
+                height="1em"
+                onKeyUp={[Function]}
+                tabIndex={0}
+                title="delete"
+                width="1em"
+              >
+                XLight.svg
+              </svg>
+            </span>
+          </button>
+        </li>
+      </ul>
+    </div>
+  </div>
+  <div
+    className="SettingsSection"
+  >
+    <p
+      className="SettingsSectionTitle"
+    >
+      Auto Import Exams
+    </p>
+    <div
+      className="SettingsButton SettingsSectionContent"
+    >
+      Click the following button to reimport the prelims and finals from your classes into your planner. We will only import those that appears on Cornell prelim/final schedule webpage.
+      <br />
+      <button
+        onClick={[Function]}
+        tabIndex={0}
+        title="Reimport Exams"
+        type="button"
+      >
+        Reimport Exams
+      </button>
+    </div>
+  </div>
+  <div
+    className="SettingsSection"
+  >
+    <p
+      className="SettingsSectionTitle"
+    >
+      Other Tags
+    </p>
+    <div
+      className="SettingsSectionContent"
+    >
+      <ul
+        className="ColorConfigItemList"
+      >
+        <li
+          className="ColorConfigItem"
+        >
+          <span
+            className="TagName"
+            style={
+              Object {
+                "width": "calc(100% - 175px)",
+              }
+            }
+          >
+            <input
+              className="TagEdit"
+              onChange={[Function]}
+              type="text"
+              value="T1"
+            />
+          </span>
+          <button
+            className="ColorEdit"
+            onClick={[Function]}
+            tabIndex={0}
+            type="button"
+          >
+            <span
+              className="ColorDisplay"
+              style={
+                Object {
+                  "backgroundColor": "red",
+                }
+              }
+            />
+            <span
+              title="dropdown"
+            >
+              <svg
+                alt="dropdown"
+                className="Arrow"
+                height="1em"
+                onKeyUp={[Function]}
+                tabIndex={0}
+                title="dropdown"
+                width="1em"
+              >
+                v.svg
+              </svg>
+            </span>
+          </button>
+          <button
+            className="DeleteTag"
+            onClick={[Function]}
+            tabIndex={0}
+            type="button"
+          >
+            <span
+              title="delete"
+            >
+              <svg
+                alt="delete"
+                height="1em"
+                onKeyUp={[Function]}
+                tabIndex={0}
+                title="delete"
+                width="1em"
+              >
+                XLight.svg
+              </svg>
+            </span>
+          </button>
+        </li>
+        <li
+          className="ColorConfigItem"
+        >
+          <input
+            className="TagName AddTagName"
+            onChange={[Function]}
+            onKeyDown={[Function]}
+            placeholder="New Tag"
+            type="text"
+            value=""
+          />
+          <button
+            className="ColorEdit"
+            onClick={[Function]}
+            tabIndex={0}
+            type="button"
+          >
+            Blue
+            <span
+              className="ColorDisplay"
+              style={
+                Object {
+                  "backgroundColor": "#289de9",
+                }
+              }
+            />
+            <span
+              title="dropdown"
+            >
+              <svg
+                alt="dropdown"
+                className="Arrow"
+                height="1em"
+                onKeyUp={[Function]}
+                tabIndex={0}
+                title="dropdown"
+                width="1em"
+              >
+                v.svg
+              </svg>
+            </span>
+          </button>
+        </li>
+      </ul>
+    </div>
+  </div>
+  <div
+    className="FinalRowButtonContainer"
+  >
+    <div
+      className="SettingsButton"
+    >
+      <button
+        className="FinalRowButton SignButton"
+        onClick={[Function]}
+        tabIndex={0}
+        title="Sign out of Samwise"
+        type="button"
+      >
+        Sign Out
+      </button>
+    </div>
+    <a
+      className="FeedbackButton"
+      href="https://goo.gl/forms/PZUZ1Ze6kN82EmcD2"
+      rel="noopener noreferrer"
+      tabIndex={0}
+      target="_blank"
+      title="Link to Feedback form"
+    >
+      Give Feedback
+    </a>
+    <span
+      className="Padding"
+    />
+    <div
+      className="SettingsButton"
+    >
+      <button
+        className="FinalRowButton ReplayTutorialButton"
+        onClick={[Function]}
+        tabIndex={0}
+        title="Click to replay tutorial"
+        type="button"
+      >
+        Replay Tutorial
+      </button>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`TagsContainer matches snapshot. 1`] = `
+<div
+  className="SettingsSection"
+>
+  <p
+    className="SettingsSectionTitle"
+  >
+    TITLE
+  </p>
+  <div
+    className="SettingsSectionContent"
+  >
+    <ul
+      className="ColorConfigItemList"
+    >
+      TEST
+    </ul>
+  </div>
+</div>
+`;

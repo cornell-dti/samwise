@@ -15,7 +15,7 @@ import { firebaseSignOut } from '../../../firebase/auth-util';
  * @return {Node} rendered component.
  * @constructor
  */
-const ClassAdder = (): ReactElement => (
+export const ClassAdder = (): ReactElement => (
   <div className={styles.SettingsSection}>
     <p className={styles.SettingsSectionTitle}>Add Classes</p>
     <div className={styles.SettingsSectionContent}>
@@ -25,7 +25,7 @@ const ClassAdder = (): ReactElement => (
   </div>
 );
 
-const ExamImporter = (): ReactElement => (
+export const ExamImporter = (): ReactElement => (
   <div className={styles.SettingsSection}>
     <p className={styles.SettingsSectionTitle}>Auto Import Exams</p>
     <div className={`${styles.SettingsButton} ${styles.SettingsSectionContent}`}>
@@ -48,7 +48,7 @@ type TagsContainerProps = { readonly title: string; readonly children: ReactNode
  * @return {Node} rendered component.
  * @constructor
  */
-const TagsContainer = ({ title, children }: TagsContainerProps): ReactElement => (
+export const TagsContainer = ({ title, children }: TagsContainerProps): ReactElement => (
   <div className={styles.SettingsSection}>
     <p className={styles.SettingsSectionTitle}>{title}</p>
     <div className={styles.SettingsSectionContent}>
@@ -64,7 +64,7 @@ type Props = { readonly tags: Map<string, Tag> };
 /**
  * The settings page.
  */
-function SettingsPage({ tags }: Props): ReactElement {
+export function SettingsPage({ tags }: Props): ReactElement {
   const classTags: Tag[] = [];
   const otherTags: Tag[] = [];
   tags.forEach((tag) => {

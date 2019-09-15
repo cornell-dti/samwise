@@ -1,0 +1,35 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`SettingsButton matches snapshot. 1`] = `
+<div
+  style={
+    Object {
+      "display": "inline-block",
+    }
+  }
+>
+  <button
+    onClick={[Function]}
+    type="submit"
+  >
+    <p
+      title="Settings Button"
+    >
+      <span
+        title="settings"
+      >
+        <svg
+          alt="settings"
+          height="1em"
+          onKeyUp={[Function]}
+          tabIndex={0}
+          title="settings"
+          width="1em"
+        >
+          settings.svg
+        </svg>
+      </span>
+    </p>
+  </button>
+</div>
+`;
