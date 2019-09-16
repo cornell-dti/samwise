@@ -35,7 +35,8 @@ jobs:
         env:
           ACCESS_TOKEN: ${{ secrets.DEPLOY_GH_PAGE_TOKEN }}
         run: |
-          git clone "https://${ACCESS_TOKEN}@github.com/cornell-dti/samwise.git"
+          rm -rf *
+          git clone "https://${ACCESS_TOKEN}@github.com/cornell-dti/samwise.git" .
       - name: Purge Old Static Assets
         env:
           PR_BRANCH: ${{ github.head_ref }}
