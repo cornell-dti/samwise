@@ -37,6 +37,7 @@ jobs:
         run: |
           rm -rf *
           git clone "https://${ACCESS_TOKEN}@github.com/cornell-dti/samwise.git" .
+          git checkout -b gh-pages
       - name: Purge Old Static Assets
         env:
           PR_BRANCH: ${{ github.head_ref }}
