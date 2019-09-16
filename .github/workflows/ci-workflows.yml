@@ -24,9 +24,9 @@ jobs:
           PUBLIC_URL=$PR_BRANCH yarn build:stage
       - name: Upload Built Static Assets
         uses: actions/upload-artifact@master
-          with:
-            name: built-frontend-assets
-            path: frontend/build
+        with:
+          name: built-frontend-assets
+          path: frontend/build
   deploy:
     runs-on: ubuntu-latest
     needs: [check, build]
