@@ -21,7 +21,7 @@ jobs:
           PR_BRANCH: ${{ github.head_ref }}
         run: |
           cd frontend
-          PUBLIC_URL=$PR_BRANCH yarn build:stage
+          PUBLIC_URL="/$PR_BRANCH" yarn build:stage
       - name: Upload Built Static Assets
         uses: actions/upload-artifact@master
         with:
