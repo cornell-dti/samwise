@@ -40,7 +40,7 @@ jobs:
       - name: Purge Old Static Assets
         env:
           PR_BRANCH: ${{ github.head_ref }}
-        run: git rm -rf $PR_BRANCH
+        run: rm -rf $PR_BRANCH
       - name: Download Built Static Assets
         uses: actions/download-artifact@master
         with:
