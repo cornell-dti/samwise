@@ -1,0 +1,60 @@
+name: CI
+on: pull_request
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@master
+      - name: Set up Node
+        uses: actions/setup-node@v1
+      - name: Yarn Install
+        run: cd frontend && yarn install
+      - name: Run TypeScript Compiler
+        run: cd frontend && yarn tsc
+      - name: Run Linter
+        run: cd frontend && yarn lint
+      - name: Run Tests
+        run: cd frontend && yarn test
+      - name: Build main-site-frontend
+        env:
+          PR_BRANCH: ${{ github.head_ref }}
+        run: |
+          cd frontend
+          PUBLIC_URL="/$PR_BRANCH" yarn build:stage
+      - name: Upload Built Static Assets
+        uses: actions/upload-artifact@master
+        with:
+          name: built-frontend-assets
+          path: frontend/build
+  deploy:
+    runs-on: ubuntu-latest
+    needs: [build]
+    steps:
+      - name: Setup gh-pages Branch
+        env:
+          ACCESS_TOKEN: ${{ secrets.DEPLOY_GH_PAGE_TOKEN }}
+        run: |
+          rm -rf *
+          git clone "https://${ACCESS_TOKEN}@github.com/cornell-dti/samwise.git" .
+          git remote set-url origin https://github.com/cornell-dti/samwise.git
+          git fetch origin
+          git checkout -b gh-pages origin/gh-pages
+      - name: Purge Old Static Assets
+        env:
+          PR_BRANCH: ${{ github.head_ref }}
+        run: rm -rf $PR_BRANCH
+      - name: Download Built Static Assets
+        uses: actions/download-artifact@master
+        with:
+          name: built-frontend-assets
+          path: ${{ github.head_ref }}
+      - name: Commit and Push New Static Assets
+        env:
+          PR_BRANCH: ${{ github.head_ref }}
+          ACCESS_TOKEN: ${{ secrets.DEPLOY_GH_PAGE_TOKEN }}
+        run: |
+          git config --global user.name "deployment-bot"
+          git add .
+          git commit -m "Deploy for $PR_BRANCH"
+          git push "https://${ACCESS_TOKEN}@github.com/cornell-dti/samwise.git"
