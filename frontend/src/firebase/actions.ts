@@ -1,6 +1,19 @@
 import { firestore } from 'firebase/app';
 import { Map, Set } from 'immutable';
 import {
+  reportAddTagEvent,
+  reportEditTagEvent,
+  reportDeleteTagEvent,
+  reportAddTaskEvent,
+  reportEditTaskEvent,
+  reportDeleteTaskEvent,
+  reportAddSubTaskEvent,
+  reportEditSubTaskEvent,
+  reportDeleteSubTaskEvent,
+  reportCompleteTaskEvent,
+  reportFocusTaskEvent,
+} from '../util/ga-util';
+import {
   Course,
   SubTask,
   Tag,
@@ -68,12 +81,14 @@ export const addTag = (tag: WithoutIdOrder<Tag>): void => {
   }
   createFirestoreObject('tags', tag)
     .then((firebaseTag: FirestoreTag) => tagsCollection().add(firebaseTag))
-    .then(ignore);
+    .then(reportAddTagEvent);
 };
 
 export const editTag = (tag: Tag): void => {
   const { id, ...rest } = tag;
-  tagsCollection().doc(id).update(rest).then(ignore);
+  tagsCollection().doc(id)
+    .update(rest)
+    .then(reportEditTagEvent);
 };
 
 export const removeTag = (id: string): void => {
@@ -89,7 +104,8 @@ export const removeTag = (id: string): void => {
         });
       batch.delete(tagsCollection().doc(id));
       batch.commit().then(ignore);
-    });
+    })
+    .then(reportDeleteTagEvent);
 };
 
 /*
@@ -134,7 +150,10 @@ export const addTask = (
       };
       emitUndoAddTaskToast(fullTask);
     }
-    batch.commit().then(ignore);
+    batch.commit().then(() => {
+      reportAddTaskEvent();
+      createdSubTasks.forEach(reportAddSubTaskEvent);
+    });
   });
 };
 
@@ -193,7 +212,24 @@ export const handleTaskDiffs = (
     });
   }
   batch.update(tasksCollection().doc(taskId), mainTaskEdits);
-  batch.commit();
+  batch.commit().then(() => {
+    if (mainTaskEdits.name
+      || mainTaskEdits.complete
+      || mainTaskEdits.date
+      || mainTaskEdits.inFocus
+      || mainTaskEdits.tag) {
+      reportEditTaskEvent();
+    }
+    if (mainTaskEdits.complete) {
+      reportCompleteTaskEvent();
+    }
+    if (mainTaskEdits.inFocus) {
+      reportFocusTaskEvent();
+    }
+    subTaskCreations.forEach(reportAddSubTaskEvent);
+    subTaskEdits.forEach(reportEditSubTaskEvent);
+    subTaskDeletions.forEach(reportDeleteSubTaskEvent);
+  });
 };
 
 type EditType = 'EDITING_MASTER_TEMPLATE' | 'EDITING_ONE_TIME_TASK';
@@ -301,6 +337,7 @@ export const removeTask = (task: Task, noUndo?: 'no-undo'): void => {
     });
   }
   batch.commit().then(() => {
+    reportDeleteTaskEvent();
     if (noUndo !== 'no-undo') {
       const { children, ...rest } = task;
       const fullTask = { ...rest, children: deletedSubTasks };
