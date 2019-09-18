@@ -8,9 +8,11 @@ import { error } from './util/general-util';
 import { store } from './store/store';
 import ErrorBoundary from './components/Util/ErrorBoundary';
 import LoginBarrier from './components/Util/AppInit/LoginBarrier';
-import './util/ga-util'; // import and init google analytics
+import { initialize as initializeGA } from './util/ga-util';
 import { initModal } from './components/Util/Modals';
 import * as serviceWorker from './serviceWorker';
+
+initializeGA();
 
 const appRenderer = (): ReactElement => (
   <ReactReduxProvider store={store}><App /></ReactReduxProvider>

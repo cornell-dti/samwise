@@ -3,6 +3,7 @@ import 'firebase/auth';
 import { error } from '../util/general-util';
 
 export type AppUser = {
+  readonly uid: string;
   readonly displayName: string;
   readonly email: string;
   readonly token: string;
@@ -18,12 +19,12 @@ export async function toAppUser(firebaseUser: firebase.User | null): Promise<App
   if (firebaseUser == null) {
     return null;
   }
-  const { displayName, email } = firebaseUser;
+  const { uid, displayName, email } = firebaseUser;
   if (typeof displayName !== 'string' || typeof email !== 'string') {
     throw new Error('Bad user!');
   }
   const token: string = await firebaseUser.getIdToken(true);
-  return { displayName, email, token };
+  return { uid, displayName, email, token };
 }
 
 let appUser: AppUser | null = null;
