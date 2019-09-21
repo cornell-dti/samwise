@@ -16,7 +16,7 @@ jobs:
         run: cd frontend && yarn lint
       - name: Run Tests
         run: cd frontend && yarn test
-      - name: Build main-site-frontend
+      - name: Build frontend
         run: |
           cd frontend
           PUBLIC_URL="/${{ github.event.number }}" yarn build:stage
