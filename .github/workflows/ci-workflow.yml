@@ -54,7 +54,7 @@ jobs:
         with:
           github-token: ${{ secrets.DEPLOY_GH_PAGE_TOKEN }}
           script: |
-            octokit.pulls.createReview({
+            github.pulls.createReview({
               owner: 'cornell-dti',
               repo: 'samwise',
               pull_number: ${{ github.event.number }},
