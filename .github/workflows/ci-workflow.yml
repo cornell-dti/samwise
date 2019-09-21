@@ -47,7 +47,7 @@ jobs:
           git config user.name "deployment-bot"
           git config user.email "hello@cornelldti.org"
           git add .
-          git commit -m "Deploy for ${{ github.event.number }}"
+          git commit -m "Deploy for ${{ github.event.number }}" || echo "No Update"
           git push "https://${ACCESS_TOKEN}@github.com/cornell-dti/samwise.git" || echo "No Update"
       - name: Comment on Pull Request
         uses: actions/github-script@0.2.0
