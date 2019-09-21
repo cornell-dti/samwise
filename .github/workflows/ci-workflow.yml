@@ -49,3 +49,15 @@ jobs:
           git add .
           git commit -m "Deploy for ${{ github.event.number }}"
           git push "https://${ACCESS_TOKEN}@github.com/cornell-dti/samwise.git"
+      - name: Comment on Pull Request
+        uses: actions/github-script@0.2.0
+        with:
+          github-token: ${{ secrets.DEPLOY_GH_PAGE_TOKEN }}
+          script: |
+            octokit.pulls.createReview({
+              owner: 'cornell-dti',
+              repo: 'samwise',
+              pull_number: ${{ github.event.number }},
+              event: 'COMMENT',
+              body: 'Deployed to https://staging-pr.samwise.today/${{ github.event.number }}'
+            });
