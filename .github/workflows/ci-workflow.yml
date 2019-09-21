@@ -52,12 +52,11 @@ jobs:
       - name: Comment on Pull Request
         uses: actions/github-script@0.2.0
         with:
-          github-token: ${{ secrets.DEPLOY_GH_PAGE_TOKEN }}
+          github-token: ${{ github.token }}
           script: |
-            github.pulls.createReview({
+            github.issues.createComment({
               owner: 'cornell-dti',
               repo: 'samwise',
-              pull_number: ${{ github.event.number }},
-              event: 'COMMENT',
+              issue_number: ${{ github.event.number }},
               body: 'Deployed to https://staging-pr.samwise.today/${{ github.event.number }}'
             });
