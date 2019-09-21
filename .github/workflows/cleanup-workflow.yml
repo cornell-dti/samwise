@@ -1,0 +1,23 @@
+name: Cleanup
+on:
+  pull_request:
+    type: [closed]
+
+jobs:
+  clean-up:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout gh-pages Branch
+        uses: actions/checkout@master
+        with:
+          token: ${{ secrets.DEPLOY_GH_PAGE_TOKEN }}
+          ref: gh-pages
+      - name: Purge Static Assets
+        env:
+          ACCESS_TOKEN: ${{ secrets.DEPLOY_GH_PAGE_TOKEN }}
+        run: |
+          rm -rf ${{ github.event.number }}
+          git config --global user.name "deployment-bot"
+          git add .
+          git commit -m "Deploy for ${{ github.event.number }}"
+          git push "https://${ACCESS_TOKEN}@github.com/cornell-dti/samwise.git"
