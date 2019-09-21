@@ -9,15 +9,15 @@ jobs:
         if: github.event.state == 'closed'
         uses: actions/checkout@master
         with:
-          token: ${{ secrets.DEPLOY_GH_PAGE_TOKEN }}
           ref: gh-pages
       - name: Purge Static Assets
         if: github.event.state == 'closed'
         env:
           ACCESS_TOKEN: ${{ secrets.DEPLOY_GH_PAGE_TOKEN }}
         run: |
-          rm -rf ${{ github.event.number }}
-          git config --global user.name "deployment-bot"
+          git rm -rf ${{ github.event.number }} || echo "Nothing to remove"
+          git config user.name "deployment-bot"
+          git config user.email "hello@cornelldti.org"
           git add .
           git commit -m "Deploy for ${{ github.event.number }}"
           git push "https://${ACCESS_TOKEN}@github.com/cornell-dti/samwise.git"
