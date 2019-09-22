@@ -43,6 +43,16 @@ export default function DatePicker(props: Props): ReactElement {
     onClearPicker();
   };
 
+  const [internalDate, setInternalDate] = React.useState<InternalDate>(
+    date instanceof Date ? { type: 'normal', date } : {
+      type: 'repeat',
+      checkedWeeks: date.pattern.bitSet,
+      endOption: 1,
+      calOpened: false,
+      repeatEnd: date.endDate,
+    },
+  );
+
   /**
    * Generates the date string of the next valid day in a bitset pattern
    */
@@ -78,15 +88,14 @@ export default function DatePicker(props: Props): ReactElement {
   };
 
   /**
-   * Whether or not this task is a repeating task.
-   */
-  const [isRepeat, setIsRepeat] = React.useState<boolean>(!(date instanceof Date));
-
-  /**
    * Event handler for when the user starts the repeat box
    */
   const changeRepeat = (e: ChangeEvent): void => {
-    setIsRepeat((e.target as HTMLSelectElement).value === 'true');
+    if ((e.target as HTMLSelectElement).value === 'true') {
+      setInternalDate({ type: 'repeat', checkedWeeks: 0, endOption: 0, calOpened: false, repeatEnd: 0 });
+    } else {
+      setInternalDate({ type: 'normal', date: new Date() });
+    }
   };
 
   /**
@@ -304,7 +313,6 @@ export default function DatePicker(props: Props): ReactElement {
     setRepeatNumber(0);
     setRepeatEndDate(new Date());
     setEndOption(0);
-    setIsRepeat(false);
   };
 
   /**
@@ -321,7 +329,7 @@ export default function DatePicker(props: Props): ReactElement {
    * Event handler for when the user tries to save
    */
   const onSubmit = (): void => {
-    if (isRepeat) {
+    if (internalDate.type === 'repeat') {
       const bitSet = checkedWeeks;
 
       // If they didn't pick any days to repeat on, don't save.
@@ -370,7 +378,7 @@ export default function DatePicker(props: Props): ReactElement {
             <p className={dateStyles.SelectTypeWrap}>
               <select
                 className={dateStyles.SelectType}
-                value={isRepeat.toString()}
+                value={(internalDate.type !== 'normal').toString()}
                 onChange={changeRepeat}
               >
                 <option value="false">One-Time</option>
@@ -378,8 +386,8 @@ export default function DatePicker(props: Props): ReactElement {
               </select>
             </p>
           )}
-          {!isRepeat && <Calendar onChange={onChange} value={currDate} minDate={new Date()} calendarType="US" />}
-          {isRepeat && openedRepeat}
+          {internalDate.type === 'normal' && <Calendar onChange={onChange} value={currDate} minDate={new Date()} calendarType="US" />}
+          {internalDate.type !== 'normal' && openedRepeat}
           <p className={styles.NewTaskDateSave}>
             <button type="button" onClick={onCancel}>Cancel</button>
             <button type="button" onClick={onSubmit}>Done</button>
