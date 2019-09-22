@@ -1,6 +1,5 @@
 import React, { ReactElement, SyntheticEvent, ChangeEvent } from 'react';
 import Calendar from 'react-calendar';
-import { exception } from 'react-ga';
 import styles from './Picker.module.css';
 import dateStyles from './DatePicker.module.css';
 import { date2String } from '../../util/datetime-util';
@@ -104,10 +103,6 @@ export default function DatePicker(props: Props): ReactElement {
    */
   const handleClickWeekday = (e: ChangeEvent): void => {
     if (internalDate.type !== 'repeat') {
-      exception({
-        description: 'Attempted to set repeat day on nonrepeating date',
-        fatal: true,
-      });
       throw Error('Attempted to set repeat day on nonrepeating date');
     }
     const { value, checked } = e.target as HTMLInputElement;
@@ -151,19 +146,20 @@ export default function DatePicker(props: Props): ReactElement {
   );
 
   /**
-   * The state to keep track of which repeat end option the user has chosen.
-   */
-  const [endOption, setEndOption] = React.useState<0|1>(date instanceof Date ? 0 : 1);
-
-  /**
    * Event handler for choosing a repeat end option
    * @param e The onchange event
    */
   const handleClickEnd = (e: ChangeEvent): void => {
+    if (internalDate.type !== 'repeat') {
+      throw Error('Attempted to set repeat day on nonrepeating date');
+    }
     const { value } = e.target as HTMLInputElement;
     const valNum = parseInt(value, 10);
     if (valNum !== 0 && valNum !== 1) { return; }
-    setEndOption(valNum);
+    setInternalDate({
+      ...internalDate,
+      endOption: valNum,
+    });
   };
 
   /**
@@ -192,9 +188,15 @@ export default function DatePicker(props: Props): ReactElement {
    * @param d The date chosen from the Calendar component
    */
   const handleSetRepeatEndDate = (d: Date | Date[]): void => {
+    if (internalDate.type !== 'repeat') {
+      throw Error('Attempted to set repeat day on nonrepeating date');
+    }
     setCalOpened(false);
     setRepeatEndDate(d instanceof Array ? d[0] : d);
-    setEndOption(0);
+    setInternalDate({
+      ...internalDate,
+      endOption: 1,
+    });
   };
 
 
@@ -208,9 +210,15 @@ export default function DatePicker(props: Props): ReactElement {
    * @param e The onchange event
    */
   const handleSetRepeatNumber = (e: ChangeEvent): void => {
+    if (internalDate.type !== 'repeat') {
+      throw Error('Attempted to set repeat day on nonrepeating date');
+    }
     const { value } = e.target as HTMLInputElement;
     setRepeatNumber(parseInt(value, 10));
-    setEndOption(1);
+    setInternalDate({
+      ...internalDate,
+      endOption: 1,
+    });
   };
 
   /**
@@ -270,8 +278,9 @@ export default function DatePicker(props: Props): ReactElement {
       {' '}
       weeks
     </>,
-  ].map((x, i) => (
-    <>
+  ].map((x, i) => {
+    const checked = internalDate.type === 'repeat' ? internalDate.endOption === i : false;
+    return (
       <li>
         <label htmlFor={`newTaskRepeatEndRadio${i}`}>
           <input
@@ -279,14 +288,14 @@ export default function DatePicker(props: Props): ReactElement {
             name="repeatEnd"
             id={`newTaskRepeatEndRadio${i}`}
             value={i}
-            checked={i === endOption}
+            checked={checked}
             onChange={handleClickEnd}
           />
           {x}
         </label>
       </li>
-    </>
-  ));
+    );
+  });
 
   /**
    * The component to display when the repeating task box is open
@@ -317,7 +326,6 @@ export default function DatePicker(props: Props): ReactElement {
     setCalOpened(false);
     setRepeatNumber(0);
     setRepeatEndDate(new Date());
-    setEndOption(0);
   };
 
   /**
@@ -342,7 +350,7 @@ export default function DatePicker(props: Props): ReactElement {
 
       let endDate;
 
-      switch (endOption) {
+      switch (internalDate.endOption) {
         case 0:
           endDate = repeatEndDate;
           break;
