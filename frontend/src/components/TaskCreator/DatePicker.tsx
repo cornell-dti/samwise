@@ -1,5 +1,6 @@
 import React, { ReactElement, SyntheticEvent, ChangeEvent } from 'react';
 import Calendar from 'react-calendar';
+import { exception } from 'react-ga';
 import styles from './Picker.module.css';
 import dateStyles from './DatePicker.module.css';
 import { date2String } from '../../util/datetime-util';
@@ -99,22 +100,25 @@ export default function DatePicker(props: Props): ReactElement {
   };
 
   /**
-   * The state to keep track of which days the user would like to repeat
-   */
-  const [checkedWeeks, setCheckedWeeks] = React.useState<number>(
-    date instanceof Date ? 0 : date.pattern.bitSet,
-  );
-
-  /**
    * Event handler when checking or unchecking a weekday for repeating
    */
   const handleClickWeekday = (e: ChangeEvent): void => {
+    if (internalDate.type !== 'repeat') {
+      exception({
+        description: 'Attempted to set repeat day on nonrepeating date',
+        fatal: true,
+      });
+    }
     const { value, checked } = e.target as HTMLInputElement;
     const val = parseInt(value, 10);
     if (checked) {
-      setCheckedWeeks(setDayOfWeek(checkedWeeks, val));
+      setInternalDate(
+        { ...internalDate, checkedWeeks: setDayOfWeek(internalDate.checkedWeeks, val) },
+      );
     } else {
-      setCheckedWeeks(unsetDayOfWeek(checkedWeeks, val));
+      setInternalDate(
+        { ...internalDate, checkedWeeks: unsetDayOfWeek(internalDate.checkedWeeks, val) },
+      );
     }
   };
 
@@ -122,26 +126,27 @@ export default function DatePicker(props: Props): ReactElement {
    * The list of labels and inputs making up the seven weekdays users can check and uncheck
    */
   const weekdayPickers = ['S', 'M', 'T', 'W', 'T', 'F', 'S'].map(
-    (x, i) => (
-      <>
+    (x, i) => {
+      const isDaySet = internalDate.type === 'repeat' ? isDayOfWeekSet(internalDate.checkedWeeks, i) : false;
+      return (
         <label
           htmlFor={`newTaskRepeatInputCheck${i}`}
-          style={isDayOfWeekSet(checkedWeeks, i) ? {
+          style={isDaySet ? {
             background: '#5a5a5a', color: 'white',
           } : {}}
         >
           {x}
           <input
             id={`newTaskRepeatInputCheck${i}`}
-            checked={isDayOfWeekSet(checkedWeeks, i)}
+            checked={isDaySet}
             value={i}
             onChange={handleClickWeekday}
             type="checkbox"
             name="repeatWeek"
           />
         </label>
-      </>
-    ),
+      );
+    },
   );
 
   /**
@@ -308,7 +313,6 @@ export default function DatePicker(props: Props): ReactElement {
    * Resets all the react states regarding repeating tasks
    */
   const resetRepeats = (): void => {
-    setCheckedWeeks(0);
     setCalOpened(false);
     setRepeatNumber(0);
     setRepeatEndDate(new Date());
@@ -330,7 +334,7 @@ export default function DatePicker(props: Props): ReactElement {
    */
   const onSubmit = (): void => {
     if (internalDate.type === 'repeat') {
-      const bitSet = checkedWeeks;
+      const bitSet = internalDate.checkedWeeks;
 
       // If they didn't pick any days to repeat on, don't save.
       if (bitSet === 0) { return; }
