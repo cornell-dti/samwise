@@ -188,12 +188,6 @@ export default function DatePicker(props: Props): ReactElement {
     });
   };
 
-
-  /**
-   * When to end the repeating task if the user chooses to end after a
-   * certain number of times.
-   */
-  const [repeatNumber, setRepeatNumber] = React.useState<number>(0);
   /**
    * Event handler for choosing a repeat end option
    * @param e The onchange event
@@ -203,10 +197,10 @@ export default function DatePicker(props: Props): ReactElement {
       throw Error('Attempted to set repeat day on nonrepeating date');
     }
     const { value } = e.target as HTMLInputElement;
-    setRepeatNumber(parseInt(value, 10));
     setInternalDate({
       ...internalDate,
       endOption: 1,
+      repeatEnd: parseInt(value, 10),
     });
   };
 
@@ -269,7 +263,14 @@ export default function DatePicker(props: Props): ReactElement {
     <>
       After
       {' '}
-      <input value={repeatNumber} onChange={handleSetRepeatNumber} min="1" max="30" step="1" type="number" />
+      <input
+        value={internalDate.repeatEnd instanceof Date ? 0 : internalDate.repeatEnd}
+        onChange={handleSetRepeatNumber}
+        min="1"
+        max="30"
+        step="1"
+        type="number"
+      />
       {' '}
       weeks
     </>,
@@ -318,7 +319,10 @@ export default function DatePicker(props: Props): ReactElement {
    * Resets all the react states regarding repeating tasks
    */
   const resetRepeats = (): void => {
-    setRepeatNumber(0);
+    setInternalDate({
+      type: 'normal',
+      date: new Date(),
+    });
   };
 
   /**
@@ -346,7 +350,7 @@ export default function DatePicker(props: Props): ReactElement {
       if (internalDate.repeatEnd instanceof Date) {
         endDate = internalDate.repeatEnd;
       } else {
-        endDate = new Date(+(new Date()) + 1000 * 60 * 60 * 24 * 7 * repeatNumber);
+        endDate = new Date(+(new Date()) + 1000 * 60 * 60 * 24 * 7 * internalDate.repeatEnd);
         // checkedWeeks.reduce((acc, x) => acc + (x ? 1 : 0), 0));
       }
 
