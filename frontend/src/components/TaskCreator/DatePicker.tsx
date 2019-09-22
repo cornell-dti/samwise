@@ -108,6 +108,7 @@ export default function DatePicker(props: Props): ReactElement {
         description: 'Attempted to set repeat day on nonrepeating date',
         fatal: true,
       });
+      throw Error('Attempted to set repeat day on nonrepeating date');
     }
     const { value, checked } = e.target as HTMLInputElement;
     const val = parseInt(value, 10);
