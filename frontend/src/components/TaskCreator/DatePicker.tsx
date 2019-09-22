@@ -25,7 +25,6 @@ type InternalDate =
 } | {
   type: 'repeat';
   checkedWeeks: number;
-  endOption: 0 | 1;
   calOpened: boolean;
   repeatEnd: Date | number;
 };
@@ -47,7 +46,6 @@ export default function DatePicker(props: Props): ReactElement {
     date instanceof Date ? { type: 'normal', date } : {
       type: 'repeat',
       checkedWeeks: date.pattern.bitSet,
-      endOption: 1,
       calOpened: false,
       repeatEnd: date.endDate,
     },
@@ -92,7 +90,7 @@ export default function DatePicker(props: Props): ReactElement {
    */
   const changeRepeat = (e: ChangeEvent): void => {
     if ((e.target as HTMLSelectElement).value === 'true') {
-      setInternalDate({ type: 'repeat', checkedWeeks: 0, endOption: 0, calOpened: false, repeatEnd: 0 });
+      setInternalDate({ type: 'repeat', checkedWeeks: 0, calOpened: false, repeatEnd: 0 });
     } else {
       setInternalDate({ type: 'normal', date: new Date() });
     }
@@ -155,10 +153,13 @@ export default function DatePicker(props: Props): ReactElement {
     }
     const { value } = e.target as HTMLInputElement;
     const valNum = parseInt(value, 10);
-    if (valNum !== 0 && valNum !== 1) { return; }
+    let newRepeatEnd: Date | number = 0;
+    if (valNum === 0) {
+      newRepeatEnd = new Date();
+    }
     setInternalDate({
       ...internalDate,
-      endOption: valNum,
+      repeatEnd: newRepeatEnd,
     });
   };
 
@@ -182,7 +183,6 @@ export default function DatePicker(props: Props): ReactElement {
     }
     setInternalDate({
       ...internalDate,
-      endOption: 1,
       calOpened: false,
       repeatEnd: d instanceof Array ? d[0] : d,
     });
@@ -199,7 +199,6 @@ export default function DatePicker(props: Props): ReactElement {
     const { value } = e.target as HTMLInputElement;
     setInternalDate({
       ...internalDate,
-      endOption: 1,
       repeatEnd: parseInt(value, 10),
     });
   };
@@ -275,7 +274,12 @@ export default function DatePicker(props: Props): ReactElement {
       weeks
     </>,
   ].map((x, i) => {
-    const checked = internalDate.type === 'repeat' ? internalDate.endOption === i : false;
+    let checked = false;
+    if (internalDate.type === 'repeat') {
+      checked = i === 0
+        ? internalDate.repeatEnd instanceof Date
+        : !(internalDate.repeatEnd instanceof Date);
+    }
     return (
       <li>
         <label htmlFor={`newTaskRepeatEndRadio${i}`}>
