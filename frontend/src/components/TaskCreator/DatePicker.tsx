@@ -163,14 +163,14 @@ export default function DatePicker(props: Props): ReactElement {
   };
 
   /**
-   * Whether or not the pick repeat end date calendar is open
-   */
-  const [calOpened, setCalOpened] = React.useState<boolean>(false);
-
-  /**
    * Event handler for when the user starts the repeat box
    */
-  const handleClickRepeatCal = (): void => { setCalOpened(!calOpened); };
+  const handleClickRepeatCal = (): void => {
+    if (internalDate.type !== 'repeat') {
+      throw Error('Attempted to set repeat day on nonrepeating date');
+    }
+    setInternalDate({ ...internalDate, calOpened: !internalDate.calOpened });
+  };
 
   /**
    * When to end the repeating task if the user chooses to end on a date.
@@ -191,11 +191,11 @@ export default function DatePicker(props: Props): ReactElement {
     if (internalDate.type !== 'repeat') {
       throw Error('Attempted to set repeat day on nonrepeating date');
     }
-    setCalOpened(false);
     setRepeatEndDate(d instanceof Array ? d[0] : d);
     setInternalDate({
       ...internalDate,
       endOption: 1,
+      calOpened: false,
     });
   };
 
@@ -226,8 +226,11 @@ export default function DatePicker(props: Props): ReactElement {
    * @param d The date to set the repeat end date
    */
   const testSetEndSem = (d: Date): void => {
+    if (internalDate.type !== 'repeat') {
+      throw Error('Attempted to set repeat day on nonrepeating date');
+    }
     setRepeatEndDate(d);
-    setCalOpened(false);
+    setInternalDate({ ...internalDate, calOpened: false });
   };
 
 
@@ -246,7 +249,8 @@ export default function DatePicker(props: Props): ReactElement {
         {repeatEndDate.toLocaleDateString()}
       </button>
       {
-        calOpened
+        internalDate.type === 'repeat'
+        && internalDate.calOpened
         && (
           <div>
             <Calendar
@@ -323,7 +327,6 @@ export default function DatePicker(props: Props): ReactElement {
    * Resets all the react states regarding repeating tasks
    */
   const resetRepeats = (): void => {
-    setCalOpened(false);
     setRepeatNumber(0);
     setRepeatEndDate(new Date());
   };
