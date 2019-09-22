@@ -13,6 +13,11 @@ exports[`SettingsButton matches snapshot. 1`] = `
     type="submit"
   >
     <p
+      style={
+        Object {
+          "transform": "scale(2)translateY(-5px)",
+        }
+      }
       title="Settings Button"
     >
       <span
