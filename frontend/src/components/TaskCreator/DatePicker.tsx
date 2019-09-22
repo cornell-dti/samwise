@@ -18,6 +18,18 @@ type Props = {
   readonly onClearPicker: () => void;
 };
 
+type InternalDate =
+{
+  type: 'normal';
+  date: Date;
+} | {
+  type: 'repeat';
+  checkedWeeks: number;
+  endOption: 0 | 1;
+  calOpened: boolean;
+  repeatEnd: Date | number;
+};
+
 const REPEATING_TASK_ENABLED: boolean = localStorage.getItem('REPEATING_TASK_ENABLED') != null;
 
 export default function DatePicker(props: Props): ReactElement {
@@ -100,10 +112,9 @@ export default function DatePicker(props: Props): ReactElement {
   /**
    * The list of labels and inputs making up the seven weekdays users can check and uncheck
    */
-  const weekdayPickers = ['S', 'M', 'T', 'W', 'T', 'F', 'S'].reduce(
-    (a, x, i) => (
+  const weekdayPickers = ['S', 'M', 'T', 'W', 'T', 'F', 'S'].map(
+    (x, i) => (
       <>
-        {a}
         <label
           htmlFor={`newTaskRepeatInputCheck${i}`}
           style={isDayOfWeekSet(checkedWeeks, i) ? {
@@ -121,7 +132,7 @@ export default function DatePicker(props: Props): ReactElement {
           />
         </label>
       </>
-    ), <></>,
+    ),
   );
 
   /**
@@ -244,9 +255,8 @@ export default function DatePicker(props: Props): ReactElement {
       {' '}
       weeks
     </>,
-  ].reduce((a, x, i) => (
+  ].map((x, i) => (
     <>
-      {a}
       <li>
         <label htmlFor={`newTaskRepeatEndRadio${i}`}>
           <input
@@ -261,7 +271,7 @@ export default function DatePicker(props: Props): ReactElement {
         </label>
       </li>
     </>
-  ), <></>);
+  ));
 
   /**
    * The component to display when the repeating task box is open
