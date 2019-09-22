@@ -70,16 +70,6 @@ pids
 *.seed
 *.pid.lock
 
-# Flask stuff:
-instance/
-.webassets-cache
-
-# Jupyter Notebook
-.ipynb_checkpoints
-
-# SageMath parsed files
-*.sage.py
-
 # Logs
 logs
 *.log
