@@ -94,11 +94,11 @@ function TaskEditor(
 
   const [subTaskToFocus, setSubTaskToFocus] = useState<TaskToFocus>(null);
 
-  const onMouseLeave = (): void => {
-    if (onBlur) {
-      onBlur();
-    }
-  };
+  // const onMouseLeave = (): void => {
+  //   if (onBlur) {
+  //     onBlur();
+  //   }
+  // };
   const onSaveClicked = (): void => {
     if (type === 'ONE_TIME') {
       editTaskWithDiff(id, 'EDITING_ONE_TIME_TASK', diff);
@@ -191,7 +191,7 @@ function TaskEditor(
       className={actualClassName}
       style={formStyle}
       onMouseEnter={onFocus}
-      onMouseLeave={onMouseLeave}
+      onMouseLeave={onSaveClicked}
       onFocus={onFocus}
       onBlur={ignore}
       ref={editorRef}
@@ -245,9 +245,6 @@ function TaskEditor(
         style={diffIsEmpty(diff) ? { maxHeight: 0, padding: 0 } : undefined}
       >
         <span className={styles.TaskEditorFlexiblePadding} />
-        <div role="presentation" className={styles.SaveButton} onClick={onSaveClicked}>
-          <span className={styles.SaveButtonText}>Save</span>
-        </div>
       </div>
     </form>
   );
