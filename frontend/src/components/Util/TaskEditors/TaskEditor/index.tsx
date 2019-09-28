@@ -8,7 +8,6 @@ import { connect } from 'react-redux';
 import { MainTask, State, SubTask, Tag } from 'store/store-types';
 import OverdueAlert from 'components/UI/OverdueAlert';
 import { NONE_TAG } from 'util/tag-util';
-import { ignore } from 'util/general-util';
 import { confirmRepeatedTaskEditMaster, promptRepeatedTaskEditChoice } from 'util/task-util';
 import { editTaskWithDiff, forkTaskWithDiff } from 'firebase/actions';
 import styles from './index.module.css';
@@ -187,7 +186,7 @@ function TaskEditor(
       onMouseEnter={onFocus}
       onMouseLeave={onSaveClicked}
       onFocus={onFocus}
-      onBlur={ignore}
+      onBlur={onSaveClicked}
       ref={editorRef}
     >
       {isOverdue && <OverdueAlert target="task-card" />}
