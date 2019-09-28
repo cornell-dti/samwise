@@ -73,7 +73,6 @@ function TaskEditor(
     newSubTaskAutoFocused,
     newSubTaskDisabled,
     onFocus,
-    onBlur,
     editorRef,
     calendarPosition,
   }: Props,
@@ -94,11 +93,6 @@ function TaskEditor(
 
   const [subTaskToFocus, setSubTaskToFocus] = useState<TaskToFocus>(null);
 
-  // const onMouseLeave = (): void => {
-  //   if (onBlur) {
-  //     onBlur();
-  //   }
-  // };
   const onSaveClicked = (): void => {
     if (type === 'ONE_TIME') {
       editTaskWithDiff(id, 'EDITING_ONE_TIME_TASK', diff);
