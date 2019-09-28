@@ -14,9 +14,9 @@ type State = {
 export default class Tooltip extends Component<Props, State> {
   public readonly state: State = { hover: false };
 
-  private handleMouseIn = () => this.setState({ hover: true });
+  private handleMouseIn = (): void => this.setState({ hover: true });
 
-  private handleMouseOut = () => this.setState({ hover: false });
+  private handleMouseOut = (): void => this.setState({ hover: false });
 
   public render(): ReactElement {
     const { text, iconName } = this.props;
