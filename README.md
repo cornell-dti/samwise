@@ -93,6 +93,7 @@ Check our [wiki](https://github.com/cornell-dti/samwise/wiki) folder to see a li
 
 - **Megan Yin** - Front-end Developer
 - **William Evans** - Back-end Developer
+- **Pinxuan Huang** - Front-end Developer
 
 We are a team within **Cornell Design & Tech Initiative**. For more information, see our website [here](https://cornelldti.org/).
 
