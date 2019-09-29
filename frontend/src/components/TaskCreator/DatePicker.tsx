@@ -24,7 +24,11 @@ type InternalDate =
   date: Date;
   checkedWeeks: number;
   calOpened: boolean;
-  repeatEnd: Date | number;
+  repeatEnd: {
+    type: 'date' | 'weeks';
+    date: Date;
+    weeks: number;
+  };
 };
 
 const REPEATING_TASK_ENABLED: boolean = localStorage.getItem('REPEATING_TASK_ENABLED') != null;
@@ -47,14 +51,18 @@ export default function DatePicker(props: Props): ReactElement {
         date,
         checkedWeeks: 0,
         calOpened: false,
-        repeatEnd: new Date(),
+        repeatEnd: { type: 'date', date: new Date(), weeks: 0 },
       }
       : {
         type: 'repeat',
         date: new Date(),
         checkedWeeks: date.pattern.bitSet,
         calOpened: false,
-        repeatEnd: date.endDate,
+        repeatEnd: {
+          type: 'date',
+          date: date.endDate instanceof Date ? date.endDate : new Date(),
+          weeks: date.endDate instanceof Date ? 0 : date.endDate,
+        },
       },
   );
 
@@ -154,13 +162,15 @@ export default function DatePicker(props: Props): ReactElement {
   const handleClickEnd = (e: ChangeEvent): void => {
     const { value } = e.target as HTMLInputElement;
     const valNum = parseInt(value, 10);
-    let newRepeatEnd: Date | number = 0;
-    if (valNum === 0) {
-      newRepeatEnd = new Date();
-    }
+
+    const newType: 'date' | 'weeks' = valNum === 0 ? 'date' : 'weeks';
+
     setInternalDate({
       ...internalDate,
-      repeatEnd: newRepeatEnd,
+      repeatEnd: {
+        ...internalDate.repeatEnd,
+        type: newType,
+      },
     });
   };
 
@@ -179,7 +189,7 @@ export default function DatePicker(props: Props): ReactElement {
     setInternalDate({
       ...internalDate,
       calOpened: false,
-      repeatEnd: d instanceof Array ? d[0] : d,
+      repeatEnd: { ...internalDate.repeatEnd, date: d instanceof Array ? d[0] : d },
     });
   };
 
@@ -191,7 +201,7 @@ export default function DatePicker(props: Props): ReactElement {
     const { value } = e.target as HTMLInputElement;
     setInternalDate({
       ...internalDate,
-      repeatEnd: parseInt(value, 10),
+      repeatEnd: { ...internalDate.repeatEnd, weeks: parseInt(value, 10) },
     });
   };
 
@@ -200,7 +210,11 @@ export default function DatePicker(props: Props): ReactElement {
    * @param d The date to set the repeat end date
    */
   const testSetEndSem = (d: Date): void => {
-    setInternalDate({ ...internalDate, calOpened: false, repeatEnd: d });
+    setInternalDate({
+      ...internalDate,
+      calOpened: false,
+      repeatEnd: { type: 'date', date: d, weeks: internalDate.repeatEnd.weeks },
+    });
   };
 
 
@@ -216,10 +230,7 @@ export default function DatePicker(props: Props): ReactElement {
         className={dateStyles.SubtleBtn}
         onClick={handleClickRepeatCal}
       >
-        {
-          (internalDate.repeatEnd instanceof Date ? internalDate.repeatEnd : new Date())
-            .toLocaleDateString()
-        }
+        { internalDate.repeatEnd.date.toLocaleDateString() }
       </button>
       {
         internalDate.type === 'repeat'
@@ -252,7 +263,7 @@ export default function DatePicker(props: Props): ReactElement {
       After
       {' '}
       <input
-        value={internalDate.repeatEnd instanceof Date ? 0 : internalDate.repeatEnd}
+        value={internalDate.repeatEnd.weeks}
         onChange={handleSetRepeatNumber}
         min="1"
         max="30"
@@ -266,8 +277,8 @@ export default function DatePicker(props: Props): ReactElement {
     let checked = false;
     if (internalDate.type === 'repeat') {
       checked = i === 0
-        ? internalDate.repeatEnd instanceof Date
-        : !(internalDate.repeatEnd instanceof Date);
+        ? internalDate.repeatEnd.type !== 'weeks'
+        : internalDate.repeatEnd.type === 'weeks';
     }
     return (
       <li>
@@ -317,7 +328,7 @@ export default function DatePicker(props: Props): ReactElement {
       date: new Date(),
       checkedWeeks: 0,
       calOpened: false,
-      repeatEnd: new Date(),
+      repeatEnd: { type: 'date', date: new Date(), weeks: 0 },
     });
   };
 
@@ -343,10 +354,10 @@ export default function DatePicker(props: Props): ReactElement {
 
       let endDate;
 
-      if (internalDate.repeatEnd instanceof Date) {
-        endDate = internalDate.repeatEnd;
+      if (internalDate.repeatEnd.type === 'date') {
+        endDate = internalDate.repeatEnd.date;
       } else {
-        endDate = new Date(+(new Date()) + 1000 * 60 * 60 * 24 * 7 * internalDate.repeatEnd);
+        endDate = new Date(+(new Date()) + 1000 * 60 * 60 * 24 * 7 * internalDate.repeatEnd.weeks);
       }
 
       const repData: RepeatMetaData = {
