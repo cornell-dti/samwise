@@ -18,6 +18,19 @@ type Props = {
   readonly onClearPicker: () => void;
 };
 
+type InternalDate =
+{
+  type: 'normal' | 'repeat';
+  date: Date;
+  checkedWeeks: number;
+  calOpened: boolean;
+  repeatEnd: {
+    type: 'date' | 'weeks';
+    date: Date;
+    weeks: number;
+  };
+};
+
 const REPEATING_TASK_ENABLED: boolean = localStorage.getItem('REPEATING_TASK_ENABLED') != null;
 
 export default function DatePicker(props: Props): ReactElement {
@@ -30,6 +43,28 @@ export default function DatePicker(props: Props): ReactElement {
     e.stopPropagation();
     onClearPicker();
   };
+
+  const [internalDate, setInternalDate] = React.useState<InternalDate>(
+    date instanceof Date
+      ? {
+        type: 'normal',
+        date,
+        checkedWeeks: 0,
+        calOpened: false,
+        repeatEnd: { type: 'date', date: new Date(), weeks: 0 },
+      }
+      : {
+        type: 'repeat',
+        date: new Date(),
+        checkedWeeks: date.pattern.bitSet,
+        calOpened: false,
+        repeatEnd: {
+          type: 'date',
+          date: date.endDate instanceof Date ? date.endDate : new Date(),
+          weeks: date.endDate instanceof Date ? 0 : date.endDate,
+        },
+      },
+  );
 
   /**
    * Generates the date string of the next valid day in a bitset pattern
@@ -66,125 +101,110 @@ export default function DatePicker(props: Props): ReactElement {
   };
 
   /**
-   * Whether or not this task is a repeating task.
-   */
-  const [isRepeat, setIsRepeat] = React.useState<boolean>(!(date instanceof Date));
-
-  /**
    * Event handler for when the user starts the repeat box
    */
-  const changeRepeat = (e: ChangeEvent): void => {
-    setIsRepeat((e.target as HTMLSelectElement).value === 'true');
+  const changeRepeat = (e: ChangeEvent<HTMLSelectElement>): void => {
+    setInternalDate({
+      ...internalDate,
+      type:
+       e.currentTarget.value === 'true'
+         ? 'repeat'
+         : 'normal',
+    });
   };
-
-  /**
-   * The state to keep track of which days the user would like to repeat
-   */
-  const [checkedWeeks, setCheckedWeeks] = React.useState<number>(
-    date instanceof Date ? 0 : date.pattern.bitSet,
-  );
 
   /**
    * Event handler when checking or unchecking a weekday for repeating
    */
-  const handleClickWeekday = (e: ChangeEvent): void => {
-    const { value, checked } = e.target as HTMLInputElement;
+  const handleClickWeekday = (e: ChangeEvent<HTMLInputElement>): void => {
+    const { value, checked } = e.currentTarget;
     const val = parseInt(value, 10);
-    if (checked) {
-      setCheckedWeeks(setDayOfWeek(checkedWeeks, val));
-    } else {
-      setCheckedWeeks(unsetDayOfWeek(checkedWeeks, val));
-    }
+
+    setInternalDate(
+      {
+        ...internalDate,
+        checkedWeeks: checked
+          ? setDayOfWeek(internalDate.checkedWeeks, val)
+          : unsetDayOfWeek(internalDate.checkedWeeks, val),
+      },
+    );
   };
 
   /**
    * The list of labels and inputs making up the seven weekdays users can check and uncheck
    */
-  const weekdayPickers = ['S', 'M', 'T', 'W', 'T', 'F', 'S'].reduce(
-    (a, x, i) => (
-      <>
-        {a}
+  const weekdayPickers = ['S', 'M', 'T', 'W', 'T', 'F', 'S'].map(
+    (x, i) => {
+      const isDaySet = isDayOfWeekSet(internalDate.checkedWeeks, i);
+      return (
         <label
           htmlFor={`newTaskRepeatInputCheck${i}`}
-          style={isDayOfWeekSet(checkedWeeks, i) ? {
+          style={isDaySet ? {
             background: '#5a5a5a', color: 'white',
           } : {}}
         >
           {x}
           <input
             id={`newTaskRepeatInputCheck${i}`}
-            checked={isDayOfWeekSet(checkedWeeks, i)}
+            checked={isDaySet}
             value={i}
             onChange={handleClickWeekday}
             type="checkbox"
             name="repeatWeek"
           />
         </label>
-      </>
-    ), <></>,
+      );
+    },
   );
-
-  /**
-   * The state to keep track of which repeat end option the user has chosen.
-   */
-  const [endOption, setEndOption] = React.useState<0|1>(date instanceof Date ? 0 : 1);
 
   /**
    * Event handler for choosing a repeat end option
    * @param e The onchange event
    */
-  const handleClickEnd = (e: ChangeEvent): void => {
-    const { value } = e.target as HTMLInputElement;
+  const handleClickEnd = (e: ChangeEvent<HTMLInputElement>): void => {
+    const { value } = e.currentTarget;
     const valNum = parseInt(value, 10);
-    if (valNum !== 0 && valNum !== 1) { return; }
-    setEndOption(valNum);
-  };
 
-  /**
-   * Whether or not the pick repeat end date calendar is open
-   */
-  const [calOpened, setCalOpened] = React.useState<boolean>(false);
+    const newType: 'date' | 'weeks' = valNum === 0 ? 'date' : 'weeks';
+
+    setInternalDate({
+      ...internalDate,
+      repeatEnd: {
+        ...internalDate.repeatEnd,
+        type: newType,
+      },
+    });
+  };
 
   /**
    * Event handler for when the user starts the repeat box
    */
-  const handleClickRepeatCal = (): void => { setCalOpened(!calOpened); };
+  const handleClickRepeatCal = (): void => {
+    setInternalDate({ ...internalDate, calOpened: !internalDate.calOpened });
+  };
 
-  /**
-   * When to end the repeating task if the user chooses to end on a date.
-   */
-  const [repeatEndDate, setRepeatEndDate] = React.useState<Date>(
-    (() => {
-      if (date instanceof Date) {
-        return new Date();
-      }
-      return (date.endDate instanceof Date ? date.endDate : new Date());
-    })(),
-  );
   /**
    * Event handler for choosing a date to end the repeat
    * @param d The date chosen from the Calendar component
    */
   const handleSetRepeatEndDate = (d: Date | Date[]): void => {
-    setCalOpened(false);
-    setRepeatEndDate(d instanceof Array ? d[0] : d);
-    setEndOption(0);
+    setInternalDate({
+      ...internalDate,
+      calOpened: false,
+      repeatEnd: { ...internalDate.repeatEnd, date: d instanceof Array ? d[0] : d },
+    });
   };
 
-
-  /**
-   * When to end the repeating task if the user chooses to end after a
-   * certain number of times.
-   */
-  const [repeatNumber, setRepeatNumber] = React.useState<number>(0);
   /**
    * Event handler for choosing a repeat end option
    * @param e The onchange event
    */
-  const handleSetRepeatNumber = (e: ChangeEvent): void => {
-    const { value } = e.target as HTMLInputElement;
-    setRepeatNumber(parseInt(value, 10));
-    setEndOption(1);
+  const handleSetRepeatNumber = (e: ChangeEvent<HTMLInputElement>): void => {
+    const { value } = e.currentTarget;
+    setInternalDate({
+      ...internalDate,
+      repeatEnd: { ...internalDate.repeatEnd, weeks: parseInt(value, 10) },
+    });
   };
 
   /**
@@ -192,15 +212,18 @@ export default function DatePicker(props: Props): ReactElement {
    * @param d The date to set the repeat end date
    */
   const testSetEndSem = (d: Date): void => {
-    setRepeatEndDate(d);
-    setCalOpened(false);
+    setInternalDate({
+      ...internalDate,
+      calOpened: false,
+      repeatEnd: { type: 'date', date: d, weeks: internalDate.repeatEnd.weeks },
+    });
   };
 
 
   /**
    * The list of li elements for all the repeat end options
    */
-  const endPicker = [
+  const endPicker = internalDate.type === 'repeat' ? [
     <>
       On
       {' '}
@@ -209,14 +232,15 @@ export default function DatePicker(props: Props): ReactElement {
         className={dateStyles.SubtleBtn}
         onClick={handleClickRepeatCal}
       >
-        {repeatEndDate.toLocaleDateString()}
+        { internalDate.repeatEnd.date.toLocaleDateString() }
       </button>
       {
-        calOpened
+        internalDate.type === 'repeat'
+        && internalDate.calOpened
         && (
           <div>
             <Calendar
-              value={repeatEndDate}
+              value={internalDate.repeatEnd instanceof Date ? internalDate.repeatEnd : new Date()}
               minDate={new Date()}
               onChange={handleSetRepeatEndDate}
               calendarType="US"
@@ -240,13 +264,25 @@ export default function DatePicker(props: Props): ReactElement {
     <>
       After
       {' '}
-      <input value={repeatNumber} onChange={handleSetRepeatNumber} min="1" max="30" step="1" type="number" />
+      <input
+        value={internalDate.repeatEnd.weeks}
+        onChange={handleSetRepeatNumber}
+        min="1"
+        max="30"
+        step="1"
+        type="number"
+      />
       {' '}
       weeks
     </>,
-  ].reduce((a, x, i) => (
-    <>
-      {a}
+  ].map((x, i) => {
+    let checked = false;
+    if (internalDate.type === 'repeat') {
+      checked = i === 0
+        ? internalDate.repeatEnd.type !== 'weeks'
+        : internalDate.repeatEnd.type === 'weeks';
+    }
+    return (
       <li>
         <label htmlFor={`newTaskRepeatEndRadio${i}`}>
           <input
@@ -254,14 +290,14 @@ export default function DatePicker(props: Props): ReactElement {
             name="repeatEnd"
             id={`newTaskRepeatEndRadio${i}`}
             value={i}
-            checked={i === endOption}
+            checked={checked}
             onChange={handleClickEnd}
           />
           {x}
         </label>
       </li>
-    </>
-  ), <></>);
+    );
+  }) : [];
 
   /**
    * The component to display when the repeating task box is open
@@ -281,66 +317,56 @@ export default function DatePicker(props: Props): ReactElement {
   );
 
   /**
-   * State keeping track of the selected date
-   */
-  const [currDate, setCurrDate] = React.useState<Date>(date instanceof Date ? date : new Date());
-
-  /**
    * Resets all the react states regarding repeating tasks
    */
   const resetRepeats = (): void => {
-    setCheckedWeeks(0);
-    setCalOpened(false);
-    setRepeatNumber(0);
-    setRepeatEndDate(new Date());
-    setEndOption(0);
-    setIsRepeat(false);
+    setInternalDate({
+      type: 'normal',
+      date: new Date(),
+      checkedWeeks: 0,
+      calOpened: false,
+      repeatEnd: { type: 'date', date: new Date(), weeks: 0 },
+    });
   };
 
   /**
    * Event handler for when the user changes the calendar date
    */
   const onChange = (d: Date | Date[]): void => {
-    if (Array.isArray(d)) {
-      return;
-    }
-    setCurrDate(d);
+    setInternalDate({ ...internalDate, date: Array.isArray(d) ? d[0] : d });
   };
 
   /**
    * Event handler for when the user tries to save
    */
   const onSubmit = (): void => {
-    if (isRepeat) {
-      const bitSet = checkedWeeks;
-
-      // If they didn't pick any days to repeat on, don't save.
-      if (bitSet === 0) { return; }
-
-      let endDate;
-
-      switch (endOption) {
-        case 0:
-          endDate = repeatEndDate;
-          break;
-        case 1:
-          endDate = new Date(+(new Date()) + 1000 * 60 * 60 * 24 * 7 * repeatNumber);
-          // checkedWeeks.reduce((acc, x) => acc + (x ? 1 : 0), 0));
-          break;
-        default:
-          // Illegal state
-          return;
-      }
-
-      const repData: RepeatMetaData = {
-        startDate: new Date(),
-        endDate,
-        pattern: { type: 'WEEKLY', bitSet },
-      };
-      onDateChange(repData);
-    } else {
-      onDateChange(currDate);
+    if (internalDate.type === 'normal') {
+      onDateChange(internalDate.date);
+      return;
     }
+
+    const bitSet = internalDate.checkedWeeks;
+
+    // If they didn't pick any days to repeat on, don't save.
+    if (bitSet === 0) { return; }
+
+    let endDate;
+
+    if (internalDate.repeatEnd.type === 'date') {
+      endDate = internalDate.repeatEnd.date;
+    } else {
+      // TODO once database support exists, replace this with number of occurrances
+      endDate = new Date(
+        new Date().getTime() + 1000 * 60 * 60 * 24 * 7 * internalDate.repeatEnd.weeks,
+      );
+    }
+
+    const repData: RepeatMetaData = {
+      startDate: new Date(),
+      endDate,
+      pattern: { type: 'WEEKLY', bitSet },
+    };
+    onDateChange(repData);
   };
 
   /**
@@ -360,7 +386,7 @@ export default function DatePicker(props: Props): ReactElement {
             <p className={dateStyles.SelectTypeWrap}>
               <select
                 className={dateStyles.SelectType}
-                value={isRepeat.toString()}
+                value={(internalDate.type !== 'normal').toString()}
                 onChange={changeRepeat}
               >
                 <option value="false">One-Time</option>
@@ -368,8 +394,11 @@ export default function DatePicker(props: Props): ReactElement {
               </select>
             </p>
           )}
-          {!isRepeat && <Calendar onChange={onChange} value={currDate} minDate={new Date()} calendarType="US" />}
-          {isRepeat && openedRepeat}
+          {
+            internalDate.type === 'normal'
+            && <Calendar onChange={onChange} value={internalDate.date} minDate={new Date()} calendarType="US" />
+          }
+          {internalDate.type !== 'normal' && openedRepeat}
           <p className={styles.NewTaskDateSave}>
             <button type="button" onClick={onCancel}>Cancel</button>
             <button type="button" onClick={onSubmit}>Done</button>
