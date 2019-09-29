@@ -20,10 +20,8 @@ type Props = {
 
 type InternalDate =
 {
-  type: 'normal';
+  type: 'normal' | 'repeat';
   date: Date;
-} | {
-  type: 'repeat';
   checkedWeeks: number;
   calOpened: boolean;
   repeatEnd: Date | number;
@@ -43,12 +41,21 @@ export default function DatePicker(props: Props): ReactElement {
   };
 
   const [internalDate, setInternalDate] = React.useState<InternalDate>(
-    date instanceof Date ? { type: 'normal', date } : {
-      type: 'repeat',
-      checkedWeeks: date.pattern.bitSet,
-      calOpened: false,
-      repeatEnd: date.endDate,
-    },
+    date instanceof Date
+      ? {
+        type: 'normal',
+        date,
+        checkedWeeks: 0,
+        calOpened: false,
+        repeatEnd: new Date(),
+      }
+      : {
+        type: 'repeat',
+        date: new Date(),
+        checkedWeeks: date.pattern.bitSet,
+        calOpened: false,
+        repeatEnd: date.endDate,
+      },
   );
 
   /**
@@ -90,9 +97,9 @@ export default function DatePicker(props: Props): ReactElement {
    */
   const changeRepeat = (e: ChangeEvent): void => {
     if ((e.target as HTMLSelectElement).value === 'true') {
-      setInternalDate({ type: 'repeat', checkedWeeks: 0, calOpened: false, repeatEnd: 0 });
+      setInternalDate({ ...internalDate, type: 'repeat' });
     } else {
-      setInternalDate({ type: 'normal', date: new Date() });
+      setInternalDate({ ...internalDate, type: 'normal' });
     }
   };
 
@@ -100,20 +107,17 @@ export default function DatePicker(props: Props): ReactElement {
    * Event handler when checking or unchecking a weekday for repeating
    */
   const handleClickWeekday = (e: ChangeEvent): void => {
-    if (internalDate.type !== 'repeat') {
-      throw Error('Attempted to set repeat day on nonrepeating date');
-    }
     const { value, checked } = e.target as HTMLInputElement;
     const val = parseInt(value, 10);
-    if (checked) {
-      setInternalDate(
-        { ...internalDate, checkedWeeks: setDayOfWeek(internalDate.checkedWeeks, val) },
-      );
-    } else {
-      setInternalDate(
-        { ...internalDate, checkedWeeks: unsetDayOfWeek(internalDate.checkedWeeks, val) },
-      );
-    }
+
+    setInternalDate(
+      {
+        ...internalDate,
+        checkedWeeks: checked
+          ? setDayOfWeek(internalDate.checkedWeeks, val)
+          : unsetDayOfWeek(internalDate.checkedWeeks, val),
+      },
+    );
   };
 
   /**
@@ -148,9 +152,6 @@ export default function DatePicker(props: Props): ReactElement {
    * @param e The onchange event
    */
   const handleClickEnd = (e: ChangeEvent): void => {
-    if (internalDate.type !== 'repeat') {
-      throw Error('Attempted to set repeat day on nonrepeating date');
-    }
     const { value } = e.target as HTMLInputElement;
     const valNum = parseInt(value, 10);
     let newRepeatEnd: Date | number = 0;
@@ -167,9 +168,6 @@ export default function DatePicker(props: Props): ReactElement {
    * Event handler for when the user starts the repeat box
    */
   const handleClickRepeatCal = (): void => {
-    if (internalDate.type !== 'repeat') {
-      throw Error('Attempted to set repeat day on nonrepeating date');
-    }
     setInternalDate({ ...internalDate, calOpened: !internalDate.calOpened });
   };
 
@@ -178,9 +176,6 @@ export default function DatePicker(props: Props): ReactElement {
    * @param d The date chosen from the Calendar component
    */
   const handleSetRepeatEndDate = (d: Date | Date[]): void => {
-    if (internalDate.type !== 'repeat') {
-      throw Error('Attempted to set repeat day on nonrepeating date');
-    }
     setInternalDate({
       ...internalDate,
       calOpened: false,
@@ -193,9 +188,6 @@ export default function DatePicker(props: Props): ReactElement {
    * @param e The onchange event
    */
   const handleSetRepeatNumber = (e: ChangeEvent): void => {
-    if (internalDate.type !== 'repeat') {
-      throw Error('Attempted to set repeat day on nonrepeating date');
-    }
     const { value } = e.target as HTMLInputElement;
     setInternalDate({
       ...internalDate,
@@ -208,9 +200,6 @@ export default function DatePicker(props: Props): ReactElement {
    * @param d The date to set the repeat end date
    */
   const testSetEndSem = (d: Date): void => {
-    if (internalDate.type !== 'repeat') {
-      throw Error('Attempted to set repeat day on nonrepeating date');
-    }
     setInternalDate({ ...internalDate, calOpened: false, repeatEnd: d });
   };
 
@@ -326,6 +315,9 @@ export default function DatePicker(props: Props): ReactElement {
     setInternalDate({
       type: 'normal',
       date: new Date(),
+      checkedWeeks: 0,
+      calOpened: false,
+      repeatEnd: new Date(),
     });
   };
 
@@ -355,7 +347,6 @@ export default function DatePicker(props: Props): ReactElement {
         endDate = internalDate.repeatEnd;
       } else {
         endDate = new Date(+(new Date()) + 1000 * 60 * 60 * 24 * 7 * internalDate.repeatEnd);
-        // checkedWeeks.reduce((acc, x) => acc + (x ? 1 : 0), 0));
       }
 
       const repData: RepeatMetaData = {
