@@ -1,6 +1,6 @@
 # Project Samwise v1.0
 
-[![CircleCI](https://circleci.com/gh/cornell-dti/samwise.svg?style=svg)](https://circleci.com/gh/cornell-dti/samwise)
+[![Deployment Status](https://github.com/cornell-dti/samwise/workflows/CD/badge.svg)](https://samwise-dev.firebaseapp.com)
 ![License](https://img.shields.io/github/license/cornell-dti/samwise.svg)
 
 _Last updated **03/20/2019**_.
