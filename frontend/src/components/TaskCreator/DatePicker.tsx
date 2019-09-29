@@ -104,11 +104,13 @@ export default function DatePicker(props: Props): ReactElement {
    * Event handler for when the user starts the repeat box
    */
   const changeRepeat = (e: ChangeEvent): void => {
-    if ((e.target as HTMLSelectElement).value === 'true') {
-      setInternalDate({ ...internalDate, type: 'repeat' });
-    } else {
-      setInternalDate({ ...internalDate, type: 'normal' });
-    }
+    setInternalDate({
+      ...internalDate,
+      type:
+       (e.target as HTMLSelectElement).value === 'true'
+         ? 'repeat'
+         : 'normal',
+    });
   };
 
   /**
@@ -133,7 +135,7 @@ export default function DatePicker(props: Props): ReactElement {
    */
   const weekdayPickers = ['S', 'M', 'T', 'W', 'T', 'F', 'S'].map(
     (x, i) => {
-      const isDaySet = internalDate.type === 'repeat' ? isDayOfWeekSet(internalDate.checkedWeeks, i) : false;
+      const isDaySet = isDayOfWeekSet(internalDate.checkedWeeks, i);
       return (
         <label
           htmlFor={`newTaskRepeatInputCheck${i}`}
@@ -315,11 +317,6 @@ export default function DatePicker(props: Props): ReactElement {
   );
 
   /**
-   * State keeping track of the selected date
-   */
-  const [currDate, setCurrDate] = React.useState<Date>(date instanceof Date ? date : new Date());
-
-  /**
    * Resets all the react states regarding repeating tasks
    */
   const resetRepeats = (): void => {
@@ -336,10 +333,7 @@ export default function DatePicker(props: Props): ReactElement {
    * Event handler for when the user changes the calendar date
    */
   const onChange = (d: Date | Date[]): void => {
-    if (Array.isArray(d)) {
-      return;
-    }
-    setCurrDate(d);
+    setInternalDate({ ...internalDate, date: Array.isArray(d) ? d[0] : d });
   };
 
   /**
@@ -367,7 +361,7 @@ export default function DatePicker(props: Props): ReactElement {
       };
       onDateChange(repData);
     } else {
-      onDateChange(currDate);
+      onDateChange(internalDate.date);
     }
   };
 
@@ -396,7 +390,10 @@ export default function DatePicker(props: Props): ReactElement {
               </select>
             </p>
           )}
-          {internalDate.type === 'normal' && <Calendar onChange={onChange} value={currDate} minDate={new Date()} calendarType="US" />}
+          {
+            internalDate.type === 'normal'
+            && <Calendar onChange={onChange} value={internalDate.date} minDate={new Date()} calendarType="US" />
+          }
           {internalDate.type !== 'normal' && openedRepeat}
           <p className={styles.NewTaskDateSave}>
             <button type="button" onClick={onCancel}>Cancel</button>
