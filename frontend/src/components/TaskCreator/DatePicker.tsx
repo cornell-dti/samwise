@@ -103,11 +103,11 @@ export default function DatePicker(props: Props): ReactElement {
   /**
    * Event handler for when the user starts the repeat box
    */
-  const changeRepeat = (e: ChangeEvent): void => {
+  const changeRepeat = (e: ChangeEvent<HTMLSelectElement>): void => {
     setInternalDate({
       ...internalDate,
       type:
-       (e.target as HTMLSelectElement).value === 'true'
+       e.currentTarget.value === 'true'
          ? 'repeat'
          : 'normal',
     });
@@ -116,8 +116,8 @@ export default function DatePicker(props: Props): ReactElement {
   /**
    * Event handler when checking or unchecking a weekday for repeating
    */
-  const handleClickWeekday = (e: ChangeEvent): void => {
-    const { value, checked } = e.target as HTMLInputElement;
+  const handleClickWeekday = (e: ChangeEvent<HTMLInputElement>): void => {
+    const { value, checked } = e.currentTarget;
     const val = parseInt(value, 10);
 
     setInternalDate(
@@ -161,8 +161,8 @@ export default function DatePicker(props: Props): ReactElement {
    * Event handler for choosing a repeat end option
    * @param e The onchange event
    */
-  const handleClickEnd = (e: ChangeEvent): void => {
-    const { value } = e.target as HTMLInputElement;
+  const handleClickEnd = (e: ChangeEvent<HTMLInputElement>): void => {
+    const { value } = e.currentTarget;
     const valNum = parseInt(value, 10);
 
     const newType: 'date' | 'weeks' = valNum === 0 ? 'date' : 'weeks';
@@ -199,8 +199,8 @@ export default function DatePicker(props: Props): ReactElement {
    * Event handler for choosing a repeat end option
    * @param e The onchange event
    */
-  const handleSetRepeatNumber = (e: ChangeEvent): void => {
-    const { value } = e.target as HTMLInputElement;
+  const handleSetRepeatNumber = (e: ChangeEvent<HTMLInputElement>): void => {
+    const { value } = e.currentTarget;
     setInternalDate({
       ...internalDate,
       repeatEnd: { ...internalDate.repeatEnd, weeks: parseInt(value, 10) },
@@ -356,7 +356,9 @@ export default function DatePicker(props: Props): ReactElement {
       endDate = internalDate.repeatEnd.date;
     } else {
       // TODO once database support exists, replace this with number of occurrances
-      endDate = new Date(+(new Date()) + 1000 * 60 * 60 * 24 * 7 * internalDate.repeatEnd.weeks);
+      endDate = new Date(
+        new Date().getTime() + 1000 * 60 * 60 * 24 * 7 * internalDate.repeatEnd.weeks,
+      );
     }
 
     const repData: RepeatMetaData = {
