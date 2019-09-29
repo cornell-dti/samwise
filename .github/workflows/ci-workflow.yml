@@ -58,5 +58,5 @@ jobs:
               owner: 'cornell-dti',
               repo: 'samwise',
               issue_number: ${{ github.event.number }},
-              body: 'Deployed to https://staging-pr.samwise.today/${{ github.event.number }}'
+              body: 'Deployed to https://staging-pr.samwise.today/${{ github.event.number }}/index.html'
             });

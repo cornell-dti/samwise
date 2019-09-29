@@ -1,0 +1,24 @@
+name: CD
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@master
+      - name: Set up Node
+        uses: actions/setup-node@v1
+      - name: Yarn Install
+        run: cd frontend && yarn install
+      - name: Build frontend
+        run: cd frontend && yarn build:stage
+      - name: Deploy to Firebase Staging Site
+        env:
+          FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
+        run: |
+          cd frontend
+          ./node_modules/.bin/firebase use default
+          ./node_modules/.bin/firebase deploy --token=$FIREBASE_TOKEN --non-interactive --only hosting

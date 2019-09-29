@@ -30,55 +30,15 @@ coverage.xml
 *.cover
 .hypothesis/
 
-# Intermediate Files
-.grunt
-
 # Compiled Output
 **/build
 **/dist
-**/__pycache__/
-**/docs/_build/
-**/target/
-**/develop-eggs/
-**/downloads/
-**/eggs/
-**/.eggs/
-**/lib/
-**/lib64/
-**/parts/
-**/sdist/
-**/var/
-**/wheels/
-**/env/
-.Python
-*.egg-info/
-*.egg
-.installed.cfg
-*.py[cod]
-*$py.class
-*.so
-
-# VirtualEnv
-.venv
-venv/
-ENV/
-.python-version
 
 # Runtime data
 pids
 *.pid
 *.seed
 *.pid.lock
-
-# Flask stuff:
-instance/
-.webassets-cache
-
-# Jupyter Notebook
-.ipynb_checkpoints
-
-# SageMath parsed files
-*.sage.py
 
 # Logs
 logs
@@ -87,8 +47,6 @@ firebase-debug.log*
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
-**/pip-log.txt
-**/pip-delete-this-directory.txt
 
 # IDE Configs
 **/.vs
@@ -98,15 +56,3 @@ yarn-error.log*
 
 # Misc
 .DS_Store
-
-# PyInstaller
-*.manifest
-*.spec
-
-# Environment variable script
-run_db_viewer
-
-# Service account JSON
-serviceAccount.json
-backend/run_server.bat
-start.bat
