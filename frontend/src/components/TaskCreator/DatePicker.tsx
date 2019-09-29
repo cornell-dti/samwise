@@ -340,29 +340,31 @@ export default function DatePicker(props: Props): ReactElement {
    * Event handler for when the user tries to save
    */
   const onSubmit = (): void => {
-    if (internalDate.type === 'repeat') {
-      const bitSet = internalDate.checkedWeeks;
-
-      // If they didn't pick any days to repeat on, don't save.
-      if (bitSet === 0) { return; }
-
-      let endDate;
-
-      if (internalDate.repeatEnd.type === 'date') {
-        endDate = internalDate.repeatEnd.date;
-      } else {
-        endDate = new Date(+(new Date()) + 1000 * 60 * 60 * 24 * 7 * internalDate.repeatEnd.weeks);
-      }
-
-      const repData: RepeatMetaData = {
-        startDate: new Date(),
-        endDate,
-        pattern: { type: 'WEEKLY', bitSet },
-      };
-      onDateChange(repData);
-    } else {
+    if (internalDate.type === 'normal') {
       onDateChange(internalDate.date);
+      return;
     }
+
+    const bitSet = internalDate.checkedWeeks;
+
+    // If they didn't pick any days to repeat on, don't save.
+    if (bitSet === 0) { return; }
+
+    let endDate;
+
+    if (internalDate.repeatEnd.type === 'date') {
+      endDate = internalDate.repeatEnd.date;
+    } else {
+      // TODO once database support exists, replace this with number of occurrances
+      endDate = new Date(+(new Date()) + 1000 * 60 * 60 * 24 * 7 * internalDate.repeatEnd.weeks);
+    }
+
+    const repData: RepeatMetaData = {
+      startDate: new Date(),
+      endDate,
+      pattern: { type: 'WEEKLY', bitSet },
+    };
+    onDateChange(repData);
   };
 
   /**
