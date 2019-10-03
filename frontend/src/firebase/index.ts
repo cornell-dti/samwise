@@ -10,6 +10,8 @@ if (process.env.NODE_ENV === 'production' && process.env.REACT_APP_IS_STAGING !=
     projectId: 'dti-samwise',
     storageBucket: 'dti-samwise.appspot.com',
     messagingSenderId: '114434220691',
+    appId: '1:114434220691:web:01579d764b20fb0aeb6366',
+    measurementId: 'G-DHQY39TSMH',
   };
 } else {
   firebaseConfig = {
@@ -19,6 +21,8 @@ if (process.env.NODE_ENV === 'production' && process.env.REACT_APP_IS_STAGING !=
     projectId: 'samwise-dev',
     storageBucket: 'samwise-dev.appspot.com',
     messagingSenderId: '423488925083',
+    appId: '1:423488925083:web:6de3b7dd7df2c20c14453e',
+    measurementId: 'G-ETTT5Z748X',
   };
 }
 

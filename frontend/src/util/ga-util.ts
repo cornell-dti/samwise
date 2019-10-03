@@ -1,31 +1,44 @@
-import ReactGA from 'react-ga';
+import firebase from 'firebase/app';
+import 'firebase/analytics';
 import { AppUser } from 'firebase/auth-util';
 
 export const initialize = (): void => {
-  ReactGA.initialize('UA-134683024-1', {
-    debug: process.env.NODE_ENV !== 'production',
-    gaOptions: {
-      sampleRate: 100,
-    },
-  });
-  ReactGA.pageview(window.location.pathname + window.location.search);
+  firebase.analytics().logEvent('screen-view', { screenName: 'Homepage' });
 };
 
-export const setGAUser = ({ uid }: AppUser): void => ReactGA.set({ userId: uid });
+type EventType =
+  | 'add-tag'
+  | 'edit-tag'
+  | 'delete-tag'
+  | 'add-task'
+  | 'edit-task'
+  | 'delete-task'
+  | 'add-sub-task'
+  | 'edit-sub-task'
+  | 'delete-sub-task'
+  | 'complete'
+  | 'focus';
 
-const reportEvent = (category: string, action: string): void => ReactGA.event({ category, action });
+export const setGAUser = ({ uid }: AppUser): void => {
+  firebase.analytics().setUserId(uid);
+  firebase.analytics().logEvent('login', {});
+};
 
-export const reportAddTagEvent = (): void => reportEvent('Tag', 'add-tag');
-export const reportEditTagEvent = (): void => reportEvent('Tag', 'edit-tag');
-export const reportDeleteTagEvent = (): void => reportEvent('Tag', 'delete-tag');
+const reportEvent = (eventType: EventType): void => {
+  firebase.analytics().logEvent<EventType>(eventType, {});
+};
 
-export const reportAddTaskEvent = (): void => reportEvent('Task', 'add-task');
-export const reportEditTaskEvent = (): void => reportEvent('Task', 'edit-task');
-export const reportDeleteTaskEvent = (): void => reportEvent('Task', 'delete-task');
+export const reportAddTagEvent = (): void => reportEvent('add-tag');
+export const reportEditTagEvent = (): void => reportEvent('edit-tag');
+export const reportDeleteTagEvent = (): void => reportEvent('delete-tag');
 
-export const reportAddSubTaskEvent = (): void => reportEvent('SubTask', 'add-sub-task');
-export const reportEditSubTaskEvent = (): void => reportEvent('SubTask', 'edit-sub-task');
-export const reportDeleteSubTaskEvent = (): void => reportEvent('SubTask', 'delete-sub-task');
+export const reportAddTaskEvent = (): void => reportEvent('add-task');
+export const reportEditTaskEvent = (): void => reportEvent('edit-task');
+export const reportDeleteTaskEvent = (): void => reportEvent('delete-task');
 
-export const reportCompleteTaskEvent = (): void => reportEvent('Task', 'complete');
-export const reportFocusTaskEvent = (): void => reportEvent('Task', 'focus');
+export const reportAddSubTaskEvent = (): void => reportEvent('add-sub-task');
+export const reportEditSubTaskEvent = (): void => reportEvent('edit-sub-task');
+export const reportDeleteSubTaskEvent = (): void => reportEvent('delete-sub-task');
+
+export const reportCompleteTaskEvent = (): void => reportEvent('complete');
+export const reportFocusTaskEvent = (): void => reportEvent('focus');
