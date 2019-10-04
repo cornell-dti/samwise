@@ -22,6 +22,15 @@ body {
   font-size: 14px;
   line-height: 1.4285em;
   overflow: hidden;
+  touch-action: manipulation;
+}
+
+@media screen and (-webkit-min-device-pixel-ratio: 0) {
+  select,
+  textarea,
+  input {
+    font-size: 12px;
+  }
 }
 
 /*******************************
