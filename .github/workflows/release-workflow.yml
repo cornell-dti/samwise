@@ -7,8 +7,8 @@ jobs:
     steps:
       - uses: actions/checkout@master
       - name: Fail if base-ref is not master
-        if: github.base_ref != 'master'
+        if: github.ref != 'ref/head/master'
         run: |
           echo "Base ref must be master. Everything should go through staging first!"
-          echo "Your base ref is ${{github.base_ref}}."
+          echo "Your base ref is ${{ github.ref }}."
           exit 1
