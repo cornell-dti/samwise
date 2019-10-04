@@ -1,3 +1,8 @@
+.TaskView {
+  flex: 1 1 auto;
+  overflow: scroll;
+}
+
 .Toast div {
   min-height: unset !important;
   background: #676767;

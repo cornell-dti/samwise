@@ -10,7 +10,11 @@ import SamwiseIcon from '../UI/SamwiseIcon';
 
 const FocusPanel = (): ReactElement => <div className={styles.FocusPanel}><FocusView /></div>;
 
-export default function TaskView(): ReactElement {
+const classNames = (...names: readonly string[]): string => names.join(' ');
+
+type Props = { readonly className: string };
+
+export default function TaskView({ className }: Props): ReactElement {
   const [doesShowFocusViewInWideScreen, setDoesShowFocusViewInWideScreen] = useState(true);
   const [doesShowFutureViewInSmallScreen, setDoesShowFutureViewInSmallScreen] = useState(false);
   const [config, setConfig] = useState<FutureViewConfig>(futureViewConfigProvider.initialValue);
@@ -22,7 +26,7 @@ export default function TaskView(): ReactElement {
   const FuturePanel = ({ children }: { readonly children?: ReactNode }): ReactElement => {
     const onChange = (c: FutureViewConfig): void => { setConfig(c); };
     return (
-      <div className={styles.FuturePanel}>
+      <div className={classNames(className, styles.FuturePanel)}>
         <div className={styles.FuturePanelContainer}>
           {children}
           <FutureView config={config} onConfigChange={onChange} />
@@ -38,7 +42,7 @@ export default function TaskView(): ReactElement {
   if (screenIsSmall) {
     const taskView = doesShowFutureViewInSmallScreen
       ? (
-        <div className={styles.TaskView}>
+        <div className={classNames(className, styles.TaskView)}>
           <FuturePanel />
           <SamwiseIcon
             iconName="pin-dark-filled"
@@ -47,7 +51,7 @@ export default function TaskView(): ReactElement {
           />
         </div>
       ) : (
-        <div className={styles.TaskView}>
+        <div className={classNames(className, styles.TaskView)}>
           <FocusPanel />
           <SamwiseIcon
             iconName="calendar-dark"
@@ -89,7 +93,7 @@ export default function TaskView(): ReactElement {
 
   return (
     <>
-      <div className={styles.TaskView}>
+      <div className={classNames(className, styles.TaskView)}>
         <ProgressTracker inMobileView={false} />
         {showFocusView && <FocusPanel />}
         {showFocusView && <div style={{ width: '2em' }} />}
