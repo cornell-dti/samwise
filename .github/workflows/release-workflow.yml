@@ -10,4 +10,5 @@ jobs:
         if: github.base_ref != 'master'
         run: |
           echo "Base ref must be master. Everything should go through staging first!"
+          echo "Your base ref is ${{github.base_ref}}."
           exit 1
