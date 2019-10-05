@@ -1,6 +1,6 @@
 .TaskView {
   flex: 1 1 auto;
-  overflow: scroll;
+  overflow: hidden;
 }
 
 .Toast div {
