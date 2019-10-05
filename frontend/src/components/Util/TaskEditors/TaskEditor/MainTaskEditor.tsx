@@ -1,4 +1,4 @@
-import React, { KeyboardEvent, ReactElement, SyntheticEvent } from 'react';
+import React, { KeyboardEvent, ReactElement, SyntheticEvent, useState } from 'react';
 import styles from './index.module.css';
 import CheckBox from '../../../UI/CheckBox';
 import SamwiseIcon from '../../../UI/SamwiseIcon';
@@ -14,6 +14,11 @@ type Props = NameCompleteInFocus & {
   readonly onPressEnter: (id: 'main-task' | number) => void;
 };
 
+type NameCache = {
+  readonly cached: string;
+  readonly originalPropsName: string;
+};
+
 const deleteIconClass = [styles.TaskEditorIcon, styles.TaskEditorIconLeftPad].join(' ');
 
 function MainTaskEditor(
@@ -21,9 +26,10 @@ function MainTaskEditor(
     name, complete, inFocus, onChange, onRemove, onPressEnter,
   }: Props,
 ): ReactElement {
-  const editName = (event: SyntheticEvent<HTMLInputElement>): void => onChange({
-    name: event.currentTarget.value,
-  });
+  const [nameCache, setNameCache] = useState<NameCache>({ cached: name, originalPropsName: name });
+  if (name !== nameCache.originalPropsName) {
+    setNameCache({ cached: name, originalPropsName: name });
+  }
   const editComplete = (): void => onChange({ complete: !complete });
   const editInFocus = (): void => onChange({ inFocus: !inFocus });
 
@@ -32,6 +38,17 @@ function MainTaskEditor(
       return;
     }
     onPressEnter('main-task');
+  };
+  const onInputChange = (event: SyntheticEvent<HTMLInputElement>): void => {
+    event.stopPropagation();
+    const newValue = event.currentTarget.value;
+    setNameCache((prev) => ({ ...prev, cached: newValue }));
+  };
+  const onBlur = (event: SyntheticEvent<HTMLInputElement>): void => {
+    event.stopPropagation();
+    if (name !== nameCache.cached) {
+      onChange({ name: nameCache.cached });
+    }
   };
 
   return (
@@ -44,9 +61,11 @@ function MainTaskEditor(
       <input
         className={styles.TaskEditorFlexibleInput}
         placeholder="Main Task"
-        value={name}
+        value={nameCache.cached}
         onKeyDown={onKeyDown}
-        onChange={editName}
+        onChange={onInputChange}
+        onBlur={onBlur}
+        onMouseLeave={onBlur}
       />
       <SamwiseIcon
         iconName={inFocus ? 'pin-light-filled' : 'pin-light-outline'}
