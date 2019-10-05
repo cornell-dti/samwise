@@ -1,0 +1,151 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`TagItem with class matches snapshot. 1`] = `
+<li
+  className="ColorConfigItem"
+>
+  <span
+    style={
+      Object {
+        "display": "inline-block",
+        "width": "calc(100% - 175px)",
+      }
+    }
+  >
+    <span
+      className="TagName"
+    >
+      CS2112
+    </span>
+    <span
+      className="ClassExpandedTitle"
+    >
+      CRITTER
+    </span>
+  </span>
+  <button
+    className="ColorEdit"
+    onClick={[Function]}
+    tabIndex={0}
+    type="button"
+  >
+    <span
+      className="ColorDisplay"
+      style={
+        Object {
+          "backgroundColor": "blue",
+        }
+      }
+    />
+    <span
+      title="dropdown"
+    >
+      <svg
+        alt="dropdown"
+        className="Arrow"
+        height="1em"
+        onKeyUp={[Function]}
+        tabIndex={0}
+        title="dropdown"
+        width="1em"
+      >
+        v.svg
+      </svg>
+    </span>
+  </button>
+  <button
+    className="DeleteTag"
+    onClick={[Function]}
+    tabIndex={0}
+    type="button"
+  >
+    <span
+      title="delete"
+    >
+      <svg
+        alt="delete"
+        height="1em"
+        onKeyUp={[Function]}
+        tabIndex={0}
+        title="delete"
+        width="1em"
+      >
+        XLight.svg
+      </svg>
+    </span>
+  </button>
+</li>
+`;
+
+exports[`TagItem without class matches snapshot. 1`] = `
+<li
+  className="ColorConfigItem"
+>
+  <span
+    className="TagName"
+    style={
+      Object {
+        "width": "calc(100% - 175px)",
+      }
+    }
+  >
+    <input
+      className="TagEdit"
+      onChange={[Function]}
+      type="text"
+      value="Foo"
+    />
+  </span>
+  <button
+    className="ColorEdit"
+    onClick={[Function]}
+    tabIndex={0}
+    type="button"
+  >
+    <span
+      className="ColorDisplay"
+      style={
+        Object {
+          "backgroundColor": "red",
+        }
+      }
+    />
+    <span
+      title="dropdown"
+    >
+      <svg
+        alt="dropdown"
+        className="Arrow"
+        height="1em"
+        onKeyUp={[Function]}
+        tabIndex={0}
+        title="dropdown"
+        width="1em"
+      >
+        v.svg
+      </svg>
+    </span>
+  </button>
+  <button
+    className="DeleteTag"
+    onClick={[Function]}
+    tabIndex={0}
+    type="button"
+  >
+    <span
+      title="delete"
+    >
+      <svg
+        alt="delete"
+        height="1em"
+        onKeyUp={[Function]}
+        tabIndex={0}
+        title="delete"
+        width="1em"
+      >
+        XLight.svg
+      </svg>
+    </span>
+  </button>
+</li>
+`;
