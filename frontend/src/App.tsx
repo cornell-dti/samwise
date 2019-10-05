@@ -13,14 +13,14 @@ import { ModalsContainer } from './components/Util/Modals';
  */
 export default function App(): ReactElement {
   return (
-    <div>
+    <>
       <Onboard />
       <ToastContainer className={styles.Toast} />
       <ModalsContainer />
       <TitleBar />
       <TaskCreator />
-      <TaskView />
+      <TaskView className={styles.TaskView} />
       <AllComplete />
-    </div>
+    </>
   );
 }

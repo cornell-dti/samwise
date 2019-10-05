@@ -1,7 +1,7 @@
 .CloseButton {
   position: absolute;
-  top: 40px;
-  right: 40px;
+  top: 32px;
+  right: 32px;
   color: white;
   font-size: 30px;
 }
@@ -40,7 +40,7 @@
 }
 
 .ContentWrap {
-  padding: 60px 50px;
+  padding: 32px;
 }
 
 .SettingsButton:hover path {

@@ -39,8 +39,8 @@ export default function ProgressIndicator(
   { completedTasksCount, allTasksCount, inMobileView }: Props,
 ): ReactElement {
   const containerStyle: CSSProperties = inMobileView
-    ? { height: '2em' }
-    : { flexDirection: 'column-reverse', margin: '0', width: '2em' };
+    ? { height: '32px' }
+    : { flexDirection: 'column-reverse', margin: '0', width: '32px' };
   const textStyle: CSSProperties = inMobileView ? {} : { width: '70px', marginBottom: '8px' };
   const fractionString = `${completedTasksCount}/${allTasksCount}`;
   return (

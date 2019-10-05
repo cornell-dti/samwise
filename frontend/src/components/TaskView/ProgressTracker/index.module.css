@@ -10,14 +10,10 @@
 .MobileView {
   flex-direction: row;
   margin-top: 16px;
-  transform:translateY(-50px);
 }
 
 .DesktopView {
-  margin-right: 16px;
-  margin-top: 68px;
-  margin-bottom: -82px;
   width: 70px;
+  margin-right: 1em;
   flex-direction: column-reverse;
-  transform:translate(-10px, -35px);
 }
