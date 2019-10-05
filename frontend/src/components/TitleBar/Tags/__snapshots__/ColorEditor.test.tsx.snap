@@ -1,0 +1,34 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`ColorEditor matches snapshot. 1`] = `
+<button
+  className="ColorEdit"
+  onClick={[Function]}
+  tabIndex={0}
+  type="button"
+>
+  <span
+    className="ColorDisplay"
+    style={
+      Object {
+        "backgroundColor": "green",
+      }
+    }
+  />
+  <span
+    title="dropdown"
+  >
+    <svg
+      alt="dropdown"
+      className="Arrow"
+      height="1em"
+      onKeyUp={[Function]}
+      tabIndex={0}
+      title="dropdown"
+      width="1em"
+    >
+      v.svg
+    </svg>
+  </span>
+</button>
+`;
