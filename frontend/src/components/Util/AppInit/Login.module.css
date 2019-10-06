@@ -77,7 +77,7 @@
   border-radius: 5px;
 }
 
-@media(max-width: 700px){
+@media(max-width: 700px) {
   .LoginWrapper {
     display :none;
   }
