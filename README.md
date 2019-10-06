@@ -1,13 +1,13 @@
-# Project Samwise v1.0
+# Samwise
 
 [![Deployment Status](https://github.com/cornell-dti/samwise/workflows/CD/badge.svg)](https://samwise-dev.firebaseapp.com)
 ![License](https://img.shields.io/github/license/cornell-dti/samwise.svg)
 
-_Last updated **03/20/2019**_.
+_Last updated **10/06/2019**_.
 
 ## Contents
 
-- [Project Samwise v1.0](#project-samwise-v10)
+- [Samwise](#samwise)
   - [Contents](#contents)
   - [About](#about)
   - [Getting Started](#getting-started)
@@ -50,9 +50,8 @@ You are expected to follow the
 - [React](https://reactjs.org/) - a Facebook library for frontend. We use it for frontend UI.
 - [Redux](https://redux.js.org/) - a predictable state container for JavaScript apps. We used it for state management.
 - [React-Redux](https://github.com/reduxjs/react-redux) - a library for bindings between React and Redux.
-- [Firebase](https://firebase.google.com) - a serverless service for auth, database, etc. We used it for auth.
+- [Firebase](https://firebase.google.com) - a serverless service for auth, database, etc. We used it for auth, database and analytics.
 - [React FirebaseUI](https://github.com/firebase/firebaseui-web-react) - a simple sign-in component library for firebase auth.
-- [Semantic UI React](https://react.semantic-ui.com/) - a library of pre-styled components in Semantic UI for React.
 - [React Calendar](https://www.npmjs.com/package/react-calendar) - A calendar component for React.
 - [React Color](https://casesandberg.github.io/react-color/) - a collection of React components for picking colors.
 - [React Search Box](https://ghoshnirmalya.github.io/react-search-box/) - a search box component for React.
@@ -62,7 +61,7 @@ To know about the specific versions of these dependencies, go to [package.json](
 
 ## Documentation
 
-Check our [wiki](https://github.com/cornell-dti/samwise/wiki) folder to see a list of all documentations.
+Check our [wiki](https://github.com/cornell-dti/samwise/wiki) to see a list of all documentations.
 
 ## Screenshots
 
