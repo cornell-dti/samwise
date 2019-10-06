@@ -50,7 +50,7 @@ You are expected to follow the
 - [React](https://reactjs.org/) - a Facebook library for frontend. We use it for frontend UI.
 - [Redux](https://redux.js.org/) - a predictable state container for JavaScript apps. We used it for state management.
 - [React-Redux](https://github.com/reduxjs/react-redux) - a library for bindings between React and Redux.
-- [Firebase](https://firebase.google.com) - a serverless service for auth, database, etc. We used it for auth and database.
+- [Firebase](https://firebase.google.com) - a serverless service for auth, database, etc. We used it for auth, database and analytics.
 - [React FirebaseUI](https://github.com/firebase/firebaseui-web-react) - a simple sign-in component library for firebase auth.
 - [React Calendar](https://www.npmjs.com/package/react-calendar) - A calendar component for React.
 - [React Color](https://casesandberg.github.io/react-color/) - a collection of React components for picking colors.
