@@ -29,7 +29,9 @@ function MainTaskEditor(
   const editName = (event: SyntheticEvent<HTMLInputElement>): void => onChange({
     name: event.currentTarget.value,
   });
-  const replaceDateForFork = getDateWithDateString(taskDate, dateAppeared);
+  const replaceDateForFork = taskDate == null
+    ? getDateWithDateString(taskDate, dateAppeared)
+    : null;
   const editComplete = (): void => editMainTask(id, replaceDateForFork, { complete: !complete });
   const editInFocus = (): void => editMainTask(id, replaceDateForFork, { inFocus: !inFocus });
 
