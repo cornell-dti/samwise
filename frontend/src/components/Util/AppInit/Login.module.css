@@ -1,24 +1,87 @@
 .Login {
-  display: flex;
+  display: block;
   position: fixed;
   top: 0;
   bottom: 0;
   left: 0;
   right: 0;
-  color: white;
-  background-color: #7b7b7b;
+  overflow: hidden;
+  color: black;
+  background-color: white;
+  text-align: center;
+  margin:0; padding:0;
+
+  background: linear-gradient(282deg, #289DE9, white);
+  overflow: hidden;
+	font-family: 'Open Sans', sans-serif;
+}
+
+.LoginSection {
+  max-width: 40vw;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  vertical-align: top;
+}
+
+.LoginSection h1 {
+  font-size: 400%;
+  font-weight: bold;
+  margin: 0;
+  height: 40px;
+}
+
+.LoginSection p{
+  margin: 10px 0;
+}
+
+.LoginSection div {
+  display: block;
   text-align: center;
 }
 
 .LoginWrapper {
-  margin: auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: fixed;
+  top: 0;
+  right: 0;
+  width: 50vw;
+  height: 100vh;
+  vertical-align: top;
 }
 
-.LoginPadding {
-  height: 100px;
+.LoginWrapper img {
+  max-width: 130%;
+  transform: translateX(7vw);
 }
 
-.LoginText {
-  color: white;
-  font-size: 5em;
+.LoginFooter {
+  position: fixed;
+  left: 0;
+  width: 100%;
+  bottom: 0;
+  font-size: 14px;
+
+  text-align: center;
+}
+
+.LoginFooter img {
+  max-width: 150px;
+  margin: 10px;
+
+  padding: 10px;
+  background: black;
+  border-radius: 5px;
+}
+
+@media(max-width: 700px){
+  .LoginWrapper {
+    display :none;
+  }
+  .LoginSection {
+    max-width: 100%;
+  }
 }
