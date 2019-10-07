@@ -85,7 +85,7 @@ function NavControl(props: NavControlProps): ReactElement {
   const prevHandler = changeOffset(-1);
   const nextHandler = changeOffset(+1);
   if (containerType === 'N_DAYS') {
-    const offset = isSmallScreen ? -10 : -35;
+    const offset = -10;
     const prevStyle = { left: offset };
     const nextStyle = { right: offset };
     return (
