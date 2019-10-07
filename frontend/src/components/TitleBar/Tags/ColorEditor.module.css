@@ -23,6 +23,7 @@
   text-transform: capitalize;
 }
 
+
 .ColorDisplay {
   display: block;
   position: absolute;
@@ -42,6 +43,6 @@
 
 .ColorPicker {
   position: absolute !important;
-  right: 59px !important;
+  right: 59px;
   z-index: 3;
 }
