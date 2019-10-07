@@ -9,13 +9,18 @@ import styles from './index.module.css';
 import CheckBox from '../../../UI/CheckBox';
 import { PartialSubTask, SubTask } from '../../../../store/store-types';
 import SamwiseIcon from '../../../UI/SamwiseIcon';
+import { getDateWithDateString } from '../../../../util/datetime-util';
+import { editSubTask } from '../../../../firebase/actions';
 
 type Props = {
   readonly subTask: SubTask; // the subtask to edit
   readonly mainTaskComplete: boolean; // whether the main task is completed
+  readonly mainTaskId: string;
+  readonly taskDate: Date | null;
+  readonly dateAppeared: string;
   readonly needToBeFocused: boolean; // whether it needs to be focused.
   readonly afterFocusedCallback: () => void; // need to be called once we focused the subtask
-  readonly editSubTask: (subtaskId: string, partialSubTask: PartialSubTask) => void;
+  readonly editThisSubTask: (subtaskId: string, partialSubTask: PartialSubTask) => void;
   readonly removeSubTask: (subtaskId: string) => void;
   readonly onPressEnter: (id: 'main-task' | number) => void;
 };
@@ -27,18 +32,28 @@ function OneSubTaskEditor(
   {
     subTask,
     mainTaskComplete,
+    mainTaskId,
+    taskDate,
+    dateAppeared,
     needToBeFocused,
     afterFocusedCallback,
-    editSubTask,
+    editThisSubTask,
     removeSubTask,
     onPressEnter,
   }: Props,
 ): ReactElement {
   const onNameChange = (event: SyntheticEvent<HTMLInputElement>): void => {
-    editSubTask(subTask.id, { name: event.currentTarget.value });
+    editThisSubTask(subTask.id, { name: event.currentTarget.value });
   };
-  const onCompleteChange = (): void => editSubTask(subTask.id, { complete: !subTask.complete });
-  const onInFocusChange = (): void => editSubTask(subTask.id, { inFocus: !subTask.inFocus });
+  const replaceDateForFork = taskDate == null
+    ? getDateWithDateString(taskDate, dateAppeared)
+    : null;
+  const onCompleteChange = (): void => editSubTask(
+    mainTaskId, subTask.id, replaceDateForFork, { complete: !subTask.complete },
+  );
+  const onInFocusChange = (): void => editSubTask(
+    mainTaskId, subTask.id, replaceDateForFork, { inFocus: !subTask.inFocus },
+  );
   const onRemove = (): void => removeSubTask(subTask.id);
 
   const onKeyDown = (event: KeyboardEvent<HTMLInputElement>): void => {
