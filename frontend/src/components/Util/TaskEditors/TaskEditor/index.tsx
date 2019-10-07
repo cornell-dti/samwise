@@ -225,10 +225,13 @@ function TaskEditor(
           <OneSubTaskEditor
             key={subTask.id}
             subTask={subTask}
+            mainTaskId={id}
+            taskDate={date instanceof Date ? date : null}
+            dateAppeared={taskAppearedDate}
             mainTaskComplete={complete}
             needToBeFocused={subTaskToFocus === subTask.order}
             afterFocusedCallback={clearNeedToFocus}
-            editSubTask={dispatchEditSubTask}
+            editThisSubTask={dispatchEditSubTask}
             removeSubTask={dispatchDeleteSubTask}
             onPressEnter={pressEnterHandler}
           />
