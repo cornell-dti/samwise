@@ -2,18 +2,17 @@
   .ColorEdit {
   
     width: 54px !important;
-    font-size: 0px !important;
+    font-size: 0 !important;
     float: right;
-    position: absolute !important;
-    right: 70px !important;
+    position: absolute;
+    right: 70px;
   }
   
   .ColorPicker {
-    position: absolute !important;
+    position: absolute;
     right: 79px !important;
-    top: 50px !important;
+    top: 50px;
     z-index: 3;
-
   }
 }
 
