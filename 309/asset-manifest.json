@@ -1,12 +1,12 @@
 {
   "files": {
-    "main.css": "/309/static/css/main.e5b6b19c.chunk.css",
-    "main.js": "/309/static/js/main.23b116c6.chunk.js",
+    "main.css": "/309/static/css/main.3a1205ce.chunk.css",
+    "main.js": "/309/static/js/main.a37e3336.chunk.js",
     "runtime-main.js": "/309/static/js/runtime-main.8d7cea6a.js",
     "static/css/2.eed73c98.chunk.css": "/309/static/css/2.eed73c98.chunk.css",
-    "static/js/2.09d80666.chunk.js": "/309/static/js/2.09d80666.chunk.js",
+    "static/js/2.2fbbb2da.chunk.js": "/309/static/js/2.2fbbb2da.chunk.js",
     "index.html": "/309/index.html",
-    "precache-manifest.ff6a8aacda989b96590c8bb393cb4061.js": "/309/precache-manifest.ff6a8aacda989b96590c8bb393cb4061.js",
+    "precache-manifest.79c4338350f5e552474cb13939337135.js": "/309/precache-manifest.79c4338350f5e552474cb13939337135.js",
     "service-worker.js": "/309/service-worker.js",
     "static/media/XDark.c73c1341.svg": "/309/static/media/XDark.c73c1341.svg",
     "static/media/XLight.b14ef42f.svg": "/309/static/media/XLight.b14ef42f.svg",
@@ -19,6 +19,7 @@
     "static/media/frontendCrash.png": "/309/static/media/frontendCrash.c17c880a.png",
     "static/media/grabbers.40271341.svg": "/309/static/media/grabbers.40271341.svg",
     "static/media/happy-bear.png": "/309/static/media/happy-bear.812db056.png",
+    "static/media/header_final.png": "/309/static/media/header_final.033dbeb6.png",
     "static/media/hide.366410c3.svg": "/309/static/media/hide.366410c3.svg",
     "static/media/pin-2-dark-filled.74619d5f.svg": "/309/static/media/pin-2-dark-filled.74619d5f.svg",
     "static/media/pin-2-dark-outline.edb5e072.svg": "/309/static/media/pin-2-dark-outline.edb5e072.svg",
@@ -35,6 +36,7 @@
     "static/media/t6.png": "/309/static/media/t6.0de6651b.png",
     "static/media/tag.70e131ed.svg": "/309/static/media/tag.70e131ed.svg",
     "static/media/unchecked.391264cd.svg": "/309/static/media/unchecked.391264cd.svg",
-    "static/media/v.8ef60f3c.svg": "/309/static/media/v.8ef60f3c.svg"
+    "static/media/v.8ef60f3c.svg": "/309/static/media/v.8ef60f3c.svg",
+    "static/media/wordmark.png": "/309/static/media/wordmark.ee95f67e.png"
   }
 }
