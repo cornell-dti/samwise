@@ -6,12 +6,14 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@master
+      - name: Print refs
+        run: |
+          echo "Your base ref is ${{ github.base_ref }}."
+          echo "Your ref is ${{ github.ref }}."
       - name: Fail if try to push release from non-master branch
         if: github.base_ref != 'ref/head/master' && github.ref == 'ref/head/release'
         run: |
           echo "Base ref must be master. Everything should go through staging first!"
-          echo "Your base ref is ${{ github.base_ref }}."
-          echo "Your ref is ${{ github.ref }}."
           exit 1
   build:
     runs-on: ubuntu-latest
