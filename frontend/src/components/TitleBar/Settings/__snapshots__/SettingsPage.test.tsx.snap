@@ -12,6 +12,22 @@ exports[`ClassAdder matches snapshot. 1`] = `
   <div
     className="SettingsSectionContent"
   >
+    <div
+      className="TagColorConfigItemAdder SearchClasses"
+      title="Search for a class"
+    >
+      <div
+        className="src__StyledContainer-hakmvc-0 emqRtB"
+      >
+        <input
+          className="styled-component__StyledInput-sc-1dsackt-0 dEHJYu"
+          onChange={[Function]}
+          placeholder="Search for classes (e.g. CS 2110, Introduction to Creative Writing)"
+          type="text"
+          value=""
+        />
+      </div>
+    </div>
     <small>
       Add classes to get upcoming prelims automatically added to your planner.
     </small>
@@ -58,6 +74,22 @@ exports[`SettingsPage matches snapshot. 1`] = `
     <div
       className="SettingsSectionContent"
     >
+      <div
+        className="TagColorConfigItemAdder SearchClasses"
+        title="Search for a class"
+      >
+        <div
+          className="src__StyledContainer-hakmvc-0 emqRtB"
+        >
+          <input
+            className="styled-component__StyledInput-sc-1dsackt-0 dEHJYu"
+            onChange={[Function]}
+            placeholder="Search for classes (e.g. CS 2110, Introduction to Creative Writing)"
+            type="text"
+            value=""
+          />
+        </div>
+      </div>
       <small>
         Add classes to get upcoming prelims automatically added to your planner.
       </small>

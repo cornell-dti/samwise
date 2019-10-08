@@ -2,6 +2,8 @@ import React, { KeyboardEvent, ReactElement, SyntheticEvent } from 'react';
 import styles from './index.module.css';
 import CheckBox from '../../../UI/CheckBox';
 import SamwiseIcon from '../../../UI/SamwiseIcon';
+import { editMainTask } from '../../../../firebase/actions';
+import { getDateWithDateString } from '../../../../util/datetime-util';
 
 type NameCompleteInFocus = {
   readonly name: string;
@@ -9,6 +11,9 @@ type NameCompleteInFocus = {
   readonly inFocus: boolean;
 };
 type Props = NameCompleteInFocus & {
+  readonly id: string;
+  readonly taskDate: Date | null;
+  readonly dateAppeared: string;
   readonly onChange: (change: Partial<NameCompleteInFocus>) => void;
   readonly onRemove: () => void;
   readonly onPressEnter: (id: 'main-task' | number) => void;
@@ -18,14 +23,17 @@ const deleteIconClass = [styles.TaskEditorIcon, styles.TaskEditorIconLeftPad].jo
 
 function MainTaskEditor(
   {
-    name, complete, inFocus, onChange, onRemove, onPressEnter,
+    id, taskDate, dateAppeared, name, complete, inFocus, onChange, onRemove, onPressEnter,
   }: Props,
 ): ReactElement {
   const editName = (event: SyntheticEvent<HTMLInputElement>): void => onChange({
     name: event.currentTarget.value,
   });
-  const editComplete = (): void => onChange({ complete: !complete });
-  const editInFocus = (): void => onChange({ inFocus: !inFocus });
+  const replaceDateForFork = taskDate == null
+    ? getDateWithDateString(taskDate, dateAppeared)
+    : null;
+  const editComplete = (): void => editMainTask(id, replaceDateForFork, { complete: !complete });
+  const editInFocus = (): void => editMainTask(id, replaceDateForFork, { inFocus: !inFocus });
 
   const onKeyDown = (event: KeyboardEvent<HTMLInputElement>): void => {
     if (event.key !== 'Enter') {

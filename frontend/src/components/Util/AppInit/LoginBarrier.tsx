@@ -6,6 +6,9 @@ import styles from './Login.module.css';
 import { cacheAppUser, toAppUser } from '../../../firebase/auth-util';
 import initListeners from '../../../firebase/listeners';
 
+import dtiLogo from '../../../assets/splash/wordmark.png';
+import screenshot from '../../../assets/splash/header_final.png';
+
 const uiConfig = {
   signInFlow: 'popup',
   signInOptions: [
@@ -86,12 +89,25 @@ export default function LoginBarrier({ appRenderer }: Props): ReactElement {
     : (<h3>Loading...</h3>);
   return (
     <div className={styles.Login}>
+      <section className={styles.LoginSection}>
+        <div>
+          <h1>Samwise</h1>
+          <p>A Student Planner for Everyone</p>
+          {loadingOrLogin}
+        </div>
+      </section>
       <div className={styles.LoginWrapper}>
-        <h1 className={styles.LoginText}>Samwise</h1>
-        {loadingOrLogin}
-        <h4>Made by Cornell DTI</h4>
-        <h4>Cornell Design & Tech Initiative</h4>
+        <img src={screenshot} alt="Samwise screenshot" />
       </div>
+      <footer className={styles.LoginFooter}>
+        <a href="https://cornelldti.org">
+          <img
+            src={dtiLogo}
+            alt="Cornell DTI"
+          />
+
+        </a>
+      </footer>
     </div>
   );
 }

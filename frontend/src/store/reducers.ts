@@ -1,4 +1,4 @@
-import { Map, Set } from 'immutable';
+import { Set } from 'immutable';
 import {
   Action,
   PatchCourses,
@@ -9,25 +9,8 @@ import {
   PatchBannerMessageStatus,
 } from './action-types';
 import { State } from './store-types';
-import { NONE_TAG_ID, NONE_TAG } from '../util/tag-util';
 import { error } from '../util/general-util';
-
-/**
- * The initial state of the app.
- * This state is dummy. It needs to be patched by the data from the backend ASAP.
- * @type {State}
- */
-const initialState: State = {
-  tags: Map({ [NONE_TAG_ID]: NONE_TAG }),
-  tasks: Map(),
-  subTasks: Map(),
-  dateTaskMap: Map(),
-  repeatedTaskSet: Set(),
-  taskChildrenMap: Map(),
-  settings: { completedOnboarding: true, theme: 'light' },
-  bannerMessageStatus: {},
-  courses: Map(),
-};
+import { initialState } from './state';
 
 function patchTags(state: State, { created, edited, deleted }: PatchTags): State {
   const newTags = state.tags.withMutations((tags) => {

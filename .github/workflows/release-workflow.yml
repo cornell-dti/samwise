@@ -1,0 +1,35 @@
+name: Release
+on:
+  push:
+    branches:
+      - release
+
+jobs:
+  check-base-ref:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@master
+      - name: Fail if base-ref is not master
+        if: github.ref != 'ref/head/master'
+        run: |
+          echo "Base ref must be master. Everything should go through staging first!"
+          echo "Your base ref is ${{ github.ref }}."
+          exit 1
+  deploy:
+    runs-on: ubuntu-latest
+    needs: check-base-ref
+    steps:
+      - uses: actions/checkout@master
+      - name: Set up Node
+        uses: actions/setup-node@v1
+      - name: Yarn Install
+        run: cd frontend && yarn install
+      - name: Build frontend
+        run: cd frontend && yarn build
+      - name: Deploy to Production
+        env:
+          FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
+        run: |
+          cd frontend
+          ./node_modules/.bin/firebase use production
+          ./node_modules/.bin/firebase deploy --token=$FIREBASE_TOKEN --non-interactive --only hosting

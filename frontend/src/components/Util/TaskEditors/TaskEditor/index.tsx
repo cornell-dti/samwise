@@ -178,7 +178,9 @@ function TaskEditor(
     }
   };
   const clearNeedToFocus = (): void => setSubTaskToFocus(null);
-
+  if (taskAppearedDate === null) {
+    throw new Error('Impossible');
+  }
   const isOverdue = date < getTodayAtZeroAM() && !complete;
   const backgroundColor = getTag(tag).color;
   const formStyle = isOverdue
@@ -207,6 +209,9 @@ function TaskEditor(
           displayGrabber={displayGrabber == null ? false : displayGrabber}
         />
         <MainTaskEditor
+          id={id}
+          taskDate={date instanceof Date ? date : null}
+          dateAppeared={taskAppearedDate}
           name={name}
           complete={complete}
           inFocus={inFocus}
@@ -220,10 +225,13 @@ function TaskEditor(
           <OneSubTaskEditor
             key={subTask.id}
             subTask={subTask}
+            mainTaskId={id}
+            taskDate={date instanceof Date ? date : null}
+            dateAppeared={taskAppearedDate}
             mainTaskComplete={complete}
             needToBeFocused={subTaskToFocus === subTask.order}
             afterFocusedCallback={clearNeedToFocus}
-            editSubTask={dispatchEditSubTask}
+            editThisSubTask={dispatchEditSubTask}
             removeSubTask={dispatchDeleteSubTask}
             onPressEnter={pressEnterHandler}
           />
