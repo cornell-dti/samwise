@@ -18,4 +18,5 @@ export type IconName =
   | 'unchecked'
   | 'dropdown'
   | 'x-dark'
-  | 'x-light';
+  | 'x-light'
+  | 'x-light-settings';
