@@ -50,6 +50,8 @@ function MainTaskEditor(
         onChange={editComplete}
       />
       <input
+        type="text"
+        data-lpignore="true"
         className={styles.TaskEditorFlexibleInput}
         placeholder="Main Task"
         value={name}
