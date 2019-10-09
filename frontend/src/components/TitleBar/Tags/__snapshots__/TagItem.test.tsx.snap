@@ -38,15 +38,15 @@ exports[`TagItem with class matches snapshot. 1`] = `
       }
     />
     <span
-      title="dropdown"
+      title="More"
     >
       <svg
-        alt="dropdown"
+        alt="More"
         className="Arrow"
         height="1em"
         onKeyUp={[Function]}
         tabIndex={0}
-        title="dropdown"
+        title="More"
         width="1em"
       >
         v.svg
@@ -60,14 +60,14 @@ exports[`TagItem with class matches snapshot. 1`] = `
     type="button"
   >
     <span
-      title="delete"
+      title="Delete"
     >
       <svg
-        alt="delete"
+        alt="Delete"
         height="1em"
         onKeyUp={[Function]}
         tabIndex={0}
-        title="delete"
+        title="Delete"
         width="1em"
       >
         XLight.svg
@@ -111,15 +111,15 @@ exports[`TagItem without class matches snapshot. 1`] = `
       }
     />
     <span
-      title="dropdown"
+      title="More"
     >
       <svg
-        alt="dropdown"
+        alt="More"
         className="Arrow"
         height="1em"
         onKeyUp={[Function]}
         tabIndex={0}
-        title="dropdown"
+        title="More"
         width="1em"
       >
         v.svg
@@ -133,14 +133,14 @@ exports[`TagItem without class matches snapshot. 1`] = `
     type="button"
   >
     <span
-      title="delete"
+      title="Delete"
     >
       <svg
-        alt="delete"
+        alt="Delete"
         height="1em"
         onKeyUp={[Function]}
         tabIndex={0}
-        title="delete"
+        title="Delete"
         width="1em"
       >
         XLight.svg
