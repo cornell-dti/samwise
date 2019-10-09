@@ -52,7 +52,8 @@ function MainTaskEditor(
       <input
         type="text"
         data-lpignore="true"
-        className={styles.TaskEditorFlexibleInput}
+        className={complete
+          ? styles.TaskEditorStrikethrough : styles.TaskEditorFlexibleInput}
         placeholder="Main Task"
         value={name}
         onKeyDown={onKeyDown}
