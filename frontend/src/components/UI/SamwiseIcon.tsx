@@ -46,19 +46,19 @@ const SamwiseIcon = ({ iconName, title, ...otherProps }: Props): ReactElement =>
       break;
     case 'calendar-dark':
       SvgComponent = CalendarDark;
-      altText = 'calendar';
+      altText = 'Due date';
       break;
     case 'calendar-light':
       SvgComponent = CalendarLight;
-      altText = 'calendar';
+      altText = 'Due date';
       break;
     case 'checked-dark':
       SvgComponent = CheckedDark;
-      altText = 'checked';
+      altText = 'Checked';
       break;
     case 'checked-light':
       SvgComponent = CheckedLight;
-      altText = 'checked';
+      altText = 'Checked';
       break;
     case 'clock':
       SvgComponent = Clock;
@@ -66,39 +66,39 @@ const SamwiseIcon = ({ iconName, title, ...otherProps }: Props): ReactElement =>
       break;
     case 'grabber':
       SvgComponent = Grabber;
-      altText = 'grabber';
+      altText = 'Reorder';
       break;
     case 'hide':
       SvgComponent = Hide;
-      altText = 'hide';
+      altText = 'Hide';
       break;
     case 'pin-dark-filled':
       SvgComponent = PinDarkFilled;
-      altText = 'pin-filled';
+      altText = 'Unpin from Focus';
       break;
     case 'pin-dark-outline':
       SvgComponent = PinDarkOutline;
-      altText = 'pin-outline';
+      altText = 'Pin to Focus';
       break;
     case 'pin-light-filled':
       SvgComponent = PinLightFilled;
-      altText = 'pin-filled';
+      altText = 'Unpin from Focus';
       break;
     case 'pin-light-outline':
       SvgComponent = PinLightOutline;
-      altText = 'pin-outline';
+      altText = 'Pin to Focus';
       break;
     case 'settings':
       SvgComponent = Settings;
-      altText = 'settings';
+      altText = 'Settings';
       break;
     case 'show':
       SvgComponent = Show;
-      altText = 'hide';
+      altText = 'Show';
       break;
     case 'tag':
       SvgComponent = Tag;
-      altText = 'tag';
+      altText = 'Tag';
       break;
     case 'unchecked':
       SvgComponent = Unchecked;
@@ -106,15 +106,19 @@ const SamwiseIcon = ({ iconName, title, ...otherProps }: Props): ReactElement =>
       break;
     case 'dropdown':
       SvgComponent = DropDown;
-      altText = 'dropdown';
+      altText = 'More';
       break;
     case 'x-dark':
       SvgComponent = XDark;
-      altText = 'delete';
+      altText = 'Delete';
       break;
     case 'x-light':
       SvgComponent = XLight;
-      altText = 'delete';
+      altText = 'Delete';
+      break;
+    case 'x-light-settings':
+      SvgComponent = XLight;
+      altText = 'Close Settings';
       break;
     default:
       throw new Error(`Unrecognized icon name: ${iconName}`);

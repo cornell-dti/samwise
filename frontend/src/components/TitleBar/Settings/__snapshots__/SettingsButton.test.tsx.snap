@@ -21,14 +21,14 @@ exports[`SettingsButton matches snapshot. 1`] = `
       title="Settings Button"
     >
       <span
-        title="settings"
+        title="Settings"
       >
         <svg
-          alt="settings"
+          alt="Settings"
           height="1em"
           onKeyUp={[Function]}
           tabIndex={0}
-          title="settings"
+          title="Settings"
           width="1em"
         >
           settings.svg

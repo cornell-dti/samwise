@@ -1,3 +1,21 @@
+@media (max-width: 500px) {
+  .ColorEdit {
+  
+    width: 54px !important;
+    font-size: 0 !important;
+    float: right;
+    position: absolute;
+    right: 70px;
+  }
+  
+  .ColorPicker {
+    position: absolute;
+    right: 79px !important;
+    top: 50px;
+    z-index: 3;
+  }
+}
+
 .ColorEdit {
   display: inline-flex;
   align-items: center;
@@ -23,6 +41,7 @@
   text-transform: capitalize;
 }
 
+
 .ColorDisplay {
   display: block;
   position: absolute;
@@ -42,6 +61,6 @@
 
 .ColorPicker {
   position: absolute !important;
-  right: 59px !important;
+  right: 59px;
   z-index: 3;
 }

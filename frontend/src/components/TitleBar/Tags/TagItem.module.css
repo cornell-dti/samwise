@@ -1,3 +1,10 @@
+@media (max-width: 500px) {
+  .DeleteTag {
+    position: absolute;
+    right: 5px;
+    float: right !important;
+  }
+}
 .ColorConfigItem {
   position: relative;
   width: 100%;
@@ -26,7 +33,7 @@
 
 .DeleteTag:hover,
 .DeleteTag:focus {
-  opacity: 0.85;
+  opacity: 0.50;
   stroke-width: 3px;
 }
 
