@@ -1,17 +1,17 @@
 name: Cleanup
-on: pull_request
+on:
+  pull_request:
+    types: [closed]
 
 jobs:
   clean-up:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout gh-pages Branch
-        if: github.event.state == 'closed'
         uses: actions/checkout@master
         with:
           ref: gh-pages
       - name: Purge Static Assets
-        if: github.event.state == 'closed'
         env:
           ACCESS_TOKEN: ${{ secrets.DEPLOY_GH_PAGE_TOKEN }}
         run: |
