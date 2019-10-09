@@ -42,7 +42,8 @@ function MainTaskEditor(
         onChange={editComplete}
       />
       <input
-        className={styles.TaskEditorFlexibleInput}
+        className={complete ?
+          styles.TaskEditorStrikethrough : styles.TaskEditorFlexibleInput}
         placeholder="Main Task"
         value={name}
         onKeyDown={onKeyDown}

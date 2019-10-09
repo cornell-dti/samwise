@@ -42,7 +42,8 @@
   margin-right: -10px;
 }
 
-input.TaskEditorFlexibleInput {
+input.TaskEditorFlexibleInput,
+input.TaskEditorStrikethrough {
   flex: 1 1 auto;
   margin-left: 0.5em;
   padding: 0.5em 0;
@@ -52,6 +53,10 @@ input.TaskEditorFlexibleInput {
   border: none;
   color: white;
   border-bottom: 1px solid transparent;
+}
+
+input.TaskEditorStrikethrough {
+  text-decoration: line-through;
 }
 
 input.TaskEditorFlexibleInput:focus-within {
