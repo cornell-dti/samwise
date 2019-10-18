@@ -240,3 +240,22 @@
 .RepeatPickEndWrap input[type="radio"]{
   margin-right:5px;
 }
+
+.RepeatSpecialEndDate{
+  padding:0;
+  text-align:left;
+}
+
+.RepeatSpecialEndDate button{
+  padding-top: 3px;
+  padding-bottom: 3px;
+  margin-top:3px;
+  background:none;
+  border-radius:3px;
+  border:none;
+  cursor:pointer;
+  border: 1.2px #5a5a5a solid;
+  color:#5a5a5a;
+  text-align:center;
+  font-weight: normal;
+ }
