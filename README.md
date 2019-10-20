@@ -32,7 +32,7 @@ You will need Node.js and Yarn installed on your development machine.
 
 To setup your environment, go into the `frontend` folder and run `yarn install`. Then, run `yarn start` to start a development server or `yarn build` to create a deployment build.
 
-This repository is configured with multiple tools to ensure code quality, including a linter and
+This repository comes with multiple tools to ensure code quality, including a linter and
 type checker. Please ensure that they are properly configured with your IDE or text editor.
 
 ### Contributing
