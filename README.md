@@ -77,20 +77,20 @@ Check our [wiki](https://github.com/cornell-dti/samwise/wiki) to see all our doc
 
 - **Alice Zhou*** - Product Manager
 - **Justin Tran*** - Front-end Developer
-- **Kevin Li*** - Back-end Developer/ Designer (2018)
+- **Kevin Li*** - Back-end Developer / Designer
 
 ### Since 2017
 
 - **Gautam Mekkat*** - Back-end Developer
 - **Matthew Epstein** - Product Manager
-- **Vivian Shiu** - Design Lead
+- **Vivian Shiu** - Designer / Design Lead
 
 ### Since 2018
 
 - **Jessica Hong*** - Back-end Developer
-- **Michael Xing** - Technical Product Manager
+- **Michael Xing** - Front-end Developer / Technical Product Manager
 - **Michelle Park** - Designer
-- **Sam Zhou** - Developer Lead
+- **Sam Zhou** - Front-end Developer / Developer Lead
 
 ### Since 2019
 
