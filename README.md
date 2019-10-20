@@ -83,14 +83,14 @@ Check our [wiki](https://github.com/cornell-dti/samwise/wiki) to see all our doc
 
 - **Gautam Mekkat*** - Back-end Developer
 - **Matthew Epstein** - Product Manager
-- **Vivian Shiu** - Designer
+- **Vivian Shiu** - Design Lead
 
 ### Since 2018
 
 - **Jessica Hong*** - Back-end Developer
-- **Michael Xing** - Front-end Developer
+- **Michael Xing** - Technical Product Manager
 - **Michelle Park** - Designer
-- **Sam Zhou** - Front-end Developer
+- **Sam Zhou** - Developer Lead
 
 ### Since 2019
 
@@ -100,7 +100,7 @@ Check our [wiki](https://github.com/cornell-dti/samwise/wiki) to see all our doc
 - **Peter Wu** - Front-end Developer
 - **Jason Tung** - Back-end Developer
 
-\* Former Member
+\* Former Contributor
 
 We are a team within the **Cornell Design & Tech Initiative**. For more information, see [our website](https://cornelldti.org/).
 
