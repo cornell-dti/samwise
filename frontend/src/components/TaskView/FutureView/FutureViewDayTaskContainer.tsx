@@ -4,7 +4,6 @@ import { CalendarPosition, FloatingPosition } from '../../Util/TaskEditors/edito
 import FutureViewTask from './FutureViewTask';
 import styles from './FutureViewDayTaskContainer.module.css';
 import { useWindowSizeCallback } from '../../../hooks/window-size-hook';
-import { error } from '../../../util/general-util';
 import { State } from '../../../store/store-types';
 import { createGetIdOrderListByDate } from '../../../store/selectors';
 
@@ -42,7 +41,10 @@ function FutureViewDayTaskContainer(
 
   // Subscribes to it, but don't use the value. Force rerender when window size changes.
   useWindowSizeCallback(() => {
-    const containerNode = containerRef.current || error();
+    const containerNode = containerRef.current;
+    if (containerNode == null) {
+      return;
+    }
     const tasksHeight = containerNode.scrollHeight;
     const containerHeight = containerNode.clientHeight;
     const [prevTasksHeight, prevContainerHeight] = prevHeights;

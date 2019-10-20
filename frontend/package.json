@@ -26,7 +26,6 @@
     "react-dom": "^16.10.0",
     "react-dom-confetti": "^0.1.1",
     "react-firebaseui": "^4.0.0",
-    "react-live-clock": "^3.1.0",
     "react-modal": "^3.10.1",
     "react-redux": "^7.1.1",
     "react-search-box": "^2.0.1",
