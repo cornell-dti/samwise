@@ -135,7 +135,6 @@ const asyncAddTask = async (
 export const addTask = (
   task: TaskWithoutIdOrderChildren,
   subTasks: WithoutId<SubTask>[],
-  noUndo?: 'no-undo',
 ): void => {
   const newTaskId = getNewTaskId();
   const batch = db().batch();
@@ -278,7 +277,7 @@ export const forkTaskWithDiff = (
   });
 };
 
-export const removeTask = (task: Task, noUndo?: 'no-undo'): void => {
+export const removeTask = (task: Task): void => {
   const { tasks, repeatedTaskSet } = store.getState();
   const batch = db().batch();
   batch.delete(tasksCollection().doc(task.id));

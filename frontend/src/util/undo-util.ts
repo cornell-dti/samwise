@@ -1,6 +1,5 @@
 import { Set } from 'immutable';
 import { SubTask, OneTimeTask, RepeatingTask } from '../store/store-types';
-import { date2String } from './datetime-util';
 import { addTask, removeTask } from '../firebase/actions';
 
 type TaskWithFullChildrenMapper<T> = Pick<T, Exclude<keyof T, 'children'>> & {
@@ -18,7 +17,7 @@ export function clearLastAddedTask(performUndo: boolean): void {
     if (performUndo) {
       const { children, ...rest } = lastAddedTask;
       const task = { ...rest, children: Set(children.map((s) => s.id)) };
-      removeTask(task, 'no-undo');
+      removeTask(task);
     }
     lastAddedTask = null;
   }
@@ -33,7 +32,7 @@ export function clearLastRemovedTask(performUndo: boolean): void {
        * Also handle the case where the task is a forked one-time task and we need to add the
        * metadata back to the master template.
        */
-      addTask(rest, children.map(({ id: _, ...s }) => s), 'no-undo');
+      addTask(rest, children.map(({ id: _, ...s }) => s));
     }
     lastRemovedTask = null;
   }

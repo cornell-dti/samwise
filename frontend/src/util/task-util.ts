@@ -249,7 +249,7 @@ function removeOneTimeTask(task: OneTimeTask): void {
       'Do you really want to remove this forked task? The removed task cannot be recovered.',
     ).then((confirmed) => {
       if (confirmed) {
-        removeTask(task, 'no-undo');
+        removeTask(task);
       }
     });
   }
@@ -274,7 +274,7 @@ function removeRepeatingTask(task: RepeatingTask, replaceDate: Date | null): voi
         case 'CANCEL_REMOVE':
           return;
         case 'REMOVE_ALL':
-          removeTask(task, 'no-undo');
+          removeTask(task);
           return;
         default:
           throw new Error();
@@ -286,7 +286,7 @@ function removeRepeatingTask(task: RepeatingTask, replaceDate: Date | null): voi
         case 'CANCEL_REMOVE':
           return;
         case 'REMOVE_ALL':
-          removeTask(task, 'no-undo');
+          removeTask(task);
           return;
         case 'REMOVE_ONE':
           removeOneRepeatedTask(task.id, replaceDate);
