@@ -1,6 +1,5 @@
 import { Set } from 'immutable';
 import { SubTask, OneTimeTask, RepeatingTask } from '../store/store-types';
-import emitToast from '../components/UI/UndoToast';
 import { date2String } from './datetime-util';
 import { addTask, removeTask } from '../firebase/actions';
 
@@ -38,36 +37,4 @@ export function clearLastRemovedTask(performUndo: boolean): void {
     }
     lastRemovedTask = null;
   }
-}
-
-/**
- * Emit a toast for undoing removing task.
- */
-export function emitUndoAddTaskToast(task: TaskWithFullChildren): void {
-  lastAddedTask = task;
-  const message = task.type === 'ONE_TIME'
-    ? `Added Task "${task.name}" on ${date2String(task.date)}.`
-    : `Added Repeating Task ${task.name}`;
-  emitToast({
-    toastId: 'task-management',
-    message,
-    onUndo: () => clearLastAddedTask(true),
-    onDismiss: () => clearLastAddedTask(false),
-  });
-}
-
-/**
- * Emit a toast for undoing removing task.
- */
-export function emitUndoRemoveTaskToast(task: TaskWithFullChildren): void {
-  lastRemovedTask = task;
-  const message = task.type === 'ONE_TIME'
-    ? `Removed Task "${task.name}" on ${date2String(task.date)}.`
-    : `Removed Repeating Task ${task.name}`;
-  emitToast({
-    toastId: 'task-management',
-    message,
-    onUndo: () => clearLastRemovedTask(true),
-    onDismiss: () => clearLastRemovedTask(false),
-  });
 }
