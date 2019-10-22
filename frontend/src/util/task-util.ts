@@ -236,11 +236,12 @@ function removeOneTimeTask(task: OneTimeTask): void {
     }
     return false;
   });
-  let prompt = ''
-  if (!isFork) prompt =
-    'Do you really want to remove this task? The removed task cannot be recovered.'
-  else prompt =
-    'Do you really want to remove this forked task? The removed task cannot be recovered.'
+  let prompt = '';
+  if (!isFork) {
+    prompt = 'Do you really want to remove this task? The removed task cannot be recovered.';
+  } else {
+    prompt = 'Do you really want to remove this forked task? The removed task cannot be recovered.';
+  }
   promptConfirm(prompt).then((confirmed) => {
     if (confirmed) {
       removeTask(task);
