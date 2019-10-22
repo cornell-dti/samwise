@@ -236,23 +236,16 @@ function removeOneTimeTask(task: OneTimeTask): void {
     }
     return false;
   });
-  if (!isFork) {
-    promptConfirm(
-      'Do you really want to remove this task? The removed task cannot be recovered.',
-    ).then((confirmed) => {
-      if (confirmed) {
-        removeTask(task);
-      }
-    });
-  } else {
-    promptConfirm(
-      'Do you really want to remove this forked task? The removed task cannot be recovered.',
-    ).then((confirmed) => {
-      if (confirmed) {
-        removeTask(task);
-      }
-    });
-  }
+  let prompt = ''
+  if (!isFork) prompt =
+    'Do you really want to remove this task? The removed task cannot be recovered.'
+  else prompt =
+    'Do you really want to remove this forked task? The removed task cannot be recovered.'
+  promptConfirm(prompt).then((confirmed) => {
+    if (confirmed) {
+      removeTask(task);
+    }
+  });
 }
 
 const removeTaskFullChoices = {
