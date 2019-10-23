@@ -16,16 +16,15 @@ exports[`ClassAdder matches snapshot. 1`] = `
       className="TagColorConfigItemAdder SearchClasses"
       title="Search for a class"
     >
-      <div
-        className="src__StyledContainer-hakmvc-0 emqRtB"
-      >
+      <div>
         <input
-          className="styled-component__StyledInput-sc-1dsackt-0 dEHJYu"
+          className="SearchInput"
           onChange={[Function]}
           placeholder="Search for classes (e.g. CS 2110, Introduction to Creative Writing)"
           type="text"
           value=""
         />
+        <div />
       </div>
     </div>
     <small>
@@ -78,16 +77,15 @@ exports[`SettingsPage matches snapshot. 1`] = `
         className="TagColorConfigItemAdder SearchClasses"
         title="Search for a class"
       >
-        <div
-          className="src__StyledContainer-hakmvc-0 emqRtB"
-        >
+        <div>
           <input
-            className="styled-component__StyledInput-sc-1dsackt-0 dEHJYu"
+            className="SearchInput"
             onChange={[Function]}
             placeholder="Search for classes (e.g. CS 2110, Introduction to Creative Writing)"
             type="text"
             value=""
           />
+          <div />
         </div>
       </div>
       <small>
