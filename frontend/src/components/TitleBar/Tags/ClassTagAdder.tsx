@@ -1,14 +1,12 @@
-import React, { useState, ReactElement } from 'react';
+import React, { ReactElement } from 'react';
 import { Map } from 'immutable';
-// @ts-ignore we need to rewrite the entire component!
-import ReactSearchBox from 'react-search-box';
 import { connect } from 'react-redux';
+import Fuse from 'fuse.js';
+import SearchBox from 'components/Util/SearchBox';
 import styles from './TagAdder.module.css';
 import { Course, State } from '../../../store/store-types';
 import { addTag } from '../../../firebase/actions';
 import getUnusedColor from './rotation-color-picker';
-
-type Props = { readonly courses: Map<string, Course[]> };
 
 type SimpleCourse = {
   readonly key: number;
@@ -18,6 +16,8 @@ type SimpleCourse = {
   readonly title: string;
   readonly classId: string;
 };
+
+type Props = { readonly fuse: Fuse<SimpleCourse> | null };
 
 /**
  * Returns the computed course options.
@@ -48,7 +48,7 @@ function getCourseOptions(courseMap: Map<string, Course[]>): SimpleCourse[] {
  * The configs for fuse searcher. Essential for fuzzy search.
  * You may need to tune this further, but it's usable right now.
  */
-const fuseConfigs: { keys: string[]; location: number; threshold: number } = {
+const fuseConfigs = {
   keys: [
     'value', // useful for search the full name as we display
     'subject', // useful for finding a list of all [subject] classes
@@ -57,14 +57,14 @@ const fuseConfigs: { keys: string[]; location: number; threshold: number } = {
   ],
   location: 0, // since we have customized the stuff to search, we can just start at beginning.
   threshold: 0.2, // higher the threshold, more stuff will be matched.
+  distance: 100, // how close the match must be to the fuzzy location
 };
 
 /**
  * The class tag adder.
  */
-function ClassTagAdder({ courses }: Props): ReactElement | null {
-  const [key, setKey] = useState(0);
-  if (courses.size === 0) {
+function ClassTagAdder({ fuse }: Props): ReactElement | null {
+  if (fuse === null) {
     return null;
   }
   const changeClass = (option: SimpleCourse): void => {
@@ -72,24 +72,28 @@ function ClassTagAdder({ courses }: Props): ReactElement | null {
     addTag({
       name: value, color: getUnusedColor(), classId,
     });
-    // force the react search box to rerender due to its bug.
-    setKey((prev) => prev + 1);
   };
   return (
     <div className={`${styles.TagColorConfigItemAdder} ${styles.SearchClasses}`} title="Search for a class">
-      <ReactSearchBox
-        tabIndex={0}
-        data={getCourseOptions(courses)}
-        value=""
-        fuseConfigs={fuseConfigs}
-        onSelect={changeClass}
+      <SearchBox
         placeholder="Search for classes (e.g. CS 2110, Introduction to Creative Writing)"
-        key={key}
+        inputClassname={styles.SearchInput}
+        dropdownItemClassName={styles.DropdownItem}
+        fuse={fuse}
+        onSelect={changeClass}
       />
     </div>
   );
 }
 
 const Memoized = React.memo<Props>(ClassTagAdder);
-const Connected = connect(({ courses }: State) => ({ courses }))(Memoized);
+const Connected = connect(
+  ({ courses }: State) => {
+    if (courses.size === 0) {
+      return { fuse: null };
+    }
+    const fuse = new Fuse(getCourseOptions(courses), fuseConfigs);
+    return { fuse };
+  },
+)(Memoized);
 export default Connected;

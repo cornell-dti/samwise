@@ -11,26 +11,38 @@
   overflow: hidden !important;
 }
 
-div.SearchClasses > div > input {
-  width: 100% !important;
+input.SearchInput {
+  display: block;
+  margin: 0;
+  width: 100%;
+  font-size: 14px;
+  height: 40px;
+  padding: 10px 20px;
+  border-width: 1px;
+  border-style: solid;
+  border-color: rgba(202, 202, 202, 0.59);
+  border-image: initial;
+  border-radius: 5px;
 }
 
-div.SearchClasses > div > div {
-  margin: 0 !important;
-  border-radius: 0 0 10px 10px !important;
+input.SearchInput:focus {
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
 }
 
-div.SearchClasses li{
-  background: #aaa !important;
+button.DropdownItem {
+  display: block;
+  width: 100%;
+  font-size: 14px;
+  text-align: left;
   transition: background 0.1s ease-in-out;
+  color: white;
+  background: #aaa !important;
+  line-height: 20px !important;
+  height: 40px;
+  padding: 10px 20px;
 }
-div.SearchClasses li:hover{
+
+button.DropdownItem:hover {
   background: #bbb !important;
-}
-div.SearchClasses li:first-child{
-  border-radius:0 !important;
-}
-div.SearchClasses input:focus{
-  border-bottom-left-radius:0 !important;
-  border-bottom-right-radius:0 !important;
 }
