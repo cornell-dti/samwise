@@ -3,7 +3,7 @@
 [![Deployment Status](https://github.com/cornell-dti/samwise/workflows/CD/badge.svg)](https://samwise-dev.firebaseapp.com)
 ![License](https://img.shields.io/github/license/cornell-dti/samwise.svg)
 
-_Last updated **10/20/2019**_
+_Last updated **10/23/2019**_
 
 ![Cornell DTI](./screenshots/samwise-splash.png)
 
@@ -58,7 +58,7 @@ These should be installed automatically by `yarn install`.
 - [React FirebaseUI](https://github.com/firebase/firebaseui-web-react) - a simple sign-in component library for Firebase Authentication.
 - [React Calendar](https://www.npmjs.com/package/react-calendar) - a calendar component for React.
 - [React Color](https://casesandberg.github.io/react-color/) - a collection of React components for picking colors.
-- [React Search Box](https://ghoshnirmalya.github.io/react-search-box/) - a search box component for React.
+- [Fuse.js](https://fusejs.io/) - a client-side fuzzy-search library.
 - [React Toastify](https://fkhadra.github.io/react-toastify/) - a library for emitting toasts in React.
 
 To find the specific version used of each dependency, see [package.json](frontend/package.json).
