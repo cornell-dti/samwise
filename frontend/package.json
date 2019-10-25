@@ -30,7 +30,6 @@
     "react-redux": "^7.1.1",
     "react-search-box": "^2.0.1",
     "react-test-renderer": "^16.10.0",
-    "react-toastify": "^5.4.0",
     "redux": "^4.0.4",
     "reselect": "^4.0.0"
   },

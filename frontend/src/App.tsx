@@ -1,5 +1,4 @@
 import React, { ReactElement } from 'react';
-import { ToastContainer } from 'react-toastify';
 import styles from './App.module.css';
 import AllComplete from './components/Popup/AllComplete';
 import Onboard from './components/TitleBar/Onboarding/Onboard';
@@ -15,7 +14,6 @@ export default function App(): ReactElement {
   return (
     <>
       <Onboard />
-      <ToastContainer className={styles.Toast} />
       <ModalsContainer />
       <TitleBar />
       <TaskCreator />
