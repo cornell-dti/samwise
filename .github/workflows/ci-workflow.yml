@@ -42,26 +42,18 @@ jobs:
     runs-on: ubuntu-latest
     needs: [build]
     steps:
-      - name: Checkout gh-pages Branch
-        uses: actions/checkout@master
-        with:
-          ref: gh-pages
-      - name: Purge Old Static Assets
-        run: git rm -rf ${{ github.event.number }} || echo "Nothing to remove"
       - name: Download Built Static Assets
         uses: actions/download-artifact@master
         with:
           name: built-frontend-assets
           path: ${{ github.event.number }}
-      - name: Commit and Push New Static Assets
+      - name: Deploy
+        uses: peaceiris/actions-gh-pages@v2.5.0
         env:
-          ACCESS_TOKEN: ${{ secrets.DEPLOY_GH_PAGE_TOKEN }}
-        run: |
-          git config user.name "deployment-bot"
-          git config user.email "hello@cornelldti.org"
-          git add .
-          git commit -m "Deploy for ${{ github.event.number }}" || echo "Nothing to commit."
-          git push "https://${ACCESS_TOKEN}@github.com/cornell-dti/samwise.git" || echo "Nothing to push."
+          PUBLISH_DIR: '.'
+          PERSONAL_TOKEN: ${{ secrets.DEPLOY_GH_PAGE_TOKEN }}
+        with:
+          keepFiles: true
       - name: Comment on Pull Request
         uses: actions/github-script@0.2.0
         with:
