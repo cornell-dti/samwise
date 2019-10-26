@@ -15,6 +15,7 @@ type SimpleCourse = {
   readonly courseNumber: string;
   readonly title: string;
   readonly classId: string;
+  readonly noSpaceName: string;
 };
 
 type Props = { readonly fuse: Fuse<SimpleCourse> | null };
@@ -36,7 +37,7 @@ function getCourseOptions(courseMap: Map<string, Course[]>): SimpleCourse[] {
       const id = `${classId} ${subject} ${courseNumber}`;
       const name = `${subject} ${courseNumber}: ${title}`;
       courseOptions.push({
-        key: i, value: name, subject, courseNumber, title, classId: id,
+        key: i, value: name, subject, courseNumber, title, classId: id, noSpaceName: name.replace(/[^a-zA-Z\d]/, ''),
       });
       i += 1;
     });
@@ -54,6 +55,7 @@ const fuseConfigs = {
     'subject', // useful for finding a list of all [subject] classes
     'courseNumber', // useful if the student just type the course number
     'title', // useful if the student just type the name
+    'noSpaceName', // useful if the student types the course code without a space (ex: "CS2112")
   ],
   location: 0, // since we have customized the stuff to search, we can just start at beginning.
   threshold: 0.2, // higher the threshold, more stuff will be matched.
