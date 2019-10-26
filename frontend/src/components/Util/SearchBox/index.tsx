@@ -22,8 +22,12 @@ export default <T extends FuseItem>(
 
   const onSearchChange = (event: ChangeEvent<HTMLInputElement>): void => {
     const input = event.currentTarget.value;
-    const newResults = fuse.search(input);
-    setState({ searchInput: input, searchResults: newResults });
+    if (input.length > 2) {
+      const newResults = fuse.search(input);
+      setState({ searchInput: input, searchResults: newResults });
+    } else {
+      setState({ searchInput: input, searchResults: [] });
+    }
   };
 
   const onResultSelected = (item: T): void => {
