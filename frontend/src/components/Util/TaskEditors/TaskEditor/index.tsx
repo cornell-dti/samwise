@@ -7,13 +7,11 @@ import React, { ReactElement, useState } from 'react';
 import { connect } from 'react-redux';
 import OverdueAlert from 'components/UI/OverdueAlert';
 import { NONE_TAG } from 'util/tag-util';
-import { ignore } from 'util/general-util';
 import { confirmRepeatedTaskEditMaster, promptRepeatedTaskEditChoice } from 'util/task-util';
 import { editTaskWithDiff, forkTaskWithDiff } from 'firebase/actions';
 import {
   Tag,
   SubTask,
-  PartialMainTask,
   State,
   MainTask,
 } from '../../../../store/store-types';
@@ -102,12 +100,6 @@ function TaskEditor(
   const [tempSubTask, setTempSubTask] = useState<SubTask | null>(null);
   const [subTaskToFocus, setSubTaskToFocus] = useState<TaskToFocus>(null);
 
-  const onMouseLeave = (): void => {
-    if (onBlur) {
-      onBlur();
-    }
-  };
-
   if (tempSubTask != null) {
     subTasks.forEach((oneSubTask) => {
       if (oneSubTask.id === tempSubTask.id) {
@@ -117,9 +109,7 @@ function TaskEditor(
   }
 
   // actions to perform
-  const editMainTask = (change: PartialMainTask): void => dispatchEditMainTask(change);
   const addSubTask = (subTask: SubTask): void => dispatchAddSubTask(subTask);
-  const removeSubTask = (subtaskId: string): void => dispatchDeleteSubTask(subtaskId);
 
   const onSaveClicked = (): void => {
     if (type === 'ONE_TIME') {
@@ -225,9 +215,9 @@ function TaskEditor(
       className={actualClassName}
       style={formStyle}
       onMouseEnter={onFocus}
-      onMouseLeave={onMouseLeave}
+      onMouseLeave={onSaveClicked}
       onFocus={onFocus}
-      onBlur={ignore}
+      onBlur={onSaveClicked}
       ref={editorRef}
     >
       {isOverdue && <OverdueAlert target="task-card" />}
@@ -278,15 +268,6 @@ function TaskEditor(
             afterFocusedCallback={clearNeedToFocus}
             onPressEnter={onSaveClicked}
           />
-        </div>
-      </div>
-      <div
-        className={styles.SaveButtonRow}
-        style={diffIsEmpty(diff) ? { maxHeight: 0, padding: 0 } : undefined}
-      >
-        <span className={styles.TaskEditorFlexiblePadding} />
-        <div role="presentation" className={styles.SaveButton} onClick={onSaveClicked}>
-          <span className={styles.SaveButtonText}>Save</span>
         </div>
       </div>
     </form>
