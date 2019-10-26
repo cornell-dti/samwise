@@ -5,12 +5,18 @@
 
 import React, { ReactElement, useState } from 'react';
 import { connect } from 'react-redux';
-import { MainTask, State, SubTask, Tag } from 'store/store-types';
 import OverdueAlert from 'components/UI/OverdueAlert';
 import { NONE_TAG } from 'util/tag-util';
 import { ignore } from 'util/general-util';
 import { confirmRepeatedTaskEditMaster, promptRepeatedTaskEditChoice } from 'util/task-util';
 import { editTaskWithDiff, forkTaskWithDiff } from 'firebase/actions';
+import {
+  Tag,
+  SubTask,
+  PartialMainTask,
+  State,
+  MainTask,
+} from '../../../../store/store-types';
 import styles from './index.module.css';
 import { getTodayAtZeroAM, getDateWithDateString } from '../../../../util/datetime-util';
 import EditorHeader from './EditorHeader';
@@ -19,6 +25,7 @@ import NewSubTaskEditor from './NewSubTaskEditor';
 import OneSubTaskEditor from './OneSubTaskEditor';
 import { CalendarPosition } from '../editors-types';
 import useTaskDiffReducer, { diffIsEmpty, Diff } from './task-diff-reducer';
+import { getNewSubTaskId } from '../../../../firebase/id-provider';
 
 type DefaultProps = {
   readonly displayGrabber?: boolean;
@@ -92,16 +99,36 @@ function TaskEditor(
   const { name, tag, date, complete, inFocus } = mainTask;
   const { removeTask, onSave } = actions;
 
+  const [tempSubTask, setTempSubTask] = useState<SubTask | null>(null);
   const [subTaskToFocus, setSubTaskToFocus] = useState<TaskToFocus>(null);
 
+<<<<<<< Updated upstream
   const onMouseLeave = (): void => {
     if (onBlur) {
       onBlur();
     }
   };
+=======
+  if (tempSubTask != null) {
+    subTasks.forEach((oneSubTask) => {
+      if (oneSubTask.id === tempSubTask.id) {
+        setTempSubTask(null);
+      }
+    });
+  }
+
+  // actions to perform
+  const editMainTask = (change: PartialMainTask): void => dispatchEditMainTask(change);
+  const addSubTask = (subTask: SubTask): void => dispatchAddSubTask(subTask);
+  const removeSubTask = (subtaskId: string): void => dispatchDeleteSubTask(subtaskId);
+
+>>>>>>> Stashed changes
   const onSaveClicked = (): void => {
     if (type === 'ONE_TIME') {
       editTaskWithDiff(id, 'EDITING_ONE_TIME_TASK', diff);
+      if (tempSubTask != null) {
+        addSubTask(tempSubTask);
+      }
       onSave();
       return;
     }
@@ -149,6 +176,13 @@ function TaskEditor(
   // called when the user types in the first char in the new subtask box. We need to shift now.
   const handleNewSubTaskFirstType = (firstTypedValue: string): void => {
     const order = subTasks.reduce((acc, s) => Math.max(acc, s.order), 0) + 1;
+    setTempSubTask({
+      id: getNewSubTaskId(),
+      name: firstTypedValue,
+      order,
+      complete: false,
+      inFocus: newSubTaskAutoFocused === true,
+    });
     dispatchAddSubTask({
       order, name: firstTypedValue, complete: false, inFocus: newSubTaskAutoFocused === true,
     });
