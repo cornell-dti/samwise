@@ -51,6 +51,7 @@ jobs:
         uses: peaceiris/actions-gh-pages@v2.5.0
         env:
           PUBLISH_DIR: '.'
+          PUBLISH_BRANCH: gh-pages
           PERSONAL_TOKEN: ${{ secrets.DEPLOY_GH_PAGE_TOKEN }}
         with:
           keepFiles: true
