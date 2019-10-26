@@ -195,14 +195,14 @@ export function dateMatchRepeats(
 }
 
 const repeatedTaskEditChoices = {
-  CANCEL_CHANGES: 'Cancel',
   CHANGE_MASTER_TEMPLATE: 'Edit All Occurences',
   FORK: 'Edit This Instance',
+  CANCEL_CHANGES: 'Cancel',
 };
 
 const repeatedTaskEditMasterConfirm = {
-  CANCEL_CHANGES: 'Cancel',
   CHANGE_MASTER_TEMPLATE: 'Edit All Occurences',
+  CANCEL_CHANGES: 'Cancel',
 };
 
 export function promptRepeatedTaskEditChoice(): Promise<keyof typeof repeatedTaskEditChoices> {
@@ -250,14 +250,14 @@ function removeOneTimeTask(task: OneTimeTask): void {
 }
 
 const removeTaskFullChoices = {
-  CANCEL_REMOVE: 'Cancel',
   REMOVE_ALL: 'Remove All',
   REMOVE_ONE: 'Remove This Instance',
+  CANCEL_REMOVE: 'Cancel',
 };
 
 const removeTaskPartialChoices = {
-  CANCEL_REMOVE: 'Cancel',
   REMOVE_ALL: 'Remove All',
+  CANCEL_REMOVE: 'Cancel',
 };
 
 function removeRepeatingTask(task: RepeatingTask, replaceDate: Date | null): void {
