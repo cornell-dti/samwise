@@ -102,13 +102,12 @@ function TaskEditor(
   const [tempSubTask, setTempSubTask] = useState<SubTask | null>(null);
   const [subTaskToFocus, setSubTaskToFocus] = useState<TaskToFocus>(null);
 
-<<<<<<< Updated upstream
   const onMouseLeave = (): void => {
     if (onBlur) {
       onBlur();
     }
   };
-=======
+
   if (tempSubTask != null) {
     subTasks.forEach((oneSubTask) => {
       if (oneSubTask.id === tempSubTask.id) {
@@ -122,7 +121,6 @@ function TaskEditor(
   const addSubTask = (subTask: SubTask): void => dispatchAddSubTask(subTask);
   const removeSubTask = (subtaskId: string): void => dispatchDeleteSubTask(subtaskId);
 
->>>>>>> Stashed changes
   const onSaveClicked = (): void => {
     if (type === 'ONE_TIME') {
       editTaskWithDiff(id, 'EDITING_ONE_TIME_TASK', diff);
