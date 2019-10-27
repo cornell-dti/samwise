@@ -3,7 +3,7 @@ import React, {
   ReactElement,
   SyntheticEvent,
   useEffect,
-  useRef,
+  useRef, useState,
 } from 'react';
 import styles from './index.module.css';
 import CheckBox from '../../../UI/CheckBox';
@@ -25,6 +25,8 @@ type Props = {
   readonly onPressEnter: (id: 'main-task' | number) => void;
 };
 
+type NameCache = { readonly cached: string; readonly originalPropsName: string };
+
 const className = [styles.TaskEditorFlexibleContainer, styles.TaskEditorSubtaskCheckBox].join(' ');
 const deleteIconClass = [styles.TaskEditorIcon, styles.TaskEditorIconLeftPad].join(' ');
 
@@ -42,9 +44,13 @@ function OneSubTaskEditor(
     onPressEnter,
   }: Props,
 ): ReactElement {
-  const onNameChange = (event: SyntheticEvent<HTMLInputElement>): void => {
-    editThisSubTask(subTask.id, { name: event.currentTarget.value });
-  };
+  const [nameCache, setNameCache] = useState<NameCache>({
+    cached: subTask.name,
+    originalPropsName: subTask.name,
+  });
+  if (subTask.name !== nameCache.originalPropsName) {
+    setNameCache({ cached: subTask.name, originalPropsName: subTask.name });
+  }
   const replaceDateForFork = taskDate == null
     ? getDateWithDateString(taskDate, dateAppeared)
     : null;
@@ -61,6 +67,18 @@ function OneSubTaskEditor(
       return;
     }
     onPressEnter(subTask.order);
+  };
+
+  const onInputChange = (event: SyntheticEvent<HTMLInputElement>): void => {
+    event.stopPropagation();
+    const newValue = event.currentTarget.value;
+    setNameCache((prev) => ({ ...prev, cached: newValue }));
+  };
+  const onBlur = (event: SyntheticEvent<HTMLInputElement>): void => {
+    event.stopPropagation();
+    if (subTask.name !== nameCache.cached) {
+      editThisSubTask(subTask.id, { name: nameCache.cached });
+    }
   };
 
   const editorRef = useRef<HTMLInputElement | null>(null);
@@ -89,10 +107,12 @@ function OneSubTaskEditor(
         className={subTask.complete || mainTaskComplete
           ? styles.TaskEditorStrikethrough : styles.TaskEditorFlexibleInput}
         placeholder="Your Subtask"
-        value={subTask.name}
+        value={nameCache.cached}
         ref={editorRef}
         onKeyDown={onKeyDown}
-        onChange={onNameChange}
+        onChange={onInputChange}
+        onBlur={onBlur}
+        onMouseLeave={onBlur}
         style={{ width: 'calc(100% - 70px)' }}
       />
       <SamwiseIcon

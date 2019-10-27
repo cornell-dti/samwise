@@ -13,7 +13,7 @@ import {
   Tag,
   SubTask,
   State,
-  MainTask,
+  MainTask, PartialSubTask,
 } from '../../../../store/store-types';
 import styles from './index.module.css';
 import { getTodayAtZeroAM, getDateWithDateString } from '../../../../util/datetime-util';
@@ -22,7 +22,7 @@ import MainTaskEditor from './MainTaskEditor';
 import NewSubTaskEditor from './NewSubTaskEditor';
 import OneSubTaskEditor from './OneSubTaskEditor';
 import { CalendarPosition } from '../editors-types';
-import useTaskDiffReducer, { diffIsEmpty, Diff } from './task-diff-reducer';
+import useTaskDiffReducer, { Diff } from './task-diff-reducer';
 import { getNewSubTaskId } from '../../../../firebase/id-provider';
 
 type DefaultProps = {
@@ -78,7 +78,6 @@ function TaskEditor(
     newSubTaskAutoFocused,
     newSubTaskDisabled,
     onFocus,
-    onBlur,
     editorRef,
     calendarPosition,
   }: Props,
@@ -100,23 +99,15 @@ function TaskEditor(
   const [tempSubTask, setTempSubTask] = useState<SubTask | null>(null);
   const [subTaskToFocus, setSubTaskToFocus] = useState<TaskToFocus>(null);
 
-  if (tempSubTask != null) {
-    subTasks.forEach((oneSubTask) => {
-      if (oneSubTask.id === tempSubTask.id) {
-        setTempSubTask(null);
-      }
-    });
-  }
-
   // actions to perform
   const addSubTask = (subTask: SubTask): void => dispatchAddSubTask(subTask);
 
   const onSaveClicked = (): void => {
     if (type === 'ONE_TIME') {
-      editTaskWithDiff(id, 'EDITING_ONE_TIME_TASK', diff);
       if (tempSubTask != null) {
         addSubTask(tempSubTask);
       }
+      editTaskWithDiff(id, 'EDITING_ONE_TIME_TASK', diff);
       onSave();
       return;
     }
@@ -175,6 +166,12 @@ function TaskEditor(
       order, name: firstTypedValue, complete: false, inFocus: newSubTaskAutoFocused === true,
     });
     setSubTaskToFocus(order);
+  };
+
+  const handleNewSubTaskEdit = (_: string, partialSubTask: PartialSubTask): void => {
+    if (tempSubTask != null) {
+      addSubTask({ ...tempSubTask, ...partialSubTask });
+    }
   };
 
   /**
@@ -258,6 +255,20 @@ function TaskEditor(
             onPressEnter={pressEnterHandler}
           />
         ))}
+        {tempSubTask !== null && (
+          <OneSubTaskEditor
+            mainTaskId={id}
+            taskDate={date instanceof Date ? date : null}
+            dateAppeared={taskAppearedDate}
+            subTask={tempSubTask}
+            mainTaskComplete={complete}
+            needToBeFocused={subTaskToFocus === tempSubTask.order}
+            afterFocusedCallback={clearNeedToFocus}
+            editThisSubTask={handleNewSubTaskEdit}
+            removeSubTask={() => setTempSubTask(null)}
+            onPressEnter={pressEnterHandler}
+          />
+        )}
         <div
           className={styles.SubtaskHide}
           style={newSubTaskDisabled === true ? { maxHeight: 0 } : undefined}
