@@ -172,7 +172,6 @@ export function dateMatchRepeats(
     return false;
   }
   if (endDate instanceof Date) {
-    console.log(date, endDate);
     if (date >= endDate) {
       // after the end
       return false;
