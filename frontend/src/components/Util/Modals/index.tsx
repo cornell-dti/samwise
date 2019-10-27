@@ -31,7 +31,7 @@ export async function promptChoice<Choices extends ChoiceObj>(
   });
 }
 
-const confirmCancelChoices = { CONFIRM: 'Confirm', CANCEL: 'cancel' };
+const confirmCancelChoices = { CANCEL: 'Cancel', CONFIRM: 'Confirm' };
 
 export async function promptConfirm(message: string): Promise<boolean> {
   const result = await promptChoice(message, confirmCancelChoices);
