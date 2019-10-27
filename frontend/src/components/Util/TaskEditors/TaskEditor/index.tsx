@@ -22,7 +22,7 @@ import MainTaskEditor from './MainTaskEditor';
 import NewSubTaskEditor from './NewSubTaskEditor';
 import OneSubTaskEditor from './OneSubTaskEditor';
 import { CalendarPosition } from '../editors-types';
-import useTaskDiffReducer, { Diff } from './task-diff-reducer';
+import useTaskDiffReducer, { Diff, diffIsEmpty } from './task-diff-reducer';
 import { getNewSubTaskId } from '../../../../firebase/id-provider';
 
 type DefaultProps = {
@@ -98,6 +98,12 @@ function TaskEditor(
 
   const [tempSubTask, setTempSubTask] = useState<SubTask | null>(null);
   const [subTaskToFocus, setSubTaskToFocus] = useState<TaskToFocus>(null);
+  const [prevSubTasks, setSubTasks] = useState<readonly SubTask[] | null>(null);
+  console.log(initSubTasks);
+  if (prevSubTasks !== initSubTasks) {
+    setTempSubTask(null);
+    setSubTasks(initSubTasks);
+  }
 
   // actions to perform
   const addSubTask = (subTask: SubTask): void => dispatchAddSubTask(subTask);
@@ -109,6 +115,7 @@ function TaskEditor(
       }
       editTaskWithDiff(id, 'EDITING_ONE_TIME_TASK', diff);
       onSave();
+      // setPrevTempSubTask(null);
       return;
     }
     if (taskAppearedDate === null) {
@@ -168,7 +175,7 @@ function TaskEditor(
     setSubTaskToFocus(order);
   };
 
-  const handleNewSubTaskEdit = (_: string, partialSubTask: PartialSubTask): void => {
+  const handleNewSubTaskEdit = (s: string, partialSubTask: PartialSubTask): void => {
     if (tempSubTask != null) {
       addSubTask({ ...tempSubTask, ...partialSubTask });
     }
@@ -281,6 +288,19 @@ function TaskEditor(
           />
         </div>
       </div>
+      {
+        type !== 'ONE_TIME' && (
+          <div
+            className={styles.SaveButtonRow}
+            style={diffIsEmpty(diff) ? { maxHeight: 0, padding: 0 } : undefined}
+          >
+            <span className={styles.TaskEditorFlexiblePadding} />
+            <div role="presentation" className={styles.SaveButton} onClick={onSaveClicked}>
+              <span className={styles.SaveButtonText}>Save</span>
+            </div>
+          </div>
+        )
+      }
     </form>
   );
 }

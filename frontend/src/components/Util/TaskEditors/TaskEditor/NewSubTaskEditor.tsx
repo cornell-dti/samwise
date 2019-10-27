@@ -1,4 +1,4 @@
-import React, { KeyboardEvent, ReactElement, SyntheticEvent, useEffect, useRef } from 'react';
+import React, { KeyboardEvent, ReactElement, SyntheticEvent, useEffect, useRef, useState } from 'react';
 import styles from './index.module.css';
 
 type Props = {
@@ -13,16 +13,22 @@ export default function NewSubTaskEditor(
     onChange, needToBeFocused, afterFocusedCallback, onPressEnter,
   }: Props,
 ): ReactElement {
+  const [subTaskValue, setSubTaskValue] = useState<string | null>(null);
   const onInputChange = (event: SyntheticEvent<HTMLInputElement>): void => {
     event.stopPropagation();
     const newSubTaskValue: string = event.currentTarget.value.trim();
-    if (newSubTaskValue.length > 0) {
-      onChange(newSubTaskValue);
-    }
+    setSubTaskValue(newSubTaskValue);
   };
   const onKeyDown = (event: KeyboardEvent<HTMLInputElement>): void => {
     if (event.key === 'Enter' || event.key === 'Tab') {
       onPressEnter();
+    }
+  };
+
+  const onMouseLeave = (): void => {
+    if (subTaskValue != null) {
+      onChange(subTaskValue);
+      setSubTaskValue(null);
     }
   };
 
@@ -46,9 +52,11 @@ export default function NewSubTaskEditor(
         ref={editorRef}
         className={styles.TaskEditorFlexibleInput}
         placeholder="Add a Subtask"
-        value=""
+        value={subTaskValue !== null ? subTaskValue : ''}
         onChange={onInputChange}
         onKeyDown={onKeyDown}
+        onMouseLeave={onMouseLeave}
+        onBlur={onMouseLeave}
       />
     </div>
   );
