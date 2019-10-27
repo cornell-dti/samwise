@@ -1,0 +1,57 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`AllComplete(0, 3) matches snapshot 1`] = `
+<div
+  className="Main Hidden"
+>
+  <span
+    className="ConfWrap"
+  >
+    <div
+      style={
+        Object {
+          "position": "relative",
+        }
+      }
+    />
+  </span>
+</div>
+`;
+
+exports[`AllComplete(1, 3) matches snapshot 1`] = `
+<div
+  className="Main Hidden"
+>
+  <span
+    className="ConfWrap"
+  >
+    <div
+      style={
+        Object {
+          "position": "relative",
+        }
+      }
+    />
+  </span>
+</div>
+`;
+
+exports[`AllComplete(2, 3) matches snapshot 1`] = `
+<div
+  className="Main Hidden"
+>
+  <span
+    className="ConfWrap"
+  >
+    <div
+      style={
+        Object {
+          "position": "relative",
+        }
+      }
+    />
+  </span>
+</div>
+`;
+
+exports[`AllComplete(3, 3) matches snapshot 1`] = `null`;

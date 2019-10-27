@@ -29,7 +29,7 @@ export const initialStateForTesting: State = {
     [NONE_TAG_ID]: NONE_TAG,
     foo: { id: 'foo', order: 1, name: 'Foo', color: 'red', classId: null },
     bar: { id: 'bar', order: 2, name: 'Bar', color: 'blue', classId: null },
-    baz: { id: 'baz', order: 3, name: 'Baz', color: 'green', classId: '2112' },
+    baz: { id: 'baz', order: 3, name: 'Baz: Baz', color: 'green', classId: '2112' },
   }),
   tasks: Map({
     foo: {

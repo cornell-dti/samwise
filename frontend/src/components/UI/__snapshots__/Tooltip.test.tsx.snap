@@ -1,0 +1,41 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Tooltip matches snapshot 1`] = `
+<div>
+  <div
+    onBlur={[Function]}
+    onFocus={[Function]}
+    onMouseOut={[Function]}
+    onMouseOver={[Function]}
+  >
+    <span
+      title="alert"
+    >
+      <svg
+        alt="alert"
+        height="1em"
+        onKeyUp={[Function]}
+        tabIndex={0}
+        title="alert"
+        width="1em"
+      >
+        alert.svg
+      </svg>
+    </span>
+  </div>
+  <div
+    className="tooltip"
+  >
+    <div
+      className="tooltiptext"
+      style={
+        Object {
+          "display": "none",
+        }
+      }
+    >
+      text
+    </div>
+  </div>
+</div>
+`;

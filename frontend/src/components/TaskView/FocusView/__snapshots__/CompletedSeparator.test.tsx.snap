@@ -1,0 +1,63 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`CompletedSeparator when not showing completed tasks matches snapshot 1`] = `
+<div
+  className="Separator"
+>
+  <span
+    className="Text"
+  >
+    Completed: (5)
+  </span>
+  <span
+    title="More"
+  >
+    <svg
+      alt="More"
+      className="Icon Inverted"
+      height="1em"
+      onClick={[Function]}
+      onKeyUp={[Function]}
+      tabIndex={0}
+      title="More"
+      width="1em"
+    >
+      v.svg
+    </svg>
+  </span>
+  <div
+    className="Line"
+  />
+</div>
+`;
+
+exports[`CompletedSeparator when showing completed tasks matches snapshot 1`] = `
+<div
+  className="Separator"
+>
+  <span
+    className="Text"
+  >
+    Completed: (10)
+  </span>
+  <span
+    title="More"
+  >
+    <svg
+      alt="More"
+      className="Icon"
+      height="1em"
+      onClick={[Function]}
+      onKeyUp={[Function]}
+      tabIndex={0}
+      title="More"
+      width="1em"
+    >
+      v.svg
+    </svg>
+  </span>
+  <div
+    className="Line"
+  />
+</div>
+`;
