@@ -99,7 +99,6 @@ function TaskEditor(
   const [tempSubTask, setTempSubTask] = useState<SubTask | null>(null);
   const [subTaskToFocus, setSubTaskToFocus] = useState<TaskToFocus>(null);
   const [prevSubTasks, setSubTasks] = useState<readonly SubTask[] | null>(null);
-  console.log(initSubTasks);
   if (prevSubTasks !== initSubTasks) {
     setTempSubTask(null);
     setSubTasks(initSubTasks);
