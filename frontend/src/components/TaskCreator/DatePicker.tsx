@@ -362,7 +362,7 @@ export default function DatePicker(props: Props): ReactElement {
     }
 
     const repData: RepeatMetaData = {
-      startDate: new Date(),
+      startDate: new Date(new Date().setHours(0,0,0,0)),
       endDate,
       pattern: { type: 'WEEKLY', bitSet },
     };
