@@ -356,13 +356,13 @@ export default function DatePicker(props: Props): ReactElement {
       endDate = internalDate.repeatEnd.date;
     } else {
       // TODO once database support exists, replace this with number of occurrances
-      endDate = new Date(
+      endDate = new Date(new Date(
         new Date().getTime() + 1000 * 60 * 60 * 24 * 7 * internalDate.repeatEnd.weeks,
-      );
+      ).setHours(0, 0, 0, 0));
     }
 
     const repData: RepeatMetaData = {
-      startDate: new Date(new Date().setHours(0,0,0,0)),
+      startDate: new Date(new Date().setHours(0, 0, 0, 0)),
       endDate,
       pattern: { type: 'WEEKLY', bitSet },
     };
