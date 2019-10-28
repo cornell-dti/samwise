@@ -357,8 +357,9 @@ export default function DatePicker(props: Props): ReactElement {
     } else {
       // TODO once database support exists, replace this with number of occurrances
       endDate = new Date(new Date(
-        new Date().getTime() + 1000 * 60 * 60 * 24 * 7 * internalDate.repeatEnd.weeks,
-      ).setHours(0, 0, 0, 0));
+        new Date().getTime() + 1000 * 60 * 60 * 24 * 7 * internalDate.repeatEnd.weeks
+        - 1000 * 60 * 60 * 24,
+      ).setHours(23, 59, 59, 999));
     }
 
     const repData: RepeatMetaData = {

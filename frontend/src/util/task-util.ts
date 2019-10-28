@@ -172,7 +172,7 @@ export function dateMatchRepeats(
     return false;
   }
   if (endDate instanceof Date) {
-    if (date >= endDate) {
+    if (date > endDate) {
       // after the end
       return false;
     }
