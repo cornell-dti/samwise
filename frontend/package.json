@@ -6,7 +6,7 @@
     "start": "react-scripts start",
     "build:stage": "REACT_APP_IS_STAGING=true react-scripts build",
     "build": "react-scripts build",
-    "test": "react-scripts test --watchAll=false",
+    "test": "TZ=UTC react-scripts test --watchAll=false",
     "optimize-svg": "svgo --disable=removeViewBox --enable=prefixIds,removeDimensions src/assets/svgs/*.svg",
     "tsc": "tsc -p tsconfig.json",
     "lint": "eslint . --ext .js --ext .ts --ext .jsx --ext .tsx",
