@@ -21,14 +21,9 @@ export default function NewSubTaskEditor(
   };
   const onKeyDown = (event: KeyboardEvent<HTMLInputElement>): void => {
     if (event.key === 'Enter' || event.key === 'Tab') {
-      onPressEnter();
-    }
-  };
-
-  const onMouseLeave = (): void => {
-    if (subTaskValue !== '') {
       setSubTaskValue('');
       onChange(subTaskValue);
+      onPressEnter();
     }
   };
 
@@ -55,7 +50,6 @@ export default function NewSubTaskEditor(
         value={subTaskValue}
         onChange={onInputChange}
         onKeyDown={onKeyDown}
-        onBlur={onMouseLeave}
       />
     </div>
   );
