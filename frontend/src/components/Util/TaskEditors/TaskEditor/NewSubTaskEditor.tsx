@@ -13,7 +13,7 @@ export default function NewSubTaskEditor(
     onChange, needToBeFocused, afterFocusedCallback, onPressEnter,
   }: Props,
 ): ReactElement {
-  const [subTaskValue, setSubTaskValue] = useState<string | null>(null);
+  const [subTaskValue, setSubTaskValue] = useState<string>('');
   const onInputChange = (event: SyntheticEvent<HTMLInputElement>): void => {
     event.stopPropagation();
     const newSubTaskValue: string = event.currentTarget.value.trim();
@@ -26,9 +26,9 @@ export default function NewSubTaskEditor(
   };
 
   const onMouseLeave = (): void => {
-    if (subTaskValue != null) {
+    if (subTaskValue !== '') {
+      setSubTaskValue('');
       onChange(subTaskValue);
-      setSubTaskValue(null);
     }
   };
 
@@ -52,10 +52,9 @@ export default function NewSubTaskEditor(
         ref={editorRef}
         className={styles.TaskEditorFlexibleInput}
         placeholder="Add a Subtask"
-        value={subTaskValue !== null ? subTaskValue : ''}
+        value={subTaskValue}
         onChange={onInputChange}
         onKeyDown={onKeyDown}
-        onMouseLeave={onMouseLeave}
         onBlur={onMouseLeave}
       />
     </div>
