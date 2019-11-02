@@ -5,7 +5,7 @@
 
 import React, { ReactElement, useState } from 'react';
 import { connect } from 'react-redux';
-import {MainTask, PartialSubTask, State, SubTask, Tag} from 'store/store-types';
+import { MainTask, PartialSubTask, State, SubTask, Tag } from 'store/store-types';
 import OverdueAlert from 'components/UI/OverdueAlert';
 import { NONE_TAG } from 'util/tag-util';
 import { ignore } from 'util/general-util';
