@@ -18,9 +18,10 @@ export default function NewSubTaskEditor(
   const onInputChange = (event: SyntheticEvent<HTMLInputElement>): void => {
     event.stopPropagation();
     const newSubTaskValue: string = event.currentTarget.value.trim();
-    setSubTaskValue(newSubTaskValue);
     if (type !== 'ONE_TIME' && newSubTaskValue.length > 0) {
       onChange(newSubTaskValue);
+    } else {
+      setSubTaskValue(newSubTaskValue);
     }
   };
   const onKeyDown = (event: KeyboardEvent<HTMLInputElement>): void => {
