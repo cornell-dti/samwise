@@ -19,4 +19,5 @@ export type IconName =
   | 'dropdown'
   | 'x-dark'
   | 'x-light'
-  | 'x-light-settings';
+  | 'x-light-settings'
+  | 'repeat-frequency';
