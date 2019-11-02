@@ -20,6 +20,7 @@ import OneSubTaskEditor from './OneSubTaskEditor';
 import { CalendarPosition } from '../editors-types';
 import useTaskDiffReducer, { diffIsEmpty, Diff } from './task-diff-reducer';
 
+
 type DefaultProps = {
   readonly displayGrabber?: boolean;
   readonly className?: string;
@@ -94,12 +95,6 @@ function TaskEditor(
 
   const [tempSubTask, setTempSubTask] = useState<SubTask | null>(null);
   const [subTaskToFocus, setSubTaskToFocus] = useState<TaskToFocus>(null);
-  const [prevSubTasks, setSubTasks] = useState<readonly SubTask[] | null>(null);
-
-  if (prevSubTasks !== initSubTasks) {
-    setTempSubTask(null);
-    setSubTasks(initSubTasks);
-  }
 
   const addSubTask = (subTask: SubTask): void => dispatchAddSubTask(subTask);
 

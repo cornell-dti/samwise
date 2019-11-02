@@ -26,9 +26,9 @@ export default function NewSubTaskEditor(
   };
   const onKeyDown = (event: KeyboardEvent<HTMLInputElement>): void => {
     if (event.key === 'Enter' || event.key === 'Tab') {
-      setSubTaskValue('');
       onChange(subTaskValue);
       if (type === 'ONE_TIME') {
+        setSubTaskValue('');
         onPressEnter();
       }
     }
