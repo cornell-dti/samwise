@@ -5,7 +5,7 @@
 
 import React, { ReactElement, useState } from 'react';
 import { connect } from 'react-redux';
-import { MainTask, PartialSubTask, State, SubTask, Tag } from 'store/store-types';
+import {MainTask, PartialSubTask, State, SubTask, Tag} from 'store/store-types';
 import OverdueAlert from 'components/UI/OverdueAlert';
 import { NONE_TAG } from 'util/tag-util';
 import { ignore } from 'util/general-util';
@@ -94,6 +94,12 @@ function TaskEditor(
 
   const [tempSubTask, setTempSubTask] = useState<SubTask | null>(null);
   const [subTaskToFocus, setSubTaskToFocus] = useState<TaskToFocus>(null);
+  const [prevSubTasks, setSubTasks] = useState<readonly SubTask[] | null>(null);
+
+  if (prevSubTasks !== initSubTasks) {
+    setTempSubTask(null);
+    setSubTasks(initSubTasks);
+  }
 
   const addSubTask = (subTask: SubTask): void => dispatchAddSubTask(subTask);
 
