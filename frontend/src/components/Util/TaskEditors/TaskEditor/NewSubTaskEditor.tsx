@@ -6,11 +6,12 @@ type Props = {
   readonly needToBeFocused: boolean;
   readonly afterFocusedCallback: () => void;
   readonly onPressEnter: () => void;
+  readonly type: 'MASTER_TEMPLATE' | 'ONE_TIME';
 };
 
 export default function NewSubTaskEditor(
   {
-    onChange, needToBeFocused, afterFocusedCallback, onPressEnter,
+    onChange, needToBeFocused, afterFocusedCallback, onPressEnter, type,
   }: Props,
 ): ReactElement {
   const [subTaskValue, setSubTaskValue] = useState<string>('');
@@ -18,12 +19,17 @@ export default function NewSubTaskEditor(
     event.stopPropagation();
     const newSubTaskValue: string = event.currentTarget.value.trim();
     setSubTaskValue(newSubTaskValue);
+    // if (newSubTaskValue.length > 0) {
+    //   onChange(newSubTaskValue);
+    // }
   };
   const onKeyDown = (event: KeyboardEvent<HTMLInputElement>): void => {
     if (event.key === 'Enter' || event.key === 'Tab') {
       setSubTaskValue('');
       onChange(subTaskValue);
-      onPressEnter();
+      if (type === 'ONE_TIME') {
+        onPressEnter();
+      }
     }
   };
 

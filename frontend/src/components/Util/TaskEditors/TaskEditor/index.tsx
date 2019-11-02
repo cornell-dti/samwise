@@ -5,16 +5,12 @@
 
 import React, { ReactElement, useState } from 'react';
 import { connect } from 'react-redux';
+import { MainTask, PartialSubTask, State, SubTask, Tag } from 'store/store-types';
 import OverdueAlert from 'components/UI/OverdueAlert';
 import { NONE_TAG } from 'util/tag-util';
+import { ignore } from 'util/general-util';
 import { confirmRepeatedTaskEditMaster, promptRepeatedTaskEditChoice } from 'util/task-util';
 import { editTaskWithDiff, forkTaskWithDiff } from 'firebase/actions';
-import {
-  Tag,
-  SubTask,
-  State,
-  MainTask, PartialSubTask,
-} from '../../../../store/store-types';
 import styles from './index.module.css';
 import { getTodayAtZeroAM, getDateWithDateString } from '../../../../util/datetime-util';
 import EditorHeader from './EditorHeader';
@@ -22,8 +18,7 @@ import MainTaskEditor from './MainTaskEditor';
 import NewSubTaskEditor from './NewSubTaskEditor';
 import OneSubTaskEditor from './OneSubTaskEditor';
 import { CalendarPosition } from '../editors-types';
-import useTaskDiffReducer, { Diff, diffIsEmpty } from './task-diff-reducer';
-import { getNewSubTaskId } from '../../../../firebase/id-provider';
+import useTaskDiffReducer, { diffIsEmpty, Diff } from './task-diff-reducer';
 
 type DefaultProps = {
   readonly displayGrabber?: boolean;
@@ -78,6 +73,7 @@ function TaskEditor(
     newSubTaskAutoFocused,
     newSubTaskDisabled,
     onFocus,
+    onBlur,
     editorRef,
     calendarPosition,
   }: Props,
@@ -98,23 +94,18 @@ function TaskEditor(
 
   const [tempSubTask, setTempSubTask] = useState<SubTask | null>(null);
   const [subTaskToFocus, setSubTaskToFocus] = useState<TaskToFocus>(null);
-  const [prevSubTasks, setSubTasks] = useState<readonly SubTask[] | null>(null);
-  if (prevSubTasks !== initSubTasks) {
-    setTempSubTask(null);
-    setSubTasks(initSubTasks);
-  }
 
-  // actions to perform
   const addSubTask = (subTask: SubTask): void => dispatchAddSubTask(subTask);
 
+  const onMouseLeave = (): void => {
+    if (onBlur) {
+      onBlur();
+    }
+  };
   const onSaveClicked = (): void => {
     if (type === 'ONE_TIME') {
-      if (tempSubTask != null) {
-        addSubTask(tempSubTask);
-      }
       editTaskWithDiff(id, 'EDITING_ONE_TIME_TASK', diff);
       onSave();
-      // setPrevTempSubTask(null);
       return;
     }
     if (taskAppearedDate === null) {
@@ -161,13 +152,6 @@ function TaskEditor(
   // called when the user types in the first char in the new subtask box. We need to shift now.
   const handleNewSubTaskFirstType = (firstTypedValue: string): void => {
     const order = subTasks.reduce((acc, s) => Math.max(acc, s.order), 0) + 1;
-    setTempSubTask({
-      id: getNewSubTaskId(),
-      name: firstTypedValue,
-      order,
-      complete: false,
-      inFocus: newSubTaskAutoFocused === true,
-    });
     dispatchAddSubTask({
       order, name: firstTypedValue, complete: false, inFocus: newSubTaskAutoFocused === true,
     });
@@ -218,9 +202,9 @@ function TaskEditor(
       className={actualClassName}
       style={formStyle}
       onMouseEnter={onFocus}
-      onMouseLeave={onSaveClicked}
+      onMouseLeave={onMouseLeave}
       onFocus={onFocus}
-      onBlur={onSaveClicked}
+      onBlur={ignore}
       ref={editorRef}
     >
       {isOverdue && <OverdueAlert target="task-card" />}
@@ -284,6 +268,7 @@ function TaskEditor(
             needToBeFocused={subTaskToFocus === 'new-subtask'}
             afterFocusedCallback={clearNeedToFocus}
             onPressEnter={onSaveClicked}
+            type={type}
           />
         </div>
       </div>
