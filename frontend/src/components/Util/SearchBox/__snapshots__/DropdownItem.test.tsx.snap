@@ -4,6 +4,8 @@ exports[`DropdownItem matches snapshot. 1`] = `
 <button
   className="test"
   onClick={[Function]}
+  tabIndex={0}
+  title="Add class"
   type="button"
 >
   foo-bar
