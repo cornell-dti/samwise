@@ -2,6 +2,7 @@ import React, { ReactElement, ChangeEvent, useState } from 'react';
 import Fuse from 'fuse.js';
 import { FuseItem } from './types';
 import DropdownItem from './DropdownItem';
+import styles from './DropdownItem.module.css';
 
 type Props<T extends FuseItem> = {
   readonly fuse: Fuse<T>;
@@ -29,12 +30,12 @@ export default <T extends FuseItem>(
       setState({ searchInput: input, searchResults: [] });
     }
   };
-
+ 
   const onResultSelected = (item: T): void => {
     onSelect(item);
     setState({ searchInput: '', searchResults: [] });
   };
-
+  
   return (
     <div>
       <input
