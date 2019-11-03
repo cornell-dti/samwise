@@ -19,14 +19,14 @@ exports[`SamwiseIcon matches snapshot. 1`] = `
 
 exports[`SamwiseIcon matches snapshot. 2`] = `
 <span
-  title="calendar"
+  title="Due date"
 >
   <svg
-    alt="calendar"
+    alt="Due date"
     height="1em"
     onKeyUp={[Function]}
     tabIndex={0}
-    title="calendar"
+    title="Due date"
     width="1em"
   >
     calendar-dark.svg
@@ -36,14 +36,14 @@ exports[`SamwiseIcon matches snapshot. 2`] = `
 
 exports[`SamwiseIcon matches snapshot. 3`] = `
 <span
-  title="calendar"
+  title="Due date"
 >
   <svg
-    alt="calendar"
+    alt="Due date"
     height="1em"
     onKeyUp={[Function]}
     tabIndex={0}
-    title="calendar"
+    title="Due date"
     width="1em"
   >
     calendar-light.svg
@@ -53,14 +53,14 @@ exports[`SamwiseIcon matches snapshot. 3`] = `
 
 exports[`SamwiseIcon matches snapshot. 4`] = `
 <span
-  title="checked"
+  title="Checked"
 >
   <svg
-    alt="checked"
+    alt="Checked"
     height="1em"
     onKeyUp={[Function]}
     tabIndex={0}
-    title="checked"
+    title="Checked"
     width="1em"
   >
     checked-dark.svg
@@ -70,14 +70,14 @@ exports[`SamwiseIcon matches snapshot. 4`] = `
 
 exports[`SamwiseIcon matches snapshot. 5`] = `
 <span
-  title="checked"
+  title="Checked"
 >
   <svg
-    alt="checked"
+    alt="Checked"
     height="1em"
     onKeyUp={[Function]}
     tabIndex={0}
-    title="checked"
+    title="Checked"
     width="1em"
   >
     checked.svg
@@ -104,14 +104,14 @@ exports[`SamwiseIcon matches snapshot. 6`] = `
 
 exports[`SamwiseIcon matches snapshot. 7`] = `
 <span
-  title="grabber"
+  title="Reorder"
 >
   <svg
-    alt="grabber"
+    alt="Reorder"
     height="1em"
     onKeyUp={[Function]}
     tabIndex={0}
-    title="grabber"
+    title="Reorder"
     width="1em"
   >
     grabbers.svg
@@ -121,14 +121,14 @@ exports[`SamwiseIcon matches snapshot. 7`] = `
 
 exports[`SamwiseIcon matches snapshot. 8`] = `
 <span
-  title="hide"
+  title="Hide"
 >
   <svg
-    alt="hide"
+    alt="Hide"
     height="1em"
     onKeyUp={[Function]}
     tabIndex={0}
-    title="hide"
+    title="Hide"
     width="1em"
   >
     hide.svg
@@ -138,14 +138,14 @@ exports[`SamwiseIcon matches snapshot. 8`] = `
 
 exports[`SamwiseIcon matches snapshot. 9`] = `
 <span
-  title="pin-filled"
+  title="Unpin from Focus"
 >
   <svg
-    alt="pin-filled"
+    alt="Unpin from Focus"
     height="1em"
     onKeyUp={[Function]}
     tabIndex={0}
-    title="pin-filled"
+    title="Unpin from Focus"
     width="1em"
   >
     pin-2-dark-filled.svg
@@ -155,14 +155,14 @@ exports[`SamwiseIcon matches snapshot. 9`] = `
 
 exports[`SamwiseIcon matches snapshot. 10`] = `
 <span
-  title="pin-outline"
+  title="Pin to Focus"
 >
   <svg
-    alt="pin-outline"
+    alt="Pin to Focus"
     height="1em"
     onKeyUp={[Function]}
     tabIndex={0}
-    title="pin-outline"
+    title="Pin to Focus"
     width="1em"
   >
     pin-2-dark-outline.svg
@@ -172,14 +172,14 @@ exports[`SamwiseIcon matches snapshot. 10`] = `
 
 exports[`SamwiseIcon matches snapshot. 11`] = `
 <span
-  title="pin-filled"
+  title="Unpin from Focus"
 >
   <svg
-    alt="pin-filled"
+    alt="Unpin from Focus"
     height="1em"
     onKeyUp={[Function]}
     tabIndex={0}
-    title="pin-filled"
+    title="Unpin from Focus"
     width="1em"
   >
     pin-2-light-filled.svg
@@ -189,14 +189,14 @@ exports[`SamwiseIcon matches snapshot. 11`] = `
 
 exports[`SamwiseIcon matches snapshot. 12`] = `
 <span
-  title="pin-outline"
+  title="Pin to Focus"
 >
   <svg
-    alt="pin-outline"
+    alt="Pin to Focus"
     height="1em"
     onKeyUp={[Function]}
     tabIndex={0}
-    title="pin-outline"
+    title="Pin to Focus"
     width="1em"
   >
     pin-2-light-outline.svg
@@ -206,14 +206,14 @@ exports[`SamwiseIcon matches snapshot. 12`] = `
 
 exports[`SamwiseIcon matches snapshot. 13`] = `
 <span
-  title="settings"
+  title="Settings"
 >
   <svg
-    alt="settings"
+    alt="Settings"
     height="1em"
     onKeyUp={[Function]}
     tabIndex={0}
-    title="settings"
+    title="Settings"
     width="1em"
   >
     settings.svg
@@ -223,14 +223,14 @@ exports[`SamwiseIcon matches snapshot. 13`] = `
 
 exports[`SamwiseIcon matches snapshot. 14`] = `
 <span
-  title="hide"
+  title="Show"
 >
   <svg
-    alt="hide"
+    alt="Show"
     height="1em"
     onKeyUp={[Function]}
     tabIndex={0}
-    title="hide"
+    title="Show"
     width="1em"
   >
     show.svg
@@ -240,14 +240,14 @@ exports[`SamwiseIcon matches snapshot. 14`] = `
 
 exports[`SamwiseIcon matches snapshot. 15`] = `
 <span
-  title="tag"
+  title="Tag"
 >
   <svg
-    alt="tag"
+    alt="Tag"
     height="1em"
     onKeyUp={[Function]}
     tabIndex={0}
-    title="tag"
+    title="Tag"
     width="1em"
   >
     tag.svg
@@ -274,14 +274,14 @@ exports[`SamwiseIcon matches snapshot. 16`] = `
 
 exports[`SamwiseIcon matches snapshot. 17`] = `
 <span
-  title="dropdown"
+  title="More"
 >
   <svg
-    alt="dropdown"
+    alt="More"
     height="1em"
     onKeyUp={[Function]}
     tabIndex={0}
-    title="dropdown"
+    title="More"
     width="1em"
   >
     v.svg
@@ -291,14 +291,14 @@ exports[`SamwiseIcon matches snapshot. 17`] = `
 
 exports[`SamwiseIcon matches snapshot. 18`] = `
 <span
-  title="delete"
+  title="Delete"
 >
   <svg
-    alt="delete"
+    alt="Delete"
     height="1em"
     onKeyUp={[Function]}
     tabIndex={0}
-    title="delete"
+    title="Delete"
     width="1em"
   >
     XDark.svg
@@ -308,14 +308,14 @@ exports[`SamwiseIcon matches snapshot. 18`] = `
 
 exports[`SamwiseIcon matches snapshot. 19`] = `
 <span
-  title="delete"
+  title="Delete"
 >
   <svg
-    alt="delete"
+    alt="Delete"
     height="1em"
     onKeyUp={[Function]}
     tabIndex={0}
-    title="delete"
+    title="Delete"
     width="1em"
   >
     XLight.svg

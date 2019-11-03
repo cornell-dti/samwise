@@ -12,10 +12,12 @@ export type IconName =
   | 'pin-dark-outline'
   | 'pin-light-filled'
   | 'pin-light-outline'
+  | 'repeat'
   | 'settings'
   | 'show'
   | 'tag'
   | 'unchecked'
   | 'dropdown'
   | 'x-dark'
-  | 'x-light';
+  | 'x-light'
+  | 'x-light-settings';

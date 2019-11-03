@@ -1,6 +1,5 @@
 import React, { ReactElement } from 'react';
-// @ts-ignore this module does not have a ts definition file.
-import Clock from 'react-live-clock';
+import { useTime } from 'hooks/time-hook';
 import Banner from './Banner';
 import { date2FullDateString } from '../../util/datetime-util';
 import styles from './index.module.css';
@@ -11,11 +10,20 @@ import SettingsButton from './Settings/SettingsButton';
  *
  * @type {function(): Node}
  */
-export default (): ReactElement => (
-  <header className={styles.Main}>
-    <Banner />
-    <span title="time" className={styles.Time}><Clock format="h:mm A" ticking /></span>
-    <span title="date" className={styles.Date}>{date2FullDateString(new Date())}</span>
-    <span className={styles.Links}><SettingsButton /></span>
-  </header>
-);
+export default (): ReactElement => {
+  const time = useTime();
+  const date = new Date(time);
+  const dateString = date2FullDateString(date);
+  const timeString = date.toLocaleTimeString('en-US', {
+    hour: 'numeric',
+    minute: 'numeric',
+  });
+  return (
+    <header className={styles.Main}>
+      <Banner />
+      <span title="time" className={styles.Time}>{timeString}</span>
+      <span title="date" className={styles.Date}>{dateString}</span>
+      <span className={styles.Links}><SettingsButton /></span>
+    </header>
+  );
+};

@@ -50,7 +50,10 @@ function MainTaskEditor(
         onChange={editComplete}
       />
       <input
-        className={styles.TaskEditorFlexibleInput}
+        type="text"
+        data-lpignore="true"
+        className={complete
+          ? styles.TaskEditorStrikethrough : styles.TaskEditorFlexibleInput}
         placeholder="Main Task"
         value={name}
         onKeyDown={onKeyDown}

@@ -48,6 +48,7 @@ const updateFloatingEditorPosition = (
       throw new Error('Bad floating position!');
     }
   }
+
   editorPosDiv.style.top = `${posTop}px`;
   editorPosDiv.style.left = posLeft === undefined ? 'initial' : `${posLeft}px`;
   editorPosDiv.style.right = posRight === undefined ? 'initial' : `${posRight}px`;

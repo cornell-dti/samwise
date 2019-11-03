@@ -41,7 +41,6 @@ import {
 } from './db';
 import { getNewTaskId } from './id-provider';
 import { error, ignore } from '../util/general-util';
-import { emitUndoAddTaskToast, emitUndoRemoveTaskToast } from '../util/undo-util';
 import allocateNewOrder from './order-manager';
 import { store } from '../store/store';
 import { NONE_TAG_ID } from '../util/tag-util';
@@ -136,20 +135,10 @@ const asyncAddTask = async (
 export const addTask = (
   task: TaskWithoutIdOrderChildren,
   subTasks: WithoutId<SubTask>[],
-  noUndo?: 'no-undo',
 ): void => {
   const newTaskId = getNewTaskId();
   const batch = db().batch();
-  asyncAddTask(newTaskId, task, subTasks, batch).then(({ firestoreTask, createdSubTasks }) => {
-    if (noUndo !== 'no-undo') {
-      const fullTask = {
-        ...task,
-        id: newTaskId,
-        order: firestoreTask.order,
-        children: createdSubTasks,
-      };
-      emitUndoAddTaskToast(fullTask);
-    }
+  asyncAddTask(newTaskId, task, subTasks, batch).then(({ createdSubTasks }) => {
     batch.commit().then(() => {
       reportAddTaskEvent();
       createdSubTasks.forEach(reportAddSubTaskEvent);
@@ -288,14 +277,8 @@ export const forkTaskWithDiff = (
   });
 };
 
-export const removeTask = (task: Task, noUndo?: 'no-undo'): void => {
-  const { tasks, subTasks, repeatedTaskSet } = store.getState();
-  const deletedSubTasks = task.children
-    .map((id) => {
-      const subTask = subTasks.get(id);
-      return subTask == null ? error('corrupted!') : subTask;
-    })
-    .toArray();
+export const removeTask = (task: Task): void => {
+  const { tasks, repeatedTaskSet } = store.getState();
   const batch = db().batch();
   batch.delete(tasksCollection().doc(task.id));
   task.children.forEach((id) => batch.delete(subTasksCollection().doc(id)));
@@ -338,11 +321,6 @@ export const removeTask = (task: Task, noUndo?: 'no-undo'): void => {
   }
   batch.commit().then(() => {
     reportDeleteTaskEvent();
-    if (noUndo !== 'no-undo') {
-      const { children, ...rest } = task;
-      const fullTask = { ...rest, children: deletedSubTasks };
-      emitUndoRemoveTaskToast(fullTask);
-    }
   });
 };
 

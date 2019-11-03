@@ -1,5 +1,6 @@
 import React, { ReactElement } from 'react';
 import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
+import { useTodayLastSecondTime } from 'hooks/time-hook';
 import { FutureViewContainerType, FutureViewDisplayOption } from './future-view-types';
 import SquareTextButton from '../../UI/SquareTextButton';
 import SquareIconToggle from '../../UI/SquareIconToggle';
@@ -49,6 +50,7 @@ const Title = ({ text }: { readonly text: string }): ReactElement => (
  */
 
 type NavControlProps = {
+  readonly today: Date;
   readonly containerType: FutureViewContainerType;
   readonly futureViewOffset: number;
   readonly changeOffset: (instruction: ChangeOffsetInstruction) => () => void;
@@ -58,17 +60,18 @@ type NavControlProps = {
 /**
  * Returns a suitable title for the backlog header title.
  *
+ * @param {Date} today today from React hooks.
  * @param {number} monthOffset offset of displaying months.
  * @return {string} a suitable title for the backlog header title.
  */
-function getMonthlyViewHeaderTitle(monthOffset: number): string {
-  const d = new Date();
+function getMonthlyViewHeaderTitle(today: Date, monthOffset: number): string {
+  const d = new Date(today);
   d.setMonth(d.getMonth() + monthOffset, 1);
   return date2YearMonth(d);
 }
 
-function getBiWeeklyViewHeaderTitle(biweeklyOffset: number): string {
-  const s = new Date();
+function getBiWeeklyViewHeaderTitle(today: Date, biweeklyOffset: number): string {
+  const s = new Date(today);
   s.setDate(s.getDate() + biweeklyOffset * 14 - s.getDay()); // minus day offset
   const e = new Date(s);
   e.setDate(e.getDate() + 13);
@@ -81,7 +84,7 @@ function getBiWeeklyViewHeaderTitle(biweeklyOffset: number): string {
  * The component to control nav.
  */
 function NavControl(props: NavControlProps): ReactElement {
-  const { containerType, futureViewOffset, changeOffset, isSmallScreen } = props;
+  const { today, containerType, futureViewOffset, changeOffset, isSmallScreen } = props;
   const prevHandler = changeOffset(-1);
   const nextHandler = changeOffset(+1);
   if (containerType === 'N_DAYS') {
@@ -130,7 +133,7 @@ function NavControl(props: NavControlProps): ReactElement {
     return (
       <>
         {futureViewOffset >= 0 && prev}
-        <Title text={getBiWeeklyViewHeaderTitle(futureViewOffset)} />
+        <Title text={getBiWeeklyViewHeaderTitle(today, futureViewOffset)} />
         {next}
       </>
     );
@@ -140,7 +143,7 @@ function NavControl(props: NavControlProps): ReactElement {
       <>
         {!isSmallScreen && <Padding />}
         {futureViewOffset >= 0 && prev}
-        <Title text={getMonthlyViewHeaderTitle(futureViewOffset)} />
+        <Title text={getMonthlyViewHeaderTitle(today, futureViewOffset)} />
         {next}
       </>
     );
@@ -240,6 +243,7 @@ function DisplayOptionControl({ nDays, displayOption, offset, onChange }: Props)
  */
 export default function FutureViewControl(props: Props): ReactElement {
   const { nDays, displayOption, offset, onChange } = props;
+  const todayTime = useTodayLastSecondTime();
   const isSmallScreen = useMappedWindowSize(({ width }) => width <= 600);
   const { containerType } = displayOption;
   const changeOffset = (instruction: ChangeOffsetInstruction): (() => void) => (): void => {
@@ -266,6 +270,7 @@ export default function FutureViewControl(props: Props): ReactElement {
         <div className={styles.FutureViewControl}>
           <Padding />
           <NavControl
+            today={todayTime}
             containerType={containerType}
             futureViewOffset={offset}
             changeOffset={changeOffset}
@@ -280,6 +285,7 @@ export default function FutureViewControl(props: Props): ReactElement {
     <div className={styles.FutureViewControl}>
       <Title text="Future" />
       <NavControl
+        today={todayTime}
         containerType={containerType}
         futureViewOffset={offset}
         changeOffset={changeOffset}

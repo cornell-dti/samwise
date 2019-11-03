@@ -41,6 +41,8 @@ export default function NewSubTaskEditor(
   return (
     <div className={styles.TaskEditorFlexibleContainer}>
       <input
+        type="text"
+        data-lpignore="true"
         ref={editorRef}
         className={styles.TaskEditorFlexibleInput}
         placeholder="Add a Subtask"

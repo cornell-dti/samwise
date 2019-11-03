@@ -21,3 +21,7 @@
   cursor:pointer;
   border-radius:5px;
 }
+
+.RepeatIcon > g{
+  stroke: white;
+}

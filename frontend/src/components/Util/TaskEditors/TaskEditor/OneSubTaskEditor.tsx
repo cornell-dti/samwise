@@ -84,7 +84,10 @@ function OneSubTaskEditor(
         onChange={onCompleteChange}
       />
       <input
-        className={styles.TaskEditorFlexibleInput}
+        type="text"
+        data-lpignore="true"
+        className={subTask.complete || mainTaskComplete
+          ? styles.TaskEditorStrikethrough : styles.TaskEditorFlexibleInput}
         placeholder="Your Subtask"
         value={subTask.name}
         ref={editorRef}

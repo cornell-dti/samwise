@@ -1,4 +1,5 @@
 import React, { ReactElement } from 'react';
+import { useTodayLastSecondTime } from 'hooks/time-hook';
 import FutureViewControl from './FutureViewControl';
 import FutureViewNDays from './FutureViewNDays';
 import FutureViewSevenColumns from './FutureViewSevenColumns';
@@ -32,16 +33,17 @@ export const futureViewConfigProvider: FutureViewConfigProvider = {
 /**
  * Compute the start date and end date.
  *
+ * @param {Date} today today object from React hooks.
  * @param {number} nDays number of days in n-days view.
  * @param {FutureViewContainerType} containerType the container type.
  * @param {number} offset offset of displaying days.
  * @return {{startDate: Date, endDate: Date}} the start date and end date.
  */
 function computeStartAndEndDay(
-  nDays: number, containerType: FutureViewContainerType, offset: number,
+  today: Date, nDays: number, containerType: FutureViewContainerType, offset: number,
 ): { readonly startDate: Date; readonly endDate: Date } {
   // Compute start date (the first date to display)
-  const startDate = new Date();
+  const startDate = new Date(today);
   let hasAdditionalDays = false;
   switch (containerType) {
     case 'N_DAYS':
@@ -82,13 +84,16 @@ function computeStartAndEndDay(
 /**
  * Returns an array of future view days given the current props and the display option.
  *
+ * @param {Date} today today object from React hooks.
  * @param {number} nDays number of days in n-days view.
  * @param {FutureViewConfig} config the display config.
  * @return {Date[]} an array of backlog days information.
  */
-function buildDaysInFutureView(nDays: number, config: FutureViewConfig): readonly SimpleDate[] {
+function buildDaysInFutureView(
+  today: Date, nDays: number, config: FutureViewConfig,
+): readonly SimpleDate[] {
   const { displayOption: { containerType }, offset } = config;
-  const { startDate, endDate } = computeStartAndEndDay(nDays, containerType, offset);
+  const { startDate, endDate } = computeStartAndEndDay(today, nDays, containerType, offset);
   // Adding the days to array
   const days: SimpleDate[] = [];
   for (let d = startDate; d < endDate; d.setDate(d.getDate() + 1)) {
@@ -112,6 +117,8 @@ type Props = {
 export default function FutureView(
   { config, onConfigChange }: Props,
 ): ReactElement {
+  const today = useTodayLastSecondTime();
+
   // the number of days in n-days mode.
   const nDays = useMappedWindowSize(({ width }) => {
     if (width > 1280) { return 5; }
@@ -123,7 +130,7 @@ export default function FutureView(
     onConfigChange({ ...config, ...change });
   };
 
-  const days = buildDaysInFutureView(nDays, config);
+  const days = buildDaysInFutureView(today, nDays, config);
   const { displayOption, offset } = config;
   const { containerType, doesShowCompletedTasks } = displayOption;
   const daysContainer = containerType === 'N_DAYS'

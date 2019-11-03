@@ -16,16 +16,15 @@ exports[`ClassAdder matches snapshot. 1`] = `
       className="TagColorConfigItemAdder SearchClasses"
       title="Search for a class"
     >
-      <div
-        className="src__StyledContainer-hakmvc-0 emqRtB"
-      >
+      <div>
         <input
-          className="styled-component__StyledInput-sc-1dsackt-0 dEHJYu"
+          className="SearchInput"
           onChange={[Function]}
           placeholder="Search for classes (e.g. CS 2110, Introduction to Creative Writing)"
           type="text"
           value=""
         />
+        <div />
       </div>
     </div>
     <small>
@@ -78,16 +77,15 @@ exports[`SettingsPage matches snapshot. 1`] = `
         className="TagColorConfigItemAdder SearchClasses"
         title="Search for a class"
       >
-        <div
-          className="src__StyledContainer-hakmvc-0 emqRtB"
-        >
+        <div>
           <input
-            className="styled-component__StyledInput-sc-1dsackt-0 dEHJYu"
+            className="SearchInput"
             onChange={[Function]}
             placeholder="Search for classes (e.g. CS 2110, Introduction to Creative Writing)"
             type="text"
             value=""
           />
+          <div />
         </div>
       </div>
       <small>
@@ -146,15 +144,15 @@ exports[`SettingsPage matches snapshot. 1`] = `
               }
             />
             <span
-              title="dropdown"
+              title="More"
             >
               <svg
-                alt="dropdown"
+                alt="More"
                 className="Arrow"
                 height="1em"
                 onKeyUp={[Function]}
                 tabIndex={0}
-                title="dropdown"
+                title="More"
                 width="1em"
               >
                 v.svg
@@ -168,14 +166,14 @@ exports[`SettingsPage matches snapshot. 1`] = `
             type="button"
           >
             <span
-              title="delete"
+              title="Delete"
             >
               <svg
-                alt="delete"
+                alt="Delete"
                 height="1em"
                 onKeyUp={[Function]}
                 tabIndex={0}
-                title="delete"
+                title="Delete"
                 width="1em"
               >
                 XLight.svg
@@ -256,15 +254,15 @@ exports[`SettingsPage matches snapshot. 1`] = `
               }
             />
             <span
-              title="dropdown"
+              title="More"
             >
               <svg
-                alt="dropdown"
+                alt="More"
                 className="Arrow"
                 height="1em"
                 onKeyUp={[Function]}
                 tabIndex={0}
-                title="dropdown"
+                title="More"
                 width="1em"
               >
                 v.svg
@@ -278,14 +276,14 @@ exports[`SettingsPage matches snapshot. 1`] = `
             type="button"
           >
             <span
-              title="delete"
+              title="Delete"
             >
               <svg
-                alt="delete"
+                alt="Delete"
                 height="1em"
                 onKeyUp={[Function]}
                 tabIndex={0}
-                title="delete"
+                title="Delete"
                 width="1em"
               >
                 XLight.svg
@@ -320,15 +318,15 @@ exports[`SettingsPage matches snapshot. 1`] = `
               }
             />
             <span
-              title="dropdown"
+              title="More"
             >
               <svg
-                alt="dropdown"
+                alt="More"
                 className="Arrow"
                 height="1em"
                 onKeyUp={[Function]}
                 tabIndex={0}
-                title="dropdown"
+                title="More"
                 width="1em"
               >
                 v.svg
