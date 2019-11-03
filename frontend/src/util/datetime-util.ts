@@ -89,3 +89,15 @@ export function getDateWithDateString(date: Date | null, dateString: string): Da
   }
   return newDate;
 }
+
+/**
+ * returns the same date x weeks - 1 day later
+ * example: monday oct 1, 2 weeks later returnes sunday the 14th
+ *
+ * @param date
+ * @param x
+ */
+export function getDateAfterXWeeks(date: Date, x: number): Date {
+  const oneDay = 1000 * 60 * 60 * 24;
+  return new Date(date.getTime() + oneDay * 7 * x - oneDay);
+}

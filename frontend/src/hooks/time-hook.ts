@@ -93,3 +93,15 @@ export const useTodayLastSecondTime = (): Date => {
   date.setHours(23, 59, 59);
   return date;
 };
+
+/**
+ * A react state hooks that returns the current date every one day.
+ * It will cause a re-render when a new value is returned.
+ *
+ * @returns today at 00:00:00 (in user's browser's reported timezone) as a date object.
+ */
+export const useTodayFirstSecondTime = (): Date => {
+  const date = new Date(useDate());
+  date.setHours(0, 0, 0);
+  return date;
+};
