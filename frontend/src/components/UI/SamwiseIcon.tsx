@@ -22,6 +22,7 @@ import { ReactComponent as PinDarkFilled } from '../../assets/svgs/pin-2-dark-fi
 import { ReactComponent as PinDarkOutline } from '../../assets/svgs/pin-2-dark-outline.svg';
 import { ReactComponent as PinLightFilled } from '../../assets/svgs/pin-2-light-filled.svg';
 import { ReactComponent as PinLightOutline } from '../../assets/svgs/pin-2-light-outline.svg';
+import { ReactComponent as Repeat } from '../../assets/svgs/repeat.svg';
 import { ReactComponent as Settings } from '../../assets/svgs/settings.svg';
 import { ReactComponent as Show } from '../../assets/svgs/show.svg';
 import { ReactComponent as Tag } from '../../assets/svgs/tag.svg';
@@ -87,6 +88,10 @@ const SamwiseIcon = ({ iconName, title, ...otherProps }: Props): ReactElement =>
     case 'pin-light-outline':
       SvgComponent = PinLightOutline;
       altText = 'Pin to Focus';
+      break;
+    case 'repeat':
+      SvgComponent = Repeat;
+      altText = 'Repeating';
       break;
     case 'settings':
       SvgComponent = Settings;
