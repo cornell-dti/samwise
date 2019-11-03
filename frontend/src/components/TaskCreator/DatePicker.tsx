@@ -1,8 +1,9 @@
 import React, { ReactElement, SyntheticEvent, ChangeEvent } from 'react';
 import Calendar from 'react-calendar';
+import { useTodayLastSecondTime, useTodayFirstSecondTime } from 'hooks/time-hook';
 import styles from './Picker.module.css';
 import dateStyles from './DatePicker.module.css';
-import { date2String } from '../../util/datetime-util';
+import { date2String, getDateAfterXWeeks } from '../../util/datetime-util';
 import { NONE_TAG } from '../../util/tag-util';
 import { RepeatMetaData } from '../../store/store-types';
 import SamwiseIcon from '../UI/SamwiseIcon';
@@ -37,6 +38,9 @@ export default function DatePicker(props: Props): ReactElement {
   const {
     date, opened, datePicked, onDateChange, onPickerOpened, onClearPicker,
   } = props;
+  const todayFirstSecond = useTodayFirstSecondTime();
+  const todayLastSecond = useTodayLastSecondTime();
+
   // Controllers
   const clickPicker = (): void => { onPickerOpened(); };
   const reset = (e: SyntheticEvent<HTMLElement>): void => {
@@ -356,13 +360,11 @@ export default function DatePicker(props: Props): ReactElement {
       endDate = internalDate.repeatEnd.date;
     } else {
       // TODO once database support exists, replace this with number of occurrances
-      endDate = new Date(
-        new Date().getTime() + 1000 * 60 * 60 * 24 * 7 * internalDate.repeatEnd.weeks,
-      );
+      endDate = getDateAfterXWeeks(todayLastSecond, internalDate.repeatEnd.weeks);
     }
 
     const repData: RepeatMetaData = {
-      startDate: new Date(),
+      startDate: todayFirstSecond,
       endDate,
       pattern: { type: 'WEEKLY', bitSet },
     };
