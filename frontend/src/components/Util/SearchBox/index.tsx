@@ -36,12 +36,12 @@ export default <T extends FuseItem>(
   //     // TODO, possible solution can be mapping Down key to tab since tab functionality works
   //   }
   // };
- 
+
   const onResultSelected = (item: T): void => {
     onSelect(item);
     setState({ searchInput: '', searchResults: [] });
   };
-  
+
   return (
     <div>
       <input
