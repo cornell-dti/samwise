@@ -1,4 +1,4 @@
-import React, { ReactElement, ChangeEvent, useState, KeyboardEvent } from 'react';
+import React, { ReactElement, ChangeEvent, useState } from 'react';
 import Fuse from 'fuse.js';
 import { FuseItem } from './types';
 import DropdownItem from './DropdownItem';
