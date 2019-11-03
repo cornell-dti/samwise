@@ -1,8 +1,12 @@
-import React, { ReactElement, KeyboardEvent, ChangeEvent, useState } from 'react';
+import React, { ReactElement, ChangeEvent, useState } from 'react';
 import Fuse from 'fuse.js';
 import { FuseItem } from './types';
 import DropdownItem from './DropdownItem';
+<<<<<<< HEAD
 // import styles from './index.module.css';
+=======
+import styles from './DropdownItem.module.css';
+>>>>>>> parent of f38c4cb... Add arrow key handler for possible solution to arrow key support
 
 type Props<T extends FuseItem> = {
   readonly fuse: Fuse<T>;
@@ -30,18 +34,21 @@ export default <T extends FuseItem>(
       setState({ searchInput: input, searchResults: [] });
     }
   };
+<<<<<<< HEAD
 
   const arrowKeyHandler = (event: KeyboardEvent<HTMLInputElement>): void => {
     if (event.key === 'Down') {
       // TODO, possible solution can be mapping Down key to tab since tab functionality works
     }
   };
+=======
+>>>>>>> parent of f38c4cb... Add arrow key handler for possible solution to arrow key support
  
   const onResultSelected = (item: T): void => {
     onSelect(item);
     setState({ searchInput: '', searchResults: [] });
   };
-
+  
   return (
     <div>
       <input
@@ -50,7 +57,6 @@ export default <T extends FuseItem>(
         className={inputClassname}
         value={searchInput}
         onChange={onSearchChange}
-        onKeyDown={arrowKeyHandler}
       />
       <div>
         {searchResults.map((item) => (
