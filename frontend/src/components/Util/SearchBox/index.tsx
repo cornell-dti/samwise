@@ -1,8 +1,7 @@
-import React, { ReactElement, ChangeEvent, useState } from 'react';
+import React, { ReactElement, ChangeEvent, useState, KeyboardEvent } from 'react';
 import Fuse from 'fuse.js';
 import { FuseItem } from './types';
 import DropdownItem from './DropdownItem';
-// import styles from './index.module.css';
 
 type Props<T extends FuseItem> = {
   readonly fuse: Fuse<T>;
@@ -30,12 +29,6 @@ export default <T extends FuseItem>(
       setState({ searchInput: input, searchResults: [] });
     }
   };
-
-  // const arrowKeyHandler = (event: KeyboardEvent<HTMLInputElement>): void => {
-  //   if (event.key === 'Down') {
-  //     // TODO, possible solution can be mapping Down key to tab since tab functionality works
-  //   }
-  // };
 
   const onResultSelected = (item: T): void => {
     onSelect(item);
