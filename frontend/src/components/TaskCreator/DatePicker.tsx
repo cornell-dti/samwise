@@ -90,7 +90,7 @@ export default function DatePicker(props: Props): ReactElement {
           <span className={styles.DateDisplay}>
             {!(date instanceof Date)
             && <SamwiseIcon iconName="repeat" className={dateStyles.RepeatIcon} /> }
-            {date instanceof Date ? date2String(date) : `${genNextValidDay(date.pattern.bitSet)} `}
+            {date instanceof Date ? date2String(date) : ` ${genNextValidDay(date.pattern.bitSet)}`}
           </span>
           <button type="button" className={styles.ResetButton} onClick={reset}>&times;</button>
         </>
