@@ -9,7 +9,7 @@ type Props<T extends FuseItem> = {
 }
 
 export default <T extends FuseItem>({ item, className, onSelect }: Props<T>): ReactElement => (
-  <button type="button" className={className} title={'Add class'} onClick={() => onSelect(item)} tabIndex={0}>
+  <button type="button" className={className} title='Add class' onClick={() => onSelect(item)} tabIndex={0}>
     {item.value}
   </button>
 );

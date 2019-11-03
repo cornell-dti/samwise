@@ -2,7 +2,7 @@ import React, { ReactElement, KeyboardEvent, ChangeEvent, useState } from 'react
 import Fuse from 'fuse.js';
 import { FuseItem } from './types';
 import DropdownItem from './DropdownItem';
-import styles from './index.module.css';
+// import styles from './index.module.css';
 
 type Props<T extends FuseItem> = {
   readonly fuse: Fuse<T>;
@@ -32,8 +32,8 @@ export default <T extends FuseItem>(
   };
 
   const arrowKeyHandler = (event: KeyboardEvent<HTMLInputElement>): void => {
-    if (event.key == 'Down') {
-      //TODO, possible solution can be mapping Down key to tab since tab functionality works
+    if (event.key === 'Down') {
+      // TODO, possible solution can be mapping Down key to tab since tab functionality works
     }
   };
  
