@@ -17,7 +17,7 @@ export default function NewSubTaskEditor(
   const [subTaskValue, setSubTaskValue] = useState<string>('');
   const onInputChange = (event: SyntheticEvent<HTMLInputElement>): void => {
     event.stopPropagation();
-    const newSubTaskValue: string = event.currentTarget.value.trim();
+    const newSubTaskValue: string = event.currentTarget.value;
     if (type !== 'ONE_TIME' && newSubTaskValue.length > 0) {
       onChange(newSubTaskValue);
     } else {
