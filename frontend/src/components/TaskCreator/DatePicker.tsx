@@ -32,8 +32,6 @@ type InternalDate =
   };
 };
 
-const REPEATING_TASK_ENABLED: boolean = localStorage.getItem('REPEATING_TASK_ENABLED') != null;
-
 export default function DatePicker(props: Props): ReactElement {
   const {
     date, opened, datePicked, onDateChange, onPickerOpened, onClearPicker,
@@ -386,18 +384,16 @@ export default function DatePicker(props: Props): ReactElement {
       {displayedNode(!datePicked)}
       {opened && (
         <div className={styles.NewTaskDatePick}>
-          {REPEATING_TASK_ENABLED && (
-            <p className={dateStyles.SelectTypeWrap}>
-              <select
-                className={dateStyles.SelectType}
-                value={(internalDate.type !== 'normal').toString()}
-                onChange={changeRepeat}
-              >
-                <option value="false">One-Time</option>
-                <option value="true">Repeating</option>
-              </select>
-            </p>
-          )}
+          <p className={dateStyles.SelectTypeWrap}>
+            <select
+              className={dateStyles.SelectType}
+              value={(internalDate.type !== 'normal').toString()}
+              onChange={changeRepeat}
+            >
+              <option value="false">One-Time</option>
+              <option value="true">Repeating</option>
+            </select>
+          </p>
           {
             internalDate.type === 'normal'
             && <Calendar onChange={onChange} value={internalDate.date} minDate={new Date()} calendarType="US" />
