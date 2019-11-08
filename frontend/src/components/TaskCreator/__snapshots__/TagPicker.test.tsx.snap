@@ -1,0 +1,479 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`TagPicker(THE_GLORIOUS_NONE_TAG, false) matches snapshot 1`] = `
+<div
+  className="Main"
+>
+  <span
+    className="Label"
+    onClick={[Function]}
+    role="presentation"
+    style={Object {}}
+  >
+    <span
+      title="Tag"
+    >
+      <svg
+        alt="Tag"
+        className="CenterIcon"
+        height="1em"
+        onKeyUp={[Function]}
+        tabIndex={0}
+        title="Tag"
+        width="1em"
+      >
+        tag.svg
+      </svg>
+    </span>
+  </span>
+</div>
+`;
+
+exports[`TagPicker(THE_GLORIOUS_NONE_TAG, true) matches snapshot 1`] = `
+<div
+  className="Main"
+>
+  <span
+    className="Label"
+    onClick={[Function]}
+    role="presentation"
+    style={Object {}}
+  >
+    <span
+      title="Tag"
+    >
+      <svg
+        alt="Tag"
+        className="CenterIcon"
+        height="1em"
+        onKeyUp={[Function]}
+        tabIndex={0}
+        title="Tag"
+        width="1em"
+      >
+        tag.svg
+      </svg>
+    </span>
+  </span>
+  <div
+    className="NewTaskClassPick"
+  >
+    <ul
+      className="NewTaskClass"
+    >
+      <li
+        style={
+          Object {
+            "--custom-color": "green",
+          }
+        }
+      >
+        <input
+          onClick={[Function]}
+          type="checkbox"
+        />
+        Baz
+      </li>
+      <li
+        style={
+          Object {
+            "--custom-color": "blue",
+          }
+        }
+      >
+        <input
+          onClick={[Function]}
+          type="checkbox"
+        />
+        Bar
+      </li>
+      <li
+        style={
+          Object {
+            "--custom-color": "red",
+          }
+        }
+      >
+        <input
+          onClick={[Function]}
+          type="checkbox"
+        />
+        Foo
+      </li>
+      <li
+        style={
+          Object {
+            "--custom-color": "#969696",
+          }
+        }
+      >
+        <input
+          onClick={[Function]}
+          type="checkbox"
+        />
+        None
+      </li>
+    </ul>
+  </div>
+</div>
+`;
+
+exports[`TagPicker(bar, false) matches snapshot 1`] = `
+<div
+  className="Main"
+>
+  <span
+    className="Label"
+    onClick={[Function]}
+    role="presentation"
+    style={
+      Object {
+        "background": "blue",
+      }
+    }
+  >
+    <span
+      className="TagDisplay"
+    >
+      Bar
+    </span>
+    <button
+      className="ResetButton"
+      onClick={[Function]}
+      type="button"
+    >
+      ×
+    </button>
+  </span>
+</div>
+`;
+
+exports[`TagPicker(bar, true) matches snapshot 1`] = `
+<div
+  className="Main"
+>
+  <span
+    className="Label"
+    onClick={[Function]}
+    role="presentation"
+    style={
+      Object {
+        "background": "blue",
+      }
+    }
+  >
+    <span
+      className="TagDisplay"
+    >
+      Bar
+    </span>
+    <button
+      className="ResetButton"
+      onClick={[Function]}
+      type="button"
+    >
+      ×
+    </button>
+  </span>
+  <div
+    className="NewTaskClassPick"
+  >
+    <ul
+      className="NewTaskClass"
+    >
+      <li
+        style={
+          Object {
+            "--custom-color": "green",
+          }
+        }
+      >
+        <input
+          onClick={[Function]}
+          type="checkbox"
+        />
+        Baz
+      </li>
+      <li
+        style={
+          Object {
+            "--custom-color": "blue",
+          }
+        }
+      >
+        <input
+          onClick={[Function]}
+          type="checkbox"
+        />
+        Bar
+      </li>
+      <li
+        style={
+          Object {
+            "--custom-color": "red",
+          }
+        }
+      >
+        <input
+          onClick={[Function]}
+          type="checkbox"
+        />
+        Foo
+      </li>
+      <li
+        style={
+          Object {
+            "--custom-color": "#969696",
+          }
+        }
+      >
+        <input
+          onClick={[Function]}
+          type="checkbox"
+        />
+        None
+      </li>
+    </ul>
+  </div>
+</div>
+`;
+
+exports[`TagPicker(baz, false) matches snapshot 1`] = `
+<div
+  className="Main"
+>
+  <span
+    className="Label"
+    onClick={[Function]}
+    role="presentation"
+    style={
+      Object {
+        "background": "green",
+      }
+    }
+  >
+    <span
+      className="TagDisplay"
+    >
+      Baz
+    </span>
+    <button
+      className="ResetButton"
+      onClick={[Function]}
+      type="button"
+    >
+      ×
+    </button>
+  </span>
+</div>
+`;
+
+exports[`TagPicker(baz, true) matches snapshot 1`] = `
+<div
+  className="Main"
+>
+  <span
+    className="Label"
+    onClick={[Function]}
+    role="presentation"
+    style={
+      Object {
+        "background": "green",
+      }
+    }
+  >
+    <span
+      className="TagDisplay"
+    >
+      Baz
+    </span>
+    <button
+      className="ResetButton"
+      onClick={[Function]}
+      type="button"
+    >
+      ×
+    </button>
+  </span>
+  <div
+    className="NewTaskClassPick"
+  >
+    <ul
+      className="NewTaskClass"
+    >
+      <li
+        style={
+          Object {
+            "--custom-color": "green",
+          }
+        }
+      >
+        <input
+          onClick={[Function]}
+          type="checkbox"
+        />
+        Baz
+      </li>
+      <li
+        style={
+          Object {
+            "--custom-color": "blue",
+          }
+        }
+      >
+        <input
+          onClick={[Function]}
+          type="checkbox"
+        />
+        Bar
+      </li>
+      <li
+        style={
+          Object {
+            "--custom-color": "red",
+          }
+        }
+      >
+        <input
+          onClick={[Function]}
+          type="checkbox"
+        />
+        Foo
+      </li>
+      <li
+        style={
+          Object {
+            "--custom-color": "#969696",
+          }
+        }
+      >
+        <input
+          onClick={[Function]}
+          type="checkbox"
+        />
+        None
+      </li>
+    </ul>
+  </div>
+</div>
+`;
+
+exports[`TagPicker(foo, false) matches snapshot 1`] = `
+<div
+  className="Main"
+>
+  <span
+    className="Label"
+    onClick={[Function]}
+    role="presentation"
+    style={
+      Object {
+        "background": "red",
+      }
+    }
+  >
+    <span
+      className="TagDisplay"
+    >
+      Foo
+    </span>
+    <button
+      className="ResetButton"
+      onClick={[Function]}
+      type="button"
+    >
+      ×
+    </button>
+  </span>
+</div>
+`;
+
+exports[`TagPicker(foo, true) matches snapshot 1`] = `
+<div
+  className="Main"
+>
+  <span
+    className="Label"
+    onClick={[Function]}
+    role="presentation"
+    style={
+      Object {
+        "background": "red",
+      }
+    }
+  >
+    <span
+      className="TagDisplay"
+    >
+      Foo
+    </span>
+    <button
+      className="ResetButton"
+      onClick={[Function]}
+      type="button"
+    >
+      ×
+    </button>
+  </span>
+  <div
+    className="NewTaskClassPick"
+  >
+    <ul
+      className="NewTaskClass"
+    >
+      <li
+        style={
+          Object {
+            "--custom-color": "green",
+          }
+        }
+      >
+        <input
+          onClick={[Function]}
+          type="checkbox"
+        />
+        Baz
+      </li>
+      <li
+        style={
+          Object {
+            "--custom-color": "blue",
+          }
+        }
+      >
+        <input
+          onClick={[Function]}
+          type="checkbox"
+        />
+        Bar
+      </li>
+      <li
+        style={
+          Object {
+            "--custom-color": "red",
+          }
+        }
+      >
+        <input
+          onClick={[Function]}
+          type="checkbox"
+        />
+        Foo
+      </li>
+      <li
+        style={
+          Object {
+            "--custom-color": "#969696",
+          }
+        }
+      >
+        <input
+          onClick={[Function]}
+          type="checkbox"
+        />
+        None
+      </li>
+    </ul>
+  </div>
+</div>
+`;

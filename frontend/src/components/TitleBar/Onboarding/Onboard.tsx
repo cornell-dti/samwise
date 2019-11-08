@@ -138,7 +138,7 @@ type Props = { readonly classTags: Tag[]; readonly completedOnboarding: boolean 
 /**
  * The onboarding page. Displayed only if the user chooses to do so or during first landing.
  */
-function Onboard({ classTags, completedOnboarding }: Props): ReactElement | null {
+export function Onboard({ classTags, completedOnboarding }: Props): ReactElement | null {
   const [progress, setProgress] = useState<number>(0);
 
   if (completedOnboarding || progress >= 7) {

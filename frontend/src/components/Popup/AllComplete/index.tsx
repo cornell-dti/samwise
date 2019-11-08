@@ -11,7 +11,7 @@ type Props = TasksProgressProps;
 /**
  * The all tasks complete page. Displays after a user completes all focused tasks.
  */
-function AllComplete({ completedTasksCount, allTasksCount }: Props): ReactElement | null {
+export function AllComplete({ completedTasksCount, allTasksCount }: Props): ReactElement | null {
   // Simple FSM. 0 = initial, 1 = saw unfinished tasks, 2 = finished all, 3 = hidden
   const [progress, setProgress] = React.useState<0 | 1 | 2 | 3>(0);
 
