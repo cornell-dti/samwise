@@ -64,31 +64,30 @@ export default function RepeatFrequencyHeader(
 
   const getRepeatedDays = (bit: number): string => {
     const frequency = bitsetToBinaryCount(bit);
-    const count = frequency.count;
+    const { binary, count } = frequency;
     if (count > 2) {
-      return ' ' + count + ' days every ' + patternTypeToString(date.pattern.type);
-    };
+      return `Repeats ${count} days every ${patternTypeToString(date.pattern.type)}`;
+    }
 
     const repeatedDays = Array<string>();
-    let binary = frequency.binary;
+    let binaryFrequency = binary;
     let index = DAYS_IN_WEEK - 1;
-    while (binary > 0) {
-      if (binary % 10 === 1) {
-        repeatedDays.push(arrOfWeeks[index])
+    while (binaryFrequency > 0) {
+      if (binaryFrequency % 10 === 1) {
+        repeatedDays.push(arrOfWeeks[index]);
       }
-      binary = Math.round(binary / 10);
+      binaryFrequency = Math.round(binaryFrequency / 10);
       index -= 1;
     }
-    return ' every ' + repeatedDays.reverse().join(', ');
+    return `Repeats every ${repeatedDays.reverse().join(", ")}`;
   };
 
   return (
     <div style={frequencyHeaderStyle}>
       <SamwiseIcon
-        iconName='repeat-frequency'
+        iconName="repeat-frequency"
         style={repeatIconStyle}
       />
-      Repeats
       {getRepeatedDays(date.pattern.bitSet)}
     </div>
   );
