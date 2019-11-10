@@ -1,4 +1,4 @@
-import { firestore } from 'firebase/app';
+import { functions, firestore } from 'firebase/app';
 import { Map, Set } from 'immutable';
 import {
   reportAddTagEvent,
@@ -524,3 +524,19 @@ export const importCourseExams = (): void => {
       batch.commit().then(() => alert('Exams Added Successfully!'));
     });
 };
+
+export const scheduledFunctionCrontab = (): void => functions.pubsub.schedule('0 0 * * *')
+  .timeZone('America/New_York')
+  .onRun(() => {
+    // stuff
+  });
+
+export const canvasGet = <T>(path: string, token: string): Promise<T> => new Promise((resolve) => {
+  fetch(`https://canvas.instructure.com/api/v1/${path}${token}?access_token=`)
+    .then((response) => response.json())
+    .then((body) => {
+      resolve(body);
+    });
+});
+
+console.log(canvasGet('courses', '9713~92msFa5QOWvRbvXYq5M8IVoXOcZVKfhGoSxL0Wfww5BmD7QAlMcnP9DjcyZvp8cG'));
