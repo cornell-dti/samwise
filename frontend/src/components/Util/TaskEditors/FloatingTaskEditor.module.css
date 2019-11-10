@@ -6,6 +6,7 @@
   transition: width 0.1s linear;
   max-height: 200px;
   overflow-y: auto;
+  padding-bottom: 20px;
 }
 
 .BackgroundBlocker {
