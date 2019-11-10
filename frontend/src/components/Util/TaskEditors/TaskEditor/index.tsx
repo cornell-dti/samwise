@@ -13,6 +13,7 @@ import { confirmRepeatedTaskEditMaster, promptRepeatedTaskEditChoice } from 'uti
 import { editTaskWithDiff, forkTaskWithDiff } from 'firebase/actions';
 import styles from './index.module.css';
 import { getTodayAtZeroAM, getDateWithDateString } from '../../../../util/datetime-util';
+import RepeatFrequencyHeader from './RepeatFrequencyHeader';
 import EditorHeader from './EditorHeader';
 import MainTaskEditor from './MainTaskEditor';
 import NewSubTaskEditor from './NewSubTaskEditor';
@@ -200,6 +201,11 @@ function TaskEditor(
     >
       {isOverdue && <OverdueAlert target="task-card" />}
       <div>
+        <RepeatFrequencyHeader
+          date={date}
+          tag={tag}
+          getTag={getTag}
+        />
         <EditorHeader
           tag={tag}
           date={date}

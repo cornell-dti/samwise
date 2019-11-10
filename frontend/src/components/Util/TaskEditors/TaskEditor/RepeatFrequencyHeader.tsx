@@ -1,0 +1,90 @@
+import React, { ReactElement } from 'react';
+import SamwiseIcon from '../../../UI/SamwiseIcon';
+import { Tag, RepeatMetaData } from '../../../../store/store-types';
+import { DAYS_IN_WEEK, isBitSet } from '../../../../util/bitwise-util';
+
+type Props = {
+  readonly date: Date | RepeatMetaData;
+  readonly tag: string;
+  readonly getTag: (id: string) => Tag;
+};
+
+export default function RepeatFrequencyHeader(
+  { date, tag, getTag }: Props
+): ReactElement | null {
+  if (date instanceof Date) {
+    return null;
+  }
+
+  const frequencyHeaderStyle = {
+    color: getTag(tag).color,
+    background: 'rgba(255, 255, 255, 0.6)',
+    padding: '3px',
+    height: '100%',
+    fontSize: '10px',
+  }
+
+  const repeatIconStyle = {
+    fill: '#FFFFFF',
+    marginRight: '4px',
+    marginBottom: '-5px',
+    height: '16px',
+    width: '16px',
+  }
+
+  function patternTypeToString(patternType: string): string {
+    switch (patternType) {
+      case 'WEEKLY': return 'week';
+      case 'BIWEEKLY': return 'two weeks';
+      case 'MONTHLY': return 'month';
+      default:
+        throw new Error();
+    }
+  }
+
+  function bitsetToBinaryCount(bit: number) {
+    let binary = 0;
+    let count = 0;
+    for (let i = 0; i < DAYS_IN_WEEK; i += 1) {
+      if (isBitSet(bit, i, DAYS_IN_WEEK)) {
+        binary = binary + (1 * 10 ** (DAYS_IN_WEEK - 1 - i));
+        count = count + 1;
+      }
+    }
+    return { binary, count }
+  }
+
+  const arrOfWeeks = ['Sunday', 'Monday', 'Tuesday',
+    'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+
+  const getRepeatedDays = (bit: number): string => {
+    const frequency = bitsetToBinaryCount(bit);
+    if (frequency.count > 2) {
+      return frequency.count + ' days every ' +
+        patternTypeToString(date.pattern.type)
+    } else {
+      let repeatedDays = Array<string>();
+      let binary = frequency.binary;
+      let index = DAYS_IN_WEEK - 1;
+
+      while (binary > 0) {
+        if (binary % 10 === 1) {
+          repeatedDays.push(arrOfWeeks[index])
+        }
+        binary = Math.round(binary / 10);
+        index = index - 1;
+      }
+      return ' every ' + repeatedDays.reverse().join(', ')
+    }
+  }
+
+  return (
+    <div style={frequencyHeaderStyle}>
+      <SamwiseIcon
+        iconName={'repeat-frequency'}
+        style={repeatIconStyle}
+      />
+      Repeats {getRepeatedDays(date.pattern.bitSet)}
+    </div>
+  );
+}
