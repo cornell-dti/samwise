@@ -79,7 +79,7 @@ export default function RepeatFrequencyHeader(
       binaryFrequency = Math.round(binaryFrequency / 10);
       index -= 1;
     }
-    return `Repeats every ${repeatedDays.reverse().join(", ")}`;
+    return `Repeats every ${repeatedDays.reverse().join(', ')}`;
   };
 
   return (
