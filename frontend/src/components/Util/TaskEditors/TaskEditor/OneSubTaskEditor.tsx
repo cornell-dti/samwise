@@ -19,7 +19,6 @@ type Props = {
   readonly taskDate: Date | null;
   readonly dateAppeared: string;
   readonly needToBeFocused: boolean; // whether it needs to be focused.
-  readonly afterFocusedCallback: () => void; // need to be called once we focused the subtask
   readonly editThisSubTask: (subtaskId: string, partialSubTask: PartialSubTask) => void;
   readonly removeSubTask: (subtaskId: string) => void;
   readonly onPressEnter: (id: 'main-task' | number) => void;
@@ -38,7 +37,6 @@ function OneSubTaskEditor(
     taskDate,
     dateAppeared,
     needToBeFocused,
-    afterFocusedCallback,
     editThisSubTask,
     removeSubTask,
     onPressEnter,
@@ -88,7 +86,6 @@ function OneSubTaskEditor(
       const currentElement = editorRef.current;
       if (currentElement != null) {
         currentElement.focus();
-        afterFocusedCallback();
       }
     }
   });

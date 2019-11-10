@@ -181,7 +181,6 @@ function TaskEditor(
       setSubTaskToFocus('new-subtask');
     }
   };
-  const clearNeedToFocus = (): void => setSubTaskToFocus(null);
   if (taskAppearedDate === null) {
     throw new Error('Impossible');
   }
@@ -244,7 +243,6 @@ function TaskEditor(
             dateAppeared={taskAppearedDate}
             mainTaskComplete={complete}
             needToBeFocused={subTaskToFocus === subTask.order}
-            afterFocusedCallback={clearNeedToFocus}
             editThisSubTask={dispatchEditSubTask}
             removeSubTask={dispatchDeleteSubTask}
             onPressEnter={pressEnterHandler}
@@ -257,7 +255,6 @@ function TaskEditor(
           <NewSubTaskEditor
             onEnter={handleNewSubTaskFirstType}
             needToBeFocused={subTaskToFocus === 'new-subtask'}
-            afterFocusedCallback={clearNeedToFocus}
             type={type}
           />
         </div>

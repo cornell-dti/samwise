@@ -4,15 +4,10 @@ import styles from './index.module.css';
 type Props = {
   readonly onEnter: (change: string) => void;
   readonly needToBeFocused: boolean;
-  readonly afterFocusedCallback: () => void;
   readonly type: 'MASTER_TEMPLATE' | 'ONE_TIME';
 };
 
-export default function NewSubTaskEditor(
-  {
-    onEnter, needToBeFocused, afterFocusedCallback, type,
-  }: Props,
-): ReactElement {
+export default function NewSubTaskEditor({ onEnter, needToBeFocused, type }: Props): ReactElement {
   const [subTaskValue, setSubTaskValue] = useState<string>('');
   const onInputChange = (event: SyntheticEvent<HTMLInputElement>): void => {
     event.stopPropagation();
@@ -20,7 +15,6 @@ export default function NewSubTaskEditor(
     if (type !== 'ONE_TIME' && newSubTaskValue.length > 0) {
       onEnter(newSubTaskValue);
     } else {
-      console.log(newSubTaskValue);
       setSubTaskValue(newSubTaskValue);
     }
   };
@@ -28,7 +22,6 @@ export default function NewSubTaskEditor(
     if (event.key === 'Enter' || event.key === 'Tab') {
       onEnter(subTaskValue);
       if (type === 'ONE_TIME') {
-        console.log(subTaskValue);
         setSubTaskValue('');
       }
     }
@@ -41,7 +34,6 @@ export default function NewSubTaskEditor(
       const currentElement = editorRef.current;
       if (currentElement != null) {
         currentElement.focus();
-        afterFocusedCallback();
       }
     }
   });
