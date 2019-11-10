@@ -3,9 +3,9 @@
 // These components' API are NOT guaranteed to be stable.
 // You should only use this component from the outside.
 
-import React, { ReactElement, useState } from 'react';
+import React, {ReactElement, useEffect, useState} from 'react';
 import { connect } from 'react-redux';
-import { MainTask, PartialSubTask, State, SubTask, Tag } from 'store/store-types';
+import { MainTask, State, SubTask, Tag } from 'store/store-types';
 import OverdueAlert from 'components/UI/OverdueAlert';
 import { NONE_TAG } from 'util/tag-util';
 import { ignore } from 'util/general-util';
@@ -93,10 +93,7 @@ function TaskEditor(
   const { name, tag, date, complete, inFocus } = mainTask;
   const { removeTask, onSave } = actions;
 
-  const [tempSubTask, setTempSubTask] = useState<SubTask | null>(null);
   const [subTaskToFocus, setSubTaskToFocus] = useState<TaskToFocus>(null);
-
-  const addSubTask = (subTask: SubTask): void => dispatchAddSubTask(subTask);
 
   const onMouseLeave = (): void => {
     if (onBlur) {
@@ -104,6 +101,9 @@ function TaskEditor(
     }
   };
   const onSaveClicked = (): void => {
+    if (diffIsEmpty(diff)) {
+      return;
+    }
     if (type === 'ONE_TIME') {
       editTaskWithDiff(id, 'EDITING_ONE_TIME_TASK', diff);
       onSave();
@@ -159,12 +159,6 @@ function TaskEditor(
     setSubTaskToFocus(order);
   };
 
-  const handleNewSubTaskEdit = (s: string, partialSubTask: PartialSubTask): void => {
-    if (tempSubTask != null) {
-      addSubTask({ ...tempSubTask, ...partialSubTask });
-    }
-  };
-
   /**
    * The event handler that handles an press enter event.
    * It will switch the focus as expected.
@@ -198,6 +192,16 @@ function TaskEditor(
     : { backgroundColor };
   const actualClassName = className == null
     ? styles.TaskEditor : `${styles.TaskEditor} ${className}`;
+
+  useEffect(() => {
+    const intervalID = setInterval(() => {
+      if (type === 'ONE_TIME') {
+        onSaveClicked();
+      }
+    }, 500);
+    return () => clearInterval(intervalID);
+  }, [type, onSaveClicked]);
+
   return (
     <form
       className={actualClassName}
@@ -246,29 +250,14 @@ function TaskEditor(
             onPressEnter={pressEnterHandler}
           />
         ))}
-        {tempSubTask !== null && (
-          <OneSubTaskEditor
-            mainTaskId={id}
-            taskDate={date instanceof Date ? date : null}
-            dateAppeared={taskAppearedDate}
-            subTask={tempSubTask}
-            mainTaskComplete={complete}
-            needToBeFocused={subTaskToFocus === tempSubTask.order}
-            afterFocusedCallback={clearNeedToFocus}
-            editThisSubTask={handleNewSubTaskEdit}
-            removeSubTask={() => setTempSubTask(null)}
-            onPressEnter={pressEnterHandler}
-          />
-        )}
         <div
           className={styles.SubtaskHide}
           style={newSubTaskDisabled === true ? { maxHeight: 0 } : undefined}
         >
           <NewSubTaskEditor
-            onChange={handleNewSubTaskFirstType}
+            onEnter={handleNewSubTaskFirstType}
             needToBeFocused={subTaskToFocus === 'new-subtask'}
             afterFocusedCallback={clearNeedToFocus}
-            onPressEnter={onSaveClicked}
             type={type}
           />
         </div>
