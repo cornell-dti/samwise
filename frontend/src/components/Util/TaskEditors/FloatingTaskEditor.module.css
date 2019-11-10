@@ -4,9 +4,9 @@
   z-index: 8;
   box-shadow: 0 5px 12px 0 rgba(0, 0, 0, 0.3);
   transition: width 0.1s linear;
-  max-height: 200px;
+  max-height: 400px;
   overflow-y: auto;
-  padding-bottom: 20px;
+  padding-bottom: 30px;
 }
 
 .BackgroundBlocker {
