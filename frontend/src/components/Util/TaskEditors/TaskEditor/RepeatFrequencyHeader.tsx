@@ -9,6 +9,11 @@ type Props = {
   readonly getTag: (id: string) => Tag;
 };
 
+type BinaryCount = {
+  binary: number;
+  count: number;
+}
+
 export default function RepeatFrequencyHeader(
   { date, tag, getTag }: Props,
 ): ReactElement | null {
@@ -32,7 +37,7 @@ export default function RepeatFrequencyHeader(
     width: '16px',
   };
 
-  const patternTypeToString = (patternType: string) => {
+  const patternTypeToString = (patternType: string): string => {
     switch (patternType) {
       case 'WEEKLY': return 'week';
       case 'BIWEEKLY': return 'two weeks';
@@ -42,7 +47,7 @@ export default function RepeatFrequencyHeader(
     }
   };
 
-  const bitsetToBinaryCount = (bit: number) => {
+  const bitsetToBinaryCount = (bit: number): BinaryCount => {
     let binary = 0;
     let count = 0;
     for (let i = 0; i < DAYS_IN_WEEK; i += 1) {
@@ -59,21 +64,20 @@ export default function RepeatFrequencyHeader(
 
   const getRepeatedDays = (bit: number): string => {
     const frequency = bitsetToBinaryCount(bit);
-    let { binary, count } = frequency;
-
+    const count = frequency.count;
     if (count > 2) {
-      return ' ' + count + ' days every '
-        + patternTypeToString(date.pattern.type);
-    }
+      return ' ' + count + ' days every ' + patternTypeToString(date.pattern.type);
+    };
 
     const repeatedDays = Array<string>();
+    let binary = frequency.binary;
     let index = DAYS_IN_WEEK - 1;
     while (binary > 0) {
       if (binary % 10 === 1) {
         repeatedDays.push(arrOfWeeks[index])
       }
       binary = Math.round(binary / 10);
-      index = index - 1;
+      index -= 1;
     }
     return ' every ' + repeatedDays.reverse().join(', ');
   };
