@@ -100,14 +100,13 @@ function TaskEditor(
       onBlur();
     }
   };
-  const onSaveClicked = (): void => {
+  const onSaveClicked = (): boolean => {
     if (diffIsEmpty(diff)) {
-      return;
+      return false;
     }
     if (type === 'ONE_TIME') {
       editTaskWithDiff(id, 'EDITING_ONE_TIME_TASK', diff);
-      onSave();
-      return;
+      return true;
     }
     if (taskAppearedDate === null) {
       confirmRepeatedTaskEditMaster().then((saveChoice) => {
@@ -147,7 +146,12 @@ function TaskEditor(
         }
       });
     }
-    onSave();
+    return true;
+  };
+  const onSaveButtonClicked = (): void => {
+    if (onSaveClicked() && type !== 'ONE_TIME') {
+      onSave();
+    }
   };
 
   // called when the user types in the first char in the new subtask box. We need to shift now.
@@ -195,7 +199,7 @@ function TaskEditor(
   useEffect(() => {
     const intervalID = setInterval(() => {
       if (type === 'ONE_TIME') {
-        onSaveClicked();
+        onSaveButtonClicked();
       }
     }, 500);
     return () => clearInterval(intervalID);
