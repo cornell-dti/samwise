@@ -12,7 +12,7 @@ export default function NewSubTaskEditor({ onEnter, needToBeFocused, type }: Pro
   const onInputChange = (event: SyntheticEvent<HTMLInputElement>): void => {
     event.stopPropagation();
     const newSubTaskValue: string = event.currentTarget.value;
-    if (type !== 'ONE_TIME' && newSubTaskValue.length > 0) {
+    if (newSubTaskValue.length > 0) {
       onEnter(newSubTaskValue);
     } else {
       setSubTaskValue(newSubTaskValue);
