@@ -7,7 +7,7 @@ type Props = {
   readonly type: 'MASTER_TEMPLATE' | 'ONE_TIME';
 };
 
-export default function NewSubTaskEditor({ onEnter, needToBeFocused, type }: Props): ReactElement {
+export default function NewSubTaskEditor({ onEnter, needToBeFocused }: Props): ReactElement {
   const [subTaskValue, setSubTaskValue] = useState<string>('');
   const onInputChange = (event: SyntheticEvent<HTMLInputElement>): void => {
     event.stopPropagation();
