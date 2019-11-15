@@ -1,0 +1,9 @@
+.Indicator {
+  position: fixed;
+  z-index: 1000;
+  background: #f44336;
+  padding: 5px;
+  color: white;
+  top: 0;
+  left: 0;
+}

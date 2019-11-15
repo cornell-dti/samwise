@@ -43,6 +43,7 @@ button.DropdownItem {
   padding: 10px 20px;
 }
 
-button.DropdownItem:hover {
+button.DropdownItem:hover,
+button.DropdownItem:focus {
   background: #bbb !important;
 }

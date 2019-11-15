@@ -1,0 +1,57 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Pinned FocusPicker matches snapshot 1`] = `
+<div
+  className="Main"
+>
+  <span
+    className="Label"
+    onClick={[Function]}
+    role="presentation"
+  >
+    <span
+      title="Unpin from Focus"
+    >
+      <svg
+        alt="Unpin from Focus"
+        className="CenterIcon"
+        height="1em"
+        onKeyUp={[Function]}
+        tabIndex={0}
+        title="Unpin from Focus"
+        width="1em"
+      >
+        pin-2-dark-filled.svg
+      </svg>
+    </span>
+  </span>
+</div>
+`;
+
+exports[`Unpinned FocusPicker matches snapshot 1`] = `
+<div
+  className="Main"
+>
+  <span
+    className="Label"
+    onClick={[Function]}
+    role="presentation"
+  >
+    <span
+      title="Pin to Focus"
+    >
+      <svg
+        alt="Pin to Focus"
+        className="CenterIcon"
+        height="1em"
+        onKeyUp={[Function]}
+        tabIndex={0}
+        title="Pin to Focus"
+        width="1em"
+      >
+        pin-2-dark-outline.svg
+      </svg>
+    </span>
+  </span>
+</div>
+`;

@@ -1,0 +1,199 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Desktop completed ProgressIndicator matches snapshot 1`] = `
+<div
+  className="ProgressIndicator"
+  style={
+    Object {
+      "flexDirection": "column-reverse",
+      "margin": "0",
+      "width": "32px",
+    }
+  }
+>
+  <div
+    className="ProgressText"
+    style={
+      Object {
+        "marginBottom": "8px",
+        "width": "70px",
+      }
+    }
+  >
+    <div
+      className="ProgressCountText"
+    >
+      3/3
+    </div>
+    <div
+      className="ProgressOtherText"
+    >
+      tasks complete
+    </div>
+  </div>
+  <div
+    className="ProgressBarContainer"
+    style={
+      Object {
+        "marginBottom": "1em",
+        "width": "2em",
+      }
+    }
+  >
+    <div
+      className="ProgressBarIndicator"
+      style={
+        Object {
+          "height": "100%",
+          "width": "2em",
+        }
+      }
+    />
+  </div>
+</div>
+`;
+
+exports[`Desktop incompleted ProgressIndicator matches snapshot 1`] = `
+<div
+  className="ProgressIndicator"
+  style={
+    Object {
+      "flexDirection": "column-reverse",
+      "margin": "0",
+      "width": "32px",
+    }
+  }
+>
+  <div
+    className="ProgressText"
+    style={
+      Object {
+        "marginBottom": "8px",
+        "width": "70px",
+      }
+    }
+  >
+    <div
+      className="ProgressCountText"
+    >
+      3/1
+    </div>
+    <div
+      className="ProgressOtherText"
+    >
+      tasks complete
+    </div>
+  </div>
+  <div
+    className="ProgressBarContainer"
+    style={
+      Object {
+        "marginBottom": "1em",
+        "width": "2em",
+      }
+    }
+  >
+    <div
+      className="ProgressBarIndicator"
+      style={
+        Object {
+          "height": "300%",
+          "width": "2em",
+        }
+      }
+    />
+  </div>
+</div>
+`;
+
+exports[`Mobile completed ProgressIndicator matches snapshot 1`] = `
+<div
+  className="ProgressIndicator"
+  style={
+    Object {
+      "height": "32px",
+    }
+  }
+>
+  <div
+    className="ProgressText"
+    style={Object {}}
+  >
+    <div
+      className="ProgressCountText"
+    >
+      3/3
+    </div>
+    <div
+      className="ProgressOtherText"
+    >
+      tasks complete
+    </div>
+  </div>
+  <div
+    className="ProgressBarContainer"
+    style={
+      Object {
+        "height": "2em",
+        "marginLeft": "1em",
+      }
+    }
+  >
+    <div
+      className="ProgressBarIndicator"
+      style={
+        Object {
+          "height": "2em",
+          "width": "100%",
+        }
+      }
+    />
+  </div>
+</div>
+`;
+
+exports[`Mobile incompleted ProgressIndicator matches snapshot 1`] = `
+<div
+  className="ProgressIndicator"
+  style={
+    Object {
+      "height": "32px",
+    }
+  }
+>
+  <div
+    className="ProgressText"
+    style={Object {}}
+  >
+    <div
+      className="ProgressCountText"
+    >
+      3/1
+    </div>
+    <div
+      className="ProgressOtherText"
+    >
+      tasks complete
+    </div>
+  </div>
+  <div
+    className="ProgressBarContainer"
+    style={
+      Object {
+        "height": "2em",
+        "marginLeft": "1em",
+      }
+    }
+  >
+    <div
+      className="ProgressBarIndicator"
+      style={
+        Object {
+          "height": "2em",
+          "width": "300%",
+        }
+      }
+    />
+  </div>
+</div>
+`;

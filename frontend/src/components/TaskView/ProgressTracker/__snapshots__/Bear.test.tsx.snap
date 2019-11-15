@@ -1,0 +1,47 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Desktop completed bear matches snapshot 1`] = `
+<div
+  className="Bear"
+  style={
+    Object {
+      "backgroundImage": "url(happy-bear.png)",
+      "margin": "0",
+    }
+  }
+/>
+`;
+
+exports[`Desktop incompleted bear matches snapshot 1`] = `
+<div
+  className="Bear"
+  style={
+    Object {
+      "backgroundImage": "url(regular-bear.png)",
+      "margin": "0",
+    }
+  }
+/>
+`;
+
+exports[`Mobile completed bear matches snapshot 1`] = `
+<div
+  className="Bear"
+  style={
+    Object {
+      "backgroundImage": "url(happy-bear.png)",
+    }
+  }
+/>
+`;
+
+exports[`Mobile incompleted bear matches snapshot 1`] = `
+<div
+  className="Bear"
+  style={
+    Object {
+      "backgroundImage": "url(regular-bear.png)",
+    }
+  }
+/>
+`;
