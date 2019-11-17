@@ -31,6 +31,8 @@ type DefaultProps = {
   readonly editorRef?: { current: HTMLFormElement | null }; // the ref of the editor
 };
 type Actions = {
+  // whenever the user made some edits.
+  readonly onChange?: () => void;
   // remove the entire task to be edited.
   readonly removeTask: () => void;
   // save all the edits.
@@ -79,6 +81,7 @@ function TaskEditor(
     calendarPosition,
   }: Props,
 ): ReactElement {
+  const { onChange, removeTask, onSaveClicked } = actions;
   const {
     mainTask,
     subTasks,
@@ -88,10 +91,9 @@ function TaskEditor(
     dispatchEditSubTask,
     dispatchDeleteSubTask,
     reset,
-  } = useTaskDiffReducer(initMainTask, initSubTasks);
+  } = useTaskDiffReducer(initMainTask, initSubTasks, onChange || ignore);
 
   const { name, tag, date, complete, inFocus } = mainTask;
-  const { removeTask, onSaveClicked } = actions;
 
   const [subTaskToFocus, setSubTaskToFocus] = useState<TaskToFocus>(null);
 
