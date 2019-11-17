@@ -3,7 +3,6 @@ import { connect } from 'react-redux';
 import FloatingTaskEditor from 'components/Util/TaskEditors/FloatingTaskEditor';
 import { State, SubTask, Task } from 'store/store-types';
 import CheckBox from 'components/UI/CheckBox';
-import { Draggable } from 'react-beautiful-dnd';
 import { FloatingPosition, CalendarPosition } from 'components/Util/TaskEditors/editors-types';
 import { getTodayAtZeroAM, getDateWithDateString } from 'util/datetime-util';
 import OverdueAlert from 'components/UI/OverdueAlert';
@@ -102,6 +101,9 @@ function FutureViewTask(
       />
     );
   };
+  const DragIcon = (): ReactElement => {
+    return <SamwiseIcon iconName="grabber" className={styles.TaskIcon} />;
+  };
 
   const renderMainTaskInfo = (simplified = false): ReactElement => {
     if (simplified && isInMainList) {
@@ -110,6 +112,7 @@ function FutureViewTask(
     }
     return (
       <div className={styles.TaskMainWrapper} style={{ backgroundColor: color }}>
+        <DragIcon />
         <TaskCheckBox />
         <TaskName />
         <PinIcon />

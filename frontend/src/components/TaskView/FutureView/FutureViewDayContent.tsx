@@ -4,7 +4,7 @@ import { CalendarPosition, FloatingPosition } from '../../Util/TaskEditors/edito
 import styles from './FutureViewDay.module.scss';
 import { day2String, getTodayAtZeroAM } from '../../../util/datetime-util';
 import FutureViewDayTaskContainer from './FutureViewDayTaskContainer';
-import {DragDropContext, Droppable} from 'react-beautiful-dnd';
+import { DragDropContext, Droppable, DropResult } from 'react-beautiful-dnd';
 
 type Props = {
   readonly date: SimpleDate;
@@ -32,7 +32,10 @@ function FutureViewDayContent(
 ): ReactElement {
   const containerStyle = (inNDaysView && inMainList) ? { paddingTop: '1em' } : {};
   const isToday: boolean = getTodayAtZeroAM().toDateString() === date.text;
-  const onDragEnd = () => {};
+  const onDragEnd = (result: DropResult): void => {
+    const { source, destination } = result;
+
+  };
   return (
     <>
     <DragDropContext onDragEnd={onDragEnd}>
