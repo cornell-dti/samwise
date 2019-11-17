@@ -30,7 +30,6 @@ function FocusView({ tasks, progress }: FocusViewProps): ReactElement {
   if (localTasks !== tasks) {
     setLocalTasks(tasks);
   }
-  
   const localCompletedList: IdOrder[] = [];
   const localUncompletedList: IdOrder[] = [];
   localTasks.forEach(({ id, order, inFocusView, inCompleteFocusView }: FocusViewTaskMetaData) => {

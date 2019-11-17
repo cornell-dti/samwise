@@ -1,10 +1,11 @@
-import React, { ReactElement } from 'react';
+import React, {ReactElement, useState} from 'react';
 import { SimpleDate } from './future-view-types';
 import { CalendarPosition, FloatingPosition } from '../../Util/TaskEditors/editors-types';
 import styles from './FutureViewDay.module.scss';
 import { day2String, getTodayAtZeroAM } from '../../../util/datetime-util';
 import FutureViewDayTaskContainer from './FutureViewDayTaskContainer';
 import {DragDropContext, Droppable} from 'react-beautiful-dnd';
+import {FocusViewTaskMetaData} from "../../../store/selectors";
 
 type Props = {
   readonly date: SimpleDate;
@@ -31,33 +32,37 @@ function FutureViewDayContent(
   }: Props,
 ): ReactElement {
   const containerStyle = (inNDaysView && inMainList) ? { paddingTop: '1em' } : {};
+  const [localTasks, setLocalTasks] = useState<FocusViewTaskMetaData[]>(tasks);
   const isToday: boolean = getTodayAtZeroAM().toDateString() === date.text;
-  const onDragEnd = () => {};
+  const onDragEnd = (result: DropResult) => {
+
+  };
   return (
     <>
-    <DragDropContext onDragEnd={onDragEnd}>
-      <div className={styles.DateInfo} style={containerStyle}>
-        <div className={styles.DateInfoDay}>
-          {isToday ? 'TODAY' : day2String(date.day)}
-        </div>
-        <div className={styles.DateNum}>{date.date}</div>
-      </div>
-      <Droppable droppableId={date.date.toString()}>
-        {(provided) => (
-          <div ref={provided.innerRef} {...provided.droppableProps} {...provided.droppableProps}>
-            <FutureViewDayTaskContainer
-              date={date.text}
-              inNDaysView={inNDaysView}
-              taskEditorPosition={taskEditorPosition}
-              calendarPosition={calendarPosition}
-              doesShowCompletedTasks={doesShowCompletedTasks}
-              isInMainList={inMainList}
-              onHeightChange={onHeightChange}
-            />
+      <DragDropContext onDragEnd={onDragEnd}>
+        <div className={styles.DateInfo} style={containerStyle}>
+          <div className={styles.DateInfoDay}>
+            {isToday ? 'TODAY' : day2String(date.day)}
           </div>
-        )}
-      </Droppable>
-    </DragDropContext>
+          <div className={styles.DateNum}>{date.date}</div>
+        </div>
+        <Droppable droppableId={date.date.toString()}>
+          {(provided) => (
+            <div ref={provided.innerRef} {...provided.droppableProps} {...provided.droppableProps}>
+              <FutureViewDayTaskContainer
+                date={date.text}
+                inNDaysView={inNDaysView}
+                taskEditorPosition={taskEditorPosition}
+                calendarPosition={calendarPosition}
+                doesShowCompletedTasks={doesShowCompletedTasks}
+                isInMainList={inMainList}
+                onHeightChange={onHeightChange}
+              />
+              {provided.placeholder}
+            </div>
+          )}
+        </Droppable>
+      </DragDropContext>
     </>
   );
 }

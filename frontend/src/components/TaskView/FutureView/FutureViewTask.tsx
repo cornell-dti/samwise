@@ -3,7 +3,6 @@ import { connect } from 'react-redux';
 import FloatingTaskEditor from 'components/Util/TaskEditors/FloatingTaskEditor';
 import { State, SubTask, Task } from 'store/store-types';
 import CheckBox from 'components/UI/CheckBox';
-import { Draggable } from 'react-beautiful-dnd';
 import { FloatingPosition, CalendarPosition } from 'components/Util/TaskEditors/editors-types';
 import { getTodayAtZeroAM, getDateWithDateString } from 'util/datetime-util';
 import OverdueAlert from 'components/UI/OverdueAlert';
