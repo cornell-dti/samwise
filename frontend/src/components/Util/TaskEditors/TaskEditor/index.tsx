@@ -3,7 +3,7 @@
 // These components' API are NOT guaranteed to be stable.
 // You should only use this component from the outside.
 
-import React, { ReactElement, useEffect, useState } from 'react';
+import React, { ReactElement, useEffect, useState, useCallback } from 'react';
 import { connect } from 'react-redux';
 import { MainTask, State, SubTask, Tag } from 'store/store-types';
 import OverdueAlert from 'components/UI/OverdueAlert';
@@ -100,7 +100,7 @@ function TaskEditor(
       onBlur();
     }
   };
-  const onSave = (): boolean => {
+  const onSave = useCallback((): boolean => {
     if (diffIsEmpty(diff)) {
       return false;
     }
@@ -147,7 +147,7 @@ function TaskEditor(
       });
     }
     return true;
-  };
+  }, [date, diff, id, reset, taskAppearedDate, type]);
   const onSaveButtonClicked = (): void => {
     if (onSave() && type !== 'ONE_TIME') {
       onSaveClicked();
