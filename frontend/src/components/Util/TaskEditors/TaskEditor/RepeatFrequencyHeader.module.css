@@ -1,6 +1,7 @@
 .Header {
   background: rgba(255, 255, 255, 0.6);
-  padding: 3px;
+  padding: 9px 9px 6px 9px;
+  margin: -6px;
   height: 100%;
 }
 
