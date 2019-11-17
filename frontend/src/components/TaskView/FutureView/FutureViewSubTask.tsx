@@ -6,7 +6,7 @@ import { editSubTask, removeSubTask } from '../../../firebase/actions';
 import SamwiseIcon from '../../UI/SamwiseIcon';
 
 type Props = {
-  readonly subTask: SubTask;
+  readonly subTask: SubTask | null;
   readonly mainTaskId: string;
   readonly replaceDateForFork: Date | null;
   readonly mainTaskCompleted: boolean;

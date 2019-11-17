@@ -15,7 +15,7 @@ type Props = TasksProgressProps & { readonly inMobileView: boolean };
  * The progress tracker component.
  * It is a wrapper component designed to pass down the progress object.
  */
-function ProgressTracker(
+export function ProgressTracker(
   { completedTasksCount, allTasksCount, inMobileView }: Props,
 ): ReactElement {
   const containerClass = inMobileView ? mobileViewStyle : desktopViewStyle;

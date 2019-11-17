@@ -1,0 +1,60 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`TitleBar matches snapshot 1`] = `
+<header
+  className="Main"
+>
+  <span
+    className="Time"
+    title="time"
+  >
+    8:00 AM
+  </span>
+  <span
+    className="Date"
+    title="date"
+  >
+    January 15, 2027
+  </span>
+  <span
+    className="Links"
+  >
+    <div
+      style={
+        Object {
+          "display": "inline-block",
+        }
+      }
+    >
+      <button
+        onClick={[Function]}
+        type="submit"
+      >
+        <p
+          style={
+            Object {
+              "transform": "scale(2)translateY(-5px)",
+            }
+          }
+          title="Settings Button"
+        >
+          <span
+            title="Settings"
+          >
+            <svg
+              alt="Settings"
+              height="1em"
+              onKeyUp={[Function]}
+              tabIndex={0}
+              title="Settings"
+              width="1em"
+            >
+              settings.svg
+            </svg>
+          </span>
+        </p>
+      </button>
+    </div>
+  </span>
+</header>
+`;

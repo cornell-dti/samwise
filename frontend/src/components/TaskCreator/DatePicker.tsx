@@ -1,8 +1,9 @@
 import React, { ReactElement, SyntheticEvent, ChangeEvent } from 'react';
 import Calendar from 'react-calendar';
+import { useTodayLastSecondTime, useTodayFirstSecondTime } from 'hooks/time-hook';
 import styles from './Picker.module.css';
 import dateStyles from './DatePicker.module.css';
-import { date2String } from '../../util/datetime-util';
+import { date2String, getDateAfterXWeeks } from '../../util/datetime-util';
 import { NONE_TAG } from '../../util/tag-util';
 import { RepeatMetaData } from '../../store/store-types';
 import SamwiseIcon from '../UI/SamwiseIcon';
@@ -31,12 +32,13 @@ type InternalDate =
   };
 };
 
-const REPEATING_TASK_ENABLED: boolean = localStorage.getItem('REPEATING_TASK_ENABLED') != null;
-
 export default function DatePicker(props: Props): ReactElement {
   const {
     date, opened, datePicked, onDateChange, onPickerOpened, onClearPicker,
   } = props;
+  const todayFirstSecond = useTodayFirstSecondTime();
+  const todayLastSecond = useTodayLastSecondTime();
+
   // Controllers
   const clickPicker = (): void => { onPickerOpened(); };
   const reset = (e: SyntheticEvent<HTMLElement>): void => {
@@ -88,7 +90,9 @@ export default function DatePicker(props: Props): ReactElement {
       : (
         <>
           <span className={styles.DateDisplay}>
-            {date instanceof Date ? date2String(date) : `${genNextValidDay(date.pattern.bitSet)}🔁`}
+            {!(date instanceof Date)
+            && <SamwiseIcon iconName="repeat" className={dateStyles.RepeatIcon} /> }
+            {date instanceof Date ? date2String(date) : ` ${genNextValidDay(date.pattern.bitSet)}`}
           </span>
           <button type="button" className={styles.ResetButton} onClick={reset}>&times;</button>
         </>
@@ -356,13 +360,11 @@ export default function DatePicker(props: Props): ReactElement {
       endDate = internalDate.repeatEnd.date;
     } else {
       // TODO once database support exists, replace this with number of occurrances
-      endDate = new Date(
-        new Date().getTime() + 1000 * 60 * 60 * 24 * 7 * internalDate.repeatEnd.weeks,
-      );
+      endDate = getDateAfterXWeeks(todayLastSecond, internalDate.repeatEnd.weeks);
     }
 
     const repData: RepeatMetaData = {
-      startDate: new Date(),
+      startDate: todayFirstSecond,
       endDate,
       pattern: { type: 'WEEKLY', bitSet },
     };
@@ -382,18 +384,16 @@ export default function DatePicker(props: Props): ReactElement {
       {displayedNode(!datePicked)}
       {opened && (
         <div className={styles.NewTaskDatePick}>
-          {REPEATING_TASK_ENABLED && (
-            <p className={dateStyles.SelectTypeWrap}>
-              <select
-                className={dateStyles.SelectType}
-                value={(internalDate.type !== 'normal').toString()}
-                onChange={changeRepeat}
-              >
-                <option value="false">One-Time</option>
-                <option value="true">Repeating</option>
-              </select>
-            </p>
-          )}
+          <p className={dateStyles.SelectTypeWrap}>
+            <select
+              className={dateStyles.SelectType}
+              value={(internalDate.type !== 'normal').toString()}
+              onChange={changeRepeat}
+            >
+              <option value="false">One-Time</option>
+              <option value="true">Repeating</option>
+            </select>
+          </p>
           {
             internalDate.type === 'normal'
             && <Calendar onChange={onChange} value={internalDate.date} minDate={new Date()} calendarType="US" />

@@ -1,0 +1,493 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`FutureViewSubTask with null SubTask matches snapshot. 1`] = `null`;
+
+exports[`FutureViewSubTask(false, false, false) matches snapshot 1`] = `
+<div
+  className="SubTask"
+>
+  <label
+    className="TaskCheckBox CheckBox InvertedCheckBox"
+  >
+    <input
+      defaultChecked={false}
+      disabled={false}
+      onClick={[Function]}
+      tabIndex={0}
+      type="checkbox"
+    />
+  </label>
+  <span
+    className="TaskText"
+    style={Object {}}
+  >
+    foo
+  </span>
+  <span
+    title="Pin to Focus"
+  >
+    <svg
+      alt="Pin to Focus"
+      className="TaskIcon"
+      height="1em"
+      onClick={[Function]}
+      onKeyUp={[Function]}
+      tabIndex={0}
+      title="Pin to Focus"
+      width="1em"
+    >
+      pin-2-dark-outline.svg
+    </svg>
+  </span>
+  <span
+    title="Delete"
+  >
+    <svg
+      alt="Delete"
+      className="TaskIcon"
+      height="1em"
+      onClick={[Function]}
+      onKeyUp={[Function]}
+      tabIndex={0}
+      title="Delete"
+      width="1em"
+    >
+      XDark.svg
+    </svg>
+  </span>
+</div>
+`;
+
+exports[`FutureViewSubTask(false, false, true) matches snapshot 1`] = `
+<div
+  className="SubTask"
+>
+  <label
+    className="TaskCheckBox CheckBox InvertedCheckBox"
+  >
+    <input
+      defaultChecked={true}
+      disabled={true}
+      onClick={[Function]}
+      tabIndex={0}
+      type="checkbox"
+    />
+    <span
+      className="CheckBoxCheckMark"
+    />
+  </label>
+  <span
+    className="TaskText"
+    style={
+      Object {
+        "textDecoration": "line-through",
+      }
+    }
+  >
+    foo
+  </span>
+  <span
+    title="Pin to Focus"
+  >
+    <svg
+      alt="Pin to Focus"
+      className="TaskIcon"
+      height="1em"
+      onClick={[Function]}
+      onKeyUp={[Function]}
+      tabIndex={0}
+      title="Pin to Focus"
+      width="1em"
+    >
+      pin-2-dark-outline.svg
+    </svg>
+  </span>
+  <span
+    title="Delete"
+  >
+    <svg
+      alt="Delete"
+      className="TaskIcon"
+      height="1em"
+      onClick={[Function]}
+      onKeyUp={[Function]}
+      tabIndex={0}
+      title="Delete"
+      width="1em"
+    >
+      XDark.svg
+    </svg>
+  </span>
+</div>
+`;
+
+exports[`FutureViewSubTask(false, true, false) matches snapshot 1`] = `
+<div
+  className="SubTask"
+>
+  <label
+    className="TaskCheckBox CheckBox InvertedCheckBox"
+  >
+    <input
+      defaultChecked={true}
+      disabled={false}
+      onClick={[Function]}
+      tabIndex={0}
+      type="checkbox"
+    />
+    <span
+      className="CheckBoxCheckMark"
+    />
+  </label>
+  <span
+    className="TaskText"
+    style={
+      Object {
+        "textDecoration": "line-through",
+      }
+    }
+  >
+    foo
+  </span>
+  <span
+    title="Pin to Focus"
+  >
+    <svg
+      alt="Pin to Focus"
+      className="TaskIcon"
+      height="1em"
+      onClick={[Function]}
+      onKeyUp={[Function]}
+      tabIndex={0}
+      title="Pin to Focus"
+      width="1em"
+    >
+      pin-2-dark-outline.svg
+    </svg>
+  </span>
+  <span
+    title="Delete"
+  >
+    <svg
+      alt="Delete"
+      className="TaskIcon"
+      height="1em"
+      onClick={[Function]}
+      onKeyUp={[Function]}
+      tabIndex={0}
+      title="Delete"
+      width="1em"
+    >
+      XDark.svg
+    </svg>
+  </span>
+</div>
+`;
+
+exports[`FutureViewSubTask(false, true, true) matches snapshot 1`] = `
+<div
+  className="SubTask"
+>
+  <label
+    className="TaskCheckBox CheckBox InvertedCheckBox"
+  >
+    <input
+      defaultChecked={true}
+      disabled={true}
+      onClick={[Function]}
+      tabIndex={0}
+      type="checkbox"
+    />
+    <span
+      className="CheckBoxCheckMark"
+    />
+  </label>
+  <span
+    className="TaskText"
+    style={
+      Object {
+        "textDecoration": "line-through",
+      }
+    }
+  >
+    foo
+  </span>
+  <span
+    title="Pin to Focus"
+  >
+    <svg
+      alt="Pin to Focus"
+      className="TaskIcon"
+      height="1em"
+      onClick={[Function]}
+      onKeyUp={[Function]}
+      tabIndex={0}
+      title="Pin to Focus"
+      width="1em"
+    >
+      pin-2-dark-outline.svg
+    </svg>
+  </span>
+  <span
+    title="Delete"
+  >
+    <svg
+      alt="Delete"
+      className="TaskIcon"
+      height="1em"
+      onClick={[Function]}
+      onKeyUp={[Function]}
+      tabIndex={0}
+      title="Delete"
+      width="1em"
+    >
+      XDark.svg
+    </svg>
+  </span>
+</div>
+`;
+
+exports[`FutureViewSubTask(true, false, false) matches snapshot 1`] = `
+<div
+  className="SubTask"
+>
+  <label
+    className="TaskCheckBox CheckBox InvertedCheckBox"
+  >
+    <input
+      defaultChecked={false}
+      disabled={false}
+      onClick={[Function]}
+      tabIndex={0}
+      type="checkbox"
+    />
+  </label>
+  <span
+    className="TaskText"
+    style={Object {}}
+  >
+    foo
+  </span>
+  <span
+    title="Unpin from Focus"
+  >
+    <svg
+      alt="Unpin from Focus"
+      className="TaskIcon"
+      height="1em"
+      onClick={[Function]}
+      onKeyUp={[Function]}
+      tabIndex={0}
+      title="Unpin from Focus"
+      width="1em"
+    >
+      pin-2-dark-filled.svg
+    </svg>
+  </span>
+  <span
+    title="Delete"
+  >
+    <svg
+      alt="Delete"
+      className="TaskIcon"
+      height="1em"
+      onClick={[Function]}
+      onKeyUp={[Function]}
+      tabIndex={0}
+      title="Delete"
+      width="1em"
+    >
+      XDark.svg
+    </svg>
+  </span>
+</div>
+`;
+
+exports[`FutureViewSubTask(true, false, true) matches snapshot 1`] = `
+<div
+  className="SubTask"
+>
+  <label
+    className="TaskCheckBox CheckBox InvertedCheckBox"
+  >
+    <input
+      defaultChecked={true}
+      disabled={true}
+      onClick={[Function]}
+      tabIndex={0}
+      type="checkbox"
+    />
+    <span
+      className="CheckBoxCheckMark"
+    />
+  </label>
+  <span
+    className="TaskText"
+    style={
+      Object {
+        "textDecoration": "line-through",
+      }
+    }
+  >
+    foo
+  </span>
+  <span
+    title="Unpin from Focus"
+  >
+    <svg
+      alt="Unpin from Focus"
+      className="TaskIcon"
+      height="1em"
+      onClick={[Function]}
+      onKeyUp={[Function]}
+      tabIndex={0}
+      title="Unpin from Focus"
+      width="1em"
+    >
+      pin-2-dark-filled.svg
+    </svg>
+  </span>
+  <span
+    title="Delete"
+  >
+    <svg
+      alt="Delete"
+      className="TaskIcon"
+      height="1em"
+      onClick={[Function]}
+      onKeyUp={[Function]}
+      tabIndex={0}
+      title="Delete"
+      width="1em"
+    >
+      XDark.svg
+    </svg>
+  </span>
+</div>
+`;
+
+exports[`FutureViewSubTask(true, true, false) matches snapshot 1`] = `
+<div
+  className="SubTask"
+>
+  <label
+    className="TaskCheckBox CheckBox InvertedCheckBox"
+  >
+    <input
+      defaultChecked={true}
+      disabled={false}
+      onClick={[Function]}
+      tabIndex={0}
+      type="checkbox"
+    />
+    <span
+      className="CheckBoxCheckMark"
+    />
+  </label>
+  <span
+    className="TaskText"
+    style={
+      Object {
+        "textDecoration": "line-through",
+      }
+    }
+  >
+    foo
+  </span>
+  <span
+    title="Unpin from Focus"
+  >
+    <svg
+      alt="Unpin from Focus"
+      className="TaskIcon"
+      height="1em"
+      onClick={[Function]}
+      onKeyUp={[Function]}
+      tabIndex={0}
+      title="Unpin from Focus"
+      width="1em"
+    >
+      pin-2-dark-filled.svg
+    </svg>
+  </span>
+  <span
+    title="Delete"
+  >
+    <svg
+      alt="Delete"
+      className="TaskIcon"
+      height="1em"
+      onClick={[Function]}
+      onKeyUp={[Function]}
+      tabIndex={0}
+      title="Delete"
+      width="1em"
+    >
+      XDark.svg
+    </svg>
+  </span>
+</div>
+`;
+
+exports[`FutureViewSubTask(true, true, true) matches snapshot 1`] = `
+<div
+  className="SubTask"
+>
+  <label
+    className="TaskCheckBox CheckBox InvertedCheckBox"
+  >
+    <input
+      defaultChecked={true}
+      disabled={true}
+      onClick={[Function]}
+      tabIndex={0}
+      type="checkbox"
+    />
+    <span
+      className="CheckBoxCheckMark"
+    />
+  </label>
+  <span
+    className="TaskText"
+    style={
+      Object {
+        "textDecoration": "line-through",
+      }
+    }
+  >
+    foo
+  </span>
+  <span
+    title="Unpin from Focus"
+  >
+    <svg
+      alt="Unpin from Focus"
+      className="TaskIcon"
+      height="1em"
+      onClick={[Function]}
+      onKeyUp={[Function]}
+      tabIndex={0}
+      title="Unpin from Focus"
+      width="1em"
+    >
+      pin-2-dark-filled.svg
+    </svg>
+  </span>
+  <span
+    title="Delete"
+  >
+    <svg
+      alt="Delete"
+      className="TaskIcon"
+      height="1em"
+      onClick={[Function]}
+      onKeyUp={[Function]}
+      tabIndex={0}
+      title="Delete"
+      width="1em"
+    >
+      XDark.svg
+    </svg>
+  </span>
+</div>
+`;

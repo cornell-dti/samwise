@@ -3,7 +3,7 @@
 // These components' API are NOT guaranteed to be stable.
 // You should only use this component from the outside.
 
-import React, { ReactElement, useState } from 'react';
+import React, { ReactElement, useEffect, useState, useCallback } from 'react';
 import { connect } from 'react-redux';
 import { MainTask, State, SubTask, Tag } from 'store/store-types';
 import OverdueAlert from 'components/UI/OverdueAlert';
@@ -21,6 +21,7 @@ import OneSubTaskEditor from './OneSubTaskEditor';
 import { CalendarPosition } from '../editors-types';
 import useTaskDiffReducer, { diffIsEmpty, Diff } from './task-diff-reducer';
 
+
 type DefaultProps = {
   readonly displayGrabber?: boolean;
   readonly className?: string;
@@ -34,7 +35,7 @@ type Actions = {
   // remove the entire task to be edited.
   readonly removeTask: () => void;
   // save all the edits.
-  readonly onSave: () => void;
+  readonly onSaveClicked: () => void;
 };
 type OwnProps = DefaultProps & {
   readonly id: string;
@@ -91,7 +92,7 @@ function TaskEditor(
   } = useTaskDiffReducer(initMainTask, initSubTasks);
 
   const { name, tag, date, complete, inFocus } = mainTask;
-  const { removeTask, onSave } = actions;
+  const { removeTask, onSaveClicked } = actions;
 
   const [subTaskToFocus, setSubTaskToFocus] = useState<TaskToFocus>(null);
 
@@ -100,11 +101,13 @@ function TaskEditor(
       onBlur();
     }
   };
-  const onSaveClicked = (): void => {
+  const onSave = useCallback((): boolean => {
+    if (diffIsEmpty(diff)) {
+      return false;
+    }
     if (type === 'ONE_TIME') {
       editTaskWithDiff(id, 'EDITING_ONE_TIME_TASK', diff);
-      onSave();
-      return;
+      return true;
     }
     if (taskAppearedDate === null) {
       confirmRepeatedTaskEditMaster().then((saveChoice) => {
@@ -144,11 +147,16 @@ function TaskEditor(
         }
       });
     }
-    onSave();
+    return true;
+  }, [date, diff, id, reset, taskAppearedDate, type]);
+  const onSaveButtonClicked = (): void => {
+    if (onSave() && type !== 'ONE_TIME') {
+      onSaveClicked();
+    }
   };
 
   // called when the user types in the first char in the new subtask box. We need to shift now.
-  const handleNewSubTaskFirstType = (firstTypedValue: string): void => {
+  const handleCreatedNewSubtask = (firstTypedValue: string): void => {
     const order = subTasks.reduce((acc, s) => Math.max(acc, s.order), 0) + 1;
     dispatchAddSubTask({
       order, name: firstTypedValue, complete: false, inFocus: newSubTaskAutoFocused === true,
@@ -178,7 +186,6 @@ function TaskEditor(
       setSubTaskToFocus('new-subtask');
     }
   };
-  const clearNeedToFocus = (): void => setSubTaskToFocus(null);
   if (taskAppearedDate === null) {
     throw new Error('Impossible');
   }
@@ -189,6 +196,16 @@ function TaskEditor(
     : { backgroundColor };
   const actualClassName = className == null
     ? styles.TaskEditor : `${styles.TaskEditor} ${className}`;
+
+  useEffect(() => {
+    const intervalID = setInterval(() => {
+      if (type === 'ONE_TIME') {
+        onSave();
+      }
+    }, 500);
+    return () => clearInterval(intervalID);
+  }, [type, onSave]);
+
   return (
     <form
       className={actualClassName}
@@ -236,7 +253,6 @@ function TaskEditor(
             dateAppeared={taskAppearedDate}
             mainTaskComplete={complete}
             needToBeFocused={subTaskToFocus === subTask.order}
-            afterFocusedCallback={clearNeedToFocus}
             editThisSubTask={dispatchEditSubTask}
             removeSubTask={dispatchDeleteSubTask}
             onPressEnter={pressEnterHandler}
@@ -247,22 +263,26 @@ function TaskEditor(
           style={newSubTaskDisabled === true ? { maxHeight: 0 } : undefined}
         >
           <NewSubTaskEditor
-            onChange={handleNewSubTaskFirstType}
+            onFirstType={handleCreatedNewSubtask}
+            onPressEnter={onSaveButtonClicked}
             needToBeFocused={subTaskToFocus === 'new-subtask'}
-            afterFocusedCallback={clearNeedToFocus}
-            onPressEnter={onSaveClicked}
+            type={type}
           />
         </div>
       </div>
-      <div
-        className={styles.SaveButtonRow}
-        style={diffIsEmpty(diff) ? { maxHeight: 0, padding: 0 } : undefined}
-      >
-        <span className={styles.TaskEditorFlexiblePadding} />
-        <div role="presentation" className={styles.SaveButton} onClick={onSaveClicked}>
-          <span className={styles.SaveButtonText}>Save</span>
-        </div>
-      </div>
+      {
+        type !== 'ONE_TIME' && (
+          <div
+            className={styles.SaveButtonRow}
+            style={diffIsEmpty(diff) ? { maxHeight: 0, padding: 0 } : undefined}
+          >
+            <span className={styles.TaskEditorFlexiblePadding} />
+            <div role="presentation" className={styles.SaveButton} onClick={onSaveButtonClicked}>
+              <span className={styles.SaveButtonText}>Save</span>
+            </div>
+          </div>
+        )
+      }
     </form>
   );
 }

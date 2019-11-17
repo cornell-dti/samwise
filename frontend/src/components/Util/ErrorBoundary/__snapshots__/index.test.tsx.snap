@@ -1,0 +1,55 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`ErrorBoundary can catch error and render 1`] = `
+<div>
+  <img
+    alt="Uh oh - we broke something"
+    src="frontendCrash.png"
+    style={
+      Object {
+        "height": "100vh",
+        "left": 0,
+        "objectFit": "cover",
+        "objectPosition": "center",
+        "position": "absolute",
+        "top": 0,
+        "width": "100vw",
+        "zIndex": -1,
+      }
+    }
+  />
+  <div
+    style={
+      Object {
+        "bottom": 0,
+        "fontSize": "150%",
+        "padding": "10px",
+        "position": "fixed",
+        "right": 0,
+        "textAlign": "right",
+      }
+    }
+  >
+    <p>
+      Come yell at us: 
+      <a
+        href="https://goo.gl/forms/PZUZ1Ze6kN82EmcD2"
+        style={
+          Object {
+            "color": "white",
+            "textDecoration": "underline",
+          }
+        }
+      >
+        Send Feedback
+      </a>
+    </p>
+    <button
+      onClick={[Function]}
+      type="button"
+    >
+      Click me to refresh the page. It may help.
+    </button>
+  </div>
+</div>
+`;

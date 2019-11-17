@@ -26,9 +26,6 @@ function MainTaskEditor(
     id, taskDate, dateAppeared, name, complete, inFocus, onChange, onRemove, onPressEnter,
   }: Props,
 ): ReactElement {
-  const editName = (event: SyntheticEvent<HTMLInputElement>): void => onChange({
-    name: event.currentTarget.value,
-  });
   const replaceDateForFork = taskDate == null
     ? getDateWithDateString(taskDate, dateAppeared)
     : null;
@@ -40,6 +37,12 @@ function MainTaskEditor(
       return;
     }
     onPressEnter('main-task');
+  };
+
+  const onInputChange = (event: SyntheticEvent<HTMLInputElement>): void => {
+    event.stopPropagation();
+    const newValue = event.currentTarget.value;
+    onChange({ name: newValue });
   };
 
   return (
@@ -57,7 +60,7 @@ function MainTaskEditor(
         placeholder="Main Task"
         value={name}
         onKeyDown={onKeyDown}
-        onChange={editName}
+        onChange={onInputChange}
       />
       <SamwiseIcon
         iconName={inFocus ? 'pin-light-filled' : 'pin-light-outline'}
