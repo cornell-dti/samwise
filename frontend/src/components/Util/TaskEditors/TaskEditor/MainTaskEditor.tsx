@@ -1,4 +1,4 @@
-import React, { KeyboardEvent, ReactElement, SyntheticEvent, useState } from 'react';
+import React, { KeyboardEvent, ReactElement, SyntheticEvent } from 'react';
 import styles from './index.module.css';
 import CheckBox from '../../../UI/CheckBox';
 import SamwiseIcon from '../../../UI/SamwiseIcon';
@@ -19,11 +19,6 @@ type Props = NameCompleteInFocus & {
   readonly onPressEnter: (id: 'main-task' | number) => void;
 };
 
-type NameCache = {
-  readonly cached: string;
-  readonly originalPropsName: string;
-};
-
 const deleteIconClass = [styles.TaskEditorIcon, styles.TaskEditorIconLeftPad].join(' ');
 
 function MainTaskEditor(
@@ -31,10 +26,6 @@ function MainTaskEditor(
     id, taskDate, dateAppeared, name, complete, inFocus, onChange, onRemove, onPressEnter,
   }: Props,
 ): ReactElement {
-  const [nameCache, setNameCache] = useState<NameCache>({ cached: name, originalPropsName: name });
-  if (name !== nameCache.originalPropsName) {
-    setNameCache({ cached: name, originalPropsName: name });
-  }
   const replaceDateForFork = taskDate == null
     ? getDateWithDateString(taskDate, dateAppeared)
     : null;
@@ -51,13 +42,7 @@ function MainTaskEditor(
   const onInputChange = (event: SyntheticEvent<HTMLInputElement>): void => {
     event.stopPropagation();
     const newValue = event.currentTarget.value;
-    setNameCache((prev) => ({ ...prev, cached: newValue }));
-  };
-  const onBlur = (event: SyntheticEvent<HTMLInputElement>): void => {
-    event.stopPropagation();
-    if (name !== nameCache.cached) {
-      onChange({ name: nameCache.cached });
-    }
+    onChange({ name: newValue });
   };
 
   return (
@@ -73,9 +58,7 @@ function MainTaskEditor(
         className={complete
           ? styles.TaskEditorStrikethrough : styles.TaskEditorFlexibleInput}
         placeholder="Main Task"
-        value={nameCache.cached}
-        onBlur={onBlur}
-        onMouseLeave={onBlur}
+        value={name}
         onKeyDown={onKeyDown}
         onChange={onInputChange}
       />
