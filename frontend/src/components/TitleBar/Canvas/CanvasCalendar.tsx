@@ -62,15 +62,25 @@ export default class CanvasCalendar extends Component<{}, State> {
             style={{ display: !this.calendarState().linked ? 'block' : 'none' }}
           >
             <form
+              className={styles.CalendarForm}
               onSubmit={this.addiCalToFirestore}
             >
               <input
                 placeholder="Link your Canvas iCal"
                 type="text"
                 onChange={this.handleChange}
-                className={styles.calendarInput}
+                className={styles.CalendarInput}
               />
             </form>
+            <a
+              className={styles.HelpButton}
+              href="https://community.canvaslms.com/docs/DOC-10691-4212717348"
+              target="_blank"
+              rel="noopener noreferrer"
+              title="Link to Canvas iCal guide"
+            >
+              Having trouble finding the iCal link?
+            </a>
           </div>
 
           <div

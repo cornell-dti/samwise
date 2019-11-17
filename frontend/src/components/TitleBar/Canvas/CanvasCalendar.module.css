@@ -1,4 +1,4 @@
-.calendarInput {
+.CalendarInput {
   display: block;
   margin: 0;
   width: 100%;
@@ -10,4 +10,18 @@
   border-color: rgba(202, 202, 202, 0.59);
   border-image: initial;
   border-radius: 5px;
+}
+
+.CalendarForm {
+  margin-top: 24px;
+}
+
+.HelpButton {
+  text-decoration: underline #83c1ff;
+  color: #83c1ff;
+}
+
+.HelpButton:hover,
+.HelpButton:focus {
+  color: #6bb5ff;
 }
