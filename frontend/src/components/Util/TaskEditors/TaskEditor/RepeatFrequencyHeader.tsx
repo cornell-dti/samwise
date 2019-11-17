@@ -39,6 +39,26 @@ const bitsetToBinaryCount = (bit: number): BinaryCount => {
   return { binary, count };
 };
 
+const getRepeatedDays = ({ type, bitSet }: RepeatingPattern): string => {
+  const frequency = bitsetToBinaryCount(bitSet);
+  const { binary, count } = frequency;
+  if (count > 2) {
+    return `Repeats ${count} days every ${patternTypeToString(type)}`;
+  }
+
+  const repeatedDays = Array<string>();
+  let binaryFrequency = binary;
+  let index = DAYS_IN_WEEK - 1;
+  while (binaryFrequency > 0) {
+    if (binaryFrequency % 10 === 1) {
+      repeatedDays.push(arrOfWeeks[index]);
+    }
+    binaryFrequency = Math.round(binaryFrequency / 10);
+    index -= 1;
+  }
+  return `Repeats every ${repeatedDays.reverse().join(', ')}`;
+};
+
 function RepeatFrequencyHeader(
   { pattern, tag, getTag }: Props,
 ): ReactElement | null {
@@ -46,30 +66,10 @@ function RepeatFrequencyHeader(
     return null;
   }
 
-  const getRepeatedDays = (bit: number): string => {
-    const frequency = bitsetToBinaryCount(bit);
-    const { binary, count } = frequency;
-    if (count > 2) {
-      return `Repeats ${count} days every ${patternTypeToString(pattern.type)}`;
-    }
-
-    const repeatedDays = Array<string>();
-    let binaryFrequency = binary;
-    let index = DAYS_IN_WEEK - 1;
-    while (binaryFrequency > 0) {
-      if (binaryFrequency % 10 === 1) {
-        repeatedDays.push(arrOfWeeks[index]);
-      }
-      binaryFrequency = Math.round(binaryFrequency / 10);
-      index -= 1;
-    }
-    return `Repeats every ${repeatedDays.reverse().join(', ')}`;
-  };
-
   return (
     <div className={styles.Header} style={{ color: getTag(tag).color }}>
       <SamwiseIcon iconName="repeat-frequency" className={styles.Icon} />
-      {getRepeatedDays(pattern.bitSet)}
+      {getRepeatedDays(pattern)}
     </div>
   );
 }
