@@ -1,27 +1,26 @@
-import React, { KeyboardEvent, ReactElement, SyntheticEvent, useEffect, useRef, useState } from 'react';
+import React, { KeyboardEvent, ReactElement, SyntheticEvent, useEffect, useRef } from 'react';
 import styles from './index.module.css';
 
 type Props = {
-  readonly onEnter: (change: string) => void;
+  readonly onFirstType: (change: string) => void;
+  readonly onPressEnter: () => void;
   readonly needToBeFocused: boolean;
   readonly type: 'MASTER_TEMPLATE' | 'ONE_TIME';
 };
 
-export default function NewSubTaskEditor({ onEnter, needToBeFocused }: Props): ReactElement {
-  const [subTaskValue, setSubTaskValue] = useState<string>('');
+export default function NewSubTaskEditor(
+  { onFirstType, onPressEnter, needToBeFocused }: Props,
+): ReactElement {
   const onInputChange = (event: SyntheticEvent<HTMLInputElement>): void => {
     event.stopPropagation();
-    const newSubTaskValue: string = event.currentTarget.value;
+    const newSubTaskValue: string = event.currentTarget.value.trim();
     if (newSubTaskValue.length > 0) {
-      onEnter(newSubTaskValue);
-    } else {
-      setSubTaskValue(newSubTaskValue);
+      onFirstType(newSubTaskValue);
     }
   };
   const onKeyDown = (event: KeyboardEvent<HTMLInputElement>): void => {
-    if ((event.key === 'Enter' || event.key === 'Tab') && subTaskValue !== '') {
-      onEnter(subTaskValue);
-      setSubTaskValue('');
+    if (event.key === 'Enter' || event.key === 'Tab') {
+      onPressEnter();
     }
   };
 
@@ -44,7 +43,7 @@ export default function NewSubTaskEditor({ onEnter, needToBeFocused }: Props): R
         ref={editorRef}
         className={styles.TaskEditorFlexibleInput}
         placeholder="Add a Subtask"
-        value={subTaskValue}
+        value=""
         onChange={onInputChange}
         onKeyDown={onKeyDown}
       />

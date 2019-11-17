@@ -257,7 +257,8 @@ function TaskEditor(
           style={newSubTaskDisabled === true ? { maxHeight: 0 } : undefined}
         >
           <NewSubTaskEditor
-            onEnter={handleCreatedNewSubtask}
+            onFirstType={handleCreatedNewSubtask}
+            onPressEnter={onSaveButtonClicked}
             needToBeFocused={subTaskToFocus === 'new-subtask'}
             type={type}
           />
