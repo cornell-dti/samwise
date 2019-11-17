@@ -1,4 +1,5 @@
 import fetch, {Response} from 'node-fetch';
+//@ts-ignore
 import {parse, stringify} from 'json-bigint';
 
 // export const scheduledFunctionCrontab = (): void => functions.pubsub.schedule('0 0 * * *')
@@ -23,8 +24,10 @@ async function canvasGetAssignments(token: string): Promise<any> {
 }
 
 async function getAssignments(token: string, data: JSON[]) {
+    //@ts-ignore
     let assignmentList = [];
     await data.forEach(course => {
+        //@ts-ignore
         fetch(getUri(`courses/${course["id"].toString()}/assignments`, token), {
             method: 'GET'
         }).then((response: Response) => response.text())
@@ -36,7 +39,8 @@ async function getAssignments(token: string, data: JSON[]) {
             console.log(err);
         });
     });
+    //@ts-ignore
     console.log(assignmentList);
-};
+}
 
 canvasGetAssignments('9713~v6sFYkNFHbgXE3Bgo1JBLP7LO18t2aFCs6cvgbcLAOGPA6ejv51ozK8fV92Jq3Hs');

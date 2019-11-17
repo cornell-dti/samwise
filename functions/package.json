@@ -1,0 +1,17 @@
+{
+  "scripts": {
+    "tsc": "tsc --project tsconfig.json",
+    "start": "yarn tsc && node dist/iCalFunctions.js"
+  },
+  "dependencies": {
+    "ical": "^0.6.0",
+    "json-bigint": "^0.3.0",
+    "node-fetch": "^2.6.0"
+  },
+  "devDependencies": {
+    "@types/firebase": "^3.2.1",
+    "@types/ical": "^0.6.1",
+    "@types/node-fetch": "^2.5.3",
+    "typescript": "^3.7.2"
+  }
+}
