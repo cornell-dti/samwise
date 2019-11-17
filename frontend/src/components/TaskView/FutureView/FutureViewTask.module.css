@@ -20,7 +20,6 @@
 }
 
 .SubTask {
-  margin-left: 16px;
   display: flex;
   padding: 3px;
   align-items: center;
@@ -32,6 +31,11 @@
 
 .TaskCheckBox {
   margin-right: 5px;
+}
+
+.SubTaskCheckBox {
+  margin-right: 5px;
+  margin-left: 16px;
 }
 
 .TaskCheckBoxPlaceHolder {
