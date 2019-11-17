@@ -156,7 +156,7 @@ function TaskEditor(
 
   // called when the user types in the first char in the new subtask box. We need to shift now.
   const handleCreatedNewSubtask = (firstTypedValue: string): void => {
-    const order = subTasks.reduce((acc, s) => Math.max(acc, s.order), 0);
+    const order = subTasks.reduce((acc, s) => Math.max(acc, s.order), 0) + 1;
     dispatchAddSubTask({
       order, name: firstTypedValue, complete: false, inFocus: newSubTaskAutoFocused === true,
     });
