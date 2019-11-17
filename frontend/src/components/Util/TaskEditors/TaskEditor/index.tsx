@@ -219,7 +219,7 @@ function TaskEditor(
       {isOverdue && <OverdueAlert target="task-card" />}
       <div>
         <RepeatFrequencyHeader
-          date={date}
+          taskId={id}
           tag={tag}
           getTag={getTag}
         />
