@@ -4,7 +4,7 @@ import { CalendarPosition, FloatingPosition } from '../../Util/TaskEditors/edito
 import styles from './FutureViewDay.module.scss';
 import { day2String, getTodayAtZeroAM } from '../../../util/datetime-util';
 import FutureViewDayTaskContainer from './FutureViewDayTaskContainer';
-import { DragDropContext } from 'react-beautiful-dnd';
+import {DragDropContext, Droppable} from 'react-beautiful-dnd';
 
 type Props = {
   readonly date: SimpleDate;
@@ -42,16 +42,22 @@ function FutureViewDayContent(
         </div>
         <div className={styles.DateNum}>{date.date}</div>
       </div>
-      <FutureViewDayTaskContainer
-        date={date.text}
-        inNDaysView={inNDaysView}
-        taskEditorPosition={taskEditorPosition}
-        calendarPosition={calendarPosition}
-        doesShowCompletedTasks={doesShowCompletedTasks}
-        isInMainList={inMainList}
-        onHeightChange={onHeightChange}
-      />
-      </DragDropContext>
+      <Droppable droppableId={date.date.toString()}>
+        {(provided) => (
+          <div ref={provided.innerRef} {...provided.droppableProps} {...provided.droppableProps}>
+            <FutureViewDayTaskContainer
+              date={date.text}
+              inNDaysView={inNDaysView}
+              taskEditorPosition={taskEditorPosition}
+              calendarPosition={calendarPosition}
+              doesShowCompletedTasks={doesShowCompletedTasks}
+              isInMainList={inMainList}
+              onHeightChange={onHeightChange}
+            />
+          </div>
+        )}
+      </Droppable>
+    </DragDropContext>
     </>
   );
 }

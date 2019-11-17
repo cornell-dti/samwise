@@ -1,5 +1,6 @@
 import React, { ReactElement } from 'react';
 import { connect } from 'react-redux';
+import { Draggable } from 'react-beautiful-dnd';
 import { CalendarPosition, FloatingPosition } from '../../Util/TaskEditors/editors-types';
 import FutureViewTask from './FutureViewTask';
 import styles from './FutureViewDayTaskContainer.module.css';
@@ -55,17 +56,23 @@ function FutureViewDayTaskContainer(
     onHeightChange(tasksHeight > containerHeight && containerHeight > 0, tasksHeight);
   });
 
-  const taskListComponent = idOrderList.map(({ id }) => (
-    <FutureViewTask
-      key={id}
-      taskId={id}
-      containerDate={date}
-      inNDaysView={inNDaysView}
-      taskEditorPosition={taskEditorPosition}
-      calendarPosition={calendarPosition}
-      doesShowCompletedTasks={doesShowCompletedTasks}
-      isInMainList={isInMainList}
-    />
+  const taskListComponent = idOrderList.map(({ id, order }) => (
+    <Draggable draggableId={id} index={order}>
+      { (provided) => (
+        <div ref={provided.innerRef} {...provided.draggableProps} {...provided.dragHandleProps}>
+          <FutureViewTask
+            key={id}
+            taskId={id}
+            containerDate={date}
+            inNDaysView={inNDaysView}
+            taskEditorPosition={taskEditorPosition}
+            calendarPosition={calendarPosition}
+            doesShowCompletedTasks={doesShowCompletedTasks}
+            isInMainList={isInMainList}
+          />
+        </div>
+      )}
+    </Draggable>
   ));
   if (isInMainList) {
     const style = { overflow: 'hidden' };
