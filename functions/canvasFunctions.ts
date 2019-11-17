@@ -29,9 +29,9 @@ async function getAssignments(token: string, data: JSON[]) {
             method: 'GET'
         }).then((response: Response) => response.text())
             .then(json => {
-                console.log(getUri(`courses/${course["id"]}/assignments`, token));
+                // console.log(getUri(`courses/${course["id"]}/assignments`, token));
                 assignmentList.push(parse(json));
-                console.log(parse(json));
+                // console.log(parse(json));
             }).catch((err) => {
             console.log(err);
         });
@@ -39,4 +39,4 @@ async function getAssignments(token: string, data: JSON[]) {
     console.log(assignmentList);
 };
 
-canvasGetAssignments('');
+canvasGetAssignments('9713~v6sFYkNFHbgXE3Bgo1JBLP7LO18t2aFCs6cvgbcLAOGPA6ejv51ozK8fV92Jq3Hs');
