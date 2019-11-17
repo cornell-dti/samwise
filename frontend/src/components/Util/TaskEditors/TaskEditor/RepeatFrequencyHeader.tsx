@@ -42,7 +42,7 @@ const bitsetToBinaryCount = (bit: number): BinaryCount => {
 const getRepeatedDays = ({ type, bitSet }: RepeatingPattern): string => {
   const frequency = bitsetToBinaryCount(bitSet);
   const { binary, count } = frequency;
-  if (count > 2) {
+  if (count > 2 || type !== 'WEEKLY') {
     return `Repeats ${count} days every ${patternTypeToString(type)}`;
   }
 
