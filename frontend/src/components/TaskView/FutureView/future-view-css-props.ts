@@ -1,9 +1,5 @@
 /**
  * Header height.
  */
+// eslint-disable-next-line import/prefer-default-export
 export const headerHeight = 66;
-
-/**
- * Height of each task line in display.
- */
-export const taskHeight = 25;
