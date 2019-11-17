@@ -1,4 +1,5 @@
 import React, { ReactElement } from 'react';
+import ModeIndicator from 'components/UI/ModeIndicator';
 import styles from './App.module.css';
 import AllComplete from './components/Popup/AllComplete';
 import Onboard from './components/TitleBar/Onboarding/Onboard';
@@ -13,6 +14,7 @@ import { ModalsContainer } from './components/Util/Modals';
 export default function App(): ReactElement {
   return (
     <>
+      <ModeIndicator />
       <Onboard />
       <ModalsContainer />
       <TitleBar />

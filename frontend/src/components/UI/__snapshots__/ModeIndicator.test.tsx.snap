@@ -1,0 +1,27 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`ConfigurableModeIndicator DEV matches snapshot. 1`] = `
+<div
+  className="Indicator"
+>
+  DEV
+</div>
+`;
+
+exports[`ConfigurableModeIndicator PROD matches snapshot. 1`] = `null`;
+
+exports[`ConfigurableModeIndicator STAGING matches snapshot. 1`] = `
+<div
+  className="Indicator"
+>
+  STAGING
+</div>
+`;
+
+exports[`ModeIndicator(DEV) matches snapshot. 1`] = `
+<div
+  className="Indicator"
+>
+  DEV
+</div>
+`;

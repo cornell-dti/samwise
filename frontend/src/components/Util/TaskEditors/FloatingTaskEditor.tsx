@@ -101,7 +101,7 @@ function FloatingTaskEditor(
       initialTask,
       getDateWithDateString(mainTask.date instanceof Date ? mainTask.date : null, taskAppearedDate),
     ),
-    onSave: closePopup,
+    onSaveClicked: closePopup,
   };
 
   return (
