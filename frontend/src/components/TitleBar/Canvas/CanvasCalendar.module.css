@@ -1,0 +1,13 @@
+.calendarInput {
+  display: block;
+  margin: 0;
+  width: 100%;
+  font-size: 14px;
+  height: 32px;
+  padding: 6px 12px;
+  border-width: 1px;
+  border-style: solid;
+  border-color: rgba(202, 202, 202, 0.59);
+  border-image: initial;
+  border-radius: 5px;
+}

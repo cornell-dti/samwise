@@ -1,7 +1,8 @@
 import React, { ReactElement, Component } from 'react';
-import styles from '../Settings/SettingsPage.module.css';
+import settingStyles from '../Settings/SettingsPage.module.css';
 import { settingsCollection } from '../../../firebase/db';
 import { getAppUser } from '../../../firebase/auth-util';
+import styles from './CanvasCalendar.module.css';
 
 type State = {
   canvasCalendar: string;
@@ -15,12 +16,11 @@ export default class CanvasCalendar extends Component<{}, State> {
   };
 
   componentWillMount(): void {
-    const self = this;
     settingsCollection().doc(getAppUser().email)
       .get().then((doc) => {
         const userSettings = doc.data();
         if (userSettings) {
-          self.setState({ linked: !(userSettings.canvasCalendar === null) });
+          this.setState({ linked: !(userSettings.canvasCalendar === null) });
         }
       });
   }
@@ -29,51 +29,64 @@ export default class CanvasCalendar extends Component<{}, State> {
     this.setState({ canvasCalendar: e.target.value });
   };
 
-  handleSubmit = (e: React.FormEvent<HTMLFormElement>): void => {
+  addiCalToFirestore = (e: React.FormEvent<HTMLFormElement>): void => {
     e.preventDefault();
-    const self = this;
+    const { canvasCalendar } = this.state;
     settingsCollection().doc(getAppUser().email)
-      .update({ canvasCalendar: this.state.canvasCalendar })
+      .update({ canvasCalendar })
       .then(() => {
-        self.setState({ linked: true });
+        this.setState({ linked: true });
       });
   };
 
   removeCanvasiCal = (): void => {
-    const self = this;
     settingsCollection().doc(getAppUser().email)
       .update({ canvasCalendar: null })
       .then(() => {
-        self.setState({ linked: false });
+        this.setState({ linked: false });
       });
+  };
+
+  calendarState = (): State => {
+    const { canvasCalendar, linked } = this.state;
+    return { canvasCalendar, linked };
   };
 
   render(): ReactElement {
     return (
-      <div>
-        <div style={{ display: !this.state.linked ? 'block' : 'none' }}>
-          <form onSubmit={this.handleSubmit}>
-            <label>
-              Canvas Calendar Feed:
-              <input type="text" onChange={this.handleChange} />
-            </label>
-            <input type="submit" value="Submit" />
-          </form>
-        </div>
+      <div className={settingStyles.SettingsSection}>
+        <p className={settingStyles.SettingsSectionTitle}>Canvas Calendar</p>
+        <div className={settingStyles.SettingsSectionContent}>
 
-        <div
-          style={{ display: this.state.linked ? 'block' : 'none' }}
-          className={styles.SettingsButton}
-        >
-          Your Canvas calendar feed is linked.
-          <button
-            type="button"
-            style={{ marginLeft: '12px' }}
-            onClick={this.removeCanvasiCal}
-            title="Remove Canvas iCal Link"
+          <div
+            style={{ display: !this.calendarState().linked ? 'block' : 'none' }}
           >
-            Unlink
-          </button>
+            <form
+              onSubmit={this.addiCalToFirestore}
+            >
+              <input
+                placeholder="Link your Canvas iCal"
+                type="text"
+                onChange={this.handleChange}
+                className={styles.calendarInput}
+              />
+            </form>
+          </div>
+
+          <div
+            className={settingStyles.SettingsButton}
+            style={{ display: this.calendarState().linked ? 'block' : 'none' }}
+          >
+            Your Canvas calendar feed is linked.
+            <button
+              type="button"
+              style={{ marginLeft: '12px' }}
+              onClick={this.removeCanvasiCal}
+              title="Remove Canvas iCal Link"
+            >
+              Unlink
+            </button>
+          </div>
         </div>
       </div>
     );
