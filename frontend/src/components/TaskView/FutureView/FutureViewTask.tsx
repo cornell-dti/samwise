@@ -101,6 +101,9 @@ function FutureViewTask(
       />
     );
   };
+  const DragIcon = (): ReactElement => {
+    return <SamwiseIcon iconName="grabber" className={styles.TaskIcon} />;
+  };
 
   const renderMainTaskInfo = (simplified = false): ReactElement => {
     if (simplified && isInMainList) {
@@ -109,6 +112,7 @@ function FutureViewTask(
     }
     return (
       <div className={styles.TaskMainWrapper} style={{ backgroundColor: color }}>
+        <DragIcon />
         <TaskCheckBox />
         <TaskName />
         <PinIcon />
