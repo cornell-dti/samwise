@@ -8,6 +8,7 @@
     "ecmaFeatures": { "jsx": true }
   },
   "rules": {
+    "no-warning-comments": "warn",
     "object-curly-newline": [
       "error",
       {
