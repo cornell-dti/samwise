@@ -1,10 +1,10 @@
-import React, {ReactElement, useState} from 'react';
+import React, { ReactElement } from 'react';
+import { DragDropContext, Droppable, DropResult } from 'react-beautiful-dnd';
 import { SimpleDate } from './future-view-types';
 import { CalendarPosition, FloatingPosition } from '../../Util/TaskEditors/editors-types';
 import styles from './FutureViewDay.module.scss';
 import { day2String, getTodayAtZeroAM } from '../../../util/datetime-util';
 import FutureViewDayTaskContainer from './FutureViewDayTaskContainer';
-import { DragDropContext, Droppable, DropResult } from 'react-beautiful-dnd';
 
 type Props = {
   readonly date: SimpleDate;
@@ -35,6 +35,7 @@ function FutureViewDayContent(
 
   const onDragEnd = (result: DropResult): void => {
     const { source, destination } = result;
+    console.log(result);
 
   };
   return (
@@ -46,7 +47,7 @@ function FutureViewDayContent(
           </div>
           <div className={styles.DateNum}>{date.date}</div>
         </div>
-        <Droppable droppableId={date.date.toString()}>
+        <Droppable droppableId={`${date.month}/${date.day}/${date.year}`}>
           {(provided) => (
             <div ref={provided.innerRef} {...provided.droppableProps} {...provided.droppableProps}>
               <FutureViewDayTaskContainer

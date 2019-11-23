@@ -55,9 +55,8 @@ function FutureViewDayTaskContainer(
     setPrevHeights([tasksHeight, containerHeight]);
     onHeightChange(tasksHeight > containerHeight && containerHeight > 0, tasksHeight);
   });
-
-  const taskListComponent = idOrderList.map(({ id, order }) => (
-    <Draggable draggableId={id} index={order}>
+  const taskListComponent = idOrderList.map(({ id }, idx) => (
+    <Draggable draggableId={id} index={idx}>
       { (provided) => (
         <div ref={provided.innerRef} {...provided.draggableProps} {...provided.dragHandleProps}>
           <FutureViewTask
