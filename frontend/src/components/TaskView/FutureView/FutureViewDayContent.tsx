@@ -5,6 +5,8 @@ import { CalendarPosition, FloatingPosition } from '../../Util/TaskEditors/edito
 import styles from './FutureViewDay.module.scss';
 import { day2String, getTodayAtZeroAM } from '../../../util/datetime-util';
 import FutureViewDayTaskContainer from './FutureViewDayTaskContainer';
+import { computeReorderMap, getReorderedList } from 'util/order-util';
+import { applyReorder } from 'firebase/actions';
 
 type Props = {
   readonly date: SimpleDate;
@@ -15,6 +17,8 @@ type Props = {
   readonly inMainList: boolean;
   readonly onHeightChange: (doesOverflow: boolean, tasksHeight: number) => void;
 };
+
+type IdOrder = { readonly id: string; readonly order: number };
 
 /**
  * The main content of future view day.
@@ -32,11 +36,21 @@ function FutureViewDayContent(
 ): ReactElement {
   const containerStyle = (inNDaysView && inMainList) ? { paddingTop: '1em' } : {};
   const isToday: boolean = getTodayAtZeroAM().toDateString() === date.text;
-
   const onDragEnd = (result: DropResult): void => {
     const { source, destination } = result;
-    console.log(result);
+    if (destination == null) {
+      // invalid drop, skip
+      return;
+    }
+    let sourceOrder: number;
+    let destinationOrder: number;
+    sourceOrder = source.index;
+    const dest = destination.index;
+    destinationOrder = dest == null ? sourceOrder : 0;
 
+    // const reorderMap = computeReorderMap(localTasks, sourceOrder, destinationOrder);
+    // setLocalTasks(getReorderedList(localTasks, reorderMap));
+    // applyReorder('tasks', reorderMap);
   };
   return (
     <>
