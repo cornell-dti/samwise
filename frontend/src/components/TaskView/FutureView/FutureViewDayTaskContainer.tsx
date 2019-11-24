@@ -1,4 +1,4 @@
-import React, { ReactElement } from 'react';
+import React, {ReactElement, useState} from 'react';
 import { connect } from 'react-redux';
 import { Draggable, DragDropContext, DropResult, Droppable } from 'react-beautiful-dnd';
 import { CalendarPosition, FloatingPosition } from '../../Util/TaskEditors/editors-types';
@@ -6,7 +6,7 @@ import FutureViewTask from './FutureViewTask';
 import styles from './FutureViewDayTaskContainer.module.css';
 import { useWindowSizeCallback } from '../../../hooks/window-size-hook';
 import { State } from '../../../store/store-types';
-import { createGetIdOrderListByDate } from '../../../store/selectors';
+import {createGetIdOrderListByDate, FocusViewTaskMetaData} from '../../../store/selectors';
 
 type OwnProps = {
   readonly date: string;
@@ -18,8 +18,10 @@ type OwnProps = {
   readonly onHeightChange: (doesOverflow: boolean, tasksHeight: number) => void;
 };
 
+type IdOrder = { readonly id: string; readonly order: number };
+
 type Props = OwnProps & {
-  readonly idOrderList: { readonly id: string; readonly order: number }[];
+  readonly idOrderList: IdOrder[];
 };
 
 /**
@@ -55,57 +57,62 @@ function FutureViewDayTaskContainer(
     setPrevHeights([tasksHeight, containerHeight]);
     onHeightChange(tasksHeight > containerHeight && containerHeight > 0, tasksHeight);
   });
-
+  const [localTasks, setLocalTasks] = useState<IdOrder[]>(idOrderList);
   const onDragEnd = (result: DropResult): void => {
     const { source, destination } = result;
+    console.log(destination);
     if (destination == null) {
       // invalid drop, skip
       console.log("test");
       return;
     }
-    let sourceOrder: number;
-    let destinationOrder: number;
-    sourceOrder = source.index;
+    const sourceOrder: number = localTasks[source.index].order;
     const dest = destination.index;
-    destinationOrder = dest == null ? sourceOrder : 0;
+    const destinationOrder: number = dest == null ? sourceOrder : 0;
 
+    console.log(sourceOrder);
+    console.log(destinationOrder);
 
+    // const reorderMap = computeReorderMap(localTasks, sourceOrder, destinationOrder);
+    // setLocalTasks(getReorderedList(localTasks, reorderMap));
+    // applyReorder('tasks', reorderMap);
   };
-  
   const taskListComponent = idOrderList.map(({ id }, idx) => (
-  
-        <Draggable draggableId={id} index={idx}>
-          { (provided) => (
-            <div ref={provided.innerRef} {...provided.draggableProps} {...provided.dragHandleProps}>
-         
-              <FutureViewTask
-                key={id}
-                taskId={id}
-                containerDate={date}
-                inNDaysView={inNDaysView}
-                taskEditorPosition={taskEditorPosition}
-                calendarPosition={calendarPosition}
-                doesShowCompletedTasks={doesShowCompletedTasks}
-                isInMainList={isInMainList}
-              />
-            </div>
-          )}
-        </Draggable>
-         
-       
+    <Draggable draggableId={id} index={idx}>
+      { (provided) => (
+        <div ref={provided.innerRef} {...provided.draggableProps} {...provided.dragHandleProps}>
+          <FutureViewTask
+            key={id}
+            taskId={id}
+            containerDate={date}
+            inNDaysView={inNDaysView}
+            taskEditorPosition={taskEditorPosition}
+            calendarPosition={calendarPosition}
+            doesShowCompletedTasks={doesShowCompletedTasks}
+            isInMainList={isInMainList}
+          />
+        </div>
+      )}
+    </Draggable>
   ));
   if (isInMainList) {
     const style = { overflow: 'hidden' };
     return (
       <DragDropContext onDragEnd={onDragEnd}>
-      <Droppable droppableId={date}>
-      {(provided) => (
-        <div ref={provided.innerRef} {...provided.droppableProps}>
-
-      <div className={styles.Container} style={style} ref={containerRef}>{taskListComponent}</div>
-      </div>)}
-      </Droppable>
-    </DragDropContext>
+        <Droppable droppableId="droppable-id">
+          {(provided) => (
+            <div ref={provided.innerRef} {...provided.droppableProps}>
+              <div
+                className={styles.Container}
+                style={style}
+                ref={containerRef}
+              >
+                {taskListComponent}
+              </div>
+            </div>
+          )}
+        </Droppable>
+      </DragDropContext>
     );
   }
   return <div className={styles.Container} ref={containerRef}>{taskListComponent}</div>;
