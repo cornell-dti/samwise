@@ -20,7 +20,7 @@ export default class CanvasCalendar extends Component<{}, State> {
       .get().then((doc) => {
         const userSettings = doc.data();
         if (userSettings) {
-          this.setState({ linked: !(userSettings.canvasCalendar === null) });
+          this.setState({ linked: userSettings.canvasCalendar != null });
         }
       });
   }
@@ -66,7 +66,7 @@ export default class CanvasCalendar extends Component<{}, State> {
               onSubmit={this.addiCalToFirestore}
             >
               <input
-                placeholder="Link your Canvas iCal"
+                placeholder="Paste your Canvas iCal link here"
                 type="text"
                 onChange={this.handleChange}
                 className={styles.CalendarInput}
@@ -75,8 +75,6 @@ export default class CanvasCalendar extends Component<{}, State> {
             <a
               className={styles.HelpButton}
               href="https://community.canvaslms.com/docs/DOC-10691-4212717348"
-              target="_blank"
-              rel="noopener noreferrer"
               title="Link to Canvas iCal guide"
             >
               Having trouble finding the iCal link?
