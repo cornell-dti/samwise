@@ -63,17 +63,20 @@ function FutureViewDayTaskContainer(
   const onDragEnd = (result: DropResult): void => {
     const { source, destination } = result;
     if (destination == null) {
+      console.log('ahhhh', result);
       // invalid drop, skip
       return;
     }
+    
     const sourceOrder: number = source.index;
     const dest = localTasks[destination.index];
     const destinationOrder: number = dest == null ? sourceOrder : dest.order;
-
+    console.log(destination);
     const reorderMap = computeReorderMap(localTasks, sourceOrder, destinationOrder);
     setLocalTasks(getReorderedList(localTasks, reorderMap));
     applyReorder('tasks', reorderMap);
   };
+
   const taskListComponent = idOrderList.map(({ id, order }) => (
     <Draggable key={id} draggableId={id} index={order}>
       { (provided) => (
@@ -95,8 +98,7 @@ function FutureViewDayTaskContainer(
   if (isInMainList) {
     const style = {};
     return (
-      <DragDropContext onDragEnd={onDragEnd}>
-        <Droppable droppableId="onetestyboy">
+        <Droppable droppableId={"future-view-task-droppable-thankssam" + date}>
           {(provided) => (
             <div ref={provided.innerRef} {...provided.droppableProps}>
               <div
@@ -106,10 +108,10 @@ function FutureViewDayTaskContainer(
               >
                 {taskListComponent}
               </div>
+              {provided.placeholder}
             </div>
           )}
         </Droppable>
-      </DragDropContext>
     );
   }
   return <div className={styles.Container} ref={containerRef}>{taskListComponent}</div>;

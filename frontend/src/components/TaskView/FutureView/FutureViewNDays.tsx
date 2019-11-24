@@ -2,6 +2,7 @@ import React, { ReactElement } from 'react';
 import FutureViewDay from './FutureViewDay';
 import styles from './FutureViewNDays.module.css';
 import { SimpleDate } from './future-view-types';
+import { DragDropContext, DropResult } from 'react-beautiful-dnd';
 
 type Props = {
   readonly days: readonly SimpleDate[];
@@ -16,7 +17,16 @@ export default function FutureViewNDays(
 ): ReactElement {
   const nDays = days.length;
   const containerStyle = { gridTemplateColumns: `repeat(${nDays}, minmax(0, 1fr))` };
+
+  const onDragEnd = (result: DropResult): void => {
+    const { source, destination } = result;
+    if (destination == null) {
+    
+    }
+  }
+  
   return (
+    <DragDropContext onDragEnd={onDragEnd}>
     <div className={styles.FutureViewNDays} style={containerStyle}>
       {days.map((date: SimpleDate, index: number) => {
         const taskEditorPosition = index < (nDays / 2) ? 'right' : 'left';
@@ -33,5 +43,6 @@ export default function FutureViewNDays(
         );
       })}
     </div>
+    </DragDropContext>
   );
 }
