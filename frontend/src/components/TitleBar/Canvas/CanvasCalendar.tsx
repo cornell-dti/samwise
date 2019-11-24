@@ -15,7 +15,7 @@ export default class CanvasCalendar extends Component<{}, State> {
     linked: false,
   };
 
-  componentWillMount(): void {
+  componentDidMount(): void {
     db().collection('samwise-settings').doc(getAppUser().email)
       .get()
       .then((doc) => {
