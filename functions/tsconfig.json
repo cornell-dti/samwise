@@ -7,18 +7,16 @@
       "esnext"
     ],
     "allowJs": true,
+    "outDir": "dist",
     "baseUrl": "./src",
     "skipLibCheck": true,
-    "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
     "strict": true,
     "forceConsistentCasingInFileNames": true,
-    "module": "esnext",
+    "module": "commonjs",
     "moduleResolution": "node",
     "resolveJsonModule": true,
-    "isolatedModules": true,
-    "noEmit": true,
-    "jsx": "preserve"
+    "esModuleInterop": true
   },
   "include": [
     "src"

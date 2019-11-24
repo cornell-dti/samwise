@@ -1,11 +1,19 @@
 import firebase from 'firebase/app';
 import 'firebase/firestore';
+import * as admin from 'firebase-admin';
+import serviceAccount from './firebase-adminsdk.json';
+
+admin.initializeApp({
+  credential: admin.credential.cert(serviceAccount as any),
+  databaseURL: "https://samwise-dev.firebaseio.com"
+});
 
 /**
  * The firestore database.
  * @return {firebase.firestore.Firestore}
  */
-export const db = (): firebase.firestore.Firestore => firebase.firestore();
+export const db = (): admin.firestore.Firestore => admin.firestore();
+
 
 /**
  * Collection name literals.
@@ -19,7 +27,7 @@ const collections = {
   SUBTASKS: 'samwise-subtasks',
 };
 
-type Collection = firebase.firestore.CollectionReference;
+type Collection = admin.firestore.CollectionReference;
 
 export const orderManagerCollection = (): Collection => db().collection(collections.ORDER_MANAGER);
 export const settingsCollection = (): Collection => db().collection(collections.USER_SETTINGS);

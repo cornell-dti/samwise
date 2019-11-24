@@ -56,3 +56,6 @@ yarn-error.log*
 
 # Misc
 .DS_Store
+
+# Firebase admin key
+firebase-adminsdk.json

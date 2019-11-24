@@ -1,8 +1,9 @@
 import { db, orderManagerCollection } from './db';
-import { getAppUser } from './auth-util';
+import * as admin from 'firebase-admin';
 
-type DocRef = firebase.firestore.DocumentReference;
-const managerRef = (): DocRef => orderManagerCollection().doc(getAppUser().email);
+type DocRef = admin.firestore.DocumentReference;
+
+  const managerRef = (user: string): DocRef => orderManagerCollection().doc(user);
 
 type Manager = {
   readonly tagsMaxOrder: number;
@@ -18,10 +19,10 @@ type PartialManager = Partial<Manager>;
  * @param {number} count the count allocated. Default to 1.
  * @return {Promise<number>} the promise of the order number.
  */
-export default async function allocateNewOrder(
+export default async function allocateNewOrder(user:string,
   orderFor: 'tags' | 'tasks', count = 1,
 ): Promise<number> {
-  const ref = managerRef();
+  const ref = managerRef(user);
   const forTags = orderFor === 'tags';
   return db().runTransaction(async (transaction) => {
     const docInTransaction = await transaction.get(ref);

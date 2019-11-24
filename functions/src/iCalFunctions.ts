@@ -1,36 +1,55 @@
 import {fromURL} from 'ical';
-import {tasksCollection} from './db';
+import {settingsCollection, tasksCollection} from './db';
 import getOrder from './order-manager';
 
-//todo make this work with repeating tasks & support tags
-let calLink: string = 'http://p49-caldav.icloud.com/published/2/MjU1MjYxMDc0MjQyNTUyNrbuSqmZmLMJBaHe_zS6XS6_mwNxYp-dEIrIBLSXyiw7';
-let user: string = "jt568@cornell.edu";
+export async function getICalLink() {
+    await settingsCollection().where("canvasCalendar", ">", "").get().then(function (querySnapshot) {
+        querySnapshot.forEach(function (doc) {
+            try {
+                parseICal(doc.data()['canvasCalendar'], doc.id);
+            } catch {
+                console.log("Failed to use this calendar link");
+            }
+        });
+    })
+        .catch(function (error) {
+            console.log("Error getting documents: ", error);
+        });
+}
 
-function parseICal(link: string, user: string): void {
+export function parseICal(link: string, user: string): void {
     fromURL(link, {}, async function (err, data) {
+
+        // console.log(data);
         for (let k in data) {
             if (data.hasOwnProperty(k)) {
                 var ev = data[k];
                 if (data[k].type == 'VEVENT') {
                     const taskName = ev['summary'];
+                    const uid = ev['uid'];
                     const endDate = ev['end'] == undefined ? new Date() : new Date(ev['end']);
                     const taskID: string = tasksCollection().doc().id;
-                    const order: number = await getOrder('tasks');
-                    await tasksCollection().doc(taskID).set({
-                        children: [],
-                        complete: endDate <= new Date(),
-                        date: endDate,
-                        inFocus: false,
-                        name: taskName,
-                        order: order,
-                        owner: user,
-                        tag: 'THE_GLORIOUS_NONE_TAG',
-                        type: 'ONE_TIME'
-                    }).catch((e: Error) => console.log(e));
+                    const order: number = await getOrder(user, 'tasks');
+                    await settingsCollection().where("icalUID", "==", uid).get().then(async function (querySnapshot) {
+                        if (querySnapshot.size == 0) {
+                            await tasksCollection().doc(taskID).set({
+                                children: [],
+                                complete: endDate <= new Date(),
+                                date: endDate,
+                                inFocus: false,
+                                name: taskName,
+                                order: order,
+                                owner: user,
+                                tag: 'THE_GLORIOUS_NONE_TAG',
+                                type: 'ONE_TIME',
+                                icalUID: uid
+                            }).catch((e: Error) => console.log(e));
+                        }
+                    });
                 }
             }
         }
     });
 }
 
-parseICal(calLink, user);
+getICalLink();
