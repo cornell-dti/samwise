@@ -1,6 +1,6 @@
 import React, { ReactElement } from 'react';
 import { connect } from 'react-redux';
-import { Draggable } from 'react-beautiful-dnd';
+import { Draggable, DragDropContext, DropResult, Droppable } from 'react-beautiful-dnd';
 import { CalendarPosition, FloatingPosition } from '../../Util/TaskEditors/editors-types';
 import FutureViewTask from './FutureViewTask';
 import styles from './FutureViewDayTaskContainer.module.css';
@@ -55,23 +55,48 @@ function FutureViewDayTaskContainer(
     setPrevHeights([tasksHeight, containerHeight]);
     onHeightChange(tasksHeight > containerHeight && containerHeight > 0, tasksHeight);
   });
+
+  const onDragEnd = (result: DropResult): void => {
+    const { source, destination } = result;
+    if (destination == null) {
+      // invalid drop, skip
+      return;
+    }
+    let sourceOrder: number;
+    let destinationOrder: number;
+    sourceOrder = source.index;
+    const dest = destination.index;
+    destinationOrder = dest == null ? sourceOrder : 0;
+
+
+  };
+
   const taskListComponent = idOrderList.map(({ id }, idx) => (
-    <Draggable draggableId={id} index={idx}>
-      { (provided) => (
-        <div ref={provided.innerRef} {...provided.draggableProps} {...provided.dragHandleProps}>
-          <FutureViewTask
-            key={id}
-            taskId={id}
-            containerDate={date}
-            inNDaysView={inNDaysView}
-            taskEditorPosition={taskEditorPosition}
-            calendarPosition={calendarPosition}
-            doesShowCompletedTasks={doesShowCompletedTasks}
-            isInMainList={isInMainList}
-          />
-        </div>
-      )}
-    </Draggable>
+    <DragDropContext onDragEnd={onDragEnd}>
+      <Droppable droppableId={'future-view-droppable-id'}>
+      {(provided) => (
+        <div ref={provided.innerRef} {...provided.droppableProps} {...provided.droppableProps}>
+
+        <Draggable draggableId={id} index={idx}>
+          { (provided) => (
+            <div ref={provided.innerRef} {...provided.draggableProps} {...provided.dragHandleProps}>
+              <FutureViewTask
+                key={id}
+                taskId={id}
+                containerDate={date}
+                inNDaysView={inNDaysView}
+                taskEditorPosition={taskEditorPosition}
+                calendarPosition={calendarPosition}
+                doesShowCompletedTasks={doesShowCompletedTasks}
+                isInMainList={isInMainList}
+              />
+            </div>
+          )}
+        </Draggable>
+         
+        </div>)}
+      </Droppable>
+    </DragDropContext>
   ));
   if (isInMainList) {
     const style = { overflow: 'hidden' };
