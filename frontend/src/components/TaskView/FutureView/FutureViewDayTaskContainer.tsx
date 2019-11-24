@@ -68,7 +68,7 @@ function FutureViewDayTaskContainer(
     sourceOrder = source.index;
     const dest = destination.index;
     destinationOrder = dest == null ? sourceOrder : 0;
-
+    console.log(destination);
 
   };
   
@@ -95,10 +95,10 @@ function FutureViewDayTaskContainer(
        
   ));
   if (isInMainList) {
-    const style = { overflow: 'hidden' };
+    const style = {};
     return (
       <DragDropContext onDragEnd={onDragEnd}>
-      <Droppable droppableId={date}>
+      <Droppable droppableId={'onetestyboy'}>
       {(provided) => (
         <div ref={provided.innerRef} {...provided.droppableProps}>
 
