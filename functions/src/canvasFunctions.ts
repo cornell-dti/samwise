@@ -1,12 +1,6 @@
 import fetch, {Response} from 'node-fetch';
-//@ts-ignore
-import {parse, stringify} from 'json-bigint';
-
-// export const scheduledFunctionCrontab = (): void => functions.pubsub.schedule('0 0 * * *')
-//   .timeZone('America/New_York')
-//   .onRun(() => {
-//     // stuff
-//   });
+// @ts-ignore
+import {parse} from 'json-bigint';
 
 function getUri(path: string, token: string) {
     return `https://canvas.instructure.com/api/v1/${path}?access_token=${token}`;
@@ -24,22 +18,18 @@ async function canvasGetAssignments(token: string): Promise<any> {
 }
 
 async function getAssignments(token: string, data: JSON[]) {
-    //@ts-ignore
-    let assignmentList = [];
+    let assignmentList: JSON[]  = [];
     await data.forEach(course => {
-        //@ts-ignore
+        // @ts-ignore
         fetch(getUri(`courses/${course["id"].toString()}/assignments`, token), {
             method: 'GET'
         }).then((response: Response) => response.text())
             .then(json => {
-                // console.log(getUri(`courses/${course["id"]}/assignments`, token));
                 assignmentList.push(parse(json));
-                // console.log(parse(json));
             }).catch((err) => {
             console.log(err);
         });
     });
-    //@ts-ignore
     console.log(assignmentList);
 }
 

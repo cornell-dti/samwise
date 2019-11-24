@@ -1,4 +1,3 @@
-import firebase from 'firebase/app';
 import 'firebase/firestore';
 import * as admin from 'firebase-admin';
 import serviceAccount from './firebase-adminsdk.json';

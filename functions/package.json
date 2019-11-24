@@ -1,4 +1,7 @@
 {
+  "name": "samwise-functions",
+  "version": "0.1.0",
+  "private": true,
   "scripts": {
     "tsc": "tsc --project tsconfig.json",
     "start": "yarn tsc && node dist/iCalFunctions.js"

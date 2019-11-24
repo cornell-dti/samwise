@@ -3,7 +3,7 @@ import * as admin from 'firebase-admin';
 
 type DocRef = admin.firestore.DocumentReference;
 
-  const managerRef = (user: string): DocRef => orderManagerCollection().doc(user);
+const managerRef = (user: string): DocRef => orderManagerCollection().doc(user);
 
 type Manager = {
   readonly tagsMaxOrder: number;

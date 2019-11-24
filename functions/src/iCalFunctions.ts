@@ -30,26 +30,26 @@ export function parseICal(link: string, user: string): void {
                     const endDate = ev['end'] == undefined ? new Date() : new Date(ev['end']);
                     const taskID: string = tasksCollection().doc().id;
                     const order: number = await getOrder(user, 'tasks');
-                    await settingsCollection().where("icalUID", "==", uid).get().then(async function (querySnapshot) {
-                        if (querySnapshot.size == 0) {
-                            await tasksCollection().doc(taskID).set({
-                                children: [],
-                                complete: endDate <= new Date(),
-                                date: endDate,
-                                inFocus: false,
-                                name: taskName,
-                                order: order,
-                                owner: user,
-                                tag: 'THE_GLORIOUS_NONE_TAG',
-                                type: 'ONE_TIME',
-                                icalUID: uid
-                            }).catch((e: Error) => console.log(e));
-                        }
-                    });
+                    if (endDate <= new Date()) {
+                        await tasksCollection().where("icalUID", "==", uid).get().then(async function (querySnapshot) {
+                            if (querySnapshot.size == 0) {
+                                await tasksCollection().doc(taskID).set({
+                                    children: [],
+                                    complete: false,
+                                    date: endDate,
+                                    inFocus: false,
+                                    name: taskName,
+                                    order: order,
+                                    owner: user,
+                                    tag: 'THE_GLORIOUS_NONE_TAG',
+                                    type: 'ONE_TIME',
+                                    icalUID: uid
+                                }).catch((e: Error) => console.log(e));
+                            }
+                        });
+                    }
                 }
             }
         }
     });
 }
-
-getICalLink();
