@@ -60,6 +60,7 @@ function FutureViewDayTaskContainer(
     const { source, destination } = result;
     if (destination == null) {
       // invalid drop, skip
+      console.log("test");
       return;
     }
     let sourceOrder: number;
@@ -70,16 +71,13 @@ function FutureViewDayTaskContainer(
 
 
   };
-
+  
   const taskListComponent = idOrderList.map(({ id }, idx) => (
-    <DragDropContext onDragEnd={onDragEnd}>
-      <Droppable droppableId={'future-view-droppable-id'}>
-      {(provided) => (
-        <div ref={provided.innerRef} {...provided.droppableProps} {...provided.droppableProps}>
-
+  
         <Draggable draggableId={id} index={idx}>
           { (provided) => (
             <div ref={provided.innerRef} {...provided.draggableProps} {...provided.dragHandleProps}>
+         
               <FutureViewTask
                 key={id}
                 taskId={id}
@@ -94,14 +92,20 @@ function FutureViewDayTaskContainer(
           )}
         </Draggable>
          
-        </div>)}
-      </Droppable>
-    </DragDropContext>
+       
   ));
   if (isInMainList) {
     const style = { overflow: 'hidden' };
     return (
+      <DragDropContext onDragEnd={onDragEnd}>
+      <Droppable droppableId={date}>
+      {(provided) => (
+        <div ref={provided.innerRef} {...provided.droppableProps}>
+
       <div className={styles.Container} style={style} ref={containerRef}>{taskListComponent}</div>
+      </div>)}
+      </Droppable>
+    </DragDropContext>
     );
   }
   return <div className={styles.Container} ref={containerRef}>{taskListComponent}</div>;
