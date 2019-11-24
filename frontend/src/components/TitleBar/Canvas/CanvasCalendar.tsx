@@ -1,6 +1,6 @@
 import React, { ReactElement, Component } from 'react';
 import settingStyles from '../Settings/SettingsPage.module.css';
-import { settingsCollection } from '../../../firebase/db';
+import { db, settingsCollection } from '../../../firebase/db';
 import { getAppUser } from '../../../firebase/auth-util';
 import styles from './CanvasCalendar.module.css';
 
@@ -16,8 +16,9 @@ export default class CanvasCalendar extends Component<{}, State> {
   };
 
   componentWillMount(): void {
-    settingsCollection().doc(getAppUser().email)
-      .get().then((doc) => {
+    db().collection('samwise-settings').doc(getAppUser().email)
+      .get()
+      .then((doc) => {
         const userSettings = doc.data();
         if (userSettings) {
           this.setState({ linked: userSettings.canvasCalendar != null });
