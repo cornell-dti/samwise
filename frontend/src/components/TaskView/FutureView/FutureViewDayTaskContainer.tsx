@@ -1,4 +1,4 @@
-import React, {ReactElement, useState} from 'react';
+import React, { ReactElement, useState } from 'react';
 import { connect } from 'react-redux';
 import { Draggable, DragDropContext, DropResult, Droppable } from 'react-beautiful-dnd';
 import { CalendarPosition, FloatingPosition } from '../../Util/TaskEditors/editors-types';
@@ -6,7 +6,9 @@ import FutureViewTask from './FutureViewTask';
 import styles from './FutureViewDayTaskContainer.module.css';
 import { useWindowSizeCallback } from '../../../hooks/window-size-hook';
 import { State } from '../../../store/store-types';
-import {createGetIdOrderListByDate, FocusViewTaskMetaData} from '../../../store/selectors';
+import { createGetIdOrderListByDate } from '../../../store/selectors';
+import { computeReorderMap, getReorderedList } from '../../../util/order-util';
+import { applyReorder } from '../../../firebase/actions';
 
 type OwnProps = {
   readonly date: string;
@@ -66,19 +68,18 @@ function FutureViewDayTaskContainer(
       console.log("test");
       return;
     }
-    const sourceOrder: number = localTasks[source.index].order;
-    const dest = destination.index;
-    const destinationOrder: number = dest == null ? sourceOrder : 0;
-    console.log(sourceOrder);
-    console.log(destinationOrder);
-    console.log(destination);
+    const sourceOrder: number = source.index;
+    const dest = localTasks[destination.index];
+    const destinationOrder: number = dest == null ? sourceOrder : dest.order;
+    console.log("Source Order: " + sourceOrder);
+    console.log("destinationOrder" + destinationOrder);
 
-    // const reorderMap = computeReorderMap(localTasks, sourceOrder, destinationOrder);
-    // setLocalTasks(getReorderedList(localTasks, reorderMap));
-    // applyReorder('tasks', reorderMap);
+    const reorderMap = computeReorderMap(localTasks, sourceOrder, destinationOrder);
+    setLocalTasks(getReorderedList(localTasks, reorderMap));
+    applyReorder('tasks', reorderMap);
   };
-  const taskListComponent = idOrderList.map(({ id }, idx) => (
-    <Draggable draggableId={id} index={idx}>
+  const taskListComponent = idOrderList.map(({ id, order }) => (
+    <Draggable draggableId={id} index={order}>
       { (provided) => (
         <div ref={provided.innerRef} {...provided.draggableProps} {...provided.dragHandleProps}>
           <FutureViewTask
