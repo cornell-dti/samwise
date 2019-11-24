@@ -26,7 +26,7 @@ const notifyAll = (): void => {
   }
 };
 
-const bindListener = (listener: Listener): () => void => {
+const bindListener = (listener: Listener): (() => void) => {
   const id = listenerSize;
   listeners.set(id, listener);
   listenerSize += 1;
@@ -66,7 +66,17 @@ export function useWindowSizeCallback(onChange: (windowSize: WindowSize) => void
  * @return the computed value.
  */
 export function useMappedWindowSize<T>(f: (windowSize: WindowSize) => T): T {
-  return f(useWindowSize());
+  const [mappedValue, setMappedValue] = useState(() => f(getWindowSize()));
+  useEffect(
+    () => bindListener((windowSize: WindowSize): void => {
+      const newMappedValue = f(windowSize);
+      if (newMappedValue !== mappedValue) {
+        setMappedValue(newMappedValue);
+      }
+    }),
+    [f, mappedValue],
+  );
+  return mappedValue;
 }
 
 /**
