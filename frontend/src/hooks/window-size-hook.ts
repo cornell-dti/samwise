@@ -52,10 +52,11 @@ export function useWindowSize(): WindowSize {
 /**
  * A hook for window size.
  */
-export function useWindowSizeCallback(onChange: (windowSize: WindowSize) => void): void {
+export function useWindowSizeCallback(onChange: (windowSize: WindowSize) => void): WindowSize {
   const [size, setSize] = useState(getWindowSize);
   useEffect(() => bindListener(setSize), []);
   useEffect(() => onChange(size));
+  return size;
 }
 
 /**
