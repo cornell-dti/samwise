@@ -30,6 +30,7 @@ import { ReactComponent as Unchecked } from '../../assets/svgs/unchecked.svg';
 import { ReactComponent as DropDown } from '../../assets/svgs/v.svg';
 import { ReactComponent as XDark } from '../../assets/svgs/XDark.svg';
 import { ReactComponent as XLight } from '../../assets/svgs/XLight.svg';
+import { ReactComponent as RepeatFrequency } from '../../assets/svgs/repeat-frequency.svg';
 
 type SvgProps = SVGAttributes<SVGElement>;
 
@@ -124,6 +125,10 @@ const SamwiseIcon = ({ iconName, title, ...otherProps }: Props): ReactElement =>
     case 'x-light-settings':
       SvgComponent = XLight;
       altText = 'Close Settings';
+      break;
+    case 'repeat-frequency':
+      SvgComponent = RepeatFrequency;
+      altText = 'Repeat Frequency';
       break;
     default:
       throw new Error(`Unrecognized icon name: ${iconName}`);
