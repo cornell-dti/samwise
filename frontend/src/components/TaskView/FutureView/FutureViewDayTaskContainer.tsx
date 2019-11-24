@@ -60,7 +60,7 @@ function FutureViewDayTaskContainer(
   const [localTasks, setLocalTasks] = useState<IdOrder[]>(idOrderList);
   const onDragEnd = (result: DropResult): void => {
     const { source, destination } = result;
-    console.log(destination);
+    console.log(result);
     if (destination == null) {
       // invalid drop, skip
       console.log("test");
@@ -69,9 +69,9 @@ function FutureViewDayTaskContainer(
     const sourceOrder: number = localTasks[source.index].order;
     const dest = destination.index;
     const destinationOrder: number = dest == null ? sourceOrder : 0;
-
     console.log(sourceOrder);
     console.log(destinationOrder);
+    console.log(destination);
 
     // const reorderMap = computeReorderMap(localTasks, sourceOrder, destinationOrder);
     // setLocalTasks(getReorderedList(localTasks, reorderMap));
@@ -96,10 +96,10 @@ function FutureViewDayTaskContainer(
     </Draggable>
   ));
   if (isInMainList) {
-    const style = { overflow: 'hidden' };
+    const style = {};
     return (
       <DragDropContext onDragEnd={onDragEnd}>
-        <Droppable droppableId="droppable-id">
+        <Droppable droppableId="onetestyboy">
           {(provided) => (
             <div ref={provided.innerRef} {...provided.droppableProps}>
               <div
