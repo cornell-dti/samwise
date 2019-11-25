@@ -25,7 +25,9 @@ export function parseICal(link: string, user: string): void {
                 let ev = data[k];
                 if (data[k].type == 'VEVENT') {
                     const taskName = ev['summary'];
-                    const uid = ev['uid'];
+                    //the unique id i will use is a concat of the user and event uid because uids are not unique between
+                    // users
+                    const uid = ev['uid'] + user;
                     const endObject: any = ev['end'];
                     const endDate = endObject == null ? null : new Date(endObject.getTime());
                     const taskID: string = tasksCollection().doc().id;
@@ -34,7 +36,6 @@ export function parseICal(link: string, user: string): void {
                         continue;
                     }
                     if (endDate > today) {
-                        // console.log(endDate);
                         await tasksCollection().where("icalUID", "==", uid).get().then(async function (querySnapshot) {
                             if (querySnapshot.size == 0) {
                                 await tasksCollection().doc(taskID).set({
