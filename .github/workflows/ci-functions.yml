@@ -1,8 +1,14 @@
 name: CI Functions
-on: push
+on:
+  push:
+    paths:
+      - '.github/workflows/ci-functions.yml'
+      - 'functions/**'
+      - 'package.json'
+      - 'yarn.lock'
 
 jobs:
-  check:
+  build:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@master
@@ -16,5 +22,7 @@ jobs:
           restore-keys: yarn-
       - name: Yarn Install
         run: yarn install
+      - name: Create Dummy Files
+        run: echo "{}" > functions/src/firebase-adminsdk.json
       - name: Run TypeScript Compiler
         run: yarn workspace functions tsc
