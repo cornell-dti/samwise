@@ -4,7 +4,7 @@ import serviceAccount from './firebase-adminsdk.json';
 
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount as any),
-  databaseURL: "https://samwise-dev.firebaseio.com"
+  databaseURL: 'https://samwise-dev.firebaseio.com',
 });
 
 /**

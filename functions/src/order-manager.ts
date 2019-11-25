@@ -1,5 +1,5 @@
-import { db, orderManagerCollection } from './db';
 import * as admin from 'firebase-admin';
+import { db, orderManagerCollection } from './db';
 
 type DocRef = admin.firestore.DocumentReference;
 
@@ -19,9 +19,8 @@ type PartialManager = Partial<Manager>;
  * @param {number} count the count allocated. Default to 1.
  * @return {Promise<number>} the promise of the order number.
  */
-export default async function allocateNewOrder(user:string,
-  orderFor: 'tags' | 'tasks', count = 1,
-): Promise<number> {
+export default async function allocateNewOrder(user: string,
+  orderFor: 'tags' | 'tasks', count = 1): Promise<number> {
   const ref = managerRef(user);
   const forTags = orderFor === 'tags';
   return db().runTransaction(async (transaction) => {

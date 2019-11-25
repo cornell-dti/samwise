@@ -1,11 +1,8 @@
-name: Release
-on:
-  push:
-    branches:
-      - release
+name: CI
+on: push
 
 jobs:
-  deploy:
+  lint:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@master
@@ -19,11 +16,5 @@ jobs:
           restore-keys: yarn-
       - name: Yarn Install
         run: yarn install
-      - name: Build frontend
-        run: yarn workspace frontend build
-      - name: Deploy to Production
-        env:
-          FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
-        run: |
-          ./node_modules/.bin/firebase use production
-          ./node_modules/.bin/firebase deploy --token=$FIREBASE_TOKEN --non-interactive --only hosting
+      - name: Run Linter
+        run: yarn lint

@@ -21,18 +21,20 @@ jobs:
       - uses: actions/checkout@master
       - name: Set up Node
         uses: actions/setup-node@v1
+      - name: Use Yarn Cache
+        uses: actions/cache@v1
+        with:
+          path: ~/.cache/yarn
+          key: yarn-${{ hashFiles(format('{0}{1}', github.workspace, '/yarn.lock')) }}
+          restore-keys: yarn-
       - name: Yarn Install
-        run: cd frontend && yarn install
+        run: yarn install
       - name: Run TypeScript Compiler
-        run: cd frontend && yarn tsc
-      - name: Run Linter
-        run: cd frontend && yarn lint
+        run: yarn workspace frontend tsc
       - name: Run Tests
-        run: cd frontend && yarn test
+        run: yarn workspace frontend test
       - name: Build frontend
-        run: |
-          cd frontend
-          PUBLIC_URL="/${{ github.event.number }}" yarn build:stage
+        run: PUBLIC_URL="/${{ github.event.number }}" yarn workspace frontend build:stage
       - name: Upload Built Static Assets
         uses: actions/upload-artifact@master
         with:
