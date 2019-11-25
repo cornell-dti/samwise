@@ -1,0 +1,20 @@
+name: CI Functions
+on: push
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@master
+      - name: Set up Node
+        uses: actions/setup-node@v1
+      - name: Use Yarn Cache
+        uses: actions/cache@v1
+        with:
+          path: ~/.cache/yarn
+          key: yarn-${{ hashFiles(format('{0}{1}', github.workspace, '/yarn.lock')) }}
+          restore-keys: yarn-
+      - name: Yarn Install
+        run: yarn install
+      - name: Run TypeScript Compiler
+        run: yarn workspace functions tsc
