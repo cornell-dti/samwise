@@ -5,7 +5,7 @@ import TagItem from '../Tags/TagItem';
 import ClassTagAdder from '../Tags/ClassTagAdder';
 import OtherTagAdder from '../Tags/OtherTagAdder';
 import styles from './SettingsPage.module.css';
-import { Tag, State } from '../../../store/store-types';
+import { Tag, Settings, State } from '../../../store/store-types';
 import { completeOnboarding, importCourseExams } from '../../../firebase/actions';
 import { firebaseSignOut } from '../../../firebase/auth-util';
 import CanvasCalendar from '../Canvas/CanvasCalendar';
@@ -60,12 +60,15 @@ export const TagsContainer = ({ title, children }: TagsContainerProps): ReactEle
   </div>
 );
 
-type Props = { readonly tags: Map<string, Tag> };
+type Props = {
+  readonly tags: Map<string, Tag>;
+  readonly settings: Settings;
+};
 
 /**
  * The settings page.
  */
-export function SettingsPage({ tags }: Props): ReactElement {
+export function SettingsPage({ tags, settings }: Props): ReactElement {
   const classTags: Tag[] = [];
   const otherTags: Tag[] = [];
   tags.forEach((tag) => {
@@ -78,6 +81,8 @@ export function SettingsPage({ tags }: Props): ReactElement {
   const renderTags = (arr: Tag[]): ReactNode => arr.map((tag: Tag) => (
     <TagItem key={tag.id} tag={tag} />
   ));
+  const { canvasCalendar } = settings;
+
   return (
     <div>
       <ClassAdder />
@@ -89,7 +94,7 @@ export function SettingsPage({ tags }: Props): ReactElement {
         {renderTags(otherTags)}
         <OtherTagAdder />
       </TagsContainer>
-      <CanvasCalendar />
+      <CanvasCalendar linked={canvasCalendar != null} />
       <div className={styles.FinalRowButtonContainer}>
         <div className={styles.SettingsButton}>
           <button
@@ -129,5 +134,5 @@ export function SettingsPage({ tags }: Props): ReactElement {
   );
 }
 
-const Connected = connect(({ tags }: State) => ({ tags }))(SettingsPage);
+const Connected = connect(({ tags, settings }: State) => ({ tags, settings }))(SettingsPage);
 export default Connected;
