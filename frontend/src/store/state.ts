@@ -14,7 +14,7 @@ export const initialState: State = {
   dateTaskMap: Map(),
   repeatedTaskSet: Set(),
   taskChildrenMap: Map(),
-  settings: { completedOnboarding: true, theme: 'light' },
+  settings: { canvasCalendar: null, completedOnboarding: true, theme: 'light' },
   bannerMessageStatus: {},
   courses: Map(),
 };
@@ -82,7 +82,7 @@ export const initialStateForTesting: State = {
     bar: Set('bar'),
     baz: Set('baz'),
   }),
-  settings: { completedOnboarding: true, theme: 'light' },
+  settings: { canvasCalendar: null, completedOnboarding: true, theme: 'light' },
   bannerMessageStatus: {},
   courses: Map({
     CS2112: [{

@@ -1,51 +1,35 @@
 import React, { ReactElement, Component } from 'react';
 import settingStyles from '../Settings/SettingsPage.module.css';
-import { db, settingsCollection } from '../../../firebase/db';
-import { getAppUser } from '../../../firebase/auth-util';
 import styles from './CanvasCalendar.module.css';
+import { setCanvasCalendar, readCanvasCalendar } from '../../../firebase/actions';
 
 type State = {
-  canvasCalendar: string;
+  canvasCalendar: string | null;
   linked: boolean;
 }
 
 export default class CanvasCalendar extends Component<{}, State> {
   public state: State = {
     canvasCalendar: '',
-    linked: false,
+    linked: readCanvasCalendar() != null,
   };
-
-  componentDidMount(): void {
-    db().collection('samwise-settings').doc(getAppUser().email)
-      .get()
-      .then((doc) => {
-        const userSettings = doc.data();
-        if (userSettings) {
-          this.setState({ linked: userSettings.canvasCalendar != null });
-        }
-      });
-  }
 
   handleChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
     this.setState({ canvasCalendar: e.target.value });
   };
 
-  addiCalToFirestore = (e: React.FormEvent<HTMLFormElement>): void => {
+  handleSubmit = (e: React.FormEvent<HTMLFormElement>): void => {
     e.preventDefault();
     const { canvasCalendar } = this.state;
-    settingsCollection().doc(getAppUser().email)
-      .update({ canvasCalendar })
-      .then(() => {
-        this.setState({ linked: true });
-      });
+    if (canvasCalendar !== '') {
+      setCanvasCalendar(canvasCalendar);
+      this.setState({ linked: true });
+    }
   };
 
   removeCanvasiCal = (): void => {
-    settingsCollection().doc(getAppUser().email)
-      .update({ canvasCalendar: null })
-      .then(() => {
-        this.setState({ linked: false });
-      });
+    setCanvasCalendar(null);
+    this.setState({ linked: false });
   };
 
   calendarState = (): State => {
@@ -64,7 +48,7 @@ export default class CanvasCalendar extends Component<{}, State> {
           >
             <form
               className={styles.CalendarForm}
-              onSubmit={this.addiCalToFirestore}
+              onSubmit={this.handleSubmit}
             >
               <input
                 placeholder="Paste your Canvas iCal link here"
@@ -84,7 +68,10 @@ export default class CanvasCalendar extends Component<{}, State> {
 
           <div
             className={settingStyles.SettingsButton}
-            style={{ display: this.calendarState().linked ? 'block' : 'none' }}
+            style={{
+              marginTop: '12px',
+              display: this.calendarState().linked ? 'block' : 'none',
+            }}
           >
             Your Canvas calendar feed is linked.
             <button
