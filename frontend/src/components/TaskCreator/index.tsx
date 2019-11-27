@@ -371,7 +371,7 @@ export default class TaskCreator extends React.PureComponent<{}, State> {
             onKeyDown={this.newSubTaskKeyPress}
           />
           <button type="button" className={styles.ResetButton} onClick={this.resetTask}>
-            {'Clear'}
+            Clear
           </button>
         </div>
       </div>
