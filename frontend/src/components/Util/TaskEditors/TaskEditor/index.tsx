@@ -99,6 +99,7 @@ function TaskEditor(
   const [subTaskToFocus, setSubTaskToFocus] = useState<TaskToFocus>(null);
 
   const onMouseLeave = (): void => {
+    onSave();
     if (onBlur) {
       onBlur();
     }
@@ -204,7 +205,7 @@ function TaskEditor(
       if (type === 'ONE_TIME') {
         onSave();
       }
-    }, 500);
+    }, 1000);
     return () => clearInterval(intervalID);
   }, [type, onSave]);
 
@@ -215,7 +216,7 @@ function TaskEditor(
       onMouseEnter={onFocus}
       onMouseLeave={onMouseLeave}
       onFocus={onFocus}
-      onBlur={ignore}
+      onBlur={onMouseLeave}
       ref={editorRef}
     >
       {isOverdue && <OverdueAlert target="task-card" />}
