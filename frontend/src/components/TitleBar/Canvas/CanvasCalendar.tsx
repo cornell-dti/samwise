@@ -1,77 +1,75 @@
-import React, { ReactElement, Component } from 'react';
+import React, { ReactElement, useState } from 'react';
+import { connect } from 'react-redux';
+import { Settings, State } from '../../../store/store-types';
 import settingStyles from '../Settings/SettingsPage.module.css';
 import styles from './CanvasCalendar.module.css';
 import { setCanvasCalendar } from '../../../firebase/actions';
 
-type Props = { readonly linked: boolean }
+type Props = { readonly settings: Settings }
 
-type State = { canvasCalendar: string | null }
+function CanvasCalendar({ settings }: Props): ReactElement {
+  const { canvasCalendar } = settings;
+  const linked = canvasCalendar != null;
+  const [input, setInput] = useState('');
 
-export default class CanvasCalendar extends Component<Props, State> {
-  public state: State = { canvasCalendar: '' };
-
-  handleChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
-    this.setState({ canvasCalendar: e.target.value });
-  };
-
-  handleSubmit = (e: React.FormEvent<HTMLFormElement>): void => {
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>): void => {
     e.preventDefault();
-    const { canvasCalendar } = this.state;
-    if (canvasCalendar !== '') { setCanvasCalendar(canvasCalendar); }
+    const iCalLink = input;
+    setCanvasCalendar(iCalLink);
   };
 
-  removeCanvasiCal = (): void => {
+  const removeCanvasiCal = (): void => {
     setCanvasCalendar(null);
   };
 
-  render(): ReactElement {
-    const { linked } = this.props;
+  return (
+    <div className={settingStyles.SettingsSection}>
+      <p className={settingStyles.SettingsSectionTitle}>Canvas Calendar</p>
+      <div className={settingStyles.SettingsSectionContent}>
 
-    return (
-      <div className={settingStyles.SettingsSection}>
-        <p className={settingStyles.SettingsSectionTitle}>Canvas Calendar</p>
-        <div className={settingStyles.SettingsSectionContent}>
-
-          <div style={{ display: !linked ? 'block' : 'none' }}>
-            <form
-              className={styles.CalendarForm}
-              onSubmit={this.handleSubmit}
-            >
-              <input
-                placeholder="Paste your Canvas iCal link here"
-                type="text"
-                onChange={this.handleChange}
-                className={styles.CalendarInput}
-              />
-            </form>
-            <a
-              className={styles.HelpButton}
-              href="https://community.canvaslms.com/docs/DOC-10691-4212717348"
-              title="Link to Canvas iCal guide"
-            >
-              Having trouble finding the iCal link?
-            </a>
-          </div>
-
-          <div
-            className={settingStyles.SettingsButton}
-            style={{
-              marginTop: '12px',
-              display: linked ? 'block' : 'none',
-            }}
+        <div style={{ display: !linked ? 'block' : 'none' }}>
+          <form
+            className={styles.CalendarForm}
+            onSubmit={handleSubmit}
           >
-            Your Canvas calendar feed is linked.
-            <button
-              type="button"
-              style={{ marginLeft: '12px' }}
-              onClick={this.removeCanvasiCal}
-              title="Remove Canvas iCal Link"
-            >
-              Unlink
-            </button>
-          </div>
+            <input
+              placeholder="Paste your Canvas iCal link here"
+              type="text"
+              className={styles.CalendarInput}
+              value={input}
+              onChange={(e) => setInput(e.target.value)}
+            />
+          </form>
+          <a
+            className={styles.HelpButton}
+            href="https://community.canvaslms.com/docs/DOC-10691-4212717348"
+            title="Link to Canvas iCal guide"
+          >
+            Having trouble finding the iCal link?
+          </a>
+        </div>
+
+        <div
+          className={settingStyles.SettingsButton}
+          style={{
+            marginTop: '12px',
+            display: linked ? 'block' : 'none',
+          }}
+        >
+          Your Canvas calendar feed is linked.
+          <button
+            type="button"
+            style={{ marginLeft: '12px' }}
+            onClick={removeCanvasiCal}
+            title="Remove Canvas iCal Link"
+          >
+            Unlink
+          </button>
         </div>
       </div>
-    );
-  }
+    </div>
+  );
 }
+
+const Connected = connect(({ settings }: State) => ({ settings }))(CanvasCalendar);
+export default Connected;
