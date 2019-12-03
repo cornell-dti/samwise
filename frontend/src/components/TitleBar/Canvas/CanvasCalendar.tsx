@@ -51,15 +51,15 @@ function CanvasCalendar({ settings }: Props): ReactElement {
 
         <div
           className={settingStyles.SettingsButton}
-          style={{
-            marginTop: '12px',
-            display: linked ? 'block' : 'none',
-          }}
+          style={{ display: linked ? 'block' : 'none' }}
         >
-          Your Canvas calendar feed is linked.
+          <p style={{ wordBreak: 'break-all' }}>
+            Your Canvas calendar feed is linked.
+            <br />
+            {canvasCalendar}
+          </p>
           <button
             type="button"
-            style={{ marginLeft: '12px' }}
             onClick={removeCanvasiCal}
             title="Remove Canvas iCal Link"
           >
