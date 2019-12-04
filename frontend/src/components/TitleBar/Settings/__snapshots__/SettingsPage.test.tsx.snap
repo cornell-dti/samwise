@@ -356,7 +356,7 @@ exports[`SettingsPage matches snapshot. 1`] = `
         }
       >
         <form
-          className="CalendarForm"
+          className="CalendarForm SettingsButton"
           onSubmit={[Function]}
         >
           <input
@@ -366,6 +366,12 @@ exports[`SettingsPage matches snapshot. 1`] = `
             type="text"
             value=""
           />
+          <button
+            title="Link Canvas iCal"
+            type="submit"
+          >
+             Save 
+          </button>
         </form>
         <a
           className="HelpButton"

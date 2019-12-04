@@ -29,7 +29,7 @@ function CanvasCalendar({ settings }: Props): ReactElement {
 
         <div style={{ display: !linked ? 'block' : 'none' }}>
           <form
-            className={styles.CalendarForm}
+            className={[styles.CalendarForm, settingStyles.SettingsButton].join(' ')}
             onSubmit={handleSubmit}
           >
             <input
@@ -39,6 +39,7 @@ function CanvasCalendar({ settings }: Props): ReactElement {
               value={input}
               onChange={(e) => setInput(e.target.value)}
             />
+            <button type="submit" title="Link Canvas iCal"> Save </button>
           </form>
           <a
             className={styles.HelpButton}
