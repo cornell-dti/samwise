@@ -1,7 +1,7 @@
 import React, { ReactElement } from 'react';
 import { Map } from 'immutable';
 import { connect } from 'react-redux';
-import Fuse from 'fuse.js';
+import Fuse, { FuseOptions } from 'fuse.js';
 import SearchBox from 'components/Util/SearchBox';
 import styles from './TagAdder.module.css';
 import { Course, State } from '../../../store/store-types';
@@ -18,7 +18,7 @@ type SimpleCourse = {
   readonly noSpaceName: string;
 };
 
-type Props = { readonly fuse: Fuse<SimpleCourse> | null };
+type Props = { readonly fuse: Fuse<SimpleCourse, FuseOptions<SimpleCourse>> | null };
 
 /**
  * Returns the computed course options.

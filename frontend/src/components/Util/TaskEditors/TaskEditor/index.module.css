@@ -27,7 +27,7 @@
 .TaskEditorFlexibleContainer {
   position: relative;
   display: flex;
-  margin: 16px 8px;
+  padding: 8px;
   align-content: center;
   align-items: center;
 }
@@ -169,7 +169,7 @@ input.TaskEditorFlexibleInput:focus-within::placeholder {
   max-height: 50px;
   transition: max-height 0.2s ease-in-out;
   overflow: hidden;
-  margin: -15px 0 20px 0;
+  margin: 0 0 8px 0;
   padding: 0;
 }
 
@@ -202,4 +202,3 @@ input.TaskEditorFlexibleInput:focus-within::placeholder {
   color: white;
   margin: 0 0.5em;
 }
-

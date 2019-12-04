@@ -127,7 +127,7 @@ function reducer(state: State, action: Action): State {
 }
 
 export default function useTaskDiffReducer(
-  initMainTask: MainTask, initSubTasks: readonly SubTask[],
+  initMainTask: MainTask, initSubTasks: readonly SubTask[], onChange: () => void,
 ): TaskDiffActions {
   const [state, dispatch] = useReducer(reducer, [initMainTask, initSubTasks], initializer);
   const { mainTask, subTasks, prevFullTask, diff } = state;
@@ -139,18 +139,25 @@ export default function useTaskDiffReducer(
     mainTask,
     subTasks,
     diff,
-    dispatchEditMainTask: (change: PartialMainTask): void => dispatch({
-      type: 'EDIT_MAIN_TASK', change,
-    }),
-    dispatchAddSubTask: (newSubTask: SubTaskWithoutId): void => dispatch({
-      type: 'ADD_SUBTASK', newSubTask,
-    }),
-    dispatchEditSubTask: (subTaskId: string, change: PartialSubTask): void => dispatch({
-      type: 'EDIT_SUBTASK', subTaskId, change,
-    }),
-    dispatchDeleteSubTask: (subtaskId: string): void => dispatch({
-      type: 'DELETE_SUBTASK', subtaskId,
-    }),
-    reset: (): void => dispatch({ type: 'RESET', mainTask: initMainTask, subTasks: initSubTasks }),
+    dispatchEditMainTask: (change: PartialMainTask): void => {
+      dispatch({ type: 'EDIT_MAIN_TASK', change });
+      onChange();
+    },
+    dispatchAddSubTask: (newSubTask: SubTaskWithoutId): void => {
+      dispatch({ type: 'ADD_SUBTASK', newSubTask });
+      onChange();
+    },
+    dispatchEditSubTask: (subTaskId: string, change: PartialSubTask): void => {
+      dispatch({ type: 'EDIT_SUBTASK', subTaskId, change });
+      onChange();
+    },
+    dispatchDeleteSubTask: (subtaskId: string): void => {
+      dispatch({ type: 'DELETE_SUBTASK', subtaskId });
+      onChange();
+    },
+    reset: (): void => {
+      dispatch({ type: 'RESET', mainTask: initMainTask, subTasks: initSubTasks });
+      onChange();
+    },
   };
 }

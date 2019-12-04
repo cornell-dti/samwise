@@ -3,10 +3,6 @@
   "parser": "@typescript-eslint/parser",
   "plugins": ["@typescript-eslint", "jest"],
   "env": { "browser": true, "node": true, "jest/globals": true },
-  "parserOptions": {
-    "project": "./tsconfig.json",
-    "ecmaFeatures": { "jsx": true }
-  },
   "rules": {
     "object-curly-newline": [
       "error",
@@ -37,8 +33,17 @@
     "import/resolver": {
       "node": {
         "extensions": [".mjs", ".js", ".json", ".ts", ".tsx"],
-        "paths": ["src"]
+        "paths": ["frontend/src", "functions/src"]
       }
     }
-  }
+  },
+  "overrides": [
+    {
+      "files": ["*.js", "*.jsx"],
+      "rules": {
+        "@typescript-eslint/explicit-function-return-type": "off",
+        "@typescript-eslint/no-var-requires": "off"
+      }
+    }
+  ]
 }

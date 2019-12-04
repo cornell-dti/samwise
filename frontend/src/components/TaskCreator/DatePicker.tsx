@@ -19,6 +19,10 @@ type Props = {
   readonly onClearPicker: () => void;
 };
 
+const weekDays: readonly [string, number][] = [
+  ['S', 0], ['M', 1], ['T', 2], ['W', 3], ['T', 4], ['F', 5], ['S', 6],
+];
+
 type InternalDate =
 {
   type: 'normal' | 'repeat';
@@ -137,12 +141,13 @@ export default function DatePicker(props: Props): ReactElement {
   /**
    * The list of labels and inputs making up the seven weekdays users can check and uncheck
    */
-  const weekdayPickers = ['S', 'M', 'T', 'W', 'T', 'F', 'S'].map(
-    (x, i) => {
+  const weekdayPickers = weekDays.map(
+    ([x, i]) => {
       const isDaySet = isDayOfWeekSet(internalDate.checkedWeeks, i);
       return (
         <label
           htmlFor={`newTaskRepeatInputCheck${i}`}
+          key={`${x}-${i}`}
           style={isDaySet ? {
             background: '#5a5a5a', color: 'white',
           } : {}}

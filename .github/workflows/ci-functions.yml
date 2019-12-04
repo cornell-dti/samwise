@@ -1,11 +1,14 @@
-name: CD
+name: CI Functions
 on:
   push:
-    branches:
-      - master
+    paths:
+      - '.github/workflows/ci-functions.yml'
+      - 'functions/**'
+      - 'package.json'
+      - 'yarn.lock'
 
 jobs:
-  deploy:
+  build:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@master
@@ -19,11 +22,7 @@ jobs:
           restore-keys: yarn-
       - name: Yarn Install
         run: yarn install
-      - name: Build frontend
-        run: yarn workspace frontend build:stage
-      - name: Deploy to Firebase Staging Site
-        env:
-          FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
-        run: |
-          ./node_modules/.bin/firebase use default
-          ./node_modules/.bin/firebase deploy --token=$FIREBASE_TOKEN --non-interactive --only hosting
+      - name: Create Dummy Files
+        run: echo "{}" > functions/src/firebase-adminsdk.json
+      - name: Run TypeScript Compiler
+        run: yarn workspace functions tsc
