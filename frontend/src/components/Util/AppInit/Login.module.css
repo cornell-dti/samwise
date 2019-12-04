@@ -191,7 +191,8 @@
 
 .LandingMidImg{
   position:absolute;
-  left:40px;
+  left:5vw;
+  width:60vw;
   z-index:0;
 }
 
