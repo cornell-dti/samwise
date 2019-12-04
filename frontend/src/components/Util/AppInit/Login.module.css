@@ -109,11 +109,6 @@
   padding: 35px 45px;
 }
 
-.Landing header>div{
-  float:right;
-  transform:translateY(-12px);
-}
-
 .LandingHeroWrap{
   position:relative;
 }
@@ -141,6 +136,7 @@
 .LandingHeroLogin{
   max-width:60%;
   text-align:center;
+  margin-top:-100px;
 }
 
 .LandingHeroLogin>img{
@@ -151,7 +147,6 @@
 }
 
 .LandingHeroLogin>div {
-  /* Override Google's default style */
   margin-top:-28px;
 }
 
@@ -234,10 +229,16 @@
 }
 
 @media(max-width:900px){
+  .Landing header{
+    text-align:center;
+  }
+
   .LandingHeroWrap h1{
     width:100%;
     padding:0 50px;
     margin-bottom:0;
+    font-size:9vw;
+    line-height:11vw;
   }
 
   .LandingHeroWrap>img{
@@ -246,6 +247,7 @@
 
   .LandingHeroLogin{
     max-width:100%;
+    margin-top:-50px;
   }
 
   .LandingScreenshot{
