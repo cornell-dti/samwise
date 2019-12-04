@@ -17,10 +17,8 @@ import splashMidImage from '../../../assets/splash/splash_mid_image.svg';
 import feature1 from '../../../assets/splash/feature1.svg';
 import feature2 from '../../../assets/splash/feature2.svg';
 import feature3 from '../../../assets/splash/feature3.svg';
-import splashPeakBear2 from '../../../assets/splash/splash_peak_bear_2.svg';
 import logoHeart from '../../../assets/splash/heart_logo.svg';
 import logoLink from '../../../assets/splash/link_logo.svg';
-import googleLogin from '../../../assets/splash/google_login/normal.png';
 
 const uiConfig = {
   signInFlow: 'popup',
@@ -123,14 +121,6 @@ export default function LoginBarrier({ appRenderer }: Props): ReactElement {
           <img src={feature1} className={styles.LandingFeatures} alt="Take control of your schedule" />
           <img src={feature2} className={styles.LandingFeatures} alt="Your workload, visualized" />
           <img src={feature3} className={styles.LandingFeatures} alt="Create actionable (sub)tasks" />
-        </div>
-        <div className={styles.LandingLastLogin}>
-          <img src={splashPeakBear2} alt="" />
-          <p>
-            <button type="button">
-              <img src={googleLogin} alt="Login with Google" />
-            </button>
-          </p>
         </div>
         <footer>
           <p>
