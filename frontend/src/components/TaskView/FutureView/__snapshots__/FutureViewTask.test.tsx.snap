@@ -21,6 +21,21 @@ exports[`FutureViewTask(false, true, false) matches snapshot. 1`] = `
       }
     }
   >
+    <span
+      title="Reorder"
+    >
+      <svg
+        alt="Reorder"
+        className="TaskIcon"
+        height="1em"
+        onKeyUp={[Function]}
+        tabIndex={0}
+        title="Reorder"
+        width="1em"
+      >
+        grabbers.svg
+      </svg>
+    </span>
     <label
       className="TaskCheckBox CheckBox"
     >
@@ -98,6 +113,21 @@ exports[`FutureViewTask(false, true, true) matches snapshot. 1`] = `
       }
     }
   >
+    <span
+      title="Reorder"
+    >
+      <svg
+        alt="Reorder"
+        className="TaskIcon"
+        height="1em"
+        onKeyUp={[Function]}
+        tabIndex={0}
+        title="Reorder"
+        width="1em"
+      >
+        grabbers.svg
+      </svg>
+    </span>
     <label
       className="TaskCheckBox CheckBox"
     >
@@ -179,6 +209,21 @@ exports[`FutureViewTask(true, true, false) matches snapshot. 1`] = `
       }
     }
   >
+    <span
+      title="Reorder"
+    >
+      <svg
+        alt="Reorder"
+        className="TaskIcon"
+        height="1em"
+        onKeyUp={[Function]}
+        tabIndex={0}
+        title="Reorder"
+        width="1em"
+      >
+        grabbers.svg
+      </svg>
+    </span>
     <label
       className="TaskCheckBox CheckBox"
     >
@@ -256,6 +301,21 @@ exports[`FutureViewTask(true, true, true) matches snapshot. 1`] = `
       }
     }
   >
+    <span
+      title="Reorder"
+    >
+      <svg
+        alt="Reorder"
+        className="TaskIcon"
+        height="1em"
+        onKeyUp={[Function]}
+        tabIndex={0}
+        title="Reorder"
+        width="1em"
+      >
+        grabbers.svg
+      </svg>
+    </span>
     <label
       className="TaskCheckBox CheckBox"
     >
