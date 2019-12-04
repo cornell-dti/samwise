@@ -20,6 +20,7 @@ import feature3 from '../../../assets/splash/feature3.svg';
 import splashPeakBear2 from '../../../assets/splash/splash_peak_bear_2.svg';
 import logoHeart from '../../../assets/splash/heart_logo.svg';
 import logoLink from '../../../assets/splash/link_logo.svg';
+import googleLogin from '../../../assets/splash/google_login/normal.png';
 
 const uiConfig = {
   signInFlow: 'popup',
@@ -125,6 +126,11 @@ export default function LoginBarrier({ appRenderer }: Props): ReactElement {
         </div>
         <div className={styles.LandingLastLogin}>
           <img src={splashPeakBear2} alt="" />
+          <p>
+            <button type="button">
+              <img src={googleLogin} alt="Login with Google" />
+            </button>
+          </p>
         </div>
         <footer>
           <p>

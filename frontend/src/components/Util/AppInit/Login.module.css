@@ -196,34 +196,6 @@
   z-index:0;
 }
 
-/*.LandingLower section{
-  z-index:1;
-  background:white;
-  position:relative;
-  display:inline-block;
-  width:20vw;
-  height:30vw;
-  vertical-align:top;
-
-  margin-left:10px;
-
-  border-radius:5px;
-  font-weight:500;
-
-  text-align:center;
-}
-
-.LandingLower section>img {
-  width:20vw;
-  height:20vw;
-  object-position:center;
-  object-fit:contain;
-}
-
-.LandingLower section>h2>span{
-  color:#7fbdff;
-}*/
-
 .LandingFeatures{
   display:inline-block;
   margin-left:10vw;
@@ -239,6 +211,28 @@
 
 .LandingLastLogin {
   text-align:center;
+}
+
+.LandingLastLogin > img{
+  position:relative;
+  z-index:2;
+  pointer-events: none;
+}
+
+.LandingLastLogin > p {
+  margin-top:-30px;
+}
+
+.LandingLastLogin button{
+  background:none;
+  padding:0;
+  margin:0;
+  border:none;
+  cursor:pointer;
+}
+
+.LandingLastLogin button img{
+  width:250px;
 }
 
 .LandingLower footer{
