@@ -459,7 +459,7 @@ export const completeOnboarding = (completedOnboarding: boolean): void => {
     .then(ignore);
 };
 
-export const setCanvasCalendar = (canvasCalendar: string | null): void => {
+export const setCanvasCalendar = (canvasCalendar: string | null | undefined): void => {
   settingsCollection().doc(getAppUser().email)
     .update({ canvasCalendar })
     .then(ignore);

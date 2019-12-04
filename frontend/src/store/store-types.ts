@@ -84,7 +84,7 @@ export type PartialMainTask = Partial<MainTask>;
  * The type of user settings.
  */
 export type Settings = {
-  readonly canvasCalendar: string | null;
+  readonly canvasCalendar: string | null | undefined;
   readonly completedOnboarding: boolean;
   readonly theme: 'light' | 'dark';
 };
