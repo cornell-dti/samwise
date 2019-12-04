@@ -1,8 +1,8 @@
 import React, { ReactElement } from 'react';
+import { DragDropContext, DropResult } from 'react-beautiful-dnd';
 import FutureViewDay from './FutureViewDay';
 import styles from './FutureViewNDays.module.css';
 import { SimpleDate } from './future-view-types';
-import { DragDropContext, DropResult } from 'react-beautiful-dnd';
 
 type Props = {
   readonly days: readonly SimpleDate[];
@@ -20,29 +20,28 @@ export default function FutureViewNDays(
 
   const onDragEnd = (result: DropResult): void => {
     const { source, destination } = result;
-    if (destination == null) {
-    
-    }
-  }
-  
+    console.log(result);
+    // if (destination == null) {
+    // }
+  };
   return (
     <DragDropContext onDragEnd={onDragEnd}>
-    <div className={styles.FutureViewNDays} style={containerStyle}>
-      {days.map((date: SimpleDate, index: number) => {
-        const taskEditorPosition = index < (nDays / 2) ? 'right' : 'left';
-        return (
-          <div key={date.text} className={styles.Column}>
-            <FutureViewDay
-              inNDaysView
-              calendarPosition="bottom"
-              taskEditorPosition={taskEditorPosition}
-              doesShowCompletedTasks={doesShowCompletedTasks}
-              date={date}
-            />
-          </div>
-        );
-      })}
-    </div>
+      <div className={styles.FutureViewNDays} style={containerStyle}>
+        {days.map((date: SimpleDate, index: number) => {
+          const taskEditorPosition = index < (nDays / 2) ? 'right' : 'left';
+          return (
+            <div key={date.text} className={styles.Column}>
+              <FutureViewDay
+                inNDaysView
+                calendarPosition="bottom"
+                taskEditorPosition={taskEditorPosition}
+                doesShowCompletedTasks={doesShowCompletedTasks}
+                date={date}
+              />
+            </div>
+          );
+        })}
+      </div>
     </DragDropContext>
   );
 }

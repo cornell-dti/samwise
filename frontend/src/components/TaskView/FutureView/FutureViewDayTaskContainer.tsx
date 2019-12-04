@@ -1,6 +1,6 @@
 import React, { ReactElement, useState } from 'react';
 import { connect } from 'react-redux';
-import { Draggable, DragDropContext, DropResult, Droppable } from 'react-beautiful-dnd';
+import { Draggable, DropResult, Droppable } from 'react-beautiful-dnd';
 import { CalendarPosition, FloatingPosition } from '../../Util/TaskEditors/editors-types';
 import FutureViewTask from './FutureViewTask';
 import styles from './FutureViewDayTaskContainer.module.css';
@@ -67,7 +67,7 @@ function FutureViewDayTaskContainer(
       // invalid drop, skip
       return;
     }
-    
+
     const sourceOrder: number = source.index;
     const dest = localTasks[destination.index];
     const destinationOrder: number = dest == null ? sourceOrder : dest.order;
@@ -98,20 +98,20 @@ function FutureViewDayTaskContainer(
   if (isInMainList) {
     const style = {};
     return (
-        <Droppable droppableId={"future-view-task-droppable-thankssam" + date}>
-          {(provided) => (
-            <div ref={provided.innerRef} {...provided.droppableProps}>
-              <div
-                className={styles.Container}
-                style={style}
-                ref={containerRef}
-              >
-                {taskListComponent}
-              </div>
-              {provided.placeholder}
+      <Droppable droppableId={`future-view-task-droppable-thankssam ${date}`}>
+        {(provided) => (
+          <div ref={provided.innerRef} {...provided.droppableProps}>
+            <div
+              className={styles.Container}
+              style={style}
+              ref={containerRef}
+            >
+              {taskListComponent}
             </div>
-          )}
-        </Droppable>
+            {provided.placeholder}
+          </div>
+        )}
+      </Droppable>
     );
   }
   return <div className={styles.Container} ref={containerRef}>{taskListComponent}</div>;
