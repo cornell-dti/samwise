@@ -143,8 +143,16 @@
   text-align:center;
 }
 
-.LandingHeroLogin img{
+.LandingHeroLogin>img{
   max-width:25%;
+  z-index:2;
+  position:relative;
+  pointer-events: none;
+}
+
+.LandingHeroLogin>div {
+  /* Override Google's default style */
+  margin-top:-28px;
 }
 
 .LandingBlue{
@@ -154,7 +162,7 @@
 }
 
 .LandingLower{
-  margin:300px 0 0 0;
+  margin:25vw 0 0 0;
   background:#7fbdff;
   min-height:1000px;
   position:relative;

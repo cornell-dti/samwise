@@ -96,13 +96,12 @@ export default function LoginBarrier({ appRenderer }: Props): ReactElement {
     <div className={styles.Landing}>
       <header>
         <img src={samwiseLogo} alt="Samwise" />
-        <FirebaseAuth uiConfig={uiConfig} firebaseAuth={firebase.auth()} />
       </header>
       <div className={styles.LandingHeroWrap}>
         <h1>
-Stop Worrying.
+          Stop Worrying.
           <br />
-Start Doing.
+          Start Doing.
         </h1>
         <img src={splashTopImage} alt="" />
         <div className={styles.LandingHeroLogin}>
