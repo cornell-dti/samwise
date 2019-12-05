@@ -30,8 +30,3 @@ const createTest = (
     expect(tree).toMatchSnapshot();
   });
 };
-
-createTest(false, false);
-createTest(false, false);
-createTest(false, true);
-createTest(false, true);
