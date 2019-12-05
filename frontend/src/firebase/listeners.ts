@@ -185,7 +185,11 @@ export default (onFirstFetched: () => void): (() => void) => {
 
   const unmountSettingsListener = listenSettingsChange(ownerEmail, (snapshot) => {
     if (!snapshot.exists) {
-      const newSettings: Settings = { completedOnboarding: false, theme: 'light' };
+      const newSettings: Settings = {
+        canvasCalendar: null,
+        completedOnboarding: false,
+        theme: 'light',
+      };
       settingsCollection().doc(ownerEmail).set(newSettings).then(ignore);
       return;
     }
@@ -193,8 +197,8 @@ export default (onFirstFetched: () => void): (() => void) => {
     if (data === undefined) {
       return;
     }
-    const { completedOnboarding, theme } = data as Settings;
-    store.dispatch(patchSettings({ completedOnboarding, theme }));
+    const { canvasCalendar, completedOnboarding, theme } = data as Settings;
+    store.dispatch(patchSettings({ canvasCalendar, completedOnboarding, theme }));
     firstSettingsFetched = true;
     reportFirstFetchedIfAllFetched();
   });

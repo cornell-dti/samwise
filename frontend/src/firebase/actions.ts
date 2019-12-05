@@ -459,6 +459,12 @@ export const completeOnboarding = (completedOnboarding: boolean): void => {
     .then(ignore);
 };
 
+export const setCanvasCalendar = (canvasCalendar: string | null | undefined): void => {
+  settingsCollection().doc(getAppUser().email)
+    .update({ canvasCalendar })
+    .then(ignore);
+};
+
 export const readBannerMessage = (bannerMessageId: BannerMessageIds, isRead: boolean): void => {
   const docRef = bannerMessageStatusCollection().doc(getAppUser().email);
   db().runTransaction(async (transaction) => {
