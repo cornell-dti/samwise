@@ -92,7 +92,7 @@ function TaskEditor(
     dispatchEditSubTask,
     dispatchDeleteSubTask,
     reset,
-  } = useTaskDiffReducer(initMainTask, initSubTasks, onChange || ignore);
+  } = useTaskDiffReducer(initMainTask, initSubTasks, onChange ?? ignore);
 
   const { name, tag, date, complete, inFocus } = mainTask;
 
@@ -138,7 +138,7 @@ function TaskEditor(
             const replaceDate = getDateWithDateString(
               date instanceof Date ? date : null, taskAppearedDate,
             );
-            const correctDate = diff.mainTaskEdits.date || replaceDate;
+            const correctDate = diff.mainTaskEdits.date ?? replaceDate;
             const diffForFork: Diff = {
               ...diff, mainTaskEdits: { ...diff.mainTaskEdits, date: correctDate },
             };
@@ -291,6 +291,6 @@ function TaskEditor(
 }
 
 const Connected = connect(
-  ({ tags }: State) => ({ getTag: (id: string) => tags.get(id) || NONE_TAG }),
+  ({ tags }: State) => ({ getTag: (id: string) => tags.get(id) ?? NONE_TAG }),
 )(TaskEditor);
 export default Connected;

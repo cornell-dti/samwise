@@ -43,7 +43,7 @@ export function cacheAppUser(user: AppUser): void {
  * Instead, it will throw an error.
  */
 export function getAppUser(): AppUser {
-  return appUser == null ? error('App is not initialized.') : appUser;
+  return appUser ?? error('App is not initialized.');
 }
 
 /**
