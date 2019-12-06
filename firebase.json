@@ -14,7 +14,6 @@
     ]
   },
   "functions": {
-    "source": "functions/",
-    "predeploy": ["cd \"$RESOURCE_DIR\"; yarn run lint", "cd \"$RESOURCE_DIR\"; yarn run build"]
+    "source": "functions/"
   }
 }
