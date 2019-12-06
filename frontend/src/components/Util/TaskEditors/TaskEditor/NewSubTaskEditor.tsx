@@ -2,22 +2,20 @@ import React, { KeyboardEvent, ReactElement, SyntheticEvent, useEffect, useRef }
 import styles from './index.module.css';
 
 type Props = {
-  readonly onChange: (change: string) => void;
-  readonly needToBeFocused: boolean;
-  readonly afterFocusedCallback: () => void;
+  readonly onFirstType: (change: string) => void;
   readonly onPressEnter: () => void;
+  readonly needToBeFocused: boolean;
+  readonly type: 'MASTER_TEMPLATE' | 'ONE_TIME';
 };
 
 export default function NewSubTaskEditor(
-  {
-    onChange, needToBeFocused, afterFocusedCallback, onPressEnter,
-  }: Props,
+  { onFirstType, onPressEnter, needToBeFocused }: Props,
 ): ReactElement {
   const onInputChange = (event: SyntheticEvent<HTMLInputElement>): void => {
     event.stopPropagation();
     const newSubTaskValue: string = event.currentTarget.value.trim();
     if (newSubTaskValue.length > 0) {
-      onChange(newSubTaskValue);
+      onFirstType(newSubTaskValue);
     }
   };
   const onKeyDown = (event: KeyboardEvent<HTMLInputElement>): void => {
@@ -33,7 +31,6 @@ export default function NewSubTaskEditor(
       const currentElement = editorRef.current;
       if (currentElement != null) {
         currentElement.focus();
-        afterFocusedCallback();
       }
     }
   });

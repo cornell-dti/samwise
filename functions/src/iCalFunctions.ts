@@ -1,5 +1,6 @@
-import {fromURL} from 'ical';
-import {settingsCollection, tasksCollection} from './db';
+/* eslint-disable no-await-in-loop */
+import { fromURL } from 'ical';
+import { settingsCollection, tasksCollection } from './db';
 import getOrder from './order-manager';
 
 export default async function getICalLink() {
@@ -12,9 +13,9 @@ export default async function getICalLink() {
             }
         });
     })
-        .catch(function (error) {
-            console.log("Error getting documents: ", error);
-        });
+    .catch((error) => {
+      console.log('Error getting documents: ', error);
+    });
 }
 
 export function parseICal(link: string, user: string): void {
@@ -54,7 +55,8 @@ export function parseICal(link: string, user: string): void {
                         });
                     }
                 }
-            }
+              });
+          }
         }
     });
 }

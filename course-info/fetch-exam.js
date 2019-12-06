@@ -34,12 +34,12 @@ function parsePrelimLine(line) {
     subject,
     courseNumber,
     sectionNumber: '',
-    time: date.getTime()
+    time: date.getTime(),
   };
 }
 
 function parseFinalLine(line) {
-  const segments = line.split(' ').filter(part => part !== '');
+  const segments = line.split(' ').filter((part) => part !== '');
   const subject = segments[0];
   const courseNumber = segments[1];
   const sectionNumber = segments[2];
@@ -60,7 +60,7 @@ function parseFinalLine(line) {
     subject,
     courseNumber,
     sectionNumber,
-    time: date.getTime()
+    time: date.getTime(),
   };
 }
 
@@ -79,8 +79,8 @@ function getExamInfoList(rawText, isFinal) {
 
 function createJson(url, isFinal, outFilename) {
   fetchExamText(url)
-    .then(rawText => getExamInfoList(rawText, isFinal))
-    .then(json => fs.writeFile(outFilename, JSON.stringify(json), () => {}));
+    .then((rawText) => getExamInfoList(rawText, isFinal))
+    .then((json) => fs.writeFile(outFilename, JSON.stringify(json), () => {}));
 }
 
 function main() {

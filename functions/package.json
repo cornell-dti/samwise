@@ -1,11 +1,12 @@
 {
   "name": "samwise-functions",
+  "version": "0.1.0",
+  "private": true,
   "scripts": {
-    "lint": "tslint --project tsconfig.json",
     "build": "tsc",
-    "serve": "npm run build && firebase serve --only functions",
-    "shell": "npm run build && firebase functions:shell",
-    "start": "npm run shell",
+    "serve": "yarn build && firebase serve --only functions",
+    "shell": "yarn build && firebase functions:shell",
+    "start": "yarn shell",
     "deploy": "firebase deploy --only functions",
     "logs": "firebase functions:log"
   },
@@ -22,12 +23,9 @@
     "node-fetch": "^2.6.0"
   },
   "devDependencies": {
-    "@types/firebase": "^3.2.1",
     "@types/ical": "^0.6.1",
     "@types/node-fetch": "^2.5.3",
-    "tslint": "^5.12.0",
     "typescript": "^3.7.2",
     "firebase-functions-test": "^0.1.6"
-  },
-  "private": true
+  }
 }

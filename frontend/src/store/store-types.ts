@@ -45,7 +45,7 @@ export type OneTimeTask = CommonTask<Date> & {
  * Fields that are filled represent differences from master template
  */
 
-export type PartialTask = Partial<Pick<FlexibleCommonTask, MainTaskProperties | 'children' >>;
+export type PartialTask = Partial<Pick<FlexibleCommonTask, MainTaskProperties | 'children'>>;
 
 export type RepeatingPattern =
   | { readonly type: 'WEEKLY'; readonly bitSet: number /* 7-bit */ }
@@ -84,6 +84,7 @@ export type PartialMainTask = Partial<MainTask>;
  * The type of user settings.
  */
 export type Settings = {
+  readonly canvasCalendar: string | null | undefined;
   readonly completedOnboarding: boolean;
   readonly theme: 'light' | 'dark';
 };

@@ -56,7 +56,6 @@ function FutureViewTask(
    * @param opener the opener passed by the floating task editor.
    * @return the onClick handler.
    */
-  // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
   const getOnClickHandler = (opener: () => void) => (event?: SyntheticEvent<HTMLElement>): void => {
     if (event == null) {
       opener();
@@ -177,7 +176,7 @@ const getCompoundTask = (
   if (original == null) {
     return null;
   }
-  const { color } = tags.get(original.tag) || NONE_TAG;
+  const { color } = tags.get(original.tag) ?? NONE_TAG;
   if (doesShowCompletedTasks) {
     let filteredSubTasks: SubTask[] = [];
     original.children.forEach((subTaskId) => {

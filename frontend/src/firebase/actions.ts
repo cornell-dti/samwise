@@ -149,7 +149,7 @@ export const addTask = (
 export const removeAllForks = (taskId: string): void => {
   (async () => {
     const { tasks } = store.getState();
-    const task = tasks.get(taskId) || error('bad!');
+    const task = tasks.get(taskId) ?? error('bad!');
     const repeatingTask = task as RepeatingTask;
     const forkIds = repeatingTask.forks.map((fork) => fork.forkId);
     const batch = db().batch();
@@ -418,7 +418,7 @@ export function completeTaskInFocus<T extends { readonly id: string; readonly or
   });
   newCompletedList = newCompletedList.sort((a, b) => a.order - b.order);
   const { tasks, subTasks } = store.getState();
-  const task = tasks.get(completedTaskIdOrder.id) || error('bad');
+  const task = tasks.get(completedTaskIdOrder.id) ?? error('bad');
   const batch = db().batch();
   if (task.inFocus) {
     batch.update(tasksCollection().doc(task.id), { complete: true });
@@ -456,6 +456,12 @@ export function applyReorder(
 export const completeOnboarding = (completedOnboarding: boolean): void => {
   settingsCollection().doc(getAppUser().email)
     .update({ completedOnboarding })
+    .then(ignore);
+};
+
+export const setCanvasCalendar = (canvasCalendar: string | null | undefined): void => {
+  settingsCollection().doc(getAppUser().email)
+    .update({ canvasCalendar })
     .then(ignore);
 };
 
