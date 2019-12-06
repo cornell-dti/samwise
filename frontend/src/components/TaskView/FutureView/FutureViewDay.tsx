@@ -124,7 +124,7 @@ export default function FutureViewDay(props: Props): ReactElement {
     );
   }
   const computeFloatingViewPosition = (): PositionStyle => {
-    const componentDiv = componentDivRef.current || error();
+    const componentDiv = componentDivRef.current ?? error();
     const boundingRect = componentDiv.getBoundingClientRect();
     if (!(boundingRect instanceof DOMRect)) {
       throw new Error('Bad boundingRect!');

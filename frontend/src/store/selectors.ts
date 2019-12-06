@@ -44,7 +44,7 @@ const getBannerMessageStatus = (
 
 const getTasksId = ({ tasks }: State): Set<string> => Set(tasks.keys());
 
-export const getTagById = ({ tags }: State, id: string): Tag => tags.get(id) || NONE_TAG;
+export const getTagById = ({ tags }: State, id: string): Tag => tags.get(id) ?? NONE_TAG;
 export const getTaskById = ({ tasks }: State, id: string): Task | null | undefined => tasks.get(id);
 export const getSubTaskById = (
   { subTasks }: State, id: string,

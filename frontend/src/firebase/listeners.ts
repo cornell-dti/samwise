@@ -205,7 +205,7 @@ export default (onFirstFetched: () => void): (() => void) => {
 
   const unmountBannerStatusListener = listenBannerMessageChange(ownerEmail, (snapshot) => {
     const data = snapshot.exists ? snapshot.data() : undefined;
-    const bannerMessageStatus = data as BannerMessageStatus || {};
+    const bannerMessageStatus = (data as BannerMessageStatus) ?? {};
     store.dispatch(patchBannerMessageStatus(bannerMessageStatus));
     firstBannerStatusFetched = true;
     reportFirstFetchedIfAllFetched();

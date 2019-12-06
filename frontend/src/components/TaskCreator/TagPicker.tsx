@@ -52,6 +52,6 @@ function TagPicker({ tag, opened, onTagChange, onPickerOpened, getTag }: Props):
 }
 
 const Connected = connect(
-  ({ tags }: State) => ({ getTag: (id: string) => tags.get(id) || NONE_TAG }),
+  ({ tags }: State) => ({ getTag: (id: string) => tags.get(id) ?? NONE_TAG }),
 )(TagPicker);
 export default Connected;

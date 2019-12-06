@@ -40,12 +40,12 @@ function patchTasks(state: State, { created, edited, deleted }: PatchTasks): Sta
         return;
       }
       const key = t.date.toDateString();
-      const oldTask = state.tasks.get(t.id) || error();
+      const oldTask = state.tasks.get(t.id) ?? error();
       if (oldTask.type === 'ONE_TIME') {
         const oldKey = oldTask.date.toDateString();
         if (oldKey !== key) {
           // remove first
-          const oldBucket = m.get(oldKey) || error('impossible!');
+          const oldBucket = m.get(oldKey) ?? error('impossible!');
           m.set(oldKey, oldBucket.remove(t.id));
         }
       }

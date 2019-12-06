@@ -189,7 +189,7 @@ export default class TaskCreator extends React.PureComponent<{}, State> {
       // Selecting a date, or user cancelled while date was not picked
       this.setState(
         {
-          date: date || new Date(),
+          date: date ?? new Date(),
           datePickerOpened: false,
           datePicked: Boolean(date),
         },

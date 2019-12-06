@@ -176,7 +176,7 @@ const getCompoundTask = (
   if (original == null) {
     return null;
   }
-  const { color } = tags.get(original.tag) || NONE_TAG;
+  const { color } = tags.get(original.tag) ?? NONE_TAG;
   if (doesShowCompletedTasks) {
     let filteredSubTasks: SubTask[] = [];
     original.children.forEach((subTaskId) => {
