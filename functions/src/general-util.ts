@@ -13,7 +13,7 @@ export function identity<T>(t: T): T { return t; }
 /**
  * An empty function used to ignore promise.
  */
-export const ignore = (): void => { };
+export const ignore = (): void => {return;};
 
 /**
  * Throw an error. Useful when want to use this as an expression.

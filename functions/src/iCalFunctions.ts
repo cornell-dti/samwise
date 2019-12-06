@@ -2,7 +2,7 @@ import {fromURL} from 'ical';
 import {settingsCollection, tasksCollection} from './db';
 import getOrder from './order-manager';
 
-export async function getICalLink() {
+export default async function getICalLink() {
     await settingsCollection().where("canvasCalendar", ">", "").get().then(function (querySnapshot) {
         querySnapshot.forEach(function (doc) {
             try {
@@ -20,24 +20,24 @@ export async function getICalLink() {
 export function parseICal(link: string, user: string): void {
     fromURL(link, {}, async function (err, data) {
         const today = new Date();
-        for (let k in data) {
+        for (const k in data) {
             if (data.hasOwnProperty(k)) {
-                let ev = data[k];
-                if (data[k].type == 'VEVENT') {
+                const ev = data[k];
+                if (data[k].type === 'VEVENT') {
                     const taskName = ev['summary'];
                     //the unique id i will use is a concat of the user and event uid because uids are not unique between
                     // users
                     const uid = ev['uid'] + user;
                     const endObject: any = ev['end'];
-                    const endDate = endObject == null ? null : new Date(endObject.getTime());
+                    const endDate = endObject === null ? null : new Date(endObject.getTime());
                     const taskID: string = tasksCollection().doc().id;
                     const order: number = await getOrder(user, 'tasks');
-                    if (endDate == null) {
+                    if (endDate === null) {
                         continue;
                     }
                     if (endDate > today) {
                         await tasksCollection().where("icalUID", "==", uid).get().then(async function (querySnapshot) {
-                            if (querySnapshot.size == 0) {
+                            if (querySnapshot.size === 0) {
                                 await tasksCollection().doc(taskID).set({
                                     children: [],
                                     complete: false,
@@ -58,5 +58,3 @@ export function parseICal(link: string, user: string): void {
         }
     });
 }
-
-getICalLink();
