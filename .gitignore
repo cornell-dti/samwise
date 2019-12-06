@@ -33,6 +33,7 @@ coverage.xml
 # Compiled Output
 **/build
 **/dist
+**/compiled
 
 # Runtime data
 pids

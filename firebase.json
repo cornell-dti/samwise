@@ -14,7 +14,6 @@
     ]
   },
   "functions": {
-    "source": "functions/",
-    "predeploy": ["yarn workspace functions build"]
+    "source": "functions/"
   }
 }
