@@ -11,13 +11,8 @@ import {
 import buildCoursesMap from 'common/lib/util/courses-util';
 import { ignore } from 'common/lib/util/general-util';
 import { FirestoreSubTask, FirestoreTag, FirestoreTask } from 'common/lib/types/firestore-types';
-import {
-  subTasksCollection,
-  tagsCollection,
-  tasksCollection,
-  settingsCollection,
-  bannerMessageStatusCollection,
-} from './db';
+import { QuerySnapshot, DocumentSnapshot } from 'common/lib/firebase/database';
+import { database } from './db';
 import { getAppUser } from './auth-util';
 import {
   patchCourses,
@@ -32,38 +27,36 @@ import { store } from '../store/store';
 
 // Some type alias
 type Timestamp = firebase.firestore.Timestamp;
-type DocumentSnapshot = firebase.firestore.DocumentSnapshot;
-type QuerySnapshot = firebase.firestore.QuerySnapshot;
 
 type UnmountCallback = () => void;
 const listenTagsChange = (
   email: string,
   listener: (snapshot: QuerySnapshot) => void,
-): UnmountCallback => tagsCollection()
+): UnmountCallback => database.tagsCollection()
   .where('owner', '==', email)
   .onSnapshot(listener);
 const listenTasksChange = (
   email: string,
   listener: (snapshot: QuerySnapshot) => void,
-): UnmountCallback => tasksCollection()
+): UnmountCallback => database.tasksCollection()
   .where('owner', '==', email)
   .onSnapshot(listener);
 const listenSubTasksChange = (
   email: string,
   listener: (snapshot: QuerySnapshot) => void,
-): UnmountCallback => subTasksCollection()
+): UnmountCallback => database.subTasksCollection()
   .where('owner', '==', email)
   .onSnapshot(listener);
 const listenSettingsChange = (
   email: string,
   listener: (snapshot: DocumentSnapshot) => void,
-): UnmountCallback => settingsCollection()
+): UnmountCallback => database.settingsCollection()
   .doc(email)
   .onSnapshot(listener);
 const listenBannerMessageChange = (
   email: string,
   listener: (snapshot: DocumentSnapshot) => void,
-): UnmountCallback => bannerMessageStatusCollection()
+): UnmountCallback => database.bannerMessageStatusCollection()
   .doc(email)
   .onSnapshot(listener);
 
@@ -207,7 +200,7 @@ export default (onFirstFetched: () => void): (() => void) => {
         completedOnboarding: false,
         theme: 'light',
       };
-      settingsCollection()
+      database.settingsCollection()
         .doc(ownerEmail)
         .set(newSettings)
         .then(ignore);

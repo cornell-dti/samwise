@@ -12,13 +12,13 @@ import {
   OneTimeTask,
 } from 'common/lib/types/store-types';
 import { error, ignore } from 'common/lib/util/general-util';
-import { NONE_TAG_ID } from 'common/lib/util/tag-util';
 import {
   FirestoreCommon,
-  FirestoreTag,
   FirestoreTask,
   FirestoreSubTask,
 } from 'common/lib/types/firestore-types';
+import { WriteBatch } from 'common/lib/firebase/database';
+import Actions from 'common/lib/firebase/common-actions';
 import {
   reportAddTagEvent,
   reportEditTagEvent,
@@ -33,24 +33,18 @@ import {
   reportFocusTaskEvent,
 } from '../util/ga-util';
 import { getAppUser } from './auth-util';
-import {
-  db,
-  settingsCollection,
-  subTasksCollection,
-  tagsCollection,
-  tasksCollection,
-  bannerMessageStatusCollection,
-} from './db';
+import { db, database } from './db';
 import { getNewTaskId } from './id-provider';
-import allocateNewOrder from './order-manager';
 import { store } from '../store/store';
 import { Diff } from '../components/Util/TaskEditors/TaskEditor/task-diff-reducer';
+
+const actions = new Actions(() => getAppUser().email, database);
 
 async function createFirestoreObject<T>(
   orderFor: 'tags' | 'tasks',
   source: T,
 ): Promise<T & FirestoreCommon> {
-  const order = await allocateNewOrder(orderFor);
+  const order = await actions.orderManager.allocateNewOrder(orderFor);
   return { ...source, owner: getAppUser().email, order };
 }
 
@@ -80,35 +74,15 @@ export const addTag = (tag: WithoutIdOrder<Tag>): void => {
   if (classId != null && Array.from(tags.values()).some((t: Tag) => t.classId === classId)) {
     return;
   }
-  createFirestoreObject('tags', tag)
-    .then((firebaseTag: FirestoreTag) => tagsCollection().add(firebaseTag))
-    .then(reportAddTagEvent);
+  actions.addTag(tag).then(reportAddTagEvent);
 };
 
 export const editTag = (tag: Tag): void => {
-  const { id, ...rest } = tag;
-  tagsCollection()
-    .doc(id)
-    .update(rest)
-    .then(reportEditTagEvent);
+  actions.editTag(tag).then(reportEditTagEvent);
 };
 
 export const removeTag = (id: string): void => {
-  tasksCollection()
-    .where('owner', '==', getAppUser().email)
-    .where('tag', '==', id)
-    .get()
-    .then((s) => {
-      const batch = db().batch();
-      s.docs
-        .filter((doc) => doc.data().type === 'TASK')
-        .forEach((doc) => {
-          batch.update(tasksCollection().doc(doc.id), { tag: NONE_TAG_ID });
-        });
-      batch.delete(tagsCollection().doc(id));
-      batch.commit().then(ignore);
-    })
-    .then(reportDeleteTagEvent);
+  actions.removeTag(id).then(reportDeleteTagEvent);
 };
 
 /*
@@ -121,18 +95,18 @@ const asyncAddTask = async (
   newTaskId: string,
   task: TaskWithoutIdOrderChildren,
   subTasks: WithoutId<SubTask>[],
-  batch: firestore.WriteBatch,
+  batch: WriteBatch,
 ): Promise<{ readonly firestoreTask: FirestoreTask; readonly createdSubTasks: SubTask[] }> => {
   const baseTask: FirestoreCommon = await createFirestoreObject('tasks', {});
   const createdSubTasks: SubTask[] = subTasks.map((subtask) => {
     const firebaseSubTask: FirestoreSubTask = mergeWithOwner(subtask);
-    const subtaskDoc = subTasksCollection().doc();
+    const subtaskDoc = database.subTasksCollection().doc();
     batch.set(subtaskDoc, firebaseSubTask);
     return { ...subtask, id: subtaskDoc.id };
   });
   const subtaskIds = createdSubTasks.map((s) => s.id);
   const firestoreTask: FirestoreTask = { ...baseTask, ...task, children: subtaskIds };
-  batch.set(tasksCollection().doc(newTaskId), firestoreTask);
+  batch.set(database.tasksCollection().doc(newTaskId), firestoreTask);
   return { firestoreTask, createdSubTasks };
 };
 
@@ -153,22 +127,22 @@ export const removeAllForks = (taskId: string): void => {
     const task = tasks.get(taskId) ?? error('bad!');
     const repeatingTask = task as RepeatingTask;
     const forkIds = repeatingTask.forks.map((fork) => fork.forkId);
-    const batch = db().batch();
+    const batch = database.db().batch();
     forkIds.forEach((id) => {
       if (id !== null) {
         // delete forked main task
-        batch.delete(tasksCollection().doc(id));
+        batch.delete(database.tasksCollection().doc(id));
         // delete forked subtasks
         const forkedTask = tasks.get(id);
         if (forkedTask != null) {
           forkedTask.children.forEach(
-            (subTaskId) => batch.delete(subTasksCollection().doc(subTaskId)),
+            (subTaskId) => batch.delete(database.subTasksCollection().doc(subTaskId)),
           );
         }
       }
     });
     // clear the forked array
-    batch.update(tasksCollection().doc(taskId), { forks: [] });
+    batch.update(database.tasksCollection().doc(taskId), { forks: [] });
     batch.commit().then(ignore);
   })();
 };
@@ -177,31 +151,31 @@ export const handleTaskDiffs = (
   taskId: string,
   { subTaskCreations, subTaskEdits, subTaskDeletions, mainTaskEdits }: Diff,
 ): void => {
-  const batch = db().batch();
+  const batch = database.db().batch();
   if (subTaskCreations.size !== 0) {
     subTaskCreations.forEach((subTask, id) => {
-      const newSubTaskDoc = subTasksCollection().doc(id);
+      const newSubTaskDoc = database.subTasksCollection().doc(id);
       const firebaseSubTask: FirestoreSubTask = mergeWithOwner(subTask);
       batch.set(newSubTaskDoc, firebaseSubTask);
-      batch.update(tasksCollection().doc(taskId), {
+      batch.update(database.tasksCollection().doc(taskId), {
         children: firestore.FieldValue.arrayUnion(newSubTaskDoc.id),
       });
     });
   }
   if (subTaskEdits.size !== 0) {
     subTaskEdits.forEach((partialSubTask, id) => {
-      batch.update(subTasksCollection().doc(id), partialSubTask);
+      batch.update(database.subTasksCollection().doc(id), partialSubTask);
     });
   }
   if (subTaskDeletions.size !== 0) {
     subTaskDeletions.forEach((id) => {
-      batch.delete(subTasksCollection().doc(id));
-      batch.update(tasksCollection().doc(taskId), {
+      batch.delete(database.subTasksCollection().doc(id));
+      batch.update(database.tasksCollection().doc(taskId), {
         children: firestore.FieldValue.arrayRemove(id),
       });
     });
   }
-  batch.update(tasksCollection().doc(taskId), mainTaskEdits);
+  batch.update(database.tasksCollection().doc(taskId), mainTaskEdits);
   batch.commit().then(() => {
     if (
       mainTaskEdits.name
@@ -271,10 +245,10 @@ export const forkTaskWithDiff = (
       newSubTasks.push(subTaskContent);
     }
   });
-  const batch = db().batch();
+  const batch = database.db().batch();
   const forkId = getNewTaskId();
   asyncAddTask(forkId, newMainTask, newSubTasks, batch).then(() => {
-    batch.update(tasksCollection().doc(id), {
+    batch.update(database.tasksCollection().doc(id), {
       forks: firestore.FieldValue.arrayUnion({ forkId, replaceDate }),
     });
     batch.commit();
@@ -283,9 +257,9 @@ export const forkTaskWithDiff = (
 
 export const removeTask = (task: Task): void => {
   const { tasks, repeatedTaskSet } = store.getState();
-  const batch = db().batch();
-  batch.delete(tasksCollection().doc(task.id));
-  task.children.forEach((id) => batch.delete(subTasksCollection().doc(id)));
+  const batch = database.db().batch();
+  batch.delete(database.tasksCollection().doc(task.id));
+  task.children.forEach((id) => batch.delete(database.subTasksCollection().doc(id)));
   if (task.type === 'ONE_TIME') {
     // remove fork mentions
     repeatedTaskSet.forEach((repeatedTaskId) => {
@@ -306,7 +280,7 @@ export const removeTask = (task: Task): void => {
         }
       }
       if (needUpdateFork) {
-        batch.update(tasksCollection().doc(repeatedTaskId), { forks: newForks });
+        batch.update(database.tasksCollection().doc(repeatedTaskId), { forks: newForks });
       }
     });
   } else {
@@ -316,10 +290,10 @@ export const removeTask = (task: Task): void => {
       if (forkId == null) {
         return;
       }
-      batch.delete(tasksCollection().doc(forkId));
+      batch.delete(database.tasksCollection().doc(forkId));
       const forkedTask = tasks.get(forkId);
       if (forkedTask != null) {
-        forkedTask.children.forEach((id) => batch.delete(subTasksCollection().doc(id)));
+        forkedTask.children.forEach((id) => batch.delete(database.subTasksCollection().doc(id)));
       }
     });
   }
@@ -329,7 +303,7 @@ export const removeTask = (task: Task): void => {
 };
 
 export const removeOneRepeatedTask = (taskId: string, replaceDate: Date): void => {
-  tasksCollection()
+  database.tasksCollection()
     .doc(taskId)
     .update({
       forks: firestore.FieldValue.arrayUnion({ forkId: null, replaceDate }),
@@ -403,9 +377,11 @@ export const removeSubTask = (
  * Clear all the completed tasks in focus view.
  */
 export const clearFocus = (taskIds: string[], subTaskIds: string[]): void => {
-  const batch = db().batch();
-  taskIds.forEach((id) => batch.update(tasksCollection().doc(id), { inFocus: false }));
-  subTaskIds.forEach((id) => batch.update(subTasksCollection().doc(id), { inFocus: false }));
+  const batch = database.db().batch();
+  taskIds.forEach((id) => batch.update(database.tasksCollection().doc(id), { inFocus: false }));
+  subTaskIds.forEach(
+    (id) => batch.update(database.subTasksCollection().doc(id), { inFocus: false }),
+  );
   batch.commit().then(ignore);
 };
 
@@ -432,14 +408,14 @@ export function completeTaskInFocus<T extends { readonly id: string; readonly or
   newCompletedList = newCompletedList.sort((a, b) => a.order - b.order);
   const { tasks, subTasks } = store.getState();
   const task = tasks.get(completedTaskIdOrder.id) ?? error('bad');
-  const batch = db().batch();
+  const batch = database.db().batch();
   if (task.inFocus) {
-    batch.update(tasksCollection().doc(task.id), { complete: true });
+    batch.update(database.tasksCollection().doc(task.id), { complete: true });
   }
   task.children.forEach((id) => {
     const s = subTasks.get(id);
     if (s != null && s.inFocus) {
-      batch.update(subTasksCollection().doc(id), { complete: true });
+      batch.update(database.subTasksCollection().doc(id), { complete: true });
     }
   });
   batch.commit().then(ignore);
@@ -454,9 +430,9 @@ export function completeTaskInFocus<T extends { readonly id: string; readonly or
  */
 export function applyReorder(orderFor: 'tags' | 'tasks', reorderMap: Map<string, number>): void {
   const collection = orderFor === 'tags'
-    ? (id: string) => tagsCollection().doc(id)
-    : (id: string) => tasksCollection().doc(id);
-  const batch = db().batch();
+    ? (id: string) => database.tagsCollection().doc(id)
+    : (id: string) => database.tasksCollection().doc(id);
+  const batch = database.db().batch();
   reorderMap.forEach((order, id) => {
     batch.update(collection(id), { order });
   });
@@ -464,22 +440,22 @@ export function applyReorder(orderFor: 'tags' | 'tasks', reorderMap: Map<string,
 }
 
 export const completeOnboarding = (completedOnboarding: boolean): void => {
-  settingsCollection()
+  database.settingsCollection()
     .doc(getAppUser().email)
     .update({ completedOnboarding })
     .then(ignore);
 };
 
 export const setCanvasCalendar = (canvasCalendar: string | null | undefined): void => {
-  settingsCollection()
+  database.settingsCollection()
     .doc(getAppUser().email)
     .update({ canvasCalendar })
     .then(ignore);
 };
 
 export const readBannerMessage = (bannerMessageId: BannerMessageIds, isRead: boolean): void => {
-  const docRef = bannerMessageStatusCollection().doc(getAppUser().email);
-  db().runTransaction(async (transaction) => {
+  const docRef = database.bannerMessageStatusCollection().doc(getAppUser().email);
+  database.db().runTransaction(async (transaction) => {
     const doc = await transaction.get(docRef);
     if (doc.exists) {
       transaction.update(docRef, { [bannerMessageId]: isRead });
@@ -533,12 +509,12 @@ export const importCourseExams = (): void => {
       });
     });
   });
-  allocateNewOrder('tasks', newTasks.length).then((startOrder: number) => {
+  actions.orderManager.allocateNewOrder('tasks', newTasks.length).then((startOrder: number) => {
     const newOrderedTasks = newTasks.map((t, i) => ({ ...t, order: i + startOrder }));
-    const batch = db().batch();
+    const batch = database.db().batch();
     newOrderedTasks.forEach((orderedTask) => {
       const transformedTask: FirestoreTask = mergeWithOwner({ ...orderedTask, children: [] });
-      batch.set(tasksCollection().doc(), transformedTask);
+      batch.set(database.tasksCollection().doc(), transformedTask);
     });
     // eslint-disable-next-line no-alert
     batch.commit().then(() => alert('Exams Added Successfully!'));
