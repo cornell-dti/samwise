@@ -99,7 +99,9 @@ function TaskEditor(
   const [subTaskToFocus, setSubTaskToFocus] = useState<TaskToFocus>(null);
 
   const onMouseLeave = (): void => {
-    onSave();
+    if (type === 'ONE_TIME') {
+      onSave();
+    }
     if (onBlur) {
       onBlur();
     }
