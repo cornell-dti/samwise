@@ -3,6 +3,7 @@ on:
   push:
     paths:
       - '.github/workflows/ci-functions.yml'
+      - 'common/**'
       - 'functions/**'
       - 'package.json'
       - 'yarn.lock'

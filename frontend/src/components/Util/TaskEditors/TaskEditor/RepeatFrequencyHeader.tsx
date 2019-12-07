@@ -1,8 +1,8 @@
 import React, { ReactElement } from 'react';
 import { connect } from 'react-redux';
+import { State, Tag, RepeatingPattern, RepeatingTask } from 'common/lib/types/store-types';
+import { DAYS_IN_WEEK, isBitSet } from 'common/lib/util/bitwise-util';
 import SamwiseIcon from '../../../UI/SamwiseIcon';
-import { State, Tag, RepeatingPattern, RepeatingTask } from '../../../../store/store-types';
-import { DAYS_IN_WEEK, isBitSet } from '../../../../util/bitwise-util';
 import styles from './RepeatFrequencyHeader.module.css';
 
 type OwnProps = {

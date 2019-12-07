@@ -1,5 +1,5 @@
 import { Map } from 'immutable';
-import { Tag } from 'store/store-types';
+import { Tag } from 'common/lib/types/store-types';
 import { store } from '../../../store/store';
 import colorMap from './ListColors';
 

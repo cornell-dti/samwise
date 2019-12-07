@@ -1,10 +1,10 @@
 import React, { ReactElement } from 'react';
 import ReactDOM from 'react-dom';
 import './index.scss';
+import { error } from 'common/lib/util/general-util';
 import { Provider as ReactReduxProvider } from './store';
 import App from './App';
 import './firebase'; // import and init firebase
-import { error } from './util/general-util';
 import ErrorBoundary from './components/Util/ErrorBoundary';
 import LoginBarrier from './components/Util/AppInit/LoginBarrier';
 import { initialize as initializeGA } from './util/ga-util';

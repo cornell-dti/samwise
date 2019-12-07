@@ -5,6 +5,7 @@
     "lint:fix": "yarn lint --fix"
   },
   "workspaces": [
+    "common",
     "frontend",
     "functions"
   ],

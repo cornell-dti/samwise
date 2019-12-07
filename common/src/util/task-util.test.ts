@@ -1,12 +1,11 @@
 import { Map, Set } from 'immutable';
+import { Task, SubTask, TaskWithSubTasks } from '../types/store-types';
 import {
   getFilteredCompletedInFocusTask,
   getFilteredNotCompletedInFocusTask,
   computeTaskProgress,
   TasksProgressProps,
 } from './task-util';
-import { Task, SubTask } from '../store/store-types';
-import { TaskWithSubTasks } from '../components/Util/TaskEditors/editors-types';
 
 // unimportant common attributes.
 const order = 0;
@@ -18,7 +17,7 @@ type MainTaskTestCommon = {
   readonly name: string;
   readonly tag: string;
   readonly date: Date;
-}
+};
 const testTaskCommon: MainTaskTestCommon = {
   type: 'ONE_TIME',
   id: 'random-id',
@@ -94,8 +93,10 @@ it('getFiltered(Completed|NotCompleted)InFocusTask are complementary', () => {
       allSubTasks.push(...uncompletedResult.subTasks);
     }
     // ensure disjoint union property
-    const subTaskIdSet = allSubTasks
-      .reduce((acc: Set<string>, s: SubTask) => acc.add(s.id), Set.of());
+    const subTaskIdSet = allSubTasks.reduce(
+      (acc: Set<string>, s: SubTask) => acc.add(s.id),
+      Set.of(),
+    );
     if (subTaskIdSet.size !== allSubTasks.length) {
       const { complete, inFocus, children } = task;
       let errorMessage = 'The subtasks in completed and uncompleted are not disjoint union.';
@@ -120,10 +121,13 @@ it('computeTaskProgress works', () => {
     { completedTasksCount: 0, allTasksCount: 0 },
     { completedTasksCount: 0, allTasksCount: 0 },
   ];
-  const expectedTotal = expectedResults.reduce((acc, curr) => ({
-    completedTasksCount: acc.completedTasksCount + curr.completedTasksCount,
-    allTasksCount: acc.allTasksCount + curr.allTasksCount,
-  }), { completedTasksCount: 0, allTasksCount: 0 });
+  const expectedTotal = expectedResults.reduce(
+    (acc, curr) => ({
+      completedTasksCount: acc.completedTasksCount + curr.completedTasksCount,
+      allTasksCount: acc.allTasksCount + curr.allTasksCount,
+    }),
+    { completedTasksCount: 0, allTasksCount: 0 },
+  );
   exampleTasks.forEach((t, i) => {
     expect(computeTaskProgress([t], commonSubTaskMap)).toEqual(expectedResults[i]);
   });

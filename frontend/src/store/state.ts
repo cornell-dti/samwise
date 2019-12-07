@@ -1,6 +1,6 @@
 import { Map, Set } from 'immutable';
-import { State } from './store-types';
-import { NONE_TAG_ID, NONE_TAG } from '../util/tag-util';
+import { State } from 'common/lib/types/store-types';
+import { NONE_TAG_ID, NONE_TAG } from 'common/lib/util/tag-util';
 
 /**
  * The initial state of the app.
@@ -85,12 +85,17 @@ export const initialStateForTesting: State = {
   settings: { canvasCalendar: null, completedOnboarding: true, theme: 'light' },
   bannerMessageStatus: {},
   courses: Map({
-    CS2112: [{
-      courseId: 42,
-      subject: 'CS',
-      courseNumber: '2112',
-      title: 'OO Design Data Structs Honors',
-      examTimes: [{ type: 'final', time: 1576332000000 }, { type: 'prelim', time: 1570145400000 }],
-    }],
+    CS2112: [
+      {
+        courseId: 42,
+        subject: 'CS',
+        courseNumber: '2112',
+        title: 'OO Design Data Structs Honors',
+        examTimes: [
+          { type: 'final', time: 1576332000000 },
+          { type: 'prelim', time: 1570145400000 },
+        ],
+      },
+    ],
   }),
 };

@@ -1,6 +1,25 @@
 import { firestore } from 'firebase/app';
 import { Map, Set } from 'immutable';
 import {
+  Course,
+  SubTask,
+  Tag,
+  Task,
+  BannerMessageIds,
+  PartialMainTask,
+  PartialSubTask,
+  RepeatingTask,
+  OneTimeTask,
+} from 'common/lib/types/store-types';
+import { error, ignore } from 'common/lib/util/general-util';
+import { NONE_TAG_ID } from 'common/lib/util/tag-util';
+import {
+  FirestoreCommon,
+  FirestoreTag,
+  FirestoreTask,
+  FirestoreSubTask,
+} from 'common/lib/types/firestore-types';
+import {
   reportAddTagEvent,
   reportEditTagEvent,
   reportDeleteTagEvent,
@@ -13,23 +32,6 @@ import {
   reportCompleteTaskEvent,
   reportFocusTaskEvent,
 } from '../util/ga-util';
-import {
-  Course,
-  SubTask,
-  Tag,
-  Task,
-  BannerMessageIds,
-  PartialMainTask,
-  PartialSubTask,
-  RepeatingTask,
-  OneTimeTask,
-} from '../store/store-types';
-import {
-  FirestoreCommon,
-  FirestoreTag,
-  FirestoreTask,
-  FirestoreSubTask,
-} from './firestore-types';
 import { getAppUser } from './auth-util';
 import {
   db,
@@ -40,21 +42,21 @@ import {
   bannerMessageStatusCollection,
 } from './db';
 import { getNewTaskId } from './id-provider';
-import { error, ignore } from '../util/general-util';
 import allocateNewOrder from './order-manager';
 import { store } from '../store/store';
-import { NONE_TAG_ID } from '../util/tag-util';
 import { Diff } from '../components/Util/TaskEditors/TaskEditor/task-diff-reducer';
 
 async function createFirestoreObject<T>(
-  orderFor: 'tags' | 'tasks', source: T,
+  orderFor: 'tags' | 'tasks',
+  source: T,
 ): Promise<T & FirestoreCommon> {
   const order = await allocateNewOrder(orderFor);
   return { ...source, owner: getAppUser().email, order };
 }
 
 const mergeWithOwner = <T>(obj: T): T & { readonly owner: string } => ({
-  owner: getAppUser().email, ...obj,
+  owner: getAppUser().email,
+  ...obj,
 });
 
 type WithoutIdOrder<Props> = Pick<Props, Exclude<keyof Props, 'id' | 'order'>>;
@@ -85,7 +87,8 @@ export const addTag = (tag: WithoutIdOrder<Tag>): void => {
 
 export const editTag = (tag: Tag): void => {
   const { id, ...rest } = tag;
-  tagsCollection().doc(id)
+  tagsCollection()
+    .doc(id)
     .update(rest)
     .then(reportEditTagEvent);
 };
@@ -97,7 +100,8 @@ export const removeTag = (id: string): void => {
     .get()
     .then((s) => {
       const batch = db().batch();
-      s.docs.filter((doc) => doc.data().type === 'TASK')
+      s.docs
+        .filter((doc) => doc.data().type === 'TASK')
         .forEach((doc) => {
           batch.update(tasksCollection().doc(doc.id), { tag: NONE_TAG_ID });
         });
@@ -132,10 +136,7 @@ const asyncAddTask = async (
   return { firestoreTask, createdSubTasks };
 };
 
-export const addTask = (
-  task: TaskWithoutIdOrderChildren,
-  subTasks: WithoutId<SubTask>[],
-): void => {
+export const addTask = (task: TaskWithoutIdOrderChildren, subTasks: WithoutId<SubTask>[]): void => {
   const newTaskId = getNewTaskId();
   const batch = db().batch();
   asyncAddTask(newTaskId, task, subTasks, batch).then(({ createdSubTasks }) => {
@@ -202,11 +203,13 @@ export const handleTaskDiffs = (
   }
   batch.update(tasksCollection().doc(taskId), mainTaskEdits);
   batch.commit().then(() => {
-    if (mainTaskEdits.name
+    if (
+      mainTaskEdits.name
       || mainTaskEdits.complete
       || mainTaskEdits.date
       || mainTaskEdits.inFocus
-      || mainTaskEdits.tag) {
+      || mainTaskEdits.tag
+    ) {
       reportEditTaskEvent();
     }
     if (mainTaskEdits.complete) {
@@ -243,11 +246,12 @@ export const forkTaskWithDiff = (
 ): void => {
   const { tasks, subTasks } = store.getState();
   const repeatingTaskMaster = tasks.get(taskId) as RepeatingTask;
-  const {
-    id, order, type, children, date, forks, ...originalTaskWithoutId
-  } = repeatingTaskMaster;
+  const { id, order, type, children, date, forks, ...originalTaskWithoutId } = repeatingTaskMaster;
   const newMainTask: TaskWithoutIdOrderChildren = {
-    ...originalTaskWithoutId, ...mainTaskEdits, date: replaceDate, type: 'ONE_TIME',
+    ...originalTaskWithoutId,
+    ...mainTaskEdits,
+    date: replaceDate,
+    type: 'ONE_TIME',
   };
   const newSubTasks: WithoutId<SubTask>[] = [];
   subTaskCreations.forEach((s) => newSubTasks.push(s));
@@ -325,13 +329,17 @@ export const removeTask = (task: Task): void => {
 };
 
 export const removeOneRepeatedTask = (taskId: string, replaceDate: Date): void => {
-  tasksCollection().doc(taskId).update({
-    forks: firestore.FieldValue.arrayUnion({ forkId: null, replaceDate }),
-  });
+  tasksCollection()
+    .doc(taskId)
+    .update({
+      forks: firestore.FieldValue.arrayUnion({ forkId: null, replaceDate }),
+    });
 };
 
 export const editMainTask = (
-  taskId: string, replaceDate: Date | null, mainTaskEdits: PartialMainTask,
+  taskId: string,
+  replaceDate: Date | null,
+  mainTaskEdits: PartialMainTask,
 ): void => {
   const diff: Diff = {
     mainTaskEdits,
@@ -349,7 +357,10 @@ export const editMainTask = (
 };
 
 export const editSubTask = (
-  taskId: string, subtaskId: string, replaceDate: Date | null, partialSubTask: PartialSubTask,
+  taskId: string,
+  subtaskId: string,
+  replaceDate: Date | null,
+  partialSubTask: PartialSubTask,
 ): void => {
   const diff: Diff = {
     mainTaskEdits: replaceDate == null ? {} : { date: replaceDate },
@@ -365,7 +376,9 @@ export const editSubTask = (
 };
 
 export const removeSubTask = (
-  taskId: string, subtaskId: string, replaceDate: Date | null,
+  taskId: string,
+  subtaskId: string,
+  replaceDate: Date | null,
 ): void => {
   const diff: Diff = {
     mainTaskEdits: replaceDate == null ? {} : { date: replaceDate },
@@ -439,10 +452,7 @@ export function completeTaskInFocus<T extends { readonly id: string; readonly or
  * @param reorderMap the map that maps the id of changed order items to new order ids.
  * @return a new list with updated orders.
  */
-export function applyReorder(
-  orderFor: 'tags' | 'tasks',
-  reorderMap: Map<string, number>,
-): void {
+export function applyReorder(orderFor: 'tags' | 'tasks', reorderMap: Map<string, number>): void {
   const collection = orderFor === 'tags'
     ? (id: string) => tagsCollection().doc(id)
     : (id: string) => tasksCollection().doc(id);
@@ -454,13 +464,15 @@ export function applyReorder(
 }
 
 export const completeOnboarding = (completedOnboarding: boolean): void => {
-  settingsCollection().doc(getAppUser().email)
+  settingsCollection()
+    .doc(getAppUser().email)
     .update({ completedOnboarding })
     .then(ignore);
 };
 
 export const setCanvasCalendar = (canvasCalendar: string | null | undefined): void => {
-  settingsCollection().doc(getAppUser().email)
+  settingsCollection()
+    .doc(getAppUser().email)
     .update({ canvasCalendar })
     .then(ignore);
 };
@@ -498,11 +510,14 @@ export const importCourseExams = (): void => {
             return false;
           }
           const { name, date } = task;
-          return task.tag === tag.id && name === examName
+          return (
+            task.tag === tag.id
+            && name === examName
             && date.getFullYear() === t.getFullYear()
             && date.getMonth() === t.getMonth()
             && date.getDate() === t.getDate()
-            && date.getHours() === t.getHours();
+            && date.getHours() === t.getHours()
+          );
         };
         if (!Array.from(tasks.values()).some(filter)) {
           const newTask: OneTimeTaskWithoutIdOrderChildren = {
@@ -518,15 +533,14 @@ export const importCourseExams = (): void => {
       });
     });
   });
-  allocateNewOrder('tasks', newTasks.length)
-    .then((startOrder: number) => {
-      const newOrderedTasks = newTasks.map((t, i) => ({ ...t, order: i + startOrder }));
-      const batch = db().batch();
-      newOrderedTasks.forEach((orderedTask) => {
-        const transformedTask: FirestoreTask = mergeWithOwner({ ...orderedTask, children: [] });
-        batch.set(tasksCollection().doc(), transformedTask);
-      });
-      // eslint-disable-next-line no-alert
-      batch.commit().then(() => alert('Exams Added Successfully!'));
+  allocateNewOrder('tasks', newTasks.length).then((startOrder: number) => {
+    const newOrderedTasks = newTasks.map((t, i) => ({ ...t, order: i + startOrder }));
+    const batch = db().batch();
+    newOrderedTasks.forEach((orderedTask) => {
+      const transformedTask: FirestoreTask = mergeWithOwner({ ...orderedTask, children: [] });
+      batch.set(tasksCollection().doc(), transformedTask);
     });
+    // eslint-disable-next-line no-alert
+    batch.commit().then(() => alert('Exams Added Successfully!'));
+  });
 };

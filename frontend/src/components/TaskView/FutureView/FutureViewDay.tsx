@@ -1,10 +1,10 @@
 import React, { ReactElement } from 'react';
+import { getTodayAtZeroAM } from 'common/lib/util/datetime-util';
+import { error } from 'common/lib/util/general-util';
 import { SimpleDate } from './future-view-types';
 import { CalendarPosition, FloatingPosition } from '../../Util/TaskEditors/editors-types';
 import styles from './FutureViewDay.module.scss';
 import { headerHeight } from './future-view-css-props';
-import { getTodayAtZeroAM } from '../../../util/datetime-util';
-import { error } from '../../../util/general-util';
 import { useWindowSize, WindowSize } from '../../../hooks/window-size-hook';
 import FutureViewDayContent from './FutureViewDayContent';
 

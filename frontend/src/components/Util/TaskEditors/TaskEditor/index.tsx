@@ -5,14 +5,14 @@
 
 import React, { ReactElement, useEffect, useState, useCallback } from 'react';
 import { connect } from 'react-redux';
-import { MainTask, State, SubTask, Tag } from 'store/store-types';
+import { MainTask, State, SubTask, Tag } from 'common/lib/types/store-types';
 import OverdueAlert from 'components/UI/OverdueAlert';
-import { NONE_TAG } from 'util/tag-util';
-import { ignore } from 'util/general-util';
+import { NONE_TAG } from 'common/lib/util/tag-util';
+import { ignore } from 'common/lib/util/general-util';
 import { confirmRepeatedTaskEditMaster, promptRepeatedTaskEditChoice } from 'util/task-util';
 import { editTaskWithDiff, forkTaskWithDiff } from 'firebase/actions';
+import { getTodayAtZeroAM, getDateWithDateString } from 'common/lib/util/datetime-util';
 import styles from './index.module.css';
-import { getTodayAtZeroAM, getDateWithDateString } from '../../../../util/datetime-util';
 import RepeatFrequencyHeader from './RepeatFrequencyHeader';
 import EditorHeader from './EditorHeader';
 import MainTaskEditor from './MainTaskEditor';

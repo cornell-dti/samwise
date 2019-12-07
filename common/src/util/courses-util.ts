@@ -1,5 +1,5 @@
 import { Map } from 'immutable';
-import { Course } from '../store/store-types';
+import { Course } from '../types/store-types';
 
 /**
  * Build a map from course id to courses.

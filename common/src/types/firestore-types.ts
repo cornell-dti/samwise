@@ -1,5 +1,5 @@
 import { firestore } from 'firebase/app';
-import { RepeatingPattern } from '../store/store-types';
+import { RepeatingPattern } from './store-types';
 
 export type FirestoreCommon = {
   readonly owner: string;
