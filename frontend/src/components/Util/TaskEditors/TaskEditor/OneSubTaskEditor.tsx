@@ -43,12 +43,16 @@ function OneSubTaskEditor(
   const replaceDateForFork = taskDate == null
     ? getDateWithDateString(taskDate, dateAppeared)
     : null;
-  const onCompleteChange = (): void => editSubTask(
-    mainTaskId, subTask.id, replaceDateForFork, { complete: !subTask.complete },
-  );
-  const onInFocusChange = (): void => editSubTask(
-    mainTaskId, subTask.id, replaceDateForFork, { inFocus: !subTask.inFocus },
-  );
+  const onCompleteChange = (): void => {
+    const complete = !subTask.complete;
+    editThisSubTask(subTask.id, { complete });
+    editSubTask(mainTaskId, subTask.id, replaceDateForFork, { complete });
+  };
+  const onInFocusChange = (): void => {
+    const inFocus = !subTask.inFocus;
+    editThisSubTask(subTask.id, { inFocus });
+    editSubTask(mainTaskId, subTask.id, replaceDateForFork, { inFocus });
+  };
   const onRemove = (): void => removeSubTask(subTask.id);
 
   const onKeyDown = (event: KeyboardEvent<HTMLInputElement>): void => {
