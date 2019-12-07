@@ -292,7 +292,8 @@ export default function DatePicker(props: Props): ReactElement {
         : internalDate.repeatEnd.type === 'weeks';
     }
     return (
-      <li>
+      // eslint-disable-next-line react/no-array-index-key
+      <li key={i}>
         <label htmlFor={`newTaskRepeatEndRadio${i}`}>
           <input
             type="radio"
