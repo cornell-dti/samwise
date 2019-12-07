@@ -1,14 +1,5 @@
 import { Set } from 'immutable';
 import {
-  subTasksCollection,
-  tagsCollection,
-  tasksCollection,
-  settingsCollection,
-  bannerMessageStatusCollection,
-} from './db';
-import { getAppUser } from './auth-util';
-import { FirestoreSubTask, FirestoreTag, FirestoreTask } from './firestore-types';
-import {
   SubTask,
   Tag,
   Task,
@@ -16,7 +7,18 @@ import {
   BannerMessageStatus,
   RepeatMetaData,
   Course,
-} from '../store/store-types';
+} from 'common/lib/types/store-types';
+import buildCoursesMap from 'common/lib/util/courses-util';
+import { ignore } from 'common/lib/util/general-util';
+import { FirestoreSubTask, FirestoreTag, FirestoreTask } from 'common/lib/types/firestore-types';
+import {
+  subTasksCollection,
+  tagsCollection,
+  tasksCollection,
+  settingsCollection,
+  bannerMessageStatusCollection,
+} from './db';
+import { getAppUser } from './auth-util';
 import {
   patchCourses,
   patchSettings,
@@ -26,9 +28,7 @@ import {
   patchBannerMessageStatus,
 } from '../store/actions';
 import coursesJson from '../assets/json/fa19-courses-with-exams-min.json';
-import buildCoursesMap from '../util/courses-util';
 import { store } from '../store/store';
-import { ignore } from '../util/general-util';
 
 // Some type alias
 type Timestamp = firebase.firestore.Timestamp;
@@ -37,20 +37,35 @@ type QuerySnapshot = firebase.firestore.QuerySnapshot;
 
 type UnmountCallback = () => void;
 const listenTagsChange = (
-  email: string, listener: (snapshot: QuerySnapshot) => void,
-): UnmountCallback => tagsCollection().where('owner', '==', email).onSnapshot(listener);
+  email: string,
+  listener: (snapshot: QuerySnapshot) => void,
+): UnmountCallback => tagsCollection()
+  .where('owner', '==', email)
+  .onSnapshot(listener);
 const listenTasksChange = (
-  email: string, listener: (snapshot: QuerySnapshot) => void,
-): UnmountCallback => tasksCollection().where('owner', '==', email).onSnapshot(listener);
+  email: string,
+  listener: (snapshot: QuerySnapshot) => void,
+): UnmountCallback => tasksCollection()
+  .where('owner', '==', email)
+  .onSnapshot(listener);
 const listenSubTasksChange = (
-  email: string, listener: (snapshot: QuerySnapshot) => void,
-): UnmountCallback => subTasksCollection().where('owner', '==', email).onSnapshot(listener);
+  email: string,
+  listener: (snapshot: QuerySnapshot) => void,
+): UnmountCallback => subTasksCollection()
+  .where('owner', '==', email)
+  .onSnapshot(listener);
 const listenSettingsChange = (
-  email: string, listener: (snapshot: DocumentSnapshot) => void,
-): UnmountCallback => settingsCollection().doc(email).onSnapshot(listener);
+  email: string,
+  listener: (snapshot: DocumentSnapshot) => void,
+): UnmountCallback => settingsCollection()
+  .doc(email)
+  .onSnapshot(listener);
 const listenBannerMessageChange = (
-  email: string, listener: (snapshot: DocumentSnapshot) => void,
-): UnmountCallback => bannerMessageStatusCollection().doc(email).onSnapshot(listener);
+  email: string,
+  listener: (snapshot: DocumentSnapshot) => void,
+): UnmountCallback => bannerMessageStatusCollection()
+  .doc(email)
+  .onSnapshot(listener);
 
 const transformDate = (dateOrTimestamp: Date | Timestamp): Date => (
   dateOrTimestamp instanceof Date ? dateOrTimestamp : dateOrTimestamp.toDate()
@@ -66,11 +81,13 @@ export default (onFirstFetched: () => void): (() => void) => {
   let firstSettingsFetched = false;
   let firstBannerStatusFetched = false;
   const reportFirstFetchedIfAllFetched = (): void => {
-    if (firstTagsFetched
+    if (
+      firstTagsFetched
       && firstTasksFetched
       && firstSubTasksFetched
       && firstSettingsFetched
-      && firstBannerStatusFetched) {
+      && firstBannerStatusFetched
+    ) {
       onFirstFetched();
     }
   };
@@ -190,7 +207,10 @@ export default (onFirstFetched: () => void): (() => void) => {
         completedOnboarding: false,
         theme: 'light',
       };
-      settingsCollection().doc(ownerEmail).set(newSettings).then(ignore);
+      settingsCollection()
+        .doc(ownerEmail)
+        .set(newSettings)
+        .then(ignore);
       return;
     }
     const data = snapshot.data();

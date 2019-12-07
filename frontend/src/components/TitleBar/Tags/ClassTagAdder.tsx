@@ -3,8 +3,8 @@ import { Map } from 'immutable';
 import { connect } from 'react-redux';
 import Fuse, { FuseOptions } from 'fuse.js';
 import SearchBox from 'components/Util/SearchBox';
+import { Course, State } from 'common/lib/types/store-types';
 import styles from './TagAdder.module.css';
-import { Course, State } from '../../../store/store-types';
 import { addTag } from '../../../firebase/actions';
 import getUnusedColor from './rotation-color-picker';
 

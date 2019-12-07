@@ -80,6 +80,21 @@ export type MainTask = Readonly<Pick<FlexibleCommonTask, MainTaskProperties>>;
  */
 export type PartialMainTask = Partial<MainTask>;
 
+type CommonTaskWithSubTasks<D> = {
+  readonly id: string;
+  readonly order: number;
+  readonly name: string;
+  readonly tag: string;
+  readonly date: D;
+  readonly complete: boolean;
+  readonly inFocus: boolean;
+  readonly subTasks: SubTask[];
+};
+
+export type TaskWithSubTasks =
+  | (CommonTaskWithSubTasks<Date> & { readonly type: 'ONE_TIME' })
+  | (CommonTaskWithSubTasks<RepeatMetaData> & { readonly type: 'MASTER_TEMPLATE' });
+
 /**
  * The type of user settings.
  */

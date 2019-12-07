@@ -2,13 +2,13 @@
 import React, { ReactElement, useState, ReactNode } from 'react';
 import { DragDropContext, Droppable, DropResult } from 'react-beautiful-dnd';
 import { connect } from 'react-redux';
+import { computeReorderMap, getReorderedList } from 'common/lib/util/order-util';
 import styles from './index.module.css';
 import ClearFocus from './ClearFocus';
 import CompletedSeparator from './CompletedSeparator';
 import FocusTask from './FocusTask';
 import { applyReorder, completeTaskInFocus } from '../../../firebase/actions';
 import { getFocusViewProps, FocusViewTaskMetaData, FocusViewProps } from '../../../store/selectors';
-import { computeReorderMap, getReorderedList } from '../../../util/order-util';
 
 const focusViewNotCompletedDroppableId = 'focus-view-not-completed-droppable';
 const focusViewCompletedDroppableId = 'focus-view-completed-droppable';

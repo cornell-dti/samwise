@@ -5,12 +5,12 @@ import React, {
   useEffect,
   useRef,
 } from 'react';
-import styles from './index.module.css';
+import { PartialSubTask, SubTask } from 'common/lib/types/store-types';
+import { getDateWithDateString } from 'common/lib/util/datetime-util';
 import CheckBox from '../../../UI/CheckBox';
-import { PartialSubTask, SubTask } from '../../../../store/store-types';
 import SamwiseIcon from '../../../UI/SamwiseIcon';
-import { getDateWithDateString } from '../../../../util/datetime-util';
 import { editSubTask } from '../../../../firebase/actions';
+import styles from './index.module.css';
 
 type Props = {
   readonly subTask: SubTask; // the subtask to edit

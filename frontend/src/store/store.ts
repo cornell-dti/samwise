@@ -1,7 +1,7 @@
 import { createStore, Store } from 'redux';
+import { State } from 'common/lib/types/store-types';
+import { Action } from 'common/lib/types/action-types';
 import rootReducer from './reducers';
-import { State } from './store-types';
-import { Action } from './action-types';
 import { initialStateForTesting } from './state';
 
 export type GlobalStore = Store<State, Action>;

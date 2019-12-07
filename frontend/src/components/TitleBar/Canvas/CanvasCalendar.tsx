@@ -1,6 +1,6 @@
 import React, { ReactElement, useState } from 'react';
 import { connect } from 'react-redux';
-import { Settings, State } from '../../../store/store-types';
+import { Settings, State } from 'common/lib/types/store-types';
 import settingStyles from '../Settings/SettingsPage.module.css';
 import styles from './CanvasCalendar.module.css';
 import { setCanvasCalendar } from '../../../firebase/actions';

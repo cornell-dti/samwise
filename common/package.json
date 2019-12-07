@@ -1,0 +1,15 @@
+{
+  "name": "common",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "postinstall": "yarn build",
+    "dev": "tsc --incremental --watch --noEmit false",
+    "build": "tsc --incremental --noEmit false",
+    "test": "react-scripts test --watchAll=false"
+  },
+  "dependencies": {
+    "firebase": "^7.5.0",
+    "immutable": "^4.0.0-rc.12"
+  }
+}

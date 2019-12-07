@@ -1,6 +1,6 @@
 import firebase from 'firebase/app';
 import 'firebase/auth';
-import { error } from '../util/general-util';
+import { error } from 'common/lib/util/general-util';
 
 export type AppUser = {
   readonly uid: string;
@@ -50,5 +50,8 @@ export function getAppUser(): AppUser {
  * Sign out from firebase auth.
  */
 export function firebaseSignOut(): void {
-  firebase.auth().signOut().then(() => { });
+  firebase
+    .auth()
+    .signOut()
+    .then(() => {});
 }

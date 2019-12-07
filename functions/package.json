@@ -9,6 +9,7 @@
     "shell": "yarn tsc && firebase functions:shell",
     "start": "yarn shell",
     "deploy": "firebase deploy --only functions",
+    "test": "echo 'Test nothing'",
     "logs": "firebase functions:log"
   },
   "main": "dist/index.js",

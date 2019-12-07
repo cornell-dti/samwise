@@ -1,4 +1,4 @@
-import { Course } from 'store/store-types';
+import { Course } from '../types/store-types';
 import buildCoursesMap from './courses-util';
 
 it('buildCoursesMap works', () => {
@@ -14,7 +14,10 @@ it('buildCoursesMap works', () => {
     subject: 'CS',
     courseNumber: '4120',
     title: 'TODO',
-    examTimes: [{ type: 'final', time: 0 }, { type: 'prelim', time: 0 }],
+    examTimes: [
+      { type: 'final', time: 0 },
+      { type: 'prelim', time: 0 },
+    ],
   };
   const course3: Course = {
     courseId: 1,

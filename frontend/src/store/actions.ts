@@ -6,8 +6,15 @@ import {
   PatchTasks,
   PatchSettings,
   PatchBannerMessageStatus,
-} from './action-types';
-import { Course, Tag, Task, SubTask, Settings, BannerMessageStatus } from './store-types';
+} from 'common/lib/types/action-types';
+import {
+  Course,
+  Tag,
+  Task,
+  SubTask,
+  Settings,
+  BannerMessageStatus,
+} from 'common/lib/types/store-types';
 
 export const patchTags = (created: Tag[], edited: Tag[], deleted: string[]): PatchTags => ({
   type: 'PATCH_TAGS', created, edited, deleted,

@@ -18,8 +18,6 @@ jobs:
         run: yarn install
       - name: Run TypeScript Compiler
         run: yarn workspace frontend tsc
-      - name: Run Tests
-        run: yarn workspace frontend test
       - name: Build frontend
         run: PUBLIC_URL="/${{ github.event.number }}" yarn workspace frontend build:stage
       - name: Upload Built Static Assets

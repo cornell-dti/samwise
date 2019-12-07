@@ -2,15 +2,14 @@
 import React, { ReactElement } from 'react';
 import { Draggable } from 'react-beautiful-dnd';
 import { connect } from 'react-redux';
-import InlineTaskEditor from '../../Util/TaskEditors/InlineTaskEditor';
-import styles from './FocusTask.module.css';
-import { State, Task } from '../../../store/store-types';
-import { error } from '../../../util/general-util';
+import { error } from 'common/lib/util/general-util';
+import { State, Task, TaskWithSubTasks } from 'common/lib/types/store-types';
 import {
   getFilteredNotCompletedInFocusTask,
   getFilteredCompletedInFocusTask,
-} from '../../../util/task-util';
-import { TaskWithSubTasks } from '../../Util/TaskEditors/editors-types';
+} from 'common/lib/util/task-util';
+import InlineTaskEditor from '../../Util/TaskEditors/InlineTaskEditor';
+import styles from './FocusTask.module.css';
 
 type OwnProps = {
   readonly id: string;
