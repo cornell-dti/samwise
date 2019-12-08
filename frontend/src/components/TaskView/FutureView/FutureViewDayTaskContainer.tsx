@@ -62,21 +62,25 @@ function FutureViewDayTaskContainer(
   const [localTasks, setLocalTasks] = useState<IdOrder[]>(idOrderList);
   const onDragEnd = (result: DropResult): void => {
     const { source, destination } = result;
+
     if (destination == null) {
-      console.log('ahhhh', result);
       // invalid drop, skip
       return;
     }
 
-    const sourceOrder: number = source.index;
-    const dest = localTasks[destination.index];
-    const destinationOrder: number = dest == null ? sourceOrder : dest.order;
-    console.log(destination);
-    const reorderMap = computeReorderMap(localTasks, sourceOrder, destinationOrder);
-    setLocalTasks(getReorderedList(localTasks, reorderMap));
-    applyReorder('tasks', reorderMap);
-  };
+    // dragging within same day
+    if (source.droppableId === destination.droppableId) {
+      const sourceOrder: number = source.index;
+      const dest = localTasks[destination.index];
+      const destinationOrder: number = dest == null ? sourceOrder : dest.order;
 
+      const reorderMap = computeReorderMap(localTasks, sourceOrder, destinationOrder);
+      setLocalTasks(getReorderedList(localTasks, reorderMap));
+      applyReorder('tasks', reorderMap);
+    } else {
+
+    }
+  };
   const taskListComponent = idOrderList.map(({ id, order }) => (
     <Draggable key={id} draggableId={id} index={order}>
       { (provided) => (
