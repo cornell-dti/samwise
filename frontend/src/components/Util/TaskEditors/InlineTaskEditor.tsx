@@ -26,7 +26,7 @@ export default function InlineTaskEditor(
   const onBlur = (): void => setDisabled(true);
   const actions = {
     removeTask: () => removeTaskWithPotentialPrompt(original, null),
-    onSave: onBlur,
+    onSaveClicked: onBlur,
   };
   return (
     <TaskEditor

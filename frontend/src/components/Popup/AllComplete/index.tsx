@@ -49,8 +49,8 @@ export function AllComplete({ completedTasksCount, allTasksCount }: Props): Reac
     dragFriction: 0.1,
     duration: 3000,
     delay: 0,
-    width: '10px',
-    height: '10px',
+    width: 10,
+    height: 10,
     colors: ['#a864fd', '#29cdff', '#78ff44', '#ff718d', '#fdff6a'],
   };
 

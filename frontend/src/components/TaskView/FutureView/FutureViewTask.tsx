@@ -56,7 +56,6 @@ function FutureViewTask(
    * @param opener the opener passed by the floating task editor.
    * @return the onClick handler.
    */
-  // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
   const getOnClickHandler = (opener: () => void) => (event?: SyntheticEvent<HTMLElement>): void => {
     if (event == null) {
       opener();
