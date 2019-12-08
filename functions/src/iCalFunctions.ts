@@ -79,5 +79,3 @@ export function parseICal(link: string, user: string): void {
     }
   });
 }
-
-parseICal('https://canvas.cornell.edu/feeds/calendars/user_EJtT79IyH5Dj22KZJX4oCD2UIXmMDPl2EOm4LQNP.ics', 'jt568@cornell.edu');
