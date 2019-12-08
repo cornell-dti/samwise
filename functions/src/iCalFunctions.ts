@@ -62,6 +62,15 @@ export function parseICal(link: string, user: string): void {
                       icalUID: uid,
                     })
                     .catch((e: Error) => console.log(e));
+                } else {
+                  querySnapshot.forEach((doc) => {
+                    tasksCollection()
+                      .doc(doc.id)
+                      .update({
+                        name: taskName,
+                        date: endDate,
+                      });
+                  });
                 }
               });
           }
@@ -70,3 +79,5 @@ export function parseICal(link: string, user: string): void {
     }
   });
 }
+
+parseICal('https://canvas.cornell.edu/feeds/calendars/user_EJtT79IyH5Dj22KZJX4oCD2UIXmMDPl2EOm4LQNP.ics', 'jt568@cornell.edu');
