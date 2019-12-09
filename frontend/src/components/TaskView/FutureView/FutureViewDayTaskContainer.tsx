@@ -2,12 +2,12 @@ import React, { ReactElement, useState } from 'react';
 import { connect } from 'react-redux';
 import { Draggable, DragDropContext, DropResult, Droppable } from 'react-beautiful-dnd';
 import { State } from 'common/lib/types/store-types';
+import { computeReorderMap, getReorderedList } from 'common/lib/util/order-util';
 import { CalendarPosition, FloatingPosition } from '../../Util/TaskEditors/editors-types';
 import FutureViewTask from './FutureViewTask';
 import styles from './FutureViewDayTaskContainer.module.css';
 import { useWindowSizeCallback } from '../../../hooks/window-size-hook';
 import { createGetIdOrderListByDate } from '../../../store/selectors';
-import { computeReorderMap, getReorderedList } from '../../../util/order-util';
 import { applyReorder } from '../../../firebase/actions';
 
 type OwnProps = {
