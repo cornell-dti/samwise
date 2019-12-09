@@ -62,6 +62,15 @@ export function parseICal(link: string, user: string): void {
                       icalUID: uid,
                     })
                     .catch((e: Error) => console.log(e));
+                } else {
+                  querySnapshot.forEach((doc) => {
+                    tasksCollection()
+                      .doc(doc.id)
+                      .update({
+                        name: taskName,
+                        date: endDate,
+                      });
+                  });
                 }
               });
           }
