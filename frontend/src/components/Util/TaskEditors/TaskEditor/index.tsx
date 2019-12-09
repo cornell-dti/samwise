@@ -5,14 +5,14 @@
 
 import React, { ReactElement, useEffect, useState, useCallback } from 'react';
 import { connect } from 'react-redux';
-import { MainTask, State, SubTask, Tag } from 'store/store-types';
+import { MainTask, State, SubTask, Tag } from 'common/lib/types/store-types';
 import OverdueAlert from 'components/UI/OverdueAlert';
-import { NONE_TAG } from 'util/tag-util';
-import { ignore } from 'util/general-util';
+import { NONE_TAG } from 'common/lib/util/tag-util';
+import { ignore } from 'common/lib/util/general-util';
 import { confirmRepeatedTaskEditMaster, promptRepeatedTaskEditChoice } from 'util/task-util';
 import { editTaskWithDiff, forkTaskWithDiff } from 'firebase/actions';
+import { getTodayAtZeroAM, getDateWithDateString } from 'common/lib/util/datetime-util';
 import styles from './index.module.css';
-import { getTodayAtZeroAM, getDateWithDateString } from '../../../../util/datetime-util';
 import RepeatFrequencyHeader from './RepeatFrequencyHeader';
 import EditorHeader from './EditorHeader';
 import MainTaskEditor from './MainTaskEditor';
@@ -92,14 +92,16 @@ function TaskEditor(
     dispatchEditSubTask,
     dispatchDeleteSubTask,
     reset,
-  } = useTaskDiffReducer(initMainTask, initSubTasks, onChange || ignore);
+  } = useTaskDiffReducer(initMainTask, initSubTasks, onChange ?? ignore);
 
   const { name, tag, date, complete, inFocus } = mainTask;
 
   const [subTaskToFocus, setSubTaskToFocus] = useState<TaskToFocus>(null);
 
   const onMouseLeave = (): void => {
-    onSave();
+    if (type === 'ONE_TIME') {
+      onSave();
+    }
     if (onBlur) {
       onBlur();
     }
@@ -138,7 +140,7 @@ function TaskEditor(
             const replaceDate = getDateWithDateString(
               date instanceof Date ? date : null, taskAppearedDate,
             );
-            const correctDate = diff.mainTaskEdits.date || replaceDate;
+            const correctDate = diff.mainTaskEdits.date ?? replaceDate;
             const diffForFork: Diff = {
               ...diff, mainTaskEdits: { ...diff.mainTaskEdits, date: correctDate },
             };
@@ -291,6 +293,6 @@ function TaskEditor(
 }
 
 const Connected = connect(
-  ({ tags }: State) => ({ getTag: (id: string) => tags.get(id) || NONE_TAG }),
+  ({ tags }: State) => ({ getTag: (id: string) => tags.get(id) ?? NONE_TAG }),
 )(TaskEditor);
 export default Connected;

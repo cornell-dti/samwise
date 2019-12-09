@@ -1,14 +1,14 @@
 import React, { ReactElement, SyntheticEvent, ChangeEvent } from 'react';
 import Calendar from 'react-calendar';
 import { useTodayLastSecondTime, useTodayFirstSecondTime } from 'hooks/time-hook';
+import { date2String, getDateAfterXWeeks } from 'common/lib/util/datetime-util';
+import { NONE_TAG } from 'common/lib/util/tag-util';
+import { RepeatMetaData } from 'common/lib/types/store-types';
+import { LAST_DAY_OF_CLASS, LAST_DAY_OF_EXAMS } from 'common/lib/util/const-util';
+import { setDayOfWeek, unsetDayOfWeek, isDayOfWeekSet, DAYS_IN_WEEK } from 'common/lib/util/bitwise-util';
 import styles from './Picker.module.css';
 import dateStyles from './DatePicker.module.css';
-import { date2String, getDateAfterXWeeks } from '../../util/datetime-util';
-import { NONE_TAG } from '../../util/tag-util';
-import { RepeatMetaData } from '../../store/store-types';
 import SamwiseIcon from '../UI/SamwiseIcon';
-import { LAST_DAY_OF_CLASS, LAST_DAY_OF_EXAMS } from '../../util/const-util';
-import { setDayOfWeek, unsetDayOfWeek, isDayOfWeekSet, DAYS_IN_WEEK } from '../../util/bitwise-util';
 
 type Props = {
   readonly onDateChange: (date: Date | RepeatMetaData | null) => void;
@@ -23,8 +23,7 @@ const weekDays: readonly [string, number][] = [
   ['S', 0], ['M', 1], ['T', 2], ['W', 3], ['T', 4], ['F', 5], ['S', 6],
 ];
 
-type InternalDate =
-{
+type InternalDate = {
   type: 'normal' | 'repeat';
   date: Date;
   checkedWeeks: number;
@@ -95,7 +94,7 @@ export default function DatePicker(props: Props): ReactElement {
         <>
           <span className={styles.DateDisplay}>
             {!(date instanceof Date)
-            && <SamwiseIcon iconName="repeat" className={dateStyles.RepeatIcon} /> }
+              && <SamwiseIcon iconName="repeat" className={dateStyles.RepeatIcon} />}
             {date instanceof Date ? date2String(date) : ` ${genNextValidDay(date.pattern.bitSet)}`}
           </span>
           <button type="button" className={styles.ResetButton} onClick={reset}>&times;</button>
@@ -115,9 +114,9 @@ export default function DatePicker(props: Props): ReactElement {
     setInternalDate({
       ...internalDate,
       type:
-       e.currentTarget.value === 'true'
-         ? 'repeat'
-         : 'normal',
+        e.currentTarget.value === 'true'
+          ? 'repeat'
+          : 'normal',
     });
   };
 
@@ -241,7 +240,7 @@ export default function DatePicker(props: Props): ReactElement {
         className={dateStyles.SubtleBtn}
         onClick={handleClickRepeatCal}
       >
-        { internalDate.repeatEnd.date.toLocaleDateString() }
+        {internalDate.repeatEnd.date.toLocaleDateString()}
       </button>
       {
         internalDate.type === 'repeat'
@@ -292,7 +291,8 @@ export default function DatePicker(props: Props): ReactElement {
         : internalDate.repeatEnd.type === 'weeks';
     }
     return (
-      <li>
+      // eslint-disable-next-line react/no-array-index-key
+      <li key={i}>
         <label htmlFor={`newTaskRepeatEndRadio${i}`}>
           <input
             type="radio"
@@ -314,12 +314,12 @@ export default function DatePicker(props: Props): ReactElement {
   const openedRepeat = (
     <div className={styles.RepeatOpened}>
       <p className={styles.RepeatPickDayWrap}>
-          Repeats every week on
+        Repeats every week on
         <br />
         {weekdayPickers}
       </p>
       <div className={styles.RepeatPickEndWrap}>
-          Stops
+        Stops
         <ul className={dateStyles.EndPicker}>{endPicker}</ul>
       </div>
     </div>

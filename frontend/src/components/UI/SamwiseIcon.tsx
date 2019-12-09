@@ -149,7 +149,7 @@ const SamwiseIcon = ({ iconName, title, ...otherProps }: Props): ReactElement =>
     ...otherProps,
   };
   return (
-    <span title={title == null ? altText : title}>
+    <span title={title ?? altText}>
       {/* eslint-disable-next-line react/jsx-props-no-spreading */}
       <SvgComponent {...allPropsToSvg} />
     </span>

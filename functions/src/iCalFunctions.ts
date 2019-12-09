@@ -3,7 +3,7 @@ import { fromURL } from 'ical';
 import { settingsCollection, tasksCollection } from './db';
 import getOrder from './order-manager';
 
-export async function getICalLink(): Promise<void> {
+export default async function getICalLink(): Promise<void> {
   await settingsCollection()
     .where('canvasCalendar', '>', '')
     .get()
@@ -30,14 +30,14 @@ export function parseICal(link: string, user: string): void {
         const ev = data[k];
         if (data[k].type === 'VEVENT') {
           const taskName = ev.summary;
-          // the unique id i will use is a concat of the user and event uid because uids are
-          // not unique between users
+          // the unique id i will use is a concat of the user and event uid,
+          // because uids are not unique between users.
           const uid = ev.uid + user;
           const endObject: any = ev.end;
-          const endDate = endObject == null ? null : new Date(endObject.getTime());
+          const endDate = endObject === null ? null : new Date(endObject.getTime());
           const taskID: string = tasksCollection().doc().id;
           const order: number = await getOrder(user, 'tasks');
-          if (endDate == null) {
+          if (endDate === null) {
             // eslint-disable-next-line no-continue
             continue;
           }
@@ -62,6 +62,15 @@ export function parseICal(link: string, user: string): void {
                       icalUID: uid,
                     })
                     .catch((e: Error) => console.log(e));
+                } else {
+                  querySnapshot.forEach((doc) => {
+                    tasksCollection()
+                      .doc(doc.id)
+                      .update({
+                        name: taskName,
+                        date: endDate,
+                      });
+                  });
                 }
               });
           }
@@ -70,5 +79,3 @@ export function parseICal(link: string, user: string): void {
     }
   });
 }
-
-getICalLink();

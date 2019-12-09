@@ -1,7 +1,7 @@
 import React, { ReactElement } from 'react';
 import { useTime } from 'hooks/time-hook';
+import { date2FullDateString } from 'common/lib/util/datetime-util';
 import Banner from './Banner';
-import { date2FullDateString } from '../../util/datetime-util';
 import styles from './index.module.css';
 import SettingsButton from './Settings/SettingsButton';
 

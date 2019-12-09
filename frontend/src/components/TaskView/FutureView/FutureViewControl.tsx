@@ -1,10 +1,10 @@
 import React, { ReactElement } from 'react';
 import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
 import { useTodayLastSecondTime } from 'hooks/time-hook';
+import { date2YearMonth } from 'common/lib/util/datetime-util';
 import { FutureViewContainerType, FutureViewDisplayOption } from './future-view-types';
 import SquareTextButton from '../../UI/SquareTextButton';
 import SquareIconToggle from '../../UI/SquareIconToggle';
-import { date2YearMonth } from '../../../util/datetime-util';
 import styles from './FutureViewControl.module.scss';
 import { useMappedWindowSize } from '../../../hooks/window-size-hook';
 import SamwiseIcon from '../../UI/SamwiseIcon';
