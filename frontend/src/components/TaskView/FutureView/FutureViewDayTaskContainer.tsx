@@ -59,23 +59,16 @@ function FutureViewDayTaskContainer(
     setPrevHeights([tasksHeight, containerHeight]);
     onHeightChange(tasksHeight > containerHeight && containerHeight > 0, tasksHeight);
   });
-  const [localTasks, setLocalTasks] = useState<IdOrder[]>(idOrderList);
   const onDragEnd = (result: DropResult): void => {
     const { source, destination } = result;
-    console.log(localTasks);
-    console.log(result);
     if (destination == null) {
       // invalid drop, skip
       return;
     }
-    const sourceOrder: number = localTasks[source.index].order;
-    const dest = localTasks[destination.index];
+    const sourceOrder: number = idOrderList[source.index].order;
+    const dest = idOrderList[destination.index];
     const destinationOrder: number = dest == null ? sourceOrder : dest.order;
-
-    console.log(sourceOrder);
-    console.log(destinationOrder);
-    const reorderMap = computeReorderMap(localTasks, sourceOrder, destinationOrder);
-    setLocalTasks(getReorderedList(localTasks, reorderMap));
+    const reorderMap = computeReorderMap(idOrderList, sourceOrder, destinationOrder);
     applyReorder('tasks', reorderMap);
   };
   const taskListComponent = idOrderList.map(({ id }, i) => (
