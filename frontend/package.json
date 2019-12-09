@@ -9,12 +9,7 @@
     "test": "TZ=UTC react-scripts test --watchAll=false",
     "optimize-svg": "svgo --disable=removeViewBox --enable=prefixIds,removeDimensions src/assets/svgs/*.svg",
     "tsc": "tsc -p tsconfig.json",
-    "check-all": "yarn tsc && yarn test",
-    "jest": {
-      "collectCoverageFrom": [
-        "src/**/{!(FutureViewTask.test.tsx),}.js"
-      ]
-    }
+    "check-all": "yarn tsc && yarn test"
   },
   "dependencies": {
     "@fortawesome/fontawesome-svg-core": "^1.2.25",
