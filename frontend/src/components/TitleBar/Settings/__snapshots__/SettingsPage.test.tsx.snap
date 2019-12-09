@@ -338,6 +338,78 @@ exports[`SettingsPage matches snapshot. 1`] = `
     </div>
   </div>
   <div
+    className="SettingsSection"
+  >
+    <p
+      className="SettingsSectionTitle"
+    >
+      Canvas Calendar
+    </p>
+    <div
+      className="SettingsSectionContent"
+    >
+      <div
+        style={
+          Object {
+            "display": "block",
+          }
+        }
+      >
+        <form
+          className="CalendarForm SettingsButton"
+          onSubmit={[Function]}
+        >
+          <input
+            className="CalendarInput"
+            onChange={[Function]}
+            placeholder="Paste your Canvas iCal link here"
+            type="text"
+            value=""
+          />
+          <button
+            title="Link Canvas iCal"
+            type="submit"
+          >
+             Save 
+          </button>
+        </form>
+        <a
+          className="HelpButton"
+          href="https://community.canvaslms.com/docs/DOC-10691-4212717348"
+          title="Link to Canvas iCal guide"
+        >
+          Having trouble finding the iCal link?
+        </a>
+      </div>
+      <div
+        className="SettingsButton"
+        style={
+          Object {
+            "display": "none",
+          }
+        }
+      >
+        <p
+          style={
+            Object {
+              "wordBreak": "break-all",
+            }
+          }
+        >
+          Your Canvas calendar feed is linked.
+          <br />
+        </p>
+        <button
+          onClick={[Function]}
+          title="Remove Canvas iCal Link"
+          type="button"
+        >
+          Unlink
+        </button>
+      </div>
+    </div>
+  </div>
+  <div
     className="FinalRowButtonContainer"
   >
     <div

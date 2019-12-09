@@ -1,14 +1,14 @@
 import React, { KeyboardEvent, ReactElement, SyntheticEvent, ReactNode } from 'react';
 import { connect } from 'react-redux';
 import FloatingTaskEditor from 'components/Util/TaskEditors/FloatingTaskEditor';
-import { State, SubTask, Task } from 'store/store-types';
+import { State, SubTask, Task } from 'common/lib/types/store-types';
 import CheckBox from 'components/UI/CheckBox';
 import { FloatingPosition, CalendarPosition } from 'components/Util/TaskEditors/editors-types';
-import { getTodayAtZeroAM, getDateWithDateString } from 'util/datetime-util';
+import { getTodayAtZeroAM, getDateWithDateString } from 'common/lib/util/datetime-util';
 import OverdueAlert from 'components/UI/OverdueAlert';
 import { editMainTask } from 'firebase/actions';
 import { useMappedWindowSize } from 'hooks/window-size-hook';
-import { NONE_TAG } from 'util/tag-util';
+import { NONE_TAG } from 'common/lib/util/tag-util';
 import SamwiseIcon from 'components/UI/SamwiseIcon';
 import { removeTaskWithPotentialPrompt } from 'util/task-util';
 import FutureViewSubTask from './FutureViewSubTask';
@@ -178,7 +178,7 @@ const getCompoundTask = (
   if (original == null) {
     return null;
   }
-  const { color } = tags.get(original.tag) || NONE_TAG;
+  const { color } = tags.get(original.tag) ?? NONE_TAG;
   if (doesShowCompletedTasks) {
     let filteredSubTasks: SubTask[] = [];
     original.children.forEach((subTaskId) => {

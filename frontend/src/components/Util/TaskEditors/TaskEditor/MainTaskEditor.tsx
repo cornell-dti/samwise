@@ -1,9 +1,9 @@
 import React, { KeyboardEvent, ReactElement, SyntheticEvent } from 'react';
+import { getDateWithDateString } from 'common/lib/util/datetime-util';
 import styles from './index.module.css';
 import CheckBox from '../../../UI/CheckBox';
 import SamwiseIcon from '../../../UI/SamwiseIcon';
 import { editMainTask } from '../../../../firebase/actions';
-import { getDateWithDateString } from '../../../../util/datetime-util';
 
 type NameCompleteInFocus = {
   readonly name: string;

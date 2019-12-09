@@ -1,9 +1,9 @@
 import React, { ReactElement, CSSProperties, useState, useRef, useEffect } from 'react';
 import { connect } from 'react-redux';
+import { State, Tag } from 'common/lib/types/store-types';
 import TagItem from '../Tags/TagItem';
 import ClassTagAdder from '../Tags/ClassTagAdder';
 import styles from './Onboard.module.scss';
-import { State, Tag } from '../../../store/store-types';
 import Tutorial1 from '../../../assets/tutorial/t1.png';
 import Tutorial2 from '../../../assets/tutorial/t2.png';
 import Tutorial3 from '../../../assets/tutorial/t3.png';

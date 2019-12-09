@@ -1,6 +1,6 @@
 import React, { ReactElement } from 'react';
 import { connect } from 'react-redux';
-import { TasksProgressProps } from '../../../util/task-util';
+import { TasksProgressProps } from 'common/lib/util/task-util';
 import Bear from './Bear';
 import ProgressIndicator from './ProgressIndicator';
 import styles from './index.module.css';

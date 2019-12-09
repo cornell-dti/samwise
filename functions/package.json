@@ -3,18 +3,27 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "tsc": "tsc --project tsconfig.json",
-    "start": "yarn tsc && node dist/iCalFunctions.js"
+    "tsc": "tsc",
+    "build": "yarn tsc && ncc build dist/index.js -o compiled -m",
+    "serve": "yarn tsc && firebase serve --only functions",
+    "shell": "yarn tsc && firebase functions:shell",
+    "start": "yarn shell",
+    "deploy": "firebase deploy --only functions",
+    "test": "echo 'Test nothing'",
+    "logs": "firebase functions:log"
   },
+  "main": "dist/index.js",
   "dependencies": {
-    "firebase": "^7.4.0",
     "firebase-admin": "^8.8.0",
+    "firebase-functions": "^3.3.0",
     "ical": "^0.6.0",
     "json-bigint": "^0.3.0",
     "node-fetch": "^2.6.0"
   },
   "devDependencies": {
     "@types/ical": "^0.6.1",
-    "@types/node-fetch": "^2.5.3"
+    "@types/node-fetch": "^2.5.3",
+    "@zeit/ncc": "^0.20.5",
+    "firebase-functions-test": "^0.1.6"
   }
 }

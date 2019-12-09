@@ -1,13 +1,14 @@
 import React, { ReactElement, ReactNode } from 'react';
 import { Map } from 'immutable';
 import { connect } from 'react-redux';
+import { Tag, State } from 'common/lib/types/store-types';
 import TagItem from '../Tags/TagItem';
 import ClassTagAdder from '../Tags/ClassTagAdder';
 import OtherTagAdder from '../Tags/OtherTagAdder';
 import styles from './SettingsPage.module.css';
-import { Tag, State } from '../../../store/store-types';
 import { completeOnboarding, importCourseExams } from '../../../firebase/actions';
 import { firebaseSignOut } from '../../../firebase/auth-util';
+import CanvasCalendar from '../Canvas/CanvasCalendar';
 
 /**
  * The class adder component.
@@ -59,7 +60,9 @@ export const TagsContainer = ({ title, children }: TagsContainerProps): ReactEle
   </div>
 );
 
-type Props = { readonly tags: Map<string, Tag> };
+type Props = {
+  readonly tags: Map<string, Tag>;
+};
 
 /**
  * The settings page.
@@ -77,6 +80,7 @@ export function SettingsPage({ tags }: Props): ReactElement {
   const renderTags = (arr: Tag[]): ReactNode => arr.map((tag: Tag) => (
     <TagItem key={tag.id} tag={tag} />
   ));
+
   return (
     <div>
       <ClassAdder />
@@ -88,6 +92,7 @@ export function SettingsPage({ tags }: Props): ReactElement {
         {renderTags(otherTags)}
         <OtherTagAdder />
       </TagsContainer>
+      <CanvasCalendar />
       <div className={styles.FinalRowButtonContainer}>
         <div className={styles.SettingsButton}>
           <button

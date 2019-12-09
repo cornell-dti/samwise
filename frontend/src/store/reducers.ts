@@ -7,9 +7,9 @@ import {
   PatchSubTasks,
   PatchSettings,
   PatchBannerMessageStatus,
-} from './action-types';
-import { State } from './store-types';
-import { error } from '../util/general-util';
+} from 'common/lib/types/action-types';
+import { State } from 'common/lib/types/store-types';
+import { error } from 'common/lib/util/general-util';
 import { initialState } from './state';
 
 function patchTags(state: State, { created, edited, deleted }: PatchTags): State {
@@ -40,12 +40,12 @@ function patchTasks(state: State, { created, edited, deleted }: PatchTasks): Sta
         return;
       }
       const key = t.date.toDateString();
-      const oldTask = state.tasks.get(t.id) || error();
+      const oldTask = state.tasks.get(t.id) ?? error();
       if (oldTask.type === 'ONE_TIME') {
         const oldKey = oldTask.date.toDateString();
         if (oldKey !== key) {
           // remove first
-          const oldBucket = m.get(oldKey) || error('impossible!');
+          const oldBucket = m.get(oldKey) ?? error('impossible!');
           m.set(oldKey, oldBucket.remove(t.id));
         }
       }
@@ -84,7 +84,10 @@ function patchTasks(state: State, { created, edited, deleted }: PatchTasks): Sta
     deleted.forEach((id) => tasks.delete(id));
   });
   return {
-    ...state, tasks: newTasks, dateTaskMap: newDateTaskMap, repeatedTaskSet: newRepeatedTaskSet,
+    ...state,
+    tasks: newTasks,
+    dateTaskMap: newDateTaskMap,
+    repeatedTaskSet: newRepeatedTaskSet,
   };
 }
 

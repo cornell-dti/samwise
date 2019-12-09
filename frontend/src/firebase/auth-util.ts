@@ -1,6 +1,6 @@
 import firebase from 'firebase/app';
 import 'firebase/auth';
-import { error } from '../util/general-util';
+import { error } from 'common/lib/util/general-util';
 
 export type AppUser = {
   readonly uid: string;
@@ -43,12 +43,15 @@ export function cacheAppUser(user: AppUser): void {
  * Instead, it will throw an error.
  */
 export function getAppUser(): AppUser {
-  return appUser == null ? error('App is not initialized.') : appUser;
+  return appUser ?? error('App is not initialized.');
 }
 
 /**
  * Sign out from firebase auth.
  */
 export function firebaseSignOut(): void {
-  firebase.auth().signOut().then(() => { });
+  firebase
+    .auth()
+    .signOut()
+    .then(() => {});
 }
