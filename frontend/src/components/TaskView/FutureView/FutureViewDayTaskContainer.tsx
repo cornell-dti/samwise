@@ -94,7 +94,7 @@ function FutureViewDayTaskContainer(
     const style = {};
     return (
       <DragDropContext onDragEnd={onDragEnd}>
-        <Droppable droppableId="onetestyboy">
+        <Droppable droppableId="one-testy-droppable-id">
           {(provided) => (
             // eslint-disable-next-line react/jsx-props-no-spreading
             <div ref={provided.innerRef} {...provided.droppableProps}>
