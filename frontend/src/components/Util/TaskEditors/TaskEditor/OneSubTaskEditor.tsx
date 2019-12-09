@@ -5,12 +5,12 @@ import React, {
   useEffect,
   useRef,
 } from 'react';
-import styles from './index.module.css';
+import { PartialSubTask, SubTask } from 'common/lib/types/store-types';
+import { getDateWithDateString } from 'common/lib/util/datetime-util';
 import CheckBox from '../../../UI/CheckBox';
-import { PartialSubTask, SubTask } from '../../../../store/store-types';
 import SamwiseIcon from '../../../UI/SamwiseIcon';
-import { getDateWithDateString } from '../../../../util/datetime-util';
 import { editSubTask } from '../../../../firebase/actions';
+import styles from './index.module.css';
 
 type Props = {
   readonly subTask: SubTask; // the subtask to edit
@@ -19,7 +19,6 @@ type Props = {
   readonly taskDate: Date | null;
   readonly dateAppeared: string;
   readonly needToBeFocused: boolean; // whether it needs to be focused.
-  readonly afterFocusedCallback: () => void; // need to be called once we focused the subtask
   readonly editThisSubTask: (subtaskId: string, partialSubTask: PartialSubTask) => void;
   readonly removeSubTask: (subtaskId: string) => void;
   readonly onPressEnter: (id: 'main-task' | number) => void;
@@ -36,24 +35,24 @@ function OneSubTaskEditor(
     taskDate,
     dateAppeared,
     needToBeFocused,
-    afterFocusedCallback,
     editThisSubTask,
     removeSubTask,
     onPressEnter,
   }: Props,
 ): ReactElement {
-  const onNameChange = (event: SyntheticEvent<HTMLInputElement>): void => {
-    editThisSubTask(subTask.id, { name: event.currentTarget.value });
-  };
   const replaceDateForFork = taskDate == null
     ? getDateWithDateString(taskDate, dateAppeared)
     : null;
-  const onCompleteChange = (): void => editSubTask(
-    mainTaskId, subTask.id, replaceDateForFork, { complete: !subTask.complete },
-  );
-  const onInFocusChange = (): void => editSubTask(
-    mainTaskId, subTask.id, replaceDateForFork, { inFocus: !subTask.inFocus },
-  );
+  const onCompleteChange = (): void => {
+    const complete = !subTask.complete;
+    editThisSubTask(subTask.id, { complete });
+    editSubTask(mainTaskId, subTask.id, replaceDateForFork, { complete });
+  };
+  const onInFocusChange = (): void => {
+    const inFocus = !subTask.inFocus;
+    editThisSubTask(subTask.id, { inFocus });
+    editSubTask(mainTaskId, subTask.id, replaceDateForFork, { inFocus });
+  };
   const onRemove = (): void => removeSubTask(subTask.id);
 
   const onKeyDown = (event: KeyboardEvent<HTMLInputElement>): void => {
@@ -63,6 +62,15 @@ function OneSubTaskEditor(
     onPressEnter(subTask.order);
   };
 
+  const onInputChange = (event: SyntheticEvent<HTMLInputElement>): void => {
+    event.stopPropagation();
+    const newValue = event.currentTarget.value;
+    editThisSubTask(subTask.id, { name: newValue });
+  };
+  const onBlur = (event: SyntheticEvent<HTMLInputElement>): void => {
+    event.stopPropagation();
+  };
+
   const editorRef = useRef<HTMLInputElement | null>(null);
 
   useEffect(() => {
@@ -70,7 +78,6 @@ function OneSubTaskEditor(
       const currentElement = editorRef.current;
       if (currentElement != null) {
         currentElement.focus();
-        afterFocusedCallback();
       }
     }
   });
@@ -92,7 +99,9 @@ function OneSubTaskEditor(
         value={subTask.name}
         ref={editorRef}
         onKeyDown={onKeyDown}
-        onChange={onNameChange}
+        onChange={onInputChange}
+        onBlur={onBlur}
+        onMouseLeave={onBlur}
         style={{ width: 'calc(100% - 70px)' }}
       />
       <SamwiseIcon

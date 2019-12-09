@@ -1,24 +1,21 @@
+/* eslint-disable no-param-reassign */
 import React, { ReactElement, ReactNode } from 'react';
 import { connect } from 'react-redux';
-import { getDateWithDateString } from 'util/datetime-util';
+import { getDateWithDateString } from 'common/lib/util/datetime-util';
 import { removeTaskWithPotentialPrompt } from 'util/task-util';
-import { State, SubTask, Task } from 'store/store-types';
+import { State, SubTask, Task, TaskWithSubTasks } from 'common/lib/types/store-types';
 import { useWindowSizeCallback, WindowSize } from 'hooks/window-size-hook';
-import { CalendarPosition, FloatingPosition, TaskWithSubTasks } from './editors-types';
+import { CalendarPosition, FloatingPosition } from './editors-types';
 import TaskEditor from './TaskEditor';
 import styles from './FloatingTaskEditor.module.css';
 
 const EDITOR_WIDTH = 300;
 
 const updateFloatingEditorPosition = (
-  editorElement: HTMLFormElement | null | undefined,
+  editorPosDiv: HTMLFormElement,
   windowSize: WindowSize,
   position: FloatingPosition,
 ): void => {
-  const editorPosDiv = editorElement;
-  if (editorPosDiv == null) {
-    return;
-  }
   const taskElement = editorPosDiv.previousElementSibling;
   if (taskElement === null || !(taskElement instanceof HTMLDivElement)) {
     throw new Error('Task element must be a div!');
@@ -86,10 +83,14 @@ function FloatingTaskEditor(
 ): ReactElement {
   const [open, setOpen] = React.useState<boolean>(false);
 
-  const editorRef = React.useRef(null);
+  const editorRef = React.useRef<HTMLFormElement>(null);
 
-  useWindowSizeCallback((windowSize) => {
-    updateFloatingEditorPosition(editorRef.current, windowSize, position);
+  const windowSize = useWindowSizeCallback((size) => {
+    const editorPosDiv = editorRef.current;
+    if (editorPosDiv == null) {
+      return;
+    }
+    updateFloatingEditorPosition(editorPosDiv, size, position);
   });
 
   const openPopup = (): void => setOpen(true);
@@ -97,11 +98,18 @@ function FloatingTaskEditor(
 
   const { id: _, type, subTasks, ...mainTask } = task;
   const actions = {
+    onChange: (): void => {
+      const editorPosDiv = editorRef.current;
+      if (editorPosDiv == null) {
+        return;
+      }
+      updateFloatingEditorPosition(editorPosDiv, windowSize, position);
+    },
     removeTask: (): void => removeTaskWithPotentialPrompt(
       initialTask,
       getDateWithDateString(mainTask.date instanceof Date ? mainTask.date : null, taskAppearedDate),
     ),
-    onSave: closePopup,
+    onSaveClicked: closePopup,
   };
 
   return (

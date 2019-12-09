@@ -1,5 +1,5 @@
 import React, { ReactNode, ReactElement, CSSProperties } from 'react';
-import { TasksProgressProps } from '../../../util/task-util';
+import { TasksProgressProps } from 'common/lib/util/task-util';
 import styles from './ProgressIndicator.module.scss';
 
 type ProgressBarProps = TasksProgressProps & {

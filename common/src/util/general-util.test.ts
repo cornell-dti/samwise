@@ -1,5 +1,4 @@
-import { shallowEqual } from 'react-redux';
-import { randomId, identity, ignore, error, shallowArrayEqual } from './general-util';
+import { randomId, identity, ignore, error, shallowEqual, shallowArrayEqual } from './general-util';
 
 it('randomId is always positive', () => {
   for (let i = 0; i < 100; i += 1) {

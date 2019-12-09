@@ -11,14 +11,19 @@ jobs:
       - uses: actions/checkout@master
       - name: Set up Node
         uses: actions/setup-node@v1
+      - name: Use Yarn Cache
+        uses: actions/cache@v1
+        with:
+          path: ~/.cache/yarn
+          key: yarn-${{ hashFiles(format('{0}{1}', github.workspace, '/yarn.lock')) }}
+          restore-keys: yarn-
       - name: Yarn Install
-        run: cd frontend && yarn install
+        run: yarn install
       - name: Build frontend
-        run: cd frontend && yarn build:stage
+        run: yarn workspace frontend build:stage
       - name: Deploy to Firebase Staging Site
         env:
           FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
         run: |
-          cd frontend
           ./node_modules/.bin/firebase use default
           ./node_modules/.bin/firebase deploy --token=$FIREBASE_TOKEN --non-interactive --only hosting

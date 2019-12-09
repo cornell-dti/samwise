@@ -33,6 +33,8 @@ coverage.xml
 # Compiled Output
 **/build
 **/dist
+**/compiled
+common/lib
 
 # Runtime data
 pids
@@ -56,3 +58,6 @@ yarn-error.log*
 
 # Misc
 .DS_Store
+
+# Firebase admin key
+firebase-adminsdk.json

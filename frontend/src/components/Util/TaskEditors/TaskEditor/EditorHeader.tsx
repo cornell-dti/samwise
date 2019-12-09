@@ -1,8 +1,8 @@
 import React, { ReactElement } from 'react';
 import Calendar from 'react-calendar';
+import { Tag, RepeatMetaData } from 'common/lib/types/store-types';
 import styles from './index.module.css';
 import TagListPicker from '../../TagListPicker/TagListPicker';
-import { Tag, RepeatMetaData } from '../../../../store/store-types';
 import { CalendarPosition } from '../editors-types';
 import SamwiseIcon from '../../../UI/SamwiseIcon';
 

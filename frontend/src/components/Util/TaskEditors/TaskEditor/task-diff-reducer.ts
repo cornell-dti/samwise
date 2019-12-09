@@ -1,13 +1,13 @@
 import { Map, Set } from 'immutable';
 import { useReducer } from 'react';
-import { shallowEqual, shallowArrayEqual } from 'util/general-util';
+import { shallowEqual, shallowArrayEqual } from 'common/lib/util/general-util';
 import {
   MainTask,
   PartialMainTask,
   PartialSubTask,
   SubTask,
   SubTaskWithoutId,
-} from '../../../../store/store-types';
+} from 'common/lib/types/store-types';
 import { getNewSubTaskId } from '../../../../firebase/id-provider';
 
 type Action =
@@ -38,7 +38,10 @@ type TaskDiffActions = FullTask & {
 };
 
 const emptyDiff: Diff = {
-  mainTaskEdits: {}, subTaskCreations: Map(), subTaskEdits: Map(), subTaskDeletions: Set(),
+  mainTaskEdits: {},
+  subTaskCreations: Map(),
+  subTaskEdits: Map(),
+  subTaskDeletions: Set(),
 };
 
 /**
@@ -82,7 +85,8 @@ function reducer(state: State, action: Action): State {
       const id = getNewSubTaskId();
       const newSubTasks = [...subTasks, { id, ...newSubTask }];
       const newDiff = {
-        ...diff, subTaskCreations: diff.subTaskCreations.set(id, newSubTask),
+        ...diff,
+        subTaskCreations: diff.subTaskCreations.set(id, newSubTask),
       };
       return { ...restState, subTasks: newSubTasks, diff: newDiff };
     }
@@ -98,9 +102,10 @@ function reducer(state: State, action: Action): State {
           subTaskCreations: diff.subTaskCreations.set(subTaskId, { ...createdSubTask, ...change }),
         };
       } else {
-        const subTaskEdits = diff.subTaskEdits.update(
-          subTaskId, change, (prevChange) => ({ ...prevChange, ...change }),
-        );
+        const subTaskEdits = diff.subTaskEdits.update(subTaskId, change, (prevChange) => ({
+          ...prevChange,
+          ...change,
+        }));
         newDiff = { ...diff, subTaskEdits };
       }
       return { ...restState, subTasks: newSubTasks, diff: newDiff };
@@ -127,30 +132,41 @@ function reducer(state: State, action: Action): State {
 }
 
 export default function useTaskDiffReducer(
-  initMainTask: MainTask, initSubTasks: readonly SubTask[],
+  initMainTask: MainTask,
+  initSubTasks: readonly SubTask[],
+  onChange: () => void,
 ): TaskDiffActions {
   const [state, dispatch] = useReducer(reducer, [initMainTask, initSubTasks], initializer);
   const { mainTask, subTasks, prevFullTask, diff } = state;
-  if (!shallowEqual(prevFullTask.mainTask, initMainTask)
-    || !shallowArrayEqual(prevFullTask.subTasks, initSubTasks)) {
+  if (
+    !shallowEqual(prevFullTask.mainTask, initMainTask)
+    || !shallowArrayEqual(prevFullTask.subTasks, initSubTasks)
+  ) {
     dispatch({ type: 'RESET', mainTask: initMainTask, subTasks: initSubTasks });
   }
   return {
     mainTask,
     subTasks,
     diff,
-    dispatchEditMainTask: (change: PartialMainTask): void => dispatch({
-      type: 'EDIT_MAIN_TASK', change,
-    }),
-    dispatchAddSubTask: (newSubTask: SubTaskWithoutId): void => dispatch({
-      type: 'ADD_SUBTASK', newSubTask,
-    }),
-    dispatchEditSubTask: (subTaskId: string, change: PartialSubTask): void => dispatch({
-      type: 'EDIT_SUBTASK', subTaskId, change,
-    }),
-    dispatchDeleteSubTask: (subtaskId: string): void => dispatch({
-      type: 'DELETE_SUBTASK', subtaskId,
-    }),
-    reset: (): void => dispatch({ type: 'RESET', mainTask: initMainTask, subTasks: initSubTasks }),
+    dispatchEditMainTask: (change: PartialMainTask): void => {
+      dispatch({ type: 'EDIT_MAIN_TASK', change });
+      onChange();
+    },
+    dispatchAddSubTask: (newSubTask: SubTaskWithoutId): void => {
+      dispatch({ type: 'ADD_SUBTASK', newSubTask });
+      onChange();
+    },
+    dispatchEditSubTask: (subTaskId: string, change: PartialSubTask): void => {
+      dispatch({ type: 'EDIT_SUBTASK', subTaskId, change });
+      onChange();
+    },
+    dispatchDeleteSubTask: (subtaskId: string): void => {
+      dispatch({ type: 'DELETE_SUBTASK', subtaskId });
+      onChange();
+    },
+    reset: (): void => {
+      dispatch({ type: 'RESET', mainTask: initMainTask, subTasks: initSubTasks });
+      onChange();
+    },
   };
 }

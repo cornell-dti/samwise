@@ -1,14 +1,14 @@
 import { createSelector, createSelectorCreator, defaultMemoize } from 'reselect';
 import { Map, Set } from 'immutable';
-import { State, SubTask, Tag, Task, BannerMessageStatus, RepeatingTask } from './store-types';
+import { State, SubTask, Tag, Task, BannerMessageStatus, RepeatingTask } from 'common/lib/types/store-types';
+import { NONE_TAG } from 'common/lib/util/tag-util';
 import {
   computeTaskProgress,
   TasksProgressProps,
   getFilteredCompletedInFocusTask,
   getFilteredNotCompletedInFocusTask,
   dateMatchRepeats,
-} from '../util/task-util';
-import { NONE_TAG } from '../util/tag-util';
+} from 'common/lib/util/task-util';
 import findMessageToDisplay, { MessageWithId } from '../components/TitleBar/Banner/messages';
 
 /*
@@ -44,7 +44,7 @@ const getBannerMessageStatus = (
 
 const getTasksId = ({ tasks }: State): Set<string> => Set(tasks.keys());
 
-export const getTagById = ({ tags }: State, id: string): Tag => tags.get(id) || NONE_TAG;
+export const getTagById = ({ tags }: State, id: string): Tag => tags.get(id) ?? NONE_TAG;
 export const getTaskById = ({ tasks }: State, id: string): Task | null | undefined => tasks.get(id);
 export const getSubTaskById = (
   { subTasks }: State, id: string,

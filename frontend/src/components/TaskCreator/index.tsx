@@ -1,16 +1,16 @@
 import React, { KeyboardEvent, SyntheticEvent, ReactElement } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlus, faArrowAltCircleRight } from '@fortawesome/free-solid-svg-icons';
-import styles from './index.module.css';
+import { randomId } from 'common/lib/util/general-util';
+import { OneTimeTask, RepeatingTask, RepeatMetaData, SubTask } from 'common/lib/types/store-types';
+import { NONE_TAG_ID } from 'common/lib/util/tag-util';
+import { isToday } from 'common/lib/util/datetime-util';
 import TagPicker from './TagPicker';
 import DatePicker from './DatePicker';
 import FocusPicker from './FocusPicker';
-import { randomId } from '../../util/general-util';
-import { OneTimeTask, RepeatingTask, RepeatMetaData, SubTask } from '../../store/store-types';
-import { NONE_TAG_ID } from '../../util/tag-util';
-import { isToday } from '../../util/datetime-util';
 import { addTask, TaskWithoutIdOrderChildren } from '../../firebase/actions';
 import SamwiseIcon from '../UI/SamwiseIcon';
+import styles from './index.module.css';
 
 type SimpleTaskMapper<T> = Pick<T, Exclude<keyof T, 'type' | 'order' | 'children'>>
 type OneTimeSimpleTask = SimpleTaskMapper<OneTimeTask>;
@@ -189,7 +189,7 @@ export default class TaskCreator extends React.PureComponent<{}, State> {
       // Selecting a date, or user cancelled while date was not picked
       this.setState(
         {
-          date: date || new Date(),
+          date: date ?? new Date(),
           datePickerOpened: false,
           datePicked: Boolean(date),
         },
@@ -371,7 +371,7 @@ export default class TaskCreator extends React.PureComponent<{}, State> {
             onKeyDown={this.newSubTaskKeyPress}
           />
           <button type="button" className={styles.ResetButton} onClick={this.resetTask}>
-            {'Clear'}
+            Clear
           </button>
         </div>
       </div>

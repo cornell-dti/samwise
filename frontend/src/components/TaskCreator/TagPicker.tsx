@@ -1,9 +1,9 @@
 import React, { ReactElement } from 'react';
 import { connect } from 'react-redux';
+import { NONE_TAG, NONE_TAG_ID } from 'common/lib/util/tag-util';
+import { State, Tag } from 'common/lib/types/store-types';
 import TagListPicker from '../Util/TagListPicker/TagListPicker';
 import styles from './Picker.module.css';
-import { NONE_TAG, NONE_TAG_ID } from '../../util/tag-util';
-import { State, Tag } from '../../store/store-types';
 import SamwiseIcon from '../UI/SamwiseIcon';
 
 type OwnProps = {
@@ -52,6 +52,6 @@ function TagPicker({ tag, opened, onTagChange, onPickerOpened, getTag }: Props):
 }
 
 const Connected = connect(
-  ({ tags }: State) => ({ getTag: (id: string) => tags.get(id) || NONE_TAG }),
+  ({ tags }: State) => ({ getTag: (id: string) => tags.get(id) ?? NONE_TAG }),
 )(TagPicker);
 export default Connected;

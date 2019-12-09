@@ -1,4 +1,4 @@
-import { BannerMessageIds, BannerMessageStatus } from '../../../store/store-types';
+import { BannerMessageIds, BannerMessageStatus } from 'common/lib/types/store-types';
 
 /**
  * This file contains a list of all banner messages we may send.

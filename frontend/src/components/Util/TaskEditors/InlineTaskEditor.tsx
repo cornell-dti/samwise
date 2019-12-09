@@ -1,8 +1,8 @@
 import React, { ReactElement, useState } from 'react';
 import { removeTaskWithPotentialPrompt } from 'util/task-util';
-import { Task } from '../../../store/store-types';
+import { Task, TaskWithSubTasks } from 'common/lib/types/store-types';
 import TaskEditor from './TaskEditor';
-import { CalendarPosition, TaskWithSubTasks } from './editors-types';
+import { CalendarPosition } from './editors-types';
 
 type Props = {
   readonly original: Task;
@@ -26,7 +26,7 @@ export default function InlineTaskEditor(
   const onBlur = (): void => setDisabled(true);
   const actions = {
     removeTask: () => removeTaskWithPotentialPrompt(original, null),
-    onSave: onBlur,
+    onSaveClicked: onBlur,
   };
   return (
     <TaskEditor

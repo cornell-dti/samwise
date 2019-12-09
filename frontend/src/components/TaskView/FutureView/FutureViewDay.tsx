@@ -1,10 +1,10 @@
 import React, { ReactElement } from 'react';
+import { getTodayAtZeroAM } from 'common/lib/util/datetime-util';
+import { error } from 'common/lib/util/general-util';
 import { SimpleDate } from './future-view-types';
 import { CalendarPosition, FloatingPosition } from '../../Util/TaskEditors/editors-types';
 import styles from './FutureViewDay.module.scss';
-import { floatingViewWidth, headerHeight } from './future-view-css-props';
-import { getTodayAtZeroAM } from '../../../util/datetime-util';
-import { error } from '../../../util/general-util';
+import { headerHeight } from './future-view-css-props';
 import { useWindowSize, WindowSize } from '../../../hooks/window-size-hook';
 import FutureViewDayContent from './FutureViewDayContent';
 
@@ -35,21 +35,17 @@ type PropsForPositionComputation = {
 const computeFloatingViewStyle = (props: PropsForPositionComputation): PositionStyle => {
   const {
     tasksHeight, inNDaysView, windowSize,
-    mainViewPosition: {
-      width, height, top, left,
-    },
+    mainViewPosition: { width, height, top },
   } = props;
   // Compute the height of inner content
   const totalHeight = headerHeight + tasksHeight;
   // Decide the maximum allowed height and the actual height
-  const maxAllowedHeight = inNDaysView ? 400 : 300;
+  const maxAllowedHeight = inNDaysView ? 500 : 300;
   const floatingViewHeight = Math.min(totalHeight, maxAllowedHeight);
   // Compute ideal offset
   let topOffset = (height - floatingViewHeight) / 2;
-  let leftOffset = (width - floatingViewWidth) / 2;
   // Correct the offsets if they overflow.
   {
-    const windowWidth = windowSize.width;
     const windowHeight = windowSize.height;
     const topAbsolutePosition = top + topOffset;
     if (topAbsolutePosition < 0) {
@@ -61,22 +57,12 @@ const computeFloatingViewStyle = (props: PropsForPositionComputation): PositionS
         topOffset -= diff;
       }
     }
-    const leftAbsolutePosition = left + leftOffset;
-    if (leftAbsolutePosition < 0) {
-      leftOffset -= leftAbsolutePosition;
-    } else {
-      const rightAbsolutePosition = leftAbsolutePosition + floatingViewWidth;
-      const diff = rightAbsolutePosition - windowWidth;
-      if (diff > 0) {
-        leftOffset -= diff;
-      }
-    }
   }
   return {
-    width: `${floatingViewWidth}px`,
+    width: `${width}px`,
     height: `${floatingViewHeight}px`,
     top: `${topOffset}px`,
-    left: `${leftOffset}px`,
+    left: '0',
   };
 };
 
@@ -138,7 +124,7 @@ export default function FutureViewDay(props: Props): ReactElement {
     );
   }
   const computeFloatingViewPosition = (): PositionStyle => {
-    const componentDiv = componentDivRef.current || error();
+    const componentDiv = componentDivRef.current ?? error();
     const boundingRect = componentDiv.getBoundingClientRect();
     if (!(boundingRect instanceof DOMRect)) {
       throw new Error('Bad boundingRect!');

@@ -1,7 +1,7 @@
 import React, { ReactElement } from 'react';
 import { connect } from 'react-redux';
 import Confetti from 'react-dom-confetti';
-import { TasksProgressProps } from '../../../util/task-util';
+import { TasksProgressProps } from 'common/lib/util/task-util';
 import styles from './Celebrate.module.css';
 import { getProgress } from '../../../store/selectors';
 // import Bear from '../../../assets/bear/happy-bear.png';
@@ -49,8 +49,8 @@ export function AllComplete({ completedTasksCount, allTasksCount }: Props): Reac
     dragFriction: 0.1,
     duration: 3000,
     delay: 0,
-    width: '10px',
-    height: '10px',
+    width: 10,
+    height: 10,
     colors: ['#a864fd', '#29cdff', '#78ff44', '#ff718d', '#fdff6a'],
   };
 
