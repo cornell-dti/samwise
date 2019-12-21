@@ -66,7 +66,7 @@ export function parseICal(link: string, user: string): void {
                     .catch((e: Error) => console.log(e));
                 } else {
                   querySnapshot.forEach((doc) => {
-                    tasksCollection()
+                    database.tasksCollection()
                       .doc(doc.id)
                       .update({
                         name: taskName,
