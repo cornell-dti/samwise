@@ -1,8 +1,9 @@
 import React, { KeyboardEvent, SyntheticEvent, ReactElement } from 'react';
+import { connect } from 'react-redux';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlus, faArrowAltCircleRight } from '@fortawesome/free-solid-svg-icons';
 import { randomId } from 'common/lib/util/general-util';
-import { OneTimeTask, RepeatingTask, RepeatMetaData, SubTask } from 'common/lib/types/store-types';
+import { OneTimeTask, RepeatingTask, RepeatMetaData, SubTask, State, Theme } from 'common/lib/types/store-types';
 import { NONE_TAG_ID } from 'common/lib/util/tag-util';
 import { isToday } from 'common/lib/util/datetime-util';
 import TagPicker from './TagPicker';
@@ -26,6 +27,8 @@ type State = SimpleTask & {
   readonly needToSwitchFocus: boolean;
 };
 
+type Props =  { readonly theme : Theme };
+
 /**
  * The placeholder text in the main task input box.
  */
@@ -48,8 +51,12 @@ const initialState = (): State => ({
   needToSwitchFocus: false,
 });
 
-export default class TaskCreator extends React.PureComponent<{}, State> {
+export class TaskCreator extends React.PureComponent<Props, State> {
   public readonly state: State = initialState();
+  private readonly darkModeStyles = this.props.theme === 'dark' ? {
+    background: 'black',
+    color: 'white'
+  } : null;
 
   private addTask: HTMLInputElement | null | undefined;
 
@@ -333,7 +340,7 @@ export default class TaskCreator extends React.PureComponent<{}, State> {
             ref={refHandler}
             value={name}
             onChange={this.editSubTask(id)}
-            onKeyDown={this.submitSubTask}
+            onKeyDown={this.submitSubTask} style={this.darkModeStyles}
           />
         </li>
       );
@@ -357,10 +364,10 @@ export default class TaskCreator extends React.PureComponent<{}, State> {
           onClearPicker={this.clearDate}
           onPickerOpened={this.openDatePicker}
         />
-        <button tabIndex={-1} type="submit" className={styles.SubmitNewTask}>
+        <button tabIndex={-1} type="submit" className={styles.SubmitNewTask} style={this.darkModeStyles}>
           <FontAwesomeIcon icon={faArrowAltCircleRight} />
         </button>
-        <div className={styles.NewTaskModal}>
+        <div className={styles.NewTaskModal} style={this.darkModeStyles}>
           <ul>{subTasks.map(existingSubTaskEditor)}</ul>
           <FontAwesomeIcon icon={faPlus} className={styles.PlusIcon} />
           <input
@@ -369,6 +376,7 @@ export default class TaskCreator extends React.PureComponent<{}, State> {
             value=""
             onChange={this.addNewSubTask}
             onKeyDown={this.newSubTaskKeyPress}
+             style={this.darkModeStyles}
           />
           <button type="button" className={styles.ResetButton} onClick={this.resetTask}>
             Clear
@@ -382,7 +390,7 @@ export default class TaskCreator extends React.PureComponent<{}, State> {
     const { name, opened } = this.state;
     const toggleDisplayStyle = opened ? {} : { display: 'none' };
     return (
-      <div>
+      <div style={this.darkModeStyles}>
         <div
           onClick={this.closeNewTask}
           role="presentation"
@@ -402,6 +410,7 @@ export default class TaskCreator extends React.PureComponent<{}, State> {
             className={styles.NewTaskComponent}
             placeholder={opened ? '' : PLACEHOLDER_TEXT}
             ref={(e) => { this.addTask = e; }}
+            style={this.darkModeStyles}
           />
           {this.renderOtherInfoEditor()}
         </form>
@@ -409,3 +418,12 @@ export default class TaskCreator extends React.PureComponent<{}, State> {
     );
   }
 }
+
+
+
+const Connected = connect(
+  ({ settings: { theme } }: State): Props => {
+    return { theme };
+  },
+)(TaskCreator);
+export default Connected;
