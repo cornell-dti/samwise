@@ -1,10 +1,10 @@
 import React, { ReactElement } from 'react';
 import { day2String, getTodayAtZeroAM } from 'common/lib/util/datetime-util';
+import { Theme } from 'common/lib/types/store-types';
 import { SimpleDate } from './future-view-types';
 import { CalendarPosition, FloatingPosition } from '../../Util/TaskEditors/editors-types';
 import styles from './FutureViewDay.module.scss';
 import FutureViewDayTaskContainer from './FutureViewDayTaskContainer';
-import { Theme } from 'common/lib/types/store-types';
 
 type Props = {
   readonly date: SimpleDate;
@@ -32,7 +32,7 @@ function FutureViewDayContent(
     theme,
   }: Props,
 ): ReactElement {
-  const containerStyle = (inNDaysView && inMainList) ? { paddingTop: '1em', color: 'white', opacity: 0.8 } : { color: 'white'};
+  const containerStyle = (inNDaysView && inMainList) ? { paddingTop: '1em', color: 'white', opacity: 0.8 } : { color: 'white' };
   const isToday: boolean = getTodayAtZeroAM().toDateString() === date.text;
   return (
     <>

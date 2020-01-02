@@ -27,7 +27,7 @@ type State = SimpleTask & {
   readonly needToSwitchFocus: boolean;
 };
 
-type Props =  { readonly theme : Theme };
+type Props = { readonly theme: Theme };
 
 /**
  * The placeholder text in the main task input box.
@@ -53,9 +53,10 @@ const initialState = (): State => ({
 
 export class TaskCreator extends React.PureComponent<Props, State> {
   public readonly state: State = initialState();
+
   private readonly darkModeStyles = this.props.theme === 'dark' ? {
     background: 'black',
-    color: 'white'
+    color: 'white',
   } : null;
 
   private addTask: HTMLInputElement | null | undefined;
@@ -340,7 +341,8 @@ export class TaskCreator extends React.PureComponent<Props, State> {
             ref={refHandler}
             value={name}
             onChange={this.editSubTask(id)}
-            onKeyDown={this.submitSubTask} style={this.darkModeStyles}
+            onKeyDown={this.submitSubTask}
+            style={this.darkModeStyles}
           />
         </li>
       );
@@ -376,7 +378,7 @@ export class TaskCreator extends React.PureComponent<Props, State> {
             value=""
             onChange={this.addNewSubTask}
             onKeyDown={this.newSubTaskKeyPress}
-             style={this.darkModeStyles}
+            style={this.darkModeStyles}
           />
           <button type="button" className={styles.ResetButton} onClick={this.resetTask}>
             Clear
@@ -420,10 +422,7 @@ export class TaskCreator extends React.PureComponent<Props, State> {
 }
 
 
-
 const Connected = connect(
-  ({ settings: { theme } }: State): Props => {
-    return { theme };
-  },
+  ({ settings: { theme } }: State): Props => ({ theme }),
 )(TaskCreator);
 export default Connected;

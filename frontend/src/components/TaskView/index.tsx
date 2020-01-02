@@ -2,19 +2,19 @@ import React, { ReactElement, ReactNode, useState } from 'react';
 import { connect } from 'react-redux';
 import { FontAwesomeIcon as Icon } from '@fortawesome/react-fontawesome';
 import { faChevronRight, faChevronLeft } from '@fortawesome/free-solid-svg-icons';
+import { State, Theme } from 'common/lib/types/store-types';
 import { useMappedWindowSize } from '../../hooks/window-size-hook';
 import FocusView from './FocusView';
 import FutureView, { futureViewConfigProvider, FutureViewConfig } from './FutureView';
 import ProgressTracker from './ProgressTracker';
 import styles from './index.module.css';
 import SamwiseIcon from '../UI/SamwiseIcon';
-import { State, Theme } from 'common/lib/types/store-types';
 
 const FocusPanel = (): ReactElement => <div className={styles.FocusPanel}><FocusView /></div>;
 
 const classNames = (...names: readonly string[]): string => names.join(' ');
 
-type Props = { readonly className: string, readonly theme: Theme };
+type Props = { readonly className: string; readonly theme: Theme };
 
 export function TaskView({ className, theme }: Props): ReactElement {
   const [doesShowFocusViewInWideScreen, setDoesShowFocusViewInWideScreen] = useState(true);
@@ -93,7 +93,7 @@ export function TaskView({ className, theme }: Props): ReactElement {
     );
   };
 
-  const darkModeStyle = theme === 'dark' ? {background: 'black', color: 'white' } : null;
+  const darkModeStyle = theme === 'dark' ? { background: 'black', color: 'white' } : null;
 
   return (
     <>
@@ -110,8 +110,6 @@ export function TaskView({ className, theme }: Props): ReactElement {
 }
 
 const Connected = connect(
-  ({ settings: { theme } }: State, ownProps : { className: string }): Props => {
-    return { className: ownProps.className, theme };
-  },
+  ({ settings: { theme } }: State, ownProps: { className: string }): Props => ({ className: ownProps.className, theme }),
 )(TaskView);
 export default Connected;
