@@ -20,7 +20,8 @@ export function TitleBar(props: { theme: Theme }): ReactElement {
     hour: 'numeric',
     minute: 'numeric',
   });
-  const darkModeStyles = props.theme === 'dark' ? {
+  const { theme } = props;
+  const darkModeStyles = theme === 'dark' ? {
     background: 'black',
     color: 'white',
   } : null;

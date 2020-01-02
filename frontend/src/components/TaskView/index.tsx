@@ -110,6 +110,8 @@ export function TaskView({ className, theme }: Props): ReactElement {
 }
 
 const Connected = connect(
-  ({ settings: { theme } }: State, ownProps: { className: string }): Props => ({ className: ownProps.className, theme }),
+  ({ settings: { theme } }: State, ownProps: { className: string }): Props => (
+    { className: ownProps.className, theme }
+  ),
 )(TaskView);
 export default Connected;

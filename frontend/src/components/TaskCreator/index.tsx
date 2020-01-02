@@ -54,12 +54,16 @@ const initialState = (): State => ({
 export class TaskCreator extends React.PureComponent<Props, State> {
   public readonly state: State = initialState();
 
-  private readonly darkModeStyles = this.props.theme === 'dark' ? {
-    background: 'black',
-    color: 'white',
-  } : null;
-
   private addTask: HTMLInputElement | null | undefined;
+
+  constructor(props) {
+    super();
+    const { theme } = props;
+    this.darkModeStyles = theme === 'dark' ? {
+      background: 'black',
+      color: 'white',
+    } : null;
+  }
 
   /*
    * --------------------------------------------------------------------------------

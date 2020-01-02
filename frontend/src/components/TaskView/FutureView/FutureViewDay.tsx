@@ -83,7 +83,14 @@ const dummyHeightInfo: HeightInfo = { doesOverflow: false, tasksHeight: 0 };
  * The component that renders all tasks on a certain day.
  */
 export function FutureViewDay(props: Props & { readonly theme: Theme }): ReactElement {
-  const { date, inNDaysView, taskEditorPosition, calendarPosition, doesShowCompletedTasks } = props;
+  const {
+    theme,
+    date,
+    inNDaysView,
+    taskEditorPosition,
+    calendarPosition,
+    doesShowCompletedTasks,
+  } = props;
   const [floatingViewOpened, setFloatingViewOpened] = React.useState(false);
   const [heightInfo, setHeightInfo] = React.useState<HeightInfo>(dummyHeightInfo);
   const windowSize = useWindowSize();
@@ -99,13 +106,18 @@ export function FutureViewDay(props: Props & { readonly theme: Theme }): ReactEl
   const closeFloatingView = (): void => setFloatingViewOpened(false);
 
   const isToday: boolean = getTodayAtZeroAM().toDateString() === date.text;
-  const darkModeStyles = props.theme === 'dark' ? (isToday ? {
-    background: 'black',
-    color: 'white',
-  } : {
-    background: 'rgb(33,33,33)',
-    color: 'white',
-  }) : null;
+  const darkModeStyles = (() => {
+    if (theme !== 'dark') {
+      return null;
+    }
+    return isToday ? {
+      background: 'black',
+      color: 'white',
+    } : {
+      background: 'rgb(33,33,33)',
+      color: 'white',
+    };
+  })();
   let wrapperCssClass: string;
   if (inNDaysView) {
     wrapperCssClass = isToday ? `${styles.NDaysView} ${styles.Today}` : styles.NDaysView;
@@ -167,7 +179,7 @@ export function FutureViewDay(props: Props & { readonly theme: Theme }): ReactEl
           taskEditorPosition={taskEditorPosition}
           calendarPosition={calendarPosition}
           doesShowCompletedTasks={doesShowCompletedTasks}
-          theme={props.theme}
+          theme={theme}
         />
       </div>
     </div>
@@ -175,6 +187,8 @@ export function FutureViewDay(props: Props & { readonly theme: Theme }): ReactEl
 }
 
 const Connected = connect(
-  ({ settings: { theme } }: State, ownProps: Props): Props & { readonly theme: Theme } => ({ ...ownProps, theme }),
+  ({ settings: { theme } }: State, ownProps: Props): Props & { readonly theme: Theme } => (
+    { ...ownProps, theme }
+  ),
 )(FutureViewDay);
 export default Connected;
