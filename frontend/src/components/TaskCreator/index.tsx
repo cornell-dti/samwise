@@ -1,9 +1,9 @@
-import React, { KeyboardEvent, SyntheticEvent, ReactElement } from 'react';
+import React, { CSSProperties, KeyboardEvent, SyntheticEvent, ReactElement } from 'react';
 import { connect } from 'react-redux';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlus, faArrowAltCircleRight } from '@fortawesome/free-solid-svg-icons';
 import { randomId } from 'common/lib/util/general-util';
-import { OneTimeTask, RepeatingTask, RepeatMetaData, SubTask, State, Theme } from 'common/lib/types/store-types';
+import { OneTimeTask, RepeatingTask, RepeatMetaData, SubTask, State as StoreState, Theme } from 'common/lib/types/store-types';
 import { NONE_TAG_ID } from 'common/lib/util/tag-util';
 import { isToday } from 'common/lib/util/datetime-util';
 import TagPicker from './TagPicker';
@@ -56,13 +56,15 @@ export class TaskCreator extends React.PureComponent<Props, State> {
 
   private addTask: HTMLInputElement | null | undefined;
 
-  constructor(props) {
-    super();
+  private darkModeStyles: undefined | CSSProperties;
+
+  constructor(props: {theme: Theme}) {
+    super(props);
     const { theme } = props;
     this.darkModeStyles = theme === 'dark' ? {
       background: 'black',
       color: 'white',
-    } : null;
+    } : undefined;
   }
 
   /*
@@ -427,6 +429,6 @@ export class TaskCreator extends React.PureComponent<Props, State> {
 
 
 const Connected = connect(
-  ({ settings: { theme } }: State): Props => ({ theme }),
+  ({ settings: { theme } }: StoreState): Props => ({ theme }),
 )(TaskCreator);
 export default Connected;

@@ -93,7 +93,7 @@ export function TaskView({ className, theme }: Props): ReactElement {
     );
   };
 
-  const darkModeStyle = theme === 'dark' ? { background: 'black', color: 'white' } : null;
+  const darkModeStyle = theme === 'dark' ? { background: 'black', color: 'white' } : undefined;
 
   return (
     <>

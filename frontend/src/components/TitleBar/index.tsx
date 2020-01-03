@@ -24,7 +24,7 @@ export function TitleBar(props: { theme: Theme }): ReactElement {
   const darkModeStyles = theme === 'dark' ? {
     background: 'black',
     color: 'white',
-  } : null;
+  } : undefined;
   return (
     <header className={styles.Main} style={darkModeStyles}>
       <Banner />
