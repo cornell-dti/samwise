@@ -41,10 +41,12 @@ export function TaskView({ className, theme }: Props): ReactElement {
   const inNDaysView = futureViewConfigProvider.isInNDaysView(config);
   const showFocusView = inNDaysView || doesShowFocusViewInWideScreen;
 
+  const darkModeStyle = theme === 'dark' ? { background: 'black', color: 'white' } : undefined;
+
   if (screenIsSmall) {
     const taskView = doesShowFutureViewInSmallScreen
       ? (
-        <div className={classNames(className, styles.TaskView)}>
+        <div className={classNames(className, styles.TaskView)} style={darkModeStyle}>
           <FuturePanel />
           <SamwiseIcon
             iconName="pin-dark-filled"
@@ -53,7 +55,7 @@ export function TaskView({ className, theme }: Props): ReactElement {
           />
         </div>
       ) : (
-        <div className={classNames(className, styles.TaskView)}>
+        <div className={classNames(className, styles.TaskView)} style={darkModeStyle}>
           <FocusPanel />
           <SamwiseIcon
             iconName="calendar-dark"
@@ -92,8 +94,6 @@ export function TaskView({ className, theme }: Props): ReactElement {
       </div>
     );
   };
-
-  const darkModeStyle = theme === 'dark' ? { background: 'black', color: 'white' } : undefined;
 
   return (
     <>
