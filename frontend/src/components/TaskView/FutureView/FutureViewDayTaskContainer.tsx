@@ -93,23 +93,21 @@ function FutureViewDayTaskContainer(
   if (isInMainList) {
     const style = {};
     return (
-      <DragDropContext onDragEnd={onDragEnd}>
-        <Droppable droppableId="future-view-task-droppable">
-          {(provided) => (
-            // eslint-disable-next-line react/jsx-props-no-spreading
-            <div ref={provided.innerRef} {...provided.droppableProps}>
-              <div
-                className={styles.Container}
-                style={style}
-                ref={containerRef}
-              >
-                {taskListComponent}
-              </div>
-              {provided.placeholder}
+      <Droppable droppableId={date}>
+        {(provided) => (
+          // eslint-disable-next-line react/jsx-props-no-spreading
+          <div ref={provided.innerRef} {...provided.droppableProps}>
+            <div
+              className={styles.Container}
+              style={style}
+              ref={containerRef}
+            >
+              {taskListComponent}
             </div>
-          )}
-        </Droppable>
-      </DragDropContext>
+            {provided.placeholder}
+          </div>
+        )}
+      </Droppable>
     );
   }
   return <div className={styles.Container} ref={containerRef}>{taskListComponent}</div>;

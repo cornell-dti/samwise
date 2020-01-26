@@ -1,4 +1,5 @@
 import React, { ReactElement } from 'react';
+import { DragDropContext, DropResult } from 'react-beautiful-dnd';
 import FutureViewDay from './FutureViewDay';
 import styles from './FutureViewNDays.module.css';
 import { SimpleDate } from './future-view-types';
@@ -16,22 +17,37 @@ export default function FutureViewNDays(
 ): ReactElement {
   const nDays = days.length;
   const containerStyle = { gridTemplateColumns: `repeat(${nDays}, minmax(0, 1fr))` };
+
+  const onDragEnd = (result: DropResult): void => {
+    const { source, destination } = result;
+    if (destination == null) {
+      // invalid drop, skip
+      return;
+    }
+    console.log(source.droppableId);
+    console.log(source.index);
+    console.log(destination.droppableId);
+    console.log(destination.index);
+  };
+
   return (
-    <div className={styles.FutureViewNDays} style={containerStyle}>
-      {days.map((date: SimpleDate, index: number) => {
-        const taskEditorPosition = index < (nDays / 2) ? 'right' : 'left';
-        return (
-          <div key={date.text} className={styles.Column}>
-            <FutureViewDay
-              inNDaysView
-              calendarPosition="bottom"
-              taskEditorPosition={taskEditorPosition}
-              doesShowCompletedTasks={doesShowCompletedTasks}
-              date={date}
-            />
-          </div>
-        );
-      })}
-    </div>
+    <DragDropContext onDragEnd={onDragEnd} >
+      <div className={styles.FutureViewNDays} style={containerStyle}>
+        {days.map((date: SimpleDate, index: number) => {
+          const taskEditorPosition = index < (nDays / 2) ? 'right' : 'left';
+          return (
+            <div key={date.text} className={styles.Column}>
+              <FutureViewDay
+                inNDaysView
+                calendarPosition="bottom"
+                taskEditorPosition={taskEditorPosition}
+                doesShowCompletedTasks={doesShowCompletedTasks}
+                date={date}
+              />
+            </div>
+          );
+        })}
+      </div>
+    </DragDropContext>
   );
 }
