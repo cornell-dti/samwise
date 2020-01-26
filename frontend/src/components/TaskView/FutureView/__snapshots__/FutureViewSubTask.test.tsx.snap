@@ -7,7 +7,7 @@ exports[`FutureViewSubTask(false, false, false) matches snapshot 1`] = `
   className="SubTask"
 >
   <label
-    className="TaskCheckBox CheckBox InvertedCheckBox"
+    className="SubTaskCheckBox CheckBox InvertedCheckBox"
   >
     <input
       defaultChecked={false}
@@ -63,7 +63,7 @@ exports[`FutureViewSubTask(false, false, true) matches snapshot 1`] = `
   className="SubTask"
 >
   <label
-    className="TaskCheckBox CheckBox InvertedCheckBox"
+    className="SubTaskCheckBox CheckBox InvertedCheckBox"
   >
     <input
       defaultChecked={true}
@@ -126,7 +126,7 @@ exports[`FutureViewSubTask(false, true, false) matches snapshot 1`] = `
   className="SubTask"
 >
   <label
-    className="TaskCheckBox CheckBox InvertedCheckBox"
+    className="SubTaskCheckBox CheckBox InvertedCheckBox"
   >
     <input
       defaultChecked={true}
@@ -189,7 +189,7 @@ exports[`FutureViewSubTask(false, true, true) matches snapshot 1`] = `
   className="SubTask"
 >
   <label
-    className="TaskCheckBox CheckBox InvertedCheckBox"
+    className="SubTaskCheckBox CheckBox InvertedCheckBox"
   >
     <input
       defaultChecked={true}
@@ -252,7 +252,7 @@ exports[`FutureViewSubTask(true, false, false) matches snapshot 1`] = `
   className="SubTask"
 >
   <label
-    className="TaskCheckBox CheckBox InvertedCheckBox"
+    className="SubTaskCheckBox CheckBox InvertedCheckBox"
   >
     <input
       defaultChecked={false}
@@ -308,7 +308,7 @@ exports[`FutureViewSubTask(true, false, true) matches snapshot 1`] = `
   className="SubTask"
 >
   <label
-    className="TaskCheckBox CheckBox InvertedCheckBox"
+    className="SubTaskCheckBox CheckBox InvertedCheckBox"
   >
     <input
       defaultChecked={true}
@@ -371,7 +371,7 @@ exports[`FutureViewSubTask(true, true, false) matches snapshot 1`] = `
   className="SubTask"
 >
   <label
-    className="TaskCheckBox CheckBox InvertedCheckBox"
+    className="SubTaskCheckBox CheckBox InvertedCheckBox"
   >
     <input
       defaultChecked={true}
@@ -434,7 +434,7 @@ exports[`FutureViewSubTask(true, true, true) matches snapshot 1`] = `
   className="SubTask"
 >
   <label
-    className="TaskCheckBox CheckBox InvertedCheckBox"
+    className="SubTaskCheckBox CheckBox InvertedCheckBox"
   >
     <input
       defaultChecked={true}

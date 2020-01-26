@@ -44,13 +44,11 @@ export function AllComplete({ completedTasksCount, allTasksCount }: Props): Reac
   const confettiConfig = {
     angle: 0,
     spread: 360,
-    startVelocity: 25,
+    startVelocity: 18,
     elementCount: 200,
     dragFriction: 0.1,
     duration: 3000,
     delay: 0,
-    width: 10,
-    height: 10,
     colors: ['#a864fd', '#29cdff', '#78ff44', '#ff718d', '#fdff6a'],
   };
 
@@ -58,17 +56,9 @@ export function AllComplete({ completedTasksCount, allTasksCount }: Props): Reac
 
   return (
     <div className={showClass}>
-      {/* <img src={Bear} alt="Happy Sam" />
-      <div>
-        <h1>You Did It!</h1>
-        <p>You completed all your tasks for today!</p>
-        <p>Why not take a well deserved break?</p>
-        <p>Once you&apos;re back, consider getting a head-start on tomorrow.</p> */}
       <span className={styles.ConfWrap}>
         <Confetti active={shouldShow} config={confettiConfig} />
       </span>
-      {/* <button onClick={hidePopup} type="button">Alright</button>
-      </div> */}
     </div>
   );
 }
