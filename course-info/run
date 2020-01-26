@@ -3,15 +3,14 @@
 set -x # Turn this on to debug
 
 ### Dependencies
-### - JDK 8+
-### - Gradle 4+
-### - Node.js 8+
+### - JDK 11+
+### - Node.js 10+
 
 # Outcome: produce a JSON file sp19-courses.json with all the courses in SP19.
 function createCourseInfoJson() {
-    git clone https://github.com/SamChou19815/cornell-api-libs.git
+    git clone https://github.com/cornell-dti/cornell-api-libs.git
     cd cornell-api-libs
-    gradle build -x test
+    ./gradlew build -x test
     cd ../
     java -jar cornell-api-libs/build/libs/cornell-api-libs-0.5-all.jar \
         print-all-courses-in SP20 | node simplify-json.js >./sp20-courses.json
