@@ -2,8 +2,8 @@ const fs = require('fs');
 const fetch = require('node-fetch');
 const { JSDOM } = require('jsdom');
 
-const fallPrelimUrl = 'https://registrar.cornell.edu/exams/fall-prelim-exam-schedule';
-const fallFinalUrl = 'https://registrar.cornell.edu/exams/fall-final-exam-schedule';
+const prelimUrl = 'https://registrar.cornell.edu/exams/spring-prelim-schedule';
+const finalUrl = 'https://registrar.cornell.edu/exams/spring-final-exam-schedule';
 
 const currentYear = new Date().getFullYear();
 
@@ -69,7 +69,7 @@ function getExamInfoList(rawText, isFinal) {
   const infoList = [];
   for (let i = 0; i < lines.length; i += 1) {
     const line = lines[i].trim();
-    if (line !== '' && !line.startsWith('Class')) {
+    if (line !== '' && !line.startsWith('Class') && !line.startsWith('final exam')) {
       const info = isFinal ? parseFinalLine(line) : parsePrelimLine(line);
       infoList.push(info);
     }
@@ -84,8 +84,8 @@ function createJson(url, isFinal, outFilename) {
 }
 
 function main() {
-  createJson(fallFinalUrl, true, 'final-exams.json');
-  createJson(fallPrelimUrl, false, 'prelim-exams.json');
+  createJson(finalUrl, true, 'final-exams.json');
+  createJson(prelimUrl, false, 'prelim-exams.json');
 }
 
 main();
