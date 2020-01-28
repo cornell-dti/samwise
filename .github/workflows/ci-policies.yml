@@ -21,4 +21,4 @@ jobs:
       - uses: actions/checkout@master
       - uses: cornell-dti/big-diff-warning@master
         env:
-          BOT_TOKEN: '${{ secrets.DEPLOY_GH_PAGE_TOKEN }}'
+          BOT_TOKEN: '${{ secrets.BOT_TOKEN }}'
