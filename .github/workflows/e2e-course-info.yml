@@ -22,6 +22,8 @@ jobs:
         uses: actions/setup-java@v1
         with:
           java-version: 11
+      - name: Yarn Install
+        run: yarn install
       - name: Produce JSON
         run: cd course-info && ./run
       - name: Install JQ for JSON Normalization
