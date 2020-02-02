@@ -56,15 +56,14 @@ export class TaskCreator extends React.PureComponent<Props, State> {
 
   private addTask: HTMLInputElement | null | undefined;
 
-  private darkModeStyles: undefined | CSSProperties;
+  private darkModeStyle: CSSProperties;
 
   constructor(props: {theme: Theme}) {
     super(props);
-    const { theme } = props;
-    this.darkModeStyles = theme === 'dark' ? {
+    this.darkModeStyle = {
       background: 'black',
       color: 'white',
-    } : undefined;
+    };
   }
 
   /*
@@ -328,6 +327,7 @@ export class TaskCreator extends React.PureComponent<Props, State> {
       tag, date, inFocus, subTasks,
       tagPickerOpened, datePickerOpened, datePicked, needToSwitchFocus,
     } = this.state;
+    const { theme } = this.props;
     const existingSubTaskEditor = (
       { id, name }: SubTask, i: number, arr: SubTask[],
     ): ReactElement => {
@@ -348,7 +348,7 @@ export class TaskCreator extends React.PureComponent<Props, State> {
             value={name}
             onChange={this.editSubTask(id)}
             onKeyDown={this.submitSubTask}
-            style={this.darkModeStyles}
+            style={theme === 'dark' ? this.darkModeStyle : undefined}
           />
         </li>
       );
@@ -372,10 +372,10 @@ export class TaskCreator extends React.PureComponent<Props, State> {
           onClearPicker={this.clearDate}
           onPickerOpened={this.openDatePicker}
         />
-        <button tabIndex={-1} type="submit" className={styles.SubmitNewTask} style={this.darkModeStyles}>
+        <button tabIndex={-1} type="submit" className={styles.SubmitNewTask} style={theme === 'dark' ? this.darkModeStyle : undefined}>
           <FontAwesomeIcon icon={faArrowAltCircleRight} />
         </button>
-        <div className={styles.NewTaskModal} style={this.darkModeStyles}>
+        <div className={styles.NewTaskModal} style={theme === 'dark' ? this.darkModeStyle : undefined}>
           <ul>{subTasks.map(existingSubTaskEditor)}</ul>
           <FontAwesomeIcon icon={faPlus} className={styles.PlusIcon} />
           <input
@@ -384,7 +384,7 @@ export class TaskCreator extends React.PureComponent<Props, State> {
             value=""
             onChange={this.addNewSubTask}
             onKeyDown={this.newSubTaskKeyPress}
-            style={this.darkModeStyles}
+            style={theme === 'dark' ? this.darkModeStyle : undefined}
           />
           <button type="button" className={styles.ResetButton} onClick={this.resetTask}>
             Clear
@@ -397,8 +397,9 @@ export class TaskCreator extends React.PureComponent<Props, State> {
   public render(): ReactElement {
     const { name, opened } = this.state;
     const toggleDisplayStyle = opened ? {} : { display: 'none' };
+    const { theme } = this.props;
     return (
-      <div style={this.darkModeStyles}>
+      <div style={theme === 'dark' ? this.darkModeStyle : undefined}>
         <div
           onClick={this.closeNewTask}
           role="presentation"
@@ -418,7 +419,7 @@ export class TaskCreator extends React.PureComponent<Props, State> {
             className={styles.NewTaskComponent}
             placeholder={opened ? '' : PLACEHOLDER_TEXT}
             ref={(e) => { this.addTask = e; }}
-            style={this.darkModeStyles}
+            style={theme === 'dark' ? this.darkModeStyle : undefined}
           />
           {this.renderOtherInfoEditor()}
         </form>
