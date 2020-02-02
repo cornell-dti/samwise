@@ -3,6 +3,11 @@
   "version": "1.0.0",
   "main": "index.js",
   "license": "MIT",
+  "scripts": {
+    "fetch": "../node_modules/.bin/ts-node src/fetch-exam.ts",
+    "merge": "../node_modules/.bin/ts-node src/merge-json.ts",
+    "simplify": "../node_modules/.bin/ts-node src/simplify-json.ts"
+  },
   "dependencies": {
     "jsdom": "^15.1.1",
     "node-fetch": "^2.6.0"
