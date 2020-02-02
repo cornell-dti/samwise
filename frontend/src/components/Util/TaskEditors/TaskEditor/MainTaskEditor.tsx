@@ -12,6 +12,7 @@ type NameCompleteInFocus = {
 };
 type Props = NameCompleteInFocus & {
   readonly id: string;
+  readonly icalUID: string | null;
   readonly taskDate: Date | null;
   readonly dateAppeared: string;
   readonly onChange: (change: Partial<NameCompleteInFocus>) => void;
@@ -23,7 +24,7 @@ const deleteIconClass = [styles.TaskEditorIcon, styles.TaskEditorIconLeftPad].jo
 
 function MainTaskEditor(
   {
-    id, taskDate, dateAppeared, name, complete, inFocus, onChange, onRemove, onPressEnter,
+    id, icalUID, taskDate, dateAppeared, name, complete, inFocus, onChange, onRemove, onPressEnter,
   }: Props,
 ): ReactElement {
   const replaceDateForFork = taskDate == null
@@ -54,6 +55,7 @@ function MainTaskEditor(
       />
       <input
         type="text"
+        disabled={icalUID == null}
         data-lpignore="true"
         className={complete
           ? styles.TaskEditorStrikethrough : styles.TaskEditorFlexibleInput}
