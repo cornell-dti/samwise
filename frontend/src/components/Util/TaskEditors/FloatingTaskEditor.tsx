@@ -81,7 +81,7 @@ function FloatingTaskEditor(
     trigger,
   }: Props,
 ): ReactElement {
-  const icalUID = initialTask.type === 'ONE_TIME' ? initialTask.icalUID : null;
+  const icalUID = initialTask.type === 'ONE_TIME' ? initialTask.icalUID : '';
 
   const [open, setOpen] = React.useState<boolean>(false);
 

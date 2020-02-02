@@ -127,7 +127,7 @@ export default class TaskCreator extends React.PureComponent<{}, State> {
       date.setHours(23);
       date.setMinutes(59);
       date.setSeconds(59);
-      newTask = { ...commonTask, type: 'ONE_TIME', icalUID: null, date };
+      newTask = { ...commonTask, type: 'ONE_TIME', date };
     } else {
       newTask = {
         ...commonTask,

@@ -42,7 +42,7 @@ type Actions = {
 type OwnProps = DefaultProps & {
   readonly id: string;
   readonly type: 'MASTER_TEMPLATE' | 'ONE_TIME';
-  readonly icalUID: string | null;
+  readonly icalUID?: string;
   // the date string that specifies when the task appears (useful for repeated task)
   readonly taskAppearedDate: string | null;
   readonly mainTask: MainTask; // The task given to the editor.

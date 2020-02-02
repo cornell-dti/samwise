@@ -12,7 +12,7 @@ type NameCompleteInFocus = {
 };
 type Props = NameCompleteInFocus & {
   readonly id: string;
-  readonly icalUID: string | null;
+  readonly icalUID?: string;
   readonly taskDate: Date | null;
   readonly dateAppeared: string;
   readonly onChange: (change: Partial<NameCompleteInFocus>) => void;
@@ -55,7 +55,7 @@ function MainTaskEditor(
       />
       <input
         type="text"
-        disabled={icalUID == null}
+        disabled={typeof icalUID === 'string' ? icalUID !== '' : false}
         data-lpignore="true"
         className={complete
           ? styles.TaskEditorStrikethrough : styles.TaskEditorFlexibleInput}

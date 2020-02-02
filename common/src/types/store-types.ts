@@ -38,7 +38,7 @@ type FlexibleCommonTask = CommonTask<Date | RepeatMetaData>;
 
 export type OneTimeTask = CommonTask<Date> & {
   readonly type: 'ONE_TIME';
-  readonly icalUID: string | null;
+  readonly icalUID?: string;
 };
 
 /**

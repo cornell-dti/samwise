@@ -20,7 +20,7 @@ export default function InlineTaskEditor(
   const [disabled, setDisabled] = useState(true);
   const { id } = original;
   const { id: _, type, subTasks, ...mainTask } = filtered;
-  const icalUID = original.type === 'ONE_TIME' ? original.icalUID : null;
+  const icalUID = original.type === 'ONE_TIME' ? original.icalUID : '';
   const taskAppearedDate = mainTask.date instanceof Date ? mainTask.date.toDateString() : null;
   // To un-mount the editor when finished editing.
   const onFocus = (): void => setDisabled(false);
