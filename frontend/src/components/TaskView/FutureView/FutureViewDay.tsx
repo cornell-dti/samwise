@@ -185,8 +185,6 @@ export function FutureViewDay(props: Props & { readonly theme: Theme }): ReactEl
 }
 
 const Connected = connect(
-  ({ settings: { theme } }: State, ownProps: Props): Props & { readonly theme: Theme } => (
-    { ...ownProps, theme }
-  ),
+  ({ settings: { theme } }: State): { readonly theme: Theme } => ({ theme }),
 )(FutureViewDay);
 export default Connected;
