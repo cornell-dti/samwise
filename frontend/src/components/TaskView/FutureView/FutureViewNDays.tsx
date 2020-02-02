@@ -32,8 +32,6 @@ export default function FutureViewNDays(
         null,
         { date: new Date(destination.droppableId) },
       );
-    } else {
-
     }
   };
 
