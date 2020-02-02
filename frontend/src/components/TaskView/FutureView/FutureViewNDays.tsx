@@ -1,10 +1,9 @@
 import React, { ReactElement } from 'react';
 import { DragDropContext, DropResult } from 'react-beautiful-dnd';
-import { computeReorderMap } from 'common/lib/util/order-util';
 import FutureViewDay from './FutureViewDay';
 import styles from './FutureViewNDays.module.css';
 import { SimpleDate } from './future-view-types';
-import { applyReorder, editMainTask } from '../../../firebase/actions';
+import { editMainTask } from '../../../firebase/actions';
 
 type Props = {
   readonly days: readonly SimpleDate[];
