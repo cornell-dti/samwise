@@ -1,8 +1,10 @@
 import React, { ReactElement } from 'react';
 import { DragDropContext, DropResult } from 'react-beautiful-dnd';
+import { computeReorderMap } from 'common/lib/util/order-util';
 import FutureViewDay from './FutureViewDay';
 import styles from './FutureViewNDays.module.css';
 import { SimpleDate } from './future-view-types';
+import { applyReorder, editMainTask } from '../../../firebase/actions';
 
 type Props = {
   readonly days: readonly SimpleDate[];
@@ -19,19 +21,23 @@ export default function FutureViewNDays(
   const containerStyle = { gridTemplateColumns: `repeat(${nDays}, minmax(0, 1fr))` };
 
   const onDragEnd = (result: DropResult): void => {
-    const { source, destination } = result;
+    const { source, destination, draggableId } = result;
     if (destination == null) {
       // invalid drop, skip
       return;
     }
-    console.log(source.droppableId);
-    console.log(source.index);
-    console.log(destination.droppableId);
-    console.log(destination.index);
+    // dragging to a different day
+    if (source.droppableId !== destination.droppableId) {
+      editMainTask(
+        draggableId,
+        null,
+        { date: new Date(destination.droppableId) },
+      );
+    }
   };
 
   return (
-    <DragDropContext onDragEnd={onDragEnd} >
+    <DragDropContext onDragEnd={onDragEnd}>
       <div className={styles.FutureViewNDays} style={containerStyle}>
         {days.map((date: SimpleDate, index: number) => {
           const taskEditorPosition = index < (nDays / 2) ? 'right' : 'left';
