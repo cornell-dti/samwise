@@ -57,6 +57,13 @@
   border-radius: 2px;
 }
 
+.TaskIconPlaceholder {
+  width: 1em;
+  margin: 0 4px 0 0;
+  padding-top: 3px;
+  height: 16px;
+}
+
 .TaskText {
   flex: 1 1 auto;
   margin-left: 3px;

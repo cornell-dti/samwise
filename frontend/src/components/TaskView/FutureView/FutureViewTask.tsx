@@ -109,7 +109,7 @@ function FutureViewTask(
     }
     return (
       <div className={styles.TaskMainWrapper} style={{ backgroundColor: color }}>
-        <DragIcon />
+        {compoundTask.original.type === 'ONE_TIME' ? <DragIcon /> : <div className={styles.TaskIconPlaceholder}> </div>}
         <TaskCheckBox />
         <TaskName />
         <PinIcon />
