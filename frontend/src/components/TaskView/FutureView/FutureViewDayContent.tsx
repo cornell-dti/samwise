@@ -29,7 +29,7 @@ function FutureViewDayContent(
     onHeightChange,
   }: Props,
 ): ReactElement {
-  const containerStyle = (inNDaysView && inMainList) ? { paddingTop: '1em' } : {};
+  const containerStyle = (inNDaysView && inMainList) ? { paddingTop: '1em', color: 'white', opacity: 0.8 } : { color: 'white' };
   const isToday: boolean = getTodayAtZeroAM().toDateString() === date.text;
   return (
     <>
