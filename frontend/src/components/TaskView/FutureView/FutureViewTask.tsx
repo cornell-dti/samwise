@@ -49,6 +49,9 @@ function FutureViewTask(
   }
   const { original, filteredSubTasks, color } = compoundTask;
 
+  const icalUID = original.type === 'ONE_TIME' ? original.icalUID : '';
+  const isCanvasTask = typeof icalUID === 'string' ? icalUID !== '' : false;
+
   /**
    * Get an onClickHandler when the element is clicked.
    * This methods ensure that only clicking on task text counts.
@@ -113,7 +116,7 @@ function FutureViewTask(
         <TaskCheckBox />
         <TaskName />
         <PinIcon />
-        <RemoveTaskIcon />
+        {isCanvasTask ? null : <RemoveTaskIcon />}
       </div>
     );
   };
