@@ -101,6 +101,7 @@ function FutureViewTask(
     );
   };
   const DragIcon = (): ReactElement => <SamwiseIcon iconName="grabber" className={styles.TaskIcon} />;
+  const RepeatingIcon = (): ReactElement => <SamwiseIcon iconName="repeat-light" className={styles.TaskIcon} />;
 
   const renderMainTaskInfo = (simplified = false): ReactElement => {
     if (simplified && isInMainList) {
@@ -109,7 +110,7 @@ function FutureViewTask(
     }
     return (
       <div className={styles.TaskMainWrapper} style={{ backgroundColor: color }}>
-        {compoundTask.original.type === 'ONE_TIME' ? <DragIcon /> : <div className={styles.TaskIconPlaceholder}> </div>}
+        {compoundTask.original.type === 'ONE_TIME' ? <DragIcon /> : <RepeatingIcon />}
         <TaskCheckBox />
         <TaskName />
         <PinIcon />

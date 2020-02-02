@@ -59,7 +59,7 @@ function FutureViewDayTaskContainer(
   });
   const taskListComponent = idOrderList.map(({ id }, i) => (
     <Draggable key={id} draggableId={id} index={i}>
-      { (provided) => (
+      {(provided) => (
         // eslint-disable-next-line react/jsx-props-no-spreading
         <div ref={provided.innerRef} {...provided.draggableProps} {...provided.dragHandleProps}>
           <FutureViewTask
