@@ -101,7 +101,7 @@ function FutureViewTask(
     );
   };
   const DragIcon = (): ReactElement => <SamwiseIcon iconName="grabber" className={styles.TaskIcon} />;
-  const RepeatingIcon = (): ReactElement => <SamwiseIcon iconName="repeat-light" className={styles.TaskIcon} />;
+  const RepeatingIcon = (): ReactElement => <SamwiseIcon iconName="repeat-light" className={styles.TaskIconNoHover} />;
 
   const renderMainTaskInfo = (simplified = false): ReactElement => {
     if (simplified && isInMainList) {
