@@ -46,6 +46,8 @@ function MainTaskEditor(
     onChange({ name: newValue });
   };
 
+  const isCanvasTask = typeof icalUID === 'string' ? icalUID !== '' : false;
+
   return (
     <div className={styles.TaskEditorFlexibleContainer}>
       <CheckBox
@@ -55,7 +57,7 @@ function MainTaskEditor(
       />
       <input
         type="text"
-        disabled={typeof icalUID === 'string' ? icalUID !== '' : false}
+        disabled={isCanvasTask}
         data-lpignore="true"
         className={complete
           ? styles.TaskEditorStrikethrough : styles.TaskEditorFlexibleInput}
@@ -69,7 +71,8 @@ function MainTaskEditor(
         className={styles.TaskEditorIcon}
         onClick={editInFocus}
       />
-      <SamwiseIcon iconName="x-light" className={deleteIconClass} onClick={onRemove} />
+      {isCanvasTask ? null
+        : <SamwiseIcon iconName="x-light" className={deleteIconClass} onClick={onRemove} />}
     </div>
   );
 }
