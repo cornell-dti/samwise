@@ -7,6 +7,7 @@ on:
   pull_request:
     paths:
       - .github/workflows/e2e-course-info.yml
+      - frontend/src/assets/json/
 
 name: 'E2E Course Info Consistency'
 jobs:
