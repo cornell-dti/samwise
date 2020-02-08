@@ -10,6 +10,7 @@ import {
   dateMatchRepeats,
 } from 'common/lib/util/task-util';
 import findMessageToDisplay, { MessageWithId } from '../components/TitleBar/Banner/messages';
+import { SimpleDate } from '../components/TaskView/FutureView/future-view-types';
 
 /*
  * --------------------------------------------------------------------------------
@@ -119,6 +120,11 @@ export const createGetIdOrderListByDate = (
   createGetIdOrderListByDateSelectors = createGetIdOrderListByDateSelectors.set(date, selector);
   return selector;
 };
+
+export const createGetIdOrderListForDays = (
+  days: SimpleDate[],
+): SelectorOf<IdOrderListProps>[] => days.map((day) => createGetIdOrderListByDate(day.toString()));
+
 
 export const getProgress: SelectorOf<TasksProgressProps> = createSelector(
   [getTasksInFocus, getSubTasks], computeTaskProgress,

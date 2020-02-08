@@ -1,12 +1,14 @@
 import React, { ReactElement } from 'react';
 import { connect } from 'react-redux';
-import { Draggable, Droppable } from 'react-beautiful-dnd';
+import { DragDropContext, Draggable, Droppable, DropResult } from 'react-beautiful-dnd';
 import { State } from 'common/lib/types/store-types';
+import { computeReorderMap } from 'common/lib/util/order-util';
 import { CalendarPosition, FloatingPosition } from '../../Util/TaskEditors/editors-types';
 import FutureViewTask from './FutureViewTask';
 import styles from './FutureViewDayTaskContainer.module.css';
 import { useWindowSizeCallback } from '../../../hooks/window-size-hook';
 import { createGetIdOrderListByDate } from '../../../store/selectors';
+import { applyReorder } from '../../../firebase/actions';
 
 type OwnProps = {
   readonly date: string;
@@ -57,6 +59,19 @@ function FutureViewDayTaskContainer(
     setPrevHeights([tasksHeight, containerHeight]);
     onHeightChange(tasksHeight > containerHeight && containerHeight > 0, tasksHeight);
   });
+
+  const onDragEnd = (result: DropResult): void => {
+    const { source, destination } = result;
+    if (destination == null) {
+      // invalid drop, skip
+      return;
+    }
+    const sourceOrder: number = idOrderList[source.index].order;
+    const dest = idOrderList[destination.index];
+    const destinationOrder: number = dest == null ? sourceOrder : dest.order;
+    const reorderMap = computeReorderMap(idOrderList, sourceOrder, destinationOrder);
+    applyReorder('tasks', reorderMap);
+  };
   const taskListComponent = idOrderList.map(({ id }, i) => (
     <Draggable key={id} draggableId={id} index={i}>
       {(provided) => (
@@ -79,21 +94,23 @@ function FutureViewDayTaskContainer(
   if (isInMainList) {
     const style = {};
     return (
-      <Droppable droppableId={date}>
-        {(provided) => (
-          // eslint-disable-next-line react/jsx-props-no-spreading
-          <div ref={provided.innerRef} {...provided.droppableProps}>
-            <div
-              className={styles.Container}
-              style={style}
-              ref={containerRef}
-            >
-              {taskListComponent}
+      <DragDropContext onDragEnd={onDragEnd}>
+        <Droppable droppableId={date}>
+          {(provided) => (
+            // eslint-disable-next-line react/jsx-props-no-spreading
+            <div ref={provided.innerRef} {...provided.droppableProps}>
+              <div
+                className={styles.Container}
+                style={style}
+                ref={containerRef}
+              >
+                {taskListComponent}
+              </div>
+              {provided.placeholder}
             </div>
-            {provided.placeholder}
-          </div>
-        )}
-      </Droppable>
+          )}
+        </Droppable>
+      </DragDropContext>
     );
   }
   return <div className={styles.Container} ref={containerRef}>{taskListComponent}</div>;
