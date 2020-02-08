@@ -1,12 +1,18 @@
 import React, { ReactElement } from 'react';
 import { connect } from 'react-redux';
-import { Draggable, Droppable } from 'react-beautiful-dnd';
-import { State } from 'common/lib/types/store-types';
+import { Droppable } from 'react-beautiful-dnd';
+import { State, SubTask, Task } from 'common/lib/types/store-types';
 import { CalendarPosition, FloatingPosition } from '../../Util/TaskEditors/editors-types';
 import FutureViewTask from './FutureViewTask';
 import styles from './FutureViewDayTaskContainer.module.css';
 import { useWindowSizeCallback } from '../../../hooks/window-size-hook';
 import { createGetIdOrderListByDate } from '../../../store/selectors';
+
+type CompoundTask = {
+  readonly original: Task;
+  readonly filteredSubTasks: SubTask[];
+  readonly color: string;
+};
 
 type OwnProps = {
   readonly date: string;
@@ -61,23 +67,17 @@ function FutureViewDayTaskContainer(
     onHeightChange(tasksHeight > containerHeight && containerHeight > 0, tasksHeight);
   });
   const taskListComponent = idOrderList.map(({ id }, i) => (
-    <Draggable key={id} draggableId={id} index={i}>
-      {(provided) => (
-        // eslint-disable-next-line react/jsx-props-no-spreading
-        <div ref={provided.innerRef} {...provided.draggableProps} {...provided.dragHandleProps}>
-          <FutureViewTask
-            key={id}
-            taskId={id}
-            containerDate={date}
-            inNDaysView={inNDaysView}
-            taskEditorPosition={taskEditorPosition}
-            calendarPosition={calendarPosition}
-            doesShowCompletedTasks={doesShowCompletedTasks}
-            isInMainList={isInMainList}
-          />
-        </div>
-      )}
-    </Draggable>
+    <FutureViewTask
+      key={id}
+      taskId={id}
+      index={i}
+      containerDate={date}
+      inNDaysView={inNDaysView}
+      taskEditorPosition={taskEditorPosition}
+      calendarPosition={calendarPosition}
+      doesShowCompletedTasks={doesShowCompletedTasks}
+      isInMainList={isInMainList}
+    />
   ));
   if (isInMainList) {
     const style = {};
@@ -105,4 +105,5 @@ function FutureViewDayTaskContainer(
 const Connected = connect(
   (state: State, { date }: OwnProps) => createGetIdOrderListByDate(date)(state),
 )(FutureViewDayTaskContainer);
+
 export default Connected;

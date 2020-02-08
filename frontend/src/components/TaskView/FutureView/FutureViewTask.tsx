@@ -11,6 +11,7 @@ import { useMappedWindowSize } from 'hooks/window-size-hook';
 import { NONE_TAG } from 'common/lib/util/tag-util';
 import SamwiseIcon from 'components/UI/SamwiseIcon';
 import { removeTaskWithPotentialPrompt } from 'util/task-util';
+import { Draggable } from 'react-beautiful-dnd';
 import FutureViewSubTask from './FutureViewSubTask';
 import styles from './FutureViewTask.module.css';
 
@@ -22,6 +23,7 @@ type CompoundTask = {
 
 type OwnProps = {
   readonly taskId: string;
+  readonly index: number;
   readonly containerDate: string;
   readonly inNDaysView: boolean;
   readonly taskEditorPosition: FloatingPosition;
@@ -39,7 +41,14 @@ type Props = OwnProps & {
  */
 function FutureViewTask(
   {
-    compoundTask, containerDate, inNDaysView, taskEditorPosition, isInMainList, calendarPosition,
+    taskId,
+    index,
+    compoundTask,
+    containerDate,
+    inNDaysView,
+    taskEditorPosition,
+    isInMainList,
+    calendarPosition,
   }: Props,
 ): ReactElement | null {
   const isSmallScreen = useMappedWindowSize(({ width }) => width <= 768);
@@ -162,13 +171,25 @@ function FutureViewTask(
     );
   };
   return (
-    <FloatingTaskEditor
-      position={taskEditorPosition}
-      calendarPosition={calendarPosition}
-      initialTask={original}
-      taskAppearedDate={containerDate}
-      trigger={trigger}
-    />
+    <Draggable
+      key={taskId}
+      draggableId={taskId}
+      index={index}
+      isDragDisabled={compoundTask.original.type === 'MASTER_TEMPLATE'}
+    >
+      {(provided) => (
+        // eslint-disable-next-line react/jsx-props-no-spreading
+        <div ref={provided.innerRef} {...provided.draggableProps} {...provided.dragHandleProps}>
+          <FloatingTaskEditor
+            position={taskEditorPosition}
+            calendarPosition={calendarPosition}
+            initialTask={original}
+            taskAppearedDate={containerDate}
+            trigger={trigger}
+          />
+        </div>
+      )}
+    </Draggable>
   );
 }
 
