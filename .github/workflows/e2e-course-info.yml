@@ -15,6 +15,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@master
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.BOT_TOKEN }}
       - name: Set up Node 10
         uses: actions/setup-node@master
         with:
@@ -37,3 +40,33 @@ jobs:
           cat frontend/src/assets/json/sp20-courses-with-exams-min.json | jq 'sort_by(.courseNumber)' > b.json
       - name: Compare JSON against current JSON
         run: diff a.json b.json
+      - name: Automatically create commit if JSON is different
+        if: failure()
+        run: |
+          git config --global user.name "dti-github-bot"
+          git config --global user.email "admin@cornelldti.org"
+          BRANCH="dti-github-bot/update-course-json"
+          rm a.json b.json
+          cp course-info/sp20-courses-with-exams-min.json frontend/src/assets/json/
+          git add .
+          git fetch --all
+          git checkout master
+          git checkout -b "$BRANCH"
+          git commit -m "[course-info][bot] Automatically update course JSON" || echo "Empty commit."
+          git push -f origin "$BRANCH" || git push -f --set-upstream origin "$BRANCH"
+      # Compare this against so that the later step can use the failure status
+      - name: Compare JSON against current JSON
+        run: diff a.json b.json
+      - name: Automatically create PR if JSON is different
+        uses: actions/github-script@0.2.0
+        if: failure()
+        with:
+          github-token: ${{ secrets.BOT_TOKEN }}
+          script: |
+            github.pulls.create({
+              owner: 'cornell-dti',
+              repo: 'samwise',
+              title: '[course-info][bot] Automatically update course JSON',
+              base: 'master',
+              head: 'dti-github-bot/update-course-json'
+            });
