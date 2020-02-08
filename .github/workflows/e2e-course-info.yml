@@ -54,7 +54,7 @@ jobs:
           git fetch --all
           git checkout master
           git checkout -b "$BRANCH"
-          git commit -m "[course-info][bot] Automatically update course JSON"
+          git commit -m "[course-info][bot] Automatically update course JSON" || echo "Empty commit."
           git push "$ORIGIN" "$BRANCH" || git push --set-upstream "$ORIGIN" "$BRANCH"
       # Compare this against so that the later step can use the failure status
       - name: Compare JSON against current JSON
@@ -70,8 +70,8 @@ jobs:
                 owner: 'cornell-dti',
                 repo: 'samwise',
                 title: '[course-info][bot] Automatically update course JSON',
-                head: 'master',
-                base: 'dti-github-bot/update-course-json'
+                base: 'master',
+                head: 'dti-github-bot/update-course-json'
               });
             } catch (error) {
               console.error(error);
