@@ -3,29 +3,25 @@ import { DragDropContext, DropResult } from 'react-beautiful-dnd';
 import FutureViewDay from './FutureViewDay';
 import styles from './FutureViewNDays.module.css';
 import { SimpleDate } from './future-view-types';
-import { applyReorder, editMainTask } from '../../../firebase/actions';
-import { computeReorderMap } from 'common/lib/util/order-util';
-import {connect} from "react-redux";
-import {State} from "common/lib/types/store-types";
-import {createGetIdOrderListByDate, createGetIdOrderListForDays} from "../../../store/selectors";
+import { editMainTask } from '../../../firebase/actions';
 
 type IdOrder = { readonly id: string; readonly order: number };
 
 type Props = {
   readonly days: readonly SimpleDate[];
   readonly doesShowCompletedTasks: boolean;
-  readonly idOrderList: IdOrder[][];
+  // readonly idOrderList: IdOrder[][];
 };
 
-type OwnProps = {
-  days: SimpleDate[];
-}
+// type OwnProps = {
+//   days: SimpleDate[];
+// }
 
 /**
  * The component used to contain all the backlog days in n-days mode.
  */
 function FutureViewNDays(
-  { days, doesShowCompletedTasks, idOrderList }: Props,
+  { days, doesShowCompletedTasks }: Props,
 ): ReactElement {
   const nDays = days.length;
   const containerStyle = { gridTemplateColumns: `repeat(${nDays}, minmax(0, 1fr))` };
@@ -44,7 +40,7 @@ function FutureViewNDays(
         { date: new Date(destination.droppableId) },
       );
     }
-    console.log(idOrderList);
+    // console.log(idOrderList);
   };
 
   return (
@@ -69,7 +65,9 @@ function FutureViewNDays(
   );
 }
 
-const Connected = connect(
-  (state: State, { days }: OwnProps) => createGetIdOrderListForDays(days)(state),
-)(FutureViewNDays);
-export default Connected;
+export default FutureViewNDays;
+
+// const Connected = connect(
+//   (state: State, { days }: OwnProps) => createGetIdOrderListForDays(days)(state),
+// )(FutureViewNDays);
+// export default Connected;
