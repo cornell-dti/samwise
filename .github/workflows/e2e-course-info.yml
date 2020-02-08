@@ -65,15 +65,10 @@ jobs:
         with:
           github-token: ${{ secrets.BOT_TOKEN }}
           script: |
-            try {
-              github.pulls.create({
-                owner: 'cornell-dti',
-                repo: 'samwise',
-                title: '[course-info][bot] Automatically update course JSON',
-                base: 'master',
-                head: 'dti-github-bot/update-course-json'
-              });
-            } catch (error) {
-              console.error(error);
-              console.error('Maybe the PR with the same branch is already created?');
-            }
+            github.pulls.create({
+              owner: 'cornell-dti',
+              repo: 'samwise',
+              title: '[course-info][bot] Automatically update course JSON',
+              base: 'master',
+              head: 'dti-github-bot/update-course-json'
+            });
