@@ -20,7 +20,10 @@ type OwnProps = {
   readonly onHeightChange: (doesOverflow: boolean, tasksHeight: number) => void;
 };
 
-type IdOrder = { readonly id: string; readonly order: number };
+type IdOrder = {
+  readonly id: string;
+  readonly order: number;
+};
 
 type Props = OwnProps & {
   readonly idOrderList: IdOrder[];
