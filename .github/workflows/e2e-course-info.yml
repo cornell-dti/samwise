@@ -55,7 +55,7 @@ jobs:
           git checkout master
           git checkout -b "$BRANCH"
           git commit -m "[course-info][bot] Automatically update course JSON" || echo "Empty commit."
-          git push "$ORIGIN" "$BRANCH" || git push --set-upstream "$ORIGIN" "$BRANCH"
+          git push -f "$ORIGIN" "$BRANCH" || git push -f --set-upstream "$ORIGIN" "$BRANCH"
       # Compare this against so that the later step can use the failure status
       - name: Compare JSON against current JSON
         run: diff a.json b.json
