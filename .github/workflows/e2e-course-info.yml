@@ -46,7 +46,7 @@ jobs:
           git config --global user.email "admin@cornelldti.org"
           ORIGIN="https://x-access-token:$BOT_TOKEN@github.com/cornell-dti/samwise.git"
           BRANCH="dti-github-bot/update-course-json"
-          git branch -b "$BRANCH"
+          git checkout -b "$BRANCH"
           git commit -m "[course-info][bot] Automatically update course JSON"
           git push
       # Compare this against so that the later step can use the failure status
