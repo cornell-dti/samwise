@@ -62,7 +62,7 @@ jobs:
           github-token: ${{ secrets.BOT_TOKEN }}
           script: |
             try {
-              octokit.pulls.create({
+              github.pulls.create({
                 owner: 'cornell-dti',
                 repo: 'samwise',
                 title: '[course-info][bot] Automatically update course JSON',
