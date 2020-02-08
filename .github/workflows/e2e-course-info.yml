@@ -49,13 +49,13 @@ jobs:
           rm a.json b.json
           cp course-info/sp20-courses-with-exams-min.json frontend/src/assets/json/
           git add .
-          git checkout -b "$BRANCH"
+          git checkout -b "$BRANCH" master
           git commit -m "[course-info][bot] Automatically update course JSON"
           git push "$ORIGIN" "$BRANCH" || git push --set-upstream "$ORIGIN" "$BRANCH"
       # Compare this against so that the later step can use the failure status
       - name: Compare JSON against current JSON
         run: diff a.json b.json
-      - name: Comment on Pull Request
+      - name: Automatically create PR if JSON is different
         uses: actions/github-script@0.2.0
         if: failure()
         with:
