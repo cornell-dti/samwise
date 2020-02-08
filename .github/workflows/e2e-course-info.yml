@@ -37,3 +37,36 @@ jobs:
           cat frontend/src/assets/json/sp20-courses-with-exams-min.json | jq 'sort_by(.courseNumber)' > b.json
       - name: Compare JSON against current JSON
         run: diff a.json b.json
+      - name: Automatically create commit if JSON is different
+        env:
+          BOT_TOKEN: '${{ secrets.BOT_TOKEN }}'
+        if: failure()
+        run: |
+          git config --global user.name "dti-github-bot"
+          git config --global user.email "admin@cornelldti.org"
+          ORIGIN="https://x-access-token:$BOT_TOKEN@github.com/cornell-dti/samwise.git"
+          BRANCH="dti-github-bot/update-course-json"
+          git branch -b "$BRANCH"
+          git commit -m "[course-info][bot] Automatically update course JSON"
+          git push
+      # Compare this against so that the later step can use the failure status
+      - name: Compare JSON against current JSON
+        run: diff a.json b.json
+      - name: Comment on Pull Request
+        uses: actions/github-script@0.2.0
+        if: failure()
+        with:
+          github-token: ${{ secrets.BOT_TOKEN }}
+          script: |
+            try {
+              octokit.pulls.create({
+                owner: 'cornell-dti',
+                repo: 'samwise',
+                title: '[course-info][bot] Automatically update course JSON',
+                head: 'master',
+                base: 'dti-github-bot/update-course-json'
+              });
+            } catch (error) {
+              console.error(error);
+              console.error('Maybe the PR with the same branch is already created?');
+            }
