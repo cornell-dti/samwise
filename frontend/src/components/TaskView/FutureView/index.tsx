@@ -1,10 +1,10 @@
 import React, { ReactElement } from 'react';
 import { useTodayLastSecondTime } from 'hooks/time-hook';
 import { DragDropContext, DropResult } from 'react-beautiful-dnd';
-import { State } from 'common/lib/types/store-types';
-import { computeReorderMap } from 'common/lib/util/order-util';
-import { createGetIdOrderListByDate } from 'store/selectors';
-import { store } from 'store/store';
+// import { State } from 'common/lib/types/store-types';
+// import { computeReorderMap } from 'common/lib/util/order-util';
+// import { createGetIdOrderListByDate } from 'store/selectors';
+// import { store } from 'store/store';
 import FutureViewControl from './FutureViewControl';
 import FutureViewNDays from './FutureViewNDays';
 import FutureViewSevenColumns from './FutureViewSevenColumns';
@@ -15,7 +15,7 @@ import {
   SimpleDate,
 } from './future-view-types';
 import { useMappedWindowSize } from '../../../hooks/window-size-hook';
-import { editMainTask, applyReorder } from '../../../firebase/actions';
+import { editMainTask } from '../../../firebase/actions';
 
 
 export type FutureViewConfig = {
