@@ -1,9 +1,13 @@
 import React, { ReactElement } from 'react';
 import { useTodayLastSecondTime } from 'hooks/time-hook';
 import { DragDropContext, DropResult } from 'react-beautiful-dnd';
+// import { State } from 'common/lib/types/store-types';
+// import { computeReorderMap } from 'common/lib/util/order-util';
+// import { createGetIdOrderListByDate } from 'store/selectors';
 import FutureViewControl from './FutureViewControl';
 import FutureViewNDays from './FutureViewNDays';
 import FutureViewSevenColumns from './FutureViewSevenColumns';
+
 import {
   FutureViewContainerType,
   FutureViewDisplayOption,
@@ -11,6 +15,7 @@ import {
 } from './future-view-types';
 import { useMappedWindowSize } from '../../../hooks/window-size-hook';
 import { editMainTask } from '../../../firebase/actions';
+
 
 export type FutureViewConfig = {
   readonly displayOption: FutureViewDisplayOption;
@@ -111,6 +116,8 @@ function buildDaysInFutureView(
   return days;
 }
 
+type IdOrder = { readonly id: string; readonly order: number };
+
 type Props = {
   readonly config: FutureViewConfig;
   readonly onConfigChange: (config: FutureViewConfig) => void;
@@ -144,15 +151,21 @@ export default function FutureView(
       // invalid drop, skip
       return;
     }
-    // dragging to a different day
-    if (source.droppableId !== destination.droppableId) {
+    // dragging to same day
+    if (source.droppableId === destination.droppableId) {
+      // const sourceOrder: number = idOrderList[source.index].order;
+      // const dest = idOrderList[destination.index];
+      // const destinationOrder: number = dest == null ? sourceOrder : dest.order;
+      // const reorderMap = computeReorderMap(idOrderList, sourceOrder, destinationOrder);
+      // applyReorder('tasks', reorderMap);
+    } else {
+      // dragging to different day
       editMainTask(
         draggableId,
         null,
         { date: new Date(destination.droppableId) },
       );
     }
-    // console.log(idOrderList);
   };
   return (
     <div>

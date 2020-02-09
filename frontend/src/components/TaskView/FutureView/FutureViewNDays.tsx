@@ -8,12 +8,7 @@ type IdOrder = { readonly id: string; readonly order: number };
 type Props = {
   readonly days: readonly SimpleDate[];
   readonly doesShowCompletedTasks: boolean;
-  // readonly idOrderList: IdOrder[][];
 };
-
-// type OwnProps = {
-//   days: SimpleDate[];
-// }
 
 /**
  * The component used to contain all the backlog days in n-days mode.
@@ -45,8 +40,3 @@ function FutureViewNDays(
 }
 
 export default FutureViewNDays;
-
-// const Connected = connect(
-//   (state: State, { days }: OwnProps) => createGetIdOrderListForDays(days)(state),
-// )(FutureViewNDays);
-// export default Connected;
