@@ -2,7 +2,3 @@
   height: calc(100% - 66px);
   min-height: 50px;
 }
-
-.Droppable {
-  min-height: 50px;
-}
