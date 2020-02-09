@@ -134,13 +134,15 @@ function reducer(state: State, action: Action): State {
 export default function useTaskDiffReducer(
   initMainTask: MainTask,
   initSubTasks: readonly SubTask[],
+  active: boolean,
   onChange: () => void,
 ): TaskDiffActions {
   const [state, dispatch] = useReducer(reducer, [initMainTask, initSubTasks], initializer);
   const { mainTask, subTasks, prevFullTask, diff } = state;
   if (
-    !shallowEqual(prevFullTask.mainTask, initMainTask)
-    || !shallowArrayEqual(prevFullTask.subTasks, initSubTasks)
+    !active
+    && (!shallowEqual(prevFullTask.mainTask, initMainTask)
+      || !shallowArrayEqual(prevFullTask.subTasks, initSubTasks))
   ) {
     dispatch({ type: 'RESET', mainTask: initMainTask, subTasks: initSubTasks });
   }
