@@ -16,6 +16,7 @@ import {
 } from './future-view-types';
 import { useMappedWindowSize } from '../../../hooks/window-size-hook';
 import { editMainTask } from '../../../firebase/actions';
+import { store } from '../../../store/store';
 
 
 export type FutureViewConfig = {
