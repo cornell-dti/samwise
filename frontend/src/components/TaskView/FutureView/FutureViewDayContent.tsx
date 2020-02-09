@@ -4,6 +4,7 @@ import { SimpleDate } from './future-view-types';
 import { CalendarPosition, FloatingPosition } from '../../Util/TaskEditors/editors-types';
 import styles from './FutureViewDay.module.scss';
 import FutureViewDayTaskContainer from './FutureViewDayTaskContainer';
+import {Droppable} from "react-beautiful-dnd";
 
 type Props = {
   readonly date: SimpleDate;
@@ -32,23 +33,31 @@ function FutureViewDayContent(
   const containerStyle = (inNDaysView && inMainList) ? { paddingTop: '1em' } : {};
   const isToday: boolean = getTodayAtZeroAM().toDateString() === date.text;
   return (
-    <>
-      <div className={styles.DateInfo} style={containerStyle}>
-        <div className={styles.DateInfoDay}>
-          {isToday ? 'TODAY' : day2String(date.day)}
+    <Droppable droppableId={date.text}>
+      {(provided) => (
+        // eslint-disable-next-line react/jsx-props-no-spreading
+        <div ref={provided.innerRef} {...provided.droppableProps}>
+          <>
+            <div className={styles.DateInfo} style={containerStyle}>
+              <div className={styles.DateInfoDay}>
+                {isToday ? 'TODAY' : day2String(date.day)}
+              </div>
+              <div className={styles.DateNum}>{date.date}</div>
+            </div>
+            <FutureViewDayTaskContainer
+              date={date.text}
+              inNDaysView={inNDaysView}
+              taskEditorPosition={taskEditorPosition}
+              calendarPosition={calendarPosition}
+              doesShowCompletedTasks={doesShowCompletedTasks}
+              isInMainList={inMainList}
+              onHeightChange={onHeightChange}
+            />
+          </>
+          {provided.placeholder}
         </div>
-        <div className={styles.DateNum}>{date.date}</div>
-      </div>
-      <FutureViewDayTaskContainer
-        date={date.text}
-        inNDaysView={inNDaysView}
-        taskEditorPosition={taskEditorPosition}
-        calendarPosition={calendarPosition}
-        doesShowCompletedTasks={doesShowCompletedTasks}
-        isInMainList={inMainList}
-        onHeightChange={onHeightChange}
-      />
-    </>
+      )}
+    </Droppable>
   );
 }
 

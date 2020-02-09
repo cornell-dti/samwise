@@ -9,6 +9,8 @@ import {
   SimpleDate,
 } from './future-view-types';
 import { useMappedWindowSize } from '../../../hooks/window-size-hook';
+import {DragDropContext, DropResult} from "react-beautiful-dnd";
+import {editMainTask} from "../../../firebase/actions";
 
 export type FutureViewConfig = {
   readonly displayOption: FutureViewDisplayOption;
@@ -136,15 +138,33 @@ export default function FutureView(
   const daysContainer = containerType === 'N_DAYS'
     ? <FutureViewNDays days={days} doesShowCompletedTasks={doesShowCompletedTasks} />
     : <FutureViewSevenColumns days={days} doesShowCompletedTasks={doesShowCompletedTasks} />;
+  const onDragEnd = (result: DropResult): void => {
+    const { source, destination, draggableId } = result;
+    if (destination == null) {
+      // invalid drop, skip
+      return;
+    }
+    // dragging to a different day
+    if (source.droppableId !== destination.droppableId) {
+      editMainTask(
+        draggableId,
+        null,
+        { date: new Date(destination.droppableId) },
+      );
+    }
+    // console.log(idOrderList);
+  };
   return (
     <div>
-      <FutureViewControl
-        nDays={nDays}
-        displayOption={displayOption}
-        offset={offset}
-        onChange={controlOnChange}
-      />
-      {daysContainer}
+      <DragDropContext onDragEnd={onDragEnd}>
+        <FutureViewControl
+          nDays={nDays}
+          displayOption={displayOption}
+          offset={offset}
+          onChange={controlOnChange}
+        />
+        {daysContainer}
+      </DragDropContext>
     </div>
   );
 }
