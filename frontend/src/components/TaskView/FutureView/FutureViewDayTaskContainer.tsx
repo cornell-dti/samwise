@@ -1,14 +1,11 @@
 import React, { ReactElement } from 'react';
 import { connect } from 'react-redux';
-import { Droppable, DropResult } from 'react-beautiful-dnd';
 import { State, SubTask, Task } from 'common/lib/types/store-types';
-import { computeReorderMap } from 'common/lib/types/order-util';
 import { CalendarPosition, FloatingPosition } from '../../Util/TaskEditors/editors-types';
 import FutureViewTask from './FutureViewTask';
 import styles from './FutureViewDayTaskContainer.module.css';
 import { useWindowSizeCallback } from '../../../hooks/window-size-hook';
 import { createGetIdOrderListByDate } from '../../../store/selectors';
-import { applyReorder } from '../../../firebase/actions';
 
 type CompoundTask = {
   readonly original: Task;
@@ -68,19 +65,6 @@ function FutureViewDayTaskContainer(
     setPrevHeights([tasksHeight, containerHeight]);
     onHeightChange(tasksHeight > containerHeight && containerHeight > 0, tasksHeight);
   });
-
-  const onDragEnd = (result: DropResult): void => {
-    const { source, destination } = result;
-    if (destination == null) {
-      // invalid drop, skip
-      return;
-    }
-    const sourceOrder: number = idOrderList[source.index].order;
-    const dest = idOrderList[destination.index];
-    const destinationOrder: number = dest == null ? sourceOrder : dest.order;
-    const reorderMap = computeReorderMap(idOrderList, sourceOrder, destinationOrder);
-    applyReorder('tasks', reorderMap);
-  };
   const taskListComponent = idOrderList.map(({ id }, i) => (
     <FutureViewTask
       key={id}

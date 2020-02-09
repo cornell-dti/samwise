@@ -1,5 +1,6 @@
 import React, { ReactElement } from 'react';
 import { useTodayLastSecondTime } from 'hooks/time-hook';
+import { DragDropContext, DropResult } from 'react-beautiful-dnd';
 import FutureViewControl from './FutureViewControl';
 import FutureViewNDays from './FutureViewNDays';
 import FutureViewSevenColumns from './FutureViewSevenColumns';
@@ -9,8 +10,7 @@ import {
   SimpleDate,
 } from './future-view-types';
 import { useMappedWindowSize } from '../../../hooks/window-size-hook';
-import {DragDropContext, DropResult} from "react-beautiful-dnd";
-import {editMainTask} from "../../../firebase/actions";
+import { editMainTask } from '../../../firebase/actions';
 
 export type FutureViewConfig = {
   readonly displayOption: FutureViewDisplayOption;

@@ -1,11 +1,7 @@
 import React, { ReactElement } from 'react';
-import { DragDropContext, DropResult } from 'react-beautiful-dnd';
-import {State, Tag} from 'common/lib/types/store-types';
 import FutureViewDay from './FutureViewDay';
 import styles from './FutureViewNDays.module.css';
 import { SimpleDate } from './future-view-types';
-import { editMainTask } from '../../../firebase/actions';
-import { createGetIdOrderListByDate } from '../../../store/selectors';
 
 type IdOrder = { readonly id: string; readonly order: number };
 
