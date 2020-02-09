@@ -154,9 +154,9 @@ export default function FutureView(
     }
     // dragging to same day
     if (source.droppableId === destination.droppableId) {
-      const { dateTaskMap } = store.getState();
-      const { tasks } = store.getState();
-      const dayTaskSet = dateTaskMap.get(source.droppableId);
+      const { dateTaskMap, tasks, repeatedTaskSet } = store.getState();
+      const date = source.droppableId;
+      const dayTaskSet = dateTaskMap.get(date);
       if (dayTaskSet != null) {
         const idOrderList: IdOrder[] = [];
 
@@ -164,6 +164,19 @@ export default function FutureView(
           const task = tasks.get(id);
           if (task != null) {
             const { order } = task;
+            idOrderList.push({ id, order });
+          }
+        });
+
+        const dateObj = new Date(source.droppableId);
+        repeatedTaskSet.forEach((id) => {
+          const task = tasks.get(id);
+          if (task == null) {
+            return;
+          }
+          const repeatedTask = task as RepeatingTask;
+          if (dateMatchRepeats(dateObj, repeatedTask.date, repeatedTask.forks)) {
+            const { order } = repeatedTask;
             idOrderList.push({ id, order });
           }
         });
