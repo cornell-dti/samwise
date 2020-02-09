@@ -1,10 +1,9 @@
 import React, { ReactElement } from 'react';
 import { useTodayLastSecondTime } from 'hooks/time-hook';
 import { DragDropContext, DropResult } from 'react-beautiful-dnd';
-// import { State } from 'common/lib/types/store-types';
-// import { computeReorderMap } from 'common/lib/util/order-util';
-// import { createGetIdOrderListByDate } from 'store/selectors';
-// import { store } from 'store/store';
+import { RepeatingTask } from 'common/lib/types/store-types';
+import { computeReorderMap } from 'common/lib/util/order-util';
+import { dateMatchRepeats } from 'common/lib/util/task-util';
 import FutureViewControl from './FutureViewControl';
 import FutureViewNDays from './FutureViewNDays';
 import FutureViewSevenColumns from './FutureViewSevenColumns';
@@ -15,7 +14,7 @@ import {
   SimpleDate,
 } from './future-view-types';
 import { useMappedWindowSize } from '../../../hooks/window-size-hook';
-import { editMainTask } from '../../../firebase/actions';
+import { editMainTask, applyReorder } from '../../../firebase/actions';
 import { store } from '../../../store/store';
 
 
@@ -156,16 +155,25 @@ export default function FutureView(
     // dragging to same day
     if (source.droppableId === destination.droppableId) {
       const { dateTaskMap } = store.getState();
+      const { tasks } = store.getState();
       const dayTaskSet = dateTaskMap.get(source.droppableId);
-      if (dayTaskSet != null && dayTaskSet !== undefined) {
-        // const idOrderListStr: string[] = Array.from(dayTaskSet);
-        // const idOrderList: IdOrder[] = [];
+      if (dayTaskSet != null) {
+        const idOrderList: IdOrder[] = [];
 
-        // const sourceOrder: number = idOrderList[source.index].order;
-        // const dest = idOrderList[destination.index];
-        // const destinationOrder: number = dest == null ? sourceOrder : dest.order;
-        // const reorderMap = computeReorderMap(idOrderList, sourceOrder, destinationOrder);
-        // applyReorder('tasks', reorderMap);
+        dayTaskSet.forEach((id) => {
+          const task = tasks.get(id);
+          if (task != null) {
+            const { order } = task;
+            idOrderList.push({ id, order });
+          }
+        });
+
+        idOrderList.sort((a, b) => a.order - b.order);
+        const sourceOrder: number = idOrderList[source.index].order;
+        const dest = idOrderList[destination.index];
+        const destinationOrder: number = dest == null ? sourceOrder : dest.order;
+        const reorderMap = computeReorderMap(idOrderList, sourceOrder, destinationOrder);
+        applyReorder('tasks', reorderMap);
       }
     } else {
       // dragging to different day
