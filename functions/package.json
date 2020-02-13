@@ -3,13 +3,13 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "tsc": "tsc",
+    "tsc": "tsc --module commonjs --noEmit false --sourceMap false --isolatedModules false",
     "build": "yarn tsc && ncc build dist/index.js -o compiled -m",
     "serve": "yarn tsc && firebase serve --only functions",
     "shell": "yarn tsc && firebase functions:shell",
     "start": "yarn shell",
     "deploy": "firebase deploy --only functions",
-    "test": "echo 'Test nothing'",
+    "test": "react-scripts test --watchAll=false",
     "logs": "firebase functions:log"
   },
   "main": "dist/index.js",
