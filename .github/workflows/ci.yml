@@ -34,5 +34,7 @@ jobs:
           restore-keys: yarn-
       - name: Yarn Install
         run: yarn install
+      - name: Create Dummy Files
+        run: echo "{}" > functions/src/firebase-adminsdk.json
       - name: Run Tests
         run: yarn workspaces run test

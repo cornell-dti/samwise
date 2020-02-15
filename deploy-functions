@@ -36,8 +36,20 @@ echo '{
 cat firebase.json > temp/firebase.json
 cat .firebaserc > temp/.firebaserc
 
+TOKEN="$1"
+PROJECT="$2"
+
+if [ -z "$PROJECT" ]; then
+  PROJECT="default"
+fi
+
 cd temp
-firebase use default
-firebase deploy --only functions
+../node_modules/.bin/firebase use "$PROJECT"
+if [ -z "$TOKEN" ]; then
+  ../node_modules/.bin/firebase deploy --only functions
+else
+  ../node_modules/.bin/firebase deploy --token=$TOKEN --non-interactive --only functions
+fi
+
 cd ../
 rm -rf temp
