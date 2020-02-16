@@ -12,6 +12,7 @@ type NameCompleteInFocus = {
 };
 type Props = NameCompleteInFocus & {
   readonly id: string;
+  readonly icalUID?: string;
   readonly taskDate: Date | null;
   readonly dateAppeared: string;
   readonly onChange: (change: Partial<NameCompleteInFocus>) => void;
@@ -23,7 +24,7 @@ const deleteIconClass = [styles.TaskEditorIcon, styles.TaskEditorIconLeftPad].jo
 
 function MainTaskEditor(
   {
-    id, taskDate, dateAppeared, name, complete, inFocus, onChange, onRemove, onPressEnter,
+    id, icalUID, taskDate, dateAppeared, name, complete, inFocus, onChange, onRemove, onPressEnter,
   }: Props,
 ): ReactElement {
   const replaceDateForFork = taskDate == null
@@ -45,6 +46,8 @@ function MainTaskEditor(
     onChange({ name: newValue });
   };
 
+  const isCanvasTask = typeof icalUID === 'string' ? icalUID !== '' : false;
+
   return (
     <div className={styles.TaskEditorFlexibleContainer}>
       <CheckBox
@@ -54,6 +57,7 @@ function MainTaskEditor(
       />
       <input
         type="text"
+        disabled={isCanvasTask}
         data-lpignore="true"
         className={complete
           ? styles.TaskEditorStrikethrough : styles.TaskEditorFlexibleInput}
@@ -67,7 +71,8 @@ function MainTaskEditor(
         className={styles.TaskEditorIcon}
         onClick={editInFocus}
       />
-      <SamwiseIcon iconName="x-light" className={deleteIconClass} onClick={onRemove} />
+      {isCanvasTask ? null
+        : <SamwiseIcon iconName="x-light" className={deleteIconClass} onClick={onRemove} />}
     </div>
   );
 }

@@ -42,6 +42,7 @@ type Actions = {
 type OwnProps = DefaultProps & {
   readonly id: string;
   readonly type: 'MASTER_TEMPLATE' | 'ONE_TIME';
+  readonly icalUID?: string;
   // the date string that specifies when the task appears (useful for repeated task)
   readonly taskAppearedDate: string | null;
   readonly mainTask: MainTask; // The task given to the editor.
@@ -67,6 +68,7 @@ function TaskEditor(
   {
     id,
     type,
+    icalUID,
     taskAppearedDate,
     mainTask: initMainTask,
     subTasks: initSubTasks,
@@ -235,9 +237,11 @@ function TaskEditor(
           getTag={getTag}
           calendarPosition={calendarPosition}
           displayGrabber={displayGrabber == null ? false : displayGrabber}
+          icalUID={icalUID}
         />
         <MainTaskEditor
           id={id}
+          icalUID={icalUID}
           taskDate={date instanceof Date ? date : null}
           dateAppeared={taskAppearedDate}
           name={name}
