@@ -7,6 +7,7 @@ import styles from './FutureViewDay.module.scss';
 import { headerHeight } from './future-view-css-props';
 import { useWindowSize, WindowSize } from '../../../hooks/window-size-hook';
 import FutureViewDayContent from './FutureViewDayContent';
+import {Droppable} from "react-beautiful-dnd";
 
 type Position = {
   readonly width: number;
@@ -106,20 +107,28 @@ export default function FutureViewDay(props: Props): ReactElement {
   if (!floatingViewOpened) {
     return (
       <div className={wrapperCssClass} ref={componentDivRef}>
-        <FutureViewDayContent
-          inMainList
-          onHeightChange={onHeightChange}
-          date={date}
-          inNDaysView={inNDaysView}
-          taskEditorPosition={taskEditorPosition}
-          calendarPosition={calendarPosition}
-          doesShowCompletedTasks={doesShowCompletedTasks}
-        />
-        {heightInfo.doesOverflow && (
-          <button type="button" className={styles.MoreTasksBar} onClick={openFloatingView} tabIndex={0}>
-            More Tasks...
-          </button>
-        )}
+        <Droppable droppableId={date.text}>
+          {(provided) => (
+            // eslint-disable-next-line react/jsx-props-no-spreading
+            <div ref={provided.innerRef} {...provided.droppableProps}>
+              <FutureViewDayContent
+                inMainList
+                onHeightChange={onHeightChange}
+                date={date}
+                inNDaysView={inNDaysView}
+                taskEditorPosition={taskEditorPosition}
+                calendarPosition={calendarPosition}
+                doesShowCompletedTasks={doesShowCompletedTasks}
+              />
+              {heightInfo.doesOverflow && (
+                <button type="button" className={styles.MoreTasksBar} onClick={openFloatingView} tabIndex={0}>
+                  More Tasks...
+                </button>
+              )}
+              {provided.placeholder}
+            </div>
+          )}
+        </Droppable>
       </div>
     );
   }

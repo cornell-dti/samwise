@@ -2,6 +2,7 @@ import React, { ReactElement } from 'react';
 import FutureViewDay from './FutureViewDay';
 import styles from './FutureViewNDays.module.css';
 import { SimpleDate } from './future-view-types';
+import {Droppable} from "react-beautiful-dnd";
 
 type IdOrder = { readonly id: string; readonly order: number };
 
