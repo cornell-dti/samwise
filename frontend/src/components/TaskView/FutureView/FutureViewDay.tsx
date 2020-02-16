@@ -1,7 +1,9 @@
 import React, { ReactElement } from 'react';
+import { connect } from 'react-redux';
 import { getTodayAtZeroAM } from 'common/lib/util/datetime-util';
 import { error } from 'common/lib/util/general-util';
 import { Droppable } from 'react-beautiful-dnd';
+import { State, Theme } from 'common/lib/types/store-types';
 import { SimpleDate } from './future-view-types';
 import { CalendarPosition, FloatingPosition } from '../../Util/TaskEditors/editors-types';
 import styles from './FutureViewDay.module.scss';
@@ -81,8 +83,15 @@ const dummyHeightInfo: HeightInfo = { doesOverflow: false, tasksHeight: 0 };
 /**
  * The component that renders all tasks on a certain day.
  */
-export default function FutureViewDay(props: Props): ReactElement {
-  const { date, inNDaysView, taskEditorPosition, calendarPosition, doesShowCompletedTasks } = props;
+export function FutureViewDay(props: Props & { readonly theme: Theme }): ReactElement {
+  const {
+    theme,
+    date,
+    inNDaysView,
+    taskEditorPosition,
+    calendarPosition,
+    doesShowCompletedTasks,
+  } = props;
   const [floatingViewOpened, setFloatingViewOpened] = React.useState(false);
   const [heightInfo, setHeightInfo] = React.useState<HeightInfo>(dummyHeightInfo);
   const windowSize = useWindowSize();
@@ -98,6 +107,18 @@ export default function FutureViewDay(props: Props): ReactElement {
   const closeFloatingView = (): void => setFloatingViewOpened(false);
 
   const isToday: boolean = getTodayAtZeroAM().toDateString() === date.text;
+  const darkModeStyles = (() => {
+    if (theme !== 'dark') {
+      return undefined;
+    }
+    return isToday ? {
+      background: 'black',
+      color: 'white',
+    } : {
+      background: 'rgb(33,33,33)',
+      color: 'white',
+    };
+  })();
   let wrapperCssClass: string;
   if (inNDaysView) {
     wrapperCssClass = isToday ? `${styles.NDaysView} ${styles.Today}` : styles.NDaysView;
@@ -119,6 +140,7 @@ export default function FutureViewDay(props: Props): ReactElement {
                 taskEditorPosition={taskEditorPosition}
                 calendarPosition={calendarPosition}
                 doesShowCompletedTasks={doesShowCompletedTasks}
+                theme={theme}
               />
               {heightInfo.doesOverflow && (
                 <button type="button" className={styles.MoreTasksBar} onClick={openFloatingView} tabIndex={0}>
@@ -150,7 +172,7 @@ export default function FutureViewDay(props: Props): ReactElement {
     });
   };
   return (
-    <div className={wrapperCssClass} ref={componentDivRef}>
+    <div className={wrapperCssClass} ref={componentDivRef} style={darkModeStyles}>
       <div className={styles.FloatingViewPrevPadding} />
       <div
         role="presentation"
@@ -166,8 +188,14 @@ export default function FutureViewDay(props: Props): ReactElement {
           taskEditorPosition={taskEditorPosition}
           calendarPosition={calendarPosition}
           doesShowCompletedTasks={doesShowCompletedTasks}
+          theme={theme}
         />
       </div>
     </div>
   );
 }
+
+const Connected = connect(
+  ({ settings: { theme } }: State): { readonly theme: Theme } => ({ theme }),
+)(FutureViewDay);
+export default Connected;
