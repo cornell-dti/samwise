@@ -1,13 +1,13 @@
 import React, { ReactElement } from 'react';
 import { getTodayAtZeroAM } from 'common/lib/util/datetime-util';
 import { error } from 'common/lib/util/general-util';
+import { Droppable } from 'react-beautiful-dnd';
 import { SimpleDate } from './future-view-types';
 import { CalendarPosition, FloatingPosition } from '../../Util/TaskEditors/editors-types';
 import styles from './FutureViewDay.module.scss';
 import { headerHeight } from './future-view-css-props';
 import { useWindowSize, WindowSize } from '../../../hooks/window-size-hook';
 import FutureViewDayContent from './FutureViewDayContent';
-import {Droppable} from "react-beautiful-dnd";
 
 type Position = {
   readonly width: number;

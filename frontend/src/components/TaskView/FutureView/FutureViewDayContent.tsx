@@ -4,7 +4,6 @@ import { SimpleDate } from './future-view-types';
 import { CalendarPosition, FloatingPosition } from '../../Util/TaskEditors/editors-types';
 import styles from './FutureViewDay.module.scss';
 import FutureViewDayTaskContainer from './FutureViewDayTaskContainer';
-import {Droppable} from "react-beautiful-dnd";
 
 type Props = {
   readonly date: SimpleDate;
