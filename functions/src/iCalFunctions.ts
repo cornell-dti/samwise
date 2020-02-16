@@ -22,26 +22,6 @@ export default async function getICalLink(): Promise<void> {
     });
 }
 
-const assignCanvasTag = (user: string, taskName?: string): string => {
-  database.tagsCollection()
-    .where('owner', '==', user)
-    .get()
-    .then((querySnapshot) => {
-      querySnapshot.forEach((doc) => {
-        // tag names for imported classes have the form
-        // 'CS 4820: Intro Analysis of Algorithms'
-        const tagName = doc.data().name.split(':')[0].replace(/\s/g, '');
-        // canvas task names have the form 'HW 3 [MATH2930]'
-        const className = taskName?.split('[')[1].replace(/]/g, '');
-        if (tagName === className) return doc.id;
-        return 'THE_GLORIOUS_NONE_TAG';
-      });
-    })
-    .catch((error) => {
-      console.log('Error getting documents: ', error);
-    });
-};
-
 export function parseICal(link: string, user: string): void {
   const orderManager = new OrderManager(database, () => user);
   fromURL(link, {}, async (_, data) => {
@@ -59,7 +39,6 @@ export function parseICal(link: string, user: string): void {
           const endDate = endObject === null ? null : new Date(endObject.getTime());
           const taskID: string = database.tasksCollection().doc().id;
           const order: number = await orderManager.allocateNewOrder('tasks');
-          const canvasTag: string = assignCanvasTag(user, taskName);
           if (endDate === null) {
             // eslint-disable-next-line no-continue
             continue;
@@ -80,7 +59,7 @@ export function parseICal(link: string, user: string): void {
                       name: taskName,
                       order,
                       owner: user,
-                      tag: canvasTag,
+                      tag: 'THE_GLORIOUS_NONE_TAG',
                       type: 'ONE_TIME',
                       icalUID: uid,
                     })
