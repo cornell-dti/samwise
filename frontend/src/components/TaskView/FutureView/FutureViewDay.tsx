@@ -115,9 +115,9 @@ export function FutureViewDay(props: Props & { readonly theme: Theme }): ReactEl
       background: 'black',
       color: 'white',
     } : {
-      background: 'rgb(33,33,33)',
-      color: 'white',
-    };
+        background: 'rgb(33,33,33)',
+        color: 'white',
+      };
   })();
   let wrapperCssClass: string;
   if (inNDaysView) {
