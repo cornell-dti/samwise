@@ -122,7 +122,7 @@ function FutureViewTask(
     }
     return (
       <div className={styles.TaskMainWrapper} style={{ backgroundColor: color }}>
-        {compoundTask.original.type === 'ONE_TIME' ? <DragIcon /> : <RepeatingIcon />}
+        {compoundTask.original.type === 'ONE_TIME' && !isCanvasTask ? <DragIcon /> : <RepeatingIcon />}
         <TaskCheckBox />
         <TaskName />
         <PinIcon />
@@ -178,7 +178,7 @@ function FutureViewTask(
       key={taskId}
       draggableId={taskId}
       index={index}
-      isDragDisabled={compoundTask.original.type === 'MASTER_TEMPLATE'}
+      isDragDisabled={compoundTask.original.type === 'MASTER_TEMPLATE' || isCanvasTask}
     >
       {(provided) => (
         // eslint-disable-next-line react/jsx-props-no-spreading
