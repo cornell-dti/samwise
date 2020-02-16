@@ -3,41 +3,32 @@
 set -x # Turn this on to debug
 
 ### Dependencies
-### - JDK 8+
-### - Gradle 4+
-### - Node.js 8+
+### - JDK 11+
+### - Node.js 10+
 
-# Outcome: produce a JSON file sp19-courses.json with all the courses in SP19.
+# Outcome: produce a JSON file sp20-courses.json with all the courses in SP20.
 function createCourseInfoJson() {
-    git clone https://github.com/SamChou19815/cornell-api-libs.git
+    git clone https://github.com/cornell-dti/cornell-api-libs.git
     cd cornell-api-libs
-    gradle build -x test
+    ./gradlew build -x test
     cd ../
-    java -jar cornell-api-libs/build/libs/cornell-api-lib-kotlin-0.4.jar \
-        print-all-courses-in FA19 | node simplify-json.js >./fa19-courses.json
+    java -jar cornell-api-libs/build/libs/cornell-api-libs-0.5-all.jar \
+        print-all-courses-in SP20 | yarn --silent simplify >./sp20-courses.json
     rm -rf cornell-api-libs
-}
-
-# Outcome: produce JSON files final-exams.json and prelim-exams.json.
-function createExamInfoJson() {
-    node fetch-exam.js
 }
 
 # Outcome: produce a single JSON file that has course and exam info.
 function mergeJson() {
-    node merge-json.js
+    yarn --silent merge
 }
 
 # Outcome: Cleanup all the intermediate json files.
 function cleanup() {
-    rm sp19-courses.json
-    rm final-exams.json
-    rm prelim-exams.json
+    rm sp20-courses.json
 }
 
 # Comment out those parts you don't need
 
-# createCourseInfoJson
-# createExamInfoJson
-# mergeJson
+createCourseInfoJson
+mergeJson
 cleanup

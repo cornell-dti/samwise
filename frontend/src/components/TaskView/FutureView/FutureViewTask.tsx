@@ -49,6 +49,9 @@ function FutureViewTask(
   }
   const { original, filteredSubTasks, color } = compoundTask;
 
+  const icalUID = original.type === 'ONE_TIME' ? original.icalUID : '';
+  const isCanvasTask = typeof icalUID === 'string' ? icalUID !== '' : false;
+
   /**
    * Get an onClickHandler when the element is clicked.
    * This methods ensure that only clicking on task text counts.
@@ -100,6 +103,7 @@ function FutureViewTask(
       />
     );
   };
+  const DragIcon = (): ReactElement => <SamwiseIcon iconName="grabber" className={styles.TaskIcon} />;
 
   const renderMainTaskInfo = (simplified = false): ReactElement => {
     if (simplified && isInMainList) {
@@ -108,10 +112,11 @@ function FutureViewTask(
     }
     return (
       <div className={styles.TaskMainWrapper} style={{ backgroundColor: color }}>
+        <DragIcon />
         <TaskCheckBox />
         <TaskName />
         <PinIcon />
-        <RemoveTaskIcon />
+        {isCanvasTask ? null : <RemoveTaskIcon />}
       </div>
     );
   };

@@ -1,28 +1,16 @@
 import * as admin from 'firebase-admin';
+import Database from 'common/lib/firebase/database';
 import serviceAccount from './firebase-adminsdk.json';
 
-admin.initializeApp({
-  credential: admin.credential.cert(serviceAccount as admin.ServiceAccount),
-  databaseURL: 'https://samwise-dev.firebaseio.com',
-});
+if (process.env.TEST_MODE) {
+  // eslint-disable-next-line no-console
+  console.log('We are in test mode. Skip initializing firebase-admin.');
+} else {
+  admin.initializeApp({
+    credential: admin.credential.cert(serviceAccount as admin.ServiceAccount),
+    databaseURL: 'https://samwise-dev.firebaseio.com',
+  });
+}
 
-/**
- * The firestore database.
- * @return {firebase.firestore.Firestore}
- */
-export const db = (): admin.firestore.Firestore => admin.firestore();
-
-/**
- * Collection name literals.
- */
-const collections = {
-  ORDER_MANAGER: 'samwise-order-manager',
-  USER_SETTINGS: 'samwise-settings',
-  TASKS: 'samwise-tasks',
-};
-
-type Collection = admin.firestore.CollectionReference;
-
-export const orderManagerCollection = (): Collection => db().collection(collections.ORDER_MANAGER);
-export const settingsCollection = (): Collection => db().collection(collections.USER_SETTINGS);
-export const tasksCollection = (): Collection => db().collection(collections.TASKS);
+const database = new Database(() => admin.firestore());
+export default database;

@@ -1,13 +1,13 @@
-const fs = require('fs');
-const fetch = require('node-fetch');
-const { JSDOM } = require('jsdom');
+import fetch from 'node-fetch';
+import { JSDOM } from 'jsdom';
+import { ExamInfo } from './types';
 
-const fallPrelimUrl = 'https://registrar.cornell.edu/exams/fall-prelim-exam-schedule';
-const fallFinalUrl = 'https://registrar.cornell.edu/exams/fall-final-exam-schedule';
+const prelimUrl = 'https://registrar.cornell.edu/exams/spring-prelim-schedule';
+const finalUrl = 'https://registrar.cornell.edu/exams/spring-final-exam-schedule';
 
 const currentYear = new Date().getFullYear();
 
-async function fetchExamText(url) {
+async function fetchExamText(url: string): Promise<string> {
   const resp = await fetch(url);
   const html = await resp.text();
   const dom = new JSDOM(html);
@@ -15,7 +15,7 @@ async function fetchExamText(url) {
   return preNode.innerHTML;
 }
 
-function parsePrelimLine(line) {
+function parsePrelimLine(line: string): ExamInfo {
   const segments = line.split(' ');
   const subject = segments[0];
   const courseNumber = segments[1];
@@ -38,7 +38,7 @@ function parsePrelimLine(line) {
   };
 }
 
-function parseFinalLine(line) {
+function parseFinalLine(line: string): ExamInfo {
   const segments = line.split(' ').filter((part) => part !== '');
   const subject = segments[0];
   const courseNumber = segments[1];
@@ -64,12 +64,12 @@ function parseFinalLine(line) {
   };
 }
 
-function getExamInfoList(rawText, isFinal) {
+function getExamInfoList(rawText: string, isFinal: boolean): readonly ExamInfo[] {
   const lines = rawText.split('\n');
-  const infoList = [];
+  const infoList: ExamInfo[] = [];
   for (let i = 0; i < lines.length; i += 1) {
     const line = lines[i].trim();
-    if (line !== '' && !line.startsWith('Class')) {
+    if (line !== '' && !line.startsWith('Class') && !line.startsWith('final exam')) {
       const info = isFinal ? parseFinalLine(line) : parsePrelimLine(line);
       infoList.push(info);
     }
@@ -77,15 +77,9 @@ function getExamInfoList(rawText, isFinal) {
   return infoList;
 }
 
-function createJson(url, isFinal, outFilename) {
-  fetchExamText(url)
-    .then((rawText) => getExamInfoList(rawText, isFinal))
-    .then((json) => fs.writeFile(outFilename, JSON.stringify(json), () => {}));
-}
+const createJson = (url: string, isFinal: boolean): Promise<readonly ExamInfo[]> => (
+  fetchExamText(url).then((rawText) => getExamInfoList(rawText, isFinal))
+);
 
-function main() {
-  createJson(fallFinalUrl, true, 'final-exams.json');
-  createJson(fallPrelimUrl, false, 'prelim-exams.json');
-}
-
-main();
+export const createFinalJson = (): Promise<readonly ExamInfo[]> => createJson(finalUrl, true);
+export const createPrelimJson = (): Promise<readonly ExamInfo[]> => createJson(prelimUrl, false);

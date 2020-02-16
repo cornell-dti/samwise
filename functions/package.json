@@ -3,18 +3,19 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "tsc": "tsc",
+    "tsc": "tsc --module commonjs --noEmit false --sourceMap false --isolatedModules false",
     "build": "yarn tsc && ncc build dist/index.js -o compiled -m",
     "serve": "yarn tsc && firebase serve --only functions",
     "shell": "yarn tsc && firebase functions:shell",
     "start": "yarn shell",
     "deploy": "firebase deploy --only functions",
-    "test": "echo 'Test nothing'",
+    "test": "TEST_MODE=true react-scripts test --watchAll=false",
     "logs": "firebase functions:log"
   },
   "main": "dist/index.js",
   "dependencies": {
-    "firebase-admin": "^8.8.0",
+    "common": "0.1.0",
+    "firebase-admin": "^8.9.2",
     "firebase-functions": "^3.3.0",
     "ical": "^0.6.0",
     "json-bigint": "^0.3.0",
