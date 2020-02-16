@@ -1,6 +1,7 @@
-import React, { ReactElement } from 'react';
+import React, { ReactElement, useEffect } from 'react';
 import Calendar from 'react-calendar';
 import { Tag, RepeatMetaData } from 'common/lib/types/store-types';
+import { getCanvasTag } from 'firebase/actions';
 import styles from './index.module.css';
 import TagListPicker from '../../TagListPicker/TagListPicker';
 import { CalendarPosition } from '../editors-types';
@@ -17,6 +18,7 @@ type Props = TagAndDate & {
   readonly displayGrabber: boolean;
   readonly calendarPosition: CalendarPosition;
   readonly icalUID?: string;
+  readonly taskName: string;
 };
 
 type EditorDisplayStatus = {
@@ -27,7 +29,7 @@ type EditorDisplayStatus = {
 const calendarIconClass = [styles.TaskEditorIconButton, styles.TaskEditorIcon].join(' ');
 
 export default function EditorHeader(
-  { tag, date, onChange, getTag, displayGrabber, calendarPosition, icalUID }: Props,
+  { tag, date, onChange, getTag, displayGrabber, calendarPosition, icalUID, taskName }: Props,
 ): ReactElement {
   const [editorDisplayStatus, setEditorDisplayStatus] = React.useState<EditorDisplayStatus>({
     doesShowTagEditor: false,
@@ -81,6 +83,16 @@ export default function EditorHeader(
     />
   );
   const isCanvasTask = typeof icalUID === 'string' ? icalUID !== '' : false;
+
+  const assignCanvasTag = (): void => {
+    if (isCanvasTask) {
+      const id = getCanvasTag(taskName);
+      onChange({ tag: id });
+    }
+  };
+  // triggered when task in future view is clicked
+  const useEffectOnce = (func: () => void): void => useEffect(func, []);
+  useEffectOnce(assignCanvasTag);
 
   return (
     <div className={headerClassName}>

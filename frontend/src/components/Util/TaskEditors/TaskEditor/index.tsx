@@ -238,6 +238,7 @@ function TaskEditor(
           calendarPosition={calendarPosition}
           displayGrabber={displayGrabber == null ? false : displayGrabber}
           icalUID={icalUID}
+          taskName={name}
         />
         <MainTaskEditor
           id={id}

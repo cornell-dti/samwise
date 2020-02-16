@@ -85,6 +85,23 @@ export const removeTag = (id: string): void => {
   actions.removeTag(id).then(reportDeleteTagEvent);
 };
 
+export const getCanvasTag = (taskName?: string): string => {
+  const { tags } = store.getState();
+  let tagId = 'THE_GLORIOUS_NONE_TAG';
+  tags.forEach((tag: Tag) => {
+    // tag names for imported classes have the form
+    // 'CS 4820: Intro Analysis of Algorithms'
+    const { id, name } = tag;
+    const tagName = name.split(':')[0].replace(/\s/g, '');
+    // canvas task names have the form 'HW 3 [MATH2930]'
+    const canvasName = taskName?.split('[')[1].replace(/]/g, '');
+    if (tagName === canvasName) {
+      tagId = id;
+    }
+  });
+  return tagId;
+};
+
 /*
  * --------------------------------------------------------------------------------
  * Section 2: Tasks Actions
