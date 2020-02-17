@@ -130,9 +130,15 @@ export type Course = {
 export type State = {
   readonly tags: Map<string, Tag>;
   readonly tasks: Map<string, Task>;
+  // Mapping of subtask id to main task id.
+  // It contains all subtask ids that the main task knows but the redux store does not have yet.
   readonly missingSubTasks: Map<string, string>;
+  // Mapping of subtask id to its object for fast access.
+  // It contains all subtasks that the redux store knows but belongs to no known main task yet.
   readonly orphanSubTasks: Map<string, SubTask>;
+  // A fast access map to quickly find all main task id within a date.
   readonly dateTaskMap: Map<string, Set<string>>;
+  // A set of all ids of repeating tasks.
   readonly repeatedTaskSet: Set<string>;
   readonly settings: Settings;
   readonly bannerMessageStatus: BannerMessageStatus;
