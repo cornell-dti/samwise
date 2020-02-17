@@ -87,23 +87,25 @@ function patchTasks(state: State, { created, edited, deleted }: PatchTasks): Sta
       subTaskIds: readonly string[],
       existingSubTasks: readonly SubTask[],
     ): readonly SubTask[] => {
-      const newIdSet = Set(subTaskIds);
+      let newIdSet = Set(subTaskIds);
       const unfolded: SubTask[] = [];
       existingSubTasks.forEach((subTask) => {
         if (newIdSet.has(subTask.id)) {
-          newIdSet.remove(subTask.id);
+          newIdSet = newIdSet.remove(subTask.id);
           unfolded.push(subTask);
-          return;
-        }
-        const orphanSubTask = state.orphanSubTasks.get(subTask.id);
-        if (orphanSubTask != null) {
-          orphanSubTasksToClear.push(subTask.id);
-          newIdSet.remove(subTask.id);
-          unfolded.push(orphanSubTask);
         }
       });
       // Remaining ids represent subtask that has not appeared yet.
-      newIdSet.forEach((id) => missingSubTasksMap.set(id, taskId));
+      newIdSet.forEach((id) => {
+        const orphanSubTask = state.orphanSubTasks.get(id);
+        if (orphanSubTask != null) {
+          orphanSubTasksToClear.push(id);
+          newIdSet = newIdSet.remove(id);
+          unfolded.push(orphanSubTask);
+          return;
+        }
+        missingSubTasksMap.set(id, taskId);
+      });
       return unfolded;
     };
 
@@ -116,10 +118,11 @@ function patchTasks(state: State, { created, edited, deleted }: PatchTasks): Sta
 
     edited.forEach((editedMainTask) => {
       const { children, ...mainTaskRest } = editedMainTask;
+      const existingSubTasks = tasks.get(mainTaskRest.id)?.children ?? [];
       const updatedChildren = unfoldSubTasks(
         editedMainTask.id,
         children,
-        tasks.get(mainTaskRest.id)?.children ?? [],
+        existingSubTasks,
       );
       const mainTask: Task = { ...mainTaskRest, children: updatedChildren };
       tasks.set(editedMainTask.id, mainTask);
