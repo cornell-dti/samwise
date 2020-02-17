@@ -21,6 +21,11 @@ function patchTags(state: State, { created, edited, deleted }: PatchTags): State
   return { ...state, tags: newTags };
 }
 
+function normalizeTaskChildrenOrder(task: Task): Task {
+  const children = [...task.children].sort((a, b) => a.order - b.order);
+  return { ...task, children };
+}
+
 function patchTasks(state: State, { created, edited, deleted }: PatchTasks): State {
   const newDateTaskMap = state.dateTaskMap.withMutations((m) => {
     created.forEach((t) => {
@@ -109,10 +114,13 @@ function patchTasks(state: State, { created, edited, deleted }: PatchTasks): Sta
       return unfolded;
     };
 
+    let dirtyMainTaskIds = Set<string>();
+
     created.forEach((createdMainTask) => {
       const { children, ...mainTaskRest } = createdMainTask;
       const updatedChildren = unfoldSubTasks(createdMainTask.id, children, []);
       const mainTask: Task = { ...mainTaskRest, children: updatedChildren };
+      dirtyMainTaskIds = dirtyMainTaskIds.add(createdMainTask.id);
       tasks.set(createdMainTask.id, mainTask);
     });
 
@@ -125,10 +133,15 @@ function patchTasks(state: State, { created, edited, deleted }: PatchTasks): Sta
         existingSubTasks,
       );
       const mainTask: Task = { ...mainTaskRest, children: updatedChildren };
+      dirtyMainTaskIds = dirtyMainTaskIds.add(editedMainTask.id);
       tasks.set(editedMainTask.id, mainTask);
     });
 
     deleted.forEach((id) => tasks.delete(id));
+
+    dirtyMainTaskIds.forEach((mainTaskId) => {
+      tasks.update(mainTaskId, (task) => normalizeTaskChildrenOrder(task));
+    });
   });
 
   // Final updates
@@ -156,6 +169,8 @@ function patchSubTasks(state: State, { created, edited, deleted }: PatchSubTasks
   const missingSubTaskToClear: string[] = [];
   const newOrphanSubTasks: SubTask[] = [];
   const updatedTasks = state.tasks.withMutations((mutableTaskMap) => {
+    let dirtyMainTaskIds = Set<string>();
+
     created.forEach((createdSubTask) => {
       // By the time a subtask is created, a main task may or may not exist.
       const mainTaskId = state.missingSubTasks.get(createdSubTask.id);
@@ -171,6 +186,7 @@ function patchSubTasks(state: State, { created, edited, deleted }: PatchSubTasks
           (mainTask) => ({ ...mainTask, children: [...mainTask.children, createdSubTask] }),
         );
         missingSubTaskToClear.push(createdSubTask.id);
+        dirtyMainTaskIds = dirtyMainTaskIds.add(mainTaskId);
       }
     });
 
@@ -186,6 +202,7 @@ function patchSubTasks(state: State, { created, edited, deleted }: PatchSubTasks
           return { ...mainTask, children };
         },
       );
+      dirtyMainTaskIds = dirtyMainTaskIds.add(mainTaskId);
     });
 
     deleted.forEach((deletedSubTaskId) => {
@@ -201,6 +218,11 @@ function patchSubTasks(state: State, { created, edited, deleted }: PatchSubTasks
           children: mainTask.children.filter((subTask) => subTask.id !== deletedSubTaskId),
         }),
       );
+      dirtyMainTaskIds = dirtyMainTaskIds.add(mainTaskId);
+    });
+
+    dirtyMainTaskIds.forEach((mainTaskId) => {
+      mutableTaskMap.update(mainTaskId, (task) => normalizeTaskChildrenOrder(task));
     });
   });
 
