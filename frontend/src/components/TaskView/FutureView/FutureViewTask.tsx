@@ -175,7 +175,7 @@ function FutureViewTask(
 }
 
 const getCompoundTask = (
-  { tasks, subTasks, tags }: State, { taskId, doesShowCompletedTasks }: OwnProps,
+  { tasks, tags }: State, { taskId, doesShowCompletedTasks }: OwnProps,
 ): CompoundTask | null => {
   const original = tasks.get(taskId);
   if (original == null) {
@@ -183,22 +183,14 @@ const getCompoundTask = (
   }
   const { color } = tags.get(original.tag) ?? NONE_TAG;
   if (doesShowCompletedTasks) {
-    let filteredSubTasks: SubTask[] = [];
-    original.children.forEach((subTaskId) => {
-      const s = subTasks.get(subTaskId);
-      if (s != null) { filteredSubTasks.push(s); }
-    });
+    let filteredSubTasks = [...original.children];
     filteredSubTasks = filteredSubTasks.sort((a, b) => a.order - b.order);
     return { original, filteredSubTasks, color };
   }
   if (original.complete) {
     return null;
   }
-  let filteredSubTasks: SubTask[] = [];
-  original.children.forEach((subTaskId) => {
-    const s = subTasks.get(subTaskId);
-    if (s != null && !s.complete) { filteredSubTasks.push(s); }
-  });
+  let filteredSubTasks: SubTask[] = [...original.children];
   filteredSubTasks = filteredSubTasks.sort((a, b) => a.order - b.order);
   return { original, filteredSubTasks, color };
 };

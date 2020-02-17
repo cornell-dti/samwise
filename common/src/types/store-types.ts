@@ -31,7 +31,7 @@ export type CommonTask<D> = {
   readonly date: D;
   readonly complete: boolean;
   readonly inFocus: boolean; // Whether the task is in focus
-  readonly children: Set<string>;
+  readonly children: readonly SubTask[];
 };
 
 type FlexibleCommonTask = CommonTask<Date | RepeatMetaData>;
@@ -130,10 +130,10 @@ export type Course = {
 export type State = {
   readonly tags: Map<string, Tag>;
   readonly tasks: Map<string, Task>;
-  readonly subTasks: Map<string, SubTask>;
+  readonly missingSubTasks: Map<string, string>;
+  readonly orphanSubTasks: Map<string, SubTask>;
   readonly dateTaskMap: Map<string, Set<string>>;
   readonly repeatedTaskSet: Set<string>;
-  readonly taskChildrenMap: Map<string, Set<string>>;
   readonly settings: Settings;
   readonly bannerMessageStatus: BannerMessageStatus;
   readonly courses: Map<string, Course[]>;

@@ -6,11 +6,11 @@ import {
   PatchTasks,
   PatchSettings,
   PatchBannerMessageStatus,
+  TaskWithChildrenId,
 } from 'common/lib/types/action-types';
 import {
   Course,
   Tag,
-  Task,
   SubTask,
   Settings,
   BannerMessageStatus,
@@ -20,7 +20,11 @@ export const patchTags = (created: Tag[], edited: Tag[], deleted: string[]): Pat
   type: 'PATCH_TAGS', created, edited, deleted,
 });
 
-export const patchTasks = (created: Task[], edited: Task[], deleted: string[]): PatchTasks => ({
+export const patchTasks = (
+  created: TaskWithChildrenId[],
+  edited: TaskWithChildrenId[],
+  deleted: string[],
+): PatchTasks => ({
   type: 'PATCH_TASKS', created, edited, deleted,
 });
 
