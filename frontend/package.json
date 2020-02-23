@@ -4,9 +4,9 @@
   "private": true,
   "scripts": {
     "start": "react-scripts start",
-    "build:stage": "REACT_APP_IS_STAGING=true react-scripts build",
+    "build:stage": "env-cmd -f .env.staging yarn react-scripts build",
     "build": "react-scripts build",
-    "test": "TZ=UTC react-scripts test --watchAll=false",
+    "test": "env-cmd -f .env.testing yarn react-scripts test --watchAll=false",
     "optimize-svg": "svgo --disable=removeViewBox --enable=prefixIds,removeDimensions src/assets/svgs/*.svg",
     "tsc": "tsc -p tsconfig.json",
     "check-all": "yarn tsc && yarn test"
@@ -41,6 +41,7 @@
     "@types/react-modal": "^3.10.4",
     "@types/react-redux": "7.1.3",
     "@types/react-test-renderer": "^16.9.2",
+    "env-cmd": "^10.1.0",
     "node-sass": "^4.13.1",
     "react-scripts": "^3.3.1",
     "svgo": "^1.3.2"
