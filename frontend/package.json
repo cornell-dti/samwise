@@ -6,7 +6,7 @@
     "start": "react-scripts start",
     "build:stage": "env-cmd -f .env.staging yarn react-scripts build",
     "build": "react-scripts build",
-    "test": "env-cmd -f .env.testing yarn react-scripts test --watchAll=false",
+    "test": "react-scripts test --watchAll=false",
     "optimize-svg": "svgo --disable=removeViewBox --enable=prefixIds,removeDimensions src/assets/svgs/*.svg",
     "tsc": "tsc -p tsconfig.json",
     "check-all": "yarn tsc && yarn test"
