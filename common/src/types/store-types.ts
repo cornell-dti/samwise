@@ -38,6 +38,7 @@ type FlexibleCommonTask = CommonTask<Date | RepeatMetaData>;
 
 export type OneTimeTask = CommonTask<Date> & {
   readonly type: 'ONE_TIME';
+  readonly icalUID?: string;
 };
 
 /**
@@ -98,10 +99,11 @@ export type TaskWithSubTasks =
 /**
  * The type of user settings.
  */
+export type Theme = 'light' | 'dark';
 export type Settings = {
   readonly canvasCalendar: string | null | undefined;
   readonly completedOnboarding: boolean;
-  readonly theme: 'light' | 'dark';
+  readonly theme: Theme;
 };
 
 export type BannerMessageIds =

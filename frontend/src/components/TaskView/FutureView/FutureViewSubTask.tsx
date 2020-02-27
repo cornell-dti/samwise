@@ -32,7 +32,7 @@ function FutureViewSubTask(
   return (
     <div className={styles.SubTask}>
       <CheckBox
-        className={styles.TaskCheckBox}
+        className={styles.SubTaskCheckBox}
         checked={mainTaskCompleted || complete}
         disabled={mainTaskCompleted}
         inverted

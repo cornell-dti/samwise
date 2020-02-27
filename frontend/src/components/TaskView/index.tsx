@@ -1,6 +1,8 @@
 import React, { ReactElement, ReactNode, useState } from 'react';
+import { connect } from 'react-redux';
 import { FontAwesomeIcon as Icon } from '@fortawesome/react-fontawesome';
 import { faChevronRight, faChevronLeft } from '@fortawesome/free-solid-svg-icons';
+import { State, Theme } from 'common/lib/types/store-types';
 import { useMappedWindowSize } from '../../hooks/window-size-hook';
 import FocusView from './FocusView';
 import FutureView, { futureViewConfigProvider, FutureViewConfig } from './FutureView';
@@ -12,14 +14,14 @@ const FocusPanel = (): ReactElement => <div className={styles.FocusPanel}><Focus
 
 const classNames = (...names: readonly string[]): string => names.join(' ');
 
-type Props = { readonly className: string };
+type Props = { readonly className: string; readonly theme: Theme };
 
-export default function TaskView({ className }: Props): ReactElement {
+export function TaskView({ className, theme }: Props): ReactElement {
   const [doesShowFocusViewInWideScreen, setDoesShowFocusViewInWideScreen] = useState(true);
   const [doesShowFutureViewInSmallScreen, setDoesShowFutureViewInSmallScreen] = useState(false);
   const [config, setConfig] = useState<FutureViewConfig>(futureViewConfigProvider.initialValue);
 
-  const screenIsSmall = useMappedWindowSize((size) => size.width <= 840);
+  const screenIsSmall = useMappedWindowSize((size) => size.width < 840);
   const toggleFocusViewInWideScreen = (): void => setDoesShowFocusViewInWideScreen((prev) => !prev);
   const switchView = (): void => setDoesShowFutureViewInSmallScreen((prev) => !prev);
 
@@ -39,10 +41,12 @@ export default function TaskView({ className }: Props): ReactElement {
   const inNDaysView = futureViewConfigProvider.isInNDaysView(config);
   const showFocusView = inNDaysView || doesShowFocusViewInWideScreen;
 
+  const darkModeStyle = theme === 'dark' ? { background: 'black', color: 'white' } : undefined;
+
   if (screenIsSmall) {
     const taskView = doesShowFutureViewInSmallScreen
       ? (
-        <div className={classNames(className, styles.TaskView)}>
+        <div className={classNames(className, styles.TaskView)} style={darkModeStyle}>
           <FuturePanel />
           <SamwiseIcon
             iconName="pin-dark-filled"
@@ -51,7 +55,7 @@ export default function TaskView({ className }: Props): ReactElement {
           />
         </div>
       ) : (
-        <div className={classNames(className, styles.TaskView)}>
+        <div className={classNames(className, styles.TaskView)} style={darkModeStyle}>
           <FocusPanel />
           <SamwiseIcon
             iconName="calendar-dark"
@@ -93,7 +97,7 @@ export default function TaskView({ className }: Props): ReactElement {
 
   return (
     <>
-      <div className={classNames(className, styles.TaskView)}>
+      <div className={classNames(className, styles.TaskView)} style={darkModeStyle}>
         <ProgressTracker inMobileView={false} />
         {showFocusView && <FocusPanel />}
         {showFocusView && <div style={{ width: '2em' }} />}
@@ -104,3 +108,10 @@ export default function TaskView({ className }: Props): ReactElement {
     </>
   );
 }
+
+const Connected = connect(
+  ({ settings: { theme } }: State, ownProps: { className: string }): Props => (
+    { className: ownProps.className, theme }
+  ),
+)(TaskView);
+export default Connected;

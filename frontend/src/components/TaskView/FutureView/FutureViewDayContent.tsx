@@ -1,5 +1,6 @@
 import React, { ReactElement } from 'react';
 import { day2String, getTodayAtZeroAM } from 'common/lib/util/datetime-util';
+import { Theme } from 'common/lib/types/store-types';
 import { SimpleDate } from './future-view-types';
 import { CalendarPosition, FloatingPosition } from '../../Util/TaskEditors/editors-types';
 import styles from './FutureViewDay.module.scss';
@@ -13,6 +14,7 @@ type Props = {
   readonly doesShowCompletedTasks: boolean;
   readonly inMainList: boolean;
   readonly onHeightChange: (doesOverflow: boolean, tasksHeight: number) => void;
+  readonly theme: Theme;
 };
 
 /**
@@ -27,9 +29,13 @@ function FutureViewDayContent(
     doesShowCompletedTasks,
     inMainList,
     onHeightChange,
+    theme,
   }: Props,
 ): ReactElement {
-  const containerStyle = (inNDaysView && inMainList) ? { paddingTop: '1em' } : {};
+  const containerStyle = (() => {
+    const style = theme === 'dark' ? { color: 'white', opacity: 0.8 } : {};
+    return (inNDaysView && inMainList) ? { paddingTop: '1em', ...style } : style;
+  })();
   const isToday: boolean = getTodayAtZeroAM().toDateString() === date.text;
   return (
     <>

@@ -12,6 +12,7 @@ const order = 0;
 const name = 'name';
 type MainTaskTestCommon = {
   readonly type: 'ONE_TIME';
+  readonly icalUID?: string;
   readonly id: string;
   readonly order: number;
   readonly name: string;
