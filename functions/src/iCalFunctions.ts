@@ -1,8 +1,9 @@
 /* eslint-disable no-await-in-loop */
 import fetch from 'node-fetch';
 import icalParse from './ical-parser';
-import { settingsCollection, tasksCollection } from './db';
-import getOrder from './order-manager';
+import { settingsCollection, tasksCollection }
+  from '../../frontend/src/firebase/db';
+import getOrder from '../../frontend/src/firebase/order-manager';
 
 process.env.TZ = 'America/New_York';
 
@@ -10,8 +11,8 @@ export default async function getICalLink(): Promise<void> {
   await settingsCollection()
     .where('canvasCalendar', '>', '')
     .get()
-    .then((querySnapshot) => {
-      querySnapshot.forEach((doc) => {
+    .then((querySnapshot: firebase.firestore.QuerySnapshot) => {
+      querySnapshot.forEach((doc: firebase.firestore.QueryDocumentSnapshot) => {
         try {
           parseICal(doc.data().canvasCalendar, doc.id);
         } catch {
@@ -19,7 +20,7 @@ export default async function getICalLink(): Promise<void> {
         }
       });
     })
-    .catch((error) => {
+    .catch((error: Error) => {
       console.log('Error getting documents: ', error);
     });
 }
@@ -45,12 +46,12 @@ export function parseICal(link: string, user: string): void {
         }
         const endDate = new Date(endObject.getTime());
         const taskID: string = tasksCollection().doc().id;
-        const order: number = await getOrder(user, 'tasks');
+        const order: number = await getOrder('tasks');
         if (endDate > today) {
           await tasksCollection()
             .where('icalUID', '==', uid)
             .get()
-            .then(async (querySnapshot) => {
+            .then(async (querySnapshot: firebase.firestore.QuerySnapshot) => {
               if (querySnapshot.size === 0) {
                 await tasksCollection()
                   .doc(taskID)
@@ -68,14 +69,16 @@ export function parseICal(link: string, user: string): void {
                   })
                   .catch((e: Error) => console.log(e));
               } else {
-                querySnapshot.forEach((doc) => {
-                  tasksCollection()
-                    .doc(doc.id)
-                    .update({
-                      name: taskName,
-                      date: endDate,
-                    });
-                });
+                querySnapshot.forEach(
+                  (doc: firebase.firestore.QueryDocumentSnapshot) => {
+                    tasksCollection()
+                      .doc(doc.id)
+                      .update({
+                        name: taskName,
+                        date: endDate,
+                      });
+                  },
+                );
               }
             });
         }
