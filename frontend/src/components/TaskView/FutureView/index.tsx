@@ -199,13 +199,13 @@ export default function FutureView(
   };
   return (
     <div>
+      <FutureViewControl
+        nDays={nDays}
+        displayOption={displayOption}
+        offset={offset}
+        onChange={controlOnChange}
+      />
       <DragDropContext onDragEnd={onDragEnd}>
-        <FutureViewControl
-          nDays={nDays}
-          displayOption={displayOption}
-          offset={offset}
-          onChange={controlOnChange}
-        />
         {daysContainer}
       </DragDropContext>
     </div>

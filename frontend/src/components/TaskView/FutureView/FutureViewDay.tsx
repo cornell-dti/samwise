@@ -127,7 +127,7 @@ export function FutureViewDay(props: Props & { readonly theme: Theme }): ReactEl
   }
   if (!floatingViewOpened) {
     return (
-      <div className={wrapperCssClass} ref={componentDivRef}>
+      <div className={wrapperCssClass} ref={componentDivRef} style={darkModeStyles}>
         <Droppable droppableId={date.text}>
           {(provided) => (
             // eslint-disable-next-line react/jsx-props-no-spreading
