@@ -13,6 +13,7 @@ export type IconName =
   | 'pin-light-filled'
   | 'pin-light-outline'
   | 'repeat'
+  | 'repeat-light'
   | 'settings'
   | 'show'
   | 'tag'
