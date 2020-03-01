@@ -1,20 +1,20 @@
 /* eslint-disable no-await-in-loop */
 import fetch from 'node-fetch';
+import OrderManager from 'common/lib/firebase/order-manager';
+import { QuerySnapshot, DocumentSnapshot } from 'common/lib/firebase/database';
 import icalParse from './ical-parser';
-import { settingsCollection, tasksCollection }
-  from '../../frontend/src/firebase/db';
-import getOrder from '../../frontend/src/firebase/order-manager';
+import db from './db';
 
 process.env.TZ = 'America/New_York';
 
 export default async function getICalLink(): Promise<void> {
-  await settingsCollection()
+  await db.settingsCollection()
     .where('canvasCalendar', '>', '')
     .get()
-    .then((querySnapshot: firebase.firestore.QuerySnapshot) => {
-      querySnapshot.forEach((doc: firebase.firestore.QueryDocumentSnapshot) => {
+    .then((querySnapshot: QuerySnapshot) => {
+      querySnapshot.forEach((doc: DocumentSnapshot) => {
         try {
-          parseICal(doc.data().canvasCalendar, doc.id);
+          parseICal(doc.data()?.canvasCalendar, doc.id);
         } catch {
           console.log('Failed to use this calendar link');
         }
@@ -32,6 +32,7 @@ export function parseICal(link: string, user: string): void {
     .then(async (data: string) => {
       const eventArray = icalParse(data);
       const today = new Date();
+      const om = new OrderManager(db, () => user);
       for (let i = 0; i < eventArray.length; i += 1) {
         const ev = eventArray[i];
         const taskName = ev.name;
@@ -45,15 +46,16 @@ export function parseICal(link: string, user: string): void {
           continue;
         }
         const endDate = new Date(endObject.getTime());
-        const taskID: string = tasksCollection().doc().id;
-        const order: number = await getOrder('tasks');
+        const taskID: string = db.tasksCollection().doc().id;
+        const order: number = await om.allocateNewOrder('tasks');
         if (endDate > today) {
-          await tasksCollection()
+          await db.tasksCollection()
             .where('icalUID', '==', uid)
             .get()
-            .then(async (querySnapshot: firebase.firestore.QuerySnapshot) => {
+            // eslint-disable-next-line no-loop-func
+            .then(async (querySnapshot: QuerySnapshot) => {
               if (querySnapshot.size === 0) {
-                await tasksCollection()
+                await db.tasksCollection()
                   .doc(taskID)
                   .set({
                     children: [],
@@ -70,8 +72,8 @@ export function parseICal(link: string, user: string): void {
                   .catch((e: Error) => console.log(e));
               } else {
                 querySnapshot.forEach(
-                  (doc: firebase.firestore.QueryDocumentSnapshot) => {
-                    tasksCollection()
+                  (doc: DocumentSnapshot) => {
+                    db.tasksCollection()
                       .doc(doc.id)
                       .update({
                         name: taskName,
