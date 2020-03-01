@@ -2,7 +2,6 @@ import React, { ReactElement } from 'react';
 import { connect } from 'react-redux';
 import { getTodayAtZeroAM } from 'common/lib/util/datetime-util';
 import { error } from 'common/lib/util/general-util';
-import { Droppable } from 'react-beautiful-dnd';
 import { State, Theme } from 'common/lib/types/store-types';
 import { SimpleDate } from './future-view-types';
 import { CalendarPosition, FloatingPosition } from '../../Util/TaskEditors/editors-types';
@@ -128,29 +127,21 @@ export function FutureViewDay(props: Props & { readonly theme: Theme }): ReactEl
   if (!floatingViewOpened) {
     return (
       <div className={wrapperCssClass} ref={componentDivRef} style={darkModeStyles}>
-        <Droppable droppableId={date.text}>
-          {(provided) => (
-            // eslint-disable-next-line react/jsx-props-no-spreading
-            <div ref={provided.innerRef} {...provided.droppableProps}>
-              <FutureViewDayContent
-                inMainList
-                onHeightChange={onHeightChange}
-                date={date}
-                inNDaysView={inNDaysView}
-                taskEditorPosition={taskEditorPosition}
-                calendarPosition={calendarPosition}
-                doesShowCompletedTasks={doesShowCompletedTasks}
-                theme={theme}
-              />
-              {heightInfo.doesOverflow && (
-                <button type="button" className={styles.MoreTasksBar} onClick={openFloatingView} tabIndex={0}>
-                  More Tasks...
-                </button>
-              )}
-              {provided.placeholder}
-            </div>
-          )}
-        </Droppable>
+        <FutureViewDayContent
+          inMainList
+          onHeightChange={onHeightChange}
+          date={date}
+          inNDaysView={inNDaysView}
+          taskEditorPosition={taskEditorPosition}
+          calendarPosition={calendarPosition}
+          doesShowCompletedTasks={doesShowCompletedTasks}
+          theme={theme}
+        />
+        {heightInfo.doesOverflow && (
+          <button type="button" className={styles.MoreTasksBar} onClick={openFloatingView} tabIndex={0}>
+            More Tasks...
+          </button>
+        )}
       </div>
     );
   }
