@@ -1,8 +1,8 @@
 import { Set } from 'immutable';
+import { TaskWithChildrenId } from 'common/lib/types/action-types';
 import {
   SubTask,
   Tag,
-  Task,
   Settings,
   BannerMessageStatus,
   RepeatMetaData,
@@ -115,8 +115,8 @@ export default (onFirstFetched: () => void): (() => void) => {
   });
 
   const unmountTasksListener = listenTasksChange(ownerEmail, (snapshot) => {
-    const created: Task[] = [];
-    const edited: Task[] = [];
+    const created: TaskWithChildrenId[] = [];
+    const edited: TaskWithChildrenId[] = [];
     const deleted: string[] = [];
     snapshot.docChanges().forEach((change) => {
       const { doc } = change;
@@ -130,8 +130,8 @@ export default (onFirstFetched: () => void): (() => void) => {
         }
         const { owner, children: childrenArr, ...rest } = data as FirestoreTask;
         const children = Set(childrenArr);
-        const taskCommon = { id, children };
-        let task: Task;
+        const taskCommon = { id, children: children.toArray() };
+        let task: TaskWithChildrenId;
         if (rest.type === 'ONE_TIME') {
           const { date: timestamp, ...oneTimeTaskRest } = rest;
           const date = transformDate(timestamp);

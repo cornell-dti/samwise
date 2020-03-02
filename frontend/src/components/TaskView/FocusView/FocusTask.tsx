@@ -42,11 +42,11 @@ function FocusTask({ id, order, filterCompleted, original, filtered }: Props): R
 }
 
 const Connected = connect(
-  ({ tasks, subTasks }: State, { id, filterCompleted }: OwnProps) => {
+  ({ tasks }: State, { id, filterCompleted }: OwnProps) => {
     const original = tasks.get(id) ?? error();
     const filtered = filterCompleted
-      ? getFilteredCompletedInFocusTask(original, subTasks)
-      : getFilteredNotCompletedInFocusTask(original, subTasks);
+      ? getFilteredCompletedInFocusTask(original)
+      : getFilteredNotCompletedInFocusTask(original);
     return { original, filtered };
   },
 )(FocusTask);

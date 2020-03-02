@@ -1,4 +1,4 @@
-import { Map, Set } from 'immutable';
+import { Set } from 'immutable';
 import { Task, SubTask, TaskWithSubTasks } from '../types/store-types';
 import {
   getFilteredCompletedInFocusTask,
@@ -28,26 +28,21 @@ const testTaskCommon: MainTaskTestCommon = {
   date: new Date(),
 };
 
+const s1: SubTask = { id: 's1', order, name, complete: true, inFocus: true };
+const s2: SubTask = { id: 's2', order, name, complete: true, inFocus: false };
+const s3: SubTask = { id: 's3', order, name, complete: false, inFocus: true };
+const s4: SubTask = { id: 's4', order, name, complete: false, inFocus: false };
 const exampleTasks: Task[] = [
-  { ...testTaskCommon, inFocus: true, complete: true, children: Set.of('s1', 's2', 's3', 's4') },
-  { ...testTaskCommon, inFocus: true, complete: false, children: Set.of('s1', 's2', 's3', 's4') },
-  { ...testTaskCommon, inFocus: false, complete: true, children: Set.of('s1', 's2', 's3', 's4') },
-  { ...testTaskCommon, inFocus: false, complete: false, children: Set.of('s1', 's2', 's3', 's4') },
-  { ...testTaskCommon, inFocus: true, complete: true, children: Set.of() },
-  { ...testTaskCommon, inFocus: true, complete: false, children: Set.of() },
-  { ...testTaskCommon, inFocus: false, complete: true, children: Set.of() },
-  { ...testTaskCommon, inFocus: false, complete: false, children: Set.of() },
+  { ...testTaskCommon, inFocus: true, complete: true, children: [s1, s2, s3, s4] },
+  { ...testTaskCommon, inFocus: true, complete: false, children: [s1, s2, s3, s4] },
+  { ...testTaskCommon, inFocus: false, complete: true, children: [s1, s2, s3, s4] },
+  { ...testTaskCommon, inFocus: false, complete: false, children: [s1, s2, s3, s4] },
+  { ...testTaskCommon, inFocus: true, complete: true, children: [] },
+  { ...testTaskCommon, inFocus: true, complete: false, children: [] },
+  { ...testTaskCommon, inFocus: false, complete: true, children: [] },
+  { ...testTaskCommon, inFocus: false, complete: false, children: [] },
 ];
-const exampleSubTasks: SubTask[] = [
-  { id: 's1', order, name, complete: true, inFocus: true },
-  { id: 's2', order, name, complete: true, inFocus: false },
-  { id: 's3', order, name, complete: false, inFocus: true },
-  { id: 's4', order, name, complete: false, inFocus: false },
-];
-const [s1, s2, s3, s4] = exampleSubTasks;
-const commonSubTaskMap: Map<string, SubTask> = Map.of().withMutations((m: Map<string, SubTask>) => {
-  exampleSubTasks.forEach((s) => m.set(s.id, s));
-});
+const exampleSubTasks: SubTask[] = [s1, s2, s3, s4];
 
 type FilterResult = TaskWithSubTasks | null;
 it('getFilteredCompletedInFocusTask works', () => {
@@ -62,7 +57,7 @@ it('getFilteredCompletedInFocusTask works', () => {
     null,
   ];
   exampleTasks.forEach((t, i) => {
-    expect(getFilteredCompletedInFocusTask(t, commonSubTaskMap)).toEqual(expectedResults[i]);
+    expect(getFilteredCompletedInFocusTask(t)).toEqual(expectedResults[i]);
   });
 });
 
@@ -78,14 +73,14 @@ it('getFilteredNotCompletedInFocusTask works', () => {
     null,
   ];
   exampleTasks.forEach((t, i) => {
-    expect(getFilteredNotCompletedInFocusTask(t, commonSubTaskMap)).toEqual(expectedResults[i]);
+    expect(getFilteredNotCompletedInFocusTask(t)).toEqual(expectedResults[i]);
   });
 });
 
 it('getFiltered(Completed|NotCompleted)InFocusTask are complementary', () => {
   exampleTasks.forEach((task) => {
-    const completedResult = getFilteredCompletedInFocusTask(task, commonSubTaskMap);
-    const uncompletedResult = getFilteredNotCompletedInFocusTask(task, commonSubTaskMap);
+    const completedResult = getFilteredCompletedInFocusTask(task);
+    const uncompletedResult = getFilteredNotCompletedInFocusTask(task);
     const allSubTasks: SubTask[] = [];
     if (completedResult) {
       allSubTasks.push(...completedResult.subTasks);
@@ -130,7 +125,7 @@ it('computeTaskProgress works', () => {
     { completedTasksCount: 0, allTasksCount: 0 },
   );
   exampleTasks.forEach((t, i) => {
-    expect(computeTaskProgress([t], commonSubTaskMap)).toEqual(expectedResults[i]);
+    expect(computeTaskProgress([t])).toEqual(expectedResults[i]);
   });
-  expect(computeTaskProgress(exampleTasks, commonSubTaskMap)).toEqual(expectedTotal);
+  expect(computeTaskProgress(exampleTasks)).toEqual(expectedTotal);
 });

@@ -31,7 +31,7 @@ export type CommonTask<D> = {
   readonly date: D;
   readonly complete: boolean;
   readonly inFocus: boolean; // Whether the task is in focus
-  readonly children: Set<string>;
+  readonly children: readonly SubTask[];
 };
 
 type FlexibleCommonTask = CommonTask<Date | RepeatMetaData>;
@@ -130,10 +130,16 @@ export type Course = {
 export type State = {
   readonly tags: Map<string, Tag>;
   readonly tasks: Map<string, Task>;
-  readonly subTasks: Map<string, SubTask>;
+  // Mapping of subtask id to main task id.
+  // It contains all subtask ids that the main task knows but the redux store does not have yet.
+  readonly missingSubTasks: Map<string, string>;
+  // Mapping of subtask id to its object for fast access.
+  // It contains all subtasks that the redux store knows but belongs to no known main task yet.
+  readonly orphanSubTasks: Map<string, SubTask>;
+  // A fast access map to quickly find all main task id within a date.
   readonly dateTaskMap: Map<string, Set<string>>;
+  // A set of all ids of repeating tasks.
   readonly repeatedTaskSet: Set<string>;
-  readonly taskChildrenMap: Map<string, Set<string>>;
   readonly settings: Settings;
   readonly bannerMessageStatus: BannerMessageStatus;
   readonly courses: Map<string, Course[]>;

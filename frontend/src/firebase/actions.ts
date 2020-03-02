@@ -136,7 +136,7 @@ export const removeAllForks = (taskId: string): void => {
         const forkedTask = tasks.get(id);
         if (forkedTask != null) {
           forkedTask.children.forEach(
-            (subTaskId) => batch.delete(database.subTasksCollection().doc(subTaskId)),
+            (subTask) => batch.delete(database.subTasksCollection().doc(subTask.id)),
           );
         }
       }
@@ -218,7 +218,7 @@ export const forkTaskWithDiff = (
   replaceDate: Date,
   { mainTaskEdits, subTaskCreations, subTaskEdits, subTaskDeletions }: Diff,
 ): void => {
-  const { tasks, subTasks } = store.getState();
+  const { tasks } = store.getState();
   const repeatingTaskMaster = tasks.get(taskId) as RepeatingTask;
   const { id, order, type, children, date, forks, ...originalTaskWithoutId } = repeatingTaskMaster;
   const newMainTask: TaskWithoutIdOrderChildren = {
@@ -229,16 +229,12 @@ export const forkTaskWithDiff = (
   };
   const newSubTasks: WithoutId<SubTask>[] = [];
   subTaskCreations.forEach((s) => newSubTasks.push(s));
-  children.forEach((childrenId) => {
-    if (subTaskDeletions.has(childrenId)) {
-      return;
-    }
-    const subTask = subTasks.get(childrenId);
-    if (subTask == null) {
+  children.forEach((subTask) => {
+    if (subTaskDeletions.has(subTask.id)) {
       return;
     }
     const { id: _, ...subTaskContent } = subTask;
-    const subTaskEdit = subTaskEdits.get(childrenId);
+    const subTaskEdit = subTaskEdits.get(subTask.id);
     if (subTaskEdit != null) {
       newSubTasks.push({ ...subTaskContent, ...subTaskEdit });
     } else {
@@ -259,7 +255,7 @@ export const removeTask = (task: Task): void => {
   const { tasks, repeatedTaskSet } = store.getState();
   const batch = database.db().batch();
   batch.delete(database.tasksCollection().doc(task.id));
-  task.children.forEach((id) => batch.delete(database.subTasksCollection().doc(id)));
+  task.children.forEach((subTask) => batch.delete(database.subTasksCollection().doc(subTask.id)));
   if (task.type === 'ONE_TIME') {
     // remove fork mentions
     repeatedTaskSet.forEach((repeatedTaskId) => {
@@ -293,7 +289,9 @@ export const removeTask = (task: Task): void => {
       batch.delete(database.tasksCollection().doc(forkId));
       const forkedTask = tasks.get(forkId);
       if (forkedTask != null) {
-        forkedTask.children.forEach((id) => batch.delete(database.subTasksCollection().doc(id)));
+        forkedTask.children.forEach(
+          (subTask) => batch.delete(database.subTasksCollection().doc(subTask.id)),
+        );
       }
     });
   }
@@ -406,16 +404,15 @@ export function completeTaskInFocus<T extends { readonly id: string; readonly or
     }
   });
   newCompletedList = newCompletedList.sort((a, b) => a.order - b.order);
-  const { tasks, subTasks } = store.getState();
+  const { tasks } = store.getState();
   const task = tasks.get(completedTaskIdOrder.id) ?? error('bad');
   const batch = database.db().batch();
   if (task.inFocus) {
     batch.update(database.tasksCollection().doc(task.id), { complete: true });
   }
-  task.children.forEach((id) => {
-    const s = subTasks.get(id);
-    if (s != null && s.inFocus) {
-      batch.update(database.subTasksCollection().doc(id), { complete: true });
+  task.children.forEach((s) => {
+    if (s.inFocus) {
+      batch.update(database.subTasksCollection().doc(s.id), { complete: true });
     }
   });
   batch.commit().then(ignore);
