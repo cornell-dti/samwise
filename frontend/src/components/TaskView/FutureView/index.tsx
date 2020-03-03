@@ -185,6 +185,8 @@ export default function FutureView(
         const sourceOrder: number = idOrderList[source.index].order;
         const dest = idOrderList[destination.index];
         const destinationOrder: number = dest == null ? sourceOrder : dest.order;
+        console.log(`dest: ${destinationOrder}`);
+        console.log(`src: ${sourceOrder}`);
         const reorderMap = computeReorderMap(idOrderList, sourceOrder, destinationOrder);
         applyReorder('tasks', reorderMap);
       }

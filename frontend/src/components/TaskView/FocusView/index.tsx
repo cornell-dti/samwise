@@ -67,6 +67,8 @@ function FocusView({ tasks, progress }: FocusViewProps): ReactElement {
     } else {
       return;
     }
+    console.log(`dest: ${destinationOrder}`);
+    console.log(`src: ${sourceOrder}`);
     if (
       (source.droppableId === focusViewCompletedDroppableId
         && destination.droppableId === focusViewCompletedDroppableId)

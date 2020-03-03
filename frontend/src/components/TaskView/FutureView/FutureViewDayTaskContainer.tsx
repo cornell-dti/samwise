@@ -1,7 +1,6 @@
 import React, { ReactElement } from 'react';
 import { connect } from 'react-redux';
 import { State, SubTask, Task } from 'common/lib/types/store-types';
-import { Droppable } from 'react-beautiful-dnd';
 import { CalendarPosition, FloatingPosition } from '../../Util/TaskEditors/editors-types';
 import FutureViewTask from './FutureViewTask';
 import styles from './FutureViewDayTaskContainer.module.css';
