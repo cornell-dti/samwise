@@ -1,6 +1,6 @@
 import React, { ReactElement } from 'react';
 import Calendar from 'react-calendar';
-import { Tag, RepeatMetaData } from 'common/lib/types/store-types';
+import { Tag, RepeatingDate } from 'common/lib/types/store-types';
 import styles from './index.module.css';
 import TagListPicker from '../../TagListPicker/TagListPicker';
 import { CalendarPosition } from '../editors-types';
@@ -8,7 +8,7 @@ import SamwiseIcon from '../../../UI/SamwiseIcon';
 
 type TagAndDate = {
   readonly tag: string;
-  readonly date: Date | RepeatMetaData;
+  readonly date: Date | RepeatingDate;
 };
 
 type Props = TagAndDate & {

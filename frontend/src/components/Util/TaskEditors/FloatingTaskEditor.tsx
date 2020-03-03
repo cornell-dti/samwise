@@ -77,7 +77,7 @@ export default function FloatingTaskEditor(
     trigger,
   }: Props,
 ): ReactElement {
-  const icalUID = task.type === 'ONE_TIME' ? task.icalUID : '';
+  const icalUID = task.metadata.type === 'ONE_TIME' ? task.metadata.icalUID : '';
 
   const [open, setOpen] = React.useState<boolean>(false);
 
@@ -94,7 +94,7 @@ export default function FloatingTaskEditor(
   const openPopup = (): void => setOpen(true);
   const closePopup = (): void => setOpen(false);
 
-  const { id: _, type, children, ...mainTask } = task;
+  const { id: _, metadata, children, ...mainTask } = task;
   const actions = {
     onChange: (): void => {
       const editorPosDiv = editorRef.current;
@@ -105,7 +105,7 @@ export default function FloatingTaskEditor(
     },
     removeTask: (): void => removeTaskWithPotentialPrompt(
       task,
-      getDateWithDateString(mainTask.date instanceof Date ? mainTask.date : null, taskAppearedDate),
+      getDateWithDateString(metadata.date instanceof Date ? metadata.date : null, taskAppearedDate),
     ),
     onSaveClicked: closePopup,
   };
@@ -117,10 +117,10 @@ export default function FloatingTaskEditor(
         <>
           <TaskEditor
             id={task.id}
-            type={type}
+            type={metadata.type}
             icalUID={icalUID}
             taskAppearedDate={taskAppearedDate}
-            mainTask={mainTask}
+            mainTask={{ ...mainTask, date: metadata.date }}
             subTasks={children}
             actions={actions}
             className={styles.Editor}

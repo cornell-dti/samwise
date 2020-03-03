@@ -58,7 +58,7 @@ function FutureViewTask(
   }
   const { original, filteredSubTasks, color } = compoundTask;
 
-  const icalUID = original.type === 'ONE_TIME' ? original.icalUID : '';
+  const icalUID = original.metadata.type === 'ONE_TIME' ? original.metadata.icalUID : '';
   const isCanvasTask = typeof icalUID === 'string' ? icalUID !== '' : false;
 
   /**
@@ -83,9 +83,9 @@ function FutureViewTask(
   };
 
   const replaceDateForFork = getDateWithDateString(
-    original.type === 'ONE_TIME' ? original.date : null, containerDate,
+    original.metadata.type === 'ONE_TIME' ? original.metadata.date : null, containerDate,
   );
-  const replaceDateForForkOpt = original.type === 'ONE_TIME' ? null : replaceDateForFork;
+  const replaceDateForForkOpt = original.metadata.type === 'ONE_TIME' ? null : replaceDateForFork;
   const TaskCheckBox = (): ReactElement => {
     const { id, complete } = original;
     const onChange = (): void => editMainTask(id, replaceDateForForkOpt, { complete: !complete });
@@ -115,7 +115,7 @@ function FutureViewTask(
   const DragIcon = (): ReactElement => <SamwiseIcon iconName="grabber" className={styles.TaskIcon} />;
   const RepeatingIcon = (): ReactElement => <SamwiseIcon iconName="repeat-light" className={styles.TaskIconNoHover} />;
   let Icon = (): ReactElement => <RepeatingIcon />;
-  if (compoundTask.original.type === 'ONE_TIME') {
+  if (compoundTask.original.metadata.type === 'ONE_TIME') {
     if (!isCanvasTask) {
       Icon = DragIcon;
     } else {
@@ -148,7 +148,7 @@ function FutureViewTask(
     />
   ));
 
-  const { date, complete } = original;
+  const { metadata: { date }, complete } = original;
   const overdueComponentOpt = (date < getTodayAtZeroAM() && !complete) && (
     <OverdueAlert target="future-view-task" />
   );
@@ -185,7 +185,7 @@ function FutureViewTask(
       key={taskId}
       draggableId={taskId}
       index={index}
-      isDragDisabled={compoundTask.original.type === 'MASTER_TEMPLATE' || isCanvasTask}
+      isDragDisabled={compoundTask.original.metadata.type === 'MASTER_TEMPLATE' || isCanvasTask}
     >
       {(provided) => (
         // eslint-disable-next-line react/jsx-props-no-spreading

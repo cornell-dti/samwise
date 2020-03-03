@@ -3,7 +3,7 @@ import Calendar from 'react-calendar';
 import { useTodayLastSecondTime, useTodayFirstSecondTime } from 'hooks/time-hook';
 import { date2String, getDateAfterXWeeks } from 'common/lib/util/datetime-util';
 import { NONE_TAG } from 'common/lib/util/tag-util';
-import { RepeatMetaData } from 'common/lib/types/store-types';
+import { RepeatingDate } from 'common/lib/types/store-types';
 import { LAST_DAY_OF_CLASS, LAST_DAY_OF_EXAMS } from 'common/lib/util/const-util';
 import { setDayOfWeek, unsetDayOfWeek, isDayOfWeekSet, DAYS_IN_WEEK } from 'common/lib/util/bitwise-util';
 import styles from './Picker.module.css';
@@ -11,8 +11,8 @@ import dateStyles from './DatePicker.module.css';
 import SamwiseIcon from '../UI/SamwiseIcon';
 
 type Props = {
-  readonly onDateChange: (date: Date | RepeatMetaData | null) => void;
-  readonly date: Date | RepeatMetaData;
+  readonly onDateChange: (date: Date | RepeatingDate | null) => void;
+  readonly date: Date | RepeatingDate;
   readonly opened: boolean;
   readonly datePicked: boolean;
   readonly onPickerOpened: () => void;
@@ -368,7 +368,7 @@ export default function DatePicker(props: Props): ReactElement {
       endDate = getDateAfterXWeeks(todayLastSecond, internalDate.repeatEnd.weeks);
     }
 
-    const repData: RepeatMetaData = {
+    const repData: RepeatingDate = {
       startDate: todayFirstSecond,
       endDate,
       pattern: { type: 'WEEKLY', bitSet },

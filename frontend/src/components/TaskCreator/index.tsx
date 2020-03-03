@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlus, faArrowAltCircleRight } from '@fortawesome/free-solid-svg-icons';
 import { randomId } from 'common/lib/util/general-util';
-import { OneTimeTask, RepeatingTask, RepeatMetaData, SubTask, State as StoreState, Theme } from 'common/lib/types/store-types';
+import { Task, RepeatingDate, SubTask, State as StoreState, Theme } from 'common/lib/types/store-types';
 import { NONE_TAG_ID } from 'common/lib/util/tag-util';
 import { isToday } from 'common/lib/util/datetime-util';
 import TagPicker from './TagPicker';
@@ -13,12 +13,10 @@ import { addTask, TaskWithoutIdOrderChildren } from '../../firebase/actions';
 import SamwiseIcon from '../UI/SamwiseIcon';
 import styles from './index.module.css';
 
-type SimpleTaskMapper<T> = Pick<T, Exclude<keyof T, 'type' | 'order' | 'children'>>
-type OneTimeSimpleTask = SimpleTaskMapper<OneTimeTask>;
-type RepeatedSimpleTask = SimpleTaskMapper<RepeatingTask>
-type SimpleTask = OneTimeSimpleTask | RepeatedSimpleTask;
+type SimpleTask = Omit<Task, 'type' | 'order' | 'children' | 'metadata'>;
 
 type State = SimpleTask & {
+  readonly date: Date | RepeatingDate;
   readonly subTasks: SubTask[];
   readonly opened: boolean;
   readonly tagPickerOpened: boolean;
@@ -140,14 +138,16 @@ export class TaskCreator extends React.PureComponent<Props, State> {
       date.setHours(23);
       date.setMinutes(59);
       date.setSeconds(59);
-      newTask = { ...commonTask, type: 'ONE_TIME', date };
+      newTask = { ...commonTask, metadata: { type: 'ONE_TIME', date } };
     } else {
       newTask = {
         ...commonTask,
-        type: 'MASTER_TEMPLATE',
-        forks: [],
-        date,
         inFocus: false,
+        metadata: {
+          type: 'MASTER_TEMPLATE',
+          forks: [],
+          date,
+        },
       };
     }
     // Add the task to the store.
@@ -190,7 +190,7 @@ export class TaskCreator extends React.PureComponent<Props, State> {
    *
    * @param {Date} date the new date, or null for cancel.
    */
-  private editDate = (date: Date | RepeatMetaData | null): void => {
+  private editDate = (date: Date | RepeatingDate | null): void => {
     const { datePicked } = this.state;
     if (datePicked && date === null) {
       // User cancelled, but date was already picked

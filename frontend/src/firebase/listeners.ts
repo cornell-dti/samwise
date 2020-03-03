@@ -5,7 +5,7 @@ import {
   Tag,
   Settings,
   BannerMessageStatus,
-  RepeatMetaData,
+  RepeatingTaskMetadata,
   Course,
 } from 'common/lib/types/store-types';
 import buildCoursesMap from 'common/lib/util/courses-util';
@@ -133,11 +133,11 @@ export default (onFirstFetched: () => void): (() => void) => {
         const taskCommon = { id, children: children.toArray() };
         let task: TaskWithChildrenId;
         if (rest.type === 'ONE_TIME') {
-          const { date: timestamp, ...oneTimeTaskRest } = rest;
+          const { type, date: timestamp, ...oneTimeTaskRest } = rest;
           const date = transformDate(timestamp);
-          task = { ...taskCommon, date, ...oneTimeTaskRest };
+          task = { ...taskCommon, ...oneTimeTaskRest, metadata: { type: 'ONE_TIME', date } };
         } else {
-          const { forks: firestoreForks, date: firestoreRepeats, ...otherTaskProps } = rest;
+          const { type, forks: firestoreForks, date: firestoreRepeats, ...otherTaskProps } = rest;
           const forks = firestoreForks.map((firestoreFork) => ({
             forkId: firestoreFork.forkId,
             replaceDate: transformDate(firestoreFork.replaceDate),
@@ -150,8 +150,12 @@ export default (onFirstFetched: () => void): (() => void) => {
           } else {
             endDate = transformDate(firestoreRepeats.endDate);
           }
-          const date: RepeatMetaData = { startDate, endDate, pattern: firestoreRepeats.pattern };
-          task = { ...taskCommon, ...otherTaskProps, forks, date };
+          const metadata: RepeatingTaskMetadata = {
+            type: 'MASTER_TEMPLATE',
+            date: { startDate, endDate, pattern: firestoreRepeats.pattern },
+            forks,
+          };
+          task = { ...taskCommon, ...otherTaskProps, metadata };
         }
         if (change.type === 'added') {
           created.push(task);

@@ -29,10 +29,10 @@ function normalizeTaskChildrenOrder(task: Task): Task {
 function patchTasks(state: State, { created, edited, deleted }: PatchTasks): State {
   const newDateTaskMap = state.dateTaskMap.withMutations((m) => {
     created.forEach((t) => {
-      if (t.type === 'MASTER_TEMPLATE') {
+      if (t.metadata.type === 'MASTER_TEMPLATE') {
         return;
       }
-      const key = t.date.toDateString();
+      const key = t.metadata.date.toDateString();
       const set = m.get(key);
       if (set == null) {
         m.set(key, Set.of(t.id));
@@ -41,13 +41,13 @@ function patchTasks(state: State, { created, edited, deleted }: PatchTasks): Sta
       }
     });
     edited.forEach((t) => {
-      if (t.type === 'MASTER_TEMPLATE') {
+      if (t.metadata.type === 'MASTER_TEMPLATE') {
         return;
       }
-      const key = t.date.toDateString();
+      const key = t.metadata.date.toDateString();
       const oldTask = state.tasks.get(t.id) ?? error();
-      if (oldTask.type === 'ONE_TIME') {
-        const oldKey = oldTask.date.toDateString();
+      if (oldTask.metadata.type === 'ONE_TIME') {
+        const oldKey = oldTask.metadata.date.toDateString();
         if (oldKey !== key) {
           // remove first
           const oldBucket = m.get(oldKey) ?? error('impossible!');
@@ -66,8 +66,8 @@ function patchTasks(state: State, { created, edited, deleted }: PatchTasks): Sta
       if (oldTask == null) {
         return;
       }
-      if (oldTask.type === 'ONE_TIME') {
-        const key = oldTask.date.toDateString();
+      if (oldTask.metadata.type === 'ONE_TIME') {
+        const key = oldTask.metadata.date.toDateString();
         const set = m.get(key);
         if (set != null) {
           m.set(key, set.remove(id));
@@ -77,7 +77,7 @@ function patchTasks(state: State, { created, edited, deleted }: PatchTasks): Sta
   });
   const newRepeatedTaskSet = state.repeatedTaskSet.withMutations((s) => {
     created.forEach((t) => {
-      if (t.type === 'MASTER_TEMPLATE') {
+      if (t.metadata.type === 'MASTER_TEMPLATE') {
         s.add(t.id);
       }
     });

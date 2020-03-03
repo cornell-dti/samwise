@@ -1,6 +1,6 @@
 import React, { ReactElement } from 'react';
 import { connect } from 'react-redux';
-import { State, Tag, RepeatingPattern, RepeatingTask } from 'common/lib/types/store-types';
+import { State, Tag, RepeatingPattern, Task, RepeatingTaskMetadata } from 'common/lib/types/store-types';
 import { DAYS_IN_WEEK, isBitSet } from 'common/lib/util/bitwise-util';
 import SamwiseIcon from '../../../UI/SamwiseIcon';
 import styles from './RepeatFrequencyHeader.module.css';
@@ -81,9 +81,9 @@ const getRepeatingPattern = (
   const repeatedTaskIds = repeatedTaskSet.toArray();
   for (let i = 0; i < repeatedTaskIds.length; i += 1) {
     const repeatedTaskId = repeatedTaskIds[i];
-    const repeatingTask = tasks.get(repeatedTaskId) as RepeatingTask | undefined;
+    const repeatingTask = tasks.get(repeatedTaskId) as Task<RepeatingTaskMetadata> | undefined;
     if (repeatingTask != null) {
-      const { date: { pattern }, forks } = repeatingTask;
+      const { metadata: { date: { pattern }, forks } } = repeatingTask;
       if (taskId === repeatedTaskId) {
         return pattern;
       }

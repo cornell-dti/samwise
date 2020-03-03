@@ -2,9 +2,7 @@ import {
   SubTask,
   Task,
   RepeatingPattern,
-  RepeatMetaData,
-  ForkedTaskMetaData,
-  TaskWithSubTasks,
+  RepeatingTaskMetadata,
 } from '../types/store-types';
 import { isBitSet } from './bitwise-util';
 
@@ -14,7 +12,7 @@ import { isBitSet } from './bitwise-util';
  * Other modules should try to call functions in this module instead of implementing their own.
  */
 
-export const getFilteredNotCompletedInFocusTask = (task: Task): TaskWithSubTasks | null => {
+export const getFilteredNotCompletedInFocusTask = (task: Task): Task | null => {
   const { children, ...rest } = task;
   const newSubTasks: SubTask[] = [];
   if (task.inFocus) {
@@ -37,10 +35,10 @@ export const getFilteredNotCompletedInFocusTask = (task: Task): TaskWithSubTasks
       return null;
     }
   }
-  return { ...rest, subTasks: newSubTasks.sort((a, b) => a.order - b.order) };
+  return { ...rest, children: newSubTasks.sort((a, b) => a.order - b.order) };
 };
 
-export const getFilteredCompletedInFocusTask = (task: Task): TaskWithSubTasks | null => {
+export const getFilteredCompletedInFocusTask = (task: Task): Task | null => {
   const { children, ...rest } = task;
   const newSubTasks: SubTask[] = [];
   if (task.inFocus) {
@@ -70,7 +68,7 @@ export const getFilteredCompletedInFocusTask = (task: Task): TaskWithSubTasks | 
       return null;
     }
   }
-  return { ...rest, subTasks: newSubTasks.sort((a, b): number => a.order - b.order) };
+  return { ...rest, children: newSubTasks.sort((a, b): number => a.order - b.order) };
 };
 
 export type TasksProgressProps = {
@@ -129,21 +127,18 @@ function dateMatchRepeatPattern(date: Date, pattern: RepeatingPattern): boolean 
 
 /**
  * @param date the date to check.
- * @param repeats the repeats metadata to be checked against.
- * @param forks the forks of the repeating task to be checked against.
+ * @param repeatingTaskMetadata the repeats metadata to be checked against.
  * @returns whether the given date can host a repeats given all the repeats info.
  */
 export function dateMatchRepeats(
   date: Date,
-  repeats: RepeatMetaData,
-  forks: readonly ForkedTaskMetaData[],
+  { date: { startDate, endDate, pattern }, forks }: RepeatingTaskMetadata,
 ): boolean {
   const dateString = date.toDateString();
   if (forks.some(({ replaceDate }) => replaceDate.toDateString() === dateString)) {
     // it's a one time task or a fork, not a repeat
     return false;
   }
-  const { startDate, endDate, pattern } = repeats;
   if (date < startDate) {
     // before the start
     return false;
