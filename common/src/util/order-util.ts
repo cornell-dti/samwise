@@ -6,12 +6,25 @@ import { Map } from 'immutable';
  * @param list the list to test whether things are sorted.
  */
 function testSorted<T extends { readonly order: number }>(list: T[]): void {
+  console.log('test');
   for (let i = 0; i < list.length - 1; i += 1) {
     const item = list[i];
     const next = list[i + 1];
     if (item.order > next.order) {
       throw new Error('Not sorted!');
     }
+  }
+}
+
+function testOrderUnique<T extends { readonly order: number }>(list: T[]): void {
+  console.log('test');
+  const orders: Set<number> = new Set<number>();
+  for (let i = 0; i < list.length - 1; i += 1) {
+    const { order } = list[i];
+    if (orders.has(order)) {
+      throw new Error('Orders not unique!');
+    }
+    orders.add(order);
   }
 }
 
@@ -45,6 +58,7 @@ export function computeReorderMap<T extends { readonly id: string; readonly orde
     return Map.of();
   }
   testSorted(originalList);
+  testOrderUnique(originalList);
   let reorderMap = Map<string, number>(); // key: id, value: new order
   const orders = originalList.map((t) => t.order);
   if (sourceOrder < destinationOrder) {
