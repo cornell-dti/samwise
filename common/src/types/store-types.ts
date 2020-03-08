@@ -26,6 +26,7 @@ export type PartialSubTask = Partial<SubTaskWithoutIdOrder>;
 export type CommonTask<D> = {
   readonly id: string;
   readonly order: number;
+  readonly futureViewOrder?: number;
   readonly name: string; // Example: "Task 1 name"
   readonly tag: string; // ID of the tag
   readonly date: D;
@@ -39,7 +40,6 @@ type FlexibleCommonTask = CommonTask<Date | RepeatMetaData>;
 export type OneTimeTask = CommonTask<Date> & {
   readonly type: 'ONE_TIME';
   readonly icalUID?: string;
-  readonly futureViewOrder?: number;
 };
 
 /**
