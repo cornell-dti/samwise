@@ -135,7 +135,7 @@ export default (onFirstFetched: () => void): (() => void) => {
         if (rest.type === 'ONE_TIME') {
           const { date: timestamp, ...oneTimeTaskRest } = rest;
           const date = transformDate(timestamp);
-          task = { ...taskCommon, date, ...oneTimeTaskRest };
+          task = { ...taskCommon, date, futureViewOrder: 0, ...oneTimeTaskRest };
         } else {
           const { forks: firestoreForks, date: firestoreRepeats, ...otherTaskProps } = rest;
           const forks = firestoreForks.map((firestoreFork) => ({
@@ -151,7 +151,7 @@ export default (onFirstFetched: () => void): (() => void) => {
             endDate = transformDate(firestoreRepeats.endDate);
           }
           const date: RepeatMetaData = { startDate, endDate, pattern: firestoreRepeats.pattern };
-          task = { ...taskCommon, ...otherTaskProps, forks, date };
+          task = { ...taskCommon, ...otherTaskProps, futureViewOrder: 0, forks, date };
         }
         if (change.type === 'added') {
           created.push(task);

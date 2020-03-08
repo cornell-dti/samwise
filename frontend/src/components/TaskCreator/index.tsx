@@ -39,6 +39,7 @@ const PLACEHOLDER_TEXT = 'What do you have to do?';
  */
 const initialState = (): State => ({
   id: randomId(),
+  futureViewOrder: 0,
   name: '',
   tag: NONE_TAG_ID, // the id of the None tag.
   date: new Date(),
@@ -149,6 +150,7 @@ export class TaskCreator extends React.PureComponent<Props, State> {
     } else {
       newTask = {
         ...commonTask,
+        futureViewOrder: 0,
         type: 'MASTER_TEMPLATE',
         forks: [],
         date,
