@@ -163,8 +163,8 @@ export default function FutureView(
         dayTaskSet.forEach((id) => {
           const task = tasks.get(id);
           if (task != null) {
-            const { order } = task;
-            idOrderList.push({ id, order });
+            const { futureViewOrder, order } = task;
+            idOrderList.push({ id, order: futureViewOrder ?? order });
           }
         });
 
@@ -176,8 +176,7 @@ export default function FutureView(
           }
           const repeatedTask = task as RepeatingTask;
           if (dateMatchRepeats(dateObj, repeatedTask.date, repeatedTask.forks)) {
-            const { order } = repeatedTask;
-            idOrderList.push({ id, order });
+            idOrderList.push({ id, order: -1 });
           }
         });
 

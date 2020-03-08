@@ -6,6 +6,7 @@ import { randomId } from 'common/lib/util/general-util';
 import { OneTimeTask, RepeatingTask, RepeatMetaData, SubTask, State as StoreState, Theme } from 'common/lib/types/store-types';
 import { NONE_TAG_ID } from 'common/lib/util/tag-util';
 import { isToday } from 'common/lib/util/datetime-util';
+import { store } from 'store/store';
 import TagPicker from './TagPicker';
 import DatePicker from './DatePicker';
 import FocusPicker from './FocusPicker';
@@ -58,7 +59,7 @@ export class TaskCreator extends React.PureComponent<Props, State> {
 
   private darkModeStyle: CSSProperties;
 
-  constructor(props: {theme: Theme}) {
+  constructor(props: { theme: Theme }) {
     super(props);
     this.darkModeStyle = {
       background: 'black',
@@ -137,10 +138,21 @@ export class TaskCreator extends React.PureComponent<Props, State> {
     const commonTask = { name, tag, date, complete, inFocus: autoInFocus };
     let newTask: TaskWithoutIdOrderChildren;
     if (date instanceof Date) {
+      const { dateTaskMap, tasks } = store.getState();
+      const dayOrderList: number[] = [];
+      const dayTaskSet = dateTaskMap.get(date.toDateString());
+      dayTaskSet?.forEach((id) => {
+        const task = tasks.get(id);
+        if (task != null) {
+          const { futureViewOrder, type, order } = task;
+          dayOrderList.push(futureViewOrder ?? type === 'MASTER_TEMPLATE' ? -1 : order);
+        }
+      });
+      const taskFutureViewOrder: number = dayOrderList.reduce((a, c) => ((a > c) ? a : c), -1) + 1;
       date.setHours(23);
       date.setMinutes(59);
       date.setSeconds(59);
-      newTask = { ...commonTask, type: 'ONE_TIME', date };
+      newTask = { ...commonTask, futureViewOrder: taskFutureViewOrder, type: 'ONE_TIME', date };
     } else {
       newTask = {
         ...commonTask,
