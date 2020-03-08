@@ -142,6 +142,7 @@ export class TaskCreator extends React.PureComponent<Props, State> {
       const { dateTaskMap } = store.getState();
       const dayTaskSet = dateTaskMap.get(date.toDateString());
       const taskFutureViewOrder: number = dayTaskSet === undefined ? 0 : dayTaskSet.size + 1;
+      console.log(taskFutureViewOrder);
       date.setHours(23);
       date.setMinutes(59);
       date.setSeconds(59);
@@ -149,7 +150,7 @@ export class TaskCreator extends React.PureComponent<Props, State> {
     } else {
       newTask = {
         ...commonTask,
-        futureViewOrder: -1,
+        futureViewOrder: 0,
         type: 'MASTER_TEMPLATE',
         forks: [],
         date,

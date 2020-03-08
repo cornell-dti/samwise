@@ -25,11 +25,11 @@ type OwnProps = {
 
 type IdOrder = {
   readonly id: string;
-  readonly futureViewOrder: number | undefined;
+  readonly order: number;
 };
 
 type Props = OwnProps & {
-  readonly idFutureViewOrderList: IdOrder[];
+  readonly idOrderList: IdOrder[];
 };
 
 /**
@@ -38,7 +38,7 @@ type Props = OwnProps & {
 function FutureViewDayTaskContainer(
   {
     date,
-    idFutureViewOrderList,
+    idOrderList,
     inNDaysView,
     taskEditorPosition,
     doesShowCompletedTasks,
@@ -65,7 +65,7 @@ function FutureViewDayTaskContainer(
     setPrevHeights([tasksHeight, containerHeight]);
     onHeightChange(tasksHeight > containerHeight && containerHeight > 0, tasksHeight);
   });
-  const taskListComponent = idFutureViewOrderList.map(({ id }, i) => (
+  const taskListComponent = idOrderList.map(({ id }, i) => (
     <FutureViewTask
       key={id}
       taskId={id}

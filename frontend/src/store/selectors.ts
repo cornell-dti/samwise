@@ -68,29 +68,28 @@ export const getTaskIds: SelectorOf<{ readonly ids: string[] }> = createSetEqual
 );
 
 type IdOrder = { readonly id: string; readonly order: number };
-type IdFutureViewOrder = { readonly id: string; readonly futureViewOrder: number };
-type IdFutureViewOrderProps = { readonly idFutureViewOrderList: IdFutureViewOrder[] };
+type IdOrderListProps = { readonly idOrderList: IdOrder[] };
 
-let createGetIdOrderListByDateSelectors = Map<string, SelectorOf<IdFutureViewOrderProps>>();
+let createGetIdOrderListByDateSelectors = Map<string, SelectorOf<IdOrderListProps>>();
 
 export const createGetIdOrderListByDate = (
   date: string,
-): SelectorOf<IdFutureViewOrderProps> => {
+): SelectorOf<IdOrderListProps> => {
   const existingSelector = createGetIdOrderListByDateSelectors.get(date);
   if (existingSelector != null) {
     return existingSelector;
   }
-  const selector: SelectorOf<IdFutureViewOrderProps> = createSelector(
+  const selector: SelectorOf<IdOrderListProps> = createSelector(
     [getTasks, getDateTaskMap, getRepeatedTaskSet], (tasks, dateTaskMap, repeatedTaskSet) => {
       const set = dateTaskMap.get(date);
-      const list: IdFutureViewOrder[] = [];
+      const list: IdOrder[] = [];
       if (set != null) {
         // date matches
         set.forEach((id) => {
           const task = tasks.get(id);
           if (task != null) {
-            const { futureViewOrder } = task;
-            list.push({ id, futureViewOrder });
+            const { order } = task;
+            list.push({ id, order });
           }
         });
       }
@@ -103,10 +102,11 @@ export const createGetIdOrderListByDate = (
         }
         const repeatedTask = task as RepeatingTask;
         if (dateMatchRepeats(dateObj, repeatedTask.date, repeatedTask.forks)) {
-          list.push({ id, futureViewOrder: -1 });
+          const { order } = repeatedTask;
+          list.push({ id, order });
         }
       });
-      return { idFutureViewOrderList: list.sort((a, b) => a.futureViewOrder - b.futureViewOrder) };
+      return { idOrderList: list.sort((a, b) => a.order - b.order) };
     },
   );
   createGetIdOrderListByDateSelectors = createGetIdOrderListByDateSelectors.set(date, selector);

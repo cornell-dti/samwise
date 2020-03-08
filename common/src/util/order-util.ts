@@ -1,18 +1,11 @@
 import { Map } from 'immutable';
 
-type IdOrder = { readonly id: string; readonly order: number };
-type Views =
-  | 'FutureView'
-  | 'FocusView';
-
 /**
  * Test whether the given list is sorted by increasing order.
  *
  * @param list the list to test whether things are sorted.
  */
-function testSorted<T extends { readonly order: number }>(
-  list: T[],
-): void {
+function testSorted<T extends { readonly order: number }>(list: T[]): void {
   for (let i = 0; i < list.length - 1; i += 1) {
     const item = list[i];
     const next = list[i + 1];
@@ -22,7 +15,7 @@ function testSorted<T extends { readonly order: number }>(
   }
 }
 
-function testOrderUnique<T extends IdOrder>(list: T[]): void {
+function testOrderUnique<T extends { readonly order: number }>(list: T[]): void {
   const orders: Set<number> = new Set<number>();
   for (let i = 0; i < list.length - 1; i += 1) {
     const { order } = list[i];
@@ -54,7 +47,7 @@ export function sortByOrder<T extends { readonly order: number }>(list: T[]): T[
  * @param destinationOrder where the dragged item goes.
  * @return the reordering map that maps id to new order.
  */
-export function computeReorderMap<T extends IdOrder>(
+export function computeReorderMap<T extends { readonly id: string; readonly order: number }>(
   originalList: T[],
   sourceOrder: number,
   destinationOrder: number,
@@ -99,18 +92,13 @@ export function computeReorderMap<T extends IdOrder>(
 export function getReorderedList<T extends { readonly id: string; readonly order: number }>(
   originalList: T[],
   reorderMap: Map<string, number>,
-  view: Views,
 ): T[] {
   const sortedList = [...originalList];
   for (let i = 0; i < sortedList.length; i += 1) {
     const element = sortedList[i];
     const newOrder = reorderMap.get(element.id);
     if (newOrder != null) {
-      if (view === 'FocusView') {
-        sortedList[i] = { ...element, order: newOrder };
-      } else {
-        sortedList[i] = { ...element, futureViewOrder: newOrder };
-      }
+      sortedList[i] = { ...element, order: newOrder };
     }
   }
   return sortedList.sort((a, b) => a.order - b.order);
@@ -139,8 +127,7 @@ export function reorder<T extends { readonly id: string; readonly order: number 
   originalList: T[],
   sourceOrder: number,
   destinationOrder: number,
-  view: Views,
 ): T[] {
   const reorderMap = computeReorderMap(originalList, sourceOrder, destinationOrder);
-  return getReorderedList(originalList, reorderMap, view);
+  return getReorderedList(originalList, reorderMap);
 }

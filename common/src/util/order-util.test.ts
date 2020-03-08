@@ -64,7 +64,7 @@ function testReorderContract(list: IdOrder[]): void {
         ordersInBetween.push(order);
       }
     });
-    const reorderedList = reorder(list, srcOrder, destOrder, 'FocusView');
+    const reorderedList = reorder(list, srcOrder, destOrder);
     const { idOrderMap: newIdOrderMap, allOrders: allNewOrders } = getInfoFromList(reorderedList);
     const getNewOrder = (oldOrder: number): number => {
       const id = originalOrderIdMap.get(oldOrder);
@@ -113,7 +113,7 @@ function testReorderContract(list: IdOrder[]): void {
 function testReorderUniqueOrders(list: IdOrder[]): void {
   const orders = list.map((l) => l.order);
   for (let i = 0; i < list.length - 1; i += 1) {
-    const reorderList = reorder(list, orders[i], orders[list.length - 1], 'FocusView');
+    const reorderList = reorder(list, orders[i], orders[list.length - 1]);
     testOrderUnique([...new Set([...reorderList, ...list])]);
   }
 }
