@@ -10,7 +10,6 @@ it('reducer works: new task creation -> subtask creation', () => {
       {
         id: '1',
         order: 4,
-        futureViewOrder: 4,
         type: 'ONE_TIME',
         name: 'test',
         tag: 'foo',
@@ -75,7 +74,6 @@ it('reducer works: subtask creation -> new task creation', () => {
       {
         id: '1',
         order: 4,
-        futureViewOrder: 4,
         type: 'ONE_TIME',
         name: 'test',
         tag: 'foo',
@@ -105,7 +103,6 @@ it('reducer works, task edit -> subtask creation', () => {
         type: 'ONE_TIME',
         id: 'foo',
         order: 1,
-        futureViewOrder: 1,
         name: 'Foo',
         tag: 'foo',
         date,
@@ -153,7 +150,6 @@ it('reducer works, subtask creation -> task edit', () => {
         type: 'ONE_TIME',
         id: 'foo',
         order: 1,
-        futureViewOrder: 1,
         name: 'Foo',
         tag: 'foo',
         date,
