@@ -27,6 +27,7 @@ function getInfoFromList(list: IdOrder[]): ListInfo {
 }
 
 function testOrderUnique(reorderList: IdOrder[]): void {
+  console.log('test');
   const { allOrders: allNewOrders } = getInfoFromList(reorderList);
   const orderSet: Set<number> = new Set<number>();
   for (const order of allNewOrders) {
