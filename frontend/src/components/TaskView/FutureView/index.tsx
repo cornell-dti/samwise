@@ -185,7 +185,7 @@ export default function FutureView(
         const dest = idOrderList[destination.index];
         const destinationOrder: number = dest == null ? sourceOrder : dest.order;
         const reorderMap = computeReorderMap(idOrderList, sourceOrder, destinationOrder);
-        applyReorder('tasks', reorderMap);
+        applyReorder('tasks', reorderMap, 'FutureView');
       }
     } else {
       // dragging to different day

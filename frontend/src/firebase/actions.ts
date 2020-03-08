@@ -425,14 +425,24 @@ export function completeTaskInFocus<T extends { readonly id: string; readonly or
  * @param reorderMap the map that maps the id of changed order items to new order ids.
  * @return a new list with updated orders.
  */
-export function applyReorder(orderFor: 'tags' | 'tasks', reorderMap: Map<string, number>): void {
+export function applyReorder(
+  orderFor: 'tags' | 'tasks',
+  reorderMap: Map<string, number>,
+  view: 'FocusView' | 'FutureView',
+): void {
   const collection = orderFor === 'tags'
     ? (id: string) => database.tagsCollection().doc(id)
     : (id: string) => database.tasksCollection().doc(id);
   const batch = database.db().batch();
-  reorderMap.forEach((order, id) => {
-    batch.update(collection(id), { order });
-  });
+  if (view === 'FocusView') {
+    reorderMap.forEach((order, id) => {
+      batch.update(collection(id), { order });
+    });
+  } else {
+    reorderMap.forEach((futureViewOrder, id) => {
+      batch.update(collection(id), { futureViewOrder });
+    });
+  }
   batch.commit().then(ignore);
 }
 

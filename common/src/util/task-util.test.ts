@@ -9,12 +9,14 @@ import {
 
 // unimportant common attributes.
 const order = 0;
+const futureViewOrder = 0;
 const name = 'name';
 type MainTaskTestCommon = {
   readonly type: 'ONE_TIME';
   readonly icalUID?: string;
   readonly id: string;
   readonly order: number;
+  readonly futureViewOrder: number;
   readonly name: string;
   readonly tag: string;
   readonly date: Date;
@@ -23,6 +25,7 @@ const testTaskCommon: MainTaskTestCommon = {
   type: 'ONE_TIME',
   id: 'random-id',
   order,
+  futureViewOrder,
   name,
   tag: 'TAG',
   date: new Date(),

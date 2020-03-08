@@ -75,8 +75,8 @@ function FocusView({ tasks, progress }: FocusViewProps): ReactElement {
     ) {
       // drag and drop completely with in completed/uncompleted region
       const reorderMap = computeReorderMap(localTasks, sourceOrder, destinationOrder);
-      setLocalTasks(getReorderedList(localTasks, reorderMap));
-      applyReorder('tasks', reorderMap);
+      setLocalTasks(getReorderedList(localTasks, reorderMap, 'FocusView'));
+      applyReorder('tasks', reorderMap, 'FocusView');
     } else if (
       source.droppableId === focusViewNotCompletedDroppableId
       && destination.droppableId === focusViewCompletedDroppableId
