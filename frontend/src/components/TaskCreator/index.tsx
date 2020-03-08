@@ -139,9 +139,21 @@ export class TaskCreator extends React.PureComponent<Props, State> {
     const commonTask = { name, tag, date, complete, inFocus: autoInFocus };
     let newTask: TaskWithoutIdOrderChildren;
     if (date instanceof Date) {
-      const { dateTaskMap } = store.getState();
+      const { dateTaskMap, tasks } = store.getState();
+      const dayOrderList: number[] = [];
       const dayTaskSet = dateTaskMap.get(date.toDateString());
+<<<<<<< HEAD
       const taskFutureViewOrder: number = dayTaskSet === undefined ? 0 : dayTaskSet.size + 1;
+=======
+      dayTaskSet?.forEach((id) => {
+        const task = tasks.get(id);
+        if (task != null) {
+          const { futureViewOrder, type, order } = task;
+          dayOrderList.push(futureViewOrder ?? type === 'MASTER_TEMPLATE' ? -1 : order);
+        }
+      });
+      const taskFutureViewOrder: number = dayOrderList.reduce((a, c) => ((a > c) ? a : c), -1) + 1;
+>>>>>>> parent of b921bab... futureViewOrder is number of tasks in a day + 1
       date.setHours(23);
       date.setMinutes(59);
       date.setSeconds(59);
