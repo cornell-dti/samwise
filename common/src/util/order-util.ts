@@ -6,7 +6,6 @@ import { Map } from 'immutable';
  * @param list the list to test whether things are sorted.
  */
 function testSorted<T extends { readonly order: number }>(list: T[]): void {
-  console.log('test');
   for (let i = 0; i < list.length - 1; i += 1) {
     const item = list[i];
     const next = list[i + 1];
@@ -17,7 +16,6 @@ function testSorted<T extends { readonly order: number }>(list: T[]): void {
 }
 
 function testOrderUnique<T extends { readonly order: number }>(list: T[]): void {
-  console.log('test');
   const orders: Set<number> = new Set<number>();
   for (let i = 0; i < list.length - 1; i += 1) {
     const { order } = list[i];
