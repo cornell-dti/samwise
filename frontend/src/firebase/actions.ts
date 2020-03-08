@@ -493,14 +493,9 @@ export const importCourseExams = (): void => {
           );
         };
         if (!Array.from(tasks.values()).some(filter)) {
-          const date = new Date(time);
-          const { dateTaskMap } = store.getState();
-          const dayTaskSet = dateTaskMap.get(date.toDateString());
-          const taskFutureViewOrder: number = dayTaskSet === undefined ? 0 : dayTaskSet.size + 1;
           const newTask: OneTimeTaskWithoutIdOrderChildren = {
             type: 'ONE_TIME',
             name: examName,
-            futureViewOrder: taskFutureViewOrder,
             tag: tag.id,
             date: t,
             complete: false,
