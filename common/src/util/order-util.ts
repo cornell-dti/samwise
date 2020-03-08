@@ -65,23 +65,29 @@ export function computeReorderMap<T extends IdOrder>(
   testSorted(originalList);
   testOrderUnique(originalList);
   let reorderMap = Map<string, number>(); // key: id, value: new order
-  const orders = originalList.map((t) => t.order);
+  const orders = originalList.map((t) => t.order).filter((t) => t >= 0);
   if (sourceOrder < destinationOrder) {
     // wants to go to later places
     originalList.forEach((element, i) => {
-      if (element.order === sourceOrder) {
-        reorderMap = reorderMap.set(element.id, destinationOrder);
-      } else if (element.order > sourceOrder && element.order <= destinationOrder) {
-        reorderMap = reorderMap.set(element.id, orders[i - 1]);
+      if (element.order !== -1) {
+        console.log(element.order);
+        if (element.order === sourceOrder) {
+          reorderMap = reorderMap.set(element.id, destinationOrder);
+        } else if (element.order > sourceOrder && element.order <= destinationOrder) {
+          reorderMap = reorderMap.set(element.id, orders[i - 1]);
+        }
       }
     });
   } else {
     // wants to go to earlier places
     originalList.forEach((element, i) => {
-      if (element.order === sourceOrder) {
-        reorderMap = reorderMap.set(element.id, destinationOrder);
-      } else if (element.order >= destinationOrder && element.order < sourceOrder) {
-        reorderMap = reorderMap.set(element.id, orders[i + 1]);
+      if (element.order !== -1) {
+        console.log(element.order);
+        if (element.order === sourceOrder) {
+          reorderMap = reorderMap.set(element.id, destinationOrder);
+        } else if (element.order >= destinationOrder && element.order < sourceOrder) {
+          reorderMap = reorderMap.set(element.id, orders[i + 1]);
+        }
       }
     });
   }
