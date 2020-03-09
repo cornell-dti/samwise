@@ -1,6 +1,6 @@
 import { createSelector, createSelectorCreator, defaultMemoize } from 'reselect';
 import { Map, Set } from 'immutable';
-import { State, Tag, Task, BannerMessageStatus, RepeatingTask } from 'common/lib/types/store-types';
+import { State, Tag, Task, BannerMessageStatus, RepeatingTaskMetadata } from 'common/lib/types/store-types';
 import { NONE_TAG } from 'common/lib/util/tag-util';
 import {
   computeTaskProgress,
@@ -100,8 +100,8 @@ export const createGetIdOrderListByDate = (
         if (task == null) {
           return;
         }
-        const repeatedTask = task as RepeatingTask;
-        if (dateMatchRepeats(dateObj, repeatedTask.date, repeatedTask.forks)) {
+        const repeatedTask = task as Task<RepeatingTaskMetadata>;
+        if (dateMatchRepeats(dateObj, repeatedTask.metadata)) {
           const { order } = repeatedTask;
           list.push({ id, order });
         }

@@ -8,8 +8,9 @@ import {
   BannerMessageIds,
   PartialMainTask,
   PartialSubTask,
-  RepeatingTask,
-  OneTimeTask,
+  TaskMetadata,
+  RepeatingTaskMetadata,
+  OneTimeTaskMetadata,
 } from 'common/lib/types/store-types';
 import { error, ignore } from 'common/lib/util/general-util';
 import {
@@ -55,12 +56,7 @@ const mergeWithOwner = <T>(obj: T): T & { readonly owner: string } => ({
 
 type WithoutIdOrder<Props> = Pick<Props, Exclude<keyof Props, 'id' | 'order'>>;
 type WithoutId<Props> = Pick<Props, Exclude<keyof Props, 'id'>>;
-type CommonTaskWithoutIdOrderChildren<T> = Pick<T, Exclude<keyof T, 'id' | 'order' | 'children'>>;
-type OneTimeTaskWithoutIdOrderChildren = CommonTaskWithoutIdOrderChildren<OneTimeTask>;
-type RepeatedTaskWithoutIdOrderChildren = CommonTaskWithoutIdOrderChildren<RepeatingTask>;
-export type TaskWithoutIdOrderChildren =
-  | OneTimeTaskWithoutIdOrderChildren
-  | RepeatedTaskWithoutIdOrderChildren;
+export type TaskWithoutIdOrderChildren<M = TaskMetadata> = Omit<Task<M>, 'id' | 'order' | 'children'>;
 
 /*
  * --------------------------------------------------------------------------------
@@ -105,7 +101,8 @@ const asyncAddTask = async (
     return { ...subtask, id: subtaskDoc.id };
   });
   const subtaskIds = createdSubTasks.map((s) => s.id);
-  const firestoreTask: FirestoreTask = { ...baseTask, ...task, children: subtaskIds };
+  const { metadata, ...rest } = task;
+  const firestoreTask: FirestoreTask = { ...baseTask, ...rest, ...metadata, children: subtaskIds };
   batch.set(database.tasksCollection().doc(newTaskId), firestoreTask);
   return { firestoreTask, createdSubTasks };
 };
@@ -125,8 +122,8 @@ export const removeAllForks = (taskId: string): void => {
   (async () => {
     const { tasks } = store.getState();
     const task = tasks.get(taskId) ?? error('bad!');
-    const repeatingTask = task as RepeatingTask;
-    const forkIds = repeatingTask.forks.map((fork) => fork.forkId);
+    const repeatingTask = task as Task<RepeatingTaskMetadata>;
+    const forkIds = repeatingTask.metadata.forks.map((fork) => fork.forkId);
     const batch = database.db().batch();
     forkIds.forEach((id) => {
       if (id !== null) {
@@ -219,13 +216,15 @@ export const forkTaskWithDiff = (
   { mainTaskEdits, subTaskCreations, subTaskEdits, subTaskDeletions }: Diff,
 ): void => {
   const { tasks } = store.getState();
-  const repeatingTaskMaster = tasks.get(taskId) as RepeatingTask;
-  const { id, order, type, children, date, forks, ...originalTaskWithoutId } = repeatingTaskMaster;
+  const repeatingTaskMaster = tasks.get(taskId) as Task<RepeatingTaskMetadata>;
+  const { id, order, children, metadata, ...originalTaskWithoutId } = repeatingTaskMaster;
   const newMainTask: TaskWithoutIdOrderChildren = {
     ...originalTaskWithoutId,
     ...mainTaskEdits,
-    date: replaceDate,
-    type: 'ONE_TIME',
+    metadata: {
+      type: 'ONE_TIME',
+      date: replaceDate,
+    },
   };
   const newSubTasks: WithoutId<SubTask>[] = [];
   subTaskCreations.forEach((s) => newSubTasks.push(s));
@@ -256,14 +255,14 @@ export const removeTask = (task: Task): void => {
   const batch = database.db().batch();
   batch.delete(database.tasksCollection().doc(task.id));
   task.children.forEach((subTask) => batch.delete(database.subTasksCollection().doc(subTask.id)));
-  if (task.type === 'ONE_TIME') {
+  if (task.metadata.type === 'ONE_TIME') {
     // remove fork mentions
     repeatedTaskSet.forEach((repeatedTaskId) => {
-      const repeatedTask = tasks.get(repeatedTaskId) as RepeatingTask | null | undefined;
+      const repeatedTask = tasks.get(repeatedTaskId) as Task<RepeatingTaskMetadata> | null;
       if (repeatedTask == null) {
         return;
       }
-      const oldForks = repeatedTask.forks;
+      const oldForks = repeatedTask.metadata.forks;
       let needUpdateFork = false;
       const newForks = [];
       for (let i = 0; i < oldForks.length; i += 1) {
@@ -281,7 +280,7 @@ export const removeTask = (task: Task): void => {
     });
   } else {
     // also delete all forks
-    task.forks.forEach((fork) => {
+    task.metadata.forks.forEach((fork) => {
       const { forkId } = fork;
       if (forkId == null) {
         return;
@@ -464,7 +463,7 @@ export const readBannerMessage = (bannerMessageId: BannerMessageIds, isRead: boo
 
 export const importCourseExams = (): void => {
   const { tags, tasks, courses } = store.getState();
-  const newTasks: OneTimeTaskWithoutIdOrderChildren[] = [];
+  const newTasks: TaskWithoutIdOrderChildren<OneTimeTaskMetadata>[] = [];
   tags.forEach((tag: Tag) => {
     if (tag.classId === null) {
       return;
@@ -479,10 +478,10 @@ export const importCourseExams = (): void => {
         const examName = `${course.subject} ${course.courseNumber} ${courseType}`;
         const t = new Date(time);
         const filter = (task: Task): boolean => {
-          if (task.type === 'MASTER_TEMPLATE') {
+          if (task.metadata.type === 'MASTER_TEMPLATE') {
             return false;
           }
-          const { name, date } = task;
+          const { name, metadata: { date } } = task;
           return (
             task.tag === tag.id
             && name === examName
@@ -493,13 +492,15 @@ export const importCourseExams = (): void => {
           );
         };
         if (!Array.from(tasks.values()).some(filter)) {
-          const newTask: OneTimeTaskWithoutIdOrderChildren = {
-            type: 'ONE_TIME',
+          const newTask: TaskWithoutIdOrderChildren<OneTimeTaskMetadata> = {
             name: examName,
             tag: tag.id,
-            date: t,
             complete: false,
             inFocus: false,
+            metadata: {
+              type: 'ONE_TIME',
+              date: t,
+            },
           };
           newTasks.push(newTask);
         }
@@ -509,8 +510,8 @@ export const importCourseExams = (): void => {
   actions.orderManager.allocateNewOrder('tasks', newTasks.length).then((startOrder: number) => {
     const newOrderedTasks = newTasks.map((t, i) => ({ ...t, order: i + startOrder }));
     const batch = database.db().batch();
-    newOrderedTasks.forEach((orderedTask) => {
-      const transformedTask: FirestoreTask = mergeWithOwner({ ...orderedTask, children: [] });
+    newOrderedTasks.forEach(({ metadata, ...rest }) => {
+      const transformedTask: FirestoreTask = mergeWithOwner({ ...rest, ...metadata, children: [] });
       batch.set(database.tasksCollection().doc(), transformedTask);
     });
     // eslint-disable-next-line no-alert

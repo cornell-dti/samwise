@@ -1,5 +1,5 @@
 import { Set } from 'immutable';
-import { Task, SubTask, TaskWithSubTasks } from '../types/store-types';
+import { Task, SubTask } from '../types/store-types';
 import {
   getFilteredCompletedInFocusTask,
   getFilteredNotCompletedInFocusTask,
@@ -11,21 +11,25 @@ import {
 const order = 0;
 const name = 'name';
 type MainTaskTestCommon = {
-  readonly type: 'ONE_TIME';
-  readonly icalUID?: string;
   readonly id: string;
   readonly order: number;
   readonly name: string;
   readonly tag: string;
-  readonly date: Date;
+  readonly metadata: {
+    readonly type: 'ONE_TIME';
+    readonly icalUID?: string;
+    readonly date: Date;
+  };
 };
 const testTaskCommon: MainTaskTestCommon = {
-  type: 'ONE_TIME',
   id: 'random-id',
   order,
   name,
   tag: 'TAG',
-  date: new Date(),
+  metadata: {
+    type: 'ONE_TIME',
+    date: new Date(),
+  },
 };
 
 const s1: SubTask = { id: 's1', order, name, complete: true, inFocus: true };
@@ -44,14 +48,14 @@ const exampleTasks: Task[] = [
 ];
 const exampleSubTasks: SubTask[] = [s1, s2, s3, s4];
 
-type FilterResult = TaskWithSubTasks | null;
+type FilterResult = Task | null;
 it('getFilteredCompletedInFocusTask works', () => {
   const expectedResults: FilterResult[] = [
-    { ...testTaskCommon, inFocus: true, complete: true, subTasks: exampleSubTasks },
-    { ...testTaskCommon, inFocus: true, complete: false, subTasks: [s1, s2] },
-    { ...testTaskCommon, inFocus: false, complete: true, subTasks: [s1, s3] },
-    { ...testTaskCommon, inFocus: false, complete: false, subTasks: [s1] },
-    { ...testTaskCommon, inFocus: true, complete: true, subTasks: [] },
+    { ...testTaskCommon, inFocus: true, complete: true, children: exampleSubTasks },
+    { ...testTaskCommon, inFocus: true, complete: false, children: [s1, s2] },
+    { ...testTaskCommon, inFocus: false, complete: true, children: [s1, s3] },
+    { ...testTaskCommon, inFocus: false, complete: false, children: [s1] },
+    { ...testTaskCommon, inFocus: true, complete: true, children: [] },
     null,
     null,
     null,
@@ -64,11 +68,11 @@ it('getFilteredCompletedInFocusTask works', () => {
 it('getFilteredNotCompletedInFocusTask works', () => {
   const expectedResults: FilterResult[] = [
     null,
-    { ...testTaskCommon, inFocus: true, complete: false, subTasks: [s3, s4] },
+    { ...testTaskCommon, inFocus: true, complete: false, children: [s3, s4] },
     null,
-    { ...testTaskCommon, inFocus: false, complete: false, subTasks: [s3] },
+    { ...testTaskCommon, inFocus: false, complete: false, children: [s3] },
     null,
-    { ...testTaskCommon, inFocus: true, complete: false, subTasks: [] },
+    { ...testTaskCommon, inFocus: true, complete: false, children: [] },
     null,
     null,
   ];
@@ -83,10 +87,10 @@ it('getFiltered(Completed|NotCompleted)InFocusTask are complementary', () => {
     const uncompletedResult = getFilteredNotCompletedInFocusTask(task);
     const allSubTasks: SubTask[] = [];
     if (completedResult) {
-      allSubTasks.push(...completedResult.subTasks);
+      allSubTasks.push(...completedResult.children);
     }
     if (uncompletedResult) {
-      allSubTasks.push(...uncompletedResult.subTasks);
+      allSubTasks.push(...uncompletedResult.children);
     }
     // ensure disjoint union property
     const subTaskIdSet = allSubTasks.reduce(

@@ -3,9 +3,7 @@ import {
   Course,
   Settings,
   SubTask,
-  CommonTask,
-  RepeatMetaData,
-  ForkedTaskMetaData,
+  Task,
   Tag,
   BannerMessageStatus,
 } from './store-types';
@@ -17,16 +15,9 @@ export type PatchTags = {
   readonly deleted: string[];
 };
 
-type OneTimeTaskWithChildrenId = Omit<CommonTask<Date>, 'children'> & {
-  readonly type: 'ONE_TIME';
+export type TaskWithChildrenId = Omit<Task, 'children'> & {
   readonly children: readonly string[];
 };
-type RepeatingTaskWithChildrenId = Omit<CommonTask<RepeatMetaData>, 'children'> & {
-  readonly type: 'MASTER_TEMPLATE';
-  readonly forks: readonly ForkedTaskMetaData[];
-  readonly children: readonly string[];
-};
-export type TaskWithChildrenId = OneTimeTaskWithChildrenId | RepeatingTaskWithChildrenId;
 
 export type PatchTasks = {
   readonly type: 'PATCH_TASKS';

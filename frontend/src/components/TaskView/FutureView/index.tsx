@@ -3,7 +3,7 @@ import { useTodayLastSecondTime } from 'hooks/time-hook';
 import { DragDropContext, DropResult } from 'react-beautiful-dnd';
 import { computeReorderMap } from 'common/lib/util/order-util';
 import { dateMatchRepeats } from 'common/lib/util/task-util';
-import { RepeatingTask } from 'common/lib/types/store-types';
+import { Task, RepeatingTaskMetadata } from 'common/lib/types/store-types';
 import FutureViewControl from './FutureViewControl';
 import FutureViewNDays from './FutureViewNDays';
 import FutureViewSevenColumns from './FutureViewSevenColumns';
@@ -174,8 +174,8 @@ export default function FutureView(
           if (task == null) {
             return;
           }
-          const repeatedTask = task as RepeatingTask;
-          if (dateMatchRepeats(dateObj, repeatedTask.date, repeatedTask.forks)) {
+          const repeatedTask = task as Task<RepeatingTaskMetadata>;
+          if (dateMatchRepeats(dateObj, repeatedTask.metadata)) {
             const { order } = repeatedTask;
             idOrderList.push({ id, order });
           }

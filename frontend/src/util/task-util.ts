@@ -1,5 +1,5 @@
 import { promptChoice, promptConfirm } from 'components/Util/Modals';
-import { Task, OneTimeTask, RepeatingTask } from 'common/lib/types/store-types';
+import { Task, OneTimeTaskMetadata, RepeatingTaskMetadata } from 'common/lib/types/store-types';
 import { removeTask, removeOneRepeatedTask } from 'firebase/actions';
 import { store } from 'store/store';
 
@@ -36,14 +36,14 @@ keyof typeof repeatedTaskEditMasterConfirm
   );
 }
 
-function removeOneTimeTask(task: OneTimeTask): void {
+function removeOneTimeTask(task: Task<OneTimeTaskMetadata>): void {
   const { tasks, repeatedTaskSet } = store.getState();
   const isFork = Array.from(repeatedTaskSet).some((repeatedTaskId): boolean => {
-    const repeatedTask = tasks.get(repeatedTaskId) as RepeatingTask | null | undefined;
+    const repeatedTask = tasks.get(repeatedTaskId) as Task<RepeatingTaskMetadata> | null;
     if (repeatedTask == null) {
       return false;
     }
-    const { forks } = repeatedTask;
+    const { forks } = repeatedTask.metadata;
     for (let i = 0; i < forks.length; i += 1) {
       const fork = forks[i];
       if (fork.forkId === task.id) {
@@ -76,7 +76,7 @@ const removeTaskPartialChoices = {
   REMOVE_ALL: 'Remove All',
 };
 
-function removeRepeatingTask(task: RepeatingTask, replaceDate: Date | null): void {
+function removeRepeatingTask(task: Task<RepeatingTaskMetadata>, replaceDate: Date | null): void {
   const prompt = 'How do you want to remove this repeated task?';
   if (replaceDate === null) {
     promptChoice(prompt, removeTaskPartialChoices).then((c) => {
@@ -109,9 +109,10 @@ function removeRepeatingTask(task: RepeatingTask, replaceDate: Date | null): voi
 }
 
 export function removeTaskWithPotentialPrompt(task: Task, replaceDate: Date | null): void {
-  if (task.type === 'ONE_TIME') {
-    removeOneTimeTask(task);
+  // The task is pattern matched on metadata only, so the following type casts are safe.
+  if (task.metadata.type === 'ONE_TIME') {
+    removeOneTimeTask(task as Task<OneTimeTaskMetadata>);
   } else {
-    removeRepeatingTask(task, replaceDate);
+    removeRepeatingTask(task as Task<RepeatingTaskMetadata>, replaceDate);
   }
 }
