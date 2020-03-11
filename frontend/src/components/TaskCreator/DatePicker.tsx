@@ -1,4 +1,4 @@
-import React, { ReactElement, SyntheticEvent, ChangeEvent } from 'react';
+import React, { ReactElement, SyntheticEvent, ChangeEvent, KeyboardEvent } from 'react';
 import Calendar from 'react-calendar';
 import { useTodayLastSecondTime, useTodayFirstSecondTime } from 'hooks/time-hook';
 import { date2String, getDateAfterXWeeks } from 'common/lib/util/datetime-util';
@@ -44,6 +44,9 @@ export default function DatePicker(props: Props): ReactElement {
 
   // Controllers
   const clickPicker = (): void => { onPickerOpened(); };
+  const pressedPicker = (e: KeyboardEvent): void => {
+    if (e.key === 'Enter' || e.key === ' ') onPickerOpened();
+  };
   const reset = (e: SyntheticEvent<HTMLElement>): void => {
     e.stopPropagation();
     onClearPicker();
@@ -101,7 +104,13 @@ export default function DatePicker(props: Props): ReactElement {
         </>
       );
     return (
-      <span role="presentation" onClick={clickPicker} className={styles.Label} style={style}>
+      <span
+        role="presentation"
+        onClick={clickPicker}
+        onKeyPress={pressedPicker}
+        className={styles.Label}
+        style={style}
+      >
         {internal}
       </span>
     );

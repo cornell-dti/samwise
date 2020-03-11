@@ -1,4 +1,4 @@
-import React, { ReactElement } from 'react';
+import React, { ReactElement, KeyboardEvent } from 'react';
 import { connect } from 'react-redux';
 import { NONE_TAG, NONE_TAG_ID } from 'common/lib/util/tag-util';
 import { State, Tag } from 'common/lib/types/store-types';
@@ -20,6 +20,9 @@ type Props = OwnProps & {
 function TagPicker({ tag, opened, onTagChange, onPickerOpened, getTag }: Props): ReactElement {
   // Controllers
   const clickPicker = (): void => { onPickerOpened(); };
+  const pressedPicker = (e: KeyboardEvent): void => {
+    if (e.key === 'Enter' || e.key === ' ') onPickerOpened();
+  };
   const reset = (): void => onTagChange(NONE_TAG_ID);
   // Nodes
   const displayedNode = (isDefault: boolean): ReactElement => {
@@ -34,7 +37,13 @@ function TagPicker({ tag, opened, onTagChange, onPickerOpened, getTag }: Props):
         </>
       );
     return (
-      <span role="presentation" onClick={clickPicker} className={styles.Label} style={style}>
+      <span
+        role="presentation"
+        onClick={clickPicker}
+        onKeyPress={pressedPicker}
+        className={styles.Label}
+        style={style}
+      >
         {internal}
       </span>
     );
