@@ -8,6 +8,7 @@ export type IconName =
   | 'clock'
   | 'grabber'
   | 'hide'
+  | 'personal-view'
   | 'pin-dark-filled'
   | 'pin-dark-outline'
   | 'pin-light-filled'
