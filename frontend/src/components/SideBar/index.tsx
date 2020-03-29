@@ -28,6 +28,7 @@ export default ({ groups, changeView }: Props): ReactElement => {
         role="presentation"
         onClick={() => changeView('personal', undefined)}
         onKeyPress={(e: KeyboardEvent) => pressedIcon(e, 'personal', undefined)}
+        className={styles.PersonalViewButton}
       >
         <SamwiseIcon iconName="personal-view" />
       </span>
@@ -40,9 +41,9 @@ export default ({ groups, changeView }: Props): ReactElement => {
           />
         ))
       }
-      <span>
-        <FontAwesomeIcon icon={faPlus} className={styles.PlusIcon} />
+      <span className={styles.PlusIcon}>
+        <FontAwesomeIcon icon={faPlus} />
       </span>
     </div>
-  )
+  );
 };
