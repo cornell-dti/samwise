@@ -18,11 +18,13 @@ import { ReactComponent as CheckedLight } from '../../assets/svgs/checked.svg';
 import { ReactComponent as Clock } from '../../assets/svgs/clock.svg';
 import { ReactComponent as Grabber } from '../../assets/svgs/grabbers.svg';
 import { ReactComponent as Hide } from '../../assets/svgs/hide.svg';
+import { ReactComponent as Hug } from '../../assets/svgs/hug.svg';
 import { ReactComponent as PersonalView } from '../../assets/svgs/personal-view.svg';
 import { ReactComponent as PinDarkFilled } from '../../assets/svgs/pin-2-dark-filled.svg';
 import { ReactComponent as PinDarkOutline } from '../../assets/svgs/pin-2-dark-outline.svg';
 import { ReactComponent as PinLightFilled } from '../../assets/svgs/pin-2-light-filled.svg';
 import { ReactComponent as PinLightOutline } from '../../assets/svgs/pin-2-light-outline.svg';
+import { ReactComponent as Poke } from '../../assets/svgs/poke.svg';
 import { ReactComponent as Repeat } from '../../assets/svgs/repeat.svg';
 import { ReactComponent as RepeatLight } from '../../assets/svgs/repeat-light.svg';
 import { ReactComponent as Settings } from '../../assets/svgs/settings.svg';
@@ -76,6 +78,10 @@ const SamwiseIcon = ({ iconName, title, ...otherProps }: Props): ReactElement =>
       SvgComponent = Hide;
       altText = 'Hide';
       break;
+    case 'hug':
+      SvgComponent = Hug;
+      altText = 'Give a hug';
+      break;
     case 'personal-view':
       SvgComponent = PersonalView;
       altText = 'Switch to Personal Samwise';
@@ -95,6 +101,10 @@ const SamwiseIcon = ({ iconName, title, ...otherProps }: Props): ReactElement =>
     case 'pin-light-outline':
       SvgComponent = PinLightOutline;
       altText = 'Pin to Focus';
+      break;
+    case 'poke':
+      SvgComponent = Poke;
+      altText = 'Poke!';
       break;
     case 'repeat':
       SvgComponent = Repeat;
