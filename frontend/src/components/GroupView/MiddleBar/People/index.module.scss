@@ -1,0 +1,26 @@
+@import '../../../../colors.scss';
+
+.People h2 {
+  font-weight: bold;
+  color: $warm-grey;
+}
+
+.AddMember {
+  height: 56px;
+  line-height: 56px;
+  font-size: 16px;
+  display: flex;
+}
+
+.AddMember svg {
+  font-size: 22px;
+  color: #bebebe;
+}
+
+.AddMember div {
+  width: 56px;
+  border-radius: 50%;
+  border: 3px solid #bebebe;
+  text-align: center;
+  margin-right: 1em;
+}
