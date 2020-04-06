@@ -1,11 +1,16 @@
-export default function icalParse(text: string): Array<Record<string, any>> {
+type Event = {
+  readonly uid: string;
+  readonly date: Date;
+  readonly name: string;
+};
+
+export default function icalParse(text: string): readonly Event[] {
   const lines = text.split('\n');
   let eventState = false;
   let uid = '';
   let date = new Date();
   let name = '';
-  const events = [];
-  // console.log(lines);
+  const events: Event[] = [];
   for (let i = 0; i < lines.length; i += 1) {
     const line = lines[i].replace(/\s/g, '');
     if (line === 'BEGIN:VEVENT') {
