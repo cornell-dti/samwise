@@ -1,5 +1,5 @@
 /* eslint-disable no-await-in-loop */
-import fetch from 'node-fetch';
+import fetch, { Response } from 'node-fetch';
 import OrderManager from 'common/lib/firebase/order-manager';
 import { QuerySnapshot, DocumentSnapshot } from 'common/lib/firebase/database';
 import icalParse from './ical-parser';
@@ -13,21 +13,19 @@ export default async function getICalLink(): Promise<void> {
     .get()
     .then((querySnapshot: QuerySnapshot) => {
       querySnapshot.forEach((doc: DocumentSnapshot) => {
+        const link: string = doc.data()?.canvasCalendar;
         try {
-          parseICal(doc.data()?.canvasCalendar, doc.id);
+          parseICal(link, doc.id);
         } catch {
-          console.log('Failed to use this calendar link');
+          // eslint-disable-next-line no-console
+          console.error(`Failed to use this calendar link: ${link}`);
         }
       });
-    })
-    .catch((error: Error) => {
-      console.log('Error getting documents: ', error);
     });
 }
 
 export function parseICal(link: string, user: string): void {
-  // @ts-ignore
-  fetch(link, { mode: 'GET' })
+  fetch(link)
     .then((response: Response) => response.text())
     .then(async (data: string) => {
       const eventArray = icalParse(data);
@@ -68,8 +66,7 @@ export function parseICal(link: string, user: string): void {
                     tag: 'THE_GLORIOUS_NONE_TAG',
                     type: 'ONE_TIME',
                     icalUID: uid,
-                  })
-                  .catch((e: Error) => console.log(e));
+                  });
               } else {
                 querySnapshot.forEach(
                   (doc: DocumentSnapshot) => {
