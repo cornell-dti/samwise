@@ -36,34 +36,16 @@ type PropsForPositionComputation = {
  */
 const computeFloatingViewStyle = (props: PropsForPositionComputation): PositionStyle => {
   const {
-    tasksHeight, inNDaysView, windowSize,
-    mainViewPosition: { width, height, top },
+    tasksHeight,
+    mainViewPosition: { width },
   } = props;
-  // Compute the height of inner content
+  // Compute the total height of inner content: the task container for a given day.
   const totalHeight = headerHeight + tasksHeight;
-  // Decide the maximum allowed height and the actual height
-  const maxAllowedHeight = inNDaysView ? 500 : 300;
-  const floatingViewHeight = Math.min(totalHeight, maxAllowedHeight);
-  // Compute ideal offset
-  let topOffset = (height - floatingViewHeight) / 2;
-  // Correct the offsets if they overflow.
-  {
-    const windowHeight = windowSize.height;
-    const topAbsolutePosition = top + topOffset;
-    if (topAbsolutePosition < 0) {
-      topOffset -= topAbsolutePosition;
-    } else {
-      const bottomAbsolutePosition = topAbsolutePosition + floatingViewHeight;
-      const diff = bottomAbsolutePosition - windowHeight;
-      if (diff > 0) {
-        topOffset -= diff;
-      }
-    }
-  }
+
   return {
     width: `${width}px`,
-    height: `${floatingViewHeight}px`,
-    top: `${topOffset}px`,
+    height: `${totalHeight}px`,
+    top: '0',
     left: '0',
   };
 };
@@ -136,6 +118,7 @@ export function FutureViewDay(props: Props & { readonly theme: Theme }): ReactEl
           calendarPosition={calendarPosition}
           doesShowCompletedTasks={doesShowCompletedTasks}
           theme={theme}
+          containerHeight={headerHeight}
         />
         {heightInfo.doesOverflow && (
           <button type="button" className={styles.MoreTasksBar} onClick={openFloatingView} tabIndex={0}>
@@ -180,6 +163,7 @@ export function FutureViewDay(props: Props & { readonly theme: Theme }): ReactEl
           calendarPosition={calendarPosition}
           doesShowCompletedTasks={doesShowCompletedTasks}
           theme={theme}
+          containerHeight={heightInfo.tasksHeight + headerHeight}
         />
       </div>
     </div>

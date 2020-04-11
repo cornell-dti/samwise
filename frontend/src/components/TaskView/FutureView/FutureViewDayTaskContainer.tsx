@@ -21,6 +21,7 @@ type OwnProps = {
   readonly doesShowCompletedTasks: boolean;
   readonly isInMainList: boolean;
   readonly onHeightChange: (doesOverflow: boolean, tasksHeight: number) => void;
+  readonly containerHeight: number;
 };
 
 type IdOrder = {
@@ -45,6 +46,7 @@ function FutureViewDayTaskContainer(
     calendarPosition,
     isInMainList,
     onHeightChange,
+    containerHeight,
   }: Props,
 ): ReactElement {
   const containerRef = React.useRef<HTMLDivElement>(null);
@@ -57,12 +59,11 @@ function FutureViewDayTaskContainer(
       return;
     }
     const tasksHeight = containerNode.scrollHeight;
-    const containerHeight = containerNode.clientHeight;
     const [prevTasksHeight, prevContainerHeight] = prevHeights;
     if (prevTasksHeight === tasksHeight && prevContainerHeight === containerHeight) {
       return;
     }
-    const vh = Math.max(document.documentElement.clientHeight, window.innerHeight || 0);
+    const vh = Math.max(document.documentElement.clientHeight, window.innerHeight || 0) * 0.6;
     setPrevHeights([tasksHeight, containerHeight]);
     onHeightChange(tasksHeight > vh && containerHeight > 0, tasksHeight);
   });
