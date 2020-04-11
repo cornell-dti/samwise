@@ -37,7 +37,6 @@ export function parseICal(link: string, user: string): void {
         // the unique id i will use is a concat of the user and event uid,
         // because uids are not unique between users.
         const uid = ev.uid + user;
-        // const endObject: Date & { tz: string } = ev.date as any;
         const endObject = new Date(ev.date);
         if (endObject == null) {
           // eslint-disable-next-line no-continue
