@@ -133,9 +133,9 @@ export default (onFirstFetched: () => void): (() => void) => {
         const taskCommon = { id, children: children.toArray() };
         let task: TaskWithChildrenId;
         if (rest.type === 'ONE_TIME') {
-          const { type, date: timestamp, ...oneTimeTaskRest } = rest;
+          const { type, date: timestamp, icalUID, ...oneTimeTaskRest } = rest;
           const date = transformDate(timestamp);
-          task = { ...taskCommon, ...oneTimeTaskRest, metadata: { type: 'ONE_TIME', date } };
+          task = { ...taskCommon, ...oneTimeTaskRest, metadata: { type: 'ONE_TIME', date, icalUID } };
         } else {
           const { type, forks: firestoreForks, date: firestoreRepeats, ...otherTaskProps } = rest;
           const forks = firestoreForks.map((firestoreFork) => ({
