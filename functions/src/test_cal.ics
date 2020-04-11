@@ -1,0 +1,353 @@
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:icalendar-ruby
+CALSCALE:GREGORIAN
+METHOD:PUBLISH
+X-WR-CALNAME:Jason Tung Calendar (Canvas)
+X-WR-CALDESC:Calendar events for the user\, Jason Tung
+BEGIN:VEVENT
+DTSTAMP:20200130T145700Z
+UID:event-assignment-84631
+DTSTART;VALUE=DATE:20200123T000000
+DTEND;VALUE=DATE:20200123T000000
+CLASS:PUBLIC
+DESCRIPTION:Do you believe in free will? Defend your position by using the
+  single most compelling argument you can think of. (1 page)
+SEQUENCE:0
+SUMMARY:Assignment 1 [PHIL1110]
+URL:https://canvas.cornell.edu/calendar?include_contexts=course_12092&month
+ =01&year=2020#assignment_84631
+X-ALT-DESC;FMTTYPE=text/html:<p>Do you believe in free will? Defend your p
+ osition by using the <em>single</em> most compelling argument you can thin
+ k of. (1 page)</p>
+END:VEVENT
+BEGIN:VEVENT
+DTSTAMP:20200208T135600Z
+UID:event-assignment-91497
+DTSTART:20200201T170500Z
+DTEND:20200201T170500Z
+CLASS:PUBLIC
+SEQUENCE:0
+SUMMARY:All-Hands Attendance #1 [COESPT_DTI]
+URL:https://canvas.cornell.edu/calendar?include_contexts=course_9523&month=
+ 02&year=2020#assignment_91497
+END:VEVENT
+BEGIN:VEVENT
+DTSTAMP:20200216T181500Z
+UID:event-assignment-override-6392
+DTSTART:20200205T182500Z
+DTEND:20200205T182500Z
+CLASS:PUBLIC
+DESCRIPTION:
+SEQUENCE:0
+SUMMARY:Pre1 Density (LAB403) [CHEM2090]
+URL:https://canvas.cornell.edu/calendar?include_contexts=course_12278&month
+ =02&year=2020#assignment_81068
+X-ALT-DESC;FMTTYPE=text/html:
+END:VEVENT
+BEGIN:VEVENT
+DTSTAMP:20200214T183400Z
+UID:event-assignment-89418
+DTSTART;VALUE=DATE:20200206T000000
+DTEND;VALUE=DATE:20200206T000000
+CLASS:PUBLIC
+DESCRIPTION:Using your own words\, explain Chisholm's argument for free wil
+ l. In your explanation you should aim to answer the following questions. W
+ hat makes Chisholm a libertarian? What makes Chisholm's view agent-causal 
+ and not event-causal? When explaining Chisholm's own argument\, try to be 
+ as objective as possible in reiterating his case (i.e. don’t criticize i
+ t until you have fully explained what he is saying). Practice summarizing 
+ his views without introducing your own opinion.\n\nOnce you have explained
+  Chisholm's argument\, you should explain whether or not you believe his a
+ rgument succeeds. If it does not\, give counterarguments to show the probl
+ ems with his account. If it does\, explain why ostensible counterarguments
+  fail to disprove his claims.\n\n (3 Pages)
+SEQUENCE:0
+SUMMARY:Assignment 2 [PHIL1110]
+URL:https://canvas.cornell.edu/calendar?include_contexts=course_12092&month
+ =02&year=2020#assignment_89418
+X-ALT-DESC;FMTTYPE=text/html:<p>Using your own words\, explain Chisholm's a
+ rgument for free will. In your explanation you should aim to answer the fo
+ llowing questions. What makes Chisholm a libertarian? What makes Chisholm'
+ s view agent-causal and not event-causal? When explaining Chisholm's own a
+ rgument\, try to be as objective as possible in reiterating his case (i.e.
+  don’t criticize it until you have fully explained what he is saying). P
+ ractice summarizing his views without introducing your own opinion.</p>\n<
+ p>Once you have explained Chisholm's argument\, you should explain whether
+  or not you believe his argument succeeds. If it does not\, give counterar
+ guments to show the problems with his account. If it does\, explain why os
+ tensible counterarguments fail to disprove his claims.</p>\n<p> (3 Pages)
+ </p>
+END:VEVENT
+BEGIN:VEVENT
+DTSTAMP:20200216T194000Z
+UID:event-assignment-override-6397
+DTSTART:20200212T182500Z
+DTEND:20200212T182500Z
+CLASS:PUBLIC
+DESCRIPTION:
+SEQUENCE:0
+SUMMARY:Post1Density (LAB403) [CHEM2090]
+URL:https://canvas.cornell.edu/calendar?include_contexts=course_12278&month
+ =02&year=2020#assignment_81372
+X-ALT-DESC;FMTTYPE=text/html:
+END:VEVENT
+BEGIN:VEVENT
+DTSTAMP:20200210T210900Z
+UID:event-assignment-override-6495
+DTSTART:20200212T182500Z
+DTEND:20200212T182500Z
+CLASS:PUBLIC
+DESCRIPTION:
+SEQUENCE:0
+SUMMARY:Pre2 CuPenny (LAB403) [CHEM2090]
+URL:https://canvas.cornell.edu/calendar?include_contexts=course_12278&month
+ =02&year=2020#assignment_81078
+X-ALT-DESC;FMTTYPE=text/html:
+END:VEVENT
+BEGIN:VEVENT
+DTSTAMP:20200208T135600Z
+UID:event-assignment-91498
+DTSTART:20200215T170500Z
+DTEND:20200215T170500Z
+CLASS:PUBLIC
+SEQUENCE:0
+SUMMARY:All-Hands Attendance #2 [COESPT_DTI]
+URL:https://canvas.cornell.edu/calendar?include_contexts=course_9523&month=
+ 02&year=2020#assignment_91498
+END:VEVENT
+BEGIN:VEVENT
+DTSTAMP:20200216T201600Z
+UID:event-assignment-override-7922
+DTSTART;VALUE=DATE:20200217T000000
+DTEND;VALUE=DATE:20200217T000000
+CLASS:PUBLIC
+DESCRIPTION:
+SEQUENCE:0
+SUMMARY:Dev Portfolio #1 (39 students) [COESPT_DTI]
+URL:https://canvas.cornell.edu/calendar?include_contexts=course_9523&month=
+ 02&year=2020#assignment_92952
+X-ALT-DESC;FMTTYPE=text/html:
+END:VEVENT
+BEGIN:VEVENT
+DTSTAMP:20200210T182100Z
+UID:event-assignment-91765
+DTSTART;VALUE=DATE:20200217T000000
+DTEND;VALUE=DATE:20200217T000000
+CLASS:PUBLIC
+DESCRIPTION:Complete your membership confirmation [here. ] (https://forms.g
+ le/PqAvwZicWjLLNShi6)You will receive a course enrollment pin 24-48 hours 
+ after completing this form. All members must be enrolled by February 21st\
+ , so if you must petition start the process now and let a lead know you a
+ re petitioning.\n\n \n\nMake sure to read the membership policy [here] (h
+ ttps://canvas.cornell.edu/courses/9523/pages/membership-agreement)!
+SEQUENCE:0
+SUMMARY:Enrollment Confirmation [COESPT_DTI]
+URL:https://canvas.cornell.edu/calendar?include_contexts=course_9523&month=
+ 02&year=2020#assignment_91765
+X-ALT-DESC;FMTTYPE=text/html:<p>Complete your membership confirmation <a hr
+ ef="https://forms.gle/PqAvwZicWjLLNShi6">here. </a>You will receive a cour
+ se enrollment pin 24-48 hours after completing this form. All members must
+  be enrolled by <strong>February 21st</strong>\, so if you must petition s
+ tart the process <em>now </em>and let a lead know you are petitioning.</p
+ >\n<p> </p>\n<p>Make sure to read the membership policy <a title="Members
+ hip Agreement" href="https://canvas.cornell.edu/courses/9523/pages/members
+ hip-agreement" data-api-endpoint="https://canvas.cornell.edu/api/v1/course
+ s/9523/pages/membership-agreement" data-api-returntype="Page">here</a>!</p
+ >
+END:VEVENT
+BEGIN:VEVENT
+DTSTAMP:20200216T195600Z
+UID:event-assignment-override-6500
+DTSTART:20200219T182500Z
+DTEND:20200219T182500Z
+CLASS:PUBLIC
+DESCRIPTION:
+SEQUENCE:0
+SUMMARY:Post2 CuPenny (LAB403) [CHEM2090]
+URL:https://canvas.cornell.edu/calendar?include_contexts=course_12278&month
+ =02&year=2020#assignment_81521
+X-ALT-DESC;FMTTYPE=text/html:
+END:VEVENT
+BEGIN:VEVENT
+DTSTAMP:20200212T014000Z
+UID:event-assignment-override-7756
+DTSTART:20200219T182500Z
+DTEND:20200219T182500Z
+CLASS:PUBLIC
+DESCRIPTION:
+SEQUENCE:0
+SUMMARY:Pre3 DetChemForm (LAB403) [CHEM2090]
+URL:https://canvas.cornell.edu/calendar?include_contexts=course_12278&month
+ =02&year=2020#assignment_81066
+X-ALT-DESC;FMTTYPE=text/html:
+END:VEVENT
+BEGIN:VEVENT
+DTSTAMP:20200210T180600Z
+UID:event-assignment-91766
+DTSTART;VALUE=DATE:20200221T000000
+DTEND;VALUE=DATE:20200221T000000
+CLASS:PUBLIC
+DESCRIPTION:This will update 24-48 hours after you enroll via Student Cente
+ r. 
+SEQUENCE:0
+SUMMARY:Being Enrolled [COESPT_DTI]
+URL:https://canvas.cornell.edu/calendar?include_contexts=course_9523&month=
+ 02&year=2020#assignment_91766
+X-ALT-DESC;FMTTYPE=text/html:<p>This will update 24-48 hours after you enro
+ ll via Student Center. </p>
+END:VEVENT
+BEGIN:VEVENT
+DTSTAMP:20200208T140500Z
+UID:event-assignment-91505
+DTSTART;VALUE=DATE:20200228T000000
+DTEND;VALUE=DATE:20200228T000000
+CLASS:PUBLIC
+SEQUENCE:0
+SUMMARY:Pre-Semester Report [COESPT_DTI]
+URL:https://canvas.cornell.edu/calendar?include_contexts=course_9523&month=
+ 02&year=2020#assignment_91505
+END:VEVENT
+BEGIN:VEVENT
+DTSTAMP:20200208T135600Z
+UID:event-assignment-91499
+DTSTART:20200229T170500Z
+DTEND:20200229T170500Z
+CLASS:PUBLIC
+SEQUENCE:0
+SUMMARY:All-Hands Attendance #3 [COESPT_DTI]
+URL:https://canvas.cornell.edu/calendar?include_contexts=course_9523&month=
+ 02&year=2020#assignment_91499
+END:VEVENT
+BEGIN:VEVENT
+DTSTAMP:20200212T012200Z
+UID:event-assignment-override-7751
+DTSTART:20200304T182500Z
+DTEND:20200304T182500Z
+CLASS:PUBLIC
+DESCRIPTION:
+SEQUENCE:0
+SUMMARY:Post3 DetChemForm (LAB403) [CHEM2090]
+URL:https://canvas.cornell.edu/calendar?include_contexts=course_12278&month
+ =03&year=2020#assignment_92111
+X-ALT-DESC;FMTTYPE=text/html:
+END:VEVENT
+BEGIN:VEVENT
+DTSTAMP:20200212T014100Z
+UID:event-assignment-override-7761
+DTSTART:20200304T182500Z
+DTEND:20200304T182500Z
+CLASS:PUBLIC
+DESCRIPTION:
+SEQUENCE:0
+SUMMARY:Pre4 OpSpec (LAB403) [CHEM2090]
+URL:https://canvas.cornell.edu/calendar?include_contexts=course_12278&month
+ =03&year=2020#assignment_81063
+X-ALT-DESC;FMTTYPE=text/html:
+END:VEVENT
+BEGIN:VEVENT
+DTSTAMP:20200212T014100Z
+UID:event-assignment-override-7766
+DTSTART:20200311T172500Z
+DTEND:20200311T172500Z
+CLASS:PUBLIC
+DESCRIPTION:
+SEQUENCE:0
+SUMMARY:Pre5 Titration (LAB403) [CHEM2090]
+URL:https://canvas.cornell.edu/calendar?include_contexts=course_12278&month
+ =03&year=2020#assignment_81069
+X-ALT-DESC;FMTTYPE=text/html:
+END:VEVENT
+BEGIN:VEVENT
+DTSTAMP:20200208T135600Z
+UID:event-assignment-91500
+DTSTART:20200314T160500Z
+DTEND:20200314T160500Z
+CLASS:PUBLIC
+SEQUENCE:0
+SUMMARY:All-Hands Attendance #4 [COESPT_DTI]
+URL:https://canvas.cornell.edu/calendar?include_contexts=course_9523&month=
+ 03&year=2020#assignment_91500
+END:VEVENT
+BEGIN:VEVENT
+DTSTAMP:20200212T014500Z
+UID:event-assignment-override-7771
+DTSTART:20200318T172500Z
+DTEND:20200318T172500Z
+CLASS:PUBLIC
+DESCRIPTION:
+SEQUENCE:0
+SUMMARY:Pre6 FeSalt (LAB403) [CHEM2090]
+URL:https://canvas.cornell.edu/calendar?include_contexts=course_12278&month
+ =03&year=2020#assignment_81065
+X-ALT-DESC;FMTTYPE=text/html:
+END:VEVENT
+BEGIN:VEVENT
+DTSTAMP:20200208T135700Z
+UID:event-assignment-91501
+DTSTART:20200321T160500Z
+DTEND:20200321T160500Z
+CLASS:PUBLIC
+SEQUENCE:0
+SUMMARY:All-Hands Attendance #5 [COESPT_DTI]
+URL:https://canvas.cornell.edu/calendar?include_contexts=course_9523&month=
+ 03&year=2020#assignment_91501
+END:VEVENT
+BEGIN:VEVENT
+DTSTAMP:20200212T014800Z
+UID:event-assignment-override-7776
+DTSTART:20200325T172500Z
+DTEND:20200325T172500Z
+CLASS:PUBLIC
+DESCRIPTION:
+SEQUENCE:0
+SUMMARY:Pre7 Mole%Ox (LAB403) [CHEM2090]
+URL:https://canvas.cornell.edu/calendar?include_contexts=course_12278&month
+ =03&year=2020#assignment_81064
+X-ALT-DESC;FMTTYPE=text/html:
+END:VEVENT
+BEGIN:VEVENT
+DTSTAMP:20200208T135700Z
+UID:event-assignment-91502
+DTSTART:20200411T160500Z
+DTEND:20200411T160500Z
+CLASS:PUBLIC
+SEQUENCE:0
+SUMMARY:All-Hands Attendance #6 [COESPT_DTI]
+URL:https://canvas.cornell.edu/calendar?include_contexts=course_9523&month=
+ 04&year=2020#assignment_91502
+END:VEVENT
+BEGIN:VEVENT
+DTSTAMP:20200208T135800Z
+UID:event-assignment-91503
+DTSTART:20200425T160500Z
+DTEND:20200425T160500Z
+CLASS:PUBLIC
+SEQUENCE:0
+SUMMARY:All-Hands Attendance #7 [COESPT_DTI]
+URL:https://canvas.cornell.edu/calendar?include_contexts=course_9523&month=
+ 04&year=2020#assignment_91503
+END:VEVENT
+BEGIN:VEVENT
+DTSTAMP:20200208T135800Z
+UID:event-assignment-91504
+DTSTART:20200502T160500Z
+DTEND:20200502T160500Z
+CLASS:PUBLIC
+SEQUENCE:0
+SUMMARY:All-Hands Attendance #8 [COESPT_DTI]
+URL:https://canvas.cornell.edu/calendar?include_contexts=course_9523&month=
+ 05&year=2020#assignment_91504
+END:VEVENT
+BEGIN:VEVENT
+DTSTAMP:20200208T140500Z
+UID:event-assignment-91506
+DTSTART;VALUE=DATE:20200505T000000
+DTEND;VALUE=DATE:20200505T000000
+CLASS:PUBLIC
+SEQUENCE:0
+SUMMARY:Post-Semester Report [COESPT_DTI]
+URL:https://canvas.cornell.edu/calendar?include_contexts=course_9523&month=
+ 05&year=2020#assignment_91506
+END:VEVENT
+END:VCALENDAR
