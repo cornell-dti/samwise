@@ -46,6 +46,7 @@ export type FirestoreMasterTask = FirestoreCommonTask & {
 export type FirestoreOneTimeTask = FirestoreCommonTask & {
   readonly type: 'ONE_TIME';
   readonly date: Date | firestore.Timestamp;
+  readonly icalUID?: string;
 };
 
 // all these tasks stay in 'samwise-tasks'
