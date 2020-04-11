@@ -12,7 +12,7 @@ export default ({ groupMemberNames }: Props): ReactElement => (
   <div className={styles.People}>
     <h2>People</h2>
     {
-      groupMemberNames.map((m, i) => <Member memberName={m} key={i} />)
+      groupMemberNames.map((m) => <Member memberName={m} key={m} />)
     }
     <div className={styles.AddMember}>
       <div>
