@@ -33,6 +33,11 @@ function FutureViewDayContent(
     theme,
   }: Props,
 ): ReactElement {
+  const containerRef = React.useRef<HTMLDivElement>(null);
+  const containerNode = containerRef.current;
+  const containerHeight = containerNode === null ? 0 : containerNode.clientHeight;
+  console.log(containerHeight);
+
   const containerStyle = (() => {
     const style = theme === 'dark' ? { color: 'white', opacity: 0.8 } : {};
     return (inNDaysView && inMainList) ? { paddingTop: '1em', ...style } : style;
