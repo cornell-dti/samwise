@@ -16,7 +16,6 @@ type Props = {
   readonly inMainList: boolean;
   readonly onHeightChange: (doesOverflow: boolean, tasksHeight: number) => void;
   readonly theme: Theme;
-  readonly containerHeight: number;
 };
 
 /**
@@ -32,7 +31,6 @@ function FutureViewDayContent(
     inMainList,
     onHeightChange,
     theme,
-    containerHeight,
   }: Props,
 ): ReactElement {
   const containerStyle = (() => {
@@ -60,7 +58,6 @@ function FutureViewDayContent(
               doesShowCompletedTasks={doesShowCompletedTasks}
               isInMainList={inMainList}
               onHeightChange={onHeightChange}
-              containerHeight={containerHeight}
             />
             {provided.placeholder}
           </div>

@@ -118,7 +118,6 @@ export function FutureViewDay(props: Props & { readonly theme: Theme }): ReactEl
           calendarPosition={calendarPosition}
           doesShowCompletedTasks={doesShowCompletedTasks}
           theme={theme}
-          containerHeight={headerHeight}
         />
         {heightInfo.doesOverflow && (
           <button type="button" className={styles.MoreTasksBar} onClick={openFloatingView} tabIndex={0}>
@@ -163,7 +162,6 @@ export function FutureViewDay(props: Props & { readonly theme: Theme }): ReactEl
           calendarPosition={calendarPosition}
           doesShowCompletedTasks={doesShowCompletedTasks}
           theme={theme}
-          containerHeight={heightInfo.tasksHeight + headerHeight}
         />
       </div>
     </div>
