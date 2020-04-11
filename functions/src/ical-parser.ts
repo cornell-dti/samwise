@@ -11,8 +11,7 @@ export default function icalParse(text: string): readonly Event[] {
   let date = new Date();
   let name = '';
   const events: Event[] = [];
-  for (let i = 0; i < lines.length; i += 1) {
-    const line = lines[i].replace(/\s/g, '');
+  lines.forEach((line: string) => {
     if (line === 'BEGIN:VEVENT') {
       eventState = true;
       uid = '';
@@ -28,7 +27,7 @@ export default function icalParse(text: string): readonly Event[] {
       });
     }
     if (eventState) {
-      const tokens = line.split(':');
+      const tokens = line.split(/:(.+)/);
       const [head, tail] = tokens;
       switch (head) {
         case 'UID':
@@ -47,7 +46,7 @@ export default function icalParse(text: string): readonly Event[] {
           break;
       }
     }
-  }
+  });
   return events;
 }
 
