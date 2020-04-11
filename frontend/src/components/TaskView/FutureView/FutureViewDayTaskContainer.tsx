@@ -63,7 +63,7 @@ function FutureViewDayTaskContainer(
       return;
     }
     const vh = Math.max(document.documentElement.clientHeight || 0);
-    const overflowThreshold = vh * 0.58;
+    const overflowThreshold = vh;
     setPrevHeights([tasksHeight, containerHeight]);
     onHeightChange(tasksHeight > overflowThreshold && overflowThreshold > 0, tasksHeight);
   });
