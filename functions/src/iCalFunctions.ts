@@ -13,6 +13,7 @@ export default async function getICalLink(): Promise<void> {
     .get()
     .then((querySnapshot: QuerySnapshot) => {
       querySnapshot.forEach((doc: DocumentSnapshot) => {
+        console.log(doc.id);
         const link: string = doc.data()?.canvasCalendar;
         try {
           parseICal(link, doc.id);
@@ -20,6 +21,7 @@ export default async function getICalLink(): Promise<void> {
           // eslint-disable-next-line no-console
           console.error(`Failed to use this calendar link: ${link}`);
         }
+        console.log('done');
       });
     });
 }
@@ -82,3 +84,5 @@ export function parseICal(link: string, user: string): void {
       }
     });
 }
+
+getICalLink();
