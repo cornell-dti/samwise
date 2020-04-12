@@ -69,11 +69,12 @@
   cursor: not-allowed;
 }
 
-.TaskIconPlaceholder {
-  width: 1.2em;
-  margin: 0 0 0 0;
-  padding-top: 3px;
-  height: 16px;
+.hide {
+  visibility: hidden;
+}
+
+.hide:hover {
+  cursor: not-allowed;
 }
 
 .TaskIconPlaceholder:hover {
