@@ -37,7 +37,6 @@ export function parseICal(link: string, user: string): void {
         // the unique id i will use is a concat of the user and event uid,
         // because uids are not unique between users.
         const uid = ev.uid + user;
-        // const endObject: Date & { tz: string } = ev.date as any;
         const endObject = new Date(ev.date);
         if (endObject == null) {
           // eslint-disable-next-line no-continue
@@ -50,7 +49,6 @@ export function parseICal(link: string, user: string): void {
           await db.tasksCollection()
             .where('icalUID', '==', uid)
             .get()
-            // eslint-disable-next-line no-loop-func
             .then(async (querySnapshot: QuerySnapshot) => {
               if (querySnapshot.size === 0) {
                 await db.tasksCollection()
