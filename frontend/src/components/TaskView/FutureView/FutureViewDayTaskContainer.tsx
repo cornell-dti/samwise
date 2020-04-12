@@ -62,8 +62,10 @@ function FutureViewDayTaskContainer(
     if (prevTasksHeight === tasksHeight && prevContainerHeight === containerHeight) {
       return;
     }
+    const vh = Math.max(document.documentElement.clientHeight || 0);
+    const overflowThreshold = vh;
     setPrevHeights([tasksHeight, containerHeight]);
-    onHeightChange(tasksHeight > containerHeight && containerHeight > 0, tasksHeight);
+    onHeightChange(tasksHeight > overflowThreshold && overflowThreshold > 0, tasksHeight);
   });
   const taskListComponent = idOrderList.map(({ id }, i) => (
     <FutureViewTask
@@ -79,11 +81,9 @@ function FutureViewDayTaskContainer(
     />
   ));
   if (isInMainList) {
-    const style = {};
     return (
       <div
         className={styles.Container}
-        style={style}
         ref={containerRef}
       >
         {taskListComponent}
