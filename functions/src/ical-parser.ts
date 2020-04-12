@@ -10,8 +10,10 @@ export default function icalParse(text: string): readonly Event[] {
   let uid = '';
   let date = new Date();
   let name = '';
-  const events: Event[] = [];
-  lines.forEach((line: string) => {
+  let events: Event[] = [];
+  lines.forEach((rawLine: string) => {
+    // must strip to remove return carriage at end of line
+    const line = rawLine.replace(/\s/g, '');
     if (line === 'BEGIN:VEVENT') {
       eventState = true;
       uid = '';
@@ -20,11 +22,11 @@ export default function icalParse(text: string): readonly Event[] {
     }
     if (line === 'END:VEVENT') {
       eventState = false;
-      events.push({
+      events = [{
         uid,
         date,
         name,
-      });
+      }, ...events];
     }
     if (eventState) {
       const tokens = line.split(/:(.+)/);
@@ -40,7 +42,7 @@ export default function icalParse(text: string): readonly Event[] {
           date = turnToLastMinute(new Date(convertDate(`${tail}Z`)));
           break;
         case 'SUMMARY':
-          name = tail;
+          [, name] = rawLine.split(/:(.+)/);
           break;
         default:
           break;
