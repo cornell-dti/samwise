@@ -49,7 +49,6 @@ export function parseICal(link: string, user: string): void {
           await db.tasksCollection()
             .where('icalUID', '==', uid)
             .get()
-            // eslint-disable-next-line no-loop-func
             .then(async (querySnapshot: QuerySnapshot) => {
               if (querySnapshot.size === 0) {
                 await db.tasksCollection()
