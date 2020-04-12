@@ -1,8 +1,9 @@
-import React, { KeyboardEvent, SyntheticEvent, ReactElement } from 'react';
+import React, { CSSProperties, KeyboardEvent, SyntheticEvent, ReactElement } from 'react';
+import { connect } from 'react-redux';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlus, faArrowAltCircleRight } from '@fortawesome/free-solid-svg-icons';
 import { randomId } from 'common/lib/util/general-util';
-import { OneTimeTask, RepeatingTask, RepeatMetaData, SubTask } from 'common/lib/types/store-types';
+import { Task, RepeatingDate, SubTask, State as StoreState, Theme } from 'common/lib/types/store-types';
 import { NONE_TAG_ID } from 'common/lib/util/tag-util';
 import { isToday } from 'common/lib/util/datetime-util';
 import TagPicker from './TagPicker';
@@ -12,12 +13,10 @@ import { addTask, TaskWithoutIdOrderChildren } from '../../firebase/actions';
 import SamwiseIcon from '../UI/SamwiseIcon';
 import styles from './index.module.css';
 
-type SimpleTaskMapper<T> = Pick<T, Exclude<keyof T, 'type' | 'order' | 'children'>>
-type OneTimeSimpleTask = SimpleTaskMapper<OneTimeTask>;
-type RepeatedSimpleTask = SimpleTaskMapper<RepeatingTask>
-type SimpleTask = OneTimeSimpleTask | RepeatedSimpleTask;
+type SimpleTask = Omit<Task, 'type' | 'order' | 'children' | 'metadata'>;
 
 type State = SimpleTask & {
+  readonly date: Date | RepeatingDate;
   readonly subTasks: SubTask[];
   readonly opened: boolean;
   readonly tagPickerOpened: boolean;
@@ -25,6 +24,8 @@ type State = SimpleTask & {
   readonly datePicked: boolean;
   readonly needToSwitchFocus: boolean;
 };
+
+type Props = { readonly theme: Theme };
 
 /**
  * The placeholder text in the main task input box.
@@ -48,10 +49,20 @@ const initialState = (): State => ({
   needToSwitchFocus: false,
 });
 
-export default class TaskCreator extends React.PureComponent<{}, State> {
+export class TaskCreator extends React.PureComponent<Props, State> {
   public readonly state: State = initialState();
 
   private addTask: HTMLInputElement | null | undefined;
+
+  private darkModeStyle: CSSProperties;
+
+  constructor(props: {theme: Theme}) {
+    super(props);
+    this.darkModeStyle = {
+      background: 'black',
+      color: 'white',
+    };
+  }
 
   /*
    * --------------------------------------------------------------------------------
@@ -127,14 +138,16 @@ export default class TaskCreator extends React.PureComponent<{}, State> {
       date.setHours(23);
       date.setMinutes(59);
       date.setSeconds(59);
-      newTask = { ...commonTask, type: 'ONE_TIME', date };
+      newTask = { ...commonTask, metadata: { type: 'ONE_TIME', date } };
     } else {
       newTask = {
         ...commonTask,
-        type: 'MASTER_TEMPLATE',
-        forks: [],
-        date,
         inFocus: false,
+        metadata: {
+          type: 'MASTER_TEMPLATE',
+          forks: [],
+          date,
+        },
       };
     }
     // Add the task to the store.
@@ -177,7 +190,7 @@ export default class TaskCreator extends React.PureComponent<{}, State> {
    *
    * @param {Date} date the new date, or null for cancel.
    */
-  private editDate = (date: Date | RepeatMetaData | null): void => {
+  private editDate = (date: Date | RepeatingDate | null): void => {
     const { datePicked } = this.state;
     if (datePicked && date === null) {
       // User cancelled, but date was already picked
@@ -314,6 +327,7 @@ export default class TaskCreator extends React.PureComponent<{}, State> {
       tag, date, inFocus, subTasks,
       tagPickerOpened, datePickerOpened, datePicked, needToSwitchFocus,
     } = this.state;
+    const { theme } = this.props;
     const existingSubTaskEditor = (
       { id, name }: SubTask, i: number, arr: SubTask[],
     ): ReactElement => {
@@ -334,6 +348,7 @@ export default class TaskCreator extends React.PureComponent<{}, State> {
             value={name}
             onChange={this.editSubTask(id)}
             onKeyDown={this.submitSubTask}
+            style={theme === 'dark' ? this.darkModeStyle : undefined}
           />
         </li>
       );
@@ -357,10 +372,10 @@ export default class TaskCreator extends React.PureComponent<{}, State> {
           onClearPicker={this.clearDate}
           onPickerOpened={this.openDatePicker}
         />
-        <button tabIndex={-1} type="submit" className={styles.SubmitNewTask}>
+        <button tabIndex={-1} type="submit" className={styles.SubmitNewTask} style={theme === 'dark' ? this.darkModeStyle : undefined}>
           <FontAwesomeIcon icon={faArrowAltCircleRight} />
         </button>
-        <div className={styles.NewTaskModal}>
+        <div className={styles.NewTaskModal} style={theme === 'dark' ? this.darkModeStyle : undefined}>
           <ul>{subTasks.map(existingSubTaskEditor)}</ul>
           <FontAwesomeIcon icon={faPlus} className={styles.PlusIcon} />
           <input
@@ -369,6 +384,7 @@ export default class TaskCreator extends React.PureComponent<{}, State> {
             value=""
             onChange={this.addNewSubTask}
             onKeyDown={this.newSubTaskKeyPress}
+            style={theme === 'dark' ? this.darkModeStyle : undefined}
           />
           <button type="button" className={styles.ResetButton} onClick={this.resetTask}>
             Clear
@@ -381,8 +397,9 @@ export default class TaskCreator extends React.PureComponent<{}, State> {
   public render(): ReactElement {
     const { name, opened } = this.state;
     const toggleDisplayStyle = opened ? {} : { display: 'none' };
+    const { theme } = this.props;
     return (
-      <div>
+      <div style={theme === 'dark' ? this.darkModeStyle : undefined}>
         <div
           onClick={this.closeNewTask}
           role="presentation"
@@ -402,6 +419,7 @@ export default class TaskCreator extends React.PureComponent<{}, State> {
             className={styles.NewTaskComponent}
             placeholder={opened ? '' : PLACEHOLDER_TEXT}
             ref={(e) => { this.addTask = e; }}
+            style={theme === 'dark' ? this.darkModeStyle : undefined}
           />
           {this.renderOtherInfoEditor()}
         </form>
@@ -409,3 +427,9 @@ export default class TaskCreator extends React.PureComponent<{}, State> {
     );
   }
 }
+
+
+const Connected = connect(
+  ({ settings: { theme } }: StoreState): Props => ({ theme }),
+)(TaskCreator);
+export default Connected;

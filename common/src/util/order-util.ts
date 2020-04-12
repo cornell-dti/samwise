@@ -15,6 +15,17 @@ function testSorted<T extends { readonly order: number }>(list: T[]): void {
   }
 }
 
+function testOrderUnique<T extends { readonly order: number }>(list: T[]): void {
+  const orders: Set<number> = new Set<number>();
+  for (let i = 0; i < list.length - 1; i += 1) {
+    const { order } = list[i];
+    if (orders.has(order)) {
+      throw new Error('Orders not unique!');
+    }
+    orders.add(order);
+  }
+}
+
 /**
  * @param list the list to sort.
  * @returns the sorted list in increasing order.
@@ -45,23 +56,25 @@ export function computeReorderMap<T extends { readonly id: string; readonly orde
     return Map.of();
   }
   testSorted(originalList);
+  testOrderUnique(originalList);
   let reorderMap = Map<string, number>(); // key: id, value: new order
+  const orders = originalList.map((t) => t.order);
   if (sourceOrder < destinationOrder) {
     // wants to go to later places
-    originalList.forEach((element) => {
+    originalList.forEach((element, i) => {
       if (element.order === sourceOrder) {
         reorderMap = reorderMap.set(element.id, destinationOrder);
       } else if (element.order > sourceOrder && element.order <= destinationOrder) {
-        reorderMap = reorderMap.set(element.id, element.order - 1);
+        reorderMap = reorderMap.set(element.id, orders[i - 1]);
       }
     });
   } else {
     // wants to go to earlier places
-    originalList.forEach((element) => {
+    originalList.forEach((element, i) => {
       if (element.order === sourceOrder) {
         reorderMap = reorderMap.set(element.id, destinationOrder);
       } else if (element.order >= destinationOrder && element.order < sourceOrder) {
-        reorderMap = reorderMap.set(element.id, element.order + 1);
+        reorderMap = reorderMap.set(element.id, orders[i + 1]);
       }
     });
   }

@@ -1,14 +1,17 @@
 import React, { ReactElement } from 'react';
 import { connect } from 'react-redux';
-import { Draggable, DragDropContext, DropResult, Droppable } from 'react-beautiful-dnd';
-import { State } from 'common/lib/types/store-types';
-import { computeReorderMap } from 'common/lib/util/order-util';
+import { State, SubTask, Task } from 'common/lib/types/store-types';
 import { CalendarPosition, FloatingPosition } from '../../Util/TaskEditors/editors-types';
 import FutureViewTask from './FutureViewTask';
 import styles from './FutureViewDayTaskContainer.module.css';
 import { useWindowSizeCallback } from '../../../hooks/window-size-hook';
 import { createGetIdOrderListByDate } from '../../../store/selectors';
-import { applyReorder } from '../../../firebase/actions';
+
+type CompoundTask = {
+  readonly original: Task;
+  readonly filteredSubTasks: SubTask[];
+  readonly color: string;
+};
 
 type OwnProps = {
   readonly date: string;
@@ -20,7 +23,10 @@ type OwnProps = {
   readonly onHeightChange: (doesOverflow: boolean, tasksHeight: number) => void;
 };
 
-type IdOrder = { readonly id: string; readonly order: number };
+type IdOrder = {
+  readonly id: string;
+  readonly order: number;
+};
 
 type Props = OwnProps & {
   readonly idOrderList: IdOrder[];
@@ -56,60 +62,32 @@ function FutureViewDayTaskContainer(
     if (prevTasksHeight === tasksHeight && prevContainerHeight === containerHeight) {
       return;
     }
+    const vh = Math.max(document.documentElement.clientHeight || 0);
+    const overflowThreshold = vh;
     setPrevHeights([tasksHeight, containerHeight]);
-    onHeightChange(tasksHeight > containerHeight && containerHeight > 0, tasksHeight);
+    onHeightChange(tasksHeight > overflowThreshold && overflowThreshold > 0, tasksHeight);
   });
-  const onDragEnd = (result: DropResult): void => {
-    const { source, destination } = result;
-    if (destination == null) {
-      // invalid drop, skip
-      return;
-    }
-    const sourceOrder: number = idOrderList[source.index].order;
-    const dest = idOrderList[destination.index];
-    const destinationOrder: number = dest == null ? sourceOrder : dest.order;
-    const reorderMap = computeReorderMap(idOrderList, sourceOrder, destinationOrder);
-    applyReorder('tasks', reorderMap);
-  };
   const taskListComponent = idOrderList.map(({ id }, i) => (
-    <Draggable key={id} draggableId={id} index={i}>
-      { (provided) => (
-        // eslint-disable-next-line react/jsx-props-no-spreading
-        <div ref={provided.innerRef} {...provided.draggableProps} {...provided.dragHandleProps}>
-          <FutureViewTask
-            key={id}
-            taskId={id}
-            containerDate={date}
-            inNDaysView={inNDaysView}
-            taskEditorPosition={taskEditorPosition}
-            calendarPosition={calendarPosition}
-            doesShowCompletedTasks={doesShowCompletedTasks}
-            isInMainList={isInMainList}
-          />
-        </div>
-      )}
-    </Draggable>
+    <FutureViewTask
+      key={id}
+      taskId={id}
+      index={i}
+      containerDate={date}
+      inNDaysView={inNDaysView}
+      taskEditorPosition={taskEditorPosition}
+      calendarPosition={calendarPosition}
+      doesShowCompletedTasks={doesShowCompletedTasks}
+      isInMainList={isInMainList}
+    />
   ));
   if (isInMainList) {
-    const style = {};
     return (
-      <DragDropContext onDragEnd={onDragEnd}>
-        <Droppable droppableId="future-view-task-droppable">
-          {(provided) => (
-            // eslint-disable-next-line react/jsx-props-no-spreading
-            <div ref={provided.innerRef} {...provided.droppableProps}>
-              <div
-                className={styles.Container}
-                style={style}
-                ref={containerRef}
-              >
-                {taskListComponent}
-              </div>
-              {provided.placeholder}
-            </div>
-          )}
-        </Droppable>
-      </DragDropContext>
+      <div
+        className={styles.Container}
+        ref={containerRef}
+      >
+        {taskListComponent}
+      </div>
     );
   }
   return <div className={styles.Container} ref={containerRef}>{taskListComponent}</div>;
@@ -118,4 +96,5 @@ function FutureViewDayTaskContainer(
 const Connected = connect(
   (state: State, { date }: OwnProps) => createGetIdOrderListByDate(date)(state),
 )(FutureViewDayTaskContainer);
+
 export default Connected;

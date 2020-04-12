@@ -3,7 +3,7 @@ import React, { ReactElement } from 'react';
 import { Draggable } from 'react-beautiful-dnd';
 import { connect } from 'react-redux';
 import { error } from 'common/lib/util/general-util';
-import { State, Task, TaskWithSubTasks } from 'common/lib/types/store-types';
+import { State, Task } from 'common/lib/types/store-types';
 import {
   getFilteredNotCompletedInFocusTask,
   getFilteredCompletedInFocusTask,
@@ -18,7 +18,7 @@ type OwnProps = {
 };
 type Props = OwnProps & {
   readonly original: Task;
-  readonly filtered: TaskWithSubTasks | null;
+  readonly filtered: Task | null;
 };
 
 function FocusTask({ id, order, filterCompleted, original, filtered }: Props): ReactElement {
@@ -42,11 +42,11 @@ function FocusTask({ id, order, filterCompleted, original, filtered }: Props): R
 }
 
 const Connected = connect(
-  ({ tasks, subTasks }: State, { id, filterCompleted }: OwnProps) => {
+  ({ tasks }: State, { id, filterCompleted }: OwnProps) => {
     const original = tasks.get(id) ?? error();
     const filtered = filterCompleted
-      ? getFilteredCompletedInFocusTask(original, subTasks)
-      : getFilteredNotCompletedInFocusTask(original, subTasks);
+      ? getFilteredCompletedInFocusTask(original)
+      : getFilteredNotCompletedInFocusTask(original);
     return { original, filtered };
   },
 )(FocusTask);

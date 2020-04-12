@@ -1,6 +1,6 @@
 import { createSelector, createSelectorCreator, defaultMemoize } from 'reselect';
 import { Map, Set } from 'immutable';
-import { State, SubTask, Tag, Task, BannerMessageStatus, RepeatingTask } from 'common/lib/types/store-types';
+import { State, Tag, Task, BannerMessageStatus, RepeatingTaskMetadata } from 'common/lib/types/store-types';
 import { NONE_TAG } from 'common/lib/util/tag-util';
 import {
   computeTaskProgress,
@@ -37,7 +37,6 @@ const getTags = ({ tags }: State): Map<string, Tag> => tags;
 const getTasks = ({ tasks }: State): Map<string, Task> => tasks;
 const getDateTaskMap = ({ dateTaskMap }: State): Map<string, Set<string>> => dateTaskMap;
 const getRepeatedTaskSet = ({ repeatedTaskSet }: State): Set<string> => repeatedTaskSet;
-const getSubTasks = ({ subTasks }: State): Map<string, SubTask> => subTasks;
 const getBannerMessageStatus = (
   { bannerMessageStatus }: State,
 ): BannerMessageStatus => bannerMessageStatus;
@@ -46,9 +45,6 @@ const getTasksId = ({ tasks }: State): Set<string> => Set(tasks.keys());
 
 export const getTagById = ({ tags }: State, id: string): Tag => tags.get(id) ?? NONE_TAG;
 export const getTaskById = ({ tasks }: State, id: string): Task | null | undefined => tasks.get(id);
-export const getSubTaskById = (
-  { subTasks }: State, id: string,
-): SubTask | null | undefined => subTasks.get(id);
 
 /*
  * --------------------------------------------------------------------------------
@@ -61,13 +57,10 @@ export const getOrderedTags: SelectorOf<Tag[]> = createSelector(
 );
 
 const getTasksInFocus: SelectorOf<Task[]> = createSelector(
-  [getTasks, getSubTasks],
-  (tasks, subTasks) => Array
+  [getTasks],
+  (tasks) => Array
     .from(tasks.values())
-    .filter((t) => t.inFocus || t.children.some((id) => {
-      const subTask = subTasks.get(id);
-      return subTask == null ? false : subTask.inFocus;
-    })),
+    .filter((t) => t.inFocus || t.children.some((subTask) => subTask.inFocus)),
 );
 
 export const getTaskIds: SelectorOf<{ readonly ids: string[] }> = createSetEqualSelector(
@@ -107,8 +100,8 @@ export const createGetIdOrderListByDate = (
         if (task == null) {
           return;
         }
-        const repeatedTask = task as RepeatingTask;
-        if (dateMatchRepeats(dateObj, repeatedTask.date, repeatedTask.forks)) {
+        const repeatedTask = task as Task<RepeatingTaskMetadata>;
+        if (dateMatchRepeats(dateObj, repeatedTask.metadata)) {
           const { order } = repeatedTask;
           list.push({ id, order });
         }
@@ -121,7 +114,7 @@ export const createGetIdOrderListByDate = (
 };
 
 export const getProgress: SelectorOf<TasksProgressProps> = createSelector(
-  [getTasksInFocus, getSubTasks], computeTaskProgress,
+  [getTasksInFocus], computeTaskProgress,
 );
 
 export type FocusViewTaskMetaData = IdOrder & {
@@ -134,11 +127,11 @@ export type FocusViewProps = {
 };
 
 export const getFocusViewProps: SelectorOf<FocusViewProps> = createSelector(
-  [getTasks, getSubTasks, getProgress], (tasks, subTasks, progress) => {
+  [getTasks, getProgress], (tasks, progress) => {
     const taskMetaDataList: FocusViewTaskMetaData[] = [];
     Array.from(tasks.values()).sort((a, b) => a.order - b.order).forEach((task) => {
-      const filteredUncompletedTask = getFilteredNotCompletedInFocusTask(task, subTasks);
-      const filteredCompletedTask = getFilteredCompletedInFocusTask(task, subTasks);
+      const filteredUncompletedTask = getFilteredNotCompletedInFocusTask(task);
+      const filteredCompletedTask = getFilteredCompletedInFocusTask(task);
       const { id, order } = task;
       if (filteredCompletedTask != null && filteredUncompletedTask != null) {
         taskMetaDataList.push({ id, order, inFocusView: true, inCompleteFocusView: true });

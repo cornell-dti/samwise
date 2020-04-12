@@ -1,6 +1,6 @@
 import React, { ReactElement } from 'react';
 import Calendar from 'react-calendar';
-import { Tag, RepeatMetaData } from 'common/lib/types/store-types';
+import { Tag, RepeatingDate } from 'common/lib/types/store-types';
 import styles from './index.module.css';
 import TagListPicker from '../../TagListPicker/TagListPicker';
 import { CalendarPosition } from '../editors-types';
@@ -8,7 +8,7 @@ import SamwiseIcon from '../../../UI/SamwiseIcon';
 
 type TagAndDate = {
   readonly tag: string;
-  readonly date: Date | RepeatMetaData;
+  readonly date: Date | RepeatingDate;
 };
 
 type Props = TagAndDate & {
@@ -16,6 +16,7 @@ type Props = TagAndDate & {
   readonly getTag: (id: string) => Tag;
   readonly displayGrabber: boolean;
   readonly calendarPosition: CalendarPosition;
+  readonly icalUID?: string;
 };
 
 type EditorDisplayStatus = {
@@ -26,7 +27,7 @@ type EditorDisplayStatus = {
 const calendarIconClass = [styles.TaskEditorIconButton, styles.TaskEditorIcon].join(' ');
 
 export default function EditorHeader(
-  { tag, date, onChange, getTag, displayGrabber, calendarPosition }: Props,
+  { tag, date, onChange, getTag, displayGrabber, calendarPosition, icalUID }: Props,
 ): ReactElement {
   const [editorDisplayStatus, setEditorDisplayStatus] = React.useState<EditorDisplayStatus>({
     doesShowTagEditor: false,
@@ -79,6 +80,8 @@ export default function EditorHeader(
       calendarType="US"
     />
   );
+  const isCanvasTask = typeof icalUID === 'string' ? icalUID !== '' : false;
+
   return (
     <div className={headerClassName}>
       {displayGrabber && (
@@ -87,12 +90,15 @@ export default function EditorHeader(
       {tagDisplay}
       {tagEditor}
       <span className={styles.TaskEditorFlexiblePadding} />
-      <SamwiseIcon
-        iconName="calendar-light"
-        className={calendarIconClass}
-        style={{ marginRight: '8px' }}
-        onClick={toggleDateEditor}
-      />
+      {isCanvasTask ? null
+        : (
+          <SamwiseIcon
+            iconName="calendar-light"
+            className={calendarIconClass}
+            style={{ marginRight: '8px' }}
+            onClick={toggleDateEditor}
+          />
+        )}
       {dateDisplay}
       {dateEditor}
     </div>
