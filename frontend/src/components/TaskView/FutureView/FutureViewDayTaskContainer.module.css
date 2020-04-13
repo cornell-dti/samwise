@@ -1,3 +1,4 @@
 .Container {
   height: calc(100% - 66px);
+  min-height: calc(100%);
 }

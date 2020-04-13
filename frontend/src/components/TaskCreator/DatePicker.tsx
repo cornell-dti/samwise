@@ -1,9 +1,9 @@
-import React, { ReactElement, SyntheticEvent, ChangeEvent } from 'react';
+import React, { ReactElement, SyntheticEvent, ChangeEvent, KeyboardEvent } from 'react';
 import Calendar from 'react-calendar';
 import { useTodayLastSecondTime, useTodayFirstSecondTime } from 'hooks/time-hook';
 import { date2String, getDateAfterXWeeks } from 'common/lib/util/datetime-util';
 import { NONE_TAG } from 'common/lib/util/tag-util';
-import { RepeatMetaData } from 'common/lib/types/store-types';
+import { RepeatingDate } from 'common/lib/types/store-types';
 import { LAST_DAY_OF_CLASS, LAST_DAY_OF_EXAMS } from 'common/lib/util/const-util';
 import { setDayOfWeek, unsetDayOfWeek, isDayOfWeekSet, DAYS_IN_WEEK } from 'common/lib/util/bitwise-util';
 import styles from './Picker.module.css';
@@ -11,8 +11,8 @@ import dateStyles from './DatePicker.module.css';
 import SamwiseIcon from '../UI/SamwiseIcon';
 
 type Props = {
-  readonly onDateChange: (date: Date | RepeatMetaData | null) => void;
-  readonly date: Date | RepeatMetaData;
+  readonly onDateChange: (date: Date | RepeatingDate | null) => void;
+  readonly date: Date | RepeatingDate;
   readonly opened: boolean;
   readonly datePicked: boolean;
   readonly onPickerOpened: () => void;
@@ -44,6 +44,9 @@ export default function DatePicker(props: Props): ReactElement {
 
   // Controllers
   const clickPicker = (): void => { onPickerOpened(); };
+  const pressedPicker = (e: KeyboardEvent): void => {
+    if (e.key === 'Enter' || e.key === ' ') onPickerOpened();
+  };
   const reset = (e: SyntheticEvent<HTMLElement>): void => {
     e.stopPropagation();
     onClearPicker();
@@ -101,7 +104,13 @@ export default function DatePicker(props: Props): ReactElement {
         </>
       );
     return (
-      <span role="presentation" onClick={clickPicker} className={styles.Label} style={style}>
+      <span
+        role="presentation"
+        onClick={clickPicker}
+        onKeyPress={pressedPicker}
+        className={styles.Label}
+        style={style}
+      >
         {internal}
       </span>
     );
@@ -368,7 +377,7 @@ export default function DatePicker(props: Props): ReactElement {
       endDate = getDateAfterXWeeks(todayLastSecond, internalDate.repeatEnd.weeks);
     }
 
-    const repData: RepeatMetaData = {
+    const repData: RepeatingDate = {
       startDate: todayFirstSecond,
       endDate,
       pattern: { type: 'WEEKLY', bitSet },

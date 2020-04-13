@@ -1,9 +1,8 @@
 /* eslint-disable no-param-reassign */
 import React, { ReactElement, ReactNode } from 'react';
-import { connect } from 'react-redux';
 import { getDateWithDateString } from 'common/lib/util/datetime-util';
 import { removeTaskWithPotentialPrompt } from 'util/task-util';
-import { State, SubTask, Task, TaskWithSubTasks } from 'common/lib/types/store-types';
+import { Task } from 'common/lib/types/store-types';
 import { useWindowSizeCallback, WindowSize } from 'hooks/window-size-hook';
 import { CalendarPosition, FloatingPosition } from './editors-types';
 import TaskEditor from './TaskEditor';
@@ -52,7 +51,7 @@ const updateFloatingEditorPosition = (
   editorPosDiv.style.width = '300px';
 };
 
-type OwnProps = {
+type Props = {
   // the position of the editor
   readonly position: FloatingPosition;
   // the initial task to edit
@@ -65,23 +64,20 @@ type OwnProps = {
   readonly calendarPosition: CalendarPosition;
 };
 
-type Props = OwnProps & { readonly fullInitialTask: TaskWithSubTasks };
-
 /**
  * FloatingTaskEditor is a component used to edit a task on the fly.
  * It is triggered from a click on a specified element.
  */
-function FloatingTaskEditor(
+export default function FloatingTaskEditor(
   {
     position,
     calendarPosition,
-    initialTask,
-    fullInitialTask: task,
+    initialTask: task,
     taskAppearedDate,
     trigger,
   }: Props,
 ): ReactElement {
-  const icalUID = initialTask.type === 'ONE_TIME' ? initialTask.icalUID : '';
+  const icalUID = task.metadata.type === 'ONE_TIME' ? task.metadata.icalUID : '';
 
   const [open, setOpen] = React.useState<boolean>(false);
 
@@ -98,7 +94,7 @@ function FloatingTaskEditor(
   const openPopup = (): void => setOpen(true);
   const closePopup = (): void => setOpen(false);
 
-  const { id: _, type, subTasks, ...mainTask } = task;
+  const { id: _, metadata, children, ...mainTask } = task;
   const actions = {
     onChange: (): void => {
       const editorPosDiv = editorRef.current;
@@ -108,8 +104,8 @@ function FloatingTaskEditor(
       updateFloatingEditorPosition(editorPosDiv, windowSize, position);
     },
     removeTask: (): void => removeTaskWithPotentialPrompt(
-      initialTask,
-      getDateWithDateString(mainTask.date instanceof Date ? mainTask.date : null, taskAppearedDate),
+      task,
+      getDateWithDateString(metadata.date instanceof Date ? metadata.date : null, taskAppearedDate),
     ),
     onSaveClicked: closePopup,
   };
@@ -121,11 +117,11 @@ function FloatingTaskEditor(
         <>
           <TaskEditor
             id={task.id}
-            type={type}
+            type={metadata.type}
             icalUID={icalUID}
             taskAppearedDate={taskAppearedDate}
-            mainTask={mainTask}
-            subTasks={subTasks}
+            mainTask={{ ...mainTask, date: metadata.date }}
+            subTasks={children}
             actions={actions}
             className={styles.Editor}
             editorRef={editorRef}
@@ -137,17 +133,3 @@ function FloatingTaskEditor(
     </>
   );
 }
-
-const Connected = connect(
-  ({ subTasks }: State, { initialTask }: OwnProps) => {
-    const { children, ...rest } = initialTask;
-    const newSubTasks: SubTask[] = [];
-    children.forEach((id) => {
-      const s = subTasks.get(id);
-      if (s != null) { newSubTasks.push(s); }
-    });
-    const fullInitialTask: TaskWithSubTasks = { ...rest, subTasks: newSubTasks };
-    return { fullInitialTask };
-  },
-)(FloatingTaskEditor);
-export default Connected;

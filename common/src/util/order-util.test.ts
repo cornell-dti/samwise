@@ -26,6 +26,15 @@ function getInfoFromList(list: IdOrder[]): ListInfo {
   return { idOrderMap, orderIdMap, allOrders };
 }
 
+function testOrderUnique(reorderList: IdOrder[]): void {
+  const { allOrders: allNewOrders } = getInfoFromList(reorderList);
+  const orderSet: Set<number> = new Set<number>();
+  for (const order of allNewOrders) {
+    expect(!orderSet.has(order));
+    orderSet.add(order);
+  }
+}
+
 /**
  * Test the contract for the reorder function (written in the function doc).
  *
@@ -101,6 +110,14 @@ function testReorderContract(list: IdOrder[]): void {
   originalAllOrders.forEach((src) => originalAllOrders.forEach((dest) => test(src, dest)));
 }
 
+function testReorderUniqueOrders(list: IdOrder[]): void {
+  const orders = list.map((l) => l.order);
+  for (let i = 0; i < list.length - 1; i += 1) {
+    const reorderList = reorder(list, orders[i], orders[list.length - 1]);
+    testOrderUnique([...new Set([...reorderList, ...list])]);
+  }
+}
+
 for (let i = 1; i < 5; i += 1) {
   const list: IdOrder[] = [];
   for (let order = 1; order <= i; order += 1) {
@@ -110,4 +127,14 @@ for (let i = 1; i < 5; i += 1) {
   it(`reorder works on lists of size ${i}`, () => {
     testReorderContract(list);
   });
+}
+
+for (let i = 0; i < 5; i += 2) {
+  const list: IdOrder[] = [];
+  for (let order = 1; order <= i; order += 2) {
+    const item = { id: String(order), order };
+    list.push(item);
+  }
+  it(`reorder works on discontinuous order lists of ${list.length - 1 - i}`,
+    () => testReorderUniqueOrders(list));
 }

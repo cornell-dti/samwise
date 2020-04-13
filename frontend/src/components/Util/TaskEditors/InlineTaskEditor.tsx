@@ -1,12 +1,12 @@
 import React, { ReactElement, useState } from 'react';
 import { removeTaskWithPotentialPrompt } from 'util/task-util';
-import { Task, TaskWithSubTasks } from 'common/lib/types/store-types';
+import { Task } from 'common/lib/types/store-types';
 import TaskEditor from './TaskEditor';
 import { CalendarPosition } from './editors-types';
 
 type Props = {
   readonly original: Task;
-  readonly filtered: TaskWithSubTasks;
+  readonly filtered: Task;
   readonly calendarPosition: CalendarPosition;
   readonly className?: string; // additional class names applied to the editor.
 };
@@ -19,9 +19,9 @@ export default function InlineTaskEditor(
 ): ReactElement {
   const [disabled, setDisabled] = useState(true);
   const { id } = original;
-  const { id: _, type, subTasks, ...mainTask } = filtered;
-  const icalUID = original.type === 'ONE_TIME' ? original.icalUID : '';
-  const taskAppearedDate = mainTask.date instanceof Date ? mainTask.date.toDateString() : null;
+  const { id: _, metadata, children, ...mainTask } = filtered;
+  const icalUID = original.metadata.type === 'ONE_TIME' ? original.metadata.icalUID : '';
+  const taskAppearedDate = metadata.date instanceof Date ? metadata.date.toDateString() : null;
   // To un-mount the editor when finished editing.
   const onFocus = (): void => setDisabled(false);
   const onBlur = (): void => setDisabled(true);
@@ -32,17 +32,17 @@ export default function InlineTaskEditor(
   return (
     <TaskEditor
       id={id}
-      type={type}
+      type={metadata.type}
       icalUID={icalUID}
       taskAppearedDate={taskAppearedDate}
       className={className}
-      mainTask={mainTask}
-      subTasks={subTasks}
+      mainTask={{ ...mainTask, date: metadata.date }}
+      subTasks={children}
       actions={actions}
       displayGrabber
       calendarPosition={calendarPosition}
       newSubTaskAutoFocused={!original.inFocus}
-      newSubTaskDisabled={disabled}
+      active={disabled}
       onFocus={onFocus}
       onBlur={onBlur}
     />

@@ -1,5 +1,12 @@
 import { Map } from 'immutable';
-import { Course, Settings, SubTask, Tag, Task, BannerMessageStatus } from './store-types';
+import {
+  Course,
+  Settings,
+  SubTask,
+  Task,
+  Tag,
+  BannerMessageStatus,
+} from './store-types';
 
 export type PatchTags = {
   readonly type: 'PATCH_TAGS';
@@ -8,10 +15,14 @@ export type PatchTags = {
   readonly deleted: string[];
 };
 
+export type TaskWithChildrenId = Omit<Task, 'children'> & {
+  readonly children: readonly string[];
+};
+
 export type PatchTasks = {
   readonly type: 'PATCH_TASKS';
-  readonly created: Task[];
-  readonly edited: Task[];
+  readonly created: TaskWithChildrenId[];
+  readonly edited: TaskWithChildrenId[];
   readonly deleted: string[];
 };
 

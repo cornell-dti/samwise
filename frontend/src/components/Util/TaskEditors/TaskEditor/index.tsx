@@ -26,7 +26,7 @@ type DefaultProps = {
   readonly displayGrabber?: boolean;
   readonly className?: string;
   readonly newSubTaskAutoFocused?: boolean; // whether to auto focus the new subtask
-  readonly newSubTaskDisabled?: boolean; // whether to disable new subtask creation
+  readonly active?: boolean; // whether the task is actively being edited.
   readonly onFocus?: () => void; // when the editor gets focus
   readonly onBlur?: () => void; // when the editor loses focus
   readonly editorRef?: { current: HTMLFormElement | null }; // the ref of the editor
@@ -77,7 +77,7 @@ function TaskEditor(
     getTag,
     className,
     newSubTaskAutoFocused,
-    newSubTaskDisabled,
+    active,
     onFocus,
     onBlur,
     editorRef,
@@ -94,7 +94,7 @@ function TaskEditor(
     dispatchEditSubTask,
     dispatchDeleteSubTask,
     reset,
-  } = useTaskDiffReducer(initMainTask, initSubTasks, onChange ?? ignore);
+  } = useTaskDiffReducer(initMainTask, initSubTasks, active ?? false, onChange ?? ignore);
 
   const { name, tag, date, complete, inFocus } = mainTask;
 
@@ -269,7 +269,7 @@ function TaskEditor(
         ))}
         <div
           className={styles.SubtaskHide}
-          style={newSubTaskDisabled === true ? { maxHeight: 0 } : undefined}
+          style={active === true ? { maxHeight: 0 } : undefined}
         >
           <NewSubTaskEditor
             onFirstType={handleCreatedNewSubtask}

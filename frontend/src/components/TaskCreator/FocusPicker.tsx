@@ -1,4 +1,4 @@
-import React, { ReactElement, SyntheticEvent } from 'react';
+import React, { ReactElement, SyntheticEvent, KeyboardEvent } from 'react';
 import styles from './Picker.module.css';
 import SamwiseIcon from '../UI/SamwiseIcon';
 
@@ -12,10 +12,21 @@ export default function FocusPicker({ pinned, onPinChange }: Props): ReactElemen
     e.stopPropagation();
     onPinChange(!pinned);
   };
+  const pressedPicker = (e: KeyboardEvent): void => {
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.stopPropagation();
+      onPinChange(!pinned);
+    }
+  };
   const pinIconName = pinned ? 'pin-dark-filled' : 'pin-dark-outline';
   return (
     <div className={styles.Main}>
-      <span role="presentation" onClick={clickPicker} className={styles.Label}>
+      <span
+        role="presentation"
+        onClick={clickPicker}
+        onKeyPress={pressedPicker}
+        className={styles.Label}
+      >
         <SamwiseIcon iconName={pinIconName} className={styles.CenterIcon} />
       </span>
     </div>

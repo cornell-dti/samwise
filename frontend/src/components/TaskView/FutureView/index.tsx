@@ -1,14 +1,22 @@
 import React, { ReactElement } from 'react';
 import { useTodayLastSecondTime } from 'hooks/time-hook';
+import { DragDropContext, DropResult } from 'react-beautiful-dnd';
+import { computeReorderMap } from 'common/lib/util/order-util';
+import { dateMatchRepeats } from 'common/lib/util/task-util';
+import { Task, RepeatingTaskMetadata } from 'common/lib/types/store-types';
 import FutureViewControl from './FutureViewControl';
 import FutureViewNDays from './FutureViewNDays';
 import FutureViewSevenColumns from './FutureViewSevenColumns';
+
 import {
   FutureViewContainerType,
   FutureViewDisplayOption,
   SimpleDate,
 } from './future-view-types';
 import { useMappedWindowSize } from '../../../hooks/window-size-hook';
+import { editMainTask, applyReorder } from '../../../firebase/actions';
+import { store } from '../../../store/store';
+
 
 export type FutureViewConfig = {
   readonly displayOption: FutureViewDisplayOption;
@@ -109,6 +117,8 @@ function buildDaysInFutureView(
   return days;
 }
 
+type IdOrder = { readonly id: string; readonly order: number };
+
 type Props = {
   readonly config: FutureViewConfig;
   readonly onConfigChange: (config: FutureViewConfig) => void;
@@ -136,6 +146,57 @@ export default function FutureView(
   const daysContainer = containerType === 'N_DAYS'
     ? <FutureViewNDays days={days} doesShowCompletedTasks={doesShowCompletedTasks} />
     : <FutureViewSevenColumns days={days} doesShowCompletedTasks={doesShowCompletedTasks} />;
+  const onDragEnd = (result: DropResult): void => {
+    const { source, destination, draggableId } = result;
+    if (destination == null) {
+      // invalid drop, skip
+      return;
+    }
+    // dragging to same day
+    if (source.droppableId === destination.droppableId) {
+      const { dateTaskMap, tasks, repeatedTaskSet } = store.getState();
+      const date = source.droppableId;
+      const dayTaskSet = dateTaskMap.get(date);
+      if (dayTaskSet != null) {
+        const idOrderList: IdOrder[] = [];
+
+        dayTaskSet.forEach((id) => {
+          const task = tasks.get(id);
+          if (task != null) {
+            const { order } = task;
+            idOrderList.push({ id, order });
+          }
+        });
+
+        const dateObj = new Date(source.droppableId);
+        repeatedTaskSet.forEach((id) => {
+          const task = tasks.get(id);
+          if (task == null) {
+            return;
+          }
+          const repeatedTask = task as Task<RepeatingTaskMetadata>;
+          if (dateMatchRepeats(dateObj, repeatedTask.metadata)) {
+            const { order } = repeatedTask;
+            idOrderList.push({ id, order });
+          }
+        });
+
+        idOrderList.sort((a, b) => a.order - b.order);
+        const sourceOrder: number = idOrderList[source.index].order;
+        const dest = idOrderList[destination.index];
+        const destinationOrder: number = dest == null ? sourceOrder : dest.order;
+        const reorderMap = computeReorderMap(idOrderList, sourceOrder, destinationOrder);
+        applyReorder('tasks', reorderMap);
+      }
+    } else {
+      // dragging to different day
+      editMainTask(
+        draggableId,
+        null,
+        { date: new Date(destination.droppableId) },
+      );
+    }
+  };
   return (
     <div>
       <FutureViewControl
@@ -144,7 +205,9 @@ export default function FutureView(
         offset={offset}
         onChange={controlOnChange}
       />
-      {daysContainer}
+      <DragDropContext onDragEnd={onDragEnd}>
+        {daysContainer}
+      </DragDropContext>
     </div>
   );
 }

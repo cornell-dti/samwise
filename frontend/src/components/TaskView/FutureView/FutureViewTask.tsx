@@ -11,6 +11,7 @@ import { useMappedWindowSize } from 'hooks/window-size-hook';
 import { NONE_TAG } from 'common/lib/util/tag-util';
 import SamwiseIcon from 'components/UI/SamwiseIcon';
 import { removeTaskWithPotentialPrompt } from 'util/task-util';
+import { Draggable } from 'react-beautiful-dnd';
 import FutureViewSubTask from './FutureViewSubTask';
 import styles from './FutureViewTask.module.css';
 
@@ -22,6 +23,7 @@ type CompoundTask = {
 
 type OwnProps = {
   readonly taskId: string;
+  readonly index: number;
   readonly containerDate: string;
   readonly inNDaysView: boolean;
   readonly taskEditorPosition: FloatingPosition;
@@ -39,7 +41,14 @@ type Props = OwnProps & {
  */
 function FutureViewTask(
   {
-    compoundTask, containerDate, inNDaysView, taskEditorPosition, isInMainList, calendarPosition,
+    taskId,
+    index,
+    compoundTask,
+    containerDate,
+    inNDaysView,
+    taskEditorPosition,
+    isInMainList,
+    calendarPosition,
   }: Props,
 ): ReactElement | null {
   const isSmallScreen = useMappedWindowSize(({ width }) => width <= 768);
@@ -49,7 +58,7 @@ function FutureViewTask(
   }
   const { original, filteredSubTasks, color } = compoundTask;
 
-  const icalUID = original.type === 'ONE_TIME' ? original.icalUID : '';
+  const icalUID = original.metadata.type === 'ONE_TIME' ? original.metadata.icalUID : '';
   const isCanvasTask = typeof icalUID === 'string' ? icalUID !== '' : false;
 
   /**
@@ -74,9 +83,9 @@ function FutureViewTask(
   };
 
   const replaceDateForFork = getDateWithDateString(
-    original.type === 'ONE_TIME' ? original.date : null, containerDate,
+    original.metadata.type === 'ONE_TIME' ? original.metadata.date : null, containerDate,
   );
-  const replaceDateForForkOpt = original.type === 'ONE_TIME' ? null : replaceDateForFork;
+  const replaceDateForForkOpt = original.metadata.type === 'ONE_TIME' ? null : replaceDateForFork;
   const TaskCheckBox = (): ReactElement => {
     const { id, complete } = original;
     const onChange = (): void => editMainTask(id, replaceDateForForkOpt, { complete: !complete });
@@ -92,6 +101,9 @@ function FutureViewTask(
     const handler = (): void => removeTaskWithPotentialPrompt(original, replaceDateForFork);
     return <SamwiseIcon iconName="x-light" className={styles.TaskIcon} onClick={handler} />;
   };
+
+  const Placeholder = (): ReactElement => <div className={styles.hide}><RemoveTaskIcon /></div>;
+
   const PinIcon = (): ReactElement => {
     const { id, inFocus } = original;
     const handler = (): void => editMainTask(id, replaceDateForForkOpt, { inFocus: !inFocus });
@@ -104,7 +116,11 @@ function FutureViewTask(
     );
   };
   const DragIcon = (): ReactElement => <SamwiseIcon iconName="grabber" className={styles.TaskIcon} />;
-
+  const RepeatingIcon = (): ReactElement => <SamwiseIcon iconName="repeat-light" className={styles.TaskIconNoHover} />;
+  let Icon = (): ReactElement => <RepeatingIcon />;
+  if (compoundTask.original.metadata.type === 'ONE_TIME') {
+    Icon = isCanvasTask ? Placeholder : DragIcon;
+  }
   const renderMainTaskInfo = (simplified = false): ReactElement => {
     if (simplified && isInMainList) {
       const style = { backgroundColor: color, height: '25px' };
@@ -112,11 +128,11 @@ function FutureViewTask(
     }
     return (
       <div className={styles.TaskMainWrapper} style={{ backgroundColor: color }}>
-        <DragIcon />
+        <Icon />
         <TaskCheckBox />
         <TaskName />
         <PinIcon />
-        {isCanvasTask ? null : <RemoveTaskIcon />}
+        {isCanvasTask ? <Placeholder /> : <RemoveTaskIcon />}
       </div>
     );
   };
@@ -131,7 +147,7 @@ function FutureViewTask(
     />
   ));
 
-  const { date, complete } = original;
+  const { metadata: { date }, complete } = original;
   const overdueComponentOpt = (date < getTodayAtZeroAM() && !complete) && (
     <OverdueAlert target="future-view-task" />
   );
@@ -164,18 +180,30 @@ function FutureViewTask(
     );
   };
   return (
-    <FloatingTaskEditor
-      position={taskEditorPosition}
-      calendarPosition={calendarPosition}
-      initialTask={original}
-      taskAppearedDate={containerDate}
-      trigger={trigger}
-    />
+    <Draggable
+      key={taskId}
+      draggableId={taskId}
+      index={index}
+      isDragDisabled={compoundTask.original.metadata.type === 'MASTER_TEMPLATE' || isCanvasTask}
+    >
+      {(provided) => (
+        // eslint-disable-next-line react/jsx-props-no-spreading
+        <div ref={provided.innerRef} {...provided.draggableProps} {...provided.dragHandleProps}>
+          <FloatingTaskEditor
+            position={taskEditorPosition}
+            calendarPosition={calendarPosition}
+            initialTask={original}
+            taskAppearedDate={containerDate}
+            trigger={trigger}
+          />
+        </div>
+      )}
+    </Draggable>
   );
 }
 
 const getCompoundTask = (
-  { tasks, subTasks, tags }: State, { taskId, doesShowCompletedTasks }: OwnProps,
+  { tasks, tags }: State, { taskId, doesShowCompletedTasks }: OwnProps,
 ): CompoundTask | null => {
   const original = tasks.get(taskId);
   if (original == null) {
@@ -183,22 +211,14 @@ const getCompoundTask = (
   }
   const { color } = tags.get(original.tag) ?? NONE_TAG;
   if (doesShowCompletedTasks) {
-    let filteredSubTasks: SubTask[] = [];
-    original.children.forEach((subTaskId) => {
-      const s = subTasks.get(subTaskId);
-      if (s != null) { filteredSubTasks.push(s); }
-    });
+    let filteredSubTasks = [...original.children];
     filteredSubTasks = filteredSubTasks.sort((a, b) => a.order - b.order);
     return { original, filteredSubTasks, color };
   }
   if (original.complete) {
     return null;
   }
-  let filteredSubTasks: SubTask[] = [];
-  original.children.forEach((subTaskId) => {
-    const s = subTasks.get(subTaskId);
-    if (s != null && !s.complete) { filteredSubTasks.push(s); }
-  });
+  let filteredSubTasks: SubTask[] = [...original.children];
   filteredSubTasks = filteredSubTasks.sort((a, b) => a.order - b.order);
   return { original, filteredSubTasks, color };
 };

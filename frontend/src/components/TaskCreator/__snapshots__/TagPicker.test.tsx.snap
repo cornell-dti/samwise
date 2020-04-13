@@ -7,6 +7,7 @@ exports[`TagPicker(THE_GLORIOUS_NONE_TAG, false) matches snapshot 1`] = `
   <span
     className="Label"
     onClick={[Function]}
+    onKeyPress={[Function]}
     role="presentation"
     style={Object {}}
   >
@@ -36,6 +37,7 @@ exports[`TagPicker(THE_GLORIOUS_NONE_TAG, true) matches snapshot 1`] = `
   <span
     className="Label"
     onClick={[Function]}
+    onKeyPress={[Function]}
     role="presentation"
     style={Object {}}
   >
@@ -125,6 +127,7 @@ exports[`TagPicker(bar, false) matches snapshot 1`] = `
   <span
     className="Label"
     onClick={[Function]}
+    onKeyPress={[Function]}
     role="presentation"
     style={
       Object {
@@ -155,6 +158,7 @@ exports[`TagPicker(bar, true) matches snapshot 1`] = `
   <span
     className="Label"
     onClick={[Function]}
+    onKeyPress={[Function]}
     role="presentation"
     style={
       Object {
@@ -245,6 +249,7 @@ exports[`TagPicker(baz, false) matches snapshot 1`] = `
   <span
     className="Label"
     onClick={[Function]}
+    onKeyPress={[Function]}
     role="presentation"
     style={
       Object {
@@ -275,6 +280,7 @@ exports[`TagPicker(baz, true) matches snapshot 1`] = `
   <span
     className="Label"
     onClick={[Function]}
+    onKeyPress={[Function]}
     role="presentation"
     style={
       Object {
@@ -365,6 +371,7 @@ exports[`TagPicker(foo, false) matches snapshot 1`] = `
   <span
     className="Label"
     onClick={[Function]}
+    onKeyPress={[Function]}
     role="presentation"
     style={
       Object {
@@ -395,6 +402,7 @@ exports[`TagPicker(foo, true) matches snapshot 1`] = `
   <span
     className="Label"
     onClick={[Function]}
+    onKeyPress={[Function]}
     role="presentation"
     style={
       Object {
