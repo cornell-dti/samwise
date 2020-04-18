@@ -28,6 +28,7 @@ export type OneTimeTaskMetadata = {
   readonly type: 'ONE_TIME';
   readonly date: Date;
   icalUID?: string;
+  group?: string; // documentid for associated group
 };
 
 export type RepeatingPattern =

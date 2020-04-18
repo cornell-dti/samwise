@@ -47,7 +47,14 @@ export type FirestoreOneTimeTask = FirestoreCommonTask & {
   readonly type: 'ONE_TIME';
   readonly date: Date | firestore.Timestamp;
   readonly icalUID?: string;
+  readonly group?: string;
 };
+
+export type Group = {
+  readonly name: string;
+  readonly members: string[];
+  readonly deadline: Date;
+}
 
 // all these tasks stay in 'samwise-tasks'
 // FirestoreLegacyTask should eventually be converted to FirestoreOneTimeTask.
