@@ -56,8 +56,19 @@ fs.copyFileSync('.firebaserc', 'temp/.firebaserc');
 
 // Step 3: Deploy
 
-console.log(spawnSync(__dirname +"/node_modules/.bin/firebase", ['use', 'default'], { cwd: 'temp', shell: true }).stdout.toString());
-console.log(spawnSync(__dirname +"/node_modules/.bin/firebase", ['deploy', '--only', 'functions'], { cwd: 'temp', shell: true }).stdout.toString());
+const token = process.argv[2] ? process.argv[2] : 'default';
+const project = process.argv[3];
+
+function firebase(args) {
+  console.log(spawnSync(`${__dirname}/node_modules/.bin/firebase`, args, { cwd: 'temp', shell: true }).stdout.toString());
+}
+
+firebase(['use', 'default']);
+if (!project) {
+  firebase(['deploy', '--only', 'functions']);
+} else {
+  firebase(['deploy', `--token=${token}`, '--non-interactive', '--only', 'functions']);
+}
 
 // Step 4: Cleanup
 fs.rmdirSync('temp', { recursive: true });
