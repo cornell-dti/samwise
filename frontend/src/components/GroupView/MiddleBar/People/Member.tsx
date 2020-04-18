@@ -1,5 +1,7 @@
 import React, { ReactElement } from 'react';
 import SamwiseIcon from 'components/UI/SamwiseIcon';
+import { faPlus } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import styles from './Member.module.scss';
 
 type Props = {
@@ -12,7 +14,10 @@ export default ({ memberName }: Props): ReactElement => {
     <div className={styles.Member}>
       <div className={styles.Initials}>{initials}</div>
       <p>{memberName}</p>
-      <SamwiseIcon className={styles.MemberIcon} iconName="poke" />
+      <div className={styles.Plus}>
+        <FontAwesomeIcon icon={faPlus} />
+      </div>
+      <SamwiseIcon className={styles.MemberIcon} iconName="bell" />
       <SamwiseIcon className={styles.MemberIcon} iconName="hug" />
     </div>
   );

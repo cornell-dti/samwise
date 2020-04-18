@@ -11,11 +11,13 @@ import React, {
 } from 'react';
 import { IconName } from './samwise-icon-types';
 import { ReactComponent as Alert } from '../../assets/svgs/alert.svg';
+import { ReactComponent as Bell } from '../../assets/svgs/bell.svg';
 import { ReactComponent as CalendarDark } from '../../assets/svgs/calendar-dark.svg';
 import { ReactComponent as CalendarLight } from '../../assets/svgs/calendar-light.svg';
 import { ReactComponent as CheckedDark } from '../../assets/svgs/checked-dark.svg';
 import { ReactComponent as CheckedLight } from '../../assets/svgs/checked.svg';
 import { ReactComponent as Clock } from '../../assets/svgs/clock.svg';
+import { ReactComponent as Exit } from '../../assets/svgs/exit.svg';
 import { ReactComponent as Grabber } from '../../assets/svgs/grabbers.svg';
 import { ReactComponent as Hide } from '../../assets/svgs/hide.svg';
 import { ReactComponent as Hug } from '../../assets/svgs/hug.svg';
@@ -50,6 +52,10 @@ const SamwiseIcon = ({ iconName, title, ...otherProps }: Props): ReactElement =>
       SvgComponent = Alert;
       altText = 'alert';
       break;
+    case 'bell':
+      SvgComponent = Bell;
+      altText = 'Nudge!';
+      break;
     case 'calendar-dark':
       SvgComponent = CalendarDark;
       altText = 'Due date';
@@ -69,6 +75,10 @@ const SamwiseIcon = ({ iconName, title, ...otherProps }: Props): ReactElement =>
     case 'clock':
       SvgComponent = Clock;
       altText = 'clock';
+      break;
+    case 'exit':
+      SvgComponent = Exit;
+      altText = 'Leave group';
       break;
     case 'grabber':
       SvgComponent = Grabber;

@@ -2,24 +2,25 @@
 
 .Member {
   display: flex;
-  height: 56px;
+  height: 40px;
   margin: 1em 0;
-  line-height: 56px;
+  line-height: 40px;
 }
 
 .Initials {
-  height: 56px;
-  width: 56px;
+  height: 40px;
+  width: 40px;
   border-radius: 50%;
   background-color: #D7B6DC;
   text-align: center;
-  font-size: 22px;
-  line-height: 56px;
+  font-size: 16px;
+  line-height: 40px;
   color: white;
 }
 
 .Member p {
   font-size: 16px;
+  color: #3D3D3D;
   flex: 5;
   margin: 0 1em;
 }
@@ -27,5 +28,13 @@
 .MemberIcon {
   flex: 1;
   font-size: 16px;
+  margin: 0 0.25em;
+}
+
+.Plus {
+  position: relative;
+  bottom: 3px;
+  color: $sky-blue;
+  text-align: center;
   margin: 0 0.25em;
 }

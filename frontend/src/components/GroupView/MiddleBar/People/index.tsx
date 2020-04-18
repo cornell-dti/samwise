@@ -1,6 +1,7 @@
 import React, { ReactElement } from 'react';
 import { faPlus } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import SamwiseIcon from 'components/UI/SamwiseIcon';
 import Member from './Member';
 import styles from './index.module.scss';
 
@@ -20,5 +21,9 @@ export default ({ groupMemberNames }: Props): ReactElement => (
       </div>
       Add member
     </div>
+    <span className={styles.LeaveGroup}>
+      <SamwiseIcon iconName="exit" />
+      <p>Leave Group</p>
+    </span>
   </div>
 );
