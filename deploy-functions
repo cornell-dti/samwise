@@ -7,6 +7,7 @@
 # ./deploy-functions
 
 set -x
+set -e
 
 # Step 1: Build All Projects
 
@@ -19,13 +20,12 @@ mkdir temp
 mkdir temp/functions
 
 # Copy Code For Deployment
-cp -R functions/compiled/ temp/functions/
+cp -R functions/compiled/. temp/functions/
 rm -rf functions/compiled/
 echo '{
   "name": "functions",
   "private": true,
   "version": "0.1.0",
-  "main": "index.js",
   "engines": {
     "node": "8"
   }
