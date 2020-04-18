@@ -9,6 +9,7 @@ export type IconName =
   | 'grabber'
   | 'hide'
   | 'hug'
+  | 'pencil'
   | 'personal-view'
   | 'pin-dark-filled'
   | 'pin-dark-outline'
