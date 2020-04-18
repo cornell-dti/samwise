@@ -1,0 +1,14 @@
+@import '../../../colors.scss';
+
+.RightView {
+  margin: 0 1em;
+  display: flex;
+  flex-direction: column;
+}
+
+h2 {
+  color: #808080;
+  font-size: 26px;
+  font-family: DM Sans;
+  font-weight: bold;
+}
