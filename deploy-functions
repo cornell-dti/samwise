@@ -20,7 +20,7 @@ mkdir temp
 mkdir temp/functions
 
 # Copy Code For Deployment
-cp -R functions/compiled/ temp/functions/
+cp -R functions/compiled/. temp/functions/
 rm -rf functions/compiled/
 echo '{
   "name": "functions",
