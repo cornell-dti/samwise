@@ -13,12 +13,10 @@ const { spawnSync } = require('child_process');
 const fs = require('fs');
 const path = require('path');
 
-console.log('This script buffers output until the end of a command before printing. If it looks like it hangs for a few minutes at a time, be patient.');
-
 // Step 1: Build projects
 
-console.log(spawnSync('yarn', [], { shell: true }).stdout.toString());
-console.log(spawnSync('yarn', ['workspace', 'functions', 'build'], { shell: true }).stdout.toString());
+spawnSync('yarn', [], { shell: true, stdio: [process.stdin, process.stdout, process.stderr] });
+spawnSync('yarn', ['workspace', 'functions', 'build'], { shell: true, stdio: [process.stdin, process.stdout, process.stderr] });
 
 // Step 2: Make mirror folders for deployment
 
@@ -66,7 +64,7 @@ const project = process.argv[3];
  * Run the firebase CLI with specified argument array
  */
 function firebase(args) {
-  console.log(spawnSync(`${__dirname}/node_modules/.bin/firebase`, args, { cwd: 'temp', shell: true }).stdout.toString());
+  spawnSync(`${__dirname}/node_modules/.bin/firebase`, args, { cwd: 'temp', shell: true, stdio: [process.stdin, process.stdout, process.stderr] });
 }
 
 firebase(['use', 'default']);
