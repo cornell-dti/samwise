@@ -20,11 +20,7 @@ jobs:
       - name: Yarn Install
         run: yarn install
       - name: Build frontend
-        env:
-          STAGING_FIREBASE_ADMIN_SDK_CONTENTS: ${{ secrets.STAGING_FIREBASE_ADMIN_SDK_CONTENTS }}
-        run: |
-          echo $STAGING_FIREBASE_ADMIN_SDK_CONTENTS > functions/src/firebase-adminsdk.json
-          yarn workspace frontend build:stage
+        run: yarn workspace frontend build:stage
       - name: Deploy Frontend to Firebase Staging Project
         env:
           FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
@@ -34,4 +30,7 @@ jobs:
       - name: Deploy Functions to Firebase Staging Project
         env:
           FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
-        run: ./deploy-functions $FIREBASE_TOKEN default
+          STAGING_FIREBASE_ADMIN_SDK_CONTENTS: ${{ secrets.STAGING_FIREBASE_ADMIN_SDK_CONTENTS }}
+        run: |
+          echo $STAGING_FIREBASE_ADMIN_SDK_CONTENTS > functions/src/firebase-adminsdk.json
+          ./deploy-functions $FIREBASE_TOKEN default
