@@ -1,0 +1,6 @@
+.GroupTaskRow {
+  display: flex;
+  direction: row;
+  height: 126px;
+  margin-bottom: 1em;
+}
