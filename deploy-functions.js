@@ -5,6 +5,9 @@
  * folder.
  *
  * Run with `node deploy-functions.js`
+ *
+ * Optionally pass in a token and then project, like so:
+ * `node deploy-functions.js $TOKEN production`
  */
 const { spawnSync } = require('child_process');
 const fs = require('fs');
