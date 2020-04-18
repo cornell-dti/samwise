@@ -4,3 +4,51 @@
   height: 126px;
   margin-bottom: 1em;
 }
+
+.Initials {
+  height: 56px;
+  width: 56px;
+  border-radius: 50%;
+  background-color: #D7B6DC;
+  text-align: center;
+  font-size: 22px;
+  line-height: 56px;
+  color: white;
+  margin: auto;
+  margin-right: 26px;
+}
+
+.AddTaskContainer {
+  width: 105px;
+  height: 121px;
+  border: 3px dashed rgba(255, 138, 138, 0.5);
+  box-sizing: border-box;
+  border-radius: 10px;
+  display: flex;
+  align-content: center;
+  margin: auto;
+  margin-right: 26px;
+}
+
+.AddTask {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin:auto;
+}
+
+.AddTask svg {
+  font-size: 22px;
+  color: rgba(255, 138, 138, 0.5);
+  margin-bottom: 0;
+}
+
+.AddTask h3 {
+  text-align: center;
+  color: #bebebe;
+  font-family: DM Sans;
+  font-weight: bold;
+  font-size: 10px;
+  line-height: 12px;
+  /* margin-top: 0; */
+}

@@ -1,7 +1,8 @@
 import React, { ReactElement } from 'react';
+import { faPlus } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import GroupTasksContainer from './GroupTasksContainer';
 import styles from './index.module.css';
-import memberStyles from '../../MiddleBar/People/Member.module.scss';
 
 type Props = {
   memberName: string;
@@ -12,7 +13,15 @@ export default ({ memberName }: Props): ReactElement => {
 
   return (
     <div className={styles.GroupTaskRow}>
-      <div className={memberStyles.Initials}>{initials}</div>
+      <div className={styles.Initials}>{initials}</div>
+
+      <div className={styles.AddTaskContainer}>
+        <div className={styles.AddTask}>
+          <FontAwesomeIcon icon={faPlus} />
+          <h3>Assign new task</h3>
+        </div>
+      </div>
+
       <GroupTasksContainer />
     </div>
   );
