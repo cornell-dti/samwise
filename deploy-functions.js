@@ -62,6 +62,9 @@ fs.copyFileSync('.firebaserc', 'temp/.firebaserc');
 const token = process.argv[2] ? process.argv[2] : 'default';
 const project = process.argv[3];
 
+/**
+ * Run the firebase CLI with specified argument array
+ */
 function firebase(args) {
   console.log(spawnSync(`${__dirname}/node_modules/.bin/firebase`, args, { cwd: 'temp', shell: true }).stdout.toString());
 }
