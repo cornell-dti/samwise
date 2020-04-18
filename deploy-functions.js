@@ -57,18 +57,20 @@ fs.copyFileSync('.firebaserc', 'temp/.firebaserc');
 
 // Step 3: Deploy
 
-const token = process.argv[2] ? process.argv[2] : 'default';
-const project = process.argv[3];
+const token = process.argv[2];
+const project = process.argv[3] ? process.argv[3] : 'default';
 
 /**
  * Run the firebase CLI with specified argument array
+ *
+ * @param {string[]} args Array of arguments to pass to the CLI.
  */
 function firebase(args) {
   spawnSync(`${__dirname}/node_modules/.bin/firebase`, args, { cwd: 'temp', shell: true, stdio: [process.stdin, process.stdout, process.stderr] });
 }
 
-firebase(['use', 'default']);
-if (!project) {
+firebase(['use', project]);
+if (!token) {
   firebase(['deploy', '--only', 'functions']);
 } else {
   firebase(['deploy', `--token=${token}`, '--non-interactive', '--only', 'functions']);
