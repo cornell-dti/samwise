@@ -37,9 +37,28 @@ function copyFolderSync(from, to) {
 }
 fs.mkdirSync('temp');
 
+/**
+ * Delete a folder recursively (because fs.rmdirSync recursive doesn't work on CI)
+ *
+ * @param {string} p The path to delete
+ */
+function deleteFolderRecursive(p) {
+  if (fs.existsSync(p)) {
+    fs.readdirSync(p).forEach((file) => {
+      const curPath = path.join(p, file);
+      if (fs.lstatSync(curPath).isDirectory()) { // recurse
+        deleteFolderRecursive(curPath);
+      } else { // delete file
+        fs.unlinkSync(curPath);
+      }
+    });
+    fs.rmdirSync(p);
+  }
+}
+
 // Copy deployment code
 copyFolderSync('functions/compiled/', 'temp/functions/');
-fs.rmdirSync('functions/compiled/', { recursive: true });
+deleteFolderRecursive('functions/compiled/');
 const tmpPackage = `{
   "name": "functions",
   "private": true,
@@ -77,4 +96,4 @@ if (!token) {
 }
 
 // Step 4: Cleanup
-fs.rmdirSync('temp', { recursive: true });
+deleteFolderRecursive('temp');
