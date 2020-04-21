@@ -1,6 +1,7 @@
 import React, { ReactElement, useState, useEffect } from 'react';
 import Modal from 'react-modal';
 import ChoiceModal, { ChoiceObj, ChoiceModalProps } from './ChoiceModal';
+import TextInputModal, { TextInputModalProps, TextInputTypes } from './TextInputModal';
 
 export function initModal(): void {
   Modal.setAppElement('#root');
@@ -9,8 +10,19 @@ export function initModal(): void {
 const dummyChoiceModalProps: ChoiceModalProps<ChoiceObj> = {
   open: false, message: '', choices: {}, onChoicePick: () => { },
 };
+const dummyTextInputModalProps: TextInputModalProps = {
+  open: false,
+  message: '',
+  submitButtonText: 'Submit',
+  inputType: 'text',
+  onCancel: () => { },
+  onInputSubmit: () => { },
+};
+
+type ModalProps = ChoiceModalProps<ChoiceObj> | TextInputModalProps;
 
 let currentChoiceModalSetter: (props: ChoiceModalProps<ChoiceObj>) => void = (): void => { };
+let currentTextInputModalSetter: (props: TextInputModalProps) => void = (): void => { };
 
 export async function promptChoice<Choices extends ChoiceObj>(
   message: string,
@@ -38,7 +50,7 @@ export async function promptConfirm(message: string): Promise<boolean> {
   return result === 'CONFIRM';
 }
 
-export function ModalsContainer(): ReactElement {
+const ChoiceModalWrapper = (): React.ReactElement => {
   const [choiceModalProps, setChoiceModalProps] = useState(dummyChoiceModalProps);
   const { open, message, choices, onChoicePick } = choiceModalProps;
   useEffect(() => {
@@ -48,4 +60,62 @@ export function ModalsContainer(): ReactElement {
   return (
     <ChoiceModal open={open} message={message} choices={choices} onChoicePick={onChoicePick} />
   );
-}
+};
+
+export const promptTextInput = async (
+  message: string,
+  submitButtonText: string,
+  inputType: TextInputTypes,
+): Promise<string> => (
+  new Promise<string>((onInputSubmit) => {
+    const textInputModalProps: TextInputModalProps = {
+      open: true,
+      message,
+      submitButtonText,
+      inputType,
+      onInputSubmit: (input: string) => {
+        onInputSubmit(input);
+        // close the modal
+        currentTextInputModalSetter(dummyTextInputModalProps);
+      },
+      onCancel: () => {
+        // close the modal
+        currentTextInputModalSetter(dummyTextInputModalProps);
+      },
+    };
+    currentTextInputModalSetter(textInputModalProps);
+  })
+);
+
+const TextInputModalWrapper = (): React.ReactElement => {
+  const [textInputModalProps, setTextInputModalProps] = useState(dummyTextInputModalProps);
+  const {
+    open,
+    message,
+    submitButtonText,
+    inputType,
+    onInputSubmit,
+    onCancel,
+  } = textInputModalProps;
+  useEffect(() => {
+    // register modal setter
+    currentTextInputModalSetter = setTextInputModalProps;
+  }, []);
+  return (
+    <TextInputModal
+      open={open}
+      message={message}
+      submitButtonText={submitButtonText}
+      inputType={inputType}
+      onInputSubmit={onInputSubmit}
+      onCancel={onCancel}
+    />
+  );
+};
+
+export const ModalsContainer = (): ReactElement => (
+  <div>
+    <ChoiceModalWrapper />
+    <TextInputModalWrapper />
+  </div>
+);

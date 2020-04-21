@@ -24,7 +24,6 @@ const GROUP_TASK_ENABLED: boolean = localStorage.getItem('GROUP_TASK_ENABLED') !
 const PersonalMainView = (): React.ReactElement => (
   <div className={styles.MainView}>
     <Onboard />
-    <ModalsContainer />
     <TitleBar />
     <TaskCreator />
     <TaskView className={styles.TaskView} />
@@ -57,6 +56,7 @@ export default function App(): ReactElement {
   return (
     <div className={styles.Container}>
       <ModeIndicator />
+      <ModalsContainer />
       {
         GROUP_TASK_ENABLED
           ? (
