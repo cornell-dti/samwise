@@ -2,6 +2,7 @@ import React, { ReactElement, KeyboardEvent } from 'react';
 import SamwiseIcon from 'components/UI/SamwiseIcon';
 import { faPlus } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import SettingsButton from 'components/TitleBar/Settings/SettingsButton';
 import GroupIcon from './GroupIcon';
 import styles from './index.module.scss';
 
@@ -32,17 +33,28 @@ export default ({ groups, changeView }: Props): ReactElement => {
       >
         <SamwiseIcon iconName="personal-view" />
       </span>
-      {
-        groups.map((g) => (
-          <GroupIcon
-            groupName={g}
-            handleClick={changeView}
-            pressedIcon={pressedIcon}
-          />
-        ))
-      }
-      <span className={styles.PlusIcon}>
-        <FontAwesomeIcon icon={faPlus} />
+      <div className={styles.GroupIcons}>
+        <p>My Groups</p>
+        {
+          groups.map((g) => (
+            <GroupIcon
+              classCode={g}
+              handleClick={changeView}
+              pressedIcon={pressedIcon}
+              key={g}
+            />
+          ))
+        }
+        <span
+          role="presentation"
+          className={styles.PlusIcon}
+        >
+          <FontAwesomeIcon icon={faPlus} />
+          <p>New Group</p>
+        </span>
+      </div>
+      <span className={styles.Links}>
+        <SettingsButton />
       </span>
     </div>
   );
