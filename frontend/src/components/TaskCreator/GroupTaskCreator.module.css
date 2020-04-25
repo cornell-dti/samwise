@@ -3,7 +3,7 @@
   border-left: none;
   border-right: none;
   border-bottom: 1px solid gray;
-
+  margin-top: 10px;
   width: 100%;
   padding: 10px 20px;
   text-align: left;
@@ -26,9 +26,8 @@
 .NewTaskWrap {
   position: relative;
   left: calc(50vw - 450px);
-  top: 5vh;
+  top: 7vh;
   z-index: 5;
-
   height: initial;
   max-height: 44px;
 }
@@ -47,7 +46,6 @@
 
 
 .NewTaskComponent:focus {
-  border-bottom: 2px solid black;
   outline: none;
 }
 
@@ -77,6 +75,18 @@
   pointer-events: none;
 }
 
+.TitleText {
+  position: absolute;
+  top: -10px;
+  height: 20px;
+  width: 100%;
+  text-align: left;
+  padding-bottom: 40px;
+  font-weight: bold;
+  font-size: 24px;
+  pointer-events: none;
+}
+
 .NewTaskActive * {
   pointer-events: auto;
   vertical-align:top;
@@ -90,7 +100,7 @@
 .SubmitNewTask {
   position: absolute;
   right: 0;
-  top: -3px;
+  top: 7px;
   width: 20px;
   height: 100%;
   background: white;
@@ -109,7 +119,7 @@
 .NewTaskModal {
   background: white;
   position: absolute;
-  top: -50px;
+  top: -40px;
   right: -30px;
   padding: 90px 0 10px 0;
   z-index: -1;
