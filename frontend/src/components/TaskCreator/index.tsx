@@ -56,7 +56,7 @@ export class TaskCreator extends React.PureComponent<Props, State> {
 
   private darkModeStyle: CSSProperties;
 
-  constructor(props: {theme: Theme}) {
+  constructor(props: { theme: Theme }) {
     super(props);
     this.darkModeStyle = {
       background: 'black',
@@ -368,6 +368,7 @@ export class TaskCreator extends React.PureComponent<Props, State> {
           date={date}
           opened={datePickerOpened}
           datePicked={datePicked}
+          inGroupView={false}
           onDateChange={this.editDate}
           onClearPicker={this.clearDate}
           onPickerOpened={this.openDatePicker}

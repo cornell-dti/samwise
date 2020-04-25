@@ -93,6 +93,18 @@
   box-shadow:1px 1px 10px 5px rgba(0,0,0,0.15);
 }
 
+.NewTaskDatePickGroup {
+  width: 400px;
+  position: absolute;
+  top: 20px;
+  left:initial;
+  right:0;
+  z-index: 2;
+  padding:10px;
+  background:white;
+  box-shadow:1px 1px 10px 5px rgba(0,0,0,0.15);
+}
+
 @media(max-width:1000px){
   .NewTaskDatePick{
     left:initial;

@@ -8,7 +8,6 @@ import { NONE_TAG_ID } from 'common/lib/util/tag-util';
 import { isToday } from 'common/lib/util/datetime-util';
 import TagPicker from './TagPicker';
 import DatePicker from './DatePicker';
-import FocusPicker from './FocusPicker';
 import { addTask, TaskWithoutIdOrderChildren } from '../../firebase/actions';
 import SamwiseIcon from '../UI/SamwiseIcon';
 import styles from './GroupTaskCreator.module.css';
@@ -232,12 +231,6 @@ export class GroupTaskCreator extends React.PureComponent<Props, State> {
   }
 
   /**
-   * Toggle the pin status.
-   * @param {boolean} inFocus the new in-focus status.
-   */
-  private togglePin = (inFocus: boolean): void => this.setState({ inFocus }, this.focusTaskName);
-
-  /**
    * Add a new subtask.
    *
    * @param e the event that contains the new name for new sub-task.
@@ -324,7 +317,7 @@ export class GroupTaskCreator extends React.PureComponent<Props, State> {
       return null;
     }
     const {
-      tag, date, inFocus, subTasks,
+      tag, date, subTasks,
       tagPickerOpened, datePickerOpened, datePicked, needToSwitchFocus,
     } = this.state;
     const { theme } = this.props;
@@ -357,7 +350,6 @@ export class GroupTaskCreator extends React.PureComponent<Props, State> {
       <>
         <div className={styles.TitleText}>Add Task</div>
         <div className={styles.NewTaskActive}>
-          {date instanceof Date && <FocusPicker pinned={inFocus} onPinChange={this.togglePin} />}
           <div className={styles.TagPickWrap}>
             <TagPicker
               tag={tag}
@@ -370,6 +362,7 @@ export class GroupTaskCreator extends React.PureComponent<Props, State> {
             date={date}
             opened={datePickerOpened}
             datePicked={datePicked}
+            inGroupView
             onDateChange={this.editDate}
             onClearPicker={this.clearDate}
             onPickerOpened={this.openDatePicker}
@@ -390,7 +383,7 @@ export class GroupTaskCreator extends React.PureComponent<Props, State> {
             />
             <button type="button" className={styles.ResetButton} onClick={this.resetTask}>
               Clear
-          </button>
+            </button>
           </div>
         </div>
       </>
