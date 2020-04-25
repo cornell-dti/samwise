@@ -6,7 +6,6 @@
 
 .People h2 {
   font-weight: bold;
-  color: black;
 }
 
 .AddMember {
@@ -29,6 +28,12 @@
   margin-right: 1em;
 }
 
+.AddMember:hover {
+  opacity: 0.7;
+  cursor: pointer;
+  text-decoration: underline;
+}
+
 .LeaveGroup {
   color: $pink-red;
   position: absolute;
@@ -38,4 +43,10 @@
 .LeaveGroup p {
   display: inline;
   margin: 0 0.5em;
+}
+
+.LeaveGroup:hover {
+  opacity: 0.7;
+  text-decoration: underline;
+  cursor: pointer;
 }

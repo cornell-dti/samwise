@@ -3,18 +3,19 @@
 .SideBar {
   display: flex;
   flex-direction: column;
-  width: 60px;
-  margin: 0 0.5em;
+  width: 80px;
+  padding: 0 0.5em;
   align-items: center;
+  background-color: #EBEBEB;
 }
 
 .PersonalViewButton svg,
-.PlusIcon svg {
+.AddGroup svg {
   width: 50px;
   height: 50px;
 }
 
-.PlusIcon svg {
+.AddGroup svg {
   font-size: 30px;
 }
 
@@ -23,23 +24,31 @@
   margin-bottom: 200%;
 }
 
-.PlusIcon {
+.AddGroup {
   width: 50px;
   height: 50px;
   border: 2px dashed;
   text-align: center;
-  margin: 10px 0;
+  margin: 0;
   border-radius: 10px;
   color: $warm-grey-two;
 }
 
-.GroupIcons .PlusIcon > p {
+.AddGroup > div > p {
+  font-size: 8px;
+  line-height: 10px;
+  font-weight: normal;
+}
+
+.GroupIcons .AddGroup > p {
   margin: 0;
   font-size: 8px;
 }
 
-.SideBar span:hover {
+.PersonalViewButton:hover,
+.PlusIcon {
   opacity: 0.7;
+  cursor: pointer;
 }
 
 .GroupIcons {
@@ -62,8 +71,4 @@
   border: none;
   cursor: pointer;
   line-height: 32px;
-  position: absolute;
-  bottom: 0;
-  left: 1em;
-  font-size: 1.25em;
 }

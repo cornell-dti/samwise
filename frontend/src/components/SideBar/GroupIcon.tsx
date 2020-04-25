@@ -1,20 +1,20 @@
 import React, { ReactElement, KeyboardEvent } from 'react';
-import { Views, Group } from './types';
+import { Views } from './types';
 import styles from './GroupIcon.module.scss';
 
 type Props = {
   classCode: string;
-  handleClick: (selectedView: Views, selectedGroup: string | undefined) => void;
-  pressedIcon: (e: KeyboardEvent, selectedView: Views, selectedGroup: Group) => void;
+  handleClick: (selectedView: Views, selectedGroup: string | undefined, e?: KeyboardEvent) => void;
+  selected: boolean;
 }
 
-export default ({ classCode, handleClick, pressedIcon }: Props): ReactElement => (
-  <span
+export default ({ classCode, handleClick, selected }: Props): ReactElement => (
+  <div
     role="presentation"
     onClick={() => handleClick('group', classCode)}
-    onKeyPress={(e) => pressedIcon(e, 'group', classCode)}
-    className={styles.GroupIcon}
+    onKeyPress={(e) => handleClick('group', classCode, e)}
+    className={styles.GroupIcon + (selected ? ` ${styles.Active}` : '')}
   >
     {classCode.charAt(0)}
-  </span>
+  </div>
 );

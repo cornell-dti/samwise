@@ -5,7 +5,6 @@ import { date2FullDateString } from 'common/lib/util/datetime-util';
 import { State, Theme } from 'common/lib/types/store-types';
 import Banner from './Banner';
 import styles from './index.module.css';
-import SettingsButton from './Settings/SettingsButton';
 
 /**
  * The title bar.
@@ -30,13 +29,12 @@ export function TitleBar(props: { theme: Theme }): ReactElement {
       <Banner />
       <span title="time" className={styles.Time}>{timeString}</span>
       <span title="date" className={styles.Date}>{dateString}</span>
-      <span className={styles.Links}><SettingsButton /></span>
     </header>
   );
 }
 
 
 const Connected = connect(
-  ({ settings: { theme } }: State): {theme: Theme} => ({ theme }),
+  ({ settings: { theme } }: State): { theme: Theme } => ({ theme }),
 )(TitleBar);
 export default Connected;

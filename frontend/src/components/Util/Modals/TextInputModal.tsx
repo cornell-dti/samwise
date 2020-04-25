@@ -1,6 +1,7 @@
 import React, { ReactElement, useState } from 'react';
 import Modal from 'react-modal';
-import styles from './Modal.module.css';
+import modalStyles from './Modal.module.css';
+import textInputModalStyles from './TextInputModal.module.css';
 
 /**
  * The types of input this Modal will support (add more as necessary)
@@ -19,9 +20,17 @@ export type TextInputModalProps = {
    */
   readonly open: boolean;
   /**
-   * The message displayed along with the input.
+   * The title displayed along with the input.
    */
-  readonly message: string;
+  readonly title: string;
+  /**
+   * Text shown below the title
+   */
+  readonly subText: string;
+  /**
+   * The label for the input box.
+   */
+  readonly label: string;
   /**
    * The text displayed on the submit button.
    */
@@ -40,35 +49,52 @@ export type TextInputModalProps = {
   readonly onCancel: () => void;
 }
 
-export default (
-  { open, message, submitButtonText, inputType, onInputSubmit, onCancel }: TextInputModalProps,
-): ReactElement => {
+export default ({
+  open,
+  title,
+  subText,
+  label,
+  submitButtonText,
+  inputType,
+  onInputSubmit,
+  onCancel,
+}: TextInputModalProps): ReactElement => {
   const [input, setInput] = useState('');
   return (
-    <Modal isOpen={open} className={styles.ChoiceModal} contentLabel="Choice Dialog">
-      <div className={styles.TextContainer}>{message}</div>
-      <input
-        type={inputType}
-        value={input}
-        onChange={(e) => setInput(e.target.value)}
-      />
-      <div className={styles.ButtonContainer}>
-        <span className={styles.Filler} />
+    <Modal isOpen={open} className={`${modalStyles.Modal} ${textInputModalStyles.TextInputModal}`} contentLabel="Choice Dialog">
+      <div className={textInputModalStyles.Title}>{title}</div>
+      <div className={textInputModalStyles.SubText}>{subText}</div>
+      <div className={textInputModalStyles.TextInput}>
+        {label}
+        <input
+          type={inputType}
+          name="input"
+          value={input}
+          onChange={(e) => setInput(e.target.value)}
+        />
+      </div>
+      <div className={textInputModalStyles.ButtonContainer}>
         <button
           type="button"
-          className={styles.ChoiceButton}
-          onClick={() => onCancel()}
+          className={textInputModalStyles.CancelButton}
+          onClick={() => {
+            onCancel();
+            setInput('');
+          }}
         >
           Cancel
         </button>
         <button
           type="button"
-          className={styles.ChoiceButton}
-          onClick={() => onInputSubmit(input)}
+          className={textInputModalStyles.SubmitButton}
+          onClick={() => {
+            onInputSubmit(input);
+            setInput('');
+          }}
         >
           {submitButtonText}
         </button>
       </div>
     </Modal>
   );
-}
+};

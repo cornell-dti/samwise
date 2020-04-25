@@ -16,8 +16,10 @@ function confirmLeaveGroup(): void {
 
 const promptAddMember = (): void => {
   promptTextInput(
-    'Add a member by entering their email address:',
-    'Add member',
+    'Add new member',
+    'Send them an invitation through email',
+    'NetID:',
+    'Send',
     'text',
   ).then((input) => {
     console.log(input);
@@ -34,13 +36,16 @@ export default ({ groupMemberNames }: Props): ReactElement => (
     {
       groupMemberNames.map((m) => <Member memberName={m} key={m} />)
     }
-    <div className={styles.AddMember}>
-      <div
-        onClick={promptAddMember}
-      >
+    <div
+      role="presentation"
+      onClick={promptAddMember}
+      onKeyPress={(e) => (e.key === 'Enter' || e.key === ' ') && promptAddMember()}
+      className={styles.AddMember}
+    >
+      <div>
         <FontAwesomeIcon icon={faPlus} />
       </div>
-      Add member
+        Add member
     </div>
     <span
       role="presentation"

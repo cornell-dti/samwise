@@ -39,6 +39,13 @@
   height: 17.5px;
 }
 
+.GearButton {
+  position: absolute;
+  bottom: 0;
+  left: 1em;
+  font-size: 1.25em;
+}
+
 .ContentWrap {
   padding: 32px;
 }
