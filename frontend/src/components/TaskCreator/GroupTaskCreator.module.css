@@ -25,9 +25,8 @@
 
 .NewTaskWrap {
   position: relative;
-  left: 50%;
+  left: calc(50vw - 450px);
   top: 5vh;
-  transform: translateX(-10%);
   z-index: 5;
 
   height: initial;
