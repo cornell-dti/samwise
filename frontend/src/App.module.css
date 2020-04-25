@@ -2,3 +2,15 @@
   flex: 1 1 auto;
   overflow: hidden;
 }
+
+.Container {
+  display: flex;
+}
+
+.MainView {
+  width: 95%;
+}
+
+.GroupScreen {
+  display: flex;
+}

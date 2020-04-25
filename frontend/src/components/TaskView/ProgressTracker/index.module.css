@@ -14,6 +14,7 @@
 
 .DesktopView {
   width: 70px;
+  height: 85vh;
   margin-right: 1em;
   flex-direction: column-reverse;
 }

@@ -1,0 +1,11 @@
+@import '../../colors.scss';
+
+.GroupIcon {
+  background-color: $brown-grey;
+  color: white;
+  font-size: 1.25rem;
+  line-height: 1.75rem;
+  font-weight: bold;
+  text-align: center;
+  padding: 0.25em;
+}
