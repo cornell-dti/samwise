@@ -1,4 +1,4 @@
-import React, { ReactElement, KeyboardEvent, useState } from 'react';
+import React, { ReactElement, useState } from 'react';
 import SamwiseIcon from 'components/UI/SamwiseIcon';
 import { faPlus } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -16,42 +16,27 @@ type Props = {
 export default ({ groups, changeView }: Props): ReactElement => {
   const [showDropdown, setShowDropdown] = useState(false);
   const [selected, setSelected] = useState('personal');
-  const handleClick = (
-    selectedView: Views,
-    selectedGroup: string | undefined,
-    e?: KeyboardEvent,
-  ): void => {
-    if (e === undefined || e.key === 'Enter' || e.key === ' ') {
-      changeView(selectedView, selectedGroup);
-      setSelected(selectedGroup || selectedView);
-    }
-  };
   return (
     <div className={styles.SideBar}>
-      <span
-        role="presentation"
-        onClick={() => handleClick('personal', undefined)}
-        onKeyPress={(e: KeyboardEvent) => handleClick('personal', undefined, e)}
+      <button
+        type="button"
+        onClick={() => changeView('personal', undefined)}
         className={styles.PersonalViewButton}
       >
         <SamwiseIcon iconName="personal-view" />
-      </span>
+      </button>
       <div className={styles.GroupIcons}>
         <p>My Groups</p>
         {
           groups.map((g) => (
             <GroupIcon
-              classCode={g}
-              handleClick={handleClick}
-              selected={selected === g}
+              groupName={g}
+              handleClick={changeView}
               key={g}
             />
           ))
         }
-        <span
-          role="presentation"
-          className={styles.AddGroup}
-        >
+        <button type="button" className={styles.PlusIcon}>
           <div
             onMouseEnter={() => setShowDropdown(true)}
             onMouseLeave={() => setShowDropdown(false)}
@@ -60,7 +45,7 @@ export default ({ groups, changeView }: Props): ReactElement => {
             {!showDropdown && <p>New Group</p>}
           </div>
           {showDropdown && <AddGroupTags show={showDropdown} setShow={setShowDropdown} />}
-        </span>
+        </button>
       </div>
       <span className={styles.Links}>
         <SettingsButton />
