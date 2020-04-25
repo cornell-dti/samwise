@@ -1,4 +1,4 @@
-import React, { ReactElement, KeyboardEvent } from 'react';
+import React, { ReactElement } from 'react';
 import SamwiseIcon from 'components/UI/SamwiseIcon';
 import { faPlus } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -14,37 +14,26 @@ type Props = {
   changeView: (selectedView: Views, selectedGroup: string | undefined) => void;
 }
 
-export default ({ groups, changeView }: Props): ReactElement => {
-  const pressedIcon = (
-    e: KeyboardEvent,
-    selectedView: Views,
-    selectedGroup: string | undefined,
-  ): void => {
-    if (e.key === 'Enter' || e.key === ' ') changeView(selectedView, selectedGroup);
-  };
-  return (
-    <div className={styles.SideBar}>
-      <span
-        role="presentation"
-        onClick={() => changeView('personal', undefined)}
-        onKeyPress={(e: KeyboardEvent) => pressedIcon(e, 'personal', undefined)}
-        className={styles.PersonalViewButton}
-      >
-        <SamwiseIcon iconName="personal-view" />
-      </span>
-      {
-        groups.map((g) => (
-          <GroupIcon
-            groupName={g}
-            handleClick={changeView}
-            pressedIcon={pressedIcon}
-            key={g}
-          />
-        ))
-      }
-      <span className={styles.PlusIcon}>
-        <FontAwesomeIcon icon={faPlus} />
-      </span>
-    </div>
-  );
-};
+export default ({ groups, changeView }: Props): ReactElement => (
+  <div className={styles.SideBar}>
+    <button
+      type="button"
+      onClick={() => changeView('personal', undefined)}
+      className={styles.PersonalViewButton}
+    >
+      <SamwiseIcon iconName="personal-view" />
+    </button>
+    {
+      groups.map((g) => (
+        <GroupIcon
+          groupName={g}
+          handleClick={changeView}
+          key={g}
+        />
+      ))
+    }
+    <button type="button" className={styles.PlusIcon}>
+      <FontAwesomeIcon icon={faPlus} />
+    </button>
+  </div>
+);
