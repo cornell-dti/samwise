@@ -2,7 +2,7 @@ import React, { ReactElement } from 'react';
 import SamwiseIcon from 'components/UI/SamwiseIcon';
 import { faPlus } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import styles from './Member.module.scss';
+import styles from './Member.module.css';
 
 type Props = {
   memberName: string;

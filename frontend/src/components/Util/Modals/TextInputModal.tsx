@@ -11,9 +11,6 @@ export type TextInputTypes =
   | 'email'
   | 'number';
 
-/**
- * The type parameter Choice must be an object with predefined set of string keys and string values.
- */
 export type TextInputModalProps = {
   /**
    * Whether the modal is open.

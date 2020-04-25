@@ -1,5 +1,3 @@
-@import '../../../../colors.scss';
-
 .People {
   min-height: 40%;
 }
@@ -35,7 +33,7 @@
 }
 
 .LeaveGroup {
-  color: $pink-red;
+  color: #FF7A7A;
   position: absolute;
   bottom: 10px;
 }

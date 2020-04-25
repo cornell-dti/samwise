@@ -4,7 +4,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import SamwiseIcon from 'components/UI/SamwiseIcon';
 import { promptConfirm, promptTextInput } from 'components/Util/Modals';
 import Member from './Member';
-import styles from './index.module.scss';
+import styles from './index.module.css';
 
 const leaveGroupPrompt = 'Are you sure you want to leave this group?';
 

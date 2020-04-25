@@ -6,10 +6,7 @@ import SettingsButton from 'components/TitleBar/Settings/SettingsButton';
 import GroupIcon from './GroupIcon';
 import styles from './index.module.scss';
 import AddGroupTags from './AddGroupTags';
-
-type Views =
-  | 'personal'
-  | 'group';
+import { Views } from './types';
 
 type Props = {
   groups: string[];
