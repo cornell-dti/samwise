@@ -38,6 +38,7 @@ export default ({ groups, changeView }: Props): ReactElement => {
             groupName={g}
             handleClick={changeView}
             pressedIcon={pressedIcon}
+            key={g}
           />
         ))
       }
