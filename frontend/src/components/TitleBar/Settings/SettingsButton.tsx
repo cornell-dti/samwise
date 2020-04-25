@@ -11,7 +11,7 @@ export default function SettingsButton(): ReactElement {
 
   return (
     <div style={{ display: 'inline-block' }}>
-      <button className={styles.GearButton} type="submit" onClick={displayModal}>
+      <button type="submit" onClick={displayModal}>
         <p style={{ transform: 'scale(2)translateY(-5px)' }} title="Settings Button"><SamwiseIcon iconName="settings" /></p>
       </button>
       {showSettings && (
