@@ -6,6 +6,8 @@ type Props = {
   groupName: string;
 }
 
+// will use groupName later
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 export default ({ groupName }: Props): ReactElement => (
   <div className={styles.MiddleBar}>
     <MiddleBar />
