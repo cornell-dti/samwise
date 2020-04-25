@@ -4,6 +4,11 @@
   margin: 0 1em;
   display: flex;
   flex-direction: column;
+
+.EditGroupNameIcon :hover {
+  cursor: pointer;
+}
+
 }
 
 h2 {

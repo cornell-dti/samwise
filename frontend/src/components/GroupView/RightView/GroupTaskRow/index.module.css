@@ -30,11 +30,16 @@
   margin-right: 26px;
 }
 
+.AddTaskContainer :hover {
+  cursor: pointer;
+}
+
 .AddTask {
   display: flex;
   flex-direction: column;
+  width: 100%;
+  justify-content: center;
   align-items: center;
-  margin:auto;
 }
 
 .AddTask svg {
@@ -50,5 +55,4 @@
   font-weight: bold;
   font-size: 10px;
   line-height: 12px;
-  /* margin-top: 0; */
 }
