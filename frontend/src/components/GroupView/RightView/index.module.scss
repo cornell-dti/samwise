@@ -4,11 +4,17 @@
   margin: 0 1em;
   display: flex;
   flex-direction: column;
+  height: 480px;
+}
 
 .EditGroupNameIcon :hover {
   cursor: pointer;
 }
 
+.GroupTaskRowContainer {
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
 }
 
 h2 {

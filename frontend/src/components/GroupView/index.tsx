@@ -7,7 +7,7 @@ type Props = {
   groupName: string;
 }
 
-const members = ['Darien Lopez', 'Sarah Johnson', 'Michelle Parker'];
+const members = ['Darien Lopez', 'Sarah Johnson', 'Michelle Parker', 'Samwise Bear'];
 
 // will use groupName later
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
