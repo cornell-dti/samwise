@@ -10,11 +10,9 @@ type Props = {
 }
 
 export default ({ groupName, groupMemberNames }: Props): ReactElement => (
-  <div style={{ clear: 'both' }}>
+  <div className={styles.RightViewContainer}>
     <div className={styles.GroupTaskCreator}>
       <GroupTaskCreator />
-      <br />
-      <br />
     </div>
     <div className={styles.RightView}>
       <div>

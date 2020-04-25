@@ -26,13 +26,12 @@
 .NewTaskWrap {
   position: relative;
   left: 50%;
-  text-align: center;
-  transform: translateX(-50%);
+  top: 5vh;
+  transform: translateX(-10%);
   z-index: 5;
 
   height: initial;
   max-height: 44px;
-  margin-bottom: 0;
 }
 
 @media only screen and (min-width: 800px) {
@@ -221,9 +220,10 @@
   transform:translateX(100px);
 }
 
-.PlusIcon {
-  font-size: 2em;
+.AtIcon {
+  font-size: 1.5em;
   position: relative;
+  top: 3px;
   left: 25px;
   color: grey;
 }

@@ -20,7 +20,7 @@ type Views =
 const groups = ['CS 2110', 'CS 3110', 'INFO 3450'];
 
 export default function App(): ReactElement {
-  const [view, setView] = useState('personal');
+  const [view, setView] = useState('group');
   const [group, setGroup] = useState('');
 
   const changeView = (selectedView: Views, selectedGroup?: string | undefined): void => {

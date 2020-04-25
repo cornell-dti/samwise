@@ -1,7 +1,7 @@
 import React, { CSSProperties, KeyboardEvent, SyntheticEvent, ReactElement } from 'react';
 import { connect } from 'react-redux';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faPlus, faArrowAltCircleRight } from '@fortawesome/free-solid-svg-icons';
+import { faAt, faArrowAltCircleRight } from '@fortawesome/free-solid-svg-icons';
 import { randomId } from 'common/lib/util/general-util';
 import { Task, RepeatingDate, SubTask, State as StoreState, Theme } from 'common/lib/types/store-types';
 import { NONE_TAG_ID } from 'common/lib/util/tag-util';
@@ -377,10 +377,10 @@ export class GroupTaskCreator extends React.PureComponent<Props, State> {
         </button>
         <div className={styles.NewTaskModal} style={theme === 'dark' ? this.darkModeStyle : undefined}>
           <ul>{subTasks.map(existingSubTaskEditor)}</ul>
-          <FontAwesomeIcon icon={faPlus} className={styles.PlusIcon} />
+          <FontAwesomeIcon icon={faAt} className={styles.AtIcon} />
           <input
             type="text"
-            placeholder="Add a Subtask"
+            placeholder="Assign a Group Member"
             value=""
             onChange={this.addNewSubTask}
             onKeyDown={this.newSubTaskKeyPress}
