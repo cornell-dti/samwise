@@ -16,11 +16,17 @@ type Props = {
 export default ({ groups, changeView }: Props): ReactElement => {
   const [showDropdown, setShowDropdown] = useState(false);
   const [selected, setSelected] = useState('personal');
+
+  const handleIconClick = (view: Views, group?: string): void => {
+    changeView(view, group);
+    setSelected(group !== undefined ? group : view);
+  };
+
   return (
     <div className={styles.SideBar}>
       <button
         type="button"
-        onClick={() => changeView('personal', undefined)}
+        onClick={() => handleIconClick('personal')}
         className={styles.PersonalViewButton}
       >
         <SamwiseIcon iconName="personal-view" />
@@ -30,22 +36,25 @@ export default ({ groups, changeView }: Props): ReactElement => {
         {
           groups.map((g) => (
             <GroupIcon
-              groupName={g}
-              handleClick={changeView}
+              classCode={g}
+              handleClick={() => handleIconClick('group', g)}
+              selected={selected === g}
               key={g}
             />
           ))
         }
-        <button type="button" className={styles.PlusIcon}>
-          <div
+        <span>
+          <button
+            type="button"
             onMouseEnter={() => setShowDropdown(true)}
             onMouseLeave={() => setShowDropdown(false)}
+            className={styles.AddGroup}
           >
             <FontAwesomeIcon className={styles.PlusIcon} icon={faPlus} />
-            {!showDropdown && <p>New Group</p>}
-          </div>
-          {showDropdown && <AddGroupTags show={showDropdown} setShow={setShowDropdown} />}
-        </button>
+          </button>
+          {!showDropdown && <p>New Group</p>}
+          <AddGroupTags show={showDropdown} setShow={setShowDropdown} />
+        </span>
       </div>
       <span className={styles.Links}>
         <SettingsButton />

@@ -36,8 +36,8 @@ export default ({ groupMemberNames }: Props): ReactElement => (
     {
       groupMemberNames.map((m) => <Member memberName={m} key={m} />)
     }
-    <div
-      role="presentation"
+    <button
+      type="button"
       onClick={promptAddMember}
       onKeyPress={(e) => (e.key === 'Enter' || e.key === ' ') && promptAddMember()}
       className={styles.AddMember}
@@ -45,15 +45,15 @@ export default ({ groupMemberNames }: Props): ReactElement => (
       <div>
         <FontAwesomeIcon icon={faPlus} />
       </div>
-        Add member
-    </div>
-    <span
-      role="presentation"
+      Add member
+    </button>
+    <button
+      type="button"
       className={styles.LeaveGroup}
       onClick={confirmLeaveGroup}
     >
       <SamwiseIcon iconName="exit" />
       <p>Leave Group</p>
-    </span>
+    </button>
   </div>
 );
