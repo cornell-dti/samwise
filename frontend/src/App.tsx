@@ -9,6 +9,7 @@ import TaskCreator from './components/TaskCreator';
 import TaskView from './components/TaskView';
 import TitleBar from './components/TitleBar';
 import { ModalsContainer } from './components/Util/Modals';
+import { isGroupTaskEnabled } from './util/gate-keeper';
 
 type Views =
   | 'personal'
@@ -19,7 +20,7 @@ type Views =
  */
 const groups = ['CS 2110', 'CS 3110', 'INFO 3450'];
 
-const GROUP_TASK_ENABLED: boolean = localStorage.getItem('GROUP_TASK_ENABLED') != null;
+const GROUP_TASK_ENABLED: boolean = isGroupTaskEnabled();
 
 const PersonalMainView = (): React.ReactElement => (
   <div className={styles.MainView}>
