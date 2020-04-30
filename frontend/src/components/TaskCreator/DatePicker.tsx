@@ -91,9 +91,17 @@ export default function DatePicker(props: Props): ReactElement {
 
   // Nodes
   const displayedNode = (isDefault: boolean): ReactElement => {
-    const style = isDefault ? {} : { background: NONE_TAG.color };
+    const style = { background: NONE_TAG.color };
     const internal = isDefault
-      ? <SamwiseIcon iconName="calendar-dark" className={styles.CenterIcon} />
+      ? (
+        <>
+          <span className={styles.DateDisplay}>
+            <SamwiseIcon iconName="calendar-light" className={styles.CenterIcon} />
+            {' '}
+            add date&nbsp;
+          </span>
+        </>
+      )
       : (
         <>
           <span className={styles.DateDisplay}>

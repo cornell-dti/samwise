@@ -31,11 +31,13 @@ import { ReactComponent as RepeatLight } from '../../assets/svgs/repeat-light.sv
 import { ReactComponent as Settings } from '../../assets/svgs/settings.svg';
 import { ReactComponent as Show } from '../../assets/svgs/show.svg';
 import { ReactComponent as Tag } from '../../assets/svgs/tag.svg';
+import { ReactComponent as TagLight } from '../../assets/svgs/tag-light.svg';
 import { ReactComponent as Unchecked } from '../../assets/svgs/unchecked.svg';
 import { ReactComponent as DropDown } from '../../assets/svgs/v.svg';
 import { ReactComponent as XDark } from '../../assets/svgs/XDark.svg';
 import { ReactComponent as XLight } from '../../assets/svgs/XLight.svg';
 import { ReactComponent as RepeatFrequency } from '../../assets/svgs/repeat-frequency.svg';
+import { ReactComponent as UserPlus } from '../../assets/svgs/user-plus.svg';
 
 type SvgProps = SVGAttributes<SVGElement>;
 
@@ -131,6 +133,10 @@ const SamwiseIcon = ({ iconName, title, ...otherProps }: Props): ReactElement =>
       SvgComponent = Tag;
       altText = 'Tag';
       break;
+    case 'tag-light':
+      SvgComponent = TagLight;
+      altText = 'Tag';
+      break;
     case 'unchecked':
       SvgComponent = Unchecked;
       altText = 'unchecked';
@@ -154,6 +160,10 @@ const SamwiseIcon = ({ iconName, title, ...otherProps }: Props): ReactElement =>
     case 'repeat-frequency':
       SvgComponent = RepeatFrequency;
       altText = 'Repeat Frequency';
+      break;
+    case 'user-plus':
+      SvgComponent = UserPlus;
+      altText = 'Add User';
       break;
     default:
       throw new Error(`Unrecognized icon name: ${iconName}`);

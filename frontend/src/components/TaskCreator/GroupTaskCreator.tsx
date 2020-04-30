@@ -6,7 +6,7 @@ import { randomId } from 'common/lib/util/general-util';
 import { Task, RepeatingDate, SubTask, State as StoreState, Theme } from 'common/lib/types/store-types';
 import { NONE_TAG_ID } from 'common/lib/util/tag-util';
 import { isToday } from 'common/lib/util/datetime-util';
-import TagPicker from './TagPicker';
+import GroupMemberPicker from './GroupMemberPicker';
 import DatePicker from './DatePicker';
 import { addTask, TaskWithoutIdOrderChildren } from '../../firebase/actions';
 import SamwiseIcon from '../UI/SamwiseIcon';
@@ -29,7 +29,7 @@ type Props = { readonly theme: Theme };
 /**
  * The placeholder text in the main task input box.
  */
-const PLACEHOLDER_TEXT = 'What do you have to do?';
+const PLACEHOLDER_TEXT = 'Add a task and get started';
 /**
  * Generate the initial state.
  */
@@ -351,7 +351,7 @@ export class GroupTaskCreator extends React.PureComponent<Props, State> {
         <div className={styles.TitleText}>Add Task</div>
         <div className={styles.NewTaskActive}>
           <div className={styles.TagPickWrap}>
-            <TagPicker
+            <GroupMemberPicker
               tag={tag}
               opened={tagPickerOpened}
               onTagChange={this.editTag}

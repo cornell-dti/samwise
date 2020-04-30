@@ -2,20 +2,19 @@
   border-top: none;
   border-left: none;
   border-right: none;
-  border-bottom: 1px solid gray;
-  margin-top: 10px;
+  margin-top: 20px;
+  bottom: 10px;
   width: 100%;
   padding: 10px 20px;
   text-align: left;
-
-  font-size: 20px;
+  background: #E3E3E3;
+  font-size: 18px;
   font-family: 'Open Sans', sans-serif;
-  transition: border 0.3s ease;
 }
 
 .NewTaskComponent::placeholder {
   font-weight: lighter;
-  color: gray;
+  color: #5A5A5A;
   text-align: center;
 }
 
@@ -25,7 +24,6 @@
 
 .NewTaskWrap {
   position: relative;
-  left: calc(50vw - 450px);
   top: 7vh;
   z-index: 5;
   height: initial;
@@ -35,6 +33,7 @@
 @media only screen and (min-width: 800px) {
   .NewTaskWrap {
     width: 30vw;
+    left: calc((100vw - 470px) * 0.5 - 15vw);
   }
 }
 
@@ -149,7 +148,6 @@
   border-top: none;
   border-left: none;
   border-right: none;
-  border-bottom: 1px gray solid;
 
   width: calc(100% - 60px);
   padding: 10px 20px 10px 50px;
