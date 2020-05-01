@@ -392,10 +392,10 @@ export class GroupTaskCreator extends React.PureComponent<Props, State> {
                 onKeyDown={this.newSubTaskKeyPress}
                 style={theme === 'dark' ? this.darkModeStyle : undefined}
               />
-              <button type="button" className={styles.ResetButton} onClick={this.resetTask}>
-                DISCARD TASK
-              </button>
             </div>
+            <button type="button" className={styles.ResetButton} onClick={this.resetTask}>
+              DISCARD TASK
+            </button>
           </div>
         </div>
       </>

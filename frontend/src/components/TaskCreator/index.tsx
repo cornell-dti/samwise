@@ -1,7 +1,5 @@
 import React, { CSSProperties, KeyboardEvent, SyntheticEvent, ReactElement } from 'react';
 import { connect } from 'react-redux';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faPlus, faArrowAltCircleRight } from '@fortawesome/free-solid-svg-icons';
 import { randomId } from 'common/lib/util/general-util';
 import { Task, RepeatingDate, SubTask, State as StoreState, Theme } from 'common/lib/types/store-types';
 import { NONE_TAG_ID } from 'common/lib/util/tag-util';
@@ -354,44 +352,61 @@ export class TaskCreator extends React.PureComponent<Props, State> {
       );
     };
     return (
-      <div className={styles.NewTaskActive}>
-        {date instanceof Date && <FocusPicker pinned={inFocus} onPinChange={this.togglePin} />}
-        <div className={styles.TagPickWrap}>
-          <TagPicker
-            tag={tag}
-            opened={tagPickerOpened}
-            onTagChange={this.editTag}
-            onPickerOpened={this.openTagPicker}
+      <>
+        <div className={styles.TitleText}>Add Task</div>
+        <div className={styles.NewTaskActive}>
+          {date instanceof Date && <FocusPicker pinned={inFocus} onPinChange={this.togglePin} />}
+          <div className={styles.TagPickWrap}>
+            <TagPicker
+              tag={tag}
+              opened={tagPickerOpened}
+              onTagChange={this.editTag}
+              onPickerOpened={this.openTagPicker}
+            />
+          </div>
+          <DatePicker
+            date={date}
+            opened={datePickerOpened}
+            datePicked={datePicked}
+            inGroupView={false}
+            onDateChange={this.editDate}
+            onClearPicker={this.clearDate}
+            onPickerOpened={this.openDatePicker}
           />
-        </div>
-        <DatePicker
-          date={date}
-          opened={datePickerOpened}
-          datePicked={datePicked}
-          inGroupView={false}
-          onDateChange={this.editDate}
-          onClearPicker={this.clearDate}
-          onPickerOpened={this.openDatePicker}
-        />
-        <button tabIndex={-1} type="submit" className={styles.SubmitNewTask} style={theme === 'dark' ? this.darkModeStyle : undefined}>
-          <FontAwesomeIcon icon={faArrowAltCircleRight} />
-        </button>
-        <div className={styles.NewTaskModal} style={theme === 'dark' ? this.darkModeStyle : undefined}>
-          <ul>{subTasks.map(existingSubTaskEditor)}</ul>
-          <FontAwesomeIcon icon={faPlus} className={styles.PlusIcon} />
-          <input
-            type="text"
-            placeholder="Add a Subtask"
-            value=""
-            onChange={this.addNewSubTask}
-            onKeyDown={this.newSubTaskKeyPress}
-            style={theme === 'dark' ? this.darkModeStyle : undefined}
-          />
-          <button type="button" className={styles.ResetButton} onClick={this.resetTask}>
-            Clear
+          <button tabIndex={-1} type="submit" className={styles.SubmitNewTask} style={theme === 'dark' ? this.darkModeStyle : undefined}>
+            <SamwiseIcon iconName="add-task" tabIndex={-1} />
           </button>
+          <div className={styles.SubtitleText}>
+            <p>
+              <b>Add Subtasks</b>
+               &nbsp;(optional)
+            </p>
+          </div>
+          <div className={styles.DescText}>
+            <p>
+              Add optional subtasks to break down your tasks into more manageable pieces.
+            </p>
+          </div>
+          <div className={styles.NewTaskModal} style={theme === 'dark' ? this.darkModeStyle : undefined}>
+            <div className={styles.SubtasksContainer}>
+              <ul className={styles.SubtasksList}>{subTasks.map(existingSubTaskEditor)}</ul>
+              <SamwiseIcon iconName="edit" className={styles.EditIcon} tabIndex={-1} />
+              <input
+                className={styles.SubtaskInput}
+                type="text"
+                placeholder="Add a Subtask"
+                value=""
+                onChange={this.addNewSubTask}
+                onKeyDown={this.newSubTaskKeyPress}
+                style={theme === 'dark' ? this.darkModeStyle : undefined}
+              />
+            </div>
+            <button type="button" className={styles.ResetButton} onClick={this.resetTask}>
+              DISCARD TASK
+            </button>
+          </div>
         </div>
-      </div>
+      </>
     );
   }
 
