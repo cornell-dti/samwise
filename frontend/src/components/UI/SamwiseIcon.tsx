@@ -38,6 +38,8 @@ import { ReactComponent as XDark } from '../../assets/svgs/XDark.svg';
 import { ReactComponent as XLight } from '../../assets/svgs/XLight.svg';
 import { ReactComponent as RepeatFrequency } from '../../assets/svgs/repeat-frequency.svg';
 import { ReactComponent as UserPlus } from '../../assets/svgs/user-plus.svg';
+import { ReactComponent as AddTask } from '../../assets/svgs/add-task.svg';
+import { ReactComponent as Edit } from '../../assets/svgs/edit.svg';
 
 type SvgProps = SVGAttributes<SVGElement>;
 
@@ -164,6 +166,14 @@ const SamwiseIcon = ({ iconName, title, ...otherProps }: Props): ReactElement =>
     case 'user-plus':
       SvgComponent = UserPlus;
       altText = 'Add User';
+      break;
+    case 'add-task':
+      SvgComponent = AddTask;
+      altText = 'Add Task';
+      break;
+    case 'edit':
+      SvgComponent = Edit;
+      altText = 'Subtask';
       break;
     default:
       throw new Error(`Unrecognized icon name: ${iconName}`);

@@ -17,7 +17,13 @@ type Props = OwnProps & {
   readonly getTag: (id: string) => Tag;
 };
 
-function GroupMemberPicker({ tag, opened, onTagChange, onPickerOpened, getTag }: Props): ReactElement {
+function GroupMemberPicker({
+  tag,
+  opened,
+  onTagChange,
+  onPickerOpened,
+  getTag,
+}: Props): ReactElement {
   // Controllers
   const clickPicker = (): void => { onPickerOpened(); };
   const pressedPicker = (e: KeyboardEvent): void => {
@@ -32,7 +38,7 @@ function GroupMemberPicker({ tag, opened, onTagChange, onPickerOpened, getTag }:
       ? (
         <>
           <span className={styles.TagDisplay}>
-            <SamwiseIcon iconName="user-plus" className={styles.CenterIcon} />
+            <SamwiseIcon iconName="user-plus" className={styles.CenterIcon} tabIndex={-1} />
             {' '}
             assign to&nbsp;&nbsp;
           </span>

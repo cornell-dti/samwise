@@ -28,4 +28,6 @@ export type IconName =
   | 'x-light'
   | 'x-light-settings'
   | 'repeat-frequency'
-  | 'user-plus';
+  | 'user-plus'
+  | 'add-task'
+  | 'edit';

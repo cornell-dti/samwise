@@ -1,7 +1,5 @@
 import React, { CSSProperties, KeyboardEvent, SyntheticEvent, ReactElement } from 'react';
 import { connect } from 'react-redux';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faAt, faArrowAltCircleRight } from '@fortawesome/free-solid-svg-icons';
 import { randomId } from 'common/lib/util/general-util';
 import { Task, RepeatingDate, SubTask, State as StoreState, Theme } from 'common/lib/types/store-types';
 import { NONE_TAG_ID } from 'common/lib/util/tag-util';
@@ -368,22 +366,36 @@ export class GroupTaskCreator extends React.PureComponent<Props, State> {
             onPickerOpened={this.openDatePicker}
           />
           <button tabIndex={-1} type="submit" className={styles.SubmitNewTask} style={theme === 'dark' ? this.darkModeStyle : undefined}>
-            <FontAwesomeIcon icon={faArrowAltCircleRight} />
+            <SamwiseIcon iconName="add-task" tabIndex={-1} />
           </button>
+          <div className={styles.SubtitleText}>
+            <p>
+              <b>Add Subtasks</b>
+               &nbsp;(optional)
+            </p>
+          </div>
+          <div className={styles.DescText}>
+            <p>
+              Add optional subtasks to break down your tasks into more manageable pieces.
+            </p>
+          </div>
           <div className={styles.NewTaskModal} style={theme === 'dark' ? this.darkModeStyle : undefined}>
-            <ul>{subTasks.map(existingSubTaskEditor)}</ul>
-            <FontAwesomeIcon icon={faAt} className={styles.AtIcon} />
-            <input
-              type="text"
-              placeholder="Assign a Group Member"
-              value=""
-              onChange={this.addNewSubTask}
-              onKeyDown={this.newSubTaskKeyPress}
-              style={theme === 'dark' ? this.darkModeStyle : undefined}
-            />
-            <button type="button" className={styles.ResetButton} onClick={this.resetTask}>
-              Clear
-            </button>
+            <div className={styles.SubtasksContainer}>
+              <ul className={styles.SubtasksList}>{subTasks.map(existingSubTaskEditor)}</ul>
+              <SamwiseIcon iconName="edit" className={styles.EditIcon} tabIndex={-1} />
+              <input
+                className={styles.SubtaskInput}
+                type="text"
+                placeholder="add a subtask"
+                value=""
+                onChange={this.addNewSubTask}
+                onKeyDown={this.newSubTaskKeyPress}
+                style={theme === 'dark' ? this.darkModeStyle : undefined}
+              />
+              <button type="button" className={styles.ResetButton} onClick={this.resetTask}>
+                DISCARD TASK
+              </button>
+            </div>
           </div>
         </div>
       </>
