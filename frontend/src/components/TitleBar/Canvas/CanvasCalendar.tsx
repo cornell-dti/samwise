@@ -17,7 +17,7 @@ function CanvasCalendar({ settings }: Props): ReactElement {
     e.preventDefault();
     const iCalLink = input;
 
-    promptConfirm('This will sync all calendar items from your Canvas account. This may include assignments, as well as lectures, discussions, office hours, and more. Would you like to continue?').then((confirmed) => {
+    promptConfirm('This will sync all calendar items from your Canvas account. This may include assignments, as well as lectures, discussions, office hours, and more. These tasks can only be modified or deleted by your professor. If you wish to delete or edit these tasks, you will need to unlink your Canvas calendar. Would you like to continue?').then((confirmed) => {
       if (confirmed) {
         setCanvasCalendar(iCalLink);
       }
@@ -25,7 +25,11 @@ function CanvasCalendar({ settings }: Props): ReactElement {
   };
 
   const removeCanvasiCal = (): void => {
-    setCanvasCalendar(null);
+    promptConfirm('This will stop syncing new calendar updates from Canvas, but will not delete previously imported tasks. After unlinking, you will be able to delete any tasks previously imported from Canvas. Would you like to continue?').then((confirmed) => {
+      if (confirmed) {
+        setCanvasCalendar(null);
+      }
+    });
   };
 
   return (
