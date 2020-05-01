@@ -101,6 +101,9 @@ function FutureViewTask(
     const handler = (): void => removeTaskWithPotentialPrompt(original, replaceDateForFork);
     return <SamwiseIcon iconName="x-light" className={styles.TaskIcon} onClick={handler} />;
   };
+
+  const Placeholder = (): ReactElement => <div className={styles.hide}><RemoveTaskIcon /></div>;
+
   const PinIcon = (): ReactElement => {
     const { id, inFocus } = original;
     const handler = (): void => editMainTask(id, replaceDateForForkOpt, { inFocus: !inFocus });
@@ -116,11 +119,7 @@ function FutureViewTask(
   const RepeatingIcon = (): ReactElement => <SamwiseIcon iconName="repeat-light" className={styles.TaskIconNoHover} />;
   let Icon = (): ReactElement => <RepeatingIcon />;
   if (compoundTask.original.metadata.type === 'ONE_TIME') {
-    if (!isCanvasTask) {
-      Icon = DragIcon;
-    } else {
-      Icon = () => <div className={styles.TaskIconPlaceholder}> </div>;
-    }
+    Icon = isCanvasTask ? Placeholder : DragIcon;
   }
   const renderMainTaskInfo = (simplified = false): ReactElement => {
     if (simplified && isInMainList) {
@@ -133,7 +132,7 @@ function FutureViewTask(
         <TaskCheckBox />
         <TaskName />
         <PinIcon />
-        {isCanvasTask ? null : <RemoveTaskIcon />}
+        {isCanvasTask ? <Placeholder /> : <RemoveTaskIcon />}
       </div>
     );
   };
