@@ -39,11 +39,17 @@
   .NewTaskWrap {
     width: 30vw;
   }
+  .SubmitNewTask {
+    height: 50px;
+  }
 }
 
 @media only screen and (max-width: 800px) {
   .NewTaskWrap {
     width: 90vw;
+  }
+  .SubmitNewTask {
+    height: 80px;
   }
 }
 
@@ -129,7 +135,6 @@
   top: 7px;
   width: 42px;
   padding-left: 10px;
-  height: 50px;
   background: white;
   border: none;
   cursor: pointer;
