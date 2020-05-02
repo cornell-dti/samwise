@@ -52,7 +52,7 @@ export type FirestoreOneTimeTask = FirestoreCommonTask & {
 export type FirestoreGroupTask = FirestoreCommonTask & {
   readonly type: 'GROUP';
   readonly date: Date | firestore.Timestamp;
-  readonly group?: string;
+  readonly group: string;
 }
 
 export type FirestoreGroup = {

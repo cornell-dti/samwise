@@ -33,7 +33,7 @@ export type OneTimeTaskMetadata = {
 export type GroupTaskMetadata = {
   readonly type: 'GROUP';
   readonly date: Date;
-  group?: string; // documentid for associated group
+  group: string; // documentid for associated group
 }
 
 export type RepeatingPattern =
