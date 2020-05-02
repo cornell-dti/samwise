@@ -19,8 +19,31 @@ type Views =
  */
 const groups = ['CS 2110', 'CS 3110', 'INFO 3450'];
 
+const GROUP_TASK_ENABLED: boolean = localStorage.getItem('GROUP_TASK_ENABLED') != null;
+
+const PersonalMainView = (): React.ReactElement => (
+  <div className={styles.MainView}>
+    <Onboard />
+    <TitleBar />
+    <TaskCreator />
+    <TaskView className={styles.TaskView} />
+    <AllComplete />
+  </div>
+);
+
+type MainViewProps = {
+  readonly view: string;
+  readonly group: string;
+}
+
+const MainView = ({ view, group }: MainViewProps): ReactElement => (
+  view === 'personal'
+    ? <PersonalMainView />
+    : <GroupView groupName={group} />
+);
+
 export default function App(): ReactElement {
-  const [view, setView] = useState('personal');
+  const [view, setView] = useState<Views>('personal');
   const [group, setGroup] = useState('');
 
   const changeView = (selectedView: Views, selectedGroup?: string | undefined): void => {
@@ -29,26 +52,20 @@ export default function App(): ReactElement {
       setGroup(selectedGroup);
     }
   };
+
   return (
     <div className={styles.Container}>
       <ModeIndicator />
-      <SideBar groups={groups} changeView={changeView} />
+      <ModalsContainer />
       {
-        view === 'personal' && (
-          <div className={styles.MainView}>
-            <Onboard />
-            <ModalsContainer />
-            <TitleBar />
-            <TaskCreator />
-            <TaskView className={styles.TaskView} />
-            <AllComplete />
-          </div>
-        )
-      }
-      {
-        view === 'group' && (
-          <GroupView groupName={group} />
-        )
+        GROUP_TASK_ENABLED
+          ? (
+            <div className={styles.GroupScreen}>
+              <SideBar groups={groups} changeView={changeView} />
+              <MainView view={view} group={group} />
+            </div>
+          )
+          : <PersonalMainView />
       }
     </div>
   );

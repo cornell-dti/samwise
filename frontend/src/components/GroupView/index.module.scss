@@ -2,3 +2,14 @@
   display: flex;
   flex-direction: row;
 }
+@import '../../colors.scss';
+
+.MiddleBar {
+  background-color: $card-grey;
+  padding: 1em;
+  height: 100vh;
+  color: $warm-grey;
+  display: flex;
+  flex-direction: column;
+  min-width: 20%;
+}

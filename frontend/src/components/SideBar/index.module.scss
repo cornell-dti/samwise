@@ -1,7 +1,6 @@
 @import '../../colors.scss';
 
 .SideBar {
-  width: 60px;
   display: flex;
   flex-direction: column;
 }
@@ -11,7 +10,7 @@
   background-color: $blue;
 }
 
-.SideBar span {
+.SideBar button {
   height: 4rem;
   width: 4rem;
   opacity: 0.7;
@@ -19,7 +18,7 @@
   margin: 0.5rem;
 }
 
-.SideBar span:hover {
+.SideBar button:hover {
   opacity: 0.5;
 }
 
