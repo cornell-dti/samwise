@@ -30,6 +30,12 @@ export type OneTimeTaskMetadata = {
   icalUID?: string;
 };
 
+export type GroupTaskMetadata = {
+  readonly type: 'GROUP';
+  readonly date: Date;
+  group: string; // documentid for associated group
+}
+
 export type RepeatingPattern =
   | { readonly type: 'WEEKLY'; readonly bitSet: number /* 7-bit */ }
   | { readonly type: 'BIWEEKLY'; readonly bitSet: number /* 14-bit */ }
@@ -52,7 +58,8 @@ export type RepeatingTaskMetadata = {
   readonly forks: readonly ForkedTaskMetaData[];
 };
 
-export type TaskMetadata = OneTimeTaskMetadata | RepeatingTaskMetadata;
+export type TaskMetadata =
+  OneTimeTaskMetadata | RepeatingTaskMetadata | GroupTaskMetadata;
 
 export type Task<M = TaskMetadata> = {
   readonly id: string;

@@ -41,7 +41,7 @@ type Actions = {
 };
 type OwnProps = DefaultProps & {
   readonly id: string;
-  readonly type: 'MASTER_TEMPLATE' | 'ONE_TIME';
+  readonly type: 'MASTER_TEMPLATE' | 'ONE_TIME' | 'GROUP';
   readonly icalUID?: string;
   // the date string that specifies when the task appears (useful for repeated task)
   readonly taskAppearedDate: string | null;
