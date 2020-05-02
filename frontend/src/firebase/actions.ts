@@ -11,7 +11,6 @@ import {
   TaskMetadata,
   RepeatingTaskMetadata,
   OneTimeTaskMetadata,
-  GroupTaskMetadata,
 } from 'common/lib/types/store-types';
 import { error, ignore } from 'common/lib/util/general-util';
 import {
