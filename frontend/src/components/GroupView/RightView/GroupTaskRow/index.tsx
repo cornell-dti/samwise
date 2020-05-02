@@ -26,8 +26,8 @@ export default ({ memberName }: Props): ReactElement => {
     <div className={styles.GroupTaskRow}>
       <div className={styles.Initials}>{initials}</div>
 
-      <div
-        role="presentation"
+      <button
+        type="button"
         className={styles.AddTaskContainer}
         onClick={clickAddGroupTask}
         onKeyPress={pressedAddGroupTask}
@@ -36,7 +36,7 @@ export default ({ memberName }: Props): ReactElement => {
           <FontAwesomeIcon icon={faPlus} />
           <h3>Assign new task</h3>
         </div>
-      </div>
+      </button>
 
       <GroupTasksContainer />
     </div>
