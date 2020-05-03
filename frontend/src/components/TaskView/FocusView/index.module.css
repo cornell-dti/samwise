@@ -8,6 +8,7 @@
   height: calc(100% - 54px);
   overflow-y: auto;
   overflow-x: hidden;
+  padding-bottom: 16px;
 }
 
 @media only screen and (max-width: 840px) {
