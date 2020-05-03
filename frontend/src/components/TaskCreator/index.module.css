@@ -49,6 +49,9 @@
   .NewTaskWrap {
     width: 90vw;
   }
+  .TaskCreator {
+    height: auto;
+  }
 }
 
 

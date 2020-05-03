@@ -10,11 +10,11 @@ import TitleBar from './components/TitleBar';
  * The top level Personal Samwise view component.
  */
 export default (): ReactElement => (
-  <div>
+  <>
     <Onboard />
     <TitleBar />
     <TaskCreator />
     <TaskView className={styles.TaskView} />
     <AllComplete />
-  </div>
+  </>
 );

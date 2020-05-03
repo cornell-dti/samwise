@@ -26,11 +26,13 @@ export default (): React.ReactElement => {
   return (
     <div className={styles.GroupScreen}>
       <SideBar groups={groups} changeView={changeView} />
-      {
-        view === 'personal'
-          ? <PersonalView />
-          : <GroupView groupName={group} />
-      }
+      <div>
+        {
+          view === 'personal'
+            ? <PersonalView />
+            : <GroupView groupName={group} />
+        }
+      </div>
     </div>
   );
 };

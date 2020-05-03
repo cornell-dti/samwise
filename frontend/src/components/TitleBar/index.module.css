@@ -5,6 +5,12 @@
   height: 10vh;
 }
 
+@media only screen and (max-width: 840px) {
+  .Main {
+    height: auto;
+  }
+}
+
 .Time {
   font-weight: 600;
   font-size: 32px;
