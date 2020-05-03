@@ -3,7 +3,7 @@
 .SideBar {
   display: flex;
   flex-direction: column;
-  width: 80px;
+  min-width: 80px;
   align-items: center;
   background-color: #EBEBEB;
 }
@@ -41,10 +41,6 @@
   margin-left: 0
 }
 
-.SideBar button:hover {
-  opacity: 0.5;
-}
-
 .AddGroup > div > p {
   font-size: 8px;
   line-height: 10px;
@@ -61,8 +57,8 @@
 }
 
 .PersonalViewButton:hover,
-.AddGroup:hover {
-  opacity: 0.7;
+.GroupIcons button:hover {
+  opacity: 0.5;
   cursor: pointer;
 }
 

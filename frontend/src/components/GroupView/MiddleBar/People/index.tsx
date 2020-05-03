@@ -33,9 +33,11 @@ type Props = {
 export default ({ groupMemberNames }: Props): ReactElement => (
   <div className={styles.People}>
     <h2>People</h2>
-    {
-      groupMemberNames.map((m) => <Member memberName={m} key={m} />)
-    }
+    <div className={styles.MemberList}>
+      {
+        groupMemberNames.map((m) => <Member memberName={m} key={m} />)
+      }
+    </div>
     <button
       type="button"
       onClick={promptAddMember}
