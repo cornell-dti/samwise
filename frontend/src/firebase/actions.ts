@@ -255,7 +255,7 @@ export const removeTask = (task: Task): void => {
   const batch = database.db().batch();
   batch.delete(database.tasksCollection().doc(task.id));
   task.children.forEach((subTask) => batch.delete(database.subTasksCollection().doc(subTask.id)));
-  if (task.metadata.type === 'ONE_TIME') {
+  if (task.metadata.type === 'ONE_TIME' || task.metadata.type === 'GROUP') {
     // remove fork mentions
     repeatedTaskSet.forEach((repeatedTaskId) => {
       const repeatedTask = tasks.get(repeatedTaskId) as Task<RepeatingTaskMetadata> | null;

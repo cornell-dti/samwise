@@ -5,7 +5,7 @@
 
 import React, { ReactElement, useEffect, useState, useCallback } from 'react';
 import { connect } from 'react-redux';
-import { MainTask, State, SubTask, Tag } from 'common/lib/types/store-types';
+import { MainTask, Settings, State, SubTask, Tag } from 'common/lib/types/store-types';
 import OverdueAlert from 'components/UI/OverdueAlert';
 import { NONE_TAG } from 'common/lib/util/tag-util';
 import { ignore } from 'common/lib/util/general-util';
@@ -41,7 +41,7 @@ type Actions = {
 };
 type OwnProps = DefaultProps & {
   readonly id: string;
-  readonly type: 'MASTER_TEMPLATE' | 'ONE_TIME';
+  readonly type: 'MASTER_TEMPLATE' | 'ONE_TIME' | 'GROUP';
   readonly icalUID?: string;
   // the date string that specifies when the task appears (useful for repeated task)
   readonly taskAppearedDate: string | null;
@@ -54,6 +54,7 @@ type OwnProps = DefaultProps & {
 type Props = OwnProps & {
   // subscribed from redux store.
   readonly getTag: (id: string) => Tag;
+  readonly settings: Settings;
 };
 
 type TaskToFocus = number | 'new-subtask' | null;
@@ -82,6 +83,7 @@ function TaskEditor(
     onBlur,
     editorRef,
     calendarPosition,
+    settings,
   }: Props,
 ): ReactElement {
   const { onChange, removeTask, onSaveClicked } = actions;
@@ -99,6 +101,9 @@ function TaskEditor(
   const { name, tag, date, complete, inFocus } = mainTask;
 
   const [subTaskToFocus, setSubTaskToFocus] = useState<TaskToFocus>(null);
+
+  const { canvasCalendar } = settings;
+  const canvasLinked = canvasCalendar != null;
 
   const onMouseLeave = (): void => {
     if (type === 'ONE_TIME') {
@@ -237,11 +242,11 @@ function TaskEditor(
           getTag={getTag}
           calendarPosition={calendarPosition}
           displayGrabber={displayGrabber == null ? false : displayGrabber}
-          icalUID={icalUID}
+          icalUID={canvasLinked ? icalUID : undefined}
         />
         <MainTaskEditor
           id={id}
-          icalUID={icalUID}
+          icalUID={canvasLinked ? icalUID : undefined}
           taskDate={date instanceof Date ? date : null}
           dateAppeared={taskAppearedDate}
           name={name}
@@ -297,6 +302,6 @@ function TaskEditor(
 }
 
 const Connected = connect(
-  ({ tags }: State) => ({ getTag: (id: string) => tags.get(id) ?? NONE_TAG }),
+  ({ tags, settings }: State) => ({ getTag: (id: string) => tags.get(id) ?? NONE_TAG, settings }),
 )(TaskEditor);
 export default Connected;

@@ -1,3 +1,7 @@
+.TaskCreator {
+  height: 5vh;
+}
+
 .NewTaskComponent {
   border-top: none;
   border-left: none;
@@ -44,6 +48,9 @@
 @media only screen and (max-width: 800px) {
   .NewTaskWrap {
     width: 90vw;
+  }
+  .TaskCreator {
+    height: auto;
   }
 }
 
