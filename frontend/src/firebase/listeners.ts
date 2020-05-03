@@ -136,6 +136,10 @@ export default (onFirstFetched: () => void): (() => void) => {
           const { type, date: timestamp, icalUID, ...oneTimeTaskRest } = rest;
           const date = transformDate(timestamp);
           task = { ...taskCommon, ...oneTimeTaskRest, metadata: { type: 'ONE_TIME', date, icalUID } };
+        } else if (rest.type === 'GROUP') {
+          const { type, date: timestamp, group, ...groupTaskRest } = rest;
+          const date = transformDate(timestamp);
+          task = { ...taskCommon, ...groupTaskRest, metadata: { type: 'GROUP', date, group } };
         } else {
           const { type, forks: firestoreForks, date: firestoreRepeats, ...otherTaskProps } = rest;
           const forks = firestoreForks.map((firestoreFork) => ({

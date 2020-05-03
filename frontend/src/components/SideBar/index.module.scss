@@ -1,0 +1,36 @@
+@import '../../colors.scss';
+
+.SideBar {
+  display: flex;
+  flex-direction: column;
+}
+
+.PersonalViewButton,
+.PlusIcon {
+  background-color: $blue;
+}
+
+.SideBar button {
+  height: 4rem;
+  width: 4rem;
+  opacity: 0.7;
+  border-radius: 15px;
+  margin: 0.5rem;
+  border: none;
+}
+
+.SideBar button:hover {
+  opacity: 0.5;
+}
+
+.SideBar svg {
+  width: 3.5rem;
+  height: 3.5rem;
+}
+
+.PlusIcon {
+  font-size: 2.5rem;
+  color: white;
+  position: relative;
+  padding: 0.25rem 0.75rem;
+}

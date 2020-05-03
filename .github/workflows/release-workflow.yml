@@ -29,4 +29,4 @@ jobs:
           echo $PRODUCTION_FIREBASE_ADMIN_SDK_CONTENTS > functions/src/firebase-adminsdk.json
           ./node_modules/.bin/firebase use production
           ./node_modules/.bin/firebase deploy --token=$FIREBASE_TOKEN --non-interactive --only hosting
-          ./deploy-functions $FIREBASE_TOKEN production
+          node ./deploy-functions.js $FIREBASE_TOKEN production

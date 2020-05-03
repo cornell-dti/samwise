@@ -28,12 +28,18 @@ A web app to help Cornell students plan their semesters.
 
 ## Getting Started
 
-You will need Node.js and Yarn installed on your development machine.
+You will need [Node.js](https://nodejs.org/en/download/) and 
+[Yarn](https://classic.yarnpkg.com/en/docs/install) installed on your development machine.
 
-To setup your environment, go into the `frontend` folder and run `yarn install`. Then, run `yarn start` to start a development server or `yarn build` to create a deployment build.
+To setup your environment, go into the root folder and run `yarn`. Then, run
+`yarn workspace frontend start` to start a development server for frontend.
+If you need to work on firebase functions, run `yarn workspace functions build` to compile your
+functions code.
 
-This repository comes with multiple tools to ensure code quality, including a linter and
+This repository comes with multiple tools to ensure code quality, including a linter and a
 type checker. Please ensure that they are properly configured with your IDE or text editor.
+For text editor setup instructions, please visit Cornell DTI's
+[developer website](https://dev.cornelldti.org/docs/onboarding-editor).
 
 ### Contributing
 

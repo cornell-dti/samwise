@@ -1,7 +1,7 @@
 import React, { KeyboardEvent, ReactElement, SyntheticEvent, ReactNode } from 'react';
 import { connect } from 'react-redux';
 import FloatingTaskEditor from 'components/Util/TaskEditors/FloatingTaskEditor';
-import { State, SubTask, Task } from 'common/lib/types/store-types';
+import { Settings, State, SubTask, Task } from 'common/lib/types/store-types';
 import CheckBox from 'components/UI/CheckBox';
 import { FloatingPosition, CalendarPosition } from 'components/Util/TaskEditors/editors-types';
 import { getTodayAtZeroAM, getDateWithDateString } from 'common/lib/util/datetime-util';
@@ -34,6 +34,7 @@ type OwnProps = {
 
 type Props = OwnProps & {
   readonly compoundTask: CompoundTask | null;
+  readonly settings: Settings;
 };
 
 /**
@@ -49,6 +50,7 @@ function FutureViewTask(
     taskEditorPosition,
     isInMainList,
     calendarPosition,
+    settings,
   }: Props,
 ): ReactElement | null {
   const isSmallScreen = useMappedWindowSize(({ width }) => width <= 768);
@@ -58,8 +60,11 @@ function FutureViewTask(
   }
   const { original, filteredSubTasks, color } = compoundTask;
 
+  const { canvasCalendar } = settings;
+  const canvasLinked = canvasCalendar != null;
+
   const icalUID = original.metadata.type === 'ONE_TIME' ? original.metadata.icalUID : '';
-  const isCanvasTask = typeof icalUID === 'string' ? icalUID !== '' : false;
+  const isCanvasTask = canvasLinked && (typeof icalUID === 'string' ? icalUID !== '' : false);
 
   /**
    * Get an onClickHandler when the element is clicked.
@@ -225,8 +230,9 @@ const getCompoundTask = (
 
 const mapStateToProps = (
   state: State, ownProps: OwnProps,
-): { readonly compoundTask: CompoundTask | null } => ({
+): { readonly compoundTask: CompoundTask | null; readonly settings: Settings } => ({
   compoundTask: getCompoundTask(state, ownProps),
+  settings: state.settings,
 });
 
 const Connected = connect(mapStateToProps)(FutureViewTask);
