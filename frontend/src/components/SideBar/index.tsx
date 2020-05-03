@@ -4,7 +4,7 @@ import { faPlus } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import SettingsButton from 'components/TitleBar/Settings/SettingsButton';
 import GroupIcon from './GroupIcon';
-import styles from './index.module.scss';
+import styles from './index.module.css';
 import AddGroupTags from './AddGroupTags';
 import { Views } from './types';
 
