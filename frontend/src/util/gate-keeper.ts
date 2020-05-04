@@ -2,8 +2,14 @@ const GK_GROUP_TASK = 'SAMWISE_GK-GROUP_TASK_ENABLED';
 
 export const isGroupTaskEnabled = (): boolean => localStorage.getItem(GK_GROUP_TASK) === 'true';
 
-const enableGroupTask = (): void => localStorage.setItem(GK_GROUP_TASK, 'true');
-const disableGroupTask = (): void => localStorage.removeItem(GK_GROUP_TASK);
+const enableGroupTask = (): void => {
+  localStorage.setItem(GK_GROUP_TASK, 'true');
+  window.location.reload();
+};
+const disableGroupTask = (): void => {
+  localStorage.removeItem(GK_GROUP_TASK);
+  window.location.reload();
+}
 
 const GateKeeper = { enableGroupTask, disableGroupTask };
 
