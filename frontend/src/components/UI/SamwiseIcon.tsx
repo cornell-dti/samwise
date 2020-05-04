@@ -21,6 +21,7 @@ import { ReactComponent as Exit } from '../../assets/svgs/exit.svg';
 import { ReactComponent as Grabber } from '../../assets/svgs/grabbers.svg';
 import { ReactComponent as Hide } from '../../assets/svgs/hide.svg';
 import { ReactComponent as Hug } from '../../assets/svgs/hug.svg';
+import { ReactComponent as Pencil } from '../../assets/svgs/pencil.svg';
 import { ReactComponent as PersonalView } from '../../assets/svgs/personal-view.svg';
 import { ReactComponent as PinDarkFilled } from '../../assets/svgs/pin-2-dark-filled.svg';
 import { ReactComponent as PinDarkOutline } from '../../assets/svgs/pin-2-dark-outline.svg';
@@ -91,6 +92,10 @@ const SamwiseIcon = ({ iconName, title, ...otherProps }: Props): ReactElement =>
     case 'hug':
       SvgComponent = Hug;
       altText = 'Give a hug';
+      break;
+    case 'pencil':
+      SvgComponent = Pencil;
+      altText = 'Edit';
       break;
     case 'personal-view':
       SvgComponent = PersonalView;

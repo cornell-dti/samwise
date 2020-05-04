@@ -3,9 +3,13 @@ import People from './People';
 import TaskQueue from './TaskQueue';
 import styles from './index.module.scss';
 
-export default (): ReactElement => (
+type Props = {
+  groupMemberNames: string[];
+}
+
+export default ({ groupMemberNames }: Props): ReactElement => (
   <div className={styles.MiddleBar}>
     <TaskQueue />
-    <People groupMemberNames={['Darien Lopez', 'Sarah Johnson', 'Michelle Parker']} />
+    <People groupMemberNames={groupMemberNames} />
   </div>
 );
