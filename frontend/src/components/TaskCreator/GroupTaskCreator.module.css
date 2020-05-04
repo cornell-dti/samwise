@@ -25,7 +25,9 @@
 
 .NewTaskWrap {
   position: relative;
-  top: 7vh;
+  left: 50%;
+  text-align: center;
+  transform: translateX(-50%);
   z-index: 5;
   height: initial;
   max-height: 44px;
@@ -34,7 +36,6 @@
 @media only screen and (min-width: 800px) {
   .NewTaskWrap {
     width: 30vw;
-    left: calc((100vw - 470px) * 0.5 - 15vw);
   }
 }
 

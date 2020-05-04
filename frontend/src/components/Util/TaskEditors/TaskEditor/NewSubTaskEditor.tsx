@@ -5,7 +5,7 @@ type Props = {
   readonly onFirstType: (change: string) => void;
   readonly onPressEnter: () => void;
   readonly needToBeFocused: boolean;
-  readonly type: 'MASTER_TEMPLATE' | 'ONE_TIME';
+  readonly type: 'MASTER_TEMPLATE' | 'ONE_TIME' | 'GROUP';
 };
 
 export default function NewSubTaskEditor(

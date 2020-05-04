@@ -1,6 +1,7 @@
 .GroupTasksContainer {
   display: flex;
   flex-direction: row;
-  overflow-y: auto;
+  overflow-y: hidden;
   overflow-x: auto;
+  width: 60vw;
 }

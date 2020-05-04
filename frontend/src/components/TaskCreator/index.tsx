@@ -415,7 +415,7 @@ export class TaskCreator extends React.PureComponent<Props, State> {
     const toggleDisplayStyle = opened ? {} : { display: 'none' };
     const { theme } = this.props;
     return (
-      <div style={theme === 'dark' ? this.darkModeStyle : undefined}>
+      <div className={styles.TaskCreator} style={theme === 'dark' ? this.darkModeStyle : undefined}>
         <div
           onClick={this.closeNewTask}
           role="presentation"

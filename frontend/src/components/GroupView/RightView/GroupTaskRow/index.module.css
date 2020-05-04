@@ -1,7 +1,6 @@
 .GroupTaskRow {
   display: flex;
   direction: row;
-  height: 126px;
   margin-bottom: 1em;
 }
 
@@ -14,7 +13,8 @@
   font-size: 22px;
   line-height: 56px;
   color: white;
-  margin: auto;
+  margin-top: auto;
+  margin-bottom: auto;
   margin-right: 26px;
 }
 
@@ -28,13 +28,20 @@
   align-content: center;
   margin: auto;
   margin-right: 26px;
+  background-color: rgb(255, 255, 255);
+}
+
+.AddTaskContainer :hover {
+  cursor: pointer;
 }
 
 .AddTask {
   display: flex;
   flex-direction: column;
+  width: 100%;
+  height: 100%;
+  justify-content: center;
   align-items: center;
-  margin:auto;
 }
 
 .AddTask svg {
@@ -50,5 +57,4 @@
   font-weight: bold;
   font-size: 10px;
   line-height: 12px;
-  /* margin-top: 0; */
 }

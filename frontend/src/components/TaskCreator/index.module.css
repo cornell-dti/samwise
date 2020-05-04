@@ -51,6 +51,9 @@
   .SubmitNewTask {
     height: 80px;
   }
+  .TaskCreator {
+    height: auto;
+  }
 }
 
 
