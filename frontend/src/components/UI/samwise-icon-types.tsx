@@ -1,11 +1,13 @@
 // eslint-disable-next-line import/prefer-default-export
 export type IconName =
   | 'alert'
+  | 'bell'
   | 'calendar-dark'
   | 'calendar-light'
   | 'checked-dark'
   | 'checked-light'
   | 'clock'
+  | 'exit'
   | 'grabber'
   | 'hide'
   | 'hug'

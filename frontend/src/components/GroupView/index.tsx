@@ -1,6 +1,6 @@
 import React, { ReactElement } from 'react';
 import MiddleBar from './MiddleBar';
-import styles from './index.module.scss';
+import styles from './index.module.css';
 
 type Props = {
   groupName: string;
@@ -9,7 +9,7 @@ type Props = {
 // will use groupName later
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 export default ({ groupName }: Props): ReactElement => (
-  <div className={styles.MiddleBar}>
+  <div className={styles.GroupView}>
     <MiddleBar />
   </div>
 );
