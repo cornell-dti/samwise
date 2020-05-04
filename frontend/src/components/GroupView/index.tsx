@@ -9,11 +9,9 @@ type Props = {
 
 const members = ['Darien Lopez', 'Sarah Johnson', 'Michelle Parker', 'Samwise Bear'];
 
-// will use groupName later
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 export default ({ groupName }: Props): ReactElement => (
   <div className={styles.GroupView}>
-    <MiddleBar />
+    <MiddleBar groupMemberNames={members} />
     <RightView
       groupName={groupName}
       groupMemberNames={members}

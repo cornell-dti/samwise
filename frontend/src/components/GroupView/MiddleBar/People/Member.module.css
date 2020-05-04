@@ -22,6 +22,7 @@
   flex: 5;
   margin: 0 1em;
   overflow-x: hidden;
+  overflow-y: hidden;
 }
 
 .MemberIcon {
