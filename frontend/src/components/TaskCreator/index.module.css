@@ -36,23 +36,29 @@
 }
 
 @media only screen and (min-width: 800px) {
-  .NewTaskWrap {
+  .NewTaskWrap, .GroupNewTaskWrap {
     width: 30vw;
   }
-  .SubmitNewTask {
+  .SubmitNewTask, .GroupSubmitNewTask.GroupSubmitNewTask {
     height: 50px;
+  }
+  .NewTaskModal {
+    width: calc(30vw + 60px);
   }
 }
 
 @media only screen and (max-width: 800px) {
-  .NewTaskWrap {
+  .NewTaskWrap .GroupNewTaskWrap {
     width: 90vw;
   }
-  .SubmitNewTask {
+  .SubmitNewTask .GroupSubmitNewTask {
     height: 80px;
   }
   .TaskCreator {
     height: auto;
+  }
+  .NewTaskModal {
+    width: calc(90vw + 60px);
   }
 }
 
@@ -158,18 +164,6 @@
   z-index: -1;
   box-shadow: 0 8px 65px 3px #444;
   text-align: center;
-}
-
-@media only screen and (min-width: 800px) {
-  .NewTaskModal {
-    width: calc(30vw + 60px);
-  }
-}
-
-@media only screen and (max-width: 800px) {
-  .NewTaskModal {
-    width: calc(90vw + 60px);
-  }
 }
 
 .NewTaskModal ul {
@@ -303,4 +297,30 @@
   position: relative;
   left: 25px;
   color: grey;
+}
+
+.GroupNewTaskWrap {
+  position: relative;
+  left: 50%;
+  text-align: center;
+  transform: translateX(-50%);
+  z-index: 5;
+  height: initial;
+  max-height: 44px;
+  font-family: 'Open Sans', sans-serif;
+}
+
+.GroupSubmitNewTask {
+  position: absolute;
+  right: 0;
+  top: 7px;
+  width: 42px;
+  padding-left: 13px;
+  height: 50px;
+  background: white;
+  border: none;
+  cursor: pointer;
+  margin: 0;
+  font-size: 48px;
+  z-index: 0;
 }

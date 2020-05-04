@@ -7,6 +7,7 @@ import { isToday } from 'common/lib/util/datetime-util';
 import TagPicker from './TagPicker';
 import DatePicker from './DatePicker';
 import FocusPicker from './FocusPicker';
+import GroupMemberPicker from './GroupMemberPicker';
 import { addTask, TaskWithoutIdOrderChildren } from '../../firebase/actions';
 import SamwiseIcon from '../UI/SamwiseIcon';
 import styles from './index.module.css';
@@ -23,7 +24,13 @@ type State = SimpleTask & {
   readonly needToSwitchFocus: boolean;
 };
 
-type Props = { readonly theme: Theme };
+type OwnProps = {
+  readonly theme: Theme;
+}
+
+type Props = OwnProps & {
+  readonly view: string;
+};
 
 /**
  * The placeholder text in the main task input box.
@@ -54,7 +61,7 @@ export class TaskCreator extends React.PureComponent<Props, State> {
 
   private darkModeStyle: CSSProperties;
 
-  constructor(props: { theme: Theme }) {
+  constructor(props: { theme: Theme; view: string }) {
     super(props);
     this.darkModeStyle = {
       background: 'black',
@@ -318,6 +325,7 @@ export class TaskCreator extends React.PureComponent<Props, State> {
    */
   private renderOtherInfoEditor(): ReactElement | null {
     const { opened } = this.state;
+    const { view } = this.props;
     if (!opened) {
       return null;
     }
@@ -357,12 +365,23 @@ export class TaskCreator extends React.PureComponent<Props, State> {
         <div className={styles.NewTaskActive}>
           {date instanceof Date && <FocusPicker pinned={inFocus} onPinChange={this.togglePin} />}
           <div className={styles.TagPickWrap}>
-            <TagPicker
-              tag={tag}
-              opened={tagPickerOpened}
-              onTagChange={this.editTag}
-              onPickerOpened={this.openTagPicker}
-            />
+            {
+              view === 'personal' ? (
+                <TagPicker
+                  tag={tag}
+                  opened={tagPickerOpened}
+                  onTagChange={this.editTag}
+                  onPickerOpened={this.openTagPicker}
+                />
+              ) : (
+                <GroupMemberPicker
+                  tag={tag}
+                  opened={tagPickerOpened}
+                  onTagChange={this.editTag}
+                  onPickerOpened={this.openTagPicker}
+                />
+              )
+            }
           </div>
           <DatePicker
             date={date}
@@ -373,7 +392,12 @@ export class TaskCreator extends React.PureComponent<Props, State> {
             onClearPicker={this.clearDate}
             onPickerOpened={this.openDatePicker}
           />
-          <button tabIndex={-1} type="submit" className={styles.SubmitNewTask} style={theme === 'dark' ? this.darkModeStyle : undefined}>
+          <button
+            tabIndex={-1}
+            type="submit"
+            className={view === 'personal' ? styles.SubmitNewTask : styles.GroupSubmitNewTask}
+            style={theme === 'dark' ? this.darkModeStyle : undefined}
+          >
             <SamwiseIcon iconName="add-task" tabIndex={-1} />
           </button>
           <div className={styles.SubtitleText}>
@@ -413,7 +437,7 @@ export class TaskCreator extends React.PureComponent<Props, State> {
   public render(): ReactElement {
     const { name, opened } = this.state;
     const toggleDisplayStyle = opened ? {} : { display: 'none' };
-    const { theme } = this.props;
+    const { theme, view } = this.props;
     return (
       <div className={styles.TaskCreator} style={theme === 'dark' ? this.darkModeStyle : undefined}>
         <div
@@ -423,7 +447,7 @@ export class TaskCreator extends React.PureComponent<Props, State> {
           style={toggleDisplayStyle}
         />
         <form
-          className={styles.NewTaskWrap}
+          className={view === 'personal' ? styles.NewTaskWrap : styles.GroupNewTaskWrap}
           onSubmit={this.handleSave}
           onFocus={this.openNewTask}
         >
@@ -446,6 +470,6 @@ export class TaskCreator extends React.PureComponent<Props, State> {
 
 
 const Connected = connect(
-  ({ settings: { theme } }: StoreState): Props => ({ theme }),
+  ({ settings: { theme } }: StoreState): OwnProps => ({ theme }),
 )(TaskCreator);
 export default Connected;

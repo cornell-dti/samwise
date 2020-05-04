@@ -2,7 +2,7 @@ import React, { ReactElement } from 'react';
 import SamwiseIcon from '../../UI/SamwiseIcon';
 import GroupTaskRow from './GroupTaskRow';
 import styles from './index.module.css';
-import GroupTaskCreator from '../../TaskCreator/GroupTaskCreator';
+import TaskCreator from '../../TaskCreator';
 
 type Props = {
   groupName: string;
@@ -19,7 +19,7 @@ const EditGroupNameIcon = (): ReactElement => {
 export default ({ groupName, groupMemberNames }: Props): ReactElement => (
   <div className={styles.RightView}>
     <div className={styles.GroupTaskCreator}>
-      <GroupTaskCreator />
+      <TaskCreator view="group" />
     </div>
 
     <div className={styles.RightView}>

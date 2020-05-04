@@ -1,7 +1,5 @@
-@import '../../../colors.scss';
-
 .GroupTaskCreator {
-  height: 18vh;
+  height: 20vh;
 }
 
 .RightView {

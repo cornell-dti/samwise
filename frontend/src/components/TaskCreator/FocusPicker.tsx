@@ -27,7 +27,7 @@ export default function FocusPicker({ pinned, onPinChange }: Props): ReactElemen
         onKeyPress={pressedPicker}
         className={styles.Label}
       >
-        <SamwiseIcon iconName={pinIconName} className={styles.CenterIcon} />
+        <SamwiseIcon iconName={pinIconName} className={styles.CenterIcon} tabIndex={-1} />
       </span>
     </div>
   );
