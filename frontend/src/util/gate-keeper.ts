@@ -9,7 +9,7 @@ const enableGroupTask = (): void => {
 const disableGroupTask = (): void => {
   localStorage.removeItem(GK_GROUP_TASK);
   window.location.reload();
-}
+};
 
 const GateKeeper = { enableGroupTask, disableGroupTask };
 
