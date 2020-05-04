@@ -1,14 +1,12 @@
-import React, { ReactElement, KeyboardEvent } from 'react';
+import React, { ReactElement, useState } from 'react';
 import SamwiseIcon from 'components/UI/SamwiseIcon';
 import { faPlus } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import SettingsButton from 'components/TitleBar/Settings/SettingsButton';
 import GroupIcon from './GroupIcon';
-import styles from './index.module.scss';
-
-type Views =
-  | 'personal'
-  | 'group';
+import styles from './index.module.css';
+import AddGroupTags from './AddGroupTags';
+import { Views } from './types';
 
 type Props = {
   groups: string[];
@@ -16,41 +14,46 @@ type Props = {
 }
 
 export default ({ groups, changeView }: Props): ReactElement => {
-  const pressedIcon = (
-    e: KeyboardEvent,
-    selectedView: Views,
-    selectedGroup: string | undefined,
-  ): void => {
-    if (e.key === 'Enter' || e.key === ' ') changeView(selectedView, selectedGroup);
+  const [showDropdown, setShowDropdown] = useState(false);
+  const [selected, setSelected] = useState('personal');
+
+  const handleIconClick = (view: Views, group?: string): void => {
+    changeView(view, group);
+    setSelected(group !== undefined ? group : view);
   };
+
   return (
     <div className={styles.SideBar}>
-      <span
-        role="presentation"
-        onClick={() => changeView('personal', undefined)}
-        onKeyPress={(e: KeyboardEvent) => pressedIcon(e, 'personal', undefined)}
+      <button
+        type="button"
+        onClick={() => handleIconClick('personal')}
         className={styles.PersonalViewButton}
       >
         <SamwiseIcon iconName="personal-view" />
-      </span>
+      </button>
       <div className={styles.GroupIcons}>
         <p>My Groups</p>
         {
           groups.map((g) => (
             <GroupIcon
               classCode={g}
-              handleClick={changeView}
-              pressedIcon={pressedIcon}
+              handleClick={() => handleIconClick('group', g)}
+              selected={selected === g}
               key={g}
             />
           ))
         }
-        <span
-          role="presentation"
-          className={styles.PlusIcon}
-        >
-          <FontAwesomeIcon icon={faPlus} />
-          <p>New Group</p>
+        <span>
+          <button
+            type="button"
+            onMouseEnter={() => setShowDropdown(true)}
+            onMouseLeave={() => setShowDropdown(false)}
+            className={styles.AddGroup}
+          >
+            <FontAwesomeIcon className={styles.PlusIcon} icon={faPlus} />
+          </button>
+          {!showDropdown && <p>New Group</p>}
+          <AddGroupTags show={showDropdown} setShow={setShowDropdown} />
         </span>
       </div>
       <span className={styles.Links}>

@@ -1,13 +1,13 @@
 @import '../../colors.scss';
 
 .GroupIcon {
-  width: 50px;
-  height: 50px;
   background: $aqua;
-  line-height: 50px;
+  line-height: 44px;
   text-align: center;
   font-size: 32px;
-  border-radius: 10px;
-  margin: 5px 0;
   color: white;
+}
+
+.GroupIcon.Active {
+  border: 3px solid #7FBDFF;
 }

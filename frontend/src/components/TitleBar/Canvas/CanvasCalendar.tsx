@@ -1,5 +1,6 @@
 import React, { ReactElement, useState } from 'react';
 import { connect } from 'react-redux';
+import { promptConfirm } from 'components/Util/Modals';
 import { Settings, State } from 'common/lib/types/store-types';
 import settingStyles from '../Settings/SettingsPage.module.css';
 import styles from './CanvasCalendar.module.css';
@@ -15,11 +16,20 @@ function CanvasCalendar({ settings }: Props): ReactElement {
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>): void => {
     e.preventDefault();
     const iCalLink = input;
-    setCanvasCalendar(iCalLink);
+
+    promptConfirm('This will sync all calendar items from your Canvas account. This may include assignments, as well as lectures, discussions, office hours, and more. These tasks can only be modified or deleted by your professor. If you wish to delete or edit these tasks, you will need to unlink your Canvas calendar. Would you like to continue?').then((confirmed) => {
+      if (confirmed) {
+        setCanvasCalendar(iCalLink);
+      }
+    });
   };
 
   const removeCanvasiCal = (): void => {
-    setCanvasCalendar(null);
+    promptConfirm('This will stop syncing new calendar updates from Canvas, but will not delete previously imported tasks. After unlinking, you will be able to delete any tasks previously imported from Canvas. Would you like to continue?').then((confirmed) => {
+      if (confirmed) {
+        setCanvasCalendar(null);
+      }
+    });
   };
 
   return (

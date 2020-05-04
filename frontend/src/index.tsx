@@ -8,10 +8,12 @@ import './firebase'; // import and init firebase
 import ErrorBoundary from './components/Util/ErrorBoundary';
 import LoginBarrier from './components/Util/AppInit/LoginBarrier';
 import { initialize as initializeGA } from './util/ga-util';
+import { registerGateKeeper } from './util/gate-keeper';
 import { initModal } from './components/Util/Modals';
 import * as serviceWorker from './serviceWorker';
 
 initializeGA();
+registerGateKeeper();
 
 const appRenderer = (): ReactElement => (
   <ReactReduxProvider><App /></ReactReduxProvider>

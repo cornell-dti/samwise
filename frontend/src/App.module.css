@@ -7,6 +7,6 @@
   display: flex;
 }
 
-.MainView {
-  width: 95%;
+.GroupScreen {
+  display: flex;
 }

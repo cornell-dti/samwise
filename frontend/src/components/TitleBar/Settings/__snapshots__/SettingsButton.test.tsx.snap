@@ -9,6 +9,7 @@ exports[`SettingsButton matches snapshot. 1`] = `
   }
 >
   <button
+    className="SettingsButton"
     onClick={[Function]}
     type="submit"
   >

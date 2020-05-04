@@ -1,7 +1,6 @@
 @import '../../../colors.scss';
 
 .MiddleBar {
-  margin: 0 1em;
   background-color: $card-grey;
   padding: 1em;
   height: 100vh; 
@@ -9,9 +8,4 @@
   display: flex;
   flex-direction: column;
   min-width: 20%;
-}
-
-.MiddleBar h2 {
-  font-weight: bold;
-  color: #818181;
 }
