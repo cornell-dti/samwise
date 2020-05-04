@@ -18,7 +18,7 @@ exports[`Pinned FocusPicker matches snapshot 1`] = `
         className="CenterIcon"
         height="1em"
         onKeyUp={[Function]}
-        tabIndex={0}
+        tabIndex={-1}
         title="Unpin from Focus"
         width="1em"
       >
@@ -47,7 +47,7 @@ exports[`Unpinned FocusPicker matches snapshot 1`] = `
         className="CenterIcon"
         height="1em"
         onKeyUp={[Function]}
-        tabIndex={0}
+        tabIndex={-1}
         title="Pin to Focus"
         width="1em"
       >
