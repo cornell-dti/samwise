@@ -29,6 +29,7 @@
   align-content: center;
   margin: auto;
   margin-right: 26px;
+  background-color: rgb(255, 255, 255);
 }
 
 .AddTaskContainer :hover {
@@ -39,6 +40,7 @@
   display: flex;
   flex-direction: column;
   width: 100%;
+  height: 100%;
   justify-content: center;
   align-items: center;
 }

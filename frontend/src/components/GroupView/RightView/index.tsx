@@ -1,7 +1,7 @@
 import React, { ReactElement } from 'react';
 import SamwiseIcon from 'components/UI/SamwiseIcon';
 import GroupTaskRow from './GroupTaskRow';
-import styles from './index.module.scss';
+import styles from './index.module.css';
 
 type Props = {
   groupName: string;

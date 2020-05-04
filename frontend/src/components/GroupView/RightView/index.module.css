@@ -1,10 +1,8 @@
-@import '../../../colors.scss';
-
 .RightView {
-  margin: 0 1em;
   display: flex;
   flex-direction: column;
   height: 480px;
+  padding: 20px;
 }
 
 .EditGroupNameIcon :hover {
