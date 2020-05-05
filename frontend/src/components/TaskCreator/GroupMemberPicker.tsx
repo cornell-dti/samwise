@@ -38,7 +38,7 @@ function GroupMemberPicker({
       ? (
         <>
           <span className={styles.TagDisplay}>
-            <SamwiseIcon iconName="user-plus" className={styles.CenterIcon} tabIndex={-1} />
+            <SamwiseIcon iconName="user-plus" className={styles.CenterIcon} />
             {' '}
             assign to&nbsp;&nbsp;
           </span>

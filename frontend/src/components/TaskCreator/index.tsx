@@ -61,7 +61,7 @@ export class TaskCreator extends React.PureComponent<Props, State> {
 
   private darkModeStyle: CSSProperties;
 
-  constructor(props: { theme: Theme; view: string }) {
+  constructor(props: Props) {
     super(props);
     this.darkModeStyle = {
       background: 'black',
@@ -363,6 +363,35 @@ export class TaskCreator extends React.PureComponent<Props, State> {
       <>
         <div className={styles.TitleText}>Add Task</div>
         <div className={styles.NewTaskActive}>
+          <div className={styles.SubtitleText}>
+            <p>
+              <b>Add Subtasks</b>
+               &nbsp;(optional)
+            </p>
+          </div>
+          <div className={styles.DescText}>
+            <p>
+              Add optional subtasks to break down your tasks into more manageable pieces.
+            </p>
+          </div>
+          <div className={styles.NewTaskModal} style={theme === 'dark' ? this.darkModeStyle : undefined}>
+            <div className={styles.SubtasksContainer}>
+              <ul className={styles.SubtasksList}>{subTasks.map(existingSubTaskEditor)}</ul>
+              <SamwiseIcon iconName="edit" className={styles.EditIcon} tabIndex={-1} />
+              <input
+                className={styles.SubtaskInput}
+                type="text"
+                placeholder="Add a Subtask"
+                value=""
+                onChange={this.addNewSubTask}
+                onKeyDown={this.newSubTaskKeyPress}
+                style={theme === 'dark' ? this.darkModeStyle : undefined}
+              />
+            </div>
+            <button type="button" className={styles.ResetButton} onClick={this.resetTask}>
+              DISCARD TASK
+            </button>
+          </div>
           {date instanceof Date && <FocusPicker pinned={inFocus} onPinChange={this.togglePin} />}
           <div className={styles.TagPickWrap}>
             {
@@ -393,42 +422,12 @@ export class TaskCreator extends React.PureComponent<Props, State> {
             onPickerOpened={this.openDatePicker}
           />
           <button
-            tabIndex={-1}
             type="submit"
             className={view === 'personal' ? styles.SubmitNewTask : styles.GroupSubmitNewTask}
             style={theme === 'dark' ? this.darkModeStyle : undefined}
           >
-            <SamwiseIcon iconName="add-task" tabIndex={-1} />
+            <SamwiseIcon iconName="add-task" />
           </button>
-          <div className={styles.SubtitleText}>
-            <p>
-              <b>Add Subtasks</b>
-               &nbsp;(optional)
-            </p>
-          </div>
-          <div className={styles.DescText}>
-            <p>
-              Add optional subtasks to break down your tasks into more manageable pieces.
-            </p>
-          </div>
-          <div className={styles.NewTaskModal} style={theme === 'dark' ? this.darkModeStyle : undefined}>
-            <div className={styles.SubtasksContainer}>
-              <ul className={styles.SubtasksList}>{subTasks.map(existingSubTaskEditor)}</ul>
-              <SamwiseIcon iconName="edit" className={styles.EditIcon} tabIndex={-1} />
-              <input
-                className={styles.SubtaskInput}
-                type="text"
-                placeholder="Add a Subtask"
-                value=""
-                onChange={this.addNewSubTask}
-                onKeyDown={this.newSubTaskKeyPress}
-                style={theme === 'dark' ? this.darkModeStyle : undefined}
-              />
-            </div>
-            <button type="button" className={styles.ResetButton} onClick={this.resetTask}>
-              DISCARD TASK
-            </button>
-          </div>
         </div>
       </>
     );
