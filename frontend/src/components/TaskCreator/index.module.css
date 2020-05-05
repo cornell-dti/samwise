@@ -2,21 +2,21 @@
   border-top: none;
   border-left: none;
   border-right: none;
-  border-bottom: 1px solid gray;
-
+  margin-top: 20px;
+  bottom: 10px;
   width: 100%;
   padding: 10px 20px;
   text-align: left;
-
-  font-size: 20px;
+  background: #E3E3E3;
+  font-size: 18px;
   font-family: 'Open Sans', sans-serif;
-  transition: border 0.3s ease;
 }
 
 .NewTaskComponent::placeholder {
   font-weight: lighter;
-  color: gray;
+  color: #5A5A5A;
   text-align: center;
+  font-family: 'DM Sans', sans-serif;
 }
 
 .NewTaskComponent:focus::placeholder {
@@ -29,30 +29,44 @@
   text-align: center;
   transform: translateX(-50%);
   z-index: 5;
-
+  bottom: 20px;
   height: initial;
   max-height: 44px;
   margin-bottom: 0;
 }
 
 @media only screen and (min-width: 800px) {
-  .NewTaskWrap {
+  .NewTaskWrap, .GroupNewTaskWrap {
     width: 30vw;
+  }
+  .SubmitNewTask, .GroupSubmitNewTask.GroupSubmitNewTask {
+    height: 50px;
+  }
+  .TaskCreator {
+    height: 5vh;
+  }
+  .NewTaskModal {
+    width: calc(30vw + 60px);
   }
 }
 
 @media only screen and (max-width: 800px) {
-  .NewTaskWrap {
+  .NewTaskWrap, .GroupNewTaskWrap {
     width: 90vw;
+  }
+  .SubmitNewTask .GroupSubmitNewTask {
+    height: 80px;
   }
   .TaskCreator {
     height: auto;
+  }
+  .NewTaskModal {
+    width: calc(90vw + 60px);
   }
 }
 
 
 .NewTaskComponent:focus {
-  border-bottom: 2px solid black;
   outline: none;
 }
 
@@ -82,6 +96,41 @@
   pointer-events: none;
 }
 
+.TitleText {
+  position: absolute;
+  top: -10px;
+  height: 20px;
+  width: 100%;
+  text-align: left;
+  padding-bottom: 40px;
+  font-weight: bold;
+  font-size: 24px;
+  pointer-events: none;
+}
+
+.SubtitleText {
+  position: absolute;
+  top: 56px;
+  height: 19px;
+  width: 100%;
+  text-align: left;
+  padding-bottom: 40px;
+  font-size: 16px;
+  pointer-events: none;
+}
+
+.DescText {
+  position: absolute;
+  top: 76px;
+  height: 17px;
+  width: 100%;
+  text-align: left;
+  padding-bottom: 40px;
+  font-size: 14px;
+  pointer-events: none;
+  color: #848484;
+}
+
 .NewTaskActive * {
   pointer-events: auto;
   vertical-align:top;
@@ -95,18 +144,16 @@
 .SubmitNewTask {
   position: absolute;
   right: 0;
-  top: -3px;
-  width: 20px;
-  height: 100%;
+  top: 7px;
+  width: 42px;
+  padding-left: 10px;
   background: white;
   border: none;
   cursor: pointer;
-  padding: 0;
   margin: 0;
-  font-size: 25px;
+  font-size: 48px;
   z-index: 0;
 }
-
 
 /*
  * Pop Open Modal
@@ -114,41 +161,33 @@
 .NewTaskModal {
   background: white;
   position: absolute;
-  top: -50px;
+  top: -40px;
   right: -30px;
-  padding: 90px 0 10px 0;
+  padding: 90px 10px 120px 10px;
   z-index: -1;
   box-shadow: 0 8px 65px 3px #444;
   text-align: center;
-}
-@media only screen and (min-width: 800px) {
-  .NewTaskModal {
-    width: calc(30vw + 60px);
-  }
-}
-
-@media only screen and (max-width: 800px) {
-  .NewTaskModal {
-    width: calc(90vw + 60px);
-  }
 }
 
 .NewTaskModal ul {
   list-style-type: none;
   margin: 0;
   padding: 0;
+
+  top: 72px;
 }
 
 .NewTaskModal input[type="text"] {
   border-top: none;
   border-left: none;
   border-right: none;
-  border-bottom: 1px gray solid;
 
   width: calc(100% - 60px);
   padding: 10px 20px 10px 50px;
 
   outline: none;
+
+  top: 72px;
 }
 
 .NewTaskModal input[type="text"]::placeholder {
@@ -202,9 +241,12 @@
   background: none;
   border: none;
   cursor: pointer;
-  bottom: -30px;
-  right: 10px;
-  color: white;
+  bottom: 10px;
+  left: 23px;
+  color: #FF1A1A;
+  font-size: 14px;
+  font-weight: 600;
+  font-family: 'Open Sans', sans-serif;
 }
 
 .ResetButton:hover {
@@ -215,6 +257,23 @@
   background: none;
 }
 
+.SubtaskInput {
+  font-family: 'Open Sans', sans-serif;
+  font-size: 12px;
+  color: black;
+  background: #E3E3E3;
+  padding-left: 80px !important;
+}
+
+.SubtasksList {
+  font-family: 'Open Sans', sans-serif;
+  font-size: 12px;
+  color: black;
+  box-shadow: -3px 3px 8px rgba(0, 0, 0, 0.25);
+  border-radius: 5px;
+  margin-right: 20px !important;
+  margin-left: 40px !important;
+}
 
 .TagPickWrap{
   display:inline-block;
@@ -223,9 +282,48 @@
   transform:translateX(100px);
 }
 
+.EditIcon {
+  font-size: 1.3em;
+  position: relative;
+  top: 9px;
+  left: 64px;
+  color: grey;
+}
+
+.SubtasksContainer {
+  width: calc(90%);
+  margin-top: 84px;
+}
+
 .PlusIcon {
   font-size: 2em;
   position: relative;
   left: 25px;
   color: grey;
+}
+
+.GroupNewTaskWrap {
+  position: relative;
+  left: 50%;
+  text-align: center;
+  transform: translateX(-50%);
+  z-index: 5;
+  height: initial;
+  max-height: 44px;
+  font-family: 'Open Sans', sans-serif;
+}
+
+.GroupSubmitNewTask {
+  position: absolute;
+  right: 0;
+  top: 7px;
+  width: 42px;
+  padding-left: 13px;
+  height: 50px;
+  background: white;
+  border: none;
+  cursor: pointer;
+  margin: 0;
+  font-size: 48px;
+  z-index: 0;
 }

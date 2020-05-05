@@ -17,7 +17,13 @@ type Props = OwnProps & {
   readonly getTag: (id: string) => Tag;
 };
 
-function TagPicker({ tag, opened, onTagChange, onPickerOpened, getTag }: Props): ReactElement {
+function GroupMemberPicker({
+  tag,
+  opened,
+  onTagChange,
+  onPickerOpened,
+  getTag,
+}: Props): ReactElement {
   // Controllers
   const clickPicker = (): void => { onPickerOpened(); };
   const pressedPicker = (e: KeyboardEvent): void => {
@@ -32,9 +38,9 @@ function TagPicker({ tag, opened, onTagChange, onPickerOpened, getTag }: Props):
       ? (
         <>
           <span className={styles.TagDisplay}>
-            <SamwiseIcon iconName="tag-light" className={styles.CenterIcon} />
+            <SamwiseIcon iconName="user-plus" className={styles.CenterIcon} />
             {' '}
-            add class&nbsp;&nbsp;
+            assign to&nbsp;&nbsp;
           </span>
         </>
       )
@@ -70,5 +76,5 @@ function TagPicker({ tag, opened, onTagChange, onPickerOpened, getTag }: Props):
 
 const Connected = connect(
   ({ tags }: State) => ({ getTag: (id: string) => tags.get(id) ?? NONE_TAG }),
-)(TagPicker);
+)(GroupMemberPicker);
 export default Connected;

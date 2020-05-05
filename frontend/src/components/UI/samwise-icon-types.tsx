@@ -23,9 +23,13 @@ export type IconName =
   | 'settings'
   | 'show'
   | 'tag'
+  | 'tag-light'
   | 'unchecked'
   | 'dropdown'
   | 'x-dark'
   | 'x-light'
   | 'x-light-settings'
-  | 'repeat-frequency';
+  | 'repeat-frequency'
+  | 'user-plus'
+  | 'add-task'
+  | 'edit';

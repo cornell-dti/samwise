@@ -1,7 +1,5 @@
 import React, { CSSProperties, KeyboardEvent, SyntheticEvent, ReactElement } from 'react';
 import { connect } from 'react-redux';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faPlus, faArrowAltCircleRight } from '@fortawesome/free-solid-svg-icons';
 import { randomId } from 'common/lib/util/general-util';
 import { Task, RepeatingDate, SubTask, State as StoreState, Theme } from 'common/lib/types/store-types';
 import { NONE_TAG_ID } from 'common/lib/util/tag-util';
@@ -9,6 +7,7 @@ import { isToday } from 'common/lib/util/datetime-util';
 import TagPicker from './TagPicker';
 import DatePicker from './DatePicker';
 import FocusPicker from './FocusPicker';
+import GroupMemberPicker from './GroupMemberPicker';
 import { addTask, TaskWithoutIdOrderChildren } from '../../firebase/actions';
 import SamwiseIcon from '../UI/SamwiseIcon';
 import styles from './index.module.css';
@@ -25,7 +24,13 @@ type State = SimpleTask & {
   readonly needToSwitchFocus: boolean;
 };
 
-type Props = { readonly theme: Theme };
+type OwnProps = {
+  readonly theme: Theme;
+}
+
+type Props = OwnProps & {
+  readonly view: string;
+};
 
 /**
  * The placeholder text in the main task input box.
@@ -56,7 +61,7 @@ export class TaskCreator extends React.PureComponent<Props, State> {
 
   private darkModeStyle: CSSProperties;
 
-  constructor(props: {theme: Theme}) {
+  constructor(props: Props) {
     super(props);
     this.darkModeStyle = {
       background: 'black',
@@ -320,6 +325,7 @@ export class TaskCreator extends React.PureComponent<Props, State> {
    */
   private renderOtherInfoEditor(): ReactElement | null {
     const { opened } = this.state;
+    const { view } = this.props;
     if (!opened) {
       return null;
     }
@@ -354,50 +360,83 @@ export class TaskCreator extends React.PureComponent<Props, State> {
       );
     };
     return (
-      <div className={styles.NewTaskActive}>
-        {date instanceof Date && <FocusPicker pinned={inFocus} onPinChange={this.togglePin} />}
-        <div className={styles.TagPickWrap}>
-          <TagPicker
-            tag={tag}
-            opened={tagPickerOpened}
-            onTagChange={this.editTag}
-            onPickerOpened={this.openTagPicker}
+      <>
+        <div className={styles.TitleText}>Add Task</div>
+        <div className={styles.NewTaskActive}>
+          <div className={styles.SubtitleText}>
+            <p>
+              <b>Add Subtasks</b>
+               &nbsp;(optional)
+            </p>
+          </div>
+          <div className={styles.DescText}>
+            <p>
+              Add optional subtasks to break down your tasks into more manageable pieces.
+            </p>
+          </div>
+          <div className={styles.NewTaskModal} style={theme === 'dark' ? this.darkModeStyle : undefined}>
+            <div className={styles.SubtasksContainer}>
+              <ul className={styles.SubtasksList}>{subTasks.map(existingSubTaskEditor)}</ul>
+              <SamwiseIcon iconName="edit" className={styles.EditIcon} tabIndex={-1} />
+              <input
+                className={styles.SubtaskInput}
+                type="text"
+                placeholder="Add a Subtask"
+                value=""
+                onChange={this.addNewSubTask}
+                onKeyDown={this.newSubTaskKeyPress}
+                style={theme === 'dark' ? this.darkModeStyle : undefined}
+              />
+            </div>
+            <button type="button" className={styles.ResetButton} onClick={this.resetTask}>
+              DISCARD TASK
+            </button>
+          </div>
+          {date instanceof Date && <FocusPicker pinned={inFocus} onPinChange={this.togglePin} />}
+          <div className={styles.TagPickWrap}>
+            {
+              view === 'personal' ? (
+                <TagPicker
+                  tag={tag}
+                  opened={tagPickerOpened}
+                  onTagChange={this.editTag}
+                  onPickerOpened={this.openTagPicker}
+                />
+              ) : (
+                <GroupMemberPicker
+                  tag={tag}
+                  opened={tagPickerOpened}
+                  onTagChange={this.editTag}
+                  onPickerOpened={this.openTagPicker}
+                />
+              )
+            }
+          </div>
+          <DatePicker
+            date={date}
+            opened={datePickerOpened}
+            datePicked={datePicked}
+            inGroupView={false}
+            onDateChange={this.editDate}
+            onClearPicker={this.clearDate}
+            onPickerOpened={this.openDatePicker}
           />
-        </div>
-        <DatePicker
-          date={date}
-          opened={datePickerOpened}
-          datePicked={datePicked}
-          onDateChange={this.editDate}
-          onClearPicker={this.clearDate}
-          onPickerOpened={this.openDatePicker}
-        />
-        <button tabIndex={-1} type="submit" className={styles.SubmitNewTask} style={theme === 'dark' ? this.darkModeStyle : undefined}>
-          <FontAwesomeIcon icon={faArrowAltCircleRight} />
-        </button>
-        <div className={styles.NewTaskModal} style={theme === 'dark' ? this.darkModeStyle : undefined}>
-          <ul>{subTasks.map(existingSubTaskEditor)}</ul>
-          <FontAwesomeIcon icon={faPlus} className={styles.PlusIcon} />
-          <input
-            type="text"
-            placeholder="Add a Subtask"
-            value=""
-            onChange={this.addNewSubTask}
-            onKeyDown={this.newSubTaskKeyPress}
+          <button
+            type="submit"
+            className={view === 'personal' ? styles.SubmitNewTask : styles.GroupSubmitNewTask}
             style={theme === 'dark' ? this.darkModeStyle : undefined}
-          />
-          <button type="button" className={styles.ResetButton} onClick={this.resetTask}>
-            Clear
+          >
+            <SamwiseIcon iconName="add-task" />
           </button>
         </div>
-      </div>
+      </>
     );
   }
 
   public render(): ReactElement {
     const { name, opened } = this.state;
     const toggleDisplayStyle = opened ? {} : { display: 'none' };
-    const { theme } = this.props;
+    const { theme, view } = this.props;
     return (
       <div className={styles.TaskCreator} style={theme === 'dark' ? this.darkModeStyle : undefined}>
         <div
@@ -407,7 +446,7 @@ export class TaskCreator extends React.PureComponent<Props, State> {
           style={toggleDisplayStyle}
         />
         <form
-          className={styles.NewTaskWrap}
+          className={view === 'personal' ? styles.NewTaskWrap : styles.GroupNewTaskWrap}
           onSubmit={this.handleSave}
           onFocus={this.openNewTask}
         >
@@ -430,6 +469,6 @@ export class TaskCreator extends React.PureComponent<Props, State> {
 
 
 const Connected = connect(
-  ({ settings: { theme } }: StoreState): Props => ({ theme }),
+  ({ settings: { theme } }: StoreState): OwnProps => ({ theme }),
 )(TaskCreator);
 export default Connected;

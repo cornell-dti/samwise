@@ -15,6 +15,7 @@ type Props = {
   readonly date: Date | RepeatingDate;
   readonly opened: boolean;
   readonly datePicked: boolean;
+  readonly inGroupView: boolean;
   readonly onPickerOpened: () => void;
   readonly onClearPicker: () => void;
 };
@@ -37,7 +38,7 @@ type InternalDate = {
 
 export default function DatePicker(props: Props): ReactElement {
   const {
-    date, opened, datePicked, onDateChange, onPickerOpened, onClearPicker,
+    date, opened, datePicked, inGroupView, onDateChange, onPickerOpened, onClearPicker,
   } = props;
   const todayFirstSecond = useTodayFirstSecondTime();
   const todayLastSecond = useTodayLastSecondTime();
@@ -90,9 +91,17 @@ export default function DatePicker(props: Props): ReactElement {
 
   // Nodes
   const displayedNode = (isDefault: boolean): ReactElement => {
-    const style = isDefault ? {} : { background: NONE_TAG.color };
+    const style = { background: NONE_TAG.color };
     const internal = isDefault
-      ? <SamwiseIcon iconName="calendar-dark" className={styles.CenterIcon} />
+      ? (
+        <>
+          <span className={styles.DateDisplay}>
+            <SamwiseIcon iconName="calendar-light" className={styles.CenterIcon} />
+            {' '}
+            add date&nbsp;
+          </span>
+        </>
+      )
       : (
         <>
           <span className={styles.DateDisplay}>
@@ -397,7 +406,7 @@ export default function DatePicker(props: Props): ReactElement {
     <div className={styles.Main}>
       {displayedNode(!datePicked)}
       {opened && (
-        <div className={styles.NewTaskDatePick}>
+        <div className={inGroupView ? styles.NewTaskDatePickGroup : styles.NewTaskDatePick}>
           <p className={dateStyles.SelectTypeWrap}>
             <select
               className={dateStyles.SelectType}

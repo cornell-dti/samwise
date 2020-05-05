@@ -1,8 +1,13 @@
+.GroupTaskCreator {
+  height: 20vh;
+}
+
 .RightView {
   display: flex;
   flex-direction: column;
   height: 480px;
   padding: 20px;
+  clear: both;
 }
 
 .EditGroupNameIcon :hover {
