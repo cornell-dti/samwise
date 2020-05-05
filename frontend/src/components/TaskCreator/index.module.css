@@ -42,6 +42,9 @@
   .SubmitNewTask, .GroupSubmitNewTask.GroupSubmitNewTask {
     height: 50px;
   }
+  .TaskCreator {
+    height: 5vh;
+  }
   .NewTaskModal {
     width: calc(30vw + 60px);
   }
