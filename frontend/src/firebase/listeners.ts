@@ -7,6 +7,7 @@ import {
   BannerMessageStatus,
   RepeatingTaskMetadata,
   Course,
+  Group,
 } from 'common/lib/types/store-types';
 import buildCoursesMap from 'common/lib/util/courses-util';
 import { ignore } from 'common/lib/util/general-util';
@@ -21,6 +22,7 @@ import {
   patchTags,
   patchTasks,
   patchBannerMessageStatus,
+  patchGroups,
 } from '../store/actions';
 import coursesJson from '../assets/json/sp20-courses-with-exams-min.json';
 import { store } from '../store/store';
@@ -59,6 +61,12 @@ const listenBannerMessageChange = (
 ): UnmountCallback => database.bannerMessageStatusCollection()
   .doc(email)
   .onSnapshot(listener);
+const listenGroupChange = (
+  email: string,
+  listener: (snapshot: DocumentSnapshot) => void,
+): UnmountCallback => database.groupCollection()
+  .whereArrayContains('members', email)
+  .onSnapshot(listener);
 
 const transformDate = (dateOrTimestamp: Date | Timestamp): Date => (
   dateOrTimestamp instanceof Date ? dateOrTimestamp : dateOrTimestamp.toDate()
@@ -73,6 +81,7 @@ export default (onFirstFetched: () => void): (() => void) => {
   let firstSubTasksFetched = false;
   let firstSettingsFetched = false;
   let firstBannerStatusFetched = false;
+  let firstGroupsFetched = false;
   const reportFirstFetchedIfAllFetched = (): void => {
     if (
       firstTagsFetched
@@ -80,6 +89,7 @@ export default (onFirstFetched: () => void): (() => void) => {
       && firstSubTasksFetched
       && firstSettingsFetched
       && firstBannerStatusFetched
+      && firstGroupsFetched
     ) {
       onFirstFetched();
     }
@@ -232,6 +242,14 @@ export default (onFirstFetched: () => void): (() => void) => {
     reportFirstFetchedIfAllFetched();
   });
 
+  const unmountGroupsListener = listenGroupChange(ownerEmail, (snapshot) => {
+    const data = snapshot.exists ? snapshot.data() : undefined;
+    const groups = (data as Group[]) ?? [];
+    store.dispatch(patchGroups(groups));
+    firstGroupsFetched = true;
+    reportFirstFetchedIfAllFetched();
+  });
+
   store.dispatch(patchCourses(buildCoursesMap(coursesJson as Course[])));
 
   return () => {
@@ -243,5 +261,6 @@ export default (onFirstFetched: () => void): (() => void) => {
     unmountSubTasksListener();
     unmountSettingsListener();
     unmountBannerStatusListener();
+    unmountGroupsListener();
   };
 };

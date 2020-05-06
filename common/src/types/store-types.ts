@@ -101,6 +101,17 @@ export type BannerMessageStatus = {
 };
 
 /**
+ * The type of a group entry.
+ */
+
+export type Group = {
+  readonly name: string;
+  readonly members: string[];
+  readonly deadline: Date;
+  readonly classCode?: string;
+}
+
+/**
  * The type of a course info entry.
  */
 export type Course = {

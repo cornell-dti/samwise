@@ -48,10 +48,16 @@ export type PatchCourses = {
   readonly courses: Map<string, Course[]>;
 };
 
+export type PatchGroups = {
+  readonly type: 'PATCH_GROUPS';
+  readonly groups: Group[];
+}
+
 export type Action =
   | PatchTags
   | PatchTasks
   | PatchSubTasks
   | PatchSettings
   | PatchBannerMessageStatus
-  | PatchCourses;
+  | PatchCourses
+  | PatchGroups;

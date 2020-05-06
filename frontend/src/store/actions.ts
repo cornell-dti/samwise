@@ -6,6 +6,7 @@ import {
   PatchTasks,
   PatchSettings,
   PatchBannerMessageStatus,
+  PatchGroups,
   TaskWithChildrenId,
 } from 'common/lib/types/action-types';
 import {
@@ -14,6 +15,7 @@ import {
   SubTask,
   Settings,
   BannerMessageStatus,
+  Group,
 } from 'common/lib/types/store-types';
 
 export const patchTags = (created: Tag[], edited: Tag[], deleted: string[]): PatchTags => ({
@@ -46,4 +48,10 @@ export const patchBannerMessageStatus = (
 
 export const patchCourses = (courses: Map<string, Course[]>): PatchCourses => ({
   type: 'PATCH_COURSES', courses,
+});
+
+export const patchGroups = (
+  groups: Group[],
+): PatchGroups => ({
+  type: 'PATCH_GROUPS', groups,
 });
