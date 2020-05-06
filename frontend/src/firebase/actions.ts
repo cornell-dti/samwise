@@ -436,7 +436,7 @@ export function applyReorder(orderFor: 'tags' | 'tasks', reorderMap: Map<string,
     const editedTags: Tag[] = [];
     Array.from(reorderMap.entries()).forEach(([id, order]) => {
       const existingTag = tags.get(id);
-      if (existingTag != null) {
+      if (existingTag !== undefined) {
         editedTags.push({ ...existingTag, order });
       }
     });
@@ -445,7 +445,7 @@ export function applyReorder(orderFor: 'tags' | 'tasks', reorderMap: Map<string,
     const editedTasks: TaskWithChildrenId[] = [];
     Array.from(reorderMap.entries()).forEach(([id, order]) => {
       const existingTask = tasks.get(id);
-      if (existingTask != null) {
+      if (existingTask !== undefined) {
         editedTasks.push({
           ...existingTask,
           order,
