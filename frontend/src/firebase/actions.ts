@@ -20,6 +20,7 @@ import {
 } from 'common/lib/types/firestore-types';
 import { WriteBatch } from 'common/lib/firebase/database';
 import Actions from 'common/lib/firebase/common-actions';
+import { TaskWithChildrenId } from 'common/lib/types/action-types';
 import {
   reportAddTagEvent,
   reportEditTagEvent,
@@ -37,6 +38,7 @@ import { getAppUser } from './auth-util';
 import { db, database } from './db';
 import { getNewTaskId } from './id-provider';
 import { store } from '../store/store';
+import { patchTags, patchTasks, patchSubTasks } from '../store/actions';
 import { Diff } from '../components/Util/TaskEditors/TaskEditor/task-diff-reducer';
 
 const actions = new Actions(() => getAppUser().email, database);
@@ -392,19 +394,23 @@ export const clearFocus = (taskIds: string[], subTaskIds: string[]): void => {
  */
 export function completeTaskInFocus<T extends { readonly id: string; readonly order: number }>(
   completedTaskIdOrder: T,
-  completedList: T[],
 ): void {
-  let newCompletedList = [completedTaskIdOrder];
-  completedList.forEach((item) => {
-    if (item.order < completedTaskIdOrder.order) {
-      newCompletedList.push(item);
-    } else if (item.order >= completedTaskIdOrder.order) {
-      newCompletedList.push({ ...item, order: item.order + 1 });
-    }
-  });
-  newCompletedList = newCompletedList.sort((a, b) => a.order - b.order);
   const { tasks } = store.getState();
   const task = tasks.get(completedTaskIdOrder.id) ?? error('bad');
+  store.dispatch(
+    patchTasks(
+      [],
+      [{ ...task, complete: true, children: task.children.map((child) => child.id) }],
+      [],
+    ),
+  );
+  store.dispatch(
+    patchSubTasks(
+      [],
+      task.children.map((subTask) => ({ ...subTask, complete: true })),
+      [],
+    ),
+  );
   const batch = database.db().batch();
   if (task.inFocus) {
     batch.update(database.tasksCollection().doc(task.id), { complete: true });
@@ -425,6 +431,30 @@ export function completeTaskInFocus<T extends { readonly id: string; readonly or
  * @return a new list with updated orders.
  */
 export function applyReorder(orderFor: 'tags' | 'tasks', reorderMap: Map<string, number>): void {
+  const { tags, tasks } = store.getState();
+  if (orderFor === 'tags') {
+    const editedTags: Tag[] = [];
+    Array.from(reorderMap.entries()).forEach(([id, order]) => {
+      const existingTag = tags.get(id);
+      if (existingTag != null) {
+        editedTags.push({ ...existingTag, order });
+      }
+    });
+    store.dispatch(patchTags([], editedTags, []));
+  } else {
+    const editedTasks: TaskWithChildrenId[] = [];
+    Array.from(reorderMap.entries()).forEach(([id, order]) => {
+      const existingTask = tasks.get(id);
+      if (existingTask != null) {
+        editedTasks.push({
+          ...existingTask,
+          order,
+          children: existingTask.children.map((child) => child.id),
+        });
+      }
+    });
+    store.dispatch(patchTasks([], editedTasks, []));
+  }
   const collection = orderFor === 'tags'
     ? (id: string) => database.tagsCollection().doc(id)
     : (id: string) => database.tasksCollection().doc(id);

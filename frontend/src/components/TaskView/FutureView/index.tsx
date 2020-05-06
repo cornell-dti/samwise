@@ -3,7 +3,7 @@ import { useTodayLastSecondTime } from 'hooks/time-hook';
 import { DragDropContext, DropResult } from 'react-beautiful-dnd';
 import { computeReorderMap } from 'common/lib/util/order-util';
 import { dateMatchRepeats } from 'common/lib/util/task-util';
-import { Task, RepeatingTaskMetadata } from 'common/lib/types/store-types';
+import { Task, RepeatingTaskMetadata, OneTimeTaskMetadata } from 'common/lib/types/store-types';
 import FutureViewControl from './FutureViewControl';
 import FutureViewNDays from './FutureViewNDays';
 import FutureViewSevenColumns from './FutureViewSevenColumns';
@@ -16,6 +16,7 @@ import {
 import { useMappedWindowSize } from '../../../hooks/window-size-hook';
 import { editMainTask, applyReorder } from '../../../firebase/actions';
 import { store } from '../../../store/store';
+import { patchTasks } from '../../../store/actions';
 
 
 export type FutureViewConfig = {
@@ -153,8 +154,8 @@ export default function FutureView(
       return;
     }
     // dragging to same day
+    const { dateTaskMap, tasks, repeatedTaskSet } = store.getState();
     if (source.droppableId === destination.droppableId) {
-      const { dateTaskMap, tasks, repeatedTaskSet } = store.getState();
       const date = source.droppableId;
       const dayTaskSet = dateTaskMap.get(date);
       if (dayTaskSet != null) {
@@ -190,6 +191,21 @@ export default function FutureView(
       }
     } else {
       // dragging to different day
+      const task = tasks.get(draggableId) as Task<OneTimeTaskMetadata>;
+      store.dispatch(
+        patchTasks(
+          [],
+          [{
+            ...task,
+            metadata: {
+              ...task.metadata,
+              date: new Date(destination.droppableId),
+            },
+            children: task.children.map((child) => child.id),
+          }],
+          [],
+        ),
+      );
       editMainTask(
         draggableId,
         null,
