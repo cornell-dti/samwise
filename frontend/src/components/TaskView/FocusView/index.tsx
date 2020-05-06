@@ -2,7 +2,7 @@
 import React, { ReactElement, useState, ReactNode } from 'react';
 import { DragDropContext, Droppable, DropResult } from 'react-beautiful-dnd';
 import { connect } from 'react-redux';
-import { computeReorderMap, getReorderedList } from 'common/lib/util/order-util';
+import { computeReorderMap } from 'common/lib/util/order-util';
 import styles from './index.module.css';
 import ClearFocus from './ClearFocus';
 import CompletedSeparator from './CompletedSeparator';
@@ -25,14 +25,10 @@ function renderTaskList(list: IdOrder[], filterCompleted: boolean): ReactNode {
  * The focus view component.
  */
 function FocusView({ tasks, progress }: FocusViewProps): ReactElement {
-  const [localTasks, setLocalTasks] = useState<FocusViewTaskMetaData[]>(tasks);
   const [doesShowCompletedTasks, setDoesShowCompletedTasks] = useState(true);
-  if (localTasks !== tasks) {
-    setLocalTasks(tasks);
-  }
   const localCompletedList: IdOrder[] = [];
   const localUncompletedList: IdOrder[] = [];
-  localTasks.forEach(({ id, order, inFocusView, inCompleteFocusView }: FocusViewTaskMetaData) => {
+  tasks.forEach(({ id, order, inFocusView, inCompleteFocusView }: FocusViewTaskMetaData) => {
     if (!inFocusView) {
       return;
     }
@@ -74,23 +70,14 @@ function FocusView({ tasks, progress }: FocusViewProps): ReactElement {
         && destination.droppableId === focusViewNotCompletedDroppableId)
     ) {
       // drag and drop completely with in completed/uncompleted region
-      const reorderMap = computeReorderMap(localTasks, sourceOrder, destinationOrder);
-      setLocalTasks(getReorderedList(localTasks, reorderMap));
+      const reorderMap = computeReorderMap(tasks, sourceOrder, destinationOrder);
       applyReorder('tasks', reorderMap);
     } else if (
       source.droppableId === focusViewNotCompletedDroppableId
       && destination.droppableId === focusViewCompletedDroppableId
     ) {
       // drag from not completed and drop to completed.
-      const completedTaskIdOrder: IdOrder = localUncompletedList[source.index];
-      const taskReplacer = (t: FocusViewTaskMetaData): FocusViewTaskMetaData => {
-        if (t.id !== completedTaskIdOrder.id) {
-          return t;
-        }
-        return { ...t, inCompleteFocusView: true };
-      };
-      setLocalTasks((prevTasks) => prevTasks.map(taskReplacer));
-      completeTaskInFocus(completedTaskIdOrder, localCompletedList);
+      completeTaskInFocus(localUncompletedList[source.index]);
     } else if (
       source.droppableId === focusViewCompletedDroppableId
       && destination.droppableId === focusViewNotCompletedDroppableId
