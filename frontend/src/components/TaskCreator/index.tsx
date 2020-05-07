@@ -30,6 +30,7 @@ type OwnProps = {
 
 type Props = OwnProps & {
   readonly view: string;
+  readonly group?: string;
 };
 
 /**
@@ -143,7 +144,12 @@ export class TaskCreator extends React.PureComponent<Props, State> {
       date.setHours(23);
       date.setMinutes(59);
       date.setSeconds(59);
-      newTask = { ...commonTask, metadata: { type: 'ONE_TIME', date } };
+      const { view, group } = this.props;
+      if (view === 'group' && typeof group === 'string') {
+        newTask = { ...commonTask, metadata: { type: 'GROUP', date, group } };
+      } else {
+        newTask = { ...commonTask, metadata: { type: 'ONE_TIME', date } };
+      }
     } else {
       newTask = {
         ...commonTask,
