@@ -229,7 +229,7 @@ export default function DatePicker(props: Props): ReactElement {
     const { value } = e.currentTarget;
     setInternalDate({
       ...internalDate,
-      repeatEnd: { ...internalDate.repeatEnd, weeks: parseInt(value, 10) },
+      repeatEnd: { ...internalDate.repeatEnd, weeks: parseInt(value, 10), type: 'weeks' },
     });
   };
 
