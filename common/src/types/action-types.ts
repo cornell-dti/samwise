@@ -6,6 +6,7 @@ import {
   Task,
   Tag,
   BannerMessageStatus,
+  Group,
 } from './store-types';
 
 export type PatchTags = {

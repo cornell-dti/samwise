@@ -371,16 +371,18 @@ export const removeSubTask = (
  * --------------------------------------------------------------------------------
  */
 
-export const joinGroup = (
+export const joinGroup = async (
   groupId: string,
-): void => {
-  const group = database.groupsCollection.doc(groupId);
+): Promise<void> => {
+  const groupDoc = await database.groupsCollection().doc(groupId);
+  const groupSnapshot = await groupDoc.get();
+  const group = await groupSnapshot.data() as FirestoreGroup;
   const { members } = group;
   const { email } = getAppUser();
   if (members.includes(email)) {
     return;
   }
-  group.update({ members: [...members, email] });
+  groupDoc.update({ members: [...members, email] });
 };
 
 export const createGroup = (
@@ -391,17 +393,19 @@ export const createGroup = (
   const { email } = getAppUser();
   // creator is the only member at first
   const newGroup: FirestoreGroup = { name, deadline, classCode, members: [email] };
-  database.groupsCollection.doc().set(newGroup);
+  database.groupsCollection().doc().set(newGroup);
 };
 
-export const leaveGroup = (
+export const leaveGroup = async (
   groupId: string,
-): void => {
-  const { email } = getAppUser();
-  const group = database.groupsCollection.doc(groupId);
+): Promise<void> => {
+  const groupDoc = await database.groupsCollection().doc(groupId);
+  const groupSnapshot = await groupDoc.get();
+  const group = await groupSnapshot.data() as FirestoreGroup;
   const { members } = group;
+  const { email } = getAppUser();
   const newMembers: string[] = members.filter((m: string) => m !== email);
-  group.update({ members: newMembers });
+  groupDoc.update({ members: newMembers });
 };
 
 /*
