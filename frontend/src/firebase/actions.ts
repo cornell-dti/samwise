@@ -17,6 +17,7 @@ import {
   FirestoreCommon,
   FirestoreTask,
   FirestoreSubTask,
+  FirestoreGroup,
 } from 'common/lib/types/firestore-types';
 import { WriteBatch } from 'common/lib/firebase/database';
 import Actions from 'common/lib/firebase/common-actions';
@@ -366,7 +367,46 @@ export const removeSubTask = (
 
 /*
  * --------------------------------------------------------------------------------
- * Section 3: Other Compound Actions
+ * Section 3: Groups Actions
+ * --------------------------------------------------------------------------------
+ */
+
+export const joinGroup = (
+  groupId: string,
+): void => {
+  const group = database.groupsCollection.doc(groupId);
+  const { members } = group;
+  const { email } = getAppUser();
+  if (members.includes(email)) {
+    return;
+  }
+  group.update({ members: [...members, email] });
+};
+
+export const createGroup = (
+  name: string,
+  deadline: Date,
+  classCode: string,
+): void => {
+  const { email } = getAppUser();
+  // creator is the only member at first
+  const newGroup: FirestoreGroup = { name, deadline, classCode, members: [email] };
+  database.groupsCollection.doc().set(newGroup);
+};
+
+export const leaveGroup = (
+  groupId: string,
+): void => {
+  const { email } = getAppUser();
+  const group = database.groupsCollection.doc(groupId);
+  const { members } = group;
+  const newMembers: string[] = members.filter((m: string) => m !== email);
+  group.update({ members: newMembers });
+};
+
+/*
+ * --------------------------------------------------------------------------------
+ * Section 4: Other Compound Actions
  * --------------------------------------------------------------------------------
  */
 

@@ -126,5 +126,5 @@ export default class Database {
 
   subTasksCollection = (): Collection => this.db().collection('samwise-subtasks');
 
-  groupCollection = (): Collection => this.db().collection('samwise-groups');
+  groupsCollection = (): Collection => this.db().collection('samwise-groups');
 }
