@@ -63,9 +63,9 @@ const listenBannerMessageChange = (
   .onSnapshot(listener);
 const listenGroupChange = (
   email: string,
-  listener: (snapshot: DocumentSnapshot) => void,
-): UnmountCallback => database.groupCollection()
-  .whereArrayContains('members', email)
+  listener: (snapshot: QuerySnapshot) => void,
+): UnmountCallback => database.groupsCollection()
+  .where('members', 'array-contains', email)
   .onSnapshot(listener);
 
 const transformDate = (dateOrTimestamp: Date | Timestamp): Date => (
@@ -243,8 +243,12 @@ export default (onFirstFetched: () => void): (() => void) => {
   });
 
   const unmountGroupsListener = listenGroupChange(ownerEmail, (snapshot) => {
-    const data = snapshot.exists ? snapshot.data() : undefined;
-    const groups = (data as Group[]) ?? [];
+    const data = snapshot.empty ? undefined : snapshot.docs;
+    const groups: Group[] = [];
+    data?.forEach((res) => {
+      const group = res.data();
+      groups.push(group as Group);
+    });
     store.dispatch(patchGroups(groups));
     firstGroupsFetched = true;
     reportFirstFetchedIfAllFetched();
