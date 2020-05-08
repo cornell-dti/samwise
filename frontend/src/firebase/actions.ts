@@ -375,10 +375,9 @@ export const joinGroup = async (
   groupId: string,
 ): Promise<void> => {
   const groupDoc = await database.groupsCollection().doc(groupId);
-  const groupSnapshot = await groupDoc.get();
-  const group = await groupSnapshot.data() as FirestoreGroup;
-  const { members } = group;
+  const members = await getMembers(groupId);
   const { email } = getAppUser();
+  // Check if user is already in the group
   if (members.includes(email)) {
     return;
   }
@@ -399,13 +398,32 @@ export const createGroup = (
 export const leaveGroup = async (
   groupId: string,
 ): Promise<void> => {
+  const members = await getMembers(groupId);
+  const { email } = getAppUser();
+  const newMembers: string[] = members.filter((m: string) => m !== email);
+  const groupDoc = await database.groupsCollection().doc(groupId);
+  groupDoc.update({ members: newMembers });
+};
+
+export const fetchGroups = async (): Promise<FirestoreGroup[]> => {
+  const groups: FirestoreGroup[] = [];
+  const groupSnapshot = await database.groupsCollection()
+    .where('members', 'array-contains', getAppUser().email)
+    .get();
+  groupSnapshot.forEach((res) => {
+    const g: FirestoreGroup = res.data() as FirestoreGroup;
+    groups.push(g);
+  });
+  return groups;
+};
+
+export const getMembers = async (
+  groupId: string,
+): Promise<string[]> => {
   const groupDoc = await database.groupsCollection().doc(groupId);
   const groupSnapshot = await groupDoc.get();
   const group = await groupSnapshot.data() as FirestoreGroup;
-  const { members } = group;
-  const { email } = getAppUser();
-  const newMembers: string[] = members.filter((m: string) => m !== email);
-  groupDoc.update({ members: newMembers });
+  return group.members;
 };
 
 /*
