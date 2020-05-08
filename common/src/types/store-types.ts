@@ -112,6 +112,15 @@ export type Course = {
 };
 
 /**
+ * The type for a pending group invite
+ */
+export type PendingGroupInvite = {
+  readonly group: string;
+  readonly groupName: string; // Name of the group
+  readonly inviterName: string; // Name of person who sent invite
+}
+
+/**
  * The type of the entire redux state.
  */
 export type State = {
@@ -130,4 +139,6 @@ export type State = {
   readonly settings: Settings;
   readonly bannerMessageStatus: BannerMessageStatus;
   readonly courses: Map<string, Course[]>;
+  // Set of all pending invites; ordered because only one will be shown at a time.
+  readonly pendingInvites: PendingGroupInvite[];
 };
