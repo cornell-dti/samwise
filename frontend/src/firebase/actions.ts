@@ -386,21 +386,24 @@ export const joinGroup = async (
   groupId: string,
   inviteID: string,
 ): Promise<void> => {
-  const groupDoc = await database.groupsCollection().doc(groupId);
-  const { groups } = store.getState();
+  const groupDoc = database.groupsCollection().doc(groupId);
   const { pendingInvites } = store.getState();
   const invite = pendingInvites.get(inviteID);
   // Check if user has the invitation and invitation is for this group
   if (invite === undefined || invite.group !== groupId) {
-    return;
+    throw new Error('Invalid invitation');
   }
-  const members = groups.get(groupId)?.members;
+  const members = await groupDoc.get().then(
+    (snapshot) => { console.log(snapshot.data()); return (snapshot.data() as FirestoreGroup)?.members; },
+  );
   const { email } = getAppUser();
   // Check if user is already in the group
   if (members === undefined || members.includes(email)) {
-    return;
+    throw new Error('Invalid group members');
   }
-  groupDoc.update({ members: [...members, email] });
+  await groupDoc.update({ members: [...members, email] });
+
+  rejectInvite(inviteID);
 };
 
 /**

@@ -16,12 +16,7 @@ function SingleInvitation(invite: PendingGroupInvite): ReactElement {
         {`${invite.inviterName} has invited you to join their group project.`}
       </span>
       <div className={styles.ButtonWrap}>
-        <button
-          type="button"
-          onClick={() => {
-            joinGroup(invite.group, invite.id);
-          }}
-        >
+        <button type="button" onClick={() => { joinGroup(invite.group, invite.id); }}>
           Join
         </button>
         <button type="button" onClick={() => { rejectInvite(invite.id); }}>
