@@ -125,4 +125,6 @@ export default class Database {
   tasksCollection = (): Collection => this.db().collection('samwise-tasks');
 
   subTasksCollection = (): Collection => this.db().collection('samwise-subtasks');
+
+  pendingInvitesCollection = (): Collection => this.db().collection('samwise-group-pending-invites');
 }

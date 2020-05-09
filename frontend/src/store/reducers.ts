@@ -7,6 +7,7 @@ import {
   PatchSubTasks,
   PatchSettings,
   PatchBannerMessageStatus,
+  PatchPendingInvite,
 } from 'common/lib/types/action-types';
 import { State, SubTask, Task } from 'common/lib/types/store-types';
 import { error } from 'common/lib/util/general-util';
@@ -252,6 +253,14 @@ function patchCourses(state: State, { courses }: PatchCourses): State {
   return { ...state, courses };
 }
 
+function patchPendingInvite(state: State, { created, deleted }: PatchPendingInvite): State {
+  const newInvites = state.pendingInvites.withMutations((invites) => {
+    created.forEach((t) => invites.set(t.id, t));
+    deleted.forEach((id) => invites.delete(id));
+  });
+  return { ...state, pendingInvites: newInvites };
+}
+
 export default function rootReducer(state: State = initialState, action: Action): State {
   switch (action.type) {
     case 'PATCH_TAGS':
@@ -266,6 +275,8 @@ export default function rootReducer(state: State = initialState, action: Action)
       return patchBannerMessageStatus(state, action);
     case 'PATCH_COURSES':
       return patchCourses(state, action);
+    case 'PATCH_PENDING_GROUP_INVITE':
+      return patchPendingInvite(state, action);
     default:
       return state;
   }

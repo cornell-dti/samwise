@@ -17,6 +17,7 @@ import {
   FirestoreCommon,
   FirestoreTask,
   FirestoreSubTask,
+  FirestorePendingGroupInvite,
 } from 'common/lib/types/firestore-types';
 import { WriteBatch } from 'common/lib/firebase/database';
 import Actions from 'common/lib/firebase/common-actions';
@@ -368,7 +369,35 @@ export const removeSubTask = (
 
 /*
  * --------------------------------------------------------------------------------
- * Section 3: Other Compound Actions
+ * Section 3: Groups Actions
+ * --------------------------------------------------------------------------------
+ */
+
+/**
+ * Send an invitation to a user to join a group.
+ * @param groupID Document ID of the group's Firestore document. The user calling this function must
+ *                be a member of this group.
+ * @param userName The name of the user sending the invitation (in English)
+ * @param invitee The full Cornell email of the user receiving the invitation (all lowercase)
+ */
+export const sendInvite = async (
+  groupID: string, userName: string, invitee: string,
+): Promise<void> => {
+  const newInvitation: FirestorePendingGroupInvite = {
+    group: groupID,
+    inviterName: userName,
+    invitee,
+  };
+  await database.pendingInvitesCollection().add(newInvitation);
+};
+
+export const rejectInvite = async (inviteID: string): Promise<void> => {
+  await database.pendingInvitesCollection().doc(inviteID).delete();
+};
+
+/*
+ * --------------------------------------------------------------------------------
+ * Section 4: Other Compound Actions
  * --------------------------------------------------------------------------------
  */
 
