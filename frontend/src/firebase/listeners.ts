@@ -1,4 +1,4 @@
-import { Set, Map } from 'immutable';
+import { Set } from 'immutable';
 import { TaskWithChildrenId } from 'common/lib/types/action-types';
 import {
   SubTask,
@@ -251,15 +251,24 @@ export default (onFirstFetched: () => void): (() => void) => {
   });
 
   const unmountGroupsListener = listenGroupChange(ownerEmail, (snapshot) => {
-    const data = snapshot.docs;
-    const groups: Map<string, Group> = Map();
-    data?.forEach((res) => {
-      const { name, members, deadline, classCode } = res.data() as FirestoreGroup;
-      const { id } = res;
-      const group = { id, name, members, deadline, classCode };
-      groups.set(id, group);
+    const created: Group[] = [];
+    const edited: Group[] = [];
+    const deleted: string[] = [];
+    snapshot.docChanges().forEach((change) => {
+      const { doc, type } = change;
+      const { id } = doc;
+      if (type === 'removed') {
+        deleted.push(id);
+      } else {
+        const { name, members, deadline, classCode } = doc.data() as FirestoreGroup;
+        if (type === 'added') {
+          created.push({ id, name, members, deadline, classCode });
+        } else {
+          edited.push({ id, name, members, deadline, classCode });
+        }
+      }
     });
-    store.dispatch(patchGroups(groups));
+    store.dispatch(patchGroups(created, edited, deleted));
     firstGroupsFetched = true;
     reportFirstFetchedIfAllFetched();
   });

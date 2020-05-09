@@ -53,9 +53,11 @@ export const patchCourses = (courses: Map<string, Course[]>): PatchCourses => ({
 });
 
 export const patchGroups = (
-  groups: Map<string, Group>,
+  created: Group[],
+  edited: Group[],
+  deleted: string[],
 ): PatchGroups => ({
-  type: 'PATCH_GROUPS', groups,
+  type: 'PATCH_GROUPS', created, edited, deleted,
 });
 
 export const patchPendingInvite = (
