@@ -368,7 +368,18 @@ export const removeSubTask = (
 
 /*
  * --------------------------------------------------------------------------------
- * Section 3: Other Compound Actions
+ * Section 3: Groups Actions
+ * --------------------------------------------------------------------------------
+ */
+
+export const rejectInvite = async (inviteID: string): Promise<void> => {
+  const invitations = await database.pendingInvitesCollection().doc(inviteID);
+  invitations.delete();
+};
+
+/*
+ * --------------------------------------------------------------------------------
+ * Section 4: Other Compound Actions
  * --------------------------------------------------------------------------------
  */
 
