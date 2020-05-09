@@ -110,7 +110,7 @@ function removeRepeatingTask(task: Task<RepeatingTaskMetadata>, replaceDate: Dat
 
 export function removeTaskWithPotentialPrompt(task: Task, replaceDate: Date | null): void {
   // The task is pattern matched on metadata only, so the following type casts are safe.
-  if (task.metadata.type === 'ONE_TIME') {
+  if (task.metadata.type === 'ONE_TIME' || task.metadata.type === 'GROUP') {
     removeOneTimeTask(task as Task<OneTimeTaskMetadata>);
   } else {
     removeRepeatingTask(task as Task<RepeatingTaskMetadata>, replaceDate);

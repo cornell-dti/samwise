@@ -39,6 +39,7 @@ export const initialStateForTesting: State = {
     foo: {
       id: 'foo',
       order: 1,
+      owner: 'foo',
       name: 'Foo',
       tag: 'foo',
       complete: true,
@@ -52,6 +53,7 @@ export const initialStateForTesting: State = {
     bar: {
       id: 'bar',
       order: 2,
+      owner: 'foo',
       name: 'Bar',
       tag: 'bar',
       complete: false,
@@ -65,6 +67,7 @@ export const initialStateForTesting: State = {
     baz: {
       id: 'baz',
       order: 3,
+      owner: 'foo',
       name: 'Baz',
       tag: 'baz',
       complete: true,
