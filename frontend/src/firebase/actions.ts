@@ -388,7 +388,7 @@ export const sendInvite = async (
     inviterName: userName,
     invitee,
   };
-  database.pendingInvitesCollection().doc().set(newInvitation);
+  database.pendingInvitesCollection().add(newInvitation);
 };
 
 export const rejectInvite = async (inviteID: string): Promise<void> => {
