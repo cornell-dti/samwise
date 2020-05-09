@@ -44,9 +44,10 @@ const actions = new Actions(() => getAppUser().email, database);
 async function createFirestoreObject<T>(
   orderFor: 'tags' | 'tasks',
   source: T,
+  owner: string,
 ): Promise<T & FirestoreCommon> {
   const order = await actions.orderManager.allocateNewOrder(orderFor);
-  return { ...source, owner: getAppUser().email, order };
+  return { ...source, owner, order };
 }
 
 const mergeWithOwner = <T>(obj: T): T & { readonly owner: string } => ({
@@ -89,11 +90,12 @@ export const removeTag = (id: string): void => {
 
 const asyncAddTask = async (
   newTaskId: string,
+  owner: string,
   task: TaskWithoutIdOrderChildren,
   subTasks: WithoutId<SubTask>[],
   batch: WriteBatch,
 ): Promise<{ readonly firestoreTask: FirestoreTask; readonly createdSubTasks: SubTask[] }> => {
-  const baseTask: FirestoreCommon = await createFirestoreObject('tasks', {});
+  const baseTask: FirestoreCommon = await createFirestoreObject('tasks', {}, owner);
   const createdSubTasks: SubTask[] = subTasks.map((subtask) => {
     const firebaseSubTask: FirestoreSubTask = mergeWithOwner(subtask);
     const subtaskDoc = database.subTasksCollection().doc();
@@ -102,15 +104,18 @@ const asyncAddTask = async (
   });
   const subtaskIds = createdSubTasks.map((s) => s.id);
   const { metadata, ...rest } = task;
+  rest.owner = baseTask.owner;
   const firestoreTask: FirestoreTask = { ...baseTask, ...rest, ...metadata, children: subtaskIds };
   batch.set(database.tasksCollection().doc(newTaskId), firestoreTask);
   return { firestoreTask, createdSubTasks };
 };
 
-export const addTask = (task: TaskWithoutIdOrderChildren, subTasks: WithoutId<SubTask>[]): void => {
+export const addTask = (owner: string, task: TaskWithoutIdOrderChildren,
+  subTasks: WithoutId<SubTask>[]): void => {
+  const taskOwner = owner === '' ? getAppUser().email : owner;
   const newTaskId = getNewTaskId();
   const batch = db().batch();
-  asyncAddTask(newTaskId, task, subTasks, batch).then(({ createdSubTasks }) => {
+  asyncAddTask(newTaskId, taskOwner, task, subTasks, batch).then(({ createdSubTasks }) => {
     batch.commit().then(() => {
       reportAddTaskEvent();
       createdSubTasks.forEach(reportAddSubTaskEvent);
@@ -242,7 +247,9 @@ export const forkTaskWithDiff = (
   });
   const batch = database.db().batch();
   const forkId = getNewTaskId();
-  asyncAddTask(forkId, newMainTask, newSubTasks, batch).then(() => {
+  // owner = '' for non-group tasks, so owner is set to the logged-in user
+  const owner = getAppUser().email;
+  asyncAddTask(forkId, owner, newMainTask, newSubTasks, batch).then(() => {
     batch.update(database.tasksCollection().doc(id), {
       forks: firestore.FieldValue.arrayUnion({ forkId, replaceDate }),
     });
@@ -493,6 +500,7 @@ export const importCourseExams = (): void => {
         };
         if (!Array.from(tasks.values()).some(filter)) {
           const newTask: TaskWithoutIdOrderChildren<OneTimeTaskMetadata> = {
+            owner: getAppUser().email,
             name: examName,
             tag: tag.id,
             complete: false,

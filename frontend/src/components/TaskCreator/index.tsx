@@ -15,6 +15,7 @@ import styles from './index.module.css';
 type SimpleTask = Omit<Task, 'type' | 'order' | 'children' | 'metadata'>;
 
 type State = SimpleTask & {
+  readonly owner: string;
   readonly date: Date | RepeatingDate;
   readonly subTasks: SubTask[];
   readonly opened: boolean;
@@ -42,6 +43,7 @@ const PLACEHOLDER_TEXT = 'What do you have to do?';
  */
 const initialState = (): State => ({
   id: randomId(),
+  owner: '',
   name: '',
   tag: NONE_TAG_ID, // the id of the None tag.
   date: new Date(),
@@ -127,7 +129,7 @@ export class TaskCreator extends React.PureComponent<Props, State> {
       e.preventDefault();
     }
     const {
-      name, tag, date, complete, inFocus, subTasks,
+      owner, name, tag, date, complete, inFocus, subTasks,
     } = this.state;
     if (name === '') {
       return;
@@ -138,7 +140,7 @@ export class TaskCreator extends React.PureComponent<Props, State> {
       .map(({ id, ...rest }, order) => ({ ...rest, order }));
     // Put task in focus is the due date is today.
     const autoInFocus = inFocus || (date instanceof Date && isToday(date));
-    const commonTask = { name, tag, date, complete, inFocus: autoInFocus };
+    const commonTask = { owner, name, tag, date, complete, inFocus: autoInFocus };
     let newTask: TaskWithoutIdOrderChildren;
     if (date instanceof Date) {
       date.setHours(23);
@@ -162,7 +164,7 @@ export class TaskCreator extends React.PureComponent<Props, State> {
       };
     }
     // Add the task to the store.
-    addTask(newTask, newSubTasks);
+    addTask(owner, newTask, newSubTasks);
     // Reset the state.
     this.setState({ ...initialState() });
     this.closeNewTask();
@@ -176,6 +178,15 @@ export class TaskCreator extends React.PureComponent<Props, State> {
    * Part 3: Various Editors
    * --------------------------------------------------------------------------------
    */
+
+  /**
+   * Edit the owner.
+   *
+   * @param {string} member the new owner.
+   */
+  private editOwner = (e: SyntheticEvent<HTMLInputElement>): void => this.setState(
+    { owner: e.currentTarget.value },
+  );
 
   /**
    * Edit the task name.
