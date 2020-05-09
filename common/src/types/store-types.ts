@@ -147,6 +147,7 @@ export type State = {
   readonly dateTaskMap: Map<string, Set<string>>;
   // A set of all ids of repeating tasks.
   readonly repeatedTaskSet: Set<string>;
+  readonly groupTaskSet: Set<string>;
   readonly settings: Settings;
   readonly bannerMessageStatus: BannerMessageStatus;
   readonly courses: Map<string, Course[]>;

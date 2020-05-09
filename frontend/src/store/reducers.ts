@@ -85,6 +85,15 @@ function patchTasks(state: State, { created, edited, deleted }: PatchTasks): Sta
     deleted.forEach((id) => s.remove(id));
   });
 
+  const newGroupTaskSet = state.groupTaskSet.withMutations((s) => {
+    created.forEach((t) => {
+      if (t.metadata.type === 'MASTER_TEMPLATE') {
+        s.add(t.id);
+      }
+    });
+    deleted.forEach((id) => s.remove(id));
+  });
+
   const missingSubTasksMap = new Map<string, string>();
   const orphanSubTasksToClear: string[] = [];
   const newTasks = state.tasks.withMutations((tasks) => {
@@ -158,6 +167,7 @@ function patchTasks(state: State, { created, edited, deleted }: PatchTasks): Sta
     orphanSubTasks: updatedOrphanSubTasks,
     dateTaskMap: newDateTaskMap,
     repeatedTaskSet: newRepeatedTaskSet,
+    groupTaskSet: newGroupTaskSet,
   };
 }
 

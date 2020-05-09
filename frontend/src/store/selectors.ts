@@ -1,6 +1,6 @@
 import { createSelector, createSelectorCreator, defaultMemoize } from 'reselect';
 import { Map, Set } from 'immutable';
-import { State, Tag, Task, BannerMessageStatus, RepeatingTaskMetadata } from 'common/lib/types/store-types';
+import { State, Tag, Task, BannerMessageStatus, RepeatingTaskMetadata, Group } from 'common/lib/types/store-types';
 import { NONE_TAG } from 'common/lib/util/tag-util';
 import {
   computeTaskProgress,
