@@ -35,7 +35,7 @@ service cloud.firestore {
     	allow read, write, delete: if request.auth.token.email == resource.data.author
     }
     match /samwise-group-pending-invites/{pendingInvite} {
-      allow create: if request.auth.token.email in get(/databases/$(database)/documents/samwise-groups/$(request.resource.group)).data.members 
+      allow create: if request.auth.token.email in get(/databases/$(database)/documents/samwise-groups/$(request.resource.data.group)).data.members 
       allow read, delete: if request.auth.token.email == resource.data.invitee
     }
   }
