@@ -59,6 +59,7 @@ export type FirestoreGroup = {
   readonly name: string;
   readonly members: string[];
   readonly deadline: Date;
+  readonly classCode?: string;
 }
 
 export type FirestorePendingGroupInvite = {

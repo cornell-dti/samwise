@@ -18,6 +18,7 @@ export const initialState: State = {
   bannerMessageStatus: {},
   courses: Map(),
   pendingInvites: Map(),
+  groups: Map(),
 };
 
 /**
@@ -98,4 +99,5 @@ export const initialStateForTesting: State = {
     ],
   }),
   pendingInvites: Map(),
+  groups: Map(),
 };

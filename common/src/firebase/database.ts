@@ -112,7 +112,7 @@ export interface CommonFirestore {
 type Collection = CollectionReference;
 
 export default class Database {
-  constructor(public readonly db: () => CommonFirestore) {}
+  constructor(public readonly db: () => CommonFirestore) { }
 
   orderManagerCollection = (): Collection => this.db().collection('samwise-order-manager');
 
@@ -125,6 +125,8 @@ export default class Database {
   tasksCollection = (): Collection => this.db().collection('samwise-tasks');
 
   subTasksCollection = (): Collection => this.db().collection('samwise-subtasks');
+
+  groupsCollection = (): Collection => this.db().collection('samwise-groups');
 
   pendingInvitesCollection = (): Collection => this.db().collection('samwise-group-pending-invites');
 }

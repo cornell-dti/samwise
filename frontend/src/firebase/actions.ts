@@ -17,6 +17,7 @@ import {
   FirestoreCommon,
   FirestoreTask,
   FirestoreSubTask,
+  FirestoreGroup,
   FirestorePendingGroupInvite,
 } from 'common/lib/types/firestore-types';
 import { WriteBatch } from 'common/lib/firebase/database';
@@ -372,6 +373,74 @@ export const removeSubTask = (
  * Section 3: Groups Actions
  * --------------------------------------------------------------------------------
  */
+
+/**
+* Join a group.
+* @param groupID  Document ID of the group's Firestore document. The user calling this function must
+*                 be a member of this group.
+* @param inviteID Document ID of the invitation's Firestore document. The user calling this invitee
+*                 of this invitation.
+*/
+
+export const joinGroup = async (
+  groupId: string,
+  inviteID: string,
+): Promise<void> => {
+  const groupDoc = await database.groupsCollection().doc(groupId);
+  const { groups } = store.getState();
+  const { pendingInvites } = store.getState();
+  const invite = pendingInvites.get(inviteID);
+  // Check if user has the invitation and invitation is for this group
+  if (invite === undefined || invite.group !== groupId) {
+    return;
+  }
+  const members = groups.get(groupId)?.members;
+  const { email } = getAppUser();
+  // Check if user is already in the group
+  if (members === undefined || members.includes(email)) {
+    return;
+  }
+  groupDoc.update({ members: [...members, email] });
+};
+
+/**
+ * Create a group.
+ * @param groupID Document ID of the group's Firestore document. The user calling this function must
+ *                be a member of this group.
+ */
+export const createGroup = (
+  name: string,
+  deadline: Date,
+  classCode: string,
+): void => {
+  const { email } = getAppUser();
+  // creator is the only member at first
+  const newGroup: FirestoreGroup = { name, deadline, classCode, members: [email] };
+  database.groupsCollection().doc().set(newGroup);
+};
+
+/**
+ * Leave a group.
+ * @param groupID Document ID of the group's Firestore document. The user calling this function must
+ *                be a member of this group.
+ */
+export const leaveGroup = async (
+  groupID: string,
+): Promise<void> => {
+  const { groups } = store.getState();
+  const members = groups.get(groupID)?.members;
+  if (members === undefined) {
+    return;
+  }
+  const { email } = getAppUser();
+  const newMembers: string[] = members.filter((m: string) => m !== email);
+  const groupDoc = await database.groupsCollection().doc(groupID);
+  if (newMembers.length === 0) {
+    await groupDoc.delete();
+  } else {
+    await groupDoc.update({ members: newMembers });
+  }
+};
 
 /**
  * Send an invitation to a user to join a group.
