@@ -9,9 +9,7 @@ type Props = {
   readonly pendingInvites: Map<string, PendingGroupInvite>;
 };
 
-function SingleInvitation(
-  invite: PendingGroupInvite,
-): ReactElement {
+function SingleInvitation(invite: PendingGroupInvite): ReactElement {
   return (
     <li key={invite.group}>
       <span className={styles.Text}>
