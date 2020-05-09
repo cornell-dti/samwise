@@ -251,7 +251,7 @@ export default (onFirstFetched: () => void): (() => void) => {
   });
 
   const unmountGroupsListener = listenGroupChange(ownerEmail, (snapshot) => {
-    const data = snapshot.empty ? undefined : snapshot.docs;
+    const data = snapshot.docs;
     const groups: Group[] = [];
     data?.forEach((res) => {
       const group = res.data();

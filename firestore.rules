@@ -40,7 +40,7 @@ service cloud.firestore {
     }
     match /samwise-groups/{group} {
       allow create: if canCreate()
-      allow read, delete: if request.auth.token.email in get(/databases/$(database)/documents/samwise-groups/$(request.resource.data.group)).data.members 
+      allow read, delete: if request.auth.token.email in get(/databases/$(database)/documents/samwise-groups/$(resource.data.group)).data.members 
     }
   }
 }
