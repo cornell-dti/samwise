@@ -42,6 +42,7 @@ function patchTasks(state: State, { created, edited, deleted }: PatchTasks): Sta
         m.set(key, set.add(t.id));
       }
     });
+
     edited.forEach((t) => {
       if (t.metadata.type === 'MASTER_TEMPLATE') {
         return;
@@ -77,9 +78,68 @@ function patchTasks(state: State, { created, edited, deleted }: PatchTasks): Sta
       }
     });
   });
+  const newGroupTaskMap = state.groupTaskMap.withMutations((m) => {
+    created.forEach((t) => {
+      if (t.metadata.type !== 'GROUP') {
+        return;
+      }
+      const key = t.metadata.group;
+      const set = m.get(key);
+      if (set == null) {
+        m.set(key, Set.of(t.id));
+      } else {
+        m.set(key, set.add(t.id));
+      }
+    });
+
+    edited.forEach((t) => {
+      if (t.metadata.type !== 'GROUP') {
+        return;
+      }
+      const key = t.metadata.group;
+      const oldTask = state.tasks.get(t.id) ?? error();
+      if (oldTask.metadata.type === 'GROUP') {
+        const oldKey = oldTask.metadata.group;
+        if (oldKey !== key) {
+          // remove first
+          const oldBucket = m.get(oldKey) ?? error('impossible!');
+          m.set(oldKey, oldBucket.remove(t.id));
+        }
+      }
+      const set = m.get(key);
+      if (set == null) {
+        m.set(key, Set.of(t.id));
+      } else {
+        m.set(key, set.add(t.id));
+      }
+    });
+    deleted.forEach((id) => {
+      const oldTask = state.tasks.get(id);
+      if (oldTask == null) {
+        return;
+      }
+      if (oldTask.metadata.type === 'GROUP') {
+        const key = oldTask.metadata.group;
+        const set = m.get(key);
+        if (set != null) {
+          m.set(key, set.remove(id));
+        }
+      }
+    });
+  });
+
   const newRepeatedTaskSet = state.repeatedTaskSet.withMutations((s) => {
     created.forEach((t) => {
       if (t.metadata.type === 'MASTER_TEMPLATE') {
+        s.add(t.id);
+      }
+    });
+    deleted.forEach((id) => s.remove(id));
+  });
+
+  const newGroupTaskSet = state.groupTaskSet.withMutations((s) => {
+    created.forEach((t) => {
+      if (t.metadata.type === 'GROUP') {
         s.add(t.id);
       }
     });
@@ -158,7 +218,9 @@ function patchTasks(state: State, { created, edited, deleted }: PatchTasks): Sta
     missingSubTasks: updatedMissingSubTasks,
     orphanSubTasks: updatedOrphanSubTasks,
     dateTaskMap: newDateTaskMap,
+    groupTaskMap: newGroupTaskMap,
     repeatedTaskSet: newRepeatedTaskSet,
+    groupTaskSet: newGroupTaskSet,
   };
 }
 

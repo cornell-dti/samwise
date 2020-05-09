@@ -146,8 +146,11 @@ export type State = {
   readonly orphanSubTasks: Map<string, SubTask>;
   // A fast access map to quickly find all main task id within a date.
   readonly dateTaskMap: Map<string, Set<string>>;
+  // A fast access map to quickly find all task ids under a certain group ID.
+  readonly groupTaskMap: Map<string, Set<string>>;
   // A set of all ids of repeating tasks.
   readonly repeatedTaskSet: Set<string>;
+  readonly groupTaskSet: Set<string>;
   readonly settings: Settings;
   readonly bannerMessageStatus: BannerMessageStatus;
   readonly courses: Map<string, Course[]>;
