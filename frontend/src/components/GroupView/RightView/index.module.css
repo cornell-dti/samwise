@@ -20,7 +20,7 @@
   overflow-y: auto;
 }
 
-h2 {
+.RightView h2 {
   display: inline-block;
   color: #808080;
   font-size: 26px;
