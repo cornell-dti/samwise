@@ -16,7 +16,12 @@ function SingleInvitation(
     <li key={groupID}>
       <span className={styles.Text}>{inviter} has invited you to join their group project.</span>
       <div className={styles.ButtonWrap}>
-        <button type="button" onClick={() => { console.log(`Tried to join group ${groupID}, a currently unsupported operation`); }}>
+        <button
+          type="button"
+          onClick={() => {
+            console.log(`Tried to join group ${groupID}, a currently unsupported operation`);
+          }}
+        >
             Join
         </button>
         <button type="button" onClick={() => { rejectInvite(inviteID); }}>
