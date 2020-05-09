@@ -8,6 +8,7 @@ import {
   PatchSettings,
   PatchBannerMessageStatus,
   PatchPendingInvite,
+  PatchGroups,
 } from 'common/lib/types/action-types';
 import { State, SubTask, Task } from 'common/lib/types/store-types';
 import { error } from 'common/lib/util/general-util';
@@ -261,6 +262,10 @@ function patchPendingInvite(state: State, { created, deleted }: PatchPendingInvi
   return { ...state, pendingInvites: newInvites };
 }
 
+function patchGroups(state: State, { groups }: PatchGroups): State {
+  return { ...state, groups };
+}
+
 export default function rootReducer(state: State = initialState, action: Action): State {
   switch (action.type) {
     case 'PATCH_TAGS':
@@ -277,6 +282,8 @@ export default function rootReducer(state: State = initialState, action: Action)
       return patchCourses(state, action);
     case 'PATCH_PENDING_GROUP_INVITE':
       return patchPendingInvite(state, action);
+    case 'PATCH_GROUPS':
+      return patchGroups(state, action);
     default:
       return state;
   }

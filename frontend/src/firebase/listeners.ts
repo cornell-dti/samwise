@@ -1,4 +1,4 @@
-import { Set } from 'immutable';
+import { Set, Map } from 'immutable';
 import { TaskWithChildrenId } from 'common/lib/types/action-types';
 import {
   SubTask,
@@ -12,7 +12,7 @@ import {
 } from 'common/lib/types/store-types';
 import buildCoursesMap from 'common/lib/util/courses-util';
 import { ignore } from 'common/lib/util/general-util';
-import { FirestoreSubTask, FirestoreTag, FirestoreTask, FirestorePendingGroupInvite } from 'common/lib/types/firestore-types';
+import { FirestoreSubTask, FirestoreTag, FirestoreTask, FirestorePendingGroupInvite, FirestoreGroup } from 'common/lib/types/firestore-types';
 import { QuerySnapshot, DocumentSnapshot } from 'common/lib/firebase/database';
 import { database } from './db';
 import { getAppUser } from './auth-util';
@@ -252,10 +252,12 @@ export default (onFirstFetched: () => void): (() => void) => {
 
   const unmountGroupsListener = listenGroupChange(ownerEmail, (snapshot) => {
     const data = snapshot.docs;
-    const groups: Group[] = [];
+    const groups: Map<string, Group> = Map();
     data?.forEach((res) => {
-      const group = res.data();
-      groups.push(group as Group);
+      const { name, members, deadline, classCode } = res.data() as FirestoreGroup;
+      const { id } = res;
+      const group = { id, name, members, deadline, classCode };
+      groups.set(id, group);
     });
     store.dispatch(patchGroups(groups));
     firstGroupsFetched = true;

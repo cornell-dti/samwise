@@ -105,6 +105,7 @@ export type BannerMessageStatus = {
  */
 
 export type Group = {
+  readonly id: string;
   readonly name: string;
   readonly members: readonly string[];
   readonly deadline: Date;

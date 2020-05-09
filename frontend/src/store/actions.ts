@@ -53,7 +53,7 @@ export const patchCourses = (courses: Map<string, Course[]>): PatchCourses => ({
 });
 
 export const patchGroups = (
-  groups: Group[],
+  groups: Map<string, Group>,
 ): PatchGroups => ({
   type: 'PATCH_GROUPS', groups,
 });
