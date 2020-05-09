@@ -52,7 +52,7 @@ export type PatchCourses = {
 
 export type PatchGroups = {
   readonly type: 'PATCH_GROUPS';
-  readonly groups: Group[];
+  readonly groups: Map<string, Group>;
 }
 export type PatchPendingInvite = {
   readonly type: 'PATCH_PENDING_GROUP_INVITE';
