@@ -392,8 +392,7 @@ export const sendInvite = async (
 };
 
 export const rejectInvite = async (inviteID: string): Promise<void> => {
-  const invitations = await database.pendingInvitesCollection().doc(inviteID);
-  invitations.delete();
+  await database.pendingInvitesCollection().doc(inviteID).delete();
 };
 
 /*
