@@ -63,7 +63,6 @@ export type FirestoreGroup = {
 
 export type FirestorePendingGroupInvite = {
   readonly group: string;
-  readonly groupName: string; // Name of the group
   readonly inviterName: string; // Name of person who sent invite
   readonly invitee: string; // Email of person receiving invitation
 }

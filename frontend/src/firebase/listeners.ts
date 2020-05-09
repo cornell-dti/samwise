@@ -253,8 +253,8 @@ export default (onFirstFetched: () => void): (() => void) => {
         if (data === undefined) {
           return;
         }
-        const { group, groupName, inviterName } = data as FirestorePendingGroupInvite;
-        const newInvite: PendingGroupInvite = { id, group, groupName, inviterName };
+        const { group, inviterName } = data as FirestorePendingGroupInvite;
+        const newInvite: PendingGroupInvite = { id, group, inviterName };
         newPendingInvites.push(newInvite);
       }
     });
