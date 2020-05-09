@@ -435,7 +435,11 @@ export const leaveGroup = async (
   const { email } = getAppUser();
   const newMembers: string[] = members.filter((m: string) => m !== email);
   const groupDoc = await database.groupsCollection().doc(groupID);
-  groupDoc.update({ members: newMembers });
+  if (newMembers.length === 0) {
+    await groupDoc.delete();
+  } else {
+    await groupDoc.update({ members: newMembers });
+  }
 };
 
 /**

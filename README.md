@@ -3,7 +3,7 @@
 [![Deployment Status](https://github.com/cornell-dti/samwise/workflows/CD/badge.svg)](https://samwise-dev.firebaseapp.com)
 ![License](https://img.shields.io/github/license/cornell-dti/samwise.svg)
 
-_Last updated **10/23/2019**_
+_Last updated **05/09/2020**_
 
 ![Cornell DTI](./screenshots/samwise-splash.png)
 
@@ -66,6 +66,9 @@ These should be installed automatically by `yarn install`.
 - [React Color](https://casesandberg.github.io/react-color/) - a collection of React components for picking colors.
 - [Fuse.js](https://fusejs.io/) - a client-side fuzzy-search library.
 - [React Toastify](https://fkhadra.github.io/react-toastify/) - a library for emitting toasts in React.
+- [React Confetti DOM](https://www.npmjs.com/package/react-dom-confetti) - a library for triggering confetti blasts
+- [React Modal](https://www.npmjs.com/package/react-modal) - a library for displaying accessible modal dialog components
+- [React Beautiful DND](https://www.npmjs.com/package/react-beautiful-dnd) - a library for drag and drop lists
 
 To find the specific version used of each dependency, see [package.json](frontend/package.json).
 
