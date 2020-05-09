@@ -62,6 +62,12 @@ export type FirestoreGroup = {
   readonly classCode?: string;
 }
 
+export type FirestorePendingGroupInvite = {
+  readonly group: string;
+  readonly inviterName: string; // Name of person who sent invite
+  readonly invitee: string; // Email of person receiving invitation
+}
+
 // all these tasks stay in 'samwise-tasks'
 // FirestoreLegacyTask should eventually be converted to FirestoreOneTimeTask.
 export type FirestoreTask =

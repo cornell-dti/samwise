@@ -8,10 +8,11 @@ import {
   RepeatingTaskMetadata,
   Course,
   Group,
+  PendingGroupInvite,
 } from 'common/lib/types/store-types';
 import buildCoursesMap from 'common/lib/util/courses-util';
 import { ignore } from 'common/lib/util/general-util';
-import { FirestoreSubTask, FirestoreTag, FirestoreTask } from 'common/lib/types/firestore-types';
+import { FirestoreSubTask, FirestoreTag, FirestoreTask, FirestorePendingGroupInvite } from 'common/lib/types/firestore-types';
 import { QuerySnapshot, DocumentSnapshot } from 'common/lib/firebase/database';
 import { database } from './db';
 import { getAppUser } from './auth-util';
@@ -23,6 +24,7 @@ import {
   patchTasks,
   patchBannerMessageStatus,
   patchGroups,
+  patchPendingInvite,
 } from '../store/actions';
 import coursesJson from '../assets/json/sp20-courses-with-exams-min.json';
 import { store } from '../store/store';
@@ -66,6 +68,12 @@ const listenGroupChange = (
   listener: (snapshot: QuerySnapshot) => void,
 ): UnmountCallback => database.groupsCollection()
   .where('members', 'array-contains', email)
+  .onSnapshot(listener);
+const listenPendingInviteChange = (
+  email: string,
+  listener: (snapshot: QuerySnapshot) => void,
+): UnmountCallback => database.pendingInvitesCollection()
+  .where('invitee', '==', email)
   .onSnapshot(listener);
 
 const transformDate = (dateOrTimestamp: Date | Timestamp): Date => (
@@ -253,6 +261,29 @@ export default (onFirstFetched: () => void): (() => void) => {
     firstGroupsFetched = true;
     reportFirstFetchedIfAllFetched();
   });
+  const unmountPendingInviteListener = listenPendingInviteChange(ownerEmail, (snapshot) => {
+    const newPendingInvites: PendingGroupInvite[] = [];
+    const delPendingInvites: string[] = [];
+    snapshot.docChanges().forEach((change) => {
+      const { doc } = change;
+      const { id } = doc;
+      if (change.type === 'removed') {
+        delPendingInvites.push(id);
+      } else {
+        const data = doc.data();
+        if (data === undefined) {
+          return;
+        }
+        const { group, inviterName } = data as FirestorePendingGroupInvite;
+        const newInvite: PendingGroupInvite = { id, group, inviterName };
+        newPendingInvites.push(newInvite);
+      }
+    });
+
+    // Not gonna add this to the report for first fetch since we can let pending invites come
+    // in after page load
+    store.dispatch(patchPendingInvite(newPendingInvites, delPendingInvites));
+  });
 
   store.dispatch(patchCourses(buildCoursesMap(coursesJson as Course[])));
 
@@ -266,5 +297,6 @@ export default (onFirstFetched: () => void): (() => void) => {
     unmountSettingsListener();
     unmountBannerStatusListener();
     unmountGroupsListener();
+    unmountPendingInviteListener();
   };
 };
