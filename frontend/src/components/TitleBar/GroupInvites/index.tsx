@@ -10,23 +10,23 @@ type Props = {
 };
 
 function SingleInvitation(
-  inviter: string, groupID: string, inviteID: string,
+  invite: PendingGroupInvite,
 ): ReactElement {
   return (
-    <li key={groupID}>
+    <li key={invite.group}>
       <span className={styles.Text}>
-        {`${inviter} has invited you to join their group project.`}
+        {`${invite.inviterName} has invited you to join their group project.`}
       </span>
       <div className={styles.ButtonWrap}>
         <button
           type="button"
           onClick={() => {
-            console.log(`Tried to join group ${groupID}, a currently unsupported operation`);
+            console.log(`Tried to join group ${invite.group}, a currently unsupported operation`);
           }}
         >
           Join
         </button>
-        <button type="button" onClick={() => { rejectInvite(inviteID); }}>
+        <button type="button" onClick={() => { rejectInvite(invite.id); }}>
             Reject
         </button>
       </div>
@@ -38,11 +38,7 @@ const GroupInvites = ({ pendingInvites }: Props): ReactElement | null => {
   if (pendingInvites.isEmpty()) { return null; }
   return (
     <ul className={styles.Banner}>
-      {pendingInvites.valueSeq().map((val) => SingleInvitation(
-        val.inviterName,
-        val.group,
-        val.id,
-      ))}
+      {pendingInvites.valueSeq().map((invite) => SingleInvitation(invite))}
     </ul>
   );
 };
