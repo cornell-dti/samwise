@@ -6,6 +6,8 @@ import {
   Task,
   Tag,
   BannerMessageStatus,
+  Group,
+  PendingGroupInvite,
 } from './store-types';
 
 export type PatchTags = {
@@ -48,10 +50,24 @@ export type PatchCourses = {
   readonly courses: Map<string, Course[]>;
 };
 
+export type PatchGroups = {
+  readonly type: 'PATCH_GROUPS';
+  readonly created: Group[];
+  readonly edited: Group[];
+  readonly deleted: string[];
+}
+export type PatchPendingInvite = {
+  readonly type: 'PATCH_PENDING_GROUP_INVITE';
+  readonly created: PendingGroupInvite[];
+  readonly deleted: string[];
+};
+
 export type Action =
   | PatchTags
   | PatchTasks
   | PatchSubTasks
   | PatchSettings
   | PatchBannerMessageStatus
-  | PatchCourses;
+  | PatchCourses
+  | PatchGroups
+  | PatchPendingInvite;

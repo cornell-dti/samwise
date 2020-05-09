@@ -17,9 +17,12 @@ import {
   FirestoreCommon,
   FirestoreTask,
   FirestoreSubTask,
+  FirestoreGroup,
+  FirestorePendingGroupInvite,
 } from 'common/lib/types/firestore-types';
 import { WriteBatch } from 'common/lib/firebase/database';
 import Actions from 'common/lib/firebase/common-actions';
+import { TaskWithChildrenId } from 'common/lib/types/action-types';
 import {
   reportAddTagEvent,
   reportEditTagEvent,
@@ -37,6 +40,7 @@ import { getAppUser } from './auth-util';
 import { db, database } from './db';
 import { getNewTaskId } from './id-provider';
 import { store } from '../store/store';
+import { patchTags, patchTasks, patchSubTasks } from '../store/actions';
 import { Diff } from '../components/Util/TaskEditors/TaskEditor/task-diff-reducer';
 
 const actions = new Actions(() => getAppUser().email, database);
@@ -373,7 +377,103 @@ export const removeSubTask = (
 
 /*
  * --------------------------------------------------------------------------------
- * Section 3: Other Compound Actions
+ * Section 3: Groups Actions
+ * --------------------------------------------------------------------------------
+ */
+
+/**
+* Join a group.
+* @param groupID  Document ID of the group's Firestore document. The user calling this function must
+*                 be a member of this group.
+* @param inviteID Document ID of the invitation's Firestore document. The user calling this invitee
+*                 of this invitation.
+*/
+
+export const joinGroup = async (
+  groupId: string,
+  inviteID: string,
+): Promise<void> => {
+  const groupDoc = await database.groupsCollection().doc(groupId);
+  const { groups } = store.getState();
+  const { pendingInvites } = store.getState();
+  const invite = pendingInvites.get(inviteID);
+  // Check if user has the invitation and invitation is for this group
+  if (invite === undefined || invite.group !== groupId) {
+    return;
+  }
+  const members = groups.get(groupId)?.members;
+  const { email } = getAppUser();
+  // Check if user is already in the group
+  if (members === undefined || members.includes(email)) {
+    return;
+  }
+  groupDoc.update({ members: [...members, email] });
+};
+
+/**
+ * Create a group.
+ * @param groupID Document ID of the group's Firestore document. The user calling this function must
+ *                be a member of this group.
+ */
+export const createGroup = (
+  name: string,
+  deadline: Date,
+  classCode: string,
+): void => {
+  const { email } = getAppUser();
+  // creator is the only member at first
+  const newGroup: FirestoreGroup = { name, deadline, classCode, members: [email] };
+  database.groupsCollection().doc().set(newGroup);
+};
+
+/**
+ * Leave a group.
+ * @param groupID Document ID of the group's Firestore document. The user calling this function must
+ *                be a member of this group.
+ */
+export const leaveGroup = async (
+  groupID: string,
+): Promise<void> => {
+  const { groups } = store.getState();
+  const members = groups.get(groupID)?.members;
+  if (members === undefined) {
+    return;
+  }
+  const { email } = getAppUser();
+  const newMembers: string[] = members.filter((m: string) => m !== email);
+  const groupDoc = await database.groupsCollection().doc(groupID);
+  if (newMembers.length === 0) {
+    await groupDoc.delete();
+  } else {
+    await groupDoc.update({ members: newMembers });
+  }
+};
+
+/**
+ * Send an invitation to a user to join a group.
+ * @param groupID Document ID of the group's Firestore document. The user calling this function must
+ *                be a member of this group.
+ * @param userName The name of the user sending the invitation (in English)
+ * @param invitee The full Cornell email of the user receiving the invitation (all lowercase)
+ */
+export const sendInvite = async (
+  groupID: string, userName: string, invitee: string,
+): Promise<void> => {
+  const newInvitation: FirestorePendingGroupInvite = {
+    group: groupID,
+    inviterName: userName,
+    invitee,
+  };
+  await database.pendingInvitesCollection().add(newInvitation);
+};
+
+export const rejectInvite = async (inviteID: string): Promise<void> => {
+  await database.pendingInvitesCollection().doc(inviteID).delete();
+};
+
+/*
+ * --------------------------------------------------------------------------------
+ * Section 4: Other Compound Actions
  * --------------------------------------------------------------------------------
  */
 
@@ -399,19 +499,23 @@ export const clearFocus = (taskIds: string[], subTaskIds: string[]): void => {
  */
 export function completeTaskInFocus<T extends { readonly id: string; readonly order: number }>(
   completedTaskIdOrder: T,
-  completedList: T[],
 ): void {
-  let newCompletedList = [completedTaskIdOrder];
-  completedList.forEach((item) => {
-    if (item.order < completedTaskIdOrder.order) {
-      newCompletedList.push(item);
-    } else if (item.order >= completedTaskIdOrder.order) {
-      newCompletedList.push({ ...item, order: item.order + 1 });
-    }
-  });
-  newCompletedList = newCompletedList.sort((a, b) => a.order - b.order);
   const { tasks } = store.getState();
   const task = tasks.get(completedTaskIdOrder.id) ?? error('bad');
+  store.dispatch(
+    patchTasks(
+      [],
+      [{ ...task, complete: true, children: task.children.map((child) => child.id) }],
+      [],
+    ),
+  );
+  store.dispatch(
+    patchSubTasks(
+      [],
+      task.children.map((subTask) => ({ ...subTask, complete: true })),
+      [],
+    ),
+  );
   const batch = database.db().batch();
   if (task.inFocus) {
     batch.update(database.tasksCollection().doc(task.id), { complete: true });
@@ -432,6 +536,30 @@ export function completeTaskInFocus<T extends { readonly id: string; readonly or
  * @return a new list with updated orders.
  */
 export function applyReorder(orderFor: 'tags' | 'tasks', reorderMap: Map<string, number>): void {
+  const { tags, tasks } = store.getState();
+  if (orderFor === 'tags') {
+    const editedTags: Tag[] = [];
+    Array.from(reorderMap.entries()).forEach(([id, order]) => {
+      const existingTag = tags.get(id);
+      if (existingTag !== undefined) {
+        editedTags.push({ ...existingTag, order });
+      }
+    });
+    store.dispatch(patchTags([], editedTags, []));
+  } else {
+    const editedTasks: TaskWithChildrenId[] = [];
+    Array.from(reorderMap.entries()).forEach(([id, order]) => {
+      const existingTask = tasks.get(id);
+      if (existingTask !== undefined) {
+        editedTasks.push({
+          ...existingTask,
+          order,
+          children: existingTask.children.map((child) => child.id),
+        });
+      }
+    });
+    store.dispatch(patchTasks([], editedTasks, []));
+  }
   const collection = orderFor === 'tags'
     ? (id: string) => database.tagsCollection().doc(id)
     : (id: string) => database.tasksCollection().doc(id);

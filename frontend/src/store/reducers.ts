@@ -7,6 +7,8 @@ import {
   PatchSubTasks,
   PatchSettings,
   PatchBannerMessageStatus,
+  PatchPendingInvite,
+  PatchGroups,
 } from 'common/lib/types/action-types';
 import { State, SubTask, Task } from 'common/lib/types/store-types';
 import { error } from 'common/lib/util/general-util';
@@ -252,6 +254,23 @@ function patchCourses(state: State, { courses }: PatchCourses): State {
   return { ...state, courses };
 }
 
+function patchPendingInvite(state: State, { created, deleted }: PatchPendingInvite): State {
+  const newInvites = state.pendingInvites.withMutations((invites) => {
+    created.forEach((t) => invites.set(t.id, t));
+    deleted.forEach((id) => invites.delete(id));
+  });
+  return { ...state, pendingInvites: newInvites };
+}
+
+function patchGroups(state: State, { created, edited, deleted }: PatchGroups): State {
+  const newGroups = state.groups.withMutations((groups) => {
+    created.forEach((g) => groups.set(g.id, g));
+    edited.forEach((g) => groups.set(g.id, g));
+    deleted.forEach((id) => groups.delete(id));
+  });
+  return { ...state, groups: newGroups };
+}
+
 export default function rootReducer(state: State = initialState, action: Action): State {
   switch (action.type) {
     case 'PATCH_TAGS':
@@ -266,6 +285,10 @@ export default function rootReducer(state: State = initialState, action: Action)
       return patchBannerMessageStatus(state, action);
     case 'PATCH_COURSES':
       return patchCourses(state, action);
+    case 'PATCH_PENDING_GROUP_INVITE':
+      return patchPendingInvite(state, action);
+    case 'PATCH_GROUPS':
+      return patchGroups(state, action);
     default:
       return state;
   }
