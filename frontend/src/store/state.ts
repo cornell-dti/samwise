@@ -17,7 +17,7 @@ export const initialState: State = {
   settings: { canvasCalendar: null, completedOnboarding: true, theme: 'light' },
   bannerMessageStatus: {},
   courses: Map(),
-  pendingInvites: [],
+  pendingInvites: Map(),
 };
 
 /**
@@ -97,5 +97,5 @@ export const initialStateForTesting: State = {
       },
     ],
   }),
-  pendingInvites: [],
+  pendingInvites: Map(),
 };

@@ -51,7 +51,8 @@ export type PatchCourses = {
 
 export type PatchPendingInvite = {
   readonly type: 'PATCH_PENDING_GROUP_INVITE';
-  readonly change: PendingGroupInvite[];
+  readonly created: PendingGroupInvite[];
+  readonly deleted: string[];
 };
 
 export type Action =

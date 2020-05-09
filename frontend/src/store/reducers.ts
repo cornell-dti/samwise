@@ -253,8 +253,12 @@ function patchCourses(state: State, { courses }: PatchCourses): State {
   return { ...state, courses };
 }
 
-function patchPendingInvite(state: State, { change }: PatchPendingInvite): State {
-  return { ...state, pendingInvites: change };
+function patchPendingInvite(state: State, { created, deleted }: PatchPendingInvite): State {
+  const newInvites = state.pendingInvites.withMutations((invites) => {
+    created.forEach((t) => invites.set(t.id, t));
+    deleted.forEach((id) => invites.delete(id));
+  });
+  return { ...state, pendingInvites: newInvites };
 }
 
 export default function rootReducer(state: State = initialState, action: Action): State {
