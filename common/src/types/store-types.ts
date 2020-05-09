@@ -106,7 +106,7 @@ export type BannerMessageStatus = {
 
 export type Group = {
   readonly name: string;
-  readonly members: string[];
+  readonly members: readonly string[];
   readonly deadline: Date;
   readonly classCode?: string;
 }
@@ -141,4 +141,5 @@ export type State = {
   readonly settings: Settings;
   readonly bannerMessageStatus: BannerMessageStatus;
   readonly courses: Map<string, Course[]>;
+  readonly groups: Map<string, Group>;
 };
