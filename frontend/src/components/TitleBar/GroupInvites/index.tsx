@@ -14,7 +14,9 @@ function SingleInvitation(
 ): ReactElement {
   return (
     <li key={groupID}>
-      <span className={styles.Text}>{inviter} has invited you to join their group project.</span>
+      <span className={styles.Text}>
+        {`${inviter} has invited you to join their group project.`}
+      </span>
       <div className={styles.ButtonWrap}>
         <button
           type="button"
@@ -22,7 +24,7 @@ function SingleInvitation(
             console.log(`Tried to join group ${groupID}, a currently unsupported operation`);
           }}
         >
-            Join
+          Join
         </button>
         <button type="button" onClick={() => { rejectInvite(inviteID); }}>
             Reject
