@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { Map } from 'immutable';
 import { State, PendingGroupInvite } from 'common/lib/types/store-types';
 import styles from './index.module.css';
-import { rejectInvite } from '../../../firebase/actions';
+import { joinGroup, rejectInvite } from '../../../firebase/actions';
 
 type Props = {
   readonly pendingInvites: Map<string, PendingGroupInvite>;
@@ -19,7 +19,7 @@ function SingleInvitation(invite: PendingGroupInvite): ReactElement {
         <button
           type="button"
           onClick={() => {
-            console.log(`Tried to join group ${invite.group}, a currently unsupported operation`);
+            joinGroup(invite.group, invite.id);
           }}
         >
           Join
