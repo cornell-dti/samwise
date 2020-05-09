@@ -394,7 +394,7 @@ export const joinGroup = async (
     throw new Error('Invalid invitation');
   }
   const members = await groupDoc.get().then(
-    (snapshot) => { console.log(snapshot.data()); return (snapshot.data() as FirestoreGroup)?.members; },
+    (snapshot) => (snapshot.data() as FirestoreGroup)?.members,
   );
   const { email } = getAppUser();
   // Check if user is already in the group
