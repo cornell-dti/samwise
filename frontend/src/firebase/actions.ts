@@ -403,6 +403,8 @@ export const joinGroup = async (
   }
   await groupDoc.update({ members: [...members, email] });
 
+  // TODO remove this whole function after we get a Cloud Function working;
+  // the following line is a hack
   rejectInvite(inviteID);
 };
 
