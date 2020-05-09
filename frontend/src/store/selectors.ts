@@ -36,6 +36,7 @@ type SelectorOf<T, Props = void> = (state: State, ownProps: Props) => T;
 const getTags = ({ tags }: State): Map<string, Tag> => tags;
 const getTasks = ({ tasks }: State): Map<string, Task> => tasks;
 const getDateTaskMap = ({ dateTaskMap }: State): Map<string, Set<string>> => dateTaskMap;
+const getGroupTaskMap = ({ groupTaskMap }: State): Map<string, Set<string>> => groupTaskMap;
 const getRepeatedTaskSet = ({ repeatedTaskSet }: State): Set<string> => repeatedTaskSet;
 const getBannerMessageStatus = (
   { bannerMessageStatus }: State,
@@ -112,6 +113,39 @@ export const createGetIdOrderListByDate = (
   createGetIdOrderListByDateSelectors = createGetIdOrderListByDateSelectors.set(date, selector);
   return selector;
 };
+
+let createGetIdOrderListByGroupSelectors = Map<string, SelectorOf<IdOrderListProps>>();
+
+export const createGetIdOrderListByGroup = (
+  groupId: string,
+): SelectorOf<IdOrderListProps> => {
+  const existingSelector = createGetIdOrderListByGroupSelectors.get(groupId);
+  if (existingSelector != null) {
+    return existingSelector;
+  }
+  const selector: SelectorOf<IdOrderListProps> = createSelector(
+    [getTasks, getGroupTaskMap], (tasks, groupTaskMap) => {
+      const set = groupTaskMap.get(groupId);
+      const list: IdOrder[] = [];
+      if (set != null) {
+        set.forEach((id) => {
+          const task = tasks.get(groupId);
+          if (task != null) {
+            const { order } = task;
+            list.push({ id, order });
+          }
+        });
+      }
+      return { idOrderList: list.sort((a, b) => a.order - b.order) };
+    },
+  );
+  createGetIdOrderListByGroupSelectors = createGetIdOrderListByGroupSelectors.set(
+    groupId,
+    selector,
+  );
+  return selector;
+};
+
 
 export const getProgress: SelectorOf<TasksProgressProps> = createSelector(
   [getTasksInFocus], computeTaskProgress,

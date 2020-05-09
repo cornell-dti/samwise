@@ -4,6 +4,7 @@ import { useTime } from 'hooks/time-hook';
 import { date2FullDateString } from 'common/lib/util/datetime-util';
 import { State, Theme } from 'common/lib/types/store-types';
 import Banner from './Banner';
+import GroupInvites from './GroupInvites';
 import styles from './index.module.css';
 import SettingsButton from './Settings/SettingsButton';
 
@@ -28,6 +29,7 @@ export function TitleBar(props: { theme: Theme }): ReactElement {
   return (
     <header className={styles.Main} style={darkModeStyles}>
       <Banner />
+      <GroupInvites />
       <span title="time" className={styles.Time}>{timeString}</span>
       <span title="date" className={styles.Date}>{dateString}</span>
       <span className={styles.Links}><SettingsButton /></span>
