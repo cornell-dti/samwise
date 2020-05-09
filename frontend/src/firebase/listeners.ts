@@ -7,11 +7,12 @@ import {
   BannerMessageStatus,
   RepeatingTaskMetadata,
   Course,
+  Group,
   PendingGroupInvite,
 } from 'common/lib/types/store-types';
 import buildCoursesMap from 'common/lib/util/courses-util';
 import { ignore } from 'common/lib/util/general-util';
-import { FirestoreSubTask, FirestoreTag, FirestoreTask, FirestorePendingGroupInvite } from 'common/lib/types/firestore-types';
+import { FirestoreSubTask, FirestoreTag, FirestoreTask, FirestorePendingGroupInvite, FirestoreGroup } from 'common/lib/types/firestore-types';
 import { QuerySnapshot, DocumentSnapshot } from 'common/lib/firebase/database';
 import { database } from './db';
 import { getAppUser } from './auth-util';
@@ -22,6 +23,7 @@ import {
   patchTags,
   patchTasks,
   patchBannerMessageStatus,
+  patchGroups,
   patchPendingInvite,
 } from '../store/actions';
 import coursesJson from '../assets/json/sp20-courses-with-exams-min.json';
@@ -61,6 +63,12 @@ const listenBannerMessageChange = (
 ): UnmountCallback => database.bannerMessageStatusCollection()
   .doc(email)
   .onSnapshot(listener);
+const listenGroupChange = (
+  email: string,
+  listener: (snapshot: QuerySnapshot) => void,
+): UnmountCallback => database.groupsCollection()
+  .where('members', 'array-contains', email)
+  .onSnapshot(listener);
 const listenPendingInviteChange = (
   email: string,
   listener: (snapshot: QuerySnapshot) => void,
@@ -81,6 +89,7 @@ export default (onFirstFetched: () => void): (() => void) => {
   let firstSubTasksFetched = false;
   let firstSettingsFetched = false;
   let firstBannerStatusFetched = false;
+  let firstGroupsFetched = false;
   const reportFirstFetchedIfAllFetched = (): void => {
     if (
       firstTagsFetched
@@ -88,6 +97,7 @@ export default (onFirstFetched: () => void): (() => void) => {
       && firstSubTasksFetched
       && firstSettingsFetched
       && firstBannerStatusFetched
+      && firstGroupsFetched
     ) {
       onFirstFetched();
     }
@@ -240,6 +250,28 @@ export default (onFirstFetched: () => void): (() => void) => {
     reportFirstFetchedIfAllFetched();
   });
 
+  const unmountGroupsListener = listenGroupChange(ownerEmail, (snapshot) => {
+    const created: Group[] = [];
+    const edited: Group[] = [];
+    const deleted: string[] = [];
+    snapshot.docChanges().forEach((change) => {
+      const { doc, type } = change;
+      const { id } = doc;
+      if (type === 'removed') {
+        deleted.push(id);
+      } else {
+        const { name, members, deadline, classCode } = doc.data() as FirestoreGroup;
+        if (type === 'added') {
+          created.push({ id, name, members, deadline, classCode });
+        } else {
+          edited.push({ id, name, members, deadline, classCode });
+        }
+      }
+    });
+    store.dispatch(patchGroups(created, edited, deleted));
+    firstGroupsFetched = true;
+    reportFirstFetchedIfAllFetched();
+  });
   const unmountPendingInviteListener = listenPendingInviteChange(ownerEmail, (snapshot) => {
     const newPendingInvites: PendingGroupInvite[] = [];
     const delPendingInvites: string[] = [];
@@ -275,6 +307,7 @@ export default (onFirstFetched: () => void): (() => void) => {
     unmountSubTasksListener();
     unmountSettingsListener();
     unmountBannerStatusListener();
+    unmountGroupsListener();
     unmountPendingInviteListener();
   };
 };
