@@ -262,8 +262,13 @@ function patchPendingInvite(state: State, { created, deleted }: PatchPendingInvi
   return { ...state, pendingInvites: newInvites };
 }
 
-function patchGroups(state: State, { groups }: PatchGroups): State {
-  return { ...state, groups };
+function patchGroups(state: State, { created, edited, deleted }: PatchGroups): State {
+  const newGroups = state.groups.withMutations((groups) => {
+    created.forEach((g) => groups.set(g.id, g));
+    edited.forEach((g) => groups.set(g.id, g));
+    deleted.forEach((id) => groups.delete(id));
+  });
+  return { ...state, groups: newGroups };
 }
 
 export default function rootReducer(state: State = initialState, action: Action): State {
