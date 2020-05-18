@@ -39,7 +39,7 @@ jobs:
         with:
           keep_files: true
           publish_dir: '.'
-          github_token: ${{ secrets.DEPLOY_GH_PAGE_TOKEN }}
+          github_token: ${{ secrets.BOT_TOKEN }}
       - name: Comment on pull request
         uses: cornell-dti/dti-repo-tools@master
         env:
