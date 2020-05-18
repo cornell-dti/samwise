@@ -8,6 +8,7 @@ import {
   PatchSettings,
   PatchBannerMessageStatus,
   PatchPendingInvite,
+  PatchGroups,
 } from 'common/lib/types/action-types';
 import { State, SubTask, Task } from 'common/lib/types/store-types';
 import { error } from 'common/lib/util/general-util';
@@ -41,6 +42,7 @@ function patchTasks(state: State, { created, edited, deleted }: PatchTasks): Sta
         m.set(key, set.add(t.id));
       }
     });
+
     edited.forEach((t) => {
       if (t.metadata.type === 'MASTER_TEMPLATE') {
         return;
@@ -76,9 +78,68 @@ function patchTasks(state: State, { created, edited, deleted }: PatchTasks): Sta
       }
     });
   });
+  const newGroupTaskMap = state.groupTaskMap.withMutations((m) => {
+    created.forEach((t) => {
+      if (t.metadata.type !== 'GROUP') {
+        return;
+      }
+      const key = t.metadata.group;
+      const set = m.get(key);
+      if (set == null) {
+        m.set(key, Set.of(t.id));
+      } else {
+        m.set(key, set.add(t.id));
+      }
+    });
+
+    edited.forEach((t) => {
+      if (t.metadata.type !== 'GROUP') {
+        return;
+      }
+      const key = t.metadata.group;
+      const oldTask = state.tasks.get(t.id) ?? error();
+      if (oldTask.metadata.type === 'GROUP') {
+        const oldKey = oldTask.metadata.group;
+        if (oldKey !== key) {
+          // remove first
+          const oldBucket = m.get(oldKey) ?? error('impossible!');
+          m.set(oldKey, oldBucket.remove(t.id));
+        }
+      }
+      const set = m.get(key);
+      if (set == null) {
+        m.set(key, Set.of(t.id));
+      } else {
+        m.set(key, set.add(t.id));
+      }
+    });
+    deleted.forEach((id) => {
+      const oldTask = state.tasks.get(id);
+      if (oldTask == null) {
+        return;
+      }
+      if (oldTask.metadata.type === 'GROUP') {
+        const key = oldTask.metadata.group;
+        const set = m.get(key);
+        if (set != null) {
+          m.set(key, set.remove(id));
+        }
+      }
+    });
+  });
+
   const newRepeatedTaskSet = state.repeatedTaskSet.withMutations((s) => {
     created.forEach((t) => {
       if (t.metadata.type === 'MASTER_TEMPLATE') {
+        s.add(t.id);
+      }
+    });
+    deleted.forEach((id) => s.remove(id));
+  });
+
+  const newGroupTaskSet = state.groupTaskSet.withMutations((s) => {
+    created.forEach((t) => {
+      if (t.metadata.type === 'GROUP') {
         s.add(t.id);
       }
     });
@@ -157,7 +218,9 @@ function patchTasks(state: State, { created, edited, deleted }: PatchTasks): Sta
     missingSubTasks: updatedMissingSubTasks,
     orphanSubTasks: updatedOrphanSubTasks,
     dateTaskMap: newDateTaskMap,
+    groupTaskMap: newGroupTaskMap,
     repeatedTaskSet: newRepeatedTaskSet,
+    groupTaskSet: newGroupTaskSet,
   };
 }
 
@@ -261,6 +324,15 @@ function patchPendingInvite(state: State, { created, deleted }: PatchPendingInvi
   return { ...state, pendingInvites: newInvites };
 }
 
+function patchGroups(state: State, { created, edited, deleted }: PatchGroups): State {
+  const newGroups = state.groups.withMutations((groups) => {
+    created.forEach((g) => groups.set(g.id, g));
+    edited.forEach((g) => groups.set(g.id, g));
+    deleted.forEach((id) => groups.delete(id));
+  });
+  return { ...state, groups: newGroups };
+}
+
 export default function rootReducer(state: State = initialState, action: Action): State {
   switch (action.type) {
     case 'PATCH_TAGS':
@@ -277,6 +349,8 @@ export default function rootReducer(state: State = initialState, action: Action)
       return patchCourses(state, action);
     case 'PATCH_PENDING_GROUP_INVITE':
       return patchPendingInvite(state, action);
+    case 'PATCH_GROUPS':
+      return patchGroups(state, action);
     default:
       return state;
   }

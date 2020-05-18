@@ -17,6 +17,7 @@ import {
   FirestoreCommon,
   FirestoreTask,
   FirestoreSubTask,
+  FirestoreGroup,
   FirestorePendingGroupInvite,
 } from 'common/lib/types/firestore-types';
 import { WriteBatch } from 'common/lib/firebase/database';
@@ -47,9 +48,10 @@ const actions = new Actions(() => getAppUser().email, database);
 async function createFirestoreObject<T>(
   orderFor: 'tags' | 'tasks',
   source: T,
+  owner: string,
 ): Promise<T & FirestoreCommon> {
   const order = await actions.orderManager.allocateNewOrder(orderFor);
-  return { ...source, owner: getAppUser().email, order };
+  return { ...source, owner, order };
 }
 
 const mergeWithOwner = <T>(obj: T): T & { readonly owner: string } => ({
@@ -92,11 +94,12 @@ export const removeTag = (id: string): void => {
 
 const asyncAddTask = async (
   newTaskId: string,
+  owner: string,
   task: TaskWithoutIdOrderChildren,
   subTasks: WithoutId<SubTask>[],
   batch: WriteBatch,
 ): Promise<{ readonly firestoreTask: FirestoreTask; readonly createdSubTasks: SubTask[] }> => {
-  const baseTask: FirestoreCommon = await createFirestoreObject('tasks', {});
+  const baseTask: FirestoreCommon = await createFirestoreObject('tasks', {}, owner);
   const createdSubTasks: SubTask[] = subTasks.map((subtask) => {
     const firebaseSubTask: FirestoreSubTask = mergeWithOwner(subtask);
     const subtaskDoc = database.subTasksCollection().doc();
@@ -105,15 +108,18 @@ const asyncAddTask = async (
   });
   const subtaskIds = createdSubTasks.map((s) => s.id);
   const { metadata, ...rest } = task;
+  rest.owner = baseTask.owner;
   const firestoreTask: FirestoreTask = { ...baseTask, ...rest, ...metadata, children: subtaskIds };
   batch.set(database.tasksCollection().doc(newTaskId), firestoreTask);
   return { firestoreTask, createdSubTasks };
 };
 
-export const addTask = (task: TaskWithoutIdOrderChildren, subTasks: WithoutId<SubTask>[]): void => {
+export const addTask = (owner: string, task: TaskWithoutIdOrderChildren,
+  subTasks: WithoutId<SubTask>[]): void => {
+  const taskOwner = owner === '' ? getAppUser().email : owner;
   const newTaskId = getNewTaskId();
   const batch = db().batch();
-  asyncAddTask(newTaskId, task, subTasks, batch).then(({ createdSubTasks }) => {
+  asyncAddTask(newTaskId, taskOwner, task, subTasks, batch).then(({ createdSubTasks }) => {
     batch.commit().then(() => {
       reportAddTaskEvent();
       createdSubTasks.forEach(reportAddSubTaskEvent);
@@ -245,7 +251,9 @@ export const forkTaskWithDiff = (
   });
   const batch = database.db().batch();
   const forkId = getNewTaskId();
-  asyncAddTask(forkId, newMainTask, newSubTasks, batch).then(() => {
+  // owner = '' for non-group tasks, so owner is set to the logged-in user
+  const owner = getAppUser().email;
+  asyncAddTask(forkId, owner, newMainTask, newSubTasks, batch).then(() => {
     batch.update(database.tasksCollection().doc(id), {
       forks: firestore.FieldValue.arrayUnion({ forkId, replaceDate }),
     });
@@ -372,6 +380,79 @@ export const removeSubTask = (
  * Section 3: Groups Actions
  * --------------------------------------------------------------------------------
  */
+
+/**
+* Join a group.
+* @param groupID  Document ID of the group's Firestore document. The user calling this function must
+*                 be a member of this group.
+* @param inviteID Document ID of the invitation's Firestore document. The user calling this invitee
+*                 of this invitation.
+*/
+
+export const joinGroup = async (
+  groupId: string,
+  inviteID: string,
+): Promise<void> => {
+  const groupDoc = database.groupsCollection().doc(groupId);
+  const { pendingInvites } = store.getState();
+  const invite = pendingInvites.get(inviteID);
+  // Check if user has the invitation and invitation is for this group
+  if (invite === undefined || invite.group !== groupId) {
+    throw new Error('Invalid invitation');
+  }
+  const members = await groupDoc.get().then(
+    (snapshot) => (snapshot.data() as FirestoreGroup)?.members,
+  );
+  const { email } = getAppUser();
+  // Check if user is already in the group
+  if (members === undefined || members.includes(email)) {
+    throw new Error('Invalid group members');
+  }
+  await groupDoc.update({ members: [...members, email] });
+
+  // TODO remove this whole function after we get a Cloud Function working;
+  // the following line is a hack
+  rejectInvite(inviteID);
+};
+
+/**
+ * Create a group.
+ * @param groupID Document ID of the group's Firestore document. The user calling this function must
+ *                be a member of this group.
+ */
+export const createGroup = (
+  name: string,
+  deadline: Date,
+  classCode: string,
+): void => {
+  const { email } = getAppUser();
+  // creator is the only member at first
+  const newGroup: FirestoreGroup = { name, deadline, classCode, members: [email] };
+  database.groupsCollection().doc().set(newGroup);
+};
+
+/**
+ * Leave a group.
+ * @param groupID Document ID of the group's Firestore document. The user calling this function must
+ *                be a member of this group.
+ */
+export const leaveGroup = async (
+  groupID: string,
+): Promise<void> => {
+  const { groups } = store.getState();
+  const members = groups.get(groupID)?.members;
+  if (members === undefined) {
+    return;
+  }
+  const { email } = getAppUser();
+  const newMembers: string[] = members.filter((m: string) => m !== email);
+  const groupDoc = await database.groupsCollection().doc(groupID);
+  if (newMembers.length === 0) {
+    await groupDoc.delete();
+  } else {
+    await groupDoc.update({ members: newMembers });
+  }
+};
 
 /**
  * Send an invitation to a user to join a group.
@@ -552,6 +633,7 @@ export const importCourseExams = (): void => {
         };
         if (!Array.from(tasks.values()).some(filter)) {
           const newTask: TaskWithoutIdOrderChildren<OneTimeTaskMetadata> = {
+            owner: getAppUser().email,
             name: examName,
             tag: tag.id,
             complete: false,

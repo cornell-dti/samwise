@@ -117,7 +117,7 @@ function TaskEditor(
     if (diffIsEmpty(diff)) {
       return false;
     }
-    if (type === 'ONE_TIME') {
+    if (type === 'ONE_TIME' || type === 'GROUP') {
       editTaskWithDiff(id, 'EDITING_ONE_TIME_TASK', diff);
       return true;
     }

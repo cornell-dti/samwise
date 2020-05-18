@@ -13,11 +13,14 @@ export const initialState: State = {
   missingSubTasks: Map(),
   orphanSubTasks: Map(),
   dateTaskMap: Map(),
+  groupTaskMap: Map(),
   repeatedTaskSet: Set(),
+  groupTaskSet: Set(),
   settings: { canvasCalendar: null, completedOnboarding: true, theme: 'light' },
   bannerMessageStatus: {},
   courses: Map(),
   pendingInvites: Map(),
+  groups: Map(),
 };
 
 /**
@@ -36,6 +39,7 @@ export const initialStateForTesting: State = {
     foo: {
       id: 'foo',
       order: 1,
+      owner: 'foo',
       name: 'Foo',
       tag: 'foo',
       complete: true,
@@ -49,6 +53,7 @@ export const initialStateForTesting: State = {
     bar: {
       id: 'bar',
       order: 2,
+      owner: 'foo',
       name: 'Bar',
       tag: 'bar',
       complete: false,
@@ -62,6 +67,7 @@ export const initialStateForTesting: State = {
     baz: {
       id: 'baz',
       order: 3,
+      owner: 'foo',
       name: 'Baz',
       tag: 'baz',
       complete: true,
@@ -78,9 +84,15 @@ export const initialStateForTesting: State = {
     [new Date('2031-01-01').toDateString()]: Set(['bar', 'baz']),
     [new Date('2032-01-01').toDateString()]: Set(),
   }),
+  groupTaskMap: Map({
+    groupId1: Set(['foo']),
+    groupId2: Set(['bar', 'baz']),
+    groupId3: Set(),
+  }),
   missingSubTasks: Map(),
   orphanSubTasks: Map(),
   repeatedTaskSet: Set(),
+  groupTaskSet: Set(),
   settings: { canvasCalendar: null, completedOnboarding: true, theme: 'light' },
   bannerMessageStatus: {},
   courses: Map({
@@ -98,4 +110,5 @@ export const initialStateForTesting: State = {
     ],
   }),
   pendingInvites: Map(),
+  groups: Map(),
 };

@@ -19,7 +19,7 @@ const EditGroupNameIcon = (): ReactElement => {
 export default ({ groupName, groupMemberNames }: Props): ReactElement => (
   <div className={styles.RightView}>
     <div className={styles.GroupTaskCreator}>
-      <TaskCreator view="group" />
+      <TaskCreator view="group" group={groupName} />
     </div>
 
     <div className={styles.RightView}>
