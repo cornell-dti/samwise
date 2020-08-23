@@ -6,7 +6,7 @@ import styles from './Member.module.css';
 
 type Props = {
   memberName: string;
-}
+};
 
 export default ({ memberName }: Props): ReactElement => {
   const initials = `${memberName.split(' ')[0].charAt(0)}${memberName.split(' ')[1].charAt(0)}`;

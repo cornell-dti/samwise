@@ -12,7 +12,7 @@ const nDaysBeforeNow = (n: number): Date => {
 // Visible for testing.
 export const partition = (
   idList: readonly string[],
-  partitionSize: number,
+  partitionSize: number
 ): readonly string[][] => {
   const partitioned: string[][] = [];
   let collector: string[] = [];
@@ -31,10 +31,7 @@ export const partition = (
 
 export default async (): Promise<void> => {
   const cutoff = nDaysBeforeNow(N);
-  const snapshot = await database
-    .tasksCollection()
-    .where('date', '<', cutoff)
-    .get();
+  const snapshot = await database.tasksCollection().where('date', '<', cutoff).get();
   const idListToDelete: string[] = [];
   snapshot.docs.forEach((document) => {
     const { id } = document;

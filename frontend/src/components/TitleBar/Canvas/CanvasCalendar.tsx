@@ -6,7 +6,7 @@ import settingStyles from '../Settings/SettingsPage.module.css';
 import styles from './CanvasCalendar.module.css';
 import { setCanvasCalendar } from '../../../firebase/actions';
 
-type Props = { readonly settings: Settings }
+type Props = { readonly settings: Settings };
 
 function CanvasCalendar({ settings }: Props): ReactElement {
   const { canvasCalendar } = settings;
@@ -17,7 +17,9 @@ function CanvasCalendar({ settings }: Props): ReactElement {
     e.preventDefault();
     const iCalLink = input;
 
-    promptConfirm('This will sync all calendar items from your Canvas account. This may include assignments, as well as lectures, discussions, office hours, and more. These tasks can only be modified or deleted by your professor. If you wish to delete or edit these tasks, you will need to unlink your Canvas calendar. Would you like to continue?').then((confirmed) => {
+    promptConfirm(
+      'This will sync all calendar items from your Canvas account. This may include assignments, as well as lectures, discussions, office hours, and more. These tasks can only be modified or deleted by your professor. If you wish to delete or edit these tasks, you will need to unlink your Canvas calendar. Would you like to continue?'
+    ).then((confirmed) => {
       if (confirmed) {
         setCanvasCalendar(iCalLink);
       }
@@ -25,7 +27,9 @@ function CanvasCalendar({ settings }: Props): ReactElement {
   };
 
   const removeCanvasiCal = (): void => {
-    promptConfirm('This will stop syncing new calendar updates from Canvas, but will not delete previously imported tasks. After unlinking, you will be able to delete any tasks previously imported from Canvas. Would you like to continue?').then((confirmed) => {
+    promptConfirm(
+      'This will stop syncing new calendar updates from Canvas, but will not delete previously imported tasks. After unlinking, you will be able to delete any tasks previously imported from Canvas. Would you like to continue?'
+    ).then((confirmed) => {
       if (confirmed) {
         setCanvasCalendar(null);
       }
@@ -36,7 +40,6 @@ function CanvasCalendar({ settings }: Props): ReactElement {
     <div className={settingStyles.SettingsSection}>
       <p className={settingStyles.SettingsSectionTitle}>Canvas Calendar</p>
       <div className={settingStyles.SettingsSectionContent}>
-
         <div style={{ display: !linked ? 'block' : 'none' }}>
           <form
             className={[styles.CalendarForm, settingStyles.SettingsButton].join(' ')}
@@ -49,7 +52,10 @@ function CanvasCalendar({ settings }: Props): ReactElement {
               value={input}
               onChange={(e) => setInput(e.target.value)}
             />
-            <button type="submit" title="Link Canvas iCal"> Save </button>
+            <button type="submit" title="Link Canvas iCal">
+              {' '}
+              Save{' '}
+            </button>
           </form>
           <a
             className={styles.HelpButton}
@@ -69,11 +75,7 @@ function CanvasCalendar({ settings }: Props): ReactElement {
             <br />
             {canvasCalendar}
           </p>
-          <button
-            type="button"
-            onClick={removeCanvasiCal}
-            title="Remove Canvas iCal Link"
-          >
+          <button type="button" onClick={removeCanvasiCal} title="Remove Canvas iCal Link">
             Unlink
           </button>
         </div>

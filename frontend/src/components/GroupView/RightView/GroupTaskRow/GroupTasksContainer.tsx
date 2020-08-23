@@ -2,7 +2,11 @@ import React, { ReactElement, useState, ReactNode } from 'react';
 import { connect } from 'react-redux';
 import styles from './GroupTasksContainer.module.css';
 import GroupTask from './GroupTask';
-import { getFocusViewProps, FocusViewTaskMetaData, FocusViewProps } from '../../../../store/selectors';
+import {
+  getFocusViewProps,
+  FocusViewTaskMetaData,
+  FocusViewProps,
+} from '../../../../store/selectors';
 
 type IdOrder = { readonly id: string; readonly order: number };
 
@@ -32,9 +36,7 @@ function GroupTasksContainer({ tasks }: FocusViewProps): ReactElement {
   });
 
   return (
-    <div className={styles.GroupTasksContainer}>
-      {renderTaskList(localUncompletedList, false)}
-    </div>
+    <div className={styles.GroupTasksContainer}>{renderTaskList(localUncompletedList, false)}</div>
   );
 }
 

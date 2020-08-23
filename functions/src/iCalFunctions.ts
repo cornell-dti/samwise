@@ -29,36 +29,31 @@ export function parseICal(link: string, user: string): void {
         const taskID: string = db.tasksCollection().doc().id;
         const order: number = await om.allocateNewOrder('tasks');
         if (endDate > today) {
-          await db.tasksCollection()
+          await db
+            .tasksCollection()
             .where('icalUID', '==', uid)
             .get()
             .then(async (querySnapshot: QuerySnapshot) => {
               if (querySnapshot.size === 0) {
-                await db.tasksCollection()
-                  .doc(taskID)
-                  .set({
-                    children: [],
-                    complete: false,
-                    date: endDate,
-                    inFocus: false,
-                    name: taskName,
-                    order,
-                    owner: user,
-                    tag: 'THE_GLORIOUS_NONE_TAG',
-                    type: 'ONE_TIME',
-                    icalUID: uid,
-                  });
+                await db.tasksCollection().doc(taskID).set({
+                  children: [],
+                  complete: false,
+                  date: endDate,
+                  inFocus: false,
+                  name: taskName,
+                  order,
+                  owner: user,
+                  tag: 'THE_GLORIOUS_NONE_TAG',
+                  type: 'ONE_TIME',
+                  icalUID: uid,
+                });
               } else {
-                querySnapshot.forEach(
-                  (doc: DocumentSnapshot) => {
-                    db.tasksCollection()
-                      .doc(doc.id)
-                      .update({
-                        name: taskName,
-                        date: endDate,
-                      });
-                  },
-                );
+                querySnapshot.forEach((doc: DocumentSnapshot) => {
+                  db.tasksCollection().doc(doc.id).update({
+                    name: taskName,
+                    date: endDate,
+                  });
+                });
               }
             });
         }
@@ -67,7 +62,8 @@ export function parseICal(link: string, user: string): void {
 }
 
 export default async function getICalLink(): Promise<void> {
-  await db.settingsCollection()
+  await db
+    .settingsCollection()
     .where('canvasCalendar', '>', '')
     .get()
     .then((querySnapshot: QuerySnapshot) => {

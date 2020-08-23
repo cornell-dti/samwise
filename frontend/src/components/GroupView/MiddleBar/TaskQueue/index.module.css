@@ -11,12 +11,12 @@
   text-align: center;
   align-items: center;
   padding: 50% 0;
-  border: 2px dashed #FFBDBD;
+  border: 2px dashed #ffbdbd;
 }
 
 .EmptyTaskQueue button {
   padding: 0.5em 0;
-  background-color: #64EAC2;
+  background-color: #64eac2;
   width: 60%;
   color: white;
   font-size: 18px;

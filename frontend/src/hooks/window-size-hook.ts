@@ -69,13 +69,14 @@ export function useWindowSizeCallback(onChange: (windowSize: WindowSize) => void
 export function useMappedWindowSize<T>(f: (windowSize: WindowSize) => T): T {
   const [mappedValue, setMappedValue] = useState(() => f(getWindowSize()));
   useEffect(
-    () => bindListener((windowSize: WindowSize): void => {
-      const newMappedValue = f(windowSize);
-      if (newMappedValue !== mappedValue) {
-        setMappedValue(newMappedValue);
-      }
-    }),
-    [f, mappedValue],
+    () =>
+      bindListener((windowSize: WindowSize): void => {
+        const newMappedValue = f(windowSize);
+        if (newMappedValue !== mappedValue) {
+          setMappedValue(newMappedValue);
+        }
+      }),
+    [f, mappedValue]
   );
   return mappedValue;
 }
@@ -90,7 +91,7 @@ export function useMappedWindowSize<T>(f: (windowSize: WindowSize) => T): T {
  */
 export function useMemoizedMappedWindowSize<T>(
   f: (windowSize: WindowSize) => T,
-  render: (t: T) => ReactNode,
+  render: (t: T) => ReactNode
 ): ReactNode {
   const value = f(useWindowSize());
   return useMemo(() => render(value), [render, value]);

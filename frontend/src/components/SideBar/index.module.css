@@ -3,7 +3,7 @@
   flex-direction: column;
   min-width: 80px;
   align-items: center;
-  background-color: #EBEBEB;
+  background-color: #ebebeb;
 }
 
 .PersonalViewButton svg,
@@ -24,19 +24,19 @@
 
 .SideBar .AddGroup {
   margin-bottom: 0;
-  border: 2px dashed #BEBEBE;
+  border: 2px dashed #bebebe;
   background-color: transparent;
 }
 
 .AddGroup svg {
-  color: #BEBEBE;;
+  color: #bebebe;
 }
 
 .SideBar .PersonalViewButton {
   background-color: transparent;
   margin-top: 50px;
   margin-bottom: 200%;
-  margin-left: 0
+  margin-left: 0;
 }
 
 .AddGroup > div > p {

@@ -7,14 +7,14 @@
   width: 100%;
   padding: 10px 20px;
   text-align: left;
-  background: #E3E3E3;
+  background: #e3e3e3;
   font-size: 18px;
   font-family: 'Open Sans', sans-serif;
 }
 
 .NewTaskComponent::placeholder {
   font-weight: lighter;
-  color: #5A5A5A;
+  color: #5a5a5a;
   text-align: center;
   font-family: 'DM Sans', sans-serif;
 }
@@ -36,10 +36,12 @@
 }
 
 @media only screen and (min-width: 800px) {
-  .NewTaskWrap, .GroupNewTaskWrap {
+  .NewTaskWrap,
+  .GroupNewTaskWrap {
     width: 30vw;
   }
-  .SubmitNewTask, .GroupSubmitNewTask.GroupSubmitNewTask {
+  .SubmitNewTask,
+  .GroupSubmitNewTask.GroupSubmitNewTask {
     height: 50px;
   }
   .NewTaskModal {
@@ -48,7 +50,8 @@
 }
 
 @media only screen and (max-width: 800px) {
-  .NewTaskWrap, .GroupNewTaskWrap {
+  .NewTaskWrap,
+  .GroupNewTaskWrap {
     width: 90vw;
   }
   .SubmitNewTask .GroupSubmitNewTask {
@@ -71,7 +74,6 @@
 .NewTaskComponent:focus {
   outline: none;
 }
-
 
 .CloseNewTask {
   position: fixed;
@@ -135,13 +137,12 @@
 
 .NewTaskActive * {
   pointer-events: auto;
-  vertical-align:top;
+  vertical-align: top;
 }
 
 .OpenNewTask .NewTaskActive {
   display: block;
 }
-
 
 .SubmitNewTask {
   position: absolute;
@@ -179,7 +180,7 @@
   top: 72px;
 }
 
-.NewTaskModal input[type="text"] {
+.NewTaskModal input[type='text'] {
   border-top: none;
   border-left: none;
   border-right: none;
@@ -192,7 +193,7 @@
   top: 72px;
 }
 
-.NewTaskModal input[type="text"]::placeholder {
+.NewTaskModal input[type='text']::placeholder {
   color: gray;
 }
 
@@ -205,7 +206,6 @@
 .NewTaskModal li {
   position: relative;
 }
-
 
 .NewTaskModal li button {
   position: absolute;
@@ -237,7 +237,6 @@
   font-size: 15px;
 }
 
-
 .ResetButton {
   position: absolute;
   background: none;
@@ -245,7 +244,7 @@
   cursor: pointer;
   bottom: 10px;
   left: 23px;
-  color: #FF1A1A;
+  color: #ff1a1a;
   font-size: 14px;
   font-weight: 600;
   font-family: 'Open Sans', sans-serif;
@@ -263,7 +262,7 @@
   font-family: 'Open Sans', sans-serif;
   font-size: 12px;
   color: black;
-  background: #E3E3E3;
+  background: #e3e3e3;
   padding-left: 80px !important;
 }
 
@@ -277,11 +276,11 @@
   margin-left: 40px !important;
 }
 
-.TagPickWrap{
-  display:inline-block;
+.TagPickWrap {
+  display: inline-block;
 }
-.TagPickWrap ul{
-  transform:translateX(100px);
+.TagPickWrap ul {
+  transform: translateX(100px);
 }
 
 .EditIcon {

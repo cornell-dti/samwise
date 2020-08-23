@@ -50,7 +50,7 @@ export function sortByOrder<T extends { readonly order: number }>(list: T[]): T[
 export function computeReorderMap<T extends { readonly id: string; readonly order: number }>(
   originalList: T[],
   sourceOrder: number,
-  destinationOrder: number,
+  destinationOrder: number
 ): Map<string, number> {
   if (sourceOrder === destinationOrder) {
     return Map.of();
@@ -91,7 +91,7 @@ export function computeReorderMap<T extends { readonly id: string; readonly orde
  */
 export function getReorderedList<T extends { readonly id: string; readonly order: number }>(
   originalList: T[],
-  reorderMap: Map<string, number>,
+  reorderMap: Map<string, number>
 ): T[] {
   const sortedList = [...originalList];
   for (let i = 0; i < sortedList.length; i += 1) {
@@ -126,7 +126,7 @@ export function getReorderedList<T extends { readonly id: string; readonly order
 export function reorder<T extends { readonly id: string; readonly order: number }>(
   originalList: T[],
   sourceOrder: number,
-  destinationOrder: number,
+  destinationOrder: number
 ): T[] {
   const reorderMap = computeReorderMap(originalList, sourceOrder, destinationOrder);
   return getReorderedList(originalList, reorderMap);

@@ -4,9 +4,11 @@ import { AllComplete } from '.';
 
 const createTest = (completedTasksCount: number, allTasksCount: number): void => {
   it(`AllComplete(${completedTasksCount}, ${allTasksCount}) matches snapshot`, () => {
-    const tree = renderer.create(
-      <AllComplete completedTasksCount={completedTasksCount} allTasksCount={allTasksCount} />,
-    ).toJSON();
+    const tree = renderer
+      .create(
+        <AllComplete completedTasksCount={completedTasksCount} allTasksCount={allTasksCount} />
+      )
+      .toJSON();
     expect(tree).toMatchSnapshot();
   });
 };

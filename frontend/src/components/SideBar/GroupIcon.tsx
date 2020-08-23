@@ -6,7 +6,7 @@ type Props = {
   classCode: string;
   handleClick: (selectedView: Views, selectedGroup: string | undefined, e?: KeyboardEvent) => void;
   selected: boolean;
-}
+};
 
 export default ({ classCode, handleClick, selected }: Props): ReactElement => (
   <button

@@ -2,7 +2,9 @@
   "private": true,
   "scripts": {
     "lint": "eslint . --ext .js --ext .ts --ext .jsx --ext .tsx",
-    "lint:fix": "yarn lint --fix"
+    "lint:fix": "yarn lint --fix",
+    "format": "prettier --write '**/*.{ts,js,tsx,jsx,scss,css,html}'",
+    "format:check": "prettier --check '**/*.{ts,js,tsx,jsx,scss,css,html}'"
   },
   "workspaces": [
     "common",
@@ -24,8 +26,28 @@
     "eslint-plugin-react": "^7.20.6",
     "eslint-plugin-react-hooks": "^4.1.0",
     "firebase-tools": "^8.9.0",
+    "husky": "^4.2.5",
     "jest": "26.4.2",
+    "lint-staged": "^10.2.11",
+    "prettier": "^2.0.5",
     "ts-node": "^9.0.0",
     "typescript": "^3.9.7"
+  },
+  "prettier": {
+    "printWidth": 100,
+    "singleQuote": true,
+    "trailingComma": "es5",
+    "endOfLine": "lf",
+    "proseWrap": "always"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  },
+  "lint-staged": {
+    "**/*.{ts,js,tsx,jsx,scss,css,html}": [
+      "yarn prettier --write"
+    ]
   }
 }

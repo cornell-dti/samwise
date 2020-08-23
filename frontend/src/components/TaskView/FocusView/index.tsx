@@ -64,23 +64,23 @@ function FocusView({ tasks, progress }: FocusViewProps): ReactElement {
       return;
     }
     if (
-      (source.droppableId === focusViewCompletedDroppableId
-        && destination.droppableId === focusViewCompletedDroppableId)
-      || (source.droppableId === focusViewNotCompletedDroppableId
-        && destination.droppableId === focusViewNotCompletedDroppableId)
+      (source.droppableId === focusViewCompletedDroppableId &&
+        destination.droppableId === focusViewCompletedDroppableId) ||
+      (source.droppableId === focusViewNotCompletedDroppableId &&
+        destination.droppableId === focusViewNotCompletedDroppableId)
     ) {
       // drag and drop completely with in completed/uncompleted region
       const reorderMap = computeReorderMap(tasks, sourceOrder, destinationOrder);
       applyReorder('tasks', reorderMap);
     } else if (
-      source.droppableId === focusViewNotCompletedDroppableId
-      && destination.droppableId === focusViewCompletedDroppableId
+      source.droppableId === focusViewNotCompletedDroppableId &&
+      destination.droppableId === focusViewCompletedDroppableId
     ) {
       // drag from not completed and drop to completed.
       completeTaskInFocus(localUncompletedList[source.index]);
     } else if (
-      source.droppableId === focusViewCompletedDroppableId
-      && destination.droppableId === focusViewNotCompletedDroppableId
+      source.droppableId === focusViewCompletedDroppableId &&
+      destination.droppableId === focusViewNotCompletedDroppableId
     ) {
       // drag from completed and drop to not completed.
       // do not support this case because the intuition is currently unclear

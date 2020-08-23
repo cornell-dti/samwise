@@ -152,7 +152,7 @@ function patchTasks(state: State, { created, edited, deleted }: PatchTasks): Sta
     const unfoldSubTasks = (
       taskId: string,
       subTaskIds: readonly string[],
-      existingSubTasks: readonly SubTask[],
+      existingSubTasks: readonly SubTask[]
     ): readonly SubTask[] => {
       let newIdSet = Set(subTaskIds);
       const unfolded: SubTask[] = [];
@@ -189,11 +189,7 @@ function patchTasks(state: State, { created, edited, deleted }: PatchTasks): Sta
     edited.forEach((editedMainTask) => {
       const { children, ...mainTaskRest } = editedMainTask;
       const existingSubTasks = tasks.get(mainTaskRest.id)?.children ?? [];
-      const updatedChildren = unfoldSubTasks(
-        editedMainTask.id,
-        children,
-        existingSubTasks,
-      );
+      const updatedChildren = unfoldSubTasks(editedMainTask.id, children, existingSubTasks);
       const mainTask: Task = { ...mainTaskRest, children: updatedChildren };
       dirtyMainTaskIds = dirtyMainTaskIds.add(editedMainTask.id);
       tasks.set(editedMainTask.id, mainTask);
@@ -245,10 +241,10 @@ function patchSubTasks(state: State, { created, edited, deleted }: PatchSubTasks
       } else {
         // For those that do exist, they must have some missing subtasks.
         // We must stick them into correct places,
-        mutableTaskMap.update(
-          mainTaskId,
-          (mainTask) => ({ ...mainTask, children: [...mainTask.children, createdSubTask] }),
-        );
+        mutableTaskMap.update(mainTaskId, (mainTask) => ({
+          ...mainTask,
+          children: [...mainTask.children, createdSubTask],
+        }));
         missingSubTaskToClear.push(createdSubTask.id);
         dirtyMainTaskIds = dirtyMainTaskIds.add(mainTaskId);
       }
@@ -257,15 +253,12 @@ function patchSubTasks(state: State, { created, edited, deleted }: PatchSubTasks
     edited.forEach((editedSubTask) => {
       // By the time a subtask is edited, the subtask, along with its parent, must exist!
       const mainTaskId = existingSubTaskToTaskMap.get(editedSubTask.id) ?? error('Must exist!');
-      mutableTaskMap.update(
-        mainTaskId,
-        (mainTask) => {
-          const children = mainTask.children.map(
-            (subTask) => (subTask.id === editedSubTask.id ? editedSubTask : subTask),
-          );
-          return { ...mainTask, children };
-        },
-      );
+      mutableTaskMap.update(mainTaskId, (mainTask) => {
+        const children = mainTask.children.map((subTask) =>
+          subTask.id === editedSubTask.id ? editedSubTask : subTask
+        );
+        return { ...mainTask, children };
+      });
       dirtyMainTaskIds = dirtyMainTaskIds.add(mainTaskId);
     });
 
@@ -275,13 +268,10 @@ function patchSubTasks(state: State, { created, edited, deleted }: PatchSubTasks
         // We might delete main task and subtask together, and main task is deleted before subtask.
         return;
       }
-      mutableTaskMap.update(
-        mainTaskId,
-        (mainTask) => ({
-          ...mainTask,
-          children: mainTask.children.filter((subTask) => subTask.id !== deletedSubTaskId),
-        }),
-      );
+      mutableTaskMap.update(mainTaskId, (mainTask) => ({
+        ...mainTask,
+        children: mainTask.children.filter((subTask) => subTask.id !== deletedSubTaskId),
+      }));
       dirtyMainTaskIds = dirtyMainTaskIds.add(mainTaskId);
     });
 

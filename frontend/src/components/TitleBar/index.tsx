@@ -22,22 +22,31 @@ export function TitleBar(props: { theme: Theme }): ReactElement {
     minute: 'numeric',
   });
   const { theme } = props;
-  const darkModeStyles = theme === 'dark' ? {
-    background: 'black',
-    color: 'white',
-  } : undefined;
+  const darkModeStyles =
+    theme === 'dark'
+      ? {
+          background: 'black',
+          color: 'white',
+        }
+      : undefined;
   return (
     <header className={styles.Main} style={darkModeStyles}>
       <Banner />
       <GroupInvites />
-      <span title="time" className={styles.Time}>{timeString}</span>
-      <span title="date" className={styles.Date}>{dateString}</span>
-      <span className={styles.Links}><SettingsButton /></span>
+      <span title="time" className={styles.Time}>
+        {timeString}
+      </span>
+      <span title="date" className={styles.Date}>
+        {dateString}
+      </span>
+      <span className={styles.Links}>
+        <SettingsButton />
+      </span>
     </header>
   );
 }
 
-const Connected = connect(
-  ({ settings: { theme } }: State): {theme: Theme} => ({ theme }),
-)(TitleBar);
+const Connected = connect(({ settings: { theme } }: State): { theme: Theme } => ({ theme }))(
+  TitleBar
+);
 export default Connected;

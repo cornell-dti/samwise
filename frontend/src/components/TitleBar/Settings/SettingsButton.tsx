@@ -12,11 +12,19 @@ export default function SettingsButton(): ReactElement {
   return (
     <div style={{ display: 'inline-block' }}>
       <button type="submit" onClick={displayModal} className={styles.SettingsButton}>
-        <p style={{ transform: 'scale(2)translateY(-5px)' }} title="Settings Button"><SamwiseIcon iconName="settings" /></p>
+        <p style={{ transform: 'scale(2)translateY(-5px)' }} title="Settings Button">
+          <SamwiseIcon iconName="settings" />
+        </p>
       </button>
       {showSettings && (
         <div className={styles.SettingsModal}>
-          <button className={styles.CloseButton} type="submit" title="Close Settings" onClick={closeModal} tabIndex={-1}>
+          <button
+            className={styles.CloseButton}
+            type="submit"
+            title="Close Settings"
+            onClick={closeModal}
+            tabIndex={-1}
+          >
             <SamwiseIcon iconName="x-light-settings" />
           </button>
           <section className={styles.ContentWrap}>

@@ -18,20 +18,33 @@ type Props = OwnProps & { readonly tags: Tag[] };
  * @constructor
  */
 function TagListPicker({ onTagChange, tags }: Props): ReactElement {
-  const items = tags.slice().sort((a, b) => {
-    if (a.id === NONE_TAG_ID) { return 1; }
-    if (b.id === NONE_TAG_ID) { return -1; }
-    if (a.classId != null && b.classId == null) { return -1; }
-    if (a.classId == null && b.classId != null) { return 1; }
-    return a.name.localeCompare(b.name);
-  }).map(({ id, name, color, classId }: Tag) => (
-    <TagPickerItem key={id} id={id} title={classId !== null ? name.split(':')[0] : name} color={color} onChange={onTagChange} />
-  ));
-  return (
-    <ul className={styles.NewTaskClass}>
-      {items}
-    </ul>
-  );
+  const items = tags
+    .slice()
+    .sort((a, b) => {
+      if (a.id === NONE_TAG_ID) {
+        return 1;
+      }
+      if (b.id === NONE_TAG_ID) {
+        return -1;
+      }
+      if (a.classId != null && b.classId == null) {
+        return -1;
+      }
+      if (a.classId == null && b.classId != null) {
+        return 1;
+      }
+      return a.name.localeCompare(b.name);
+    })
+    .map(({ id, name, color, classId }: Tag) => (
+      <TagPickerItem
+        key={id}
+        id={id}
+        title={classId !== null ? name.split(':')[0] : name}
+        color={color}
+        onChange={onTagChange}
+      />
+    ));
+  return <ul className={styles.NewTaskClass}>{items}</ul>;
 }
 
 const Connected = connect((state: State) => ({ tags: getOrderedTags(state) }))(TagListPicker);

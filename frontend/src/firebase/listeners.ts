@@ -12,7 +12,13 @@ import {
 } from 'common/lib/types/store-types';
 import buildCoursesMap from 'common/lib/util/courses-util';
 import { ignore } from 'common/lib/util/general-util';
-import { FirestoreSubTask, FirestoreTag, FirestoreTask, FirestorePendingGroupInvite, FirestoreGroup } from 'common/lib/types/firestore-types';
+import {
+  FirestoreSubTask,
+  FirestoreTag,
+  FirestoreTask,
+  FirestorePendingGroupInvite,
+  FirestoreGroup,
+} from 'common/lib/types/firestore-types';
 import { QuerySnapshot, DocumentSnapshot } from 'common/lib/firebase/database';
 import { database } from './db';
 import { getAppUser } from './auth-util';
@@ -35,50 +41,38 @@ type Timestamp = firebase.firestore.Timestamp;
 type UnmountCallback = () => void;
 const listenTagsChange = (
   email: string,
-  listener: (snapshot: QuerySnapshot) => void,
-): UnmountCallback => database.tagsCollection()
-  .where('owner', '==', email)
-  .onSnapshot(listener);
+  listener: (snapshot: QuerySnapshot) => void
+): UnmountCallback => database.tagsCollection().where('owner', '==', email).onSnapshot(listener);
 const listenTasksChange = (
   email: string,
-  listener: (snapshot: QuerySnapshot) => void,
-): UnmountCallback => database.tasksCollection()
-  .where('owner', '==', email)
-  .onSnapshot(listener);
+  listener: (snapshot: QuerySnapshot) => void
+): UnmountCallback => database.tasksCollection().where('owner', '==', email).onSnapshot(listener);
 const listenSubTasksChange = (
   email: string,
-  listener: (snapshot: QuerySnapshot) => void,
-): UnmountCallback => database.subTasksCollection()
-  .where('owner', '==', email)
-  .onSnapshot(listener);
+  listener: (snapshot: QuerySnapshot) => void
+): UnmountCallback =>
+  database.subTasksCollection().where('owner', '==', email).onSnapshot(listener);
 const listenSettingsChange = (
   email: string,
-  listener: (snapshot: DocumentSnapshot) => void,
-): UnmountCallback => database.settingsCollection()
-  .doc(email)
-  .onSnapshot(listener);
+  listener: (snapshot: DocumentSnapshot) => void
+): UnmountCallback => database.settingsCollection().doc(email).onSnapshot(listener);
 const listenBannerMessageChange = (
   email: string,
-  listener: (snapshot: DocumentSnapshot) => void,
-): UnmountCallback => database.bannerMessageStatusCollection()
-  .doc(email)
-  .onSnapshot(listener);
+  listener: (snapshot: DocumentSnapshot) => void
+): UnmountCallback => database.bannerMessageStatusCollection().doc(email).onSnapshot(listener);
 const listenGroupChange = (
   email: string,
-  listener: (snapshot: QuerySnapshot) => void,
-): UnmountCallback => database.groupsCollection()
-  .where('members', 'array-contains', email)
-  .onSnapshot(listener);
+  listener: (snapshot: QuerySnapshot) => void
+): UnmountCallback =>
+  database.groupsCollection().where('members', 'array-contains', email).onSnapshot(listener);
 const listenPendingInviteChange = (
   email: string,
-  listener: (snapshot: QuerySnapshot) => void,
-): UnmountCallback => database.pendingInvitesCollection()
-  .where('invitee', '==', email)
-  .onSnapshot(listener);
+  listener: (snapshot: QuerySnapshot) => void
+): UnmountCallback =>
+  database.pendingInvitesCollection().where('invitee', '==', email).onSnapshot(listener);
 
-const transformDate = (dateOrTimestamp: Date | Timestamp): Date => (
-  dateOrTimestamp instanceof Date ? dateOrTimestamp : dateOrTimestamp.toDate()
-);
+const transformDate = (dateOrTimestamp: Date | Timestamp): Date =>
+  dateOrTimestamp instanceof Date ? dateOrTimestamp : dateOrTimestamp.toDate();
 
 /**
  * Initialize listeners bind to firestore.
@@ -92,12 +86,12 @@ export default (onFirstFetched: () => void): (() => void) => {
   let firstGroupsFetched = false;
   const reportFirstFetchedIfAllFetched = (): void => {
     if (
-      firstTagsFetched
-      && firstTasksFetched
-      && firstSubTasksFetched
-      && firstSettingsFetched
-      && firstBannerStatusFetched
-      && firstGroupsFetched
+      firstTagsFetched &&
+      firstTasksFetched &&
+      firstSubTasksFetched &&
+      firstSettingsFetched &&
+      firstBannerStatusFetched &&
+      firstGroupsFetched
     ) {
       onFirstFetched();
     }
@@ -153,11 +147,21 @@ export default (onFirstFetched: () => void): (() => void) => {
         if (rest.type === 'ONE_TIME') {
           const { type, date: timestamp, icalUID, ...oneTimeTaskRest } = rest;
           const date = transformDate(timestamp);
-          task = { ...taskCommon, owner, ...oneTimeTaskRest, metadata: { type: 'ONE_TIME', date, icalUID } };
+          task = {
+            ...taskCommon,
+            owner,
+            ...oneTimeTaskRest,
+            metadata: { type: 'ONE_TIME', date, icalUID },
+          };
         } else if (rest.type === 'GROUP') {
           const { type, date: timestamp, group, ...groupTaskRest } = rest;
           const date = transformDate(timestamp);
-          task = { ...taskCommon, owner, ...groupTaskRest, metadata: { type: 'GROUP', date, group } };
+          task = {
+            ...taskCommon,
+            owner,
+            ...groupTaskRest,
+            metadata: { type: 'GROUP', date, group },
+          };
         } else {
           const { type, forks: firestoreForks, date: firestoreRepeats, ...otherTaskProps } = rest;
           const forks = firestoreForks.map((firestoreFork) => ({
@@ -226,10 +230,7 @@ export default (onFirstFetched: () => void): (() => void) => {
         completedOnboarding: false,
         theme: 'light',
       };
-      database.settingsCollection()
-        .doc(ownerEmail)
-        .set(newSettings)
-        .then(ignore);
+      database.settingsCollection().doc(ownerEmail).set(newSettings).then(ignore);
       return;
     }
     const data = snapshot.data();

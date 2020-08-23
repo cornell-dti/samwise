@@ -26,7 +26,10 @@ it('reducer works: new task creation -> subtask creation', () => {
     deleted: [],
   });
   expect(intermediateState1.tasks.get('1')?.children).toEqual([]);
-  expect(Array.from(intermediateState1.missingSubTasks.entries())).toEqual([['s1', '1'], ['s2', '1']]);
+  expect(Array.from(intermediateState1.missingSubTasks.entries())).toEqual([
+    ['s1', '1'],
+    ['s2', '1'],
+  ]);
   expect(Array.from(intermediateState1.orphanSubTasks.entries())).toEqual([]);
 
   const intermediateState2 = rootReducer(intermediateState1, {

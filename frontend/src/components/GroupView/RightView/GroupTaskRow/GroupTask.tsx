@@ -35,13 +35,11 @@ function GroupTask({ id, order, original, filtered }: Props): ReactElement {
   );
 }
 
-const Connected = connect(
-  ({ tasks }: State, { id, filterCompleted }: OwnProps) => {
-    const original = tasks.get(id) ?? error();
-    const filtered = filterCompleted
-      ? getFilteredCompletedInFocusTask(original)
-      : getFilteredNotCompletedInFocusTask(original);
-    return { original, filtered };
-  },
-)(GroupTask);
+const Connected = connect(({ tasks }: State, { id, filterCompleted }: OwnProps) => {
+  const original = tasks.get(id) ?? error();
+  const filtered = filterCompleted
+    ? getFilteredCompletedInFocusTask(original)
+    : getFilteredNotCompletedInFocusTask(original);
+  return { original, filtered };
+})(GroupTask);
 export default Connected;

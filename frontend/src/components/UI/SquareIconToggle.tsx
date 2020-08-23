@@ -24,11 +24,13 @@ export default function SquareIconToggle({ active, iconNames, onToggle }: Props)
     ? `${styles.SquareButton} ${styles.SquareButtonIconButton}`
     : `${styles.SquareButton} ${styles.SquareButtonIconButton} ${styles.active}`;
   return (
-    <button className={className} title="Hide/unhide completed tasks" type="button" onClick={onToggle}>
-      <Icon
-        className={styles.SquareButtonText}
-        icon={active ? activeIconName : inactiveIconName}
-      />
+    <button
+      className={className}
+      title="Hide/unhide completed tasks"
+      type="button"
+      onClick={onToggle}
+    >
+      <Icon className={styles.SquareButtonText} icon={active ? activeIconName : inactiveIconName} />
     </button>
   );
 }

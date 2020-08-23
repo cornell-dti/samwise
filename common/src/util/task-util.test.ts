@@ -97,7 +97,7 @@ it('getFiltered(Completed|NotCompleted)InFocusTask are complementary', () => {
     // ensure disjoint union property
     const subTaskIdSet = allSubTasks.reduce(
       (acc: Set<string>, s: SubTask) => acc.add(s.id),
-      Set.of(),
+      Set.of()
     );
     if (subTaskIdSet.size !== allSubTasks.length) {
       const { complete, inFocus, children } = task;
@@ -128,7 +128,7 @@ it('computeTaskProgress works', () => {
       completedTasksCount: acc.completedTasksCount + curr.completedTasksCount,
       allTasksCount: acc.allTasksCount + curr.allTasksCount,
     }),
-    { completedTasksCount: 0, allTasksCount: 0 },
+    { completedTasksCount: 0, allTasksCount: 0 }
   );
   exampleTasks.forEach((t, i) => {
     expect(computeTaskProgress([t])).toEqual(expectedResults[i]);

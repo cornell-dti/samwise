@@ -11,7 +11,7 @@ import { Views } from './types';
 type Props = {
   groups: string[];
   changeView: (selectedView: Views, selectedGroup: string | undefined) => void;
-}
+};
 
 export default ({ groups, changeView }: Props): ReactElement => {
   const [showDropdown, setShowDropdown] = useState(false);
@@ -33,16 +33,14 @@ export default ({ groups, changeView }: Props): ReactElement => {
       </button>
       <div className={styles.GroupIcons}>
         <p>My Groups</p>
-        {
-          groups.map((g) => (
-            <GroupIcon
-              classCode={g}
-              handleClick={() => handleIconClick('group', g)}
-              selected={selected === g}
-              key={g}
-            />
-          ))
-        }
+        {groups.map((g) => (
+          <GroupIcon
+            classCode={g}
+            handleClick={() => handleIconClick('group', g)}
+            selected={selected === g}
+            key={g}
+          />
+        ))}
         <span>
           <button
             type="button"

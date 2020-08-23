@@ -16,11 +16,18 @@ initializeGA();
 registerGateKeeper();
 
 const appRenderer = (): ReactElement => (
-  <ReactReduxProvider><App /></ReactReduxProvider>
+  <ReactReduxProvider>
+    <App />
+  </ReactReduxProvider>
 );
 
 const root = document.getElementById('root') ?? error('The root is null. This is bad!');
-ReactDOM.render(<ErrorBoundary><LoginBarrier appRenderer={appRenderer} /></ErrorBoundary>, root);
+ReactDOM.render(
+  <ErrorBoundary>
+    <LoginBarrier appRenderer={appRenderer} />
+  </ErrorBoundary>,
+  root
+);
 initModal();
 
 // If you want your app to work offline and load faster, you can change

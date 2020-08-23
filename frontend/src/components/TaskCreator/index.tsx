@@ -1,7 +1,13 @@
 import React, { CSSProperties, KeyboardEvent, SyntheticEvent, ReactElement } from 'react';
 import { connect } from 'react-redux';
 import { randomId } from 'common/lib/util/general-util';
-import { Task, RepeatingDate, SubTask, State as StoreState, Theme } from 'common/lib/types/store-types';
+import {
+  Task,
+  RepeatingDate,
+  SubTask,
+  State as StoreState,
+  Theme,
+} from 'common/lib/types/store-types';
 import { NONE_TAG_ID } from 'common/lib/util/tag-util';
 import { isToday } from 'common/lib/util/datetime-util';
 import TagPicker from './TagPicker';
@@ -27,7 +33,7 @@ type State = SimpleTask & {
 
 type OwnProps = {
   readonly theme: Theme;
-}
+};
 
 type Props = OwnProps & {
   readonly view: string;
@@ -91,18 +97,20 @@ export class TaskCreator extends React.PureComponent<Props, State> {
   /**
    * Open the tag picker and close the date picker.
    */
-  private openTagPicker = (): void => this.setState(({ tagPickerOpened }: State) => ({
-    tagPickerOpened: !tagPickerOpened,
-    datePickerOpened: false,
-  }));
+  private openTagPicker = (): void =>
+    this.setState(({ tagPickerOpened }: State) => ({
+      tagPickerOpened: !tagPickerOpened,
+      datePickerOpened: false,
+    }));
 
   /**
    * Open the date picker and close the tag picker.
    */
-  private openDatePicker = (): void => this.setState(({ datePickerOpened }: State) => ({
-    datePickerOpened: !datePickerOpened,
-    tagPickerOpened: false,
-  }));
+  private openDatePicker = (): void =>
+    this.setState(({ datePickerOpened }: State) => ({
+      datePickerOpened: !datePickerOpened,
+      tagPickerOpened: false,
+    }));
 
   /*
    * --------------------------------------------------------------------------------
@@ -128,9 +136,7 @@ export class TaskCreator extends React.PureComponent<Props, State> {
     if (e != null) {
       e.preventDefault();
     }
-    const {
-      owner, name, tag, date, complete, inFocus, subTasks,
-    } = this.state;
+    const { owner, name, tag, date, complete, inFocus, subTasks } = this.state;
     if (name === '') {
       return;
     }
@@ -184,28 +190,24 @@ export class TaskCreator extends React.PureComponent<Props, State> {
    *
    * @param {string} member the new owner.
    */
-  private editOwner = (e: SyntheticEvent<HTMLInputElement>): void => this.setState(
-    { owner: e.currentTarget.value },
-  );
+  private editOwner = (e: SyntheticEvent<HTMLInputElement>): void =>
+    this.setState({ owner: e.currentTarget.value });
 
   /**
    * Edit the task name.
    *
    * @param e the event that contains the new task name.
    */
-  private editTaskName = (e: SyntheticEvent<HTMLInputElement>): void => this.setState(
-    { name: e.currentTarget.value },
-    this.focusTaskName,
-  );
+  private editTaskName = (e: SyntheticEvent<HTMLInputElement>): void =>
+    this.setState({ name: e.currentTarget.value }, this.focusTaskName);
 
   /**
    * Edit the tag.
    *
    * @param {string} tag the new tag.
    */
-  private editTag = (tag: string): void => this.setState(
-    { tag, tagPickerOpened: false }, this.focusTaskName,
-  );
+  private editTag = (tag: string): void =>
+    this.setState({ tag, tagPickerOpened: false }, this.focusTaskName);
 
   /**
    * Edit the date.
@@ -216,10 +218,7 @@ export class TaskCreator extends React.PureComponent<Props, State> {
     const { datePicked } = this.state;
     if (datePicked && date === null) {
       // User cancelled, but date was already picked
-      this.setState(
-        { datePickerOpened: false },
-        this.focusTaskName,
-      );
+      this.setState({ datePickerOpened: false }, this.focusTaskName);
     } else if (date instanceof Date || date === null) {
       // Selecting a date, or user cancelled while date was not picked
       this.setState(
@@ -228,7 +227,7 @@ export class TaskCreator extends React.PureComponent<Props, State> {
           datePickerOpened: false,
           datePicked: Boolean(date),
         },
-        this.focusTaskName,
+        this.focusTaskName
       );
     } else {
       // Repeating task
@@ -238,7 +237,7 @@ export class TaskCreator extends React.PureComponent<Props, State> {
           datePickerOpened: false,
           datePicked: true,
         },
-        this.focusTaskName,
+        this.focusTaskName
       );
     }
   };
@@ -249,9 +248,9 @@ export class TaskCreator extends React.PureComponent<Props, State> {
   private clearDate = (): void => {
     this.setState(
       { date: new Date(), datePickerOpened: false, datePicked: false },
-      this.focusTaskName,
+      this.focusTaskName
     );
-  }
+  };
 
   /**
    * Toggle the pin status.
@@ -270,13 +269,16 @@ export class TaskCreator extends React.PureComponent<Props, State> {
       return;
     }
     this.setState(({ subTasks }: State) => ({
-      subTasks: [...subTasks, {
-        id: String(subTasks.length),
-        order: 0, // some random order, will be ignored anyway
-        name: newSubTaskName,
-        complete: false,
-        inFocus: false,
-      }],
+      subTasks: [
+        ...subTasks,
+        {
+          id: String(subTasks.length),
+          order: 0, // some random order, will be ignored anyway
+          name: newSubTaskName,
+          complete: false,
+          inFocus: false,
+        },
+      ],
       needToSwitchFocus: true,
     }));
   };
@@ -291,7 +293,7 @@ export class TaskCreator extends React.PureComponent<Props, State> {
     if (e.key === 'Tab') {
       this.closeNewTask();
     }
-  }
+  };
 
   /**
    * Edit a subtask.
@@ -347,12 +349,20 @@ export class TaskCreator extends React.PureComponent<Props, State> {
       return null;
     }
     const {
-      tag, date, inFocus, subTasks,
-      tagPickerOpened, datePickerOpened, datePicked, needToSwitchFocus,
+      tag,
+      date,
+      inFocus,
+      subTasks,
+      tagPickerOpened,
+      datePickerOpened,
+      datePicked,
+      needToSwitchFocus,
     } = this.state;
     const { theme } = this.props;
     const existingSubTaskEditor = (
-      { id, name }: SubTask, i: number, arr: SubTask[],
+      { id, name }: SubTask,
+      i: number,
+      arr: SubTask[]
     ): ReactElement => {
       const refHandler = (inputElementRef: HTMLInputElement | null): void => {
         if (i === arr.length - 1 && needToSwitchFocus && inputElementRef != null) {
@@ -387,11 +397,12 @@ export class TaskCreator extends React.PureComponent<Props, State> {
             </p>
           </div>
           <div className={styles.DescText}>
-            <p>
-              Add optional subtasks to break down your tasks into more manageable pieces.
-            </p>
+            <p>Add optional subtasks to break down your tasks into more manageable pieces.</p>
           </div>
-          <div className={styles.NewTaskModal} style={theme === 'dark' ? this.darkModeStyle : undefined}>
+          <div
+            className={styles.NewTaskModal}
+            style={theme === 'dark' ? this.darkModeStyle : undefined}
+          >
             <div className={styles.SubtasksContainer}>
               <ul className={styles.SubtasksList}>{subTasks.map(existingSubTaskEditor)}</ul>
               <SamwiseIcon iconName="edit" className={styles.EditIcon} tabIndex={-1} />
@@ -411,23 +422,21 @@ export class TaskCreator extends React.PureComponent<Props, State> {
           </div>
           {date instanceof Date && <FocusPicker pinned={inFocus} onPinChange={this.togglePin} />}
           <div className={styles.TagPickWrap}>
-            {
-              view === 'personal' ? (
-                <TagPicker
-                  tag={tag}
-                  opened={tagPickerOpened}
-                  onTagChange={this.editTag}
-                  onPickerOpened={this.openTagPicker}
-                />
-              ) : (
-                <GroupMemberPicker
-                  tag={tag}
-                  opened={tagPickerOpened}
-                  onTagChange={this.editTag}
-                  onPickerOpened={this.openTagPicker}
-                />
-              )
-            }
+            {view === 'personal' ? (
+              <TagPicker
+                tag={tag}
+                opened={tagPickerOpened}
+                onTagChange={this.editTag}
+                onPickerOpened={this.openTagPicker}
+              />
+            ) : (
+              <GroupMemberPicker
+                tag={tag}
+                opened={tagPickerOpened}
+                onTagChange={this.editTag}
+                onPickerOpened={this.openTagPicker}
+              />
+            )}
           </div>
           <DatePicker
             date={date}
@@ -474,7 +483,9 @@ export class TaskCreator extends React.PureComponent<Props, State> {
             onChange={this.editTaskName}
             className={styles.NewTaskComponent}
             placeholder={opened ? '' : PLACEHOLDER_TEXT}
-            ref={(e) => { this.addTask = e; }}
+            ref={(e) => {
+              this.addTask = e;
+            }}
             style={theme === 'dark' ? this.darkModeStyle : undefined}
           />
           {this.renderOtherInfoEditor()}
@@ -484,7 +495,7 @@ export class TaskCreator extends React.PureComponent<Props, State> {
   }
 }
 
-const Connected = connect(
-  ({ settings: { theme } }: StoreState): OwnProps => ({ theme }),
-)(TaskCreator);
+const Connected = connect(({ settings: { theme } }: StoreState): OwnProps => ({ theme }))(
+  TaskCreator
+);
 export default Connected;

@@ -45,7 +45,7 @@
 
 .CheckBoxCheckMark:after {
   position: absolute;
-  content: "";
+  content: '';
 }
 
 .CheckBox .CheckBoxCheckMark:after {

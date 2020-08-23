@@ -6,10 +6,10 @@ import styles from './Tooltip.module.css';
 type Props = {
   readonly text: string;
   readonly iconName: IconName;
-}
+};
 type State = {
   hover: boolean;
-}
+};
 
 export default class Tooltip extends Component<Props, State> {
   public readonly state: State = { hover: false };
@@ -34,7 +34,9 @@ export default class Tooltip extends Component<Props, State> {
           <SamwiseIcon iconName={iconName} />
         </div>
         <div className={styles.tooltip}>
-          <div className={styles.tooltiptext} style={tooltipStyle}>{text}</div>
+          <div className={styles.tooltiptext} style={tooltipStyle}>
+            {text}
+          </div>
         </div>
       </div>
     );

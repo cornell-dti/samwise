@@ -53,22 +53,21 @@ export type FirestoreGroupTask = FirestoreCommonTask & {
   readonly type: 'GROUP';
   readonly date: Date | firestore.Timestamp;
   readonly group: string;
-}
+};
 
 export type FirestoreGroup = {
   readonly name: string;
   readonly members: string[];
   readonly deadline: Date;
   readonly classCode?: string;
-}
+};
 
 export type FirestorePendingGroupInvite = {
   readonly group: string;
   readonly inviterName: string; // Name of person who sent invite
   readonly invitee: string; // Email of person receiving invitation
-}
+};
 
 // all these tasks stay in 'samwise-tasks'
 // FirestoreLegacyTask should eventually be converted to FirestoreOneTimeTask.
-export type FirestoreTask =
-  FirestoreMasterTask | FirestoreOneTimeTask | FirestoreGroupTask;
+export type FirestoreTask = FirestoreMasterTask | FirestoreOneTimeTask | FirestoreGroupTask;

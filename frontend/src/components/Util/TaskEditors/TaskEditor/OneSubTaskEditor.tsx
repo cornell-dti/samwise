@@ -1,10 +1,4 @@
-import React, {
-  KeyboardEvent,
-  ReactElement,
-  SyntheticEvent,
-  useEffect,
-  useRef,
-} from 'react';
+import React, { KeyboardEvent, ReactElement, SyntheticEvent, useEffect, useRef } from 'react';
 import { PartialSubTask, SubTask } from 'common/lib/types/store-types';
 import { getDateWithDateString } from 'common/lib/util/datetime-util';
 import CheckBox from '../../../UI/CheckBox';
@@ -27,22 +21,19 @@ type Props = {
 const className = [styles.TaskEditorFlexibleContainer, styles.TaskEditorSubtaskCheckBox].join(' ');
 const deleteIconClass = [styles.TaskEditorIcon, styles.TaskEditorIconLeftPad].join(' ');
 
-function OneSubTaskEditor(
-  {
-    subTask,
-    mainTaskComplete,
-    mainTaskId,
-    taskDate,
-    dateAppeared,
-    needToBeFocused,
-    editThisSubTask,
-    removeSubTask,
-    onPressEnter,
-  }: Props,
-): ReactElement {
-  const replaceDateForFork = taskDate == null
-    ? getDateWithDateString(taskDate, dateAppeared)
-    : null;
+function OneSubTaskEditor({
+  subTask,
+  mainTaskComplete,
+  mainTaskId,
+  taskDate,
+  dateAppeared,
+  needToBeFocused,
+  editThisSubTask,
+  removeSubTask,
+  onPressEnter,
+}: Props): ReactElement {
+  const replaceDateForFork =
+    taskDate == null ? getDateWithDateString(taskDate, dateAppeared) : null;
   const onCompleteChange = (): void => {
     const complete = !subTask.complete;
     editThisSubTask(subTask.id, { complete });
@@ -93,8 +84,11 @@ function OneSubTaskEditor(
       <input
         type="text"
         data-lpignore="true"
-        className={subTask.complete || mainTaskComplete
-          ? styles.TaskEditorStrikethrough : styles.TaskEditorFlexibleInput}
+        className={
+          subTask.complete || mainTaskComplete
+            ? styles.TaskEditorStrikethrough
+            : styles.TaskEditorFlexibleInput
+        }
         placeholder="Your Subtask"
         value={subTask.name}
         ref={editorRef}
@@ -116,8 +110,9 @@ function OneSubTaskEditor(
 
 const Memoized = React.memo(
   OneSubTaskEditor,
-  (prev, curr) => prev.subTask === curr.subTask
-    && prev.needToBeFocused === curr.needToBeFocused
-    && prev.mainTaskComplete === curr.mainTaskComplete,
+  (prev, curr) =>
+    prev.subTask === curr.subTask &&
+    prev.needToBeFocused === curr.needToBeFocused &&
+    prev.mainTaskComplete === curr.mainTaskComplete
 );
 export default Memoized;

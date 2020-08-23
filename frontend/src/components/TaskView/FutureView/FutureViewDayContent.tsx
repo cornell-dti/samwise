@@ -21,29 +21,25 @@ type Props = {
 /**
  * The main content of future view day.
  */
-function FutureViewDayContent(
-  {
-    date,
-    inNDaysView,
-    taskEditorPosition,
-    calendarPosition,
-    doesShowCompletedTasks,
-    inMainList,
-    onHeightChange,
-    theme,
-  }: Props,
-): ReactElement {
+function FutureViewDayContent({
+  date,
+  inNDaysView,
+  taskEditorPosition,
+  calendarPosition,
+  doesShowCompletedTasks,
+  inMainList,
+  onHeightChange,
+  theme,
+}: Props): ReactElement {
   const containerStyle = (() => {
     const style = theme === 'dark' ? { color: 'white', opacity: 0.8 } : {};
-    return (inNDaysView && inMainList) ? { paddingTop: '1em', ...style } : style;
+    return inNDaysView && inMainList ? { paddingTop: '1em', ...style } : style;
   })();
   const isToday: boolean = getTodayAtZeroAM().toDateString() === date.text;
   return (
     <>
       <div className={styles.DateInfo} style={containerStyle}>
-        <div className={styles.DateInfoDay}>
-          {isToday ? 'TODAY' : day2String(date.day)}
-        </div>
+        <div className={styles.DateInfoDay}>{isToday ? 'TODAY' : day2String(date.day)}</div>
         <div className={styles.DateNum}>{date.date}</div>
       </div>
       <Droppable droppableId={date.text}>

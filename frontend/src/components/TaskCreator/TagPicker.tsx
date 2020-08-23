@@ -19,7 +19,9 @@ type Props = OwnProps & {
 
 function TagPicker({ tag, opened, onTagChange, onPickerOpened, getTag }: Props): ReactElement {
   // Controllers
-  const clickPicker = (): void => { onPickerOpened(); };
+  const clickPicker = (): void => {
+    onPickerOpened();
+  };
   const pressedPicker = (e: KeyboardEvent): void => {
     if (e.key === 'Enter' || e.key === ' ') onPickerOpened();
   };
@@ -28,22 +30,20 @@ function TagPicker({ tag, opened, onTagChange, onPickerOpened, getTag }: Props):
   const displayedNode = (isDefault: boolean): ReactElement => {
     const { name, color, classId } = getTag(tag);
     const style = isDefault ? { background: NONE_TAG.color } : { background: color };
-    const internal = isDefault
-      ? (
-        <>
-          <span className={styles.TagDisplay}>
-            <SamwiseIcon iconName="tag-light" className={styles.CenterIcon} />
-            {' '}
-            add class&nbsp;&nbsp;
-          </span>
-        </>
-      )
-      : (
-        <>
-          <span className={styles.TagDisplay}>{classId != null ? name.split(':')[0] : name}</span>
-          <button type="button" className={styles.ResetButton} onClick={reset}>&times;</button>
-        </>
-      );
+    const internal = isDefault ? (
+      <>
+        <span className={styles.TagDisplay}>
+          <SamwiseIcon iconName="tag-light" className={styles.CenterIcon} /> add class&nbsp;&nbsp;
+        </span>
+      </>
+    ) : (
+      <>
+        <span className={styles.TagDisplay}>{classId != null ? name.split(':')[0] : name}</span>
+        <button type="button" className={styles.ResetButton} onClick={reset}>
+          &times;
+        </button>
+      </>
+    );
     return (
       <span
         role="presentation"
@@ -68,7 +68,7 @@ function TagPicker({ tag, opened, onTagChange, onPickerOpened, getTag }: Props):
   );
 }
 
-const Connected = connect(
-  ({ tags }: State) => ({ getTag: (id: string) => tags.get(id) ?? NONE_TAG }),
-)(TagPicker);
+const Connected = connect(({ tags }: State) => ({
+  getTag: (id: string) => tags.get(id) ?? NONE_TAG,
+}))(TagPicker);
 export default Connected;
