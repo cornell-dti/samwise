@@ -26,7 +26,7 @@ import {
   patchGroups,
   patchPendingInvite,
 } from '../store/actions';
-import coursesJson from '../assets/json/sp20-courses-with-exams-min.json';
+import coursesJson from '../assets/json/fa20-courses-with-exams-min.json';
 import { store } from '../store/store';
 
 // Some type alias

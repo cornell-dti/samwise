@@ -13,7 +13,7 @@ function createCourseInfoJson() {
     ./gradlew build -x test
     cd ../
     java -jar cornell-api-libs/build/libs/cornell-api-libs-0.5-all.jar \
-        print-all-courses-in SP20 | yarn --silent simplify >./sp20-courses.json
+        print-all-courses-in FA20 | yarn --silent simplify >./fa20-courses.json
     rm -rf cornell-api-libs
 }
 
@@ -24,7 +24,7 @@ function mergeJson() {
 
 # Outcome: Cleanup all the intermediate json files.
 function cleanup() {
-    rm sp20-courses.json
+    rm fa20-courses.json
 }
 
 # Comment out those parts you don't need
