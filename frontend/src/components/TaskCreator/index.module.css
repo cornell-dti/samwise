@@ -42,9 +42,6 @@
   .SubmitNewTask, .GroupSubmitNewTask.GroupSubmitNewTask {
     height: 50px;
   }
-  .TaskCreator {
-    height: 5vh;
-  }
   .NewTaskModal {
     width: calc(30vw + 60px);
   }
@@ -65,6 +62,11 @@
   }
 }
 
+@media only screen and (min-width: 800px) and (min-height: 650px) {
+  .TaskCreator {
+    height: 5vh;
+  }
+}
 
 .NewTaskComponent:focus {
   outline: none;
