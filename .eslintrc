@@ -16,6 +16,7 @@
     "react/prop-types": "off",
     "react/jsx-props-no-spreading": "warn",
     "react/jsx-filename-extension": ["error", { "extensions": [".jsx", ".tsx"] }],
+    "react/require-default-props": "off",
     "react/state-in-constructor": "off",
     "import/extensions": "off",
     "indent": "off",

@@ -12,5 +12,3 @@ export default function OverdueAlert({ target }: Props): ReactElement {
     : styles.OverdueAlertInFutureView;
   return <div className={className}>!</div>;
 }
-
-OverdueAlert.defaultProps = { absolutePosition: null };

@@ -20,7 +20,7 @@ function SingleInvitation(invite: PendingGroupInvite): ReactElement {
           Join
         </button>
         <button type="button" onClick={() => { rejectInvite(invite.id); }}>
-            Reject
+          Reject
         </button>
       </div>
     </li>

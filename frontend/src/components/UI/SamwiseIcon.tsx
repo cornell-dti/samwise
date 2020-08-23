@@ -39,7 +39,7 @@ import { ReactComponent as Edit } from '../../assets/svgs/edit.svg';
 
 type Props = SVGProps<SVGSVGElement> & {
   readonly iconName: IconName;
-  readonly title: string | undefined;
+  readonly title?: string;
 };
 
 const SamwiseIcon = ({ iconName, title, ...otherProps }: Props): ReactElement => {
@@ -205,7 +205,5 @@ const SamwiseIcon = ({ iconName, title, ...otherProps }: Props): ReactElement =>
     </span>
   );
 };
-
-SamwiseIcon.defaultProps = { title: undefined };
 
 export default SamwiseIcon;
