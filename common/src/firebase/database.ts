@@ -112,6 +112,7 @@ export interface CommonFirestore {
 type Collection = CollectionReference;
 
 export default class Database {
+  // eslint-disable-next-line no-useless-constructor
   constructor(public readonly db: () => CommonFirestore) { }
 
   orderManagerCollection = (): Collection => this.db().collection('samwise-order-manager');

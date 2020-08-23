@@ -18,7 +18,6 @@ import { editMainTask, applyReorder } from '../../../firebase/actions';
 import { store } from '../../../store/store';
 import { patchTasks } from '../../../store/actions';
 
-
 export type FutureViewConfig = {
   readonly displayOption: FutureViewDisplayOption;
   readonly offset: number;

@@ -11,7 +11,7 @@ type Props = {
  * One item in the class picker.
  */
 export default function TagPickerItem({ id, color, title, onChange }: Props): ReactElement {
-  const style: {} = { '--custom-color': color };
+  const style: Record<string, string> = { '--custom-color': color };
   return (
     <li style={style}>
       <input onClick={() => onChange(id)} type="checkbox" />

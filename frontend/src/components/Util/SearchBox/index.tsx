@@ -1,10 +1,10 @@
 import React, { ReactElement, ChangeEvent, useState } from 'react';
-import Fuse, { FuseOptions } from 'fuse.js';
+import Fuse from 'fuse.js';
 import { FuseItem } from './types';
 import DropdownItem from './DropdownItem';
 
 type Props<T extends FuseItem> = {
-  readonly fuse: Fuse<T, FuseOptions<T>>;
+  readonly fuse: Fuse<T>;
   readonly placeholder?: string;
   readonly inputClassname: string;
   readonly dropdownItemClassName: string;
@@ -23,7 +23,7 @@ export default <T extends FuseItem>(
   const onSearchChange = (event: ChangeEvent<HTMLInputElement>): void => {
     const input = event.currentTarget.value;
     if (input.length > 2) {
-      const newResults = fuse.search(input) as T[];
+      const newResults = fuse.search(input).map((result) => result.item) as T[];
       setState({ searchInput: input, searchResults: newResults });
     } else {
       setState({ searchInput: input, searchResults: [] });

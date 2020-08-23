@@ -7,7 +7,7 @@ it('Test isBitSet', () => {
   expect(isBitSet(2, 8, 10)).toEqual(true);
   expect(isBitSet(2, 1, 2)).toEqual(false);
   expect(isBitSet(3, 1, 2)).toEqual(true);
-  const everyDaySet = Math.pow(2, DAYS_IN_WEEK) - 1;
+  const everyDaySet = 2 ** DAYS_IN_WEEK - 1;
   for (let i = 0; i < DAYS_IN_WEEK; i += 1) {
     expect(isBitSet(everyDaySet, i, DAYS_IN_WEEK)).toEqual(true);
   }
@@ -32,7 +32,7 @@ it('Test unsetBit', () => {
 });
 
 it('Test isDayOfWeekSet', () => {
-  const everyDaySet = Math.pow(2, DAYS_IN_WEEK) - 1;
+  const everyDaySet = 2 ** DAYS_IN_WEEK - 1;
   for (let i = 0; i < DAYS_IN_WEEK; i += 1) {
     expect(isDayOfWeekSet(everyDaySet, i)).toEqual(true);
   }

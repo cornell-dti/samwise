@@ -4,6 +4,15 @@ type Event = {
   readonly name: string;
 };
 
+function turnToLastMinute(date: Date): Date {
+  return new Date(date.getTime() + ((23 * 60 + 59) * 60 * 1000));
+}
+
+function convertDate(date: string): string {
+  return `${date.slice(0, 4)}-${date.slice(4, 6)}-${date.slice(6, 11)}:`
+    + `${date.slice(11, 13)}:${date.slice(13, date.length)}`;
+}
+
 export default function icalParse(text: string): readonly Event[] {
   const lines = text.split('\n');
   let eventState = false;
@@ -50,13 +59,4 @@ export default function icalParse(text: string): readonly Event[] {
     }
   });
   return events;
-}
-
-function turnToLastMinute(date: Date): Date {
-  return new Date(date.getTime() + ((23 * 60 + 59) * 60 * 1000));
-}
-
-function convertDate(date: string): string {
-  return `${date.slice(0, 4)}-${date.slice(4, 6)}-${date.slice(6, 11)}:`
-    + `${date.slice(11, 13)}:${date.slice(13, date.length)}`;
 }

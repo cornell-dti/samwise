@@ -37,7 +37,6 @@ export function TitleBar(props: { theme: Theme }): ReactElement {
   );
 }
 
-
 const Connected = connect(
   ({ settings: { theme } }: State): {theme: Theme} => ({ theme }),
 )(TitleBar);

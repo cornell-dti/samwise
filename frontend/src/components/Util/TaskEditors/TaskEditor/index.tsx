@@ -21,7 +21,6 @@ import OneSubTaskEditor from './OneSubTaskEditor';
 import { CalendarPosition } from '../editors-types';
 import useTaskDiffReducer, { diffIsEmpty, Diff } from './task-diff-reducer';
 
-
 type DefaultProps = {
   readonly displayGrabber?: boolean;
   readonly className?: string;
@@ -105,14 +104,6 @@ function TaskEditor(
   const { canvasCalendar } = settings;
   const canvasLinked = canvasCalendar != null;
 
-  const onMouseLeave = (): void => {
-    if (type === 'ONE_TIME') {
-      onSave();
-    }
-    if (onBlur) {
-      onBlur();
-    }
-  };
   const onSave = useCallback((): boolean => {
     if (diffIsEmpty(diff)) {
       return false;
@@ -161,6 +152,16 @@ function TaskEditor(
     }
     return true;
   }, [date, diff, id, reset, taskAppearedDate, type]);
+
+  const onMouseLeave = (): void => {
+    if (type === 'ONE_TIME') {
+      onSave();
+    }
+    if (onBlur) {
+      onBlur();
+    }
+  };
+
   const onSaveButtonClicked = (): void => {
     if (onSave() && type !== 'ONE_TIME') {
       onSaveClicked();
@@ -280,7 +281,6 @@ function TaskEditor(
             onFirstType={handleCreatedNewSubtask}
             onPressEnter={onSaveButtonClicked}
             needToBeFocused={subTaskToFocus === 'new-subtask'}
-            type={type}
           />
         </div>
       </div>

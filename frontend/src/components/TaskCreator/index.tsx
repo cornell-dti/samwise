@@ -484,7 +484,6 @@ export class TaskCreator extends React.PureComponent<Props, State> {
   }
 }
 
-
 const Connected = connect(
   ({ settings: { theme } }: StoreState): OwnProps => ({ theme }),
 )(TaskCreator);

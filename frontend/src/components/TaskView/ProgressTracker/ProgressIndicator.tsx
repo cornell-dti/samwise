@@ -13,7 +13,7 @@ type ProgressBarProps = TasksProgressProps & {
 function ProgressBar(
   { completedTasksCount, allTasksCount, inMobileView, children }: ProgressBarProps,
 ): ReactElement {
-  const percentage = allTasksCount === 0 ? 0 : completedTasksCount / allTasksCount * 100;
+  const percentage = allTasksCount === 0 ? 0 : (completedTasksCount / allTasksCount) * 100;
   const containerStyle: CSSProperties = inMobileView
     ? { height: '2em', marginLeft: '1em' }
     : { width: '2em', marginBottom: '1em' };

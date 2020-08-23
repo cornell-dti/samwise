@@ -245,7 +245,6 @@ export default function DatePicker(props: Props): ReactElement {
     });
   };
 
-
   /**
    * The list of li elements for all the repeat end options
    */

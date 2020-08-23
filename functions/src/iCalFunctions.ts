@@ -7,23 +7,6 @@ import db from './db';
 
 process.env.TZ = 'America/New_York';
 
-export default async function getICalLink(): Promise<void> {
-  await db.settingsCollection()
-    .where('canvasCalendar', '>', '')
-    .get()
-    .then((querySnapshot: QuerySnapshot) => {
-      querySnapshot.forEach((doc: DocumentSnapshot) => {
-        const link: string = doc.data()?.canvasCalendar;
-        try {
-          parseICal(link, doc.id);
-        } catch {
-          // eslint-disable-next-line no-console
-          console.error(`Failed to use this calendar link: ${link}`);
-        }
-      });
-    });
-}
-
 export function parseICal(link: string, user: string): void {
   fetch(link)
     .then((response: Response) => response.text())
@@ -80,5 +63,22 @@ export function parseICal(link: string, user: string): void {
             });
         }
       }
+    });
+}
+
+export default async function getICalLink(): Promise<void> {
+  await db.settingsCollection()
+    .where('canvasCalendar', '>', '')
+    .get()
+    .then((querySnapshot: QuerySnapshot) => {
+      querySnapshot.forEach((doc: DocumentSnapshot) => {
+        const link: string = doc.data()?.canvasCalendar;
+        try {
+          parseICal(link, doc.id);
+        } catch {
+          // eslint-disable-next-line no-console
+          console.error(`Failed to use this calendar link: ${link}`);
+        }
+      });
     });
 }

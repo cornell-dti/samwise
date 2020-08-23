@@ -6,6 +6,7 @@ import { createFinalJson, createPrelimJson } from './fetch-exam';
 class Course {
   public readonly examTimes: Map<number, ExamType> = new Map();
 
+  // eslint-disable-next-line no-useless-constructor
   constructor(
     private readonly courseId: number,
     private readonly subject: string,

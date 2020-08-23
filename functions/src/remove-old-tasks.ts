@@ -46,6 +46,7 @@ export default async (): Promise<void> => {
   });
   // Used to overcome to the 500 item per batch limit.
   const partitioned = partition(idListToDelete, 500);
+  // eslint-disable-next-line no-restricted-syntax
   for (const idList of partitioned) {
     const batch = database.db().batch();
     idList.forEach((id) => batch.delete(database.tasksCollection().doc(id)));
