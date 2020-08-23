@@ -33,8 +33,7 @@ exports[`TagPicker(THE_GLORIOUS_NONE_TAG, false) matches snapshot 1`] = `
           tag-light.svg
         </svg>
       </span>
-       
-      add class  
+       add class  
     </span>
   </span>
 </div>
@@ -73,8 +72,7 @@ exports[`TagPicker(THE_GLORIOUS_NONE_TAG, true) matches snapshot 1`] = `
           tag-light.svg
         </svg>
       </span>
-       
-      add class  
+       add class  
     </span>
   </span>
   <div

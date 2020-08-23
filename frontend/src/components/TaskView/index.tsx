@@ -10,7 +10,11 @@ import ProgressTracker from './ProgressTracker';
 import styles from './index.module.css';
 import SamwiseIcon from '../UI/SamwiseIcon';
 
-const FocusPanel = (): ReactElement => <div className={styles.FocusPanel}><FocusView /></div>;
+const FocusPanel = (): ReactElement => (
+  <div className={styles.FocusPanel}>
+    <FocusView />
+  </div>
+);
 
 const classNames = (...names: readonly string[]): string => names.join(' ');
 
@@ -26,7 +30,9 @@ export function TaskView({ className, theme }: Props): ReactElement {
   const switchView = (): void => setDoesShowFutureViewInSmallScreen((prev) => !prev);
 
   const FuturePanel = ({ children }: { readonly children?: ReactNode }): ReactElement => {
-    const onChange = (c: FutureViewConfig): void => { setConfig(c); };
+    const onChange = (c: FutureViewConfig): void => {
+      setConfig(c);
+    };
     return (
       <div className={classNames(className, styles.FuturePanel)}>
         <div className={styles.FuturePanelContainer}>
@@ -44,26 +50,25 @@ export function TaskView({ className, theme }: Props): ReactElement {
   const darkModeStyle = theme === 'dark' ? { background: 'black', color: 'white' } : undefined;
 
   if (screenIsSmall) {
-    const taskView = doesShowFutureViewInSmallScreen
-      ? (
-        <div className={classNames(className, styles.TaskView)} style={darkModeStyle}>
-          <FuturePanel />
-          <SamwiseIcon
-            iconName="pin-dark-filled"
-            className={styles.ViewSwitcher}
-            onClick={switchView}
-          />
-        </div>
-      ) : (
-        <div className={classNames(className, styles.TaskView)} style={darkModeStyle}>
-          <FocusPanel />
-          <SamwiseIcon
-            iconName="calendar-dark"
-            className={styles.ViewSwitcher}
-            onClick={switchView}
-          />
-        </div>
-      );
+    const taskView = doesShowFutureViewInSmallScreen ? (
+      <div className={classNames(className, styles.TaskView)} style={darkModeStyle}>
+        <FuturePanel />
+        <SamwiseIcon
+          iconName="pin-dark-filled"
+          className={styles.ViewSwitcher}
+          onClick={switchView}
+        />
+      </div>
+    ) : (
+      <div className={classNames(className, styles.TaskView)} style={darkModeStyle}>
+        <FocusPanel />
+        <SamwiseIcon
+          iconName="calendar-dark"
+          className={styles.ViewSwitcher}
+          onClick={switchView}
+        />
+      </div>
+    );
     return (
       <>
         {taskView}
@@ -101,17 +106,16 @@ export function TaskView({ className, theme }: Props): ReactElement {
         <ProgressTracker inMobileView={false} />
         {showFocusView && <FocusPanel />}
         {showFocusView && <div style={{ width: '2em' }} />}
-        <FuturePanel>
-          {!inNDaysView && <WideScreenFocusViewToggle />}
-        </FuturePanel>
+        <FuturePanel>{!inNDaysView && <WideScreenFocusViewToggle />}</FuturePanel>
       </div>
     </>
   );
 }
 
 const Connected = connect(
-  ({ settings: { theme } }: State, ownProps: { className: string }): Props => (
-    { className: ownProps.className, theme }
-  ),
+  ({ settings: { theme } }: State, ownProps: { className: string }): Props => ({
+    className: ownProps.className,
+    theme,
+  })
 )(TaskView);
 export default Connected;

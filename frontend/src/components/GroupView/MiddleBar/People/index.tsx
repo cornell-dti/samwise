@@ -20,7 +20,7 @@ const promptAddMember = (): void => {
     'Send them an invitation through email',
     'NetID:',
     'Send',
-    'text',
+    'text'
   ).then((input) => {
     console.log(input);
   });
@@ -28,15 +28,15 @@ const promptAddMember = (): void => {
 
 type Props = {
   groupMemberNames: string[];
-}
+};
 
 export default ({ groupMemberNames }: Props): ReactElement => (
   <div className={styles.People}>
     <h2>People</h2>
     <div className={styles.MemberList}>
-      {
-        groupMemberNames.map((m) => <Member memberName={m} key={m} />)
-      }
+      {groupMemberNames.map((m) => (
+        <Member memberName={m} key={m} />
+      ))}
     </div>
     <button
       type="button"
@@ -49,11 +49,7 @@ export default ({ groupMemberNames }: Props): ReactElement => (
       </div>
       Add member
     </button>
-    <button
-      type="button"
-      className={styles.LeaveGroup}
-      onClick={confirmLeaveGroup}
-    >
+    <button type="button" className={styles.LeaveGroup} onClick={confirmLeaveGroup}>
       <SamwiseIcon iconName="exit" />
       <p>Leave Group</p>
     </button>

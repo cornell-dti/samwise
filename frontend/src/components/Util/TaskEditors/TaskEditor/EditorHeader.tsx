@@ -26,20 +26,30 @@ type EditorDisplayStatus = {
 
 const calendarIconClass = [styles.TaskEditorIconButton, styles.TaskEditorIcon].join(' ');
 
-export default function EditorHeader(
-  { tag, date, onChange, getTag, displayGrabber, calendarPosition, icalUID }: Props,
-): ReactElement {
+export default function EditorHeader({
+  tag,
+  date,
+  onChange,
+  getTag,
+  displayGrabber,
+  calendarPosition,
+  icalUID,
+}: Props): ReactElement {
   const [editorDisplayStatus, setEditorDisplayStatus] = React.useState<EditorDisplayStatus>({
     doesShowTagEditor: false,
     doesShowDateEditor: false,
   });
 
-  const toggleTagEditor = (): void => setEditorDisplayStatus((prev) => ({
-    doesShowTagEditor: !prev.doesShowTagEditor, doesShowDateEditor: false,
-  }));
-  const toggleDateEditor = (): void => setEditorDisplayStatus((prev) => ({
-    doesShowTagEditor: false, doesShowDateEditor: !prev.doesShowDateEditor,
-  }));
+  const toggleTagEditor = (): void =>
+    setEditorDisplayStatus((prev) => ({
+      doesShowTagEditor: !prev.doesShowTagEditor,
+      doesShowDateEditor: false,
+    }));
+  const toggleDateEditor = (): void =>
+    setEditorDisplayStatus((prev) => ({
+      doesShowTagEditor: false,
+      doesShowDateEditor: !prev.doesShowDateEditor,
+    }));
   const editTaskTag = (t: string): void => {
     onChange({ tag: t });
     setEditorDisplayStatus((prev) => ({ ...prev, doesShowTagEditor: false }));
@@ -64,16 +74,17 @@ export default function EditorHeader(
       <TagListPicker onTagChange={editTaskTag} />
     </div>
   );
-  const dateDisplay = date instanceof Date
-    ? <span>{`${date.getMonth() + 1}/${date.getDate()}`}</span>
-    : <span>Repeated</span>;
+  const dateDisplay =
+    date instanceof Date ? (
+      <span>{`${date.getMonth() + 1}/${date.getDate()}`}</span>
+    ) : (
+      <span>Repeated</span>
+    );
   const dateEditor = doesShowDateEditor && date instanceof Date && (
     <Calendar
       value={date}
       className={
-        calendarPosition === 'top'
-          ? styles.TaskEditorCalendarTop
-          : styles.TaskEditorCalendarBottom
+        calendarPosition === 'top' ? styles.TaskEditorCalendarTop : styles.TaskEditorCalendarBottom
       }
       minDate={new Date()}
       onChange={editTaskDate}
@@ -90,15 +101,14 @@ export default function EditorHeader(
       {tagDisplay}
       {tagEditor}
       <span className={styles.TaskEditorFlexiblePadding} />
-      {isCanvasTask ? null
-        : (
-          <SamwiseIcon
-            iconName="calendar-light"
-            className={calendarIconClass}
-            style={{ marginRight: '8px' }}
-            onClick={toggleDateEditor}
-          />
-        )}
+      {isCanvasTask ? null : (
+        <SamwiseIcon
+          iconName="calendar-light"
+          className={calendarIconClass}
+          style={{ marginRight: '8px' }}
+          onClick={toggleDateEditor}
+        />
+      )}
       {dateDisplay}
       {dateEditor}
     </div>

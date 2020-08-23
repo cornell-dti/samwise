@@ -12,7 +12,8 @@ async function getAssignments(token: string, data: readonly Course[]): Promise<v
   await data.forEach((course) => {
     fetch(getUri(`courses/${course.id.toString()}/assignments`, token), {
       method: 'GET',
-    }).then((response: Response) => response.text())
+    })
+      .then((response: Response) => response.text())
       .then((json) => {
         assignmentList.push(parse(json));
       });

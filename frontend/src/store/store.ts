@@ -15,9 +15,8 @@ export const store: GlobalStore = createStore(rootReducer);
  * The redux store for testing.
  */
 export const storeForTesting: GlobalStore = createStore(
-  (initialState: State = initialStateForTesting, action: Action): State => rootReducer(
-    initialState, action,
-  ),
+  (initialState: State = initialStateForTesting, action: Action): State =>
+    rootReducer(initialState, action)
 );
 
 /**

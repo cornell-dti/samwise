@@ -135,6 +135,6 @@ for (let i = 0; i < 5; i += 2) {
     const item = { id: String(order), order };
     list.push(item);
   }
-  it(`reorder works on discontinuous order lists of ${list.length - 1 - i}`,
-    () => testReorderUniqueOrders(list));
+  it(`reorder works on discontinuous order lists of ${list.length - 1 - i}`, () =>
+    testReorderUniqueOrders(list));
 }

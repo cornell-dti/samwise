@@ -7,9 +7,11 @@ type Props = {
   readonly needToBeFocused: boolean;
 };
 
-export default function NewSubTaskEditor(
-  { onFirstType, onPressEnter, needToBeFocused }: Props,
-): ReactElement {
+export default function NewSubTaskEditor({
+  onFirstType,
+  onPressEnter,
+  needToBeFocused,
+}: Props): ReactElement {
   const onInputChange = (event: SyntheticEvent<HTMLInputElement>): void => {
     event.stopPropagation();
     const newSubTaskValue: string = event.currentTarget.value.trim();

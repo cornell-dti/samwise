@@ -48,7 +48,7 @@ const actions = new Actions(() => getAppUser().email, database);
 async function createFirestoreObject<T>(
   orderFor: 'tags' | 'tasks',
   source: T,
-  owner: string,
+  owner: string
 ): Promise<T & FirestoreCommon> {
   const order = await actions.orderManager.allocateNewOrder(orderFor);
   return { ...source, owner, order };
@@ -61,7 +61,10 @@ const mergeWithOwner = <T>(obj: T): T & { readonly owner: string } => ({
 
 type WithoutIdOrder<Props> = Pick<Props, Exclude<keyof Props, 'id' | 'order'>>;
 type WithoutId<Props> = Pick<Props, Exclude<keyof Props, 'id'>>;
-export type TaskWithoutIdOrderChildren<M = TaskMetadata> = Omit<Task<M>, 'id' | 'order' | 'children'>;
+export type TaskWithoutIdOrderChildren<M = TaskMetadata> = Omit<
+  Task<M>,
+  'id' | 'order' | 'children'
+>;
 
 /*
  * --------------------------------------------------------------------------------
@@ -97,7 +100,7 @@ const asyncAddTask = async (
   owner: string,
   task: TaskWithoutIdOrderChildren,
   subTasks: WithoutId<SubTask>[],
-  batch: WriteBatch,
+  batch: WriteBatch
 ): Promise<{ readonly firestoreTask: FirestoreTask; readonly createdSubTasks: SubTask[] }> => {
   const baseTask: FirestoreCommon = await createFirestoreObject('tasks', {}, owner);
   const createdSubTasks: SubTask[] = subTasks.map((subtask) => {
@@ -114,8 +117,11 @@ const asyncAddTask = async (
   return { firestoreTask, createdSubTasks };
 };
 
-export const addTask = (owner: string, task: TaskWithoutIdOrderChildren,
-  subTasks: WithoutId<SubTask>[]): void => {
+export const addTask = (
+  owner: string,
+  task: TaskWithoutIdOrderChildren,
+  subTasks: WithoutId<SubTask>[]
+): void => {
   const taskOwner = owner === '' ? getAppUser().email : owner;
   const newTaskId = getNewTaskId();
   const batch = db().batch();
@@ -141,8 +147,8 @@ export const removeAllForks = (taskId: string): void => {
         // delete forked subtasks
         const forkedTask = tasks.get(id);
         if (forkedTask != null) {
-          forkedTask.children.forEach(
-            (subTask) => batch.delete(database.subTasksCollection().doc(subTask.id)),
+          forkedTask.children.forEach((subTask) =>
+            batch.delete(database.subTasksCollection().doc(subTask.id))
           );
         }
       }
@@ -155,7 +161,7 @@ export const removeAllForks = (taskId: string): void => {
 
 export const handleTaskDiffs = (
   taskId: string,
-  { subTaskCreations, subTaskEdits, subTaskDeletions, mainTaskEdits }: Diff,
+  { subTaskCreations, subTaskEdits, subTaskDeletions, mainTaskEdits }: Diff
 ): void => {
   const batch = database.db().batch();
   if (subTaskCreations.size !== 0) {
@@ -184,11 +190,11 @@ export const handleTaskDiffs = (
   batch.update(database.tasksCollection().doc(taskId), mainTaskEdits);
   batch.commit().then(() => {
     if (
-      mainTaskEdits.name
-      || mainTaskEdits.complete
-      || mainTaskEdits.date
-      || mainTaskEdits.inFocus
-      || mainTaskEdits.tag
+      mainTaskEdits.name ||
+      mainTaskEdits.complete ||
+      mainTaskEdits.date ||
+      mainTaskEdits.inFocus ||
+      mainTaskEdits.tag
     ) {
       reportEditTaskEvent();
     }
@@ -209,7 +215,7 @@ type EditType = 'EDITING_MASTER_TEMPLATE' | 'EDITING_ONE_TIME_TASK';
 export const editTaskWithDiff = (
   taskId: string,
   editType: EditType,
-  { mainTaskEdits, subTaskCreations, subTaskEdits, subTaskDeletions }: Diff,
+  { mainTaskEdits, subTaskCreations, subTaskEdits, subTaskDeletions }: Diff
 ): void => {
   (async () => {
     if (editType === 'EDITING_MASTER_TEMPLATE') {
@@ -222,7 +228,7 @@ export const editTaskWithDiff = (
 export const forkTaskWithDiff = (
   taskId: string,
   replaceDate: Date,
-  { mainTaskEdits, subTaskCreations, subTaskEdits, subTaskDeletions }: Diff,
+  { mainTaskEdits, subTaskCreations, subTaskEdits, subTaskDeletions }: Diff
 ): void => {
   const { tasks } = store.getState();
   const repeatingTaskMaster = tasks.get(taskId) as Task<RepeatingTaskMetadata>;
@@ -299,8 +305,8 @@ export const removeTask = (task: Task): void => {
       batch.delete(database.tasksCollection().doc(forkId));
       const forkedTask = tasks.get(forkId);
       if (forkedTask != null) {
-        forkedTask.children.forEach(
-          (subTask) => batch.delete(database.subTasksCollection().doc(subTask.id)),
+        forkedTask.children.forEach((subTask) =>
+          batch.delete(database.subTasksCollection().doc(subTask.id))
         );
       }
     });
@@ -311,7 +317,8 @@ export const removeTask = (task: Task): void => {
 };
 
 export const removeOneRepeatedTask = (taskId: string, replaceDate: Date): void => {
-  database.tasksCollection()
+  database
+    .tasksCollection()
     .doc(taskId)
     .update({
       forks: firestore.FieldValue.arrayUnion({ forkId: null, replaceDate }),
@@ -321,7 +328,7 @@ export const removeOneRepeatedTask = (taskId: string, replaceDate: Date): void =
 export const editMainTask = (
   taskId: string,
   replaceDate: Date | null,
-  mainTaskEdits: PartialMainTask,
+  mainTaskEdits: PartialMainTask
 ): void => {
   const diff: Diff = {
     mainTaskEdits,
@@ -342,7 +349,7 @@ export const editSubTask = (
   taskId: string,
   subtaskId: string,
   replaceDate: Date | null,
-  partialSubTask: PartialSubTask,
+  partialSubTask: PartialSubTask
 ): void => {
   const diff: Diff = {
     mainTaskEdits: replaceDate == null ? {} : { date: replaceDate },
@@ -360,7 +367,7 @@ export const editSubTask = (
 export const removeSubTask = (
   taskId: string,
   subtaskId: string,
-  replaceDate: Date | null,
+  replaceDate: Date | null
 ): void => {
   const diff: Diff = {
     mainTaskEdits: replaceDate == null ? {} : { date: replaceDate },
@@ -386,16 +393,13 @@ export const rejectInvite = async (inviteID: string): Promise<void> => {
 };
 
 /**
-* Join a group.
-* @param groupID  Document ID of the group's Firestore document. The user calling this function must
-*                 be a member of this group.
-* @param inviteID Document ID of the invitation's Firestore document. The user calling this invitee
-*                 of this invitation.
-*/
-export const joinGroup = async (
-  groupId: string,
-  inviteID: string,
-): Promise<void> => {
+ * Join a group.
+ * @param groupID  Document ID of the group's Firestore document. The user calling this function must
+ *                 be a member of this group.
+ * @param inviteID Document ID of the invitation's Firestore document. The user calling this invitee
+ *                 of this invitation.
+ */
+export const joinGroup = async (groupId: string, inviteID: string): Promise<void> => {
   const groupDoc = database.groupsCollection().doc(groupId);
   const { pendingInvites } = store.getState();
   const invite = pendingInvites.get(inviteID);
@@ -403,9 +407,9 @@ export const joinGroup = async (
   if (invite === undefined || invite.group !== groupId) {
     throw new Error('Invalid invitation');
   }
-  const members = await groupDoc.get().then(
-    (snapshot) => (snapshot.data() as FirestoreGroup)?.members,
-  );
+  const members = await groupDoc
+    .get()
+    .then((snapshot) => (snapshot.data() as FirestoreGroup)?.members);
   const { email } = getAppUser();
   // Check if user is already in the group
   if (members === undefined || members.includes(email)) {
@@ -423,11 +427,7 @@ export const joinGroup = async (
  * @param groupID Document ID of the group's Firestore document. The user calling this function must
  *                be a member of this group.
  */
-export const createGroup = (
-  name: string,
-  deadline: Date,
-  classCode: string,
-): void => {
+export const createGroup = (name: string, deadline: Date, classCode: string): void => {
   const { email } = getAppUser();
   // creator is the only member at first
   const newGroup: FirestoreGroup = { name, deadline, classCode, members: [email] };
@@ -439,9 +439,7 @@ export const createGroup = (
  * @param groupID Document ID of the group's Firestore document. The user calling this function must
  *                be a member of this group.
  */
-export const leaveGroup = async (
-  groupID: string,
-): Promise<void> => {
+export const leaveGroup = async (groupID: string): Promise<void> => {
   const { groups } = store.getState();
   const members = groups.get(groupID)?.members;
   if (members === undefined) {
@@ -465,7 +463,9 @@ export const leaveGroup = async (
  * @param invitee The full Cornell email of the user receiving the invitation (all lowercase)
  */
 export const sendInvite = async (
-  groupID: string, userName: string, invitee: string,
+  groupID: string,
+  userName: string,
+  invitee: string
 ): Promise<void> => {
   const newInvitation: FirestorePendingGroupInvite = {
     group: groupID,
@@ -487,8 +487,8 @@ export const sendInvite = async (
 export const clearFocus = (taskIds: string[], subTaskIds: string[]): void => {
   const batch = database.db().batch();
   taskIds.forEach((id) => batch.update(database.tasksCollection().doc(id), { inFocus: false }));
-  subTaskIds.forEach(
-    (id) => batch.update(database.subTasksCollection().doc(id), { inFocus: false }),
+  subTaskIds.forEach((id) =>
+    batch.update(database.subTasksCollection().doc(id), { inFocus: false })
   );
   batch.commit().then(ignore);
 };
@@ -502,7 +502,7 @@ export const clearFocus = (taskIds: string[], subTaskIds: string[]): void => {
  * @returns an object of updated completed and not completed task list.
  */
 export function completeTaskInFocus<T extends { readonly id: string; readonly order: number }>(
-  completedTaskIdOrder: T,
+  completedTaskIdOrder: T
 ): void {
   const { tasks } = store.getState();
   const task = tasks.get(completedTaskIdOrder.id) ?? error('bad');
@@ -510,15 +510,15 @@ export function completeTaskInFocus<T extends { readonly id: string; readonly or
     patchTasks(
       [],
       [{ ...task, complete: true, children: task.children.map((child) => child.id) }],
-      [],
-    ),
+      []
+    )
   );
   store.dispatch(
     patchSubTasks(
       [],
       task.children.map((subTask) => ({ ...subTask, complete: true })),
-      [],
-    ),
+      []
+    )
   );
   const batch = database.db().batch();
   if (task.inFocus) {
@@ -564,9 +564,10 @@ export function applyReorder(orderFor: 'tags' | 'tasks', reorderMap: Map<string,
     });
     store.dispatch(patchTasks([], editedTasks, []));
   }
-  const collection = orderFor === 'tags'
-    ? (id: string) => database.tagsCollection().doc(id)
-    : (id: string) => database.tasksCollection().doc(id);
+  const collection =
+    orderFor === 'tags'
+      ? (id: string) => database.tagsCollection().doc(id)
+      : (id: string) => database.tasksCollection().doc(id);
   const batch = database.db().batch();
   reorderMap.forEach((order, id) => {
     batch.update(collection(id), { order });
@@ -575,17 +576,15 @@ export function applyReorder(orderFor: 'tags' | 'tasks', reorderMap: Map<string,
 }
 
 export const completeOnboarding = (completedOnboarding: boolean): void => {
-  database.settingsCollection()
+  database
+    .settingsCollection()
     .doc(getAppUser().email)
     .update({ completedOnboarding })
     .then(ignore);
 };
 
 export const setCanvasCalendar = (canvasCalendar: string | null | undefined): void => {
-  database.settingsCollection()
-    .doc(getAppUser().email)
-    .update({ canvasCalendar })
-    .then(ignore);
+  database.settingsCollection().doc(getAppUser().email).update({ canvasCalendar }).then(ignore);
 };
 
 export const readBannerMessage = (bannerMessageId: BannerMessageIds, isRead: boolean): void => {
@@ -620,14 +619,17 @@ export const importCourseExams = (): void => {
           if (task.metadata.type === 'MASTER_TEMPLATE') {
             return false;
           }
-          const { name, metadata: { date } } = task;
+          const {
+            name,
+            metadata: { date },
+          } = task;
           return (
-            task.tag === tag.id
-            && name === examName
-            && date.getFullYear() === t.getFullYear()
-            && date.getMonth() === t.getMonth()
-            && date.getDate() === t.getDate()
-            && date.getHours() === t.getHours()
+            task.tag === tag.id &&
+            name === examName &&
+            date.getFullYear() === t.getFullYear() &&
+            date.getMonth() === t.getMonth() &&
+            date.getDate() === t.getDate() &&
+            date.getHours() === t.getHours()
           );
         };
         if (!Array.from(tasks.values()).some(filter)) {

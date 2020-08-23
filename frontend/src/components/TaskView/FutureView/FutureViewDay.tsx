@@ -44,13 +44,15 @@ export function FutureViewDay(props: Props & { readonly theme: Theme }): ReactEl
     if (theme !== 'dark') {
       return undefined;
     }
-    return isToday ? {
-      background: 'black',
-      color: 'white',
-    } : {
-      background: 'rgb(33,33,33)',
-      color: 'white',
-    };
+    return isToday
+      ? {
+          background: 'black',
+          color: 'white',
+        }
+      : {
+          background: 'rgb(33,33,33)',
+          color: 'white',
+        };
   })();
   let wrapperCssClass: string;
   if (inNDaysView) {
@@ -59,7 +61,11 @@ export function FutureViewDay(props: Props & { readonly theme: Theme }): ReactEl
     wrapperCssClass = isToday ? `${styles.OtherViews} ${styles.Today}` : styles.OtherViews;
   }
   return (
-    <div className={wrapperCssClass} ref={componentDivRef} style={{ ...darkModeStyles, overflowY: 'scroll' }}>
+    <div
+      className={wrapperCssClass}
+      ref={componentDivRef}
+      style={{ ...darkModeStyles, overflowY: 'scroll' }}
+    >
       <FutureViewDayContent
         inMainList
         onHeightChange={onHeightChange}
@@ -74,7 +80,7 @@ export function FutureViewDay(props: Props & { readonly theme: Theme }): ReactEl
   );
 }
 
-const Connected = connect(
-  ({ settings: { theme } }: State): { readonly theme: Theme } => ({ theme }),
-)(FutureViewDay);
+const Connected = connect(({ settings: { theme } }: State): { readonly theme: Theme } => ({
+  theme,
+}))(FutureViewDay);
 export default Connected;

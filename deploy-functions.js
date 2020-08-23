@@ -16,7 +16,10 @@ const path = require('path');
 // Step 1: Build projects
 
 spawnSync('yarn', [], { shell: true, stdio: [process.stdin, process.stdout, process.stderr] });
-spawnSync('yarn', ['workspace', 'functions', 'build'], { shell: true, stdio: [process.stdin, process.stdout, process.stderr] });
+spawnSync('yarn', ['workspace', 'functions', 'build'], {
+  shell: true,
+  stdio: [process.stdin, process.stdout, process.stderr],
+});
 
 // Step 2: Make mirror folders for deployment
 
@@ -46,9 +49,11 @@ function deleteFolderRecursive(p) {
   if (fs.existsSync(p)) {
     fs.readdirSync(p).forEach((file) => {
       const curPath = path.join(p, file);
-      if (fs.lstatSync(curPath).isDirectory()) { // recurse
+      if (fs.lstatSync(curPath).isDirectory()) {
+        // recurse
         deleteFolderRecursive(curPath);
-      } else { // delete file
+      } else {
+        // delete file
         fs.unlinkSync(curPath);
       }
     });
@@ -85,7 +90,11 @@ const project = process.argv[3] ? process.argv[3] : 'default';
  * @param {string[]} args Array of arguments to pass to the CLI.
  */
 function firebase(args) {
-  spawnSync(`${__dirname}/node_modules/.bin/firebase`, args, { cwd: 'temp', shell: true, stdio: [process.stdin, process.stdout, process.stderr] });
+  spawnSync(`${__dirname}/node_modules/.bin/firebase`, args, {
+    cwd: 'temp',
+    shell: true,
+    stdio: [process.stdin, process.stdout, process.stderr],
+  });
 }
 
 firebase(['use', project]);

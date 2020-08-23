@@ -8,13 +8,14 @@ type Props = {
   readonly onDoesShowCompletedTasksChange: () => void;
 };
 
-const getIconClassName = (notInverted: boolean): string => (
-  notInverted ? styles.Icon : `${styles.Icon} ${styles.Inverted}`
-);
+const getIconClassName = (notInverted: boolean): string =>
+  notInverted ? styles.Icon : `${styles.Icon} ${styles.Inverted}`;
 
-export default (
-  { count, doesShowCompletedTasks, onDoesShowCompletedTasksChange }: Props,
-): ReactElement => (
+export default ({
+  count,
+  doesShowCompletedTasks,
+  onDoesShowCompletedTasksChange,
+}: Props): ReactElement => (
   <div className={styles.Separator}>
     <span className={styles.Text}>{`Completed: (${count})`}</span>
     <SamwiseIcon

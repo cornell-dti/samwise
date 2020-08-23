@@ -16,7 +16,7 @@ export default class Actions {
 
   private createFirestoreObject = async <T>(
     orderFor: 'tags' | 'tasks',
-    source: T,
+    source: T
   ): Promise<T & FirestoreCommon> => {
     const order = await this.orderManager.allocateNewOrder(orderFor);
     return { ...source, owner: this.getUserEmail(), order };
@@ -35,10 +35,7 @@ export default class Actions {
 
   editTag = async (tag: Tag): Promise<void> => {
     const { id, ...rest } = tag;
-    await this.database
-      .tagsCollection()
-      .doc(id)
-      .update(rest);
+    await this.database.tagsCollection().doc(id).update(rest);
   };
 
   removeTag = async (id: string): Promise<void> => {

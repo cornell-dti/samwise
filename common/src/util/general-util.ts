@@ -8,19 +8,23 @@ export const randomId = (): string => String(new Date().getTime());
 /**
  * The identity function.
  */
-export function identity<T>(t: T): T { return t; }
+export function identity<T>(t: T): T {
+  return t;
+}
 
 /**
  * An empty function used to ignore promise.
  */
-export const ignore = (): void => { };
+export const ignore = (): void => {};
 
 /**
  * Throw an error. Useful when want to use this as an expression.
  *
  * @param {?string} message an optional message.
  */
-export const error = (message?: string): never => { throw new Error(message); };
+export const error = (message?: string): never => {
+  throw new Error(message);
+};
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type StringKeyObj = { readonly [k: string]: any };
@@ -58,7 +62,8 @@ export const shallowEqual = (a: StringKeyObj, b: StringKeyObj): boolean => {
  * @param b array b.
  */
 export const shallowArrayEqual = (
-  a: readonly StringKeyObj[], b: readonly StringKeyObj[],
+  a: readonly StringKeyObj[],
+  b: readonly StringKeyObj[]
 ): boolean => {
   const l = a.length;
   if (l !== b.length) {

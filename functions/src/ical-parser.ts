@@ -5,12 +5,14 @@ type Event = {
 };
 
 function turnToLastMinute(date: Date): Date {
-  return new Date(date.getTime() + ((23 * 60 + 59) * 60 * 1000));
+  return new Date(date.getTime() + (23 * 60 + 59) * 60 * 1000);
 }
 
 function convertDate(date: string): string {
-  return `${date.slice(0, 4)}-${date.slice(4, 6)}-${date.slice(6, 11)}:`
-    + `${date.slice(11, 13)}:${date.slice(13, date.length)}`;
+  return (
+    `${date.slice(0, 4)}-${date.slice(4, 6)}-${date.slice(6, 11)}:` +
+    `${date.slice(11, 13)}:${date.slice(13, date.length)}`
+  );
 }
 
 export default function icalParse(text: string): readonly Event[] {
@@ -31,11 +33,14 @@ export default function icalParse(text: string): readonly Event[] {
     }
     if (line === 'END:VEVENT') {
       eventState = false;
-      events = [{
-        uid,
-        date,
-        name,
-      }, ...events];
+      events = [
+        {
+          uid,
+          date,
+          name,
+        },
+        ...events,
+      ];
     }
     if (eventState) {
       const tokens = line.split(/:(.+)/);

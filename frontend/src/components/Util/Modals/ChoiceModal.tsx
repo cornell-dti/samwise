@@ -32,11 +32,14 @@ export type ChoiceModalProps<Choices extends ChoiceObj> = {
    * The function called when a choice is picked.
    */
   readonly onChoicePick: (pickedChoice: keyof Choices) => void;
-}
+};
 
-export default function ChoiceModal<Choices extends ChoiceObj>(
-  { open, message, choices, onChoicePick }: ChoiceModalProps<Choices>,
-): ReactElement {
+export default function ChoiceModal<Choices extends ChoiceObj>({
+  open,
+  message,
+  choices,
+  onChoicePick,
+}: ChoiceModalProps<Choices>): ReactElement {
   return (
     <Modal isOpen={open} className={modalStyles.Modal} contentLabel="Choice Dialog">
       <div className={modalStyles.TextContainer}>{message}</div>

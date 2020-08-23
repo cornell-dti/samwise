@@ -113,7 +113,7 @@ type Collection = CollectionReference;
 
 export default class Database {
   // eslint-disable-next-line no-useless-constructor
-  constructor(public readonly db: () => CommonFirestore) { }
+  constructor(public readonly db: () => CommonFirestore) {}
 
   orderManagerCollection = (): Collection => this.db().collection('samwise-order-manager');
 
@@ -129,5 +129,6 @@ export default class Database {
 
   groupsCollection = (): Collection => this.db().collection('samwise-groups');
 
-  pendingInvitesCollection = (): Collection => this.db().collection('samwise-group-pending-invites');
+  pendingInvitesCollection = (): Collection =>
+    this.db().collection('samwise-group-pending-invites');
 }

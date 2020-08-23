@@ -1,4 +1,12 @@
-import { isBitSet, setBit, unsetBit, isDayOfWeekSet, setDayOfWeek, unsetDayOfWeek, DAYS_IN_WEEK } from './bitwise-util';
+import {
+  isBitSet,
+  setBit,
+  unsetBit,
+  isDayOfWeekSet,
+  setDayOfWeek,
+  unsetDayOfWeek,
+  DAYS_IN_WEEK,
+} from './bitwise-util';
 
 it('Test isBitSet', () => {
   expect(isBitSet(1, 0, 1)).toEqual(true);

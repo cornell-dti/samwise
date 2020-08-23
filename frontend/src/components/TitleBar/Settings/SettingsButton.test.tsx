@@ -5,6 +5,12 @@ import { store } from 'store/store';
 import SettingsButton from './SettingsButton';
 
 it('SettingsButton matches snapshot.', () => {
-  const tree = renderer.create(<Provider store={store}><SettingsButton /></Provider>).toJSON();
+  const tree = renderer
+    .create(
+      <Provider store={store}>
+        <SettingsButton />
+      </Provider>
+    )
+    .toJSON();
   expect(tree).toMatchSnapshot();
 });

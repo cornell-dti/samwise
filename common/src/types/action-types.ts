@@ -55,7 +55,7 @@ export type PatchGroups = {
   readonly created: Group[];
   readonly edited: Group[];
   readonly deleted: string[];
-}
+};
 export type PatchPendingInvite = {
   readonly type: 'PATCH_PENDING_GROUP_INVITE';
   readonly created: PendingGroupInvite[];

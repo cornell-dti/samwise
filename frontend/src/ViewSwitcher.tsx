@@ -4,9 +4,7 @@ import PersonalView from 'PersonalView';
 import GroupView from 'components/GroupView';
 import styles from 'App.module.css';
 
-type Views =
-  | 'personal'
-  | 'group';
+type Views = 'personal' | 'group';
 /**
  * Handles switching the view from Personal to Group
  */
@@ -26,13 +24,7 @@ export default (): React.ReactElement => {
   return (
     <div className={styles.GroupScreen}>
       <SideBar groups={groups} changeView={changeView} />
-      <div>
-        {
-          view === 'personal'
-            ? <PersonalView />
-            : <GroupView groupName={group} />
-        }
-      </div>
+      <div>{view === 'personal' ? <PersonalView /> : <GroupView groupName={group} />}</div>
     </div>
   );
 };

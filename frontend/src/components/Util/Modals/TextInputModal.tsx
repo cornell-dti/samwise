@@ -6,10 +6,7 @@ import textInputModalStyles from './TextInputModal.module.css';
 /**
  * The types of input this Modal will support (add more as necessary)
  */
-export type TextInputTypes =
-  | 'text'
-  | 'email'
-  | 'number';
+export type TextInputTypes = 'text' | 'email' | 'number';
 
 export type TextInputModalProps = {
   /**
@@ -44,7 +41,7 @@ export type TextInputModalProps = {
    * The function called when a input is submitted.
    */
   readonly onCancel: () => void;
-}
+};
 
 export default ({
   open,
@@ -58,7 +55,11 @@ export default ({
 }: TextInputModalProps): ReactElement => {
   const [input, setInput] = useState('');
   return (
-    <Modal isOpen={open} className={`${modalStyles.Modal} ${textInputModalStyles.TextInputModal}`} contentLabel="Choice Dialog">
+    <Modal
+      isOpen={open}
+      className={`${modalStyles.Modal} ${textInputModalStyles.TextInputModal}`}
+      contentLabel="Choice Dialog"
+    >
       <div className={textInputModalStyles.Title}>{title}</div>
       <div className={textInputModalStyles.SubText}>{subText}</div>
       <div className={textInputModalStyles.TextInput}>

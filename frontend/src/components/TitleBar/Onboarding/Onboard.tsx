@@ -12,7 +12,7 @@ import Tutorial5 from '../../../assets/tutorial/t5.png';
 import Tutorial6 from '../../../assets/tutorial/t6.png';
 import { completeOnboarding, importCourseExams } from '../../../firebase/actions';
 
-type TaggedImage = { readonly src: string; readonly alt: string }
+type TaggedImage = { readonly src: string; readonly alt: string };
 
 const taggedImages: TaggedImage[] = [
   {
@@ -21,7 +21,7 @@ const taggedImages: TaggedImage[] = [
   },
   {
     src: Tutorial2,
-    alt: 'Add tasks in the box \'What do you have to do?\'',
+    alt: "Add tasks in the box 'What do you have to do?'",
   },
   {
     src: Tutorial3,
@@ -52,9 +52,8 @@ type AddClassProps = {
 function AddClassOnBoarding({ classTags, showNext }: AddClassProps): ReactElement {
   const [addExam, setAddExam] = useState<boolean>(true);
 
-  const clickBox = (e: React.FormEvent<HTMLInputElement>): void => (
-    setAddExam((e.target as HTMLInputElement).checked)
-  );
+  const clickBox = (e: React.FormEvent<HTMLInputElement>): void =>
+    setAddExam((e.target as HTMLInputElement).checked);
   const allDone = (): void => showNext(addExam);
 
   return (
@@ -76,7 +75,9 @@ function AddClassOnBoarding({ classTags, showNext }: AddClassProps): ReactElemen
       <div className={styles.SettingsSection}>
         <div className={styles.SettingsSectionContent}>
           <ul className={styles.ColorConfigItemList}>
-            {classTags.map((tag) => <TagItem key={tag.id} tag={tag} />)}
+            {classTags.map((tag) => (
+              <TagItem key={tag.id} tag={tag} />
+            ))}
           </ul>
         </div>
       </div>
@@ -120,9 +121,13 @@ function SlidesOnBoarding({ progress, showNext, goBack, skipTutorial }: SlidesPr
     <div className={styles.ModalWrap}>
       <h2>Tutorial</h2>
       <div className={styles.TutorialModal}>
-        <button type="button" onClick={goBack}>&lsaquo;</button>
+        <button type="button" onClick={goBack}>
+          &lsaquo;
+        </button>
         <img className={styles.TutorialImg} src={src} alt={alt} />
-        <button type="button" ref={nextButtonRef} onClick={showNext}>&rsaquo;</button>
+        <button type="button" ref={nextButtonRef} onClick={showNext}>
+          &rsaquo;
+        </button>
       </div>
       <p className={styles.ModalOptions}>
         <button type="button" onClick={skipTutorial} style={{ marginRight: '30px' }}>
@@ -160,9 +165,8 @@ export function Onboard({ classTags, completedOnboarding }: Props): ReactElement
   const goBack = (): void => setProgress((prev) => (prev > 1 ? prev - 1 : prev));
   const skipTutorial = (): void => setProgress(100);
 
-  const onboardingContainerStyle: CSSProperties | undefined = progress > 0
-    ? { overflowY: 'hidden', background: 'rgba(0,0,0,0.8)' }
-    : undefined;
+  const onboardingContainerStyle: CSSProperties | undefined =
+    progress > 0 ? { overflowY: 'hidden', background: 'rgba(0,0,0,0.8)' } : undefined;
   return (
     <div className={styles.Hero} style={onboardingContainerStyle}>
       {progress === 0 && <AddClassOnBoarding classTags={classTags} showNext={showNextImport} />}
@@ -182,6 +186,6 @@ const Connected = connect(
   ({ tags, settings: { completedOnboarding } }: State): Props => {
     const classTags: Tag[] = Array.from(tags.values()).filter((t) => t.classId != null);
     return { classTags, completedOnboarding };
-  },
+  }
 )(Onboard);
 export default Connected;

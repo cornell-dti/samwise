@@ -6,7 +6,7 @@ import styles from './index.module.css';
 
 type Props = {
   memberName: string;
-}
+};
 
 const clickAddGroupTask = (e: SyntheticEvent<HTMLElement>): void => {
   e.stopPropagation();

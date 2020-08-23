@@ -28,7 +28,7 @@
 }
 
 @media only screen and (max-width: 600px) {
-  .CalendarForm, 
+  .CalendarForm,
   .CalendarInput {
     display: block;
   }

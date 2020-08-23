@@ -193,7 +193,7 @@ const SamwiseIcon = ({ iconName, title, ...otherProps }: Props): ReactElement =>
       e.stopPropagation();
       if (e.key === ' ' && otherProps.onClick != null) {
         // hacky way to convert space to click. Potentially unsafe but generally OK.
-        otherProps.onClick(e as unknown as MouseEvent<SVGSVGElement>);
+        otherProps.onClick((e as unknown) as MouseEvent<SVGSVGElement>);
       }
     },
     ...otherProps,

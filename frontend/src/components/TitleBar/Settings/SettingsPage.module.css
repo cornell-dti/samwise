@@ -59,8 +59,8 @@ p.SettingsSectionTitle {
 }
 
 .SignButton {
-   background: #e93838 !important;
- }
+  background: #e93838 !important;
+}
 
 .SignButton:hover,
 .SignButton:focus {

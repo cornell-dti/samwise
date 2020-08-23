@@ -1,6 +1,6 @@
 .Banner {
   position: fixed;
-  
+
   bottom: 0;
   right: 0;
   width: 50vw;
@@ -27,7 +27,7 @@
 
 .ButtonWrap {
   display: block;
-  text-align: center;;
+  text-align: center;
 }
 
 .ButtonWrap button {
@@ -37,7 +37,7 @@
   border: 1px solid white;
   border-radius: 5px;
   cursor: pointer;
-  display:block;
+  display: block;
   width: 100%;
 }
 

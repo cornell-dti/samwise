@@ -8,7 +8,8 @@ import { BannerMessageIds, BannerMessageStatus } from 'common/lib/types/store-ty
 type MessagesType = { readonly [I in BannerMessageIds]: string };
 
 const messages: MessagesType = {
-  '2019-03-10-quota-exceeded-incident': 'Oopsies! Due to unexpectedly high traffic, Samwise was briefly down on the night of March 9 for an upgrade. Sorry for any inconvenience this may have caused you!',
+  '2019-03-10-quota-exceeded-incident':
+    'Oopsies! Due to unexpectedly high traffic, Samwise was briefly down on the night of March 9 for an upgrade. Sorry for any inconvenience this may have caused you!',
 };
 
 // sorted in decreasing order of date

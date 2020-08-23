@@ -13,11 +13,16 @@ type Props<T extends FuseItem> = {
 
 type State<T> = { readonly searchInput: string; readonly searchResults: readonly T[] };
 
-export default <T extends FuseItem>(
-  { placeholder, fuse, inputClassname, dropdownItemClassName, onSelect }: Props<T>,
-): ReactElement => {
+export default <T extends FuseItem>({
+  placeholder,
+  fuse,
+  inputClassname,
+  dropdownItemClassName,
+  onSelect,
+}: Props<T>): ReactElement => {
   const [{ searchInput, searchResults }, setState] = useState<State<T>>({
-    searchInput: '', searchResults: [],
+    searchInput: '',
+    searchResults: [],
   });
 
   const onSearchChange = (event: ChangeEvent<HTMLInputElement>): void => {

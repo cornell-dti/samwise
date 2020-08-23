@@ -34,7 +34,7 @@ export type GroupTaskMetadata = {
   readonly type: 'GROUP';
   readonly date: Date;
   group: string; // documentid for associated group
-}
+};
 
 export type RepeatingPattern =
   | { readonly type: 'WEEKLY'; readonly bitSet: number /* 7-bit */ }
@@ -50,7 +50,7 @@ export type RepeatingDate = {
   readonly startDate: Date;
   readonly endDate: Date | number;
   readonly pattern: RepeatingPattern;
-}
+};
 
 export type RepeatingTaskMetadata = {
   readonly type: 'MASTER_TEMPLATE';
@@ -58,8 +58,7 @@ export type RepeatingTaskMetadata = {
   readonly forks: readonly ForkedTaskMetaData[];
 };
 
-export type TaskMetadata =
-  OneTimeTaskMetadata | RepeatingTaskMetadata | GroupTaskMetadata;
+export type TaskMetadata = OneTimeTaskMetadata | RepeatingTaskMetadata | GroupTaskMetadata;
 
 export type Task<M = TaskMetadata> = {
   readonly id: string;
@@ -112,7 +111,7 @@ export type Group = {
   readonly members: readonly string[];
   readonly deadline: Date;
   readonly classCode?: string;
-}
+};
 
 /**
  * The type of a course info entry.
@@ -132,7 +131,7 @@ export type PendingGroupInvite = {
   readonly id: string;
   readonly group: string;
   readonly inviterName: string; // Name of person who sent invite
-}
+};
 
 /**
  * The type of the entire redux state.

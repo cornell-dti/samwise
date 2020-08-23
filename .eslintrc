@@ -1,5 +1,11 @@
 {
-  "extends": ["airbnb", "plugin:@typescript-eslint/recommended", "plugin:react-hooks/recommended"],
+  "extends": [
+    "airbnb",
+    "plugin:@typescript-eslint/recommended",
+    "plugin:react-hooks/recommended",
+    "prettier",
+    "prettier/react"
+  ],
   "parser": "@typescript-eslint/parser",
   "plugins": ["@typescript-eslint", "jest"],
   "env": { "browser": true, "node": true, "jest/globals": true },
@@ -21,7 +27,7 @@
     "import/extensions": "off",
     "indent": "off",
     "@typescript-eslint/ban-ts-comment": ["error", { "ts-expect-error": "allow-with-description" }],
-    "@typescript-eslint/indent": ["error", 2],
+    "@typescript-eslint/indent": "off",
     "@typescript-eslint/prefer-interface": "off",
     "@typescript-eslint/explicit-function-return-type": ["error", { "allowExpressions": true }],
     "@typescript-eslint/no-angle-bracket-type-assertion": "off",

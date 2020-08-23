@@ -11,7 +11,7 @@ class Course {
     private readonly courseId: number,
     private readonly subject: string,
     private readonly courseNumber: string,
-    private readonly title: string,
+    private readonly title: string
   ) {}
 
   get identifier(): string {
@@ -44,7 +44,7 @@ function processCourseInfoJson(map: Map<string, Course>, json: CourseInfo[]): vo
 function processExamInfoJson(
   map: Map<string, Course>,
   json: readonly ExamInfo[],
-  type: ExamType,
+  type: ExamType
 ): void {
   json.forEach(({ subject, courseNumber, time }) => {
     const identifier = `${subject}${courseNumber}`;

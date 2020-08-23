@@ -39,14 +39,15 @@ export default class ErrorBoundary extends React.PureComponent<Props, State> {
               top: 0,
             }}
           />
-          <div style={{
-            position: 'fixed',
-            bottom: 0,
-            right: 0,
-            padding: '10px',
-            textAlign: 'right',
-            fontSize: '150%',
-          }}
+          <div
+            style={{
+              position: 'fixed',
+              bottom: 0,
+              right: 0,
+              padding: '10px',
+              textAlign: 'right',
+              fontSize: '150%',
+            }}
           >
             <p>
               Come yell at us:&nbsp;

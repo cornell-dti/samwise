@@ -23,16 +23,16 @@ const repeatedTaskEditMasterConfirm = {
 export function promptRepeatedTaskEditChoice(): Promise<keyof typeof repeatedTaskEditChoices> {
   return promptChoice(
     'Do you want to edit all occurences of this task or this instance?',
-    repeatedTaskEditChoices,
+    repeatedTaskEditChoices
   );
 }
 
 export function confirmRepeatedTaskEditMaster(): Promise<
-keyof typeof repeatedTaskEditMasterConfirm
+  keyof typeof repeatedTaskEditMasterConfirm
 > {
   return promptChoice(
     'Do you want to edit all occurences of this task?',
-    repeatedTaskEditMasterConfirm,
+    repeatedTaskEditMasterConfirm
   );
 }
 

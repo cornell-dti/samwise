@@ -4,6 +4,12 @@ import { ProviderForTesting } from 'store';
 import ClassTagAdder from './ClassTagAdder';
 
 it('ClassTagAdder matches snapshot.', () => {
-  const tree = renderer.create(<ProviderForTesting><ClassTagAdder /></ProviderForTesting>).toJSON();
+  const tree = renderer
+    .create(
+      <ProviderForTesting>
+        <ClassTagAdder />
+      </ProviderForTesting>
+    )
+    .toJSON();
   expect(tree).toMatchSnapshot();
 });

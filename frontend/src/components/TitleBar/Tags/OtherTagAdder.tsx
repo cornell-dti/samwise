@@ -13,9 +13,10 @@ export default class OtherTagAdder extends React.PureComponent<unknown, State> {
 
   private editColor = (color: string): void => this.setState({ color });
 
-  private editName = (event: SyntheticEvent<HTMLInputElement>): void => this.setState({
-    name: event.currentTarget.value,
-  });
+  private editName = (event: SyntheticEvent<HTMLInputElement>): void =>
+    this.setState({
+      name: event.currentTarget.value,
+    });
 
   private onSubmit = (event: KeyboardEvent<HTMLInputElement>): void => {
     if (event.key !== 'Enter') {
@@ -23,7 +24,9 @@ export default class OtherTagAdder extends React.PureComponent<unknown, State> {
     }
     const { name, color } = this.state;
     addTag({
-      name, color, classId: null,
+      name,
+      color,
+      classId: null,
     });
     this.setState(initialState);
   };

@@ -8,11 +8,7 @@ import FutureViewControl from './FutureViewControl';
 import FutureViewNDays from './FutureViewNDays';
 import FutureViewSevenColumns from './FutureViewSevenColumns';
 
-import {
-  FutureViewContainerType,
-  FutureViewDisplayOption,
-  SimpleDate,
-} from './future-view-types';
+import { FutureViewContainerType, FutureViewDisplayOption, SimpleDate } from './future-view-types';
 import { useMappedWindowSize } from '../../../hooks/window-size-hook';
 import { editMainTask, applyReorder } from '../../../firebase/actions';
 import { store } from '../../../store/store';
@@ -48,7 +44,10 @@ export const futureViewConfigProvider: FutureViewConfigProvider = {
  * @return {{startDate: Date, endDate: Date}} the start date and end date.
  */
 function computeStartAndEndDay(
-  today: Date, nDays: number, containerType: FutureViewContainerType, offset: number,
+  today: Date,
+  nDays: number,
+  containerType: FutureViewContainerType,
+  offset: number
 ): { readonly startDate: Date; readonly endDate: Date } {
   // Compute start date (the first date to display)
   const startDate = new Date(today);
@@ -98,9 +97,14 @@ function computeStartAndEndDay(
  * @return {Date[]} an array of backlog days information.
  */
 function buildDaysInFutureView(
-  today: Date, nDays: number, config: FutureViewConfig,
+  today: Date,
+  nDays: number,
+  config: FutureViewConfig
 ): readonly SimpleDate[] {
-  const { displayOption: { containerType }, offset } = config;
+  const {
+    displayOption: { containerType },
+    offset,
+  } = config;
   const { startDate, endDate } = computeStartAndEndDay(today, nDays, containerType, offset);
   // Adding the days to array
   const days: SimpleDate[] = [];
@@ -124,16 +128,20 @@ type Props = {
   readonly onConfigChange: (config: FutureViewConfig) => void;
 };
 
-export default function FutureView(
-  { config, onConfigChange }: Props,
-): ReactElement {
+export default function FutureView({ config, onConfigChange }: Props): ReactElement {
   const today = useTodayLastSecondTime();
 
   // the number of days in n-days mode.
   const nDays = useMappedWindowSize(({ width }) => {
-    if (width > 1280) { return 5; }
-    if (width > 960) { return 4; }
-    if (width > 840) { return 3; }
+    if (width > 1280) {
+      return 5;
+    }
+    if (width > 960) {
+      return 4;
+    }
+    if (width > 840) {
+      return 3;
+    }
     return 1;
   });
   const controlOnChange = (change: Partial<FutureViewConfig>): void => {
@@ -143,9 +151,12 @@ export default function FutureView(
   const days = buildDaysInFutureView(today, nDays, config);
   const { displayOption, offset } = config;
   const { containerType, doesShowCompletedTasks } = displayOption;
-  const daysContainer = containerType === 'N_DAYS'
-    ? <FutureViewNDays days={days} doesShowCompletedTasks={doesShowCompletedTasks} />
-    : <FutureViewSevenColumns days={days} doesShowCompletedTasks={doesShowCompletedTasks} />;
+  const daysContainer =
+    containerType === 'N_DAYS' ? (
+      <FutureViewNDays days={days} doesShowCompletedTasks={doesShowCompletedTasks} />
+    ) : (
+      <FutureViewSevenColumns days={days} doesShowCompletedTasks={doesShowCompletedTasks} />
+    );
   const onDragEnd = (result: DropResult): void => {
     const { source, destination, draggableId } = result;
     if (destination == null) {
@@ -194,22 +205,20 @@ export default function FutureView(
       store.dispatch(
         patchTasks(
           [],
-          [{
-            ...task,
-            metadata: {
-              ...task.metadata,
-              date: new Date(destination.droppableId),
+          [
+            {
+              ...task,
+              metadata: {
+                ...task.metadata,
+                date: new Date(destination.droppableId),
+              },
+              children: task.children.map((child) => child.id),
             },
-            children: task.children.map((child) => child.id),
-          }],
-          [],
-        ),
+          ],
+          []
+        )
       );
-      editMainTask(
-        draggableId,
-        null,
-        { date: new Date(destination.droppableId) },
-      );
+      editMainTask(draggableId, null, { date: new Date(destination.droppableId) });
     }
   };
   return (
@@ -220,9 +229,7 @@ export default function FutureView(
         offset={offset}
         onChange={controlOnChange}
       />
-      <DragDropContext onDragEnd={onDragEnd}>
-        {daysContainer}
-      </DragDropContext>
+      <DragDropContext onDragEnd={onDragEnd}>{daysContainer}</DragDropContext>
     </div>
   );
 }

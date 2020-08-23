@@ -9,16 +9,15 @@ type Props = { readonly days: readonly SimpleDate[]; readonly doesShowCompletedT
  * The component used to contain all the backlog days in 7 columns.
  */
 export default ({ days, doesShowCompletedTasks }: Props): ReactElement => {
-  const interval = (days.length === 14) ? '2W' : 'Monthly';
+  const interval = days.length === 14 ? '2W' : 'Monthly';
   // Start building items
   const items = days.map((date: SimpleDate, i: number) => (
     <FutureViewDay
       key={date.text}
       inNDaysView={false}
-      taskEditorPosition={(i % 7) < 4 ? 'right' : 'left'}
+      taskEditorPosition={i % 7 < 4 ? 'right' : 'left'}
       calendarPosition={
-        ((interval === '2W' && i / 7 < 1) || (interval === 'Monthly' && i / 7 < 3))
-          ? 'bottom' : 'top'
+        (interval === '2W' && i / 7 < 1) || (interval === 'Monthly' && i / 7 < 3) ? 'bottom' : 'top'
       }
       doesShowCompletedTasks={doesShowCompletedTasks}
       date={date}

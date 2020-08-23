@@ -16,10 +16,20 @@ function SingleInvitation(invite: PendingGroupInvite): ReactElement {
         {`${invite.inviterName} has invited you to join their group project.`}
       </span>
       <div className={styles.ButtonWrap}>
-        <button type="button" onClick={() => { joinGroup(invite.group, invite.id); }}>
+        <button
+          type="button"
+          onClick={() => {
+            joinGroup(invite.group, invite.id);
+          }}
+        >
           Join
         </button>
-        <button type="button" onClick={() => { rejectInvite(invite.id); }}>
+        <button
+          type="button"
+          onClick={() => {
+            rejectInvite(invite.id);
+          }}
+        >
           Reject
         </button>
       </div>
@@ -28,7 +38,9 @@ function SingleInvitation(invite: PendingGroupInvite): ReactElement {
 }
 
 const GroupInvites = ({ pendingInvites }: Props): ReactElement | null => {
-  if (pendingInvites.isEmpty()) { return null; }
+  if (pendingInvites.isEmpty()) {
+    return null;
+  }
   return (
     <ul className={styles.Banner}>
       {pendingInvites.valueSeq().map((invite) => SingleInvitation(invite))}

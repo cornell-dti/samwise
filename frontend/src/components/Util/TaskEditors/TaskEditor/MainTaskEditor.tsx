@@ -22,14 +22,20 @@ type Props = NameCompleteInFocus & {
 
 const deleteIconClass = [styles.TaskEditorIcon, styles.TaskEditorIconLeftPad].join(' ');
 
-function MainTaskEditor(
-  {
-    id, icalUID, taskDate, dateAppeared, name, complete, inFocus, onChange, onRemove, onPressEnter,
-  }: Props,
-): ReactElement {
-  const replaceDateForFork = taskDate == null
-    ? getDateWithDateString(taskDate, dateAppeared)
-    : null;
+function MainTaskEditor({
+  id,
+  icalUID,
+  taskDate,
+  dateAppeared,
+  name,
+  complete,
+  inFocus,
+  onChange,
+  onRemove,
+  onPressEnter,
+}: Props): ReactElement {
+  const replaceDateForFork =
+    taskDate == null ? getDateWithDateString(taskDate, dateAppeared) : null;
   const editComplete = (): void => editMainTask(id, replaceDateForFork, { complete: !complete });
   const editInFocus = (): void => editMainTask(id, replaceDateForFork, { inFocus: !inFocus });
 
@@ -50,17 +56,12 @@ function MainTaskEditor(
 
   return (
     <div className={styles.TaskEditorFlexibleContainer}>
-      <CheckBox
-        className={styles.TaskEditorCheckBox}
-        checked={complete}
-        onChange={editComplete}
-      />
+      <CheckBox className={styles.TaskEditorCheckBox} checked={complete} onChange={editComplete} />
       <input
         type="text"
         disabled={isCanvasTask}
         data-lpignore="true"
-        className={complete
-          ? styles.TaskEditorStrikethrough : styles.TaskEditorFlexibleInput}
+        className={complete ? styles.TaskEditorStrikethrough : styles.TaskEditorFlexibleInput}
         placeholder="Main Task"
         value={name}
         onKeyDown={onKeyDown}
@@ -71,8 +72,9 @@ function MainTaskEditor(
         className={styles.TaskEditorIcon}
         onClick={editInFocus}
       />
-      {isCanvasTask ? null
-        : <SamwiseIcon iconName="x-light" className={deleteIconClass} onClick={onRemove} />}
+      {isCanvasTask ? null : (
+        <SamwiseIcon iconName="x-light" className={deleteIconClass} onClick={onRemove} />
+      )}
     </div>
   );
 }

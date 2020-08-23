@@ -15,19 +15,20 @@ type Props = {
 /**
  * The component used to render one subtask in future view day.
  */
-function FutureViewSubTask(
-  { subTask, mainTaskId, replaceDateForFork, mainTaskCompleted }: Props,
-): ReactElement | null {
+function FutureViewSubTask({
+  subTask,
+  mainTaskId,
+  replaceDateForFork,
+  mainTaskCompleted,
+}: Props): ReactElement | null {
   if (subTask == null) {
     return null;
   }
   const { name, complete, inFocus } = subTask;
-  const onCompleteChange = (): void => editSubTask(
-    mainTaskId, subTask.id, replaceDateForFork, { complete: !complete },
-  );
-  const onFocusChange = (): void => editSubTask(
-    mainTaskId, subTask.id, replaceDateForFork, { inFocus: !inFocus },
-  );
+  const onCompleteChange = (): void =>
+    editSubTask(mainTaskId, subTask.id, replaceDateForFork, { complete: !complete });
+  const onFocusChange = (): void =>
+    editSubTask(mainTaskId, subTask.id, replaceDateForFork, { inFocus: !inFocus });
   const onRemove = (): void => removeSubTask(mainTaskId, subTask.id, replaceDateForFork);
   return (
     <div className={styles.SubTask}>
@@ -40,7 +41,7 @@ function FutureViewSubTask(
       />
       <span
         className={styles.TaskText}
-        style={(mainTaskCompleted || complete) ? { textDecoration: 'line-through' } : {}}
+        style={mainTaskCompleted || complete ? { textDecoration: 'line-through' } : {}}
       >
         {name}
       </span>

@@ -7,7 +7,7 @@ import TaskCreator from '../../TaskCreator';
 type Props = {
   groupName: string;
   groupMemberNames: string[];
-}
+};
 
 const EditGroupNameIcon = (): ReactElement => {
   const handler = (): void => {
@@ -28,9 +28,9 @@ export default ({ groupName, groupMemberNames }: Props): ReactElement => (
         <EditGroupNameIcon />
       </div>
       <div className={styles.GroupTaskRowContainer}>
-        {
-          groupMemberNames.map((m) => <GroupTaskRow memberName={m} key={m} />)
-        }
+        {groupMemberNames.map((m) => (
+          <GroupTaskRow memberName={m} key={m} />
+        ))}
       </div>
     </div>
   </div>

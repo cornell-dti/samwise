@@ -162,9 +162,10 @@ function NavControl(props: NavControlProps): ReactElement {
  */
 function DisplayOptionControl({ nDays, displayOption, offset, onChange }: Props): ReactElement {
   const { containerType, doesShowCompletedTasks } = displayOption;
-  const toggleCompletedTasks = (): void => onChange({
-    displayOption: { containerType, doesShowCompletedTasks: !doesShowCompletedTasks },
-  });
+  const toggleCompletedTasks = (): void =>
+    onChange({
+      displayOption: { containerType, doesShowCompletedTasks: !doesShowCompletedTasks },
+    });
   const switchContainerType = (newContainerType: FutureViewContainerType): void => {
     let dayOffset: number;
     switch (containerType) {
@@ -200,11 +201,13 @@ function DisplayOptionControl({ nDays, displayOption, offset, onChange }: Props)
     });
   };
   const renderContainerTypeSwitcherButton = (
-    type: FutureViewContainerType, text: string,
+    type: FutureViewContainerType,
+    text: string
   ): ReactElement => {
-    const className = containerType === type
-      ? `${styles.ContainerTypeSwitcherButton} ${styles.ContainerTypeSwitcherActiveButton}`
-      : styles.ContainerTypeSwitcherButton;
+    const className =
+      containerType === type
+        ? `${styles.ContainerTypeSwitcherButton} ${styles.ContainerTypeSwitcherActiveButton}`
+        : styles.ContainerTypeSwitcherButton;
     return (
       <button
         type="button"
@@ -247,12 +250,10 @@ export default function FutureViewControl(props: Props): ReactElement {
   const isSmallScreen = useMappedWindowSize(({ width }) => width <= 600);
   const { containerType } = displayOption;
   const changeOffset = (instruction: ChangeOffsetInstruction): (() => void) => (): void => {
-    const newOffset = instruction === 'TODAY' ? 0 : (offset + instruction);
+    const newOffset = instruction === 'TODAY' ? 0 : offset + instruction;
     onChange({ offset: newOffset });
   };
-  const today = offset !== 0 && (
-    <SquareTextButton text="Today" onClick={changeOffset('TODAY')} />
-  );
+  const today = offset !== 0 && <SquareTextButton text="Today" onClick={changeOffset('TODAY')} />;
   if (isSmallScreen) {
     return (
       <div>

@@ -8,7 +8,10 @@ export function initModal(): void {
 }
 
 const dummyChoiceModalProps: ChoiceModalProps<ChoiceObj> = {
-  open: false, message: '', choices: {}, onChoicePick: () => { },
+  open: false,
+  message: '',
+  choices: {},
+  onChoicePick: () => {},
 };
 const dummyTextInputModalProps: TextInputModalProps = {
   open: false,
@@ -17,18 +20,18 @@ const dummyTextInputModalProps: TextInputModalProps = {
   label: '',
   submitButtonText: 'Submit',
   inputType: 'text',
-  onCancel: () => { },
-  onInputSubmit: () => { },
+  onCancel: () => {},
+  onInputSubmit: () => {},
 };
 
 type ModalProps = ChoiceModalProps<ChoiceObj> | TextInputModalProps;
 
-let currentChoiceModalSetter: (props: ChoiceModalProps<ChoiceObj>) => void = (): void => { };
-let currentTextInputModalSetter: (props: TextInputModalProps) => void = (): void => { };
+let currentChoiceModalSetter: (props: ChoiceModalProps<ChoiceObj>) => void = (): void => {};
+let currentTextInputModalSetter: (props: TextInputModalProps) => void = (): void => {};
 
 export async function promptChoice<Choices extends ChoiceObj>(
   message: string,
-  choices: Choices,
+  choices: Choices
 ): Promise<keyof Choices> {
   return new Promise<keyof Choices>((onChoicePick) => {
     const choiceModalProps: ChoiceModalProps<Choices> = {
@@ -69,8 +72,8 @@ export const promptTextInput = async (
   subText: string,
   label: string,
   submitButtonText: string,
-  inputType: TextInputTypes,
-): Promise<string> => (
+  inputType: TextInputTypes
+): Promise<string> =>
   new Promise<string>((onInputSubmit) => {
     const textInputModalProps: TextInputModalProps = {
       open: true,
@@ -90,8 +93,7 @@ export const promptTextInput = async (
       },
     };
     currentTextInputModalSetter(textInputModalProps);
-  })
-);
+  });
 
 const TextInputModalWrapper = (): React.ReactElement => {
   const [textInputModalProps, setTextInputModalProps] = useState(dummyTextInputModalProps);
