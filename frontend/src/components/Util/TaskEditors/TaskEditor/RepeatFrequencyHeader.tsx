@@ -6,6 +6,8 @@ import SamwiseIcon from '../../../UI/SamwiseIcon';
 import styles from './RepeatFrequencyHeader.module.css';
 
 type OwnProps = {
+  // Needed for react-redux. See connect function at the bottom.
+  // eslint-disable-next-line react/no-unused-prop-types
   readonly taskId: string;
   readonly tag: string;
   readonly getTag: (id: string) => Tag;

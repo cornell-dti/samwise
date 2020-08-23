@@ -6,9 +6,9 @@ import styles from './CheckBox.module.css';
 type Props = {
   readonly checked: boolean; // whether the box is initially checked
   readonly onChange: (checked: boolean) => void; // called when the value changed.
-  readonly disabled: boolean; // whether the checkbox is disabled.
-  readonly inverted: boolean; // whether the color is inverted.
-  readonly className: string | null; // additional className to apply
+  readonly disabled?: boolean; // whether the checkbox is disabled.
+  readonly inverted?: boolean; // whether the color is inverted.
+  readonly className?: string; // additional className to apply
 };
 
 /**
@@ -17,11 +17,11 @@ type Props = {
 export default function CheckBox({
   checked,
   onChange,
-  disabled,
-  inverted,
-  className,
+  disabled = false,
+  inverted = false,
+  className = undefined,
 }: Props): ReactElement {
-  let allClassNames = className === null ? styles.CheckBox : `${className} ${styles.CheckBox}`;
+  let allClassNames = className === undefined ? styles.CheckBox : `${className} ${styles.CheckBox}`;
   if (inverted) {
     allClassNames = `${allClassNames} ${styles.InvertedCheckBox}`;
   }
@@ -43,5 +43,3 @@ export default function CheckBox({
     </label>
   );
 }
-
-CheckBox.defaultProps = { disabled: false, inverted: false, className: null };

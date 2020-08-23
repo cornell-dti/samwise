@@ -12,6 +12,8 @@ import styles from './GroupTask.module.css';
 type OwnProps = {
   readonly id: string;
   readonly order: number;
+  // Needed for react-redux. See the connect function at the bottom.
+  // eslint-disable-next-line react/no-unused-prop-types
   readonly filterCompleted: boolean;
 };
 type Props = OwnProps & {

@@ -383,7 +383,7 @@ export class TaskCreator extends React.PureComponent<Props, State> {
           <div className={styles.SubtitleText}>
             <p>
               <b>Add Subtasks</b>
-               &nbsp;(optional)
+              &nbsp;(optional)
             </p>
           </div>
           <div className={styles.DescText}>
