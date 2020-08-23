@@ -12,7 +12,7 @@ export default class ErrorBoundary extends React.PureComponent<Props, State> {
     return { hasError: true };
   }
 
-  public componentDidCatch(error: Error | null, info: object): void {
+  public componentDidCatch(error: Error | null, info: unknown): void {
     // eslint-disable-next-line no-console
     console.log({ error, info }); // necessary for error logging!
   }

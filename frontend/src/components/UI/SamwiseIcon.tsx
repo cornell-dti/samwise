@@ -2,13 +2,7 @@
  * The Icon Set for Samwise.
  */
 
-import React, {
-  KeyboardEvent,
-  MouseEvent,
-  ReactElement,
-  StatelessComponent,
-  SVGAttributes,
-} from 'react';
+import React, { KeyboardEvent, MouseEvent, ReactElement, SVGProps } from 'react';
 import { IconName } from './samwise-icon-types';
 import { ReactComponent as Alert } from '../../assets/svgs/alert.svg';
 import { ReactComponent as Bell } from '../../assets/svgs/bell.svg';
@@ -43,12 +37,13 @@ import { ReactComponent as UserPlus } from '../../assets/svgs/user-plus.svg';
 import { ReactComponent as AddTask } from '../../assets/svgs/add-task.svg';
 import { ReactComponent as Edit } from '../../assets/svgs/edit.svg';
 
-type SvgProps = SVGAttributes<SVGElement>;
-
-type Props = SvgProps & { readonly iconName: IconName; readonly title: string | undefined };
+type Props = SVGProps<SVGSVGElement> & {
+  readonly iconName: IconName;
+  readonly title: string | undefined;
+};
 
 const SamwiseIcon = ({ iconName, title, ...otherProps }: Props): ReactElement => {
-  let SvgComponent: StatelessComponent<SvgProps>;
+  let SvgComponent: typeof Alert;
   let altText: string;
   // let title: string;
 
@@ -198,7 +193,7 @@ const SamwiseIcon = ({ iconName, title, ...otherProps }: Props): ReactElement =>
       e.stopPropagation();
       if (e.key === ' ' && otherProps.onClick != null) {
         // hacky way to convert space to click. Potentially unsafe but generally OK.
-        otherProps.onClick(e as unknown as MouseEvent<SVGElement>);
+        otherProps.onClick(e as unknown as MouseEvent<SVGSVGElement>);
       }
     },
     ...otherProps,

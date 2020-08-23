@@ -381,6 +381,10 @@ export const removeSubTask = (
  * --------------------------------------------------------------------------------
  */
 
+export const rejectInvite = async (inviteID: string): Promise<void> => {
+  await database.pendingInvitesCollection().doc(inviteID).delete();
+};
+
 /**
 * Join a group.
 * @param groupID  Document ID of the group's Firestore document. The user calling this function must
@@ -388,7 +392,6 @@ export const removeSubTask = (
 * @param inviteID Document ID of the invitation's Firestore document. The user calling this invitee
 *                 of this invitation.
 */
-
 export const joinGroup = async (
   groupId: string,
   inviteID: string,
@@ -470,10 +473,6 @@ export const sendInvite = async (
     invitee,
   };
   await database.pendingInvitesCollection().add(newInvitation);
-};
-
-export const rejectInvite = async (inviteID: string): Promise<void> => {
-  await database.pendingInvitesCollection().doc(inviteID).delete();
 };
 
 /*

@@ -8,7 +8,7 @@ type State = { readonly name: string; readonly color: string };
 const defaultColor = '#289de9';
 const initialState: State = { name: '', color: defaultColor };
 
-export default class OtherTagAdder extends React.PureComponent<{}, State> {
+export default class OtherTagAdder extends React.PureComponent<unknown, State> {
   public readonly state: State = initialState;
 
   private editColor = (color: string): void => this.setState({ color });

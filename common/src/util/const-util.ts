@@ -1,4 +1,3 @@
-
 /**
  * The (exclusive) last day of class for Fall 2020
  */

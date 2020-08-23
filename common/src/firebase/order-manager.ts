@@ -7,6 +7,7 @@ type Manager = {
 type PartialManager = Partial<Manager>;
 
 export default class OrderManager {
+  // eslint-disable-next-line no-useless-constructor
   constructor(private readonly database: Database, private readonly getUserEmail: () => string) {}
 
   /**

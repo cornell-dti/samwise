@@ -19,9 +19,7 @@ import findMessageToDisplay, { MessageWithId } from '../components/TitleBar/Bann
 
 const createSetEqualSelector = createSelectorCreator(
   defaultMemoize,
-  // Bug in reselect type definition: https://github.com/reduxjs/reselect/issues/384
-  // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
-  // @ts-ignore
+  // @ts-expect-error: Bug in reselect type definition: https://github.com/reduxjs/reselect/issues/384
   (a: Set<string>, b: Set<string>) => a.equals(b),
 );
 
@@ -145,7 +143,6 @@ export const createGetIdOrderListByGroup = (
   );
   return selector;
 };
-
 
 export const getProgress: SelectorOf<TasksProgressProps> = createSelector(
   [getTasksInFocus], computeTaskProgress,
