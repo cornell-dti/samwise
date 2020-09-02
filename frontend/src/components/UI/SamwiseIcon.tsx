@@ -7,6 +7,7 @@ import { IconName } from './samwise-icon-types';
 import styles from './SamwiseIcon.module.css';
 import {
   Alert,
+  ArrowDownDark,
   Bell,
   CalendarDark,
   CalendarLight,
@@ -65,6 +66,10 @@ const SamwiseIcon = ({
     case 'alert':
       svg = Alert;
       altText = 'alert';
+      break;
+    case 'arrow-down-dark':
+      svg = ArrowDownDark;
+      altText = 'Forward/Backward';
       break;
     case 'bell':
       svg = Bell;

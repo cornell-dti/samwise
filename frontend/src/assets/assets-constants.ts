@@ -8,6 +8,7 @@ export const RegularBear = `${PUBLIC_URL}/bear/regular-bear.png`;
 export const FrontendCrash = `${PUBLIC_URL}/error/frontendCrash.png`;
 
 export const Alert = `${PUBLIC_URL}/svgs/alert.svg`;
+export const ArrowDownDark = `${PUBLIC_URL}/svgs/arrow-down-dark.svg`;
 export const Bell = `${PUBLIC_URL}/svgs/bell.svg`;
 export const CalendarDark = `${PUBLIC_URL}/svgs/calendar-dark.svg`;
 export const CalendarLight = `${PUBLIC_URL}/svgs/calendar-light.svg`;
