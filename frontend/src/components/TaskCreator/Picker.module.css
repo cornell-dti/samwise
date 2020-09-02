@@ -1,5 +1,5 @@
 .Main {
-  display: inline-block;
+  display: inline-flex;
   height: 20px;
   line-height: 20px;
 
@@ -12,8 +12,11 @@
   z-index: 2;
 }
 
-.Main svg {
-  transform: translateY(2.5px);
+.Main,
+.Main > span,
+.Main > span > span {
+  display: inline-flex;
+  align-items: center;
 }
 
 .Label {
