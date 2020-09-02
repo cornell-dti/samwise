@@ -32,14 +32,8 @@ exports[`FutureViewSubTask(false, false, false) matches snapshot 1`] = `
   >
     <img
       alt="Pin to Focus"
-      className="TaskIcon"
+      className="SamwiseIconDefaultStyle TaskIcon"
       src="/svgs/pin-2-dark-outline.svg"
-      style={
-        Object {
-          "height": "1em",
-          "width": "1em",
-        }
-      }
     />
   </span>
   <span
@@ -51,14 +45,8 @@ exports[`FutureViewSubTask(false, false, false) matches snapshot 1`] = `
   >
     <img
       alt="Delete"
-      className="TaskIcon"
+      className="SamwiseIconDefaultStyle TaskIcon"
       src="/svgs/XDark.svg"
-      style={
-        Object {
-          "height": "1em",
-          "width": "1em",
-        }
-      }
     />
   </span>
 </div>
@@ -101,14 +89,8 @@ exports[`FutureViewSubTask(false, false, true) matches snapshot 1`] = `
   >
     <img
       alt="Pin to Focus"
-      className="TaskIcon"
+      className="SamwiseIconDefaultStyle TaskIcon"
       src="/svgs/pin-2-dark-outline.svg"
-      style={
-        Object {
-          "height": "1em",
-          "width": "1em",
-        }
-      }
     />
   </span>
   <span
@@ -120,14 +102,8 @@ exports[`FutureViewSubTask(false, false, true) matches snapshot 1`] = `
   >
     <img
       alt="Delete"
-      className="TaskIcon"
+      className="SamwiseIconDefaultStyle TaskIcon"
       src="/svgs/XDark.svg"
-      style={
-        Object {
-          "height": "1em",
-          "width": "1em",
-        }
-      }
     />
   </span>
 </div>
@@ -170,14 +146,8 @@ exports[`FutureViewSubTask(false, true, false) matches snapshot 1`] = `
   >
     <img
       alt="Pin to Focus"
-      className="TaskIcon"
+      className="SamwiseIconDefaultStyle TaskIcon"
       src="/svgs/pin-2-dark-outline.svg"
-      style={
-        Object {
-          "height": "1em",
-          "width": "1em",
-        }
-      }
     />
   </span>
   <span
@@ -189,14 +159,8 @@ exports[`FutureViewSubTask(false, true, false) matches snapshot 1`] = `
   >
     <img
       alt="Delete"
-      className="TaskIcon"
+      className="SamwiseIconDefaultStyle TaskIcon"
       src="/svgs/XDark.svg"
-      style={
-        Object {
-          "height": "1em",
-          "width": "1em",
-        }
-      }
     />
   </span>
 </div>
@@ -239,14 +203,8 @@ exports[`FutureViewSubTask(false, true, true) matches snapshot 1`] = `
   >
     <img
       alt="Pin to Focus"
-      className="TaskIcon"
+      className="SamwiseIconDefaultStyle TaskIcon"
       src="/svgs/pin-2-dark-outline.svg"
-      style={
-        Object {
-          "height": "1em",
-          "width": "1em",
-        }
-      }
     />
   </span>
   <span
@@ -258,14 +216,8 @@ exports[`FutureViewSubTask(false, true, true) matches snapshot 1`] = `
   >
     <img
       alt="Delete"
-      className="TaskIcon"
+      className="SamwiseIconDefaultStyle TaskIcon"
       src="/svgs/XDark.svg"
-      style={
-        Object {
-          "height": "1em",
-          "width": "1em",
-        }
-      }
     />
   </span>
 </div>
@@ -301,14 +253,8 @@ exports[`FutureViewSubTask(true, false, false) matches snapshot 1`] = `
   >
     <img
       alt="Unpin from Focus"
-      className="TaskIcon"
+      className="SamwiseIconDefaultStyle TaskIcon"
       src="/svgs/pin-2-dark-filled.svg"
-      style={
-        Object {
-          "height": "1em",
-          "width": "1em",
-        }
-      }
     />
   </span>
   <span
@@ -320,14 +266,8 @@ exports[`FutureViewSubTask(true, false, false) matches snapshot 1`] = `
   >
     <img
       alt="Delete"
-      className="TaskIcon"
+      className="SamwiseIconDefaultStyle TaskIcon"
       src="/svgs/XDark.svg"
-      style={
-        Object {
-          "height": "1em",
-          "width": "1em",
-        }
-      }
     />
   </span>
 </div>
@@ -370,14 +310,8 @@ exports[`FutureViewSubTask(true, false, true) matches snapshot 1`] = `
   >
     <img
       alt="Unpin from Focus"
-      className="TaskIcon"
+      className="SamwiseIconDefaultStyle TaskIcon"
       src="/svgs/pin-2-dark-filled.svg"
-      style={
-        Object {
-          "height": "1em",
-          "width": "1em",
-        }
-      }
     />
   </span>
   <span
@@ -389,14 +323,8 @@ exports[`FutureViewSubTask(true, false, true) matches snapshot 1`] = `
   >
     <img
       alt="Delete"
-      className="TaskIcon"
+      className="SamwiseIconDefaultStyle TaskIcon"
       src="/svgs/XDark.svg"
-      style={
-        Object {
-          "height": "1em",
-          "width": "1em",
-        }
-      }
     />
   </span>
 </div>
@@ -439,14 +367,8 @@ exports[`FutureViewSubTask(true, true, false) matches snapshot 1`] = `
   >
     <img
       alt="Unpin from Focus"
-      className="TaskIcon"
+      className="SamwiseIconDefaultStyle TaskIcon"
       src="/svgs/pin-2-dark-filled.svg"
-      style={
-        Object {
-          "height": "1em",
-          "width": "1em",
-        }
-      }
     />
   </span>
   <span
@@ -458,14 +380,8 @@ exports[`FutureViewSubTask(true, true, false) matches snapshot 1`] = `
   >
     <img
       alt="Delete"
-      className="TaskIcon"
+      className="SamwiseIconDefaultStyle TaskIcon"
       src="/svgs/XDark.svg"
-      style={
-        Object {
-          "height": "1em",
-          "width": "1em",
-        }
-      }
     />
   </span>
 </div>
@@ -508,14 +424,8 @@ exports[`FutureViewSubTask(true, true, true) matches snapshot 1`] = `
   >
     <img
       alt="Unpin from Focus"
-      className="TaskIcon"
+      className="SamwiseIconDefaultStyle TaskIcon"
       src="/svgs/pin-2-dark-filled.svg"
-      style={
-        Object {
-          "height": "1em",
-          "width": "1em",
-        }
-      }
     />
   </span>
   <span
@@ -527,14 +437,8 @@ exports[`FutureViewSubTask(true, true, true) matches snapshot 1`] = `
   >
     <img
       alt="Delete"
-      className="TaskIcon"
+      className="SamwiseIconDefaultStyle TaskIcon"
       src="/svgs/XDark.svg"
-      style={
-        Object {
-          "height": "1em",
-          "width": "1em",
-        }
-      }
     />
   </span>
 </div>

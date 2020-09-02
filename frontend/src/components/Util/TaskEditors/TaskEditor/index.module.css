@@ -77,7 +77,7 @@ input.TaskEditorFlexibleInput:focus-within::placeholder {
   min-width: 16px;
 }
 
-.TaskEditorIcon {
+img.TaskEditorIcon {
   width: 16px;
   height: 16px;
   flex: none;
@@ -85,8 +85,8 @@ input.TaskEditorFlexibleInput:focus-within::placeholder {
   overflow: hidden;
 }
 
-.TaskEditorIcon:hover,
-.TaskEditorIcon:focus,
+img.TaskEditorIcon:hover,
+img.TaskEditorIcon:focus,
 .TaskEditorGrabberIcon:focus {
   background-color: rgba(255, 255, 255, 0.15);
   border-radius: 2px;

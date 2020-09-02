@@ -18,14 +18,8 @@ exports[`CompletedSeparator when not showing completed tasks matches snapshot 1`
   >
     <img
       alt="More"
-      className="Icon Inverted"
+      className="SamwiseIconDefaultStyle Icon Inverted"
       src="/svgs/v.svg"
-      style={
-        Object {
-          "height": "1em",
-          "width": "1em",
-        }
-      }
     />
   </span>
   <div
@@ -52,14 +46,8 @@ exports[`CompletedSeparator when showing completed tasks matches snapshot 1`] = 
   >
     <img
       alt="More"
-      className="Icon"
+      className="SamwiseIconDefaultStyle Icon"
       src="/svgs/v.svg"
-      style={
-        Object {
-          "height": "1em",
-          "width": "1em",
-        }
-      }
     />
   </span>
   <div

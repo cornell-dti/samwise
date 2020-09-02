@@ -45,14 +45,8 @@ exports[`TagItem with class matches snapshot. 1`] = `
     >
       <img
         alt="More"
-        className="Arrow"
+        className="SamwiseIconDefaultStyle Arrow"
         src="/svgs/v.svg"
-        style={
-          Object {
-            "height": "1em",
-            "width": "1em",
-          }
-        }
       />
     </span>
   </button>
@@ -70,13 +64,8 @@ exports[`TagItem with class matches snapshot. 1`] = `
     >
       <img
         alt="Delete"
+        className="SamwiseIconDefaultStyle"
         src="/svgs/XLight.svg"
-        style={
-          Object {
-            "height": "1em",
-            "width": "1em",
-          }
-        }
       />
     </span>
   </button>
@@ -124,14 +113,8 @@ exports[`TagItem without class matches snapshot. 1`] = `
     >
       <img
         alt="More"
-        className="Arrow"
+        className="SamwiseIconDefaultStyle Arrow"
         src="/svgs/v.svg"
-        style={
-          Object {
-            "height": "1em",
-            "width": "1em",
-          }
-        }
       />
     </span>
   </button>
@@ -149,13 +132,8 @@ exports[`TagItem without class matches snapshot. 1`] = `
     >
       <img
         alt="Delete"
+        className="SamwiseIconDefaultStyle"
         src="/svgs/XLight.svg"
-        style={
-          Object {
-            "height": "1em",
-            "width": "1em",
-          }
-        }
       />
     </span>
   </button>

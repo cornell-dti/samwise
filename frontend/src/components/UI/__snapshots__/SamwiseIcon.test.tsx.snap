@@ -9,13 +9,8 @@ exports[`SamwiseIcon matches snapshot. 1`] = `
 >
   <img
     alt="alert"
+    className="SamwiseIconDefaultStyle"
     src="/svgs/alert.svg"
-    style={
-      Object {
-        "height": "1em",
-        "width": "1em",
-      }
-    }
   />
 </span>
 `;
@@ -29,13 +24,8 @@ exports[`SamwiseIcon matches snapshot. 2`] = `
 >
   <img
     alt="Due date"
+    className="SamwiseIconDefaultStyle"
     src="/svgs/calendar-dark.svg"
-    style={
-      Object {
-        "height": "1em",
-        "width": "1em",
-      }
-    }
   />
 </span>
 `;
@@ -49,13 +39,8 @@ exports[`SamwiseIcon matches snapshot. 3`] = `
 >
   <img
     alt="Due date"
+    className="SamwiseIconDefaultStyle"
     src="/svgs/calendar-light.svg"
-    style={
-      Object {
-        "height": "1em",
-        "width": "1em",
-      }
-    }
   />
 </span>
 `;
@@ -69,13 +54,8 @@ exports[`SamwiseIcon matches snapshot. 4`] = `
 >
   <img
     alt="Checked"
+    className="SamwiseIconDefaultStyle"
     src="/svgs/checked-dark.svg"
-    style={
-      Object {
-        "height": "1em",
-        "width": "1em",
-      }
-    }
   />
 </span>
 `;
@@ -89,13 +69,8 @@ exports[`SamwiseIcon matches snapshot. 5`] = `
 >
   <img
     alt="Checked"
+    className="SamwiseIconDefaultStyle"
     src="/svgs/checked.svg"
-    style={
-      Object {
-        "height": "1em",
-        "width": "1em",
-      }
-    }
   />
 </span>
 `;
@@ -109,13 +84,8 @@ exports[`SamwiseIcon matches snapshot. 6`] = `
 >
   <img
     alt="clock"
+    className="SamwiseIconDefaultStyle"
     src="/svgs/clock.svg"
-    style={
-      Object {
-        "height": "1em",
-        "width": "1em",
-      }
-    }
   />
 </span>
 `;
@@ -129,13 +99,8 @@ exports[`SamwiseIcon matches snapshot. 7`] = `
 >
   <img
     alt="Reorder"
+    className="SamwiseIconDefaultStyle"
     src="/svgs/grabbers.svg"
-    style={
-      Object {
-        "height": "1em",
-        "width": "1em",
-      }
-    }
   />
 </span>
 `;
@@ -149,13 +114,8 @@ exports[`SamwiseIcon matches snapshot. 8`] = `
 >
   <img
     alt="Hide"
+    className="SamwiseIconDefaultStyle"
     src="/svgs/hide.svg"
-    style={
-      Object {
-        "height": "1em",
-        "width": "1em",
-      }
-    }
   />
 </span>
 `;
@@ -169,13 +129,8 @@ exports[`SamwiseIcon matches snapshot. 9`] = `
 >
   <img
     alt="Unpin from Focus"
+    className="SamwiseIconDefaultStyle"
     src="/svgs/pin-2-dark-filled.svg"
-    style={
-      Object {
-        "height": "1em",
-        "width": "1em",
-      }
-    }
   />
 </span>
 `;
@@ -189,13 +144,8 @@ exports[`SamwiseIcon matches snapshot. 10`] = `
 >
   <img
     alt="Pin to Focus"
+    className="SamwiseIconDefaultStyle"
     src="/svgs/pin-2-dark-outline.svg"
-    style={
-      Object {
-        "height": "1em",
-        "width": "1em",
-      }
-    }
   />
 </span>
 `;
@@ -209,13 +159,8 @@ exports[`SamwiseIcon matches snapshot. 11`] = `
 >
   <img
     alt="Unpin from Focus"
+    className="SamwiseIconDefaultStyle"
     src="/svgs/pin-2-light-filled.svg"
-    style={
-      Object {
-        "height": "1em",
-        "width": "1em",
-      }
-    }
   />
 </span>
 `;
@@ -229,13 +174,8 @@ exports[`SamwiseIcon matches snapshot. 12`] = `
 >
   <img
     alt="Pin to Focus"
+    className="SamwiseIconDefaultStyle"
     src="/svgs/pin-2-light-outline.svg"
-    style={
-      Object {
-        "height": "1em",
-        "width": "1em",
-      }
-    }
   />
 </span>
 `;
@@ -249,13 +189,8 @@ exports[`SamwiseIcon matches snapshot. 13`] = `
 >
   <img
     alt="Settings"
+    className="SamwiseIconDefaultStyle"
     src="/svgs/settings.svg"
-    style={
-      Object {
-        "height": "1em",
-        "width": "1em",
-      }
-    }
   />
 </span>
 `;
@@ -269,13 +204,8 @@ exports[`SamwiseIcon matches snapshot. 14`] = `
 >
   <img
     alt="Show"
+    className="SamwiseIconDefaultStyle"
     src="/svgs/show.svg"
-    style={
-      Object {
-        "height": "1em",
-        "width": "1em",
-      }
-    }
   />
 </span>
 `;
@@ -289,13 +219,8 @@ exports[`SamwiseIcon matches snapshot. 15`] = `
 >
   <img
     alt="Tag"
+    className="SamwiseIconDefaultStyle"
     src="/svgs/tag.svg"
-    style={
-      Object {
-        "height": "1em",
-        "width": "1em",
-      }
-    }
   />
 </span>
 `;
@@ -309,13 +234,8 @@ exports[`SamwiseIcon matches snapshot. 16`] = `
 >
   <img
     alt="unchecked"
+    className="SamwiseIconDefaultStyle"
     src="/svgs/unchecked.svg"
-    style={
-      Object {
-        "height": "1em",
-        "width": "1em",
-      }
-    }
   />
 </span>
 `;
@@ -329,13 +249,8 @@ exports[`SamwiseIcon matches snapshot. 17`] = `
 >
   <img
     alt="More"
+    className="SamwiseIconDefaultStyle"
     src="/svgs/v.svg"
-    style={
-      Object {
-        "height": "1em",
-        "width": "1em",
-      }
-    }
   />
 </span>
 `;
@@ -349,13 +264,8 @@ exports[`SamwiseIcon matches snapshot. 18`] = `
 >
   <img
     alt="Delete"
+    className="SamwiseIconDefaultStyle"
     src="/svgs/XDark.svg"
-    style={
-      Object {
-        "height": "1em",
-        "width": "1em",
-      }
-    }
   />
 </span>
 `;
@@ -369,13 +279,8 @@ exports[`SamwiseIcon matches snapshot. 19`] = `
 >
   <img
     alt="Delete"
+    className="SamwiseIconDefaultStyle"
     src="/svgs/XLight.svg"
-    style={
-      Object {
-        "height": "1em",
-        "width": "1em",
-      }
-    }
   />
 </span>
 `;

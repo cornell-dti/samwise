@@ -29,13 +29,8 @@ exports[`SettingsButton matches snapshot. 1`] = `
       >
         <img
           alt="Settings"
+          className="SamwiseIconDefaultStyle"
           src="/svgs/settings.svg"
-          style={
-            Object {
-              "height": "1em",
-              "width": "1em",
-            }
-          }
         />
       </span>
     </p>

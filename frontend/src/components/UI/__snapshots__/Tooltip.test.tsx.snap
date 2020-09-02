@@ -16,13 +16,8 @@ exports[`Tooltip matches snapshot 1`] = `
     >
       <img
         alt="alert"
+        className="SamwiseIconDefaultStyle"
         src="/svgs/alert.svg"
-        style={
-          Object {
-            "height": "1em",
-            "width": "1em",
-          }
-        }
       />
     </span>
   </div>

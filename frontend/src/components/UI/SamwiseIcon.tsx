@@ -4,6 +4,7 @@
 
 import React, { ReactElement, CSSProperties } from 'react';
 import { IconName } from './samwise-icon-types';
+import styles from './SamwiseIcon.module.css';
 import {
   Alert,
   Bell,
@@ -51,7 +52,7 @@ type Props = {
 const SamwiseIcon = ({
   iconName,
   className,
-  style = {},
+  style,
   tabIndex,
   title,
   onClick,
@@ -211,9 +212,13 @@ const SamwiseIcon = ({
     >
       <img
         src={svg}
-        className={className}
+        className={
+          className != null
+            ? `${styles.SamwiseIconDefaultStyle} ${className}`
+            : styles.SamwiseIconDefaultStyle
+        }
         tabIndex={tabIndex}
-        style={{ width: '1em', height: '1em', ...style }}
+        style={style}
         alt={altText}
       />
     </span>
