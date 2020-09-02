@@ -4,7 +4,7 @@ exports[`ErrorBoundary can catch error and render 1`] = `
 <div>
   <img
     alt="Uh oh - we broke something"
-    src="frontendCrash.png"
+    src="/error/frontendCrash.png"
     style={
       Object {
         "height": "100vh",

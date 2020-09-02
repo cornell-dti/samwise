@@ -1,6 +1,5 @@
 import React, { ReactElement, SyntheticEvent, ChangeEvent, KeyboardEvent } from 'react';
 import Calendar from 'react-calendar';
-import { useTodayLastSecondTime, useTodayFirstSecondTime } from 'hooks/time-hook';
 import { date2String, getDateAfterXWeeks } from 'common/lib/util/datetime-util';
 import { NONE_TAG } from 'common/lib/util/tag-util';
 import { RepeatingDate } from 'common/lib/types/store-types';
@@ -11,6 +10,7 @@ import {
   isDayOfWeekSet,
   DAYS_IN_WEEK,
 } from 'common/lib/util/bitwise-util';
+import { useTodayLastSecondTime, useTodayFirstSecondTime } from '../../hooks/time-hook';
 import styles from './Picker.module.css';
 import dateStyles from './DatePicker.module.css';
 import SamwiseIcon from '../UI/SamwiseIcon';

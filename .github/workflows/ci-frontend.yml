@@ -19,12 +19,12 @@ jobs:
       - name: Run TypeScript Compiler
         run: yarn workspace frontend tsc
       - name: Build frontend
-        run: PUBLIC_URL="/${{ github.event.number }}" yarn workspace frontend build:stage
+        run: NEXT_PUBLIC_URL="/${{ github.event.number }}" NEXT_PUBLIC_URL="/${{ github.event.number }}" yarn workspace frontend build:stage
       - name: Upload Built Static Assets
         uses: actions/upload-artifact@master
         with:
           name: built-frontend-assets
-          path: frontend/build
+          path: frontend/out
   deploy:
     runs-on: ubuntu-latest
     needs: [build]

@@ -1,6 +1,7 @@
 const GK_GROUP_TASK = 'SAMWISE_GK-GROUP_TASK_ENABLED';
 
-export const isGroupTaskEnabled = (): boolean => localStorage.getItem(GK_GROUP_TASK) === 'true';
+export const isGroupTaskEnabled = (): boolean =>
+  process.env.broswer ? localStorage.getItem(GK_GROUP_TASK) === 'true' : false;
 
 const enableGroupTask = (): void => {
   localStorage.setItem(GK_GROUP_TASK, 'true');

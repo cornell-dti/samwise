@@ -24,36 +24,42 @@ exports[`FutureViewSubTask(false, false, false) matches snapshot 1`] = `
     foo
   </span>
   <span
+    onClick={[Function]}
+    onKeyUp={[Function]}
+    role="button"
+    tabIndex={0}
     title="Pin to Focus"
   >
-    <svg
+    <img
       alt="Pin to Focus"
       className="TaskIcon"
-      height="1em"
-      onClick={[Function]}
-      onKeyUp={[Function]}
-      tabIndex={0}
-      title="Pin to Focus"
-      width="1em"
-    >
-      pin-2-dark-outline.svg
-    </svg>
+      src="/svgs/pin-2-dark-outline.svg"
+      style={
+        Object {
+          "height": "1em",
+          "width": "1em",
+        }
+      }
+    />
   </span>
   <span
+    onClick={[Function]}
+    onKeyUp={[Function]}
+    role="button"
+    tabIndex={0}
     title="Delete"
   >
-    <svg
+    <img
       alt="Delete"
       className="TaskIcon"
-      height="1em"
-      onClick={[Function]}
-      onKeyUp={[Function]}
-      tabIndex={0}
-      title="Delete"
-      width="1em"
-    >
-      XDark.svg
-    </svg>
+      src="/svgs/XDark.svg"
+      style={
+        Object {
+          "height": "1em",
+          "width": "1em",
+        }
+      }
+    />
   </span>
 </div>
 `;
@@ -87,36 +93,42 @@ exports[`FutureViewSubTask(false, false, true) matches snapshot 1`] = `
     foo
   </span>
   <span
+    onClick={[Function]}
+    onKeyUp={[Function]}
+    role="button"
+    tabIndex={0}
     title="Pin to Focus"
   >
-    <svg
+    <img
       alt="Pin to Focus"
       className="TaskIcon"
-      height="1em"
-      onClick={[Function]}
-      onKeyUp={[Function]}
-      tabIndex={0}
-      title="Pin to Focus"
-      width="1em"
-    >
-      pin-2-dark-outline.svg
-    </svg>
+      src="/svgs/pin-2-dark-outline.svg"
+      style={
+        Object {
+          "height": "1em",
+          "width": "1em",
+        }
+      }
+    />
   </span>
   <span
+    onClick={[Function]}
+    onKeyUp={[Function]}
+    role="button"
+    tabIndex={0}
     title="Delete"
   >
-    <svg
+    <img
       alt="Delete"
       className="TaskIcon"
-      height="1em"
-      onClick={[Function]}
-      onKeyUp={[Function]}
-      tabIndex={0}
-      title="Delete"
-      width="1em"
-    >
-      XDark.svg
-    </svg>
+      src="/svgs/XDark.svg"
+      style={
+        Object {
+          "height": "1em",
+          "width": "1em",
+        }
+      }
+    />
   </span>
 </div>
 `;
@@ -150,36 +162,42 @@ exports[`FutureViewSubTask(false, true, false) matches snapshot 1`] = `
     foo
   </span>
   <span
+    onClick={[Function]}
+    onKeyUp={[Function]}
+    role="button"
+    tabIndex={0}
     title="Pin to Focus"
   >
-    <svg
+    <img
       alt="Pin to Focus"
       className="TaskIcon"
-      height="1em"
-      onClick={[Function]}
-      onKeyUp={[Function]}
-      tabIndex={0}
-      title="Pin to Focus"
-      width="1em"
-    >
-      pin-2-dark-outline.svg
-    </svg>
+      src="/svgs/pin-2-dark-outline.svg"
+      style={
+        Object {
+          "height": "1em",
+          "width": "1em",
+        }
+      }
+    />
   </span>
   <span
+    onClick={[Function]}
+    onKeyUp={[Function]}
+    role="button"
+    tabIndex={0}
     title="Delete"
   >
-    <svg
+    <img
       alt="Delete"
       className="TaskIcon"
-      height="1em"
-      onClick={[Function]}
-      onKeyUp={[Function]}
-      tabIndex={0}
-      title="Delete"
-      width="1em"
-    >
-      XDark.svg
-    </svg>
+      src="/svgs/XDark.svg"
+      style={
+        Object {
+          "height": "1em",
+          "width": "1em",
+        }
+      }
+    />
   </span>
 </div>
 `;
@@ -213,36 +231,42 @@ exports[`FutureViewSubTask(false, true, true) matches snapshot 1`] = `
     foo
   </span>
   <span
+    onClick={[Function]}
+    onKeyUp={[Function]}
+    role="button"
+    tabIndex={0}
     title="Pin to Focus"
   >
-    <svg
+    <img
       alt="Pin to Focus"
       className="TaskIcon"
-      height="1em"
-      onClick={[Function]}
-      onKeyUp={[Function]}
-      tabIndex={0}
-      title="Pin to Focus"
-      width="1em"
-    >
-      pin-2-dark-outline.svg
-    </svg>
+      src="/svgs/pin-2-dark-outline.svg"
+      style={
+        Object {
+          "height": "1em",
+          "width": "1em",
+        }
+      }
+    />
   </span>
   <span
+    onClick={[Function]}
+    onKeyUp={[Function]}
+    role="button"
+    tabIndex={0}
     title="Delete"
   >
-    <svg
+    <img
       alt="Delete"
       className="TaskIcon"
-      height="1em"
-      onClick={[Function]}
-      onKeyUp={[Function]}
-      tabIndex={0}
-      title="Delete"
-      width="1em"
-    >
-      XDark.svg
-    </svg>
+      src="/svgs/XDark.svg"
+      style={
+        Object {
+          "height": "1em",
+          "width": "1em",
+        }
+      }
+    />
   </span>
 </div>
 `;
@@ -269,36 +293,42 @@ exports[`FutureViewSubTask(true, false, false) matches snapshot 1`] = `
     foo
   </span>
   <span
+    onClick={[Function]}
+    onKeyUp={[Function]}
+    role="button"
+    tabIndex={0}
     title="Unpin from Focus"
   >
-    <svg
+    <img
       alt="Unpin from Focus"
       className="TaskIcon"
-      height="1em"
-      onClick={[Function]}
-      onKeyUp={[Function]}
-      tabIndex={0}
-      title="Unpin from Focus"
-      width="1em"
-    >
-      pin-2-dark-filled.svg
-    </svg>
+      src="/svgs/pin-2-dark-filled.svg"
+      style={
+        Object {
+          "height": "1em",
+          "width": "1em",
+        }
+      }
+    />
   </span>
   <span
+    onClick={[Function]}
+    onKeyUp={[Function]}
+    role="button"
+    tabIndex={0}
     title="Delete"
   >
-    <svg
+    <img
       alt="Delete"
       className="TaskIcon"
-      height="1em"
-      onClick={[Function]}
-      onKeyUp={[Function]}
-      tabIndex={0}
-      title="Delete"
-      width="1em"
-    >
-      XDark.svg
-    </svg>
+      src="/svgs/XDark.svg"
+      style={
+        Object {
+          "height": "1em",
+          "width": "1em",
+        }
+      }
+    />
   </span>
 </div>
 `;
@@ -332,36 +362,42 @@ exports[`FutureViewSubTask(true, false, true) matches snapshot 1`] = `
     foo
   </span>
   <span
+    onClick={[Function]}
+    onKeyUp={[Function]}
+    role="button"
+    tabIndex={0}
     title="Unpin from Focus"
   >
-    <svg
+    <img
       alt="Unpin from Focus"
       className="TaskIcon"
-      height="1em"
-      onClick={[Function]}
-      onKeyUp={[Function]}
-      tabIndex={0}
-      title="Unpin from Focus"
-      width="1em"
-    >
-      pin-2-dark-filled.svg
-    </svg>
+      src="/svgs/pin-2-dark-filled.svg"
+      style={
+        Object {
+          "height": "1em",
+          "width": "1em",
+        }
+      }
+    />
   </span>
   <span
+    onClick={[Function]}
+    onKeyUp={[Function]}
+    role="button"
+    tabIndex={0}
     title="Delete"
   >
-    <svg
+    <img
       alt="Delete"
       className="TaskIcon"
-      height="1em"
-      onClick={[Function]}
-      onKeyUp={[Function]}
-      tabIndex={0}
-      title="Delete"
-      width="1em"
-    >
-      XDark.svg
-    </svg>
+      src="/svgs/XDark.svg"
+      style={
+        Object {
+          "height": "1em",
+          "width": "1em",
+        }
+      }
+    />
   </span>
 </div>
 `;
@@ -395,36 +431,42 @@ exports[`FutureViewSubTask(true, true, false) matches snapshot 1`] = `
     foo
   </span>
   <span
+    onClick={[Function]}
+    onKeyUp={[Function]}
+    role="button"
+    tabIndex={0}
     title="Unpin from Focus"
   >
-    <svg
+    <img
       alt="Unpin from Focus"
       className="TaskIcon"
-      height="1em"
-      onClick={[Function]}
-      onKeyUp={[Function]}
-      tabIndex={0}
-      title="Unpin from Focus"
-      width="1em"
-    >
-      pin-2-dark-filled.svg
-    </svg>
+      src="/svgs/pin-2-dark-filled.svg"
+      style={
+        Object {
+          "height": "1em",
+          "width": "1em",
+        }
+      }
+    />
   </span>
   <span
+    onClick={[Function]}
+    onKeyUp={[Function]}
+    role="button"
+    tabIndex={0}
     title="Delete"
   >
-    <svg
+    <img
       alt="Delete"
       className="TaskIcon"
-      height="1em"
-      onClick={[Function]}
-      onKeyUp={[Function]}
-      tabIndex={0}
-      title="Delete"
-      width="1em"
-    >
-      XDark.svg
-    </svg>
+      src="/svgs/XDark.svg"
+      style={
+        Object {
+          "height": "1em",
+          "width": "1em",
+        }
+      }
+    />
   </span>
 </div>
 `;
@@ -458,36 +500,42 @@ exports[`FutureViewSubTask(true, true, true) matches snapshot 1`] = `
     foo
   </span>
   <span
+    onClick={[Function]}
+    onKeyUp={[Function]}
+    role="button"
+    tabIndex={0}
     title="Unpin from Focus"
   >
-    <svg
+    <img
       alt="Unpin from Focus"
       className="TaskIcon"
-      height="1em"
-      onClick={[Function]}
-      onKeyUp={[Function]}
-      tabIndex={0}
-      title="Unpin from Focus"
-      width="1em"
-    >
-      pin-2-dark-filled.svg
-    </svg>
+      src="/svgs/pin-2-dark-filled.svg"
+      style={
+        Object {
+          "height": "1em",
+          "width": "1em",
+        }
+      }
+    />
   </span>
   <span
+    onClick={[Function]}
+    onKeyUp={[Function]}
+    role="button"
+    tabIndex={0}
     title="Delete"
   >
-    <svg
+    <img
       alt="Delete"
       className="TaskIcon"
-      height="1em"
-      onClick={[Function]}
-      onKeyUp={[Function]}
-      tabIndex={0}
-      title="Delete"
-      width="1em"
-    >
-      XDark.svg
-    </svg>
+      src="/svgs/XDark.svg"
+      style={
+        Object {
+          "height": "1em",
+          "width": "1em",
+        }
+      }
+    />
   </span>
 </div>
 `;

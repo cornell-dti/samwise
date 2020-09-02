@@ -4,7 +4,6 @@ import Confetti from 'react-dom-confetti';
 import { TasksProgressProps } from 'common/lib/util/task-util';
 import styles from './Celebrate.module.css';
 import { getProgress } from '../../../store/selectors';
-// import Bear from '../../../assets/bear/happy-bear.png';
 
 type Props = TasksProgressProps;
 

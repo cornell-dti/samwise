@@ -3,7 +3,12 @@ import { useState, useEffect, useMemo, ReactNode } from 'react';
 export type WindowSize = { readonly width: number; readonly height: number };
 type Listener = (windowSize: WindowSize) => void;
 
-const getWindowSize = (): WindowSize => ({ width: window.innerWidth, height: window.innerHeight });
+const getWindowSize = (): WindowSize => {
+  if (!process.browser) {
+    return { width: 0, height: 0 };
+  }
+  return { width: window.innerWidth, height: window.innerHeight };
+};
 
 let cachedWindowSize: WindowSize = { width: 0, height: 0 };
 let hasUnreportedChange = false;
@@ -35,10 +40,10 @@ const bindListener = (listener: Listener): (() => void) => {
   };
 };
 
-if (cachedWindowSize.width === 0) {
+export const initializeWindowSizeHooksListeners = (): void => {
   window.addEventListener('resize', windowSizeListener);
   setInterval(notifyAll, 100);
-}
+};
 
 /**
  * A hook for window size.

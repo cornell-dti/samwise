@@ -8,7 +8,7 @@ exports[`Desktop completed ProgressTracker matches snapshot 1`] = `
     className="Bear"
     style={
       Object {
-        "backgroundImage": "url(happy-bear.png)",
+        "backgroundImage": "url(/bear/happy-bear.png)",
         "margin": "0",
       }
     }
@@ -74,7 +74,7 @@ exports[`Desktop incompleted ProgressTracker matches snapshot 1`] = `
     className="Bear"
     style={
       Object {
-        "backgroundImage": "url(regular-bear.png)",
+        "backgroundImage": "url(/bear/regular-bear.png)",
         "margin": "0",
       }
     }
@@ -140,7 +140,7 @@ exports[`Mobile completed ProgressTracker matches snapshot 1`] = `
     className="Bear"
     style={
       Object {
-        "backgroundImage": "url(happy-bear.png)",
+        "backgroundImage": "url(/bear/happy-bear.png)",
       }
     }
   />
@@ -198,7 +198,7 @@ exports[`Mobile incompleted ProgressTracker matches snapshot 1`] = `
     className="Bear"
     style={
       Object {
-        "backgroundImage": "url(regular-bear.png)",
+        "backgroundImage": "url(/bear/regular-bear.png)",
       }
     }
   />

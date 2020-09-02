@@ -86,19 +86,22 @@ exports[`TitleBar matches snapshot 1`] = `
                 }
               />
               <span
+                onKeyUp={[Function]}
+                role="button"
+                tabIndex={0}
                 title="More"
               >
-                <svg
+                <img
                   alt="More"
                   className="Arrow"
-                  height="1em"
-                  onKeyUp={[Function]}
-                  tabIndex={0}
-                  title="More"
-                  width="1em"
-                >
-                  v.svg
-                </svg>
+                  src="/svgs/v.svg"
+                  style={
+                    Object {
+                      "height": "1em",
+                      "width": "1em",
+                    }
+                  }
+                />
               </span>
             </button>
             <button
@@ -108,18 +111,21 @@ exports[`TitleBar matches snapshot 1`] = `
               type="button"
             >
               <span
+                onKeyUp={[Function]}
+                role="button"
+                tabIndex={0}
                 title="Delete"
               >
-                <svg
+                <img
                   alt="Delete"
-                  height="1em"
-                  onKeyUp={[Function]}
-                  tabIndex={0}
-                  title="Delete"
-                  width="1em"
-                >
-                  XLight.svg
-                </svg>
+                  src="/svgs/XLight.svg"
+                  style={
+                    Object {
+                      "height": "1em",
+                      "width": "1em",
+                    }
+                  }
+                />
               </span>
             </button>
           </li>
@@ -156,19 +162,22 @@ exports[`TitleBar matches snapshot 1`] = `
                 }
               />
               <span
+                onKeyUp={[Function]}
+                role="button"
+                tabIndex={0}
                 title="More"
               >
-                <svg
+                <img
                   alt="More"
                   className="Arrow"
-                  height="1em"
-                  onKeyUp={[Function]}
-                  tabIndex={0}
-                  title="More"
-                  width="1em"
-                >
-                  v.svg
-                </svg>
+                  src="/svgs/v.svg"
+                  style={
+                    Object {
+                      "height": "1em",
+                      "width": "1em",
+                    }
+                  }
+                />
               </span>
             </button>
             <button
@@ -178,18 +187,21 @@ exports[`TitleBar matches snapshot 1`] = `
               type="button"
             >
               <span
+                onKeyUp={[Function]}
+                role="button"
+                tabIndex={0}
                 title="Delete"
               >
-                <svg
+                <img
                   alt="Delete"
-                  height="1em"
-                  onKeyUp={[Function]}
-                  tabIndex={0}
-                  title="Delete"
-                  width="1em"
-                >
-                  XLight.svg
-                </svg>
+                  src="/svgs/XLight.svg"
+                  style={
+                    Object {
+                      "height": "1em",
+                      "width": "1em",
+                    }
+                  }
+                />
               </span>
             </button>
           </li>
@@ -226,19 +238,22 @@ exports[`TitleBar matches snapshot 1`] = `
                 }
               />
               <span
+                onKeyUp={[Function]}
+                role="button"
+                tabIndex={0}
                 title="More"
               >
-                <svg
+                <img
                   alt="More"
                   className="Arrow"
-                  height="1em"
-                  onKeyUp={[Function]}
-                  tabIndex={0}
-                  title="More"
-                  width="1em"
-                >
-                  v.svg
-                </svg>
+                  src="/svgs/v.svg"
+                  style={
+                    Object {
+                      "height": "1em",
+                      "width": "1em",
+                    }
+                  }
+                />
               </span>
             </button>
             <button
@@ -248,18 +263,21 @@ exports[`TitleBar matches snapshot 1`] = `
               type="button"
             >
               <span
+                onKeyUp={[Function]}
+                role="button"
+                tabIndex={0}
                 title="Delete"
               >
-                <svg
+                <img
                   alt="Delete"
-                  height="1em"
-                  onKeyUp={[Function]}
-                  tabIndex={0}
-                  title="Delete"
-                  width="1em"
-                >
-                  XLight.svg
-                </svg>
+                  src="/svgs/XLight.svg"
+                  style={
+                    Object {
+                      "height": "1em",
+                      "width": "1em",
+                    }
+                  }
+                />
               </span>
             </button>
           </li>
@@ -300,19 +318,22 @@ exports[`TitleBar matches snapshot 1`] = `
                 }
               />
               <span
+                onKeyUp={[Function]}
+                role="button"
+                tabIndex={0}
                 title="More"
               >
-                <svg
+                <img
                   alt="More"
                   className="Arrow"
-                  height="1em"
-                  onKeyUp={[Function]}
-                  tabIndex={0}
-                  title="More"
-                  width="1em"
-                >
-                  v.svg
-                </svg>
+                  src="/svgs/v.svg"
+                  style={
+                    Object {
+                      "height": "1em",
+                      "width": "1em",
+                    }
+                  }
+                />
               </span>
             </button>
             <button
@@ -322,18 +343,21 @@ exports[`TitleBar matches snapshot 1`] = `
               type="button"
             >
               <span
+                onKeyUp={[Function]}
+                role="button"
+                tabIndex={0}
                 title="Delete"
               >
-                <svg
+                <img
                   alt="Delete"
-                  height="1em"
-                  onKeyUp={[Function]}
-                  tabIndex={0}
-                  title="Delete"
-                  width="1em"
-                >
-                  XLight.svg
-                </svg>
+                  src="/svgs/XLight.svg"
+                  style={
+                    Object {
+                      "height": "1em",
+                      "width": "1em",
+                    }
+                  }
+                />
               </span>
             </button>
           </li>

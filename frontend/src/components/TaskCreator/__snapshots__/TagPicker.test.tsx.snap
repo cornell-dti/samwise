@@ -19,19 +19,22 @@ exports[`TagPicker(THE_GLORIOUS_NONE_TAG, false) matches snapshot 1`] = `
       className="TagDisplay"
     >
       <span
+        onKeyUp={[Function]}
+        role="button"
+        tabIndex={0}
         title="Tag"
       >
-        <svg
+        <img
           alt="Tag"
           className="CenterIcon"
-          height="1em"
-          onKeyUp={[Function]}
-          tabIndex={0}
-          title="Tag"
-          width="1em"
-        >
-          tag-light.svg
-        </svg>
+          src="/svgs/tag-light.svg"
+          style={
+            Object {
+              "height": "1em",
+              "width": "1em",
+            }
+          }
+        />
       </span>
        add class  
     </span>
@@ -58,19 +61,22 @@ exports[`TagPicker(THE_GLORIOUS_NONE_TAG, true) matches snapshot 1`] = `
       className="TagDisplay"
     >
       <span
+        onKeyUp={[Function]}
+        role="button"
+        tabIndex={0}
         title="Tag"
       >
-        <svg
+        <img
           alt="Tag"
           className="CenterIcon"
-          height="1em"
-          onKeyUp={[Function]}
-          tabIndex={0}
-          title="Tag"
-          width="1em"
-        >
-          tag-light.svg
-        </svg>
+          src="/svgs/tag-light.svg"
+          style={
+            Object {
+              "height": "1em",
+              "width": "1em",
+            }
+          }
+        />
       </span>
        add class  
     </span>
