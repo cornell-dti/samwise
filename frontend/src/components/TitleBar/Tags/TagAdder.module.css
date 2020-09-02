@@ -31,6 +31,7 @@ input.SearchInput:focus {
 }
 
 button.DropdownItem {
+  border: none;
   display: block;
   width: 100%;
   font-size: 14px;
