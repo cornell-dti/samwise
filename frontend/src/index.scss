@@ -103,6 +103,29 @@ button.react-calendar__month-view__days__day {
   padding-bottom: 0.4em;
 }
 
+button.react-calendar__month-view__days__day:hover {
+  background: #e6e6e6;
+  border: none;
+}
+
+button.react-calendar__month-view__days__day:disabled {
+  background: #e6e6e6;
+  cursor: not-allowed;
+}
+
+.react-calendar__tile {
+  background: white;
+  padding: 2em 0.5em;
+}
+
+.react-calendar__tile:disabled {
+  background: #f0f0f0;
+}
+
+.react-calendar__tile--hasActive {
+  background: #76baff !important;
+}
+
 .NewTaskDatePick div > abbr {
   color: #7f8fa4;
   font-weight: normal;
