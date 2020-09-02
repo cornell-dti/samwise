@@ -26,7 +26,8 @@
 }
 
 .DateDisplay {
-  display: inline;
+  display: inline-flex;
+  align-items: center;
   padding: 0 5px 0 10px;
 }
 
@@ -39,7 +40,13 @@
 
   /* Any narrower and some long class tags will begin to be truncated. */
   max-width: 110px;
-  display: inline-block;
+  display: inline-flex;
+  align-items: center;
+}
+
+.TagDisplay > span,
+.DateDisplay > span {
+  display: flex;
 }
 
 .CenterIcon {

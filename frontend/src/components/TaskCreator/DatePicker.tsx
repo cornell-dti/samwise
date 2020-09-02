@@ -114,7 +114,8 @@ export default function DatePicker(props: Props): ReactElement {
     const internal = isDefault ? (
       <>
         <span className={styles.DateDisplay}>
-          <SamwiseIcon iconName="calendar-light" className={styles.CenterIcon} /> add date&nbsp;
+          <SamwiseIcon iconName="calendar-light" className={styles.CenterIcon} />
+          &nbsp;add date&nbsp;
         </span>
       </>
     ) : (
