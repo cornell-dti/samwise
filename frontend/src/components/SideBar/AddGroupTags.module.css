@@ -35,7 +35,7 @@
   top: 5px;
 }
 
-.ClassItem p {
+div.ClassItem > p {
   text-align: left;
   margin-left: 10px;
   font-size: 10px;
