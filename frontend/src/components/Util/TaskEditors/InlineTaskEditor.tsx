@@ -14,9 +14,12 @@ type Props = {
 /**
  * The task editor used to edit task inline, activated on focus.
  */
-export default function InlineTaskEditor(
-  { original, filtered, className, calendarPosition }: Props,
-): ReactElement {
+export default function InlineTaskEditor({
+  original,
+  filtered,
+  className,
+  calendarPosition,
+}: Props): ReactElement {
   const [disabled, setDisabled] = useState(true);
   const { id } = original;
   const { id: _, metadata, children, ...mainTask } = filtered;

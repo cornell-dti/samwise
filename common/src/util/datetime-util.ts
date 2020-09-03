@@ -29,7 +29,8 @@ export function day2String(day: number): string {
  */
 export function date2String(date: Date): string {
   return date.toLocaleDateString('en-US', {
-    month: 'numeric', day: 'numeric',
+    month: 'numeric',
+    day: 'numeric',
   });
 }
 
@@ -39,7 +40,9 @@ export function date2String(date: Date): string {
  */
 export function date2FullDateString(date: Date): string {
   return date.toLocaleDateString('en-US', {
-    month: 'long', day: 'numeric', year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+    year: 'numeric',
   });
 }
 
@@ -49,7 +52,8 @@ export function date2FullDateString(date: Date): string {
  */
 export function date2YearMonth(date: Date): string {
   return date.toLocaleDateString('en-US', {
-    month: 'long', year: 'numeric',
+    month: 'long',
+    year: 'numeric',
   });
 }
 
@@ -67,9 +71,11 @@ export function getTodayAtZeroAM(): Date {
  */
 export function isToday(date: Date): boolean {
   const today = new Date();
-  return today.getFullYear() === date.getFullYear()
-    && today.getMonth() === date.getMonth()
-    && today.getDate() === date.getDate();
+  return (
+    today.getFullYear() === date.getFullYear() &&
+    today.getMonth() === date.getMonth() &&
+    today.getDate() === date.getDate()
+  );
 }
 
 /**

@@ -1,7 +1,7 @@
 import React, { ReactElement } from 'react';
 import { Map } from 'immutable';
 import { connect } from 'react-redux';
-import Fuse, { FuseOptions } from 'fuse.js';
+import Fuse from 'fuse.js';
 import SearchBox from 'components/Util/SearchBox';
 import { Course, State } from 'common/lib/types/store-types';
 import styles from './TagAdder.module.css';
@@ -18,7 +18,7 @@ type SimpleCourse = {
   readonly noSpaceName: string;
 };
 
-type Props = { readonly fuse: Fuse<SimpleCourse, FuseOptions<SimpleCourse>> | null };
+type Props = { readonly fuse: Fuse<SimpleCourse> | null };
 
 /**
  * Returns the computed course options.
@@ -31,13 +31,17 @@ function getCourseOptions(courseMap: Map<string, Course[]>): SimpleCourse[] {
   let i = 0;
   courseMap.forEach((courses: Course[]) => {
     courses.forEach((course: Course) => {
-      const {
-        subject, courseNumber, title, courseId: classId,
-      } = course;
+      const { subject, courseNumber, title, courseId: classId } = course;
       const id = `${classId} ${subject} ${courseNumber}`;
       const name = `${subject} ${courseNumber}: ${title}`;
       courseOptions.push({
-        key: i, value: name, subject, courseNumber, title, classId: id, noSpaceName: name.replace(/[^a-zA-Z\d]/, ''),
+        key: i,
+        value: name,
+        subject,
+        courseNumber,
+        title,
+        classId: id,
+        noSpaceName: name.replace(/[^a-zA-Z\d]/, ''),
       });
       i += 1;
     });
@@ -72,11 +76,16 @@ function ClassTagAdder({ fuse }: Props): ReactElement | null {
   const changeClass = (option: SimpleCourse): void => {
     const { value, classId } = option;
     addTag({
-      name: value, color: getUnusedColor(), classId,
+      name: value,
+      color: getUnusedColor(),
+      classId,
     });
   };
   return (
-    <div className={`${styles.TagColorConfigItemAdder} ${styles.SearchClasses}`} title="Search for a class">
+    <div
+      className={`${styles.TagColorConfigItemAdder} ${styles.SearchClasses}`}
+      title="Search for a class"
+    >
       <SearchBox
         placeholder="Search for classes (e.g. CS 2110, Introduction to Creative Writing)"
         inputClassname={styles.SearchInput}
@@ -89,13 +98,11 @@ function ClassTagAdder({ fuse }: Props): ReactElement | null {
 }
 
 const Memoized = React.memo<Props>(ClassTagAdder);
-const Connected = connect(
-  ({ courses }: State) => {
-    if (courses.size === 0) {
-      return { fuse: null };
-    }
-    const fuse = new Fuse(getCourseOptions(courses), fuseConfigs);
-    return { fuse };
-  },
-)(Memoized);
+const Connected = connect(({ courses }: State) => {
+  if (courses.size === 0) {
+    return { fuse: null };
+  }
+  const fuse = new Fuse(getCourseOptions(courses), fuseConfigs);
+  return { fuse };
+})(Memoized);
 export default Connected;

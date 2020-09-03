@@ -15,11 +15,7 @@ export default function App(): ReactElement {
     <>
       <ModeIndicator />
       <ModalsContainer />
-      {
-        GROUP_TASK_ENABLED
-          ? <ViewSwitcher />
-          : <PersonalView />
-      }
+      {GROUP_TASK_ENABLED ? <ViewSwitcher /> : <PersonalView />}
     </>
   );
 }

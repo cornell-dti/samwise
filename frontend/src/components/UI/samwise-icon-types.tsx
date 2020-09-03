@@ -1,14 +1,17 @@
 // eslint-disable-next-line import/prefer-default-export
 export type IconName =
   | 'alert'
+  | 'bell'
   | 'calendar-dark'
   | 'calendar-light'
   | 'checked-dark'
   | 'checked-light'
   | 'clock'
+  | 'exit'
   | 'grabber'
   | 'hide'
   | 'hug'
+  | 'pencil'
   | 'personal-view'
   | 'pin-dark-filled'
   | 'pin-dark-outline'
@@ -20,9 +23,13 @@ export type IconName =
   | 'settings'
   | 'show'
   | 'tag'
+  | 'tag-light'
   | 'unchecked'
   | 'dropdown'
   | 'x-dark'
   | 'x-light'
   | 'x-light-settings'
-  | 'repeat-frequency';
+  | 'repeat-frequency'
+  | 'user-plus'
+  | 'add-task'
+  | 'edit';

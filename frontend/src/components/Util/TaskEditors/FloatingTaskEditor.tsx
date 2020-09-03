@@ -13,7 +13,7 @@ const EDITOR_WIDTH = 300;
 const updateFloatingEditorPosition = (
   editorPosDiv: HTMLFormElement,
   windowSize: WindowSize,
-  position: FloatingPosition,
+  position: FloatingPosition
 ): void => {
   const taskElement = editorPosDiv.previousElementSibling;
   if (taskElement === null || !(taskElement instanceof HTMLDivElement)) {
@@ -35,7 +35,7 @@ const updateFloatingEditorPosition = (
     posLeft = (windowWidth - EDITOR_WIDTH) / 2;
   } else {
     const { y, left, right } = taskElementBoundingRect;
-    posTop = (y + myHeight) > windowHeight ? windowHeight - myHeight : y;
+    posTop = y + myHeight > windowHeight ? windowHeight - myHeight : y;
     if (position === 'right') {
       posLeft = right;
     } else if (position === 'left') {
@@ -68,15 +68,13 @@ type Props = {
  * FloatingTaskEditor is a component used to edit a task on the fly.
  * It is triggered from a click on a specified element.
  */
-export default function FloatingTaskEditor(
-  {
-    position,
-    calendarPosition,
-    initialTask: task,
-    taskAppearedDate,
-    trigger,
-  }: Props,
-): ReactElement {
+export default function FloatingTaskEditor({
+  position,
+  calendarPosition,
+  initialTask: task,
+  taskAppearedDate,
+  trigger,
+}: Props): ReactElement {
   const icalUID = task.metadata.type === 'ONE_TIME' ? task.metadata.icalUID : '';
 
   const [open, setOpen] = React.useState<boolean>(false);
@@ -103,10 +101,14 @@ export default function FloatingTaskEditor(
       }
       updateFloatingEditorPosition(editorPosDiv, windowSize, position);
     },
-    removeTask: (): void => removeTaskWithPotentialPrompt(
-      task,
-      getDateWithDateString(metadata.date instanceof Date ? metadata.date : null, taskAppearedDate),
-    ),
+    removeTask: (): void =>
+      removeTaskWithPotentialPrompt(
+        task,
+        getDateWithDateString(
+          metadata.date instanceof Date ? metadata.date : null,
+          taskAppearedDate
+        )
+      ),
     onSaveClicked: closePopup,
   };
 

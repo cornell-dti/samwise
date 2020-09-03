@@ -370,7 +370,9 @@ exports[`SettingsPage matches snapshot. 1`] = `
             title="Link Canvas iCal"
             type="submit"
           >
-             Save 
+             
+            Save
+             
           </button>
         </form>
         <a

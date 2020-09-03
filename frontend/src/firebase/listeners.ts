@@ -7,10 +7,18 @@ import {
   BannerMessageStatus,
   RepeatingTaskMetadata,
   Course,
+  Group,
+  PendingGroupInvite,
 } from 'common/lib/types/store-types';
 import buildCoursesMap from 'common/lib/util/courses-util';
 import { ignore } from 'common/lib/util/general-util';
-import { FirestoreSubTask, FirestoreTag, FirestoreTask } from 'common/lib/types/firestore-types';
+import {
+  FirestoreSubTask,
+  FirestoreTag,
+  FirestoreTask,
+  FirestorePendingGroupInvite,
+  FirestoreGroup,
+} from 'common/lib/types/firestore-types';
 import { QuerySnapshot, DocumentSnapshot } from 'common/lib/firebase/database';
 import { database } from './db';
 import { getAppUser } from './auth-util';
@@ -21,8 +29,10 @@ import {
   patchTags,
   patchTasks,
   patchBannerMessageStatus,
+  patchGroups,
+  patchPendingInvite,
 } from '../store/actions';
-import coursesJson from '../assets/json/sp20-courses-with-exams-min.json';
+import coursesJson from '../assets/json/fa20-courses-with-exams-min.json';
 import { store } from '../store/store';
 
 // Some type alias
@@ -31,38 +41,38 @@ type Timestamp = firebase.firestore.Timestamp;
 type UnmountCallback = () => void;
 const listenTagsChange = (
   email: string,
-  listener: (snapshot: QuerySnapshot) => void,
-): UnmountCallback => database.tagsCollection()
-  .where('owner', '==', email)
-  .onSnapshot(listener);
+  listener: (snapshot: QuerySnapshot) => void
+): UnmountCallback => database.tagsCollection().where('owner', '==', email).onSnapshot(listener);
 const listenTasksChange = (
   email: string,
-  listener: (snapshot: QuerySnapshot) => void,
-): UnmountCallback => database.tasksCollection()
-  .where('owner', '==', email)
-  .onSnapshot(listener);
+  listener: (snapshot: QuerySnapshot) => void
+): UnmountCallback => database.tasksCollection().where('owner', '==', email).onSnapshot(listener);
 const listenSubTasksChange = (
   email: string,
-  listener: (snapshot: QuerySnapshot) => void,
-): UnmountCallback => database.subTasksCollection()
-  .where('owner', '==', email)
-  .onSnapshot(listener);
+  listener: (snapshot: QuerySnapshot) => void
+): UnmountCallback =>
+  database.subTasksCollection().where('owner', '==', email).onSnapshot(listener);
 const listenSettingsChange = (
   email: string,
-  listener: (snapshot: DocumentSnapshot) => void,
-): UnmountCallback => database.settingsCollection()
-  .doc(email)
-  .onSnapshot(listener);
+  listener: (snapshot: DocumentSnapshot) => void
+): UnmountCallback => database.settingsCollection().doc(email).onSnapshot(listener);
 const listenBannerMessageChange = (
   email: string,
-  listener: (snapshot: DocumentSnapshot) => void,
-): UnmountCallback => database.bannerMessageStatusCollection()
-  .doc(email)
-  .onSnapshot(listener);
+  listener: (snapshot: DocumentSnapshot) => void
+): UnmountCallback => database.bannerMessageStatusCollection().doc(email).onSnapshot(listener);
+const listenGroupChange = (
+  email: string,
+  listener: (snapshot: QuerySnapshot) => void
+): UnmountCallback =>
+  database.groupsCollection().where('members', 'array-contains', email).onSnapshot(listener);
+const listenPendingInviteChange = (
+  email: string,
+  listener: (snapshot: QuerySnapshot) => void
+): UnmountCallback =>
+  database.pendingInvitesCollection().where('invitee', '==', email).onSnapshot(listener);
 
-const transformDate = (dateOrTimestamp: Date | Timestamp): Date => (
-  dateOrTimestamp instanceof Date ? dateOrTimestamp : dateOrTimestamp.toDate()
-);
+const transformDate = (dateOrTimestamp: Date | Timestamp): Date =>
+  dateOrTimestamp instanceof Date ? dateOrTimestamp : dateOrTimestamp.toDate();
 
 /**
  * Initialize listeners bind to firestore.
@@ -73,13 +83,15 @@ export default (onFirstFetched: () => void): (() => void) => {
   let firstSubTasksFetched = false;
   let firstSettingsFetched = false;
   let firstBannerStatusFetched = false;
+  let firstGroupsFetched = false;
   const reportFirstFetchedIfAllFetched = (): void => {
     if (
-      firstTagsFetched
-      && firstTasksFetched
-      && firstSubTasksFetched
-      && firstSettingsFetched
-      && firstBannerStatusFetched
+      firstTagsFetched &&
+      firstTasksFetched &&
+      firstSubTasksFetched &&
+      firstSettingsFetched &&
+      firstBannerStatusFetched &&
+      firstGroupsFetched
     ) {
       onFirstFetched();
     }
@@ -135,11 +147,21 @@ export default (onFirstFetched: () => void): (() => void) => {
         if (rest.type === 'ONE_TIME') {
           const { type, date: timestamp, icalUID, ...oneTimeTaskRest } = rest;
           const date = transformDate(timestamp);
-          task = { ...taskCommon, ...oneTimeTaskRest, metadata: { type: 'ONE_TIME', date, icalUID } };
+          task = {
+            ...taskCommon,
+            owner,
+            ...oneTimeTaskRest,
+            metadata: { type: 'ONE_TIME', date, icalUID },
+          };
         } else if (rest.type === 'GROUP') {
           const { type, date: timestamp, group, ...groupTaskRest } = rest;
           const date = transformDate(timestamp);
-          task = { ...taskCommon, ...groupTaskRest, metadata: { type: 'GROUP', date, group } };
+          task = {
+            ...taskCommon,
+            owner,
+            ...groupTaskRest,
+            metadata: { type: 'GROUP', date, group },
+          };
         } else {
           const { type, forks: firestoreForks, date: firestoreRepeats, ...otherTaskProps } = rest;
           const forks = firestoreForks.map((firestoreFork) => ({
@@ -159,7 +181,7 @@ export default (onFirstFetched: () => void): (() => void) => {
             date: { startDate, endDate, pattern: firestoreRepeats.pattern },
             forks,
           };
-          task = { ...taskCommon, ...otherTaskProps, metadata };
+          task = { ...taskCommon, owner, ...otherTaskProps, metadata };
         }
         if (change.type === 'added') {
           created.push(task);
@@ -208,10 +230,7 @@ export default (onFirstFetched: () => void): (() => void) => {
         completedOnboarding: false,
         theme: 'light',
       };
-      database.settingsCollection()
-        .doc(ownerEmail)
-        .set(newSettings)
-        .then(ignore);
+      database.settingsCollection().doc(ownerEmail).set(newSettings).then(ignore);
       return;
     }
     const data = snapshot.data();
@@ -232,6 +251,52 @@ export default (onFirstFetched: () => void): (() => void) => {
     reportFirstFetchedIfAllFetched();
   });
 
+  const unmountGroupsListener = listenGroupChange(ownerEmail, (snapshot) => {
+    const created: Group[] = [];
+    const edited: Group[] = [];
+    const deleted: string[] = [];
+    snapshot.docChanges().forEach((change) => {
+      const { doc, type } = change;
+      const { id } = doc;
+      if (type === 'removed') {
+        deleted.push(id);
+      } else {
+        const { name, members, deadline, classCode } = doc.data() as FirestoreGroup;
+        if (type === 'added') {
+          created.push({ id, name, members, deadline, classCode });
+        } else {
+          edited.push({ id, name, members, deadline, classCode });
+        }
+      }
+    });
+    store.dispatch(patchGroups(created, edited, deleted));
+    firstGroupsFetched = true;
+    reportFirstFetchedIfAllFetched();
+  });
+  const unmountPendingInviteListener = listenPendingInviteChange(ownerEmail, (snapshot) => {
+    const newPendingInvites: PendingGroupInvite[] = [];
+    const delPendingInvites: string[] = [];
+    snapshot.docChanges().forEach((change) => {
+      const { doc } = change;
+      const { id } = doc;
+      if (change.type === 'removed') {
+        delPendingInvites.push(id);
+      } else {
+        const data = doc.data();
+        if (data === undefined) {
+          return;
+        }
+        const { group, inviterName } = data as FirestorePendingGroupInvite;
+        const newInvite: PendingGroupInvite = { id, group, inviterName };
+        newPendingInvites.push(newInvite);
+      }
+    });
+
+    // Not gonna add this to the report for first fetch since we can let pending invites come
+    // in after page load
+    store.dispatch(patchPendingInvite(newPendingInvites, delPendingInvites));
+  });
+
   store.dispatch(patchCourses(buildCoursesMap(coursesJson as Course[])));
 
   return () => {
@@ -243,5 +308,7 @@ export default (onFirstFetched: () => void): (() => void) => {
     unmountSubTasksListener();
     unmountSettingsListener();
     unmountBannerStatusListener();
+    unmountGroupsListener();
+    unmountPendingInviteListener();
   };
 };

@@ -1,0 +1,43 @@
+.Member {
+  display: flex;
+  height: 40px;
+  margin: 1em 0;
+  line-height: 40px;
+}
+
+.Initials {
+  height: 40px;
+  width: 40px;
+  border-radius: 50%;
+  background-color: #d7b6dc;
+  text-align: center;
+  font-size: 16px;
+  line-height: 40px;
+  color: white;
+}
+
+.Member p {
+  font-size: 16px;
+  color: #3d3d3d;
+  flex: 5;
+  margin: 0 1em;
+  overflow-x: hidden;
+  overflow-y: hidden;
+}
+
+.MemberIcon {
+  flex: 1;
+  font-size: 16px;
+  margin: 0 0.25em;
+}
+
+.Plus {
+  color: #8cc3ff;
+  margin: 0 0.25em;
+}
+
+.MemberIcon:hover,
+.Plus:hover {
+  opacity: 0.7;
+  cursor: pointer;
+}

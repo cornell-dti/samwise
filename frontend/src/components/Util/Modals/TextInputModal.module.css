@@ -1,0 +1,47 @@
+.TextInputModal {
+  font-family: 'DM Sans';
+}
+
+.Title {
+  font-size: 20px;
+  color: grey;
+}
+
+.SubText {
+  font-size: 12px;
+  color: lightgrey;
+}
+
+.TextInput {
+  text-align: center;
+  margin: 2em;
+}
+
+.TextInput input {
+  border-radius: 5px;
+  margin-left: 20px;
+  border: 1px solid lightgrey;
+  line-height: 20px;
+}
+
+.ButtonContainer {
+  display: flex;
+  justify-content: space-between;
+}
+
+.ButtonContainer button {
+  border: none;
+}
+
+.CancelButton {
+  color: red;
+}
+
+.SubmitButton {
+  color: skyblue;
+}
+
+.ButtonContainer button:hover {
+  background-color: rgba(33, 150, 243, 0.08);
+  cursor: pointer;
+}

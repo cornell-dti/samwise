@@ -1,13 +1,12 @@
 @media (max-width: 500px) {
   .ColorEdit {
-  
     width: 54px !important;
     font-size: 0 !important;
     float: right;
     position: absolute;
     right: 70px;
   }
-  
+
   .ColorPicker {
     position: absolute;
     right: 79px !important;
@@ -40,7 +39,6 @@
 .ColorEdit:first-letter {
   text-transform: capitalize;
 }
-
 
 .ColorDisplay {
   display: block;

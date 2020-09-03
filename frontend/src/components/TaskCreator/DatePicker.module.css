@@ -1,27 +1,25 @@
-
-.SelectTypeWrap{
+.SelectTypeWrap {
   text-align: right;
-  margin:0;
+  margin: 0;
 }
 
-.SelectType{
+.SelectType {
   padding: 2px 5px;
-  margin-bottom:15px;
-  border-radius:5px;
-  cursor:pointer;
-  border:2px #5a5a5a solid;
-  color:#5a5a5a;
+  margin-bottom: 15px;
+  border-radius: 5px;
+  cursor: pointer;
+  border: 2px #5a5a5a solid;
+  color: #5a5a5a;
 }
 
-
-.SubtleBtn{
-  background:#eee;
-  color:#5a5a5a;
-  border:none;
-  cursor:pointer;
-  border-radius:5px;
+.SubtleBtn {
+  background: #eee;
+  color: #5a5a5a;
+  border: none;
+  cursor: pointer;
+  border-radius: 5px;
 }
 
-.RepeatIcon > g{
+.RepeatIcon > g {
   stroke: white;
 }

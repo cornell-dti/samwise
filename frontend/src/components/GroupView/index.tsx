@@ -1,15 +1,17 @@
 import React, { ReactElement } from 'react';
 import MiddleBar from './MiddleBar';
-import styles from './index.module.scss';
+import RightView from './RightView';
+import styles from './index.module.css';
 
 type Props = {
   groupName: string;
-}
+};
 
-// will use groupName later
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
+const members = ['Darien Lopez', 'Sarah Johnson', 'Michelle Parker', 'Samwise Bear'];
+
 export default ({ groupName }: Props): ReactElement => (
-  <div className={styles.MiddleBar}>
-    <MiddleBar />
+  <div className={styles.GroupView}>
+    <MiddleBar groupMemberNames={members} />
+    <RightView groupName={groupName} groupMemberNames={members} />
   </div>
 );

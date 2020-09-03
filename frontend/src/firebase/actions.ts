@@ -17,9 +17,12 @@ import {
   FirestoreCommon,
   FirestoreTask,
   FirestoreSubTask,
+  FirestoreGroup,
+  FirestorePendingGroupInvite,
 } from 'common/lib/types/firestore-types';
 import { WriteBatch } from 'common/lib/firebase/database';
 import Actions from 'common/lib/firebase/common-actions';
+import { TaskWithChildrenId } from 'common/lib/types/action-types';
 import {
   reportAddTagEvent,
   reportEditTagEvent,
@@ -37,6 +40,7 @@ import { getAppUser } from './auth-util';
 import { db, database } from './db';
 import { getNewTaskId } from './id-provider';
 import { store } from '../store/store';
+import { patchTags, patchTasks, patchSubTasks } from '../store/actions';
 import { Diff } from '../components/Util/TaskEditors/TaskEditor/task-diff-reducer';
 
 const actions = new Actions(() => getAppUser().email, database);
@@ -44,9 +48,10 @@ const actions = new Actions(() => getAppUser().email, database);
 async function createFirestoreObject<T>(
   orderFor: 'tags' | 'tasks',
   source: T,
+  owner: string
 ): Promise<T & FirestoreCommon> {
   const order = await actions.orderManager.allocateNewOrder(orderFor);
-  return { ...source, owner: getAppUser().email, order };
+  return { ...source, owner, order };
 }
 
 const mergeWithOwner = <T>(obj: T): T & { readonly owner: string } => ({
@@ -56,7 +61,10 @@ const mergeWithOwner = <T>(obj: T): T & { readonly owner: string } => ({
 
 type WithoutIdOrder<Props> = Pick<Props, Exclude<keyof Props, 'id' | 'order'>>;
 type WithoutId<Props> = Pick<Props, Exclude<keyof Props, 'id'>>;
-export type TaskWithoutIdOrderChildren<M = TaskMetadata> = Omit<Task<M>, 'id' | 'order' | 'children'>;
+export type TaskWithoutIdOrderChildren<M = TaskMetadata> = Omit<
+  Task<M>,
+  'id' | 'order' | 'children'
+>;
 
 /*
  * --------------------------------------------------------------------------------
@@ -89,11 +97,12 @@ export const removeTag = (id: string): void => {
 
 const asyncAddTask = async (
   newTaskId: string,
+  owner: string,
   task: TaskWithoutIdOrderChildren,
   subTasks: WithoutId<SubTask>[],
-  batch: WriteBatch,
+  batch: WriteBatch
 ): Promise<{ readonly firestoreTask: FirestoreTask; readonly createdSubTasks: SubTask[] }> => {
-  const baseTask: FirestoreCommon = await createFirestoreObject('tasks', {});
+  const baseTask: FirestoreCommon = await createFirestoreObject('tasks', {}, owner);
   const createdSubTasks: SubTask[] = subTasks.map((subtask) => {
     const firebaseSubTask: FirestoreSubTask = mergeWithOwner(subtask);
     const subtaskDoc = database.subTasksCollection().doc();
@@ -102,15 +111,21 @@ const asyncAddTask = async (
   });
   const subtaskIds = createdSubTasks.map((s) => s.id);
   const { metadata, ...rest } = task;
+  rest.owner = baseTask.owner;
   const firestoreTask: FirestoreTask = { ...baseTask, ...rest, ...metadata, children: subtaskIds };
   batch.set(database.tasksCollection().doc(newTaskId), firestoreTask);
   return { firestoreTask, createdSubTasks };
 };
 
-export const addTask = (task: TaskWithoutIdOrderChildren, subTasks: WithoutId<SubTask>[]): void => {
+export const addTask = (
+  owner: string,
+  task: TaskWithoutIdOrderChildren,
+  subTasks: WithoutId<SubTask>[]
+): void => {
+  const taskOwner = owner === '' ? getAppUser().email : owner;
   const newTaskId = getNewTaskId();
   const batch = db().batch();
-  asyncAddTask(newTaskId, task, subTasks, batch).then(({ createdSubTasks }) => {
+  asyncAddTask(newTaskId, taskOwner, task, subTasks, batch).then(({ createdSubTasks }) => {
     batch.commit().then(() => {
       reportAddTaskEvent();
       createdSubTasks.forEach(reportAddSubTaskEvent);
@@ -132,8 +147,8 @@ export const removeAllForks = (taskId: string): void => {
         // delete forked subtasks
         const forkedTask = tasks.get(id);
         if (forkedTask != null) {
-          forkedTask.children.forEach(
-            (subTask) => batch.delete(database.subTasksCollection().doc(subTask.id)),
+          forkedTask.children.forEach((subTask) =>
+            batch.delete(database.subTasksCollection().doc(subTask.id))
           );
         }
       }
@@ -146,7 +161,7 @@ export const removeAllForks = (taskId: string): void => {
 
 export const handleTaskDiffs = (
   taskId: string,
-  { subTaskCreations, subTaskEdits, subTaskDeletions, mainTaskEdits }: Diff,
+  { subTaskCreations, subTaskEdits, subTaskDeletions, mainTaskEdits }: Diff
 ): void => {
   const batch = database.db().batch();
   if (subTaskCreations.size !== 0) {
@@ -175,11 +190,11 @@ export const handleTaskDiffs = (
   batch.update(database.tasksCollection().doc(taskId), mainTaskEdits);
   batch.commit().then(() => {
     if (
-      mainTaskEdits.name
-      || mainTaskEdits.complete
-      || mainTaskEdits.date
-      || mainTaskEdits.inFocus
-      || mainTaskEdits.tag
+      mainTaskEdits.name ||
+      mainTaskEdits.complete ||
+      mainTaskEdits.date ||
+      mainTaskEdits.inFocus ||
+      mainTaskEdits.tag
     ) {
       reportEditTaskEvent();
     }
@@ -200,7 +215,7 @@ type EditType = 'EDITING_MASTER_TEMPLATE' | 'EDITING_ONE_TIME_TASK';
 export const editTaskWithDiff = (
   taskId: string,
   editType: EditType,
-  { mainTaskEdits, subTaskCreations, subTaskEdits, subTaskDeletions }: Diff,
+  { mainTaskEdits, subTaskCreations, subTaskEdits, subTaskDeletions }: Diff
 ): void => {
   (async () => {
     if (editType === 'EDITING_MASTER_TEMPLATE') {
@@ -213,7 +228,7 @@ export const editTaskWithDiff = (
 export const forkTaskWithDiff = (
   taskId: string,
   replaceDate: Date,
-  { mainTaskEdits, subTaskCreations, subTaskEdits, subTaskDeletions }: Diff,
+  { mainTaskEdits, subTaskCreations, subTaskEdits, subTaskDeletions }: Diff
 ): void => {
   const { tasks } = store.getState();
   const repeatingTaskMaster = tasks.get(taskId) as Task<RepeatingTaskMetadata>;
@@ -242,7 +257,9 @@ export const forkTaskWithDiff = (
   });
   const batch = database.db().batch();
   const forkId = getNewTaskId();
-  asyncAddTask(forkId, newMainTask, newSubTasks, batch).then(() => {
+  // owner = '' for non-group tasks, so owner is set to the logged-in user
+  const owner = getAppUser().email;
+  asyncAddTask(forkId, owner, newMainTask, newSubTasks, batch).then(() => {
     batch.update(database.tasksCollection().doc(id), {
       forks: firestore.FieldValue.arrayUnion({ forkId, replaceDate }),
     });
@@ -288,8 +305,8 @@ export const removeTask = (task: Task): void => {
       batch.delete(database.tasksCollection().doc(forkId));
       const forkedTask = tasks.get(forkId);
       if (forkedTask != null) {
-        forkedTask.children.forEach(
-          (subTask) => batch.delete(database.subTasksCollection().doc(subTask.id)),
+        forkedTask.children.forEach((subTask) =>
+          batch.delete(database.subTasksCollection().doc(subTask.id))
         );
       }
     });
@@ -300,7 +317,8 @@ export const removeTask = (task: Task): void => {
 };
 
 export const removeOneRepeatedTask = (taskId: string, replaceDate: Date): void => {
-  database.tasksCollection()
+  database
+    .tasksCollection()
     .doc(taskId)
     .update({
       forks: firestore.FieldValue.arrayUnion({ forkId: null, replaceDate }),
@@ -310,7 +328,7 @@ export const removeOneRepeatedTask = (taskId: string, replaceDate: Date): void =
 export const editMainTask = (
   taskId: string,
   replaceDate: Date | null,
-  mainTaskEdits: PartialMainTask,
+  mainTaskEdits: PartialMainTask
 ): void => {
   const diff: Diff = {
     mainTaskEdits,
@@ -331,7 +349,7 @@ export const editSubTask = (
   taskId: string,
   subtaskId: string,
   replaceDate: Date | null,
-  partialSubTask: PartialSubTask,
+  partialSubTask: PartialSubTask
 ): void => {
   const diff: Diff = {
     mainTaskEdits: replaceDate == null ? {} : { date: replaceDate },
@@ -349,7 +367,7 @@ export const editSubTask = (
 export const removeSubTask = (
   taskId: string,
   subtaskId: string,
-  replaceDate: Date | null,
+  replaceDate: Date | null
 ): void => {
   const diff: Diff = {
     mainTaskEdits: replaceDate == null ? {} : { date: replaceDate },
@@ -366,7 +384,100 @@ export const removeSubTask = (
 
 /*
  * --------------------------------------------------------------------------------
- * Section 3: Other Compound Actions
+ * Section 3: Groups Actions
+ * --------------------------------------------------------------------------------
+ */
+
+export const rejectInvite = async (inviteID: string): Promise<void> => {
+  await database.pendingInvitesCollection().doc(inviteID).delete();
+};
+
+/**
+ * Join a group.
+ * @param groupID  Document ID of the group's Firestore document. The user calling this function must
+ *                 be a member of this group.
+ * @param inviteID Document ID of the invitation's Firestore document. The user calling this invitee
+ *                 of this invitation.
+ */
+export const joinGroup = async (groupId: string, inviteID: string): Promise<void> => {
+  const groupDoc = database.groupsCollection().doc(groupId);
+  const { pendingInvites } = store.getState();
+  const invite = pendingInvites.get(inviteID);
+  // Check if user has the invitation and invitation is for this group
+  if (invite === undefined || invite.group !== groupId) {
+    throw new Error('Invalid invitation');
+  }
+  const members = await groupDoc
+    .get()
+    .then((snapshot) => (snapshot.data() as FirestoreGroup)?.members);
+  const { email } = getAppUser();
+  // Check if user is already in the group
+  if (members === undefined || members.includes(email)) {
+    throw new Error('Invalid group members');
+  }
+  await groupDoc.update({ members: [...members, email] });
+
+  // TODO remove this whole function after we get a Cloud Function working;
+  // the following line is a hack
+  rejectInvite(inviteID);
+};
+
+/**
+ * Create a group.
+ * @param groupID Document ID of the group's Firestore document. The user calling this function must
+ *                be a member of this group.
+ */
+export const createGroup = (name: string, deadline: Date, classCode: string): void => {
+  const { email } = getAppUser();
+  // creator is the only member at first
+  const newGroup: FirestoreGroup = { name, deadline, classCode, members: [email] };
+  database.groupsCollection().doc().set(newGroup);
+};
+
+/**
+ * Leave a group.
+ * @param groupID Document ID of the group's Firestore document. The user calling this function must
+ *                be a member of this group.
+ */
+export const leaveGroup = async (groupID: string): Promise<void> => {
+  const { groups } = store.getState();
+  const members = groups.get(groupID)?.members;
+  if (members === undefined) {
+    return;
+  }
+  const { email } = getAppUser();
+  const newMembers: string[] = members.filter((m: string) => m !== email);
+  const groupDoc = await database.groupsCollection().doc(groupID);
+  if (newMembers.length === 0) {
+    await groupDoc.delete();
+  } else {
+    await groupDoc.update({ members: newMembers });
+  }
+};
+
+/**
+ * Send an invitation to a user to join a group.
+ * @param groupID Document ID of the group's Firestore document. The user calling this function must
+ *                be a member of this group.
+ * @param userName The name of the user sending the invitation (in English)
+ * @param invitee The full Cornell email of the user receiving the invitation (all lowercase)
+ */
+export const sendInvite = async (
+  groupID: string,
+  userName: string,
+  invitee: string
+): Promise<void> => {
+  const newInvitation: FirestorePendingGroupInvite = {
+    group: groupID,
+    inviterName: userName,
+    invitee,
+  };
+  await database.pendingInvitesCollection().add(newInvitation);
+};
+
+/*
+ * --------------------------------------------------------------------------------
+ * Section 4: Other Compound Actions
  * --------------------------------------------------------------------------------
  */
 
@@ -376,8 +487,8 @@ export const removeSubTask = (
 export const clearFocus = (taskIds: string[], subTaskIds: string[]): void => {
   const batch = database.db().batch();
   taskIds.forEach((id) => batch.update(database.tasksCollection().doc(id), { inFocus: false }));
-  subTaskIds.forEach(
-    (id) => batch.update(database.subTasksCollection().doc(id), { inFocus: false }),
+  subTaskIds.forEach((id) =>
+    batch.update(database.subTasksCollection().doc(id), { inFocus: false })
   );
   batch.commit().then(ignore);
 };
@@ -391,20 +502,24 @@ export const clearFocus = (taskIds: string[], subTaskIds: string[]): void => {
  * @returns an object of updated completed and not completed task list.
  */
 export function completeTaskInFocus<T extends { readonly id: string; readonly order: number }>(
-  completedTaskIdOrder: T,
-  completedList: T[],
+  completedTaskIdOrder: T
 ): void {
-  let newCompletedList = [completedTaskIdOrder];
-  completedList.forEach((item) => {
-    if (item.order < completedTaskIdOrder.order) {
-      newCompletedList.push(item);
-    } else if (item.order >= completedTaskIdOrder.order) {
-      newCompletedList.push({ ...item, order: item.order + 1 });
-    }
-  });
-  newCompletedList = newCompletedList.sort((a, b) => a.order - b.order);
   const { tasks } = store.getState();
   const task = tasks.get(completedTaskIdOrder.id) ?? error('bad');
+  store.dispatch(
+    patchTasks(
+      [],
+      [{ ...task, complete: true, children: task.children.map((child) => child.id) }],
+      []
+    )
+  );
+  store.dispatch(
+    patchSubTasks(
+      [],
+      task.children.map((subTask) => ({ ...subTask, complete: true })),
+      []
+    )
+  );
   const batch = database.db().batch();
   if (task.inFocus) {
     batch.update(database.tasksCollection().doc(task.id), { complete: true });
@@ -425,9 +540,34 @@ export function completeTaskInFocus<T extends { readonly id: string; readonly or
  * @return a new list with updated orders.
  */
 export function applyReorder(orderFor: 'tags' | 'tasks', reorderMap: Map<string, number>): void {
-  const collection = orderFor === 'tags'
-    ? (id: string) => database.tagsCollection().doc(id)
-    : (id: string) => database.tasksCollection().doc(id);
+  const { tags, tasks } = store.getState();
+  if (orderFor === 'tags') {
+    const editedTags: Tag[] = [];
+    Array.from(reorderMap.entries()).forEach(([id, order]) => {
+      const existingTag = tags.get(id);
+      if (existingTag !== undefined) {
+        editedTags.push({ ...existingTag, order });
+      }
+    });
+    store.dispatch(patchTags([], editedTags, []));
+  } else {
+    const editedTasks: TaskWithChildrenId[] = [];
+    Array.from(reorderMap.entries()).forEach(([id, order]) => {
+      const existingTask = tasks.get(id);
+      if (existingTask !== undefined) {
+        editedTasks.push({
+          ...existingTask,
+          order,
+          children: existingTask.children.map((child) => child.id),
+        });
+      }
+    });
+    store.dispatch(patchTasks([], editedTasks, []));
+  }
+  const collection =
+    orderFor === 'tags'
+      ? (id: string) => database.tagsCollection().doc(id)
+      : (id: string) => database.tasksCollection().doc(id);
   const batch = database.db().batch();
   reorderMap.forEach((order, id) => {
     batch.update(collection(id), { order });
@@ -436,17 +576,15 @@ export function applyReorder(orderFor: 'tags' | 'tasks', reorderMap: Map<string,
 }
 
 export const completeOnboarding = (completedOnboarding: boolean): void => {
-  database.settingsCollection()
+  database
+    .settingsCollection()
     .doc(getAppUser().email)
     .update({ completedOnboarding })
     .then(ignore);
 };
 
 export const setCanvasCalendar = (canvasCalendar: string | null | undefined): void => {
-  database.settingsCollection()
-    .doc(getAppUser().email)
-    .update({ canvasCalendar })
-    .then(ignore);
+  database.settingsCollection().doc(getAppUser().email).update({ canvasCalendar }).then(ignore);
 };
 
 export const readBannerMessage = (bannerMessageId: BannerMessageIds, isRead: boolean): void => {
@@ -481,18 +619,22 @@ export const importCourseExams = (): void => {
           if (task.metadata.type === 'MASTER_TEMPLATE') {
             return false;
           }
-          const { name, metadata: { date } } = task;
+          const {
+            name,
+            metadata: { date },
+          } = task;
           return (
-            task.tag === tag.id
-            && name === examName
-            && date.getFullYear() === t.getFullYear()
-            && date.getMonth() === t.getMonth()
-            && date.getDate() === t.getDate()
-            && date.getHours() === t.getHours()
+            task.tag === tag.id &&
+            name === examName &&
+            date.getFullYear() === t.getFullYear() &&
+            date.getMonth() === t.getMonth() &&
+            date.getDate() === t.getDate() &&
+            date.getHours() === t.getHours()
           );
         };
         if (!Array.from(tasks.values()).some(filter)) {
           const newTask: TaskWithoutIdOrderChildren<OneTimeTaskMetadata> = {
+            owner: getAppUser().email,
             name: examName,
             tag: tag.id,
             complete: false,

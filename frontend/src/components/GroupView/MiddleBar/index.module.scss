@@ -1,9 +1,9 @@
-@import '../../colors.scss';
+@import '../../../colors.scss';
 
 .MiddleBar {
   background-color: $card-grey;
   padding: 1em;
-  height: 100vh; 
+  height: 100vh;
   color: $warm-grey;
   display: flex;
   flex-direction: column;

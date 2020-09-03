@@ -12,7 +12,7 @@ export default class ErrorBoundary extends React.PureComponent<Props, State> {
     return { hasError: true };
   }
 
-  public componentDidCatch(error: Error | null, info: object): void {
+  public componentDidCatch(error: Error | null, info: unknown): void {
     // eslint-disable-next-line no-console
     console.log({ error, info }); // necessary for error logging!
   }
@@ -39,14 +39,15 @@ export default class ErrorBoundary extends React.PureComponent<Props, State> {
               top: 0,
             }}
           />
-          <div style={{
-            position: 'fixed',
-            bottom: 0,
-            right: 0,
-            padding: '10px',
-            textAlign: 'right',
-            fontSize: '150%',
-          }}
+          <div
+            style={{
+              position: 'fixed',
+              bottom: 0,
+              right: 0,
+              padding: '10px',
+              textAlign: 'right',
+              fontSize: '150%',
+            }}
           >
             <p>
               Come yell at us:&nbsp;

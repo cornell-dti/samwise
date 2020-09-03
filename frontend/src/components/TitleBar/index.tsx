@@ -4,6 +4,7 @@ import { useTime } from 'hooks/time-hook';
 import { date2FullDateString } from 'common/lib/util/datetime-util';
 import { State, Theme } from 'common/lib/types/store-types';
 import Banner from './Banner';
+import GroupInvites from './GroupInvites';
 import styles from './index.module.css';
 import SettingsButton from './Settings/SettingsButton';
 
@@ -21,22 +22,31 @@ export function TitleBar(props: { theme: Theme }): ReactElement {
     minute: 'numeric',
   });
   const { theme } = props;
-  const darkModeStyles = theme === 'dark' ? {
-    background: 'black',
-    color: 'white',
-  } : undefined;
+  const darkModeStyles =
+    theme === 'dark'
+      ? {
+          background: 'black',
+          color: 'white',
+        }
+      : undefined;
   return (
     <header className={styles.Main} style={darkModeStyles}>
       <Banner />
-      <span title="time" className={styles.Time}>{timeString}</span>
-      <span title="date" className={styles.Date}>{dateString}</span>
-      <span className={styles.Links}><SettingsButton /></span>
+      <GroupInvites />
+      <span title="time" className={styles.Time}>
+        {timeString}
+      </span>
+      <span title="date" className={styles.Date}>
+        {dateString}
+      </span>
+      <span className={styles.Links}>
+        <SettingsButton />
+      </span>
     </header>
   );
 }
 
-
-const Connected = connect(
-  ({ settings: { theme } }: State): {theme: Theme} => ({ theme }),
-)(TitleBar);
+const Connected = connect(({ settings: { theme } }: State): { theme: Theme } => ({ theme }))(
+  TitleBar
+);
 export default Connected;

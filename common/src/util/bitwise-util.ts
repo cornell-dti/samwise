@@ -11,9 +11,8 @@ export const DAYS_IN_WEEK = 7;
  * @param d The position of the bit (zero-indexed from the LEFT)
  * @param totalLen The length of the bitset
  */
-export const isBitSet = (bit: number, d: number, totalLen: number): boolean => (
-  (bit & (1 << (totalLen - 1 - d))) !== 0
-);
+export const isBitSet = (bit: number, d: number, totalLen: number): boolean =>
+  (bit & (1 << (totalLen - 1 - d))) !== 0;
 
 /**
  * Return a bitset with a certain bit set
@@ -21,9 +20,8 @@ export const isBitSet = (bit: number, d: number, totalLen: number): boolean => (
  * @param index The position of the bit to set (zero-indexed from the LEFT)
  * @param totalLen The length of the bitset
  */
-export const setBit = (bit: number, index: number, totalLen: number): number => (
-  bit | (1 << (totalLen - 1 - index))
-);
+export const setBit = (bit: number, index: number, totalLen: number): number =>
+  bit | (1 << (totalLen - 1 - index));
 
 /**
  * Return a bitset with a certain bit unset
@@ -31,9 +29,8 @@ export const setBit = (bit: number, index: number, totalLen: number): number => 
  * @param index The position of the bit to unset (zero-indexed from the LEFT)
  * @param totalLen The length of the bitset
  */
-export const unsetBit = (bit: number, index: number, totalLen: number): number => (
-  bit & (~(1 << (totalLen - 1 - index)))
-);
+export const unsetBit = (bit: number, index: number, totalLen: number): number =>
+  bit & ~(1 << (totalLen - 1 - index));
 
 /**
  * Sets a bit in a seven digit bitset representing week.

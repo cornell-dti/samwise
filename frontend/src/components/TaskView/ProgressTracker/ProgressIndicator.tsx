@@ -10,10 +10,13 @@ type ProgressBarProps = TasksProgressProps & {
 /**
  * A simple progress bar with optional children.
  */
-function ProgressBar(
-  { completedTasksCount, allTasksCount, inMobileView, children }: ProgressBarProps,
-): ReactElement {
-  const percentage = allTasksCount === 0 ? 0 : completedTasksCount / allTasksCount * 100;
+function ProgressBar({
+  completedTasksCount,
+  allTasksCount,
+  inMobileView,
+  children,
+}: ProgressBarProps): ReactElement {
+  const percentage = allTasksCount === 0 ? 0 : (completedTasksCount / allTasksCount) * 100;
   const containerStyle: CSSProperties = inMobileView
     ? { height: '2em', marginLeft: '1em' }
     : { width: '2em', marginBottom: '1em' };
@@ -35,9 +38,11 @@ type Props = TasksProgressProps & { readonly inMobileView: boolean };
 /**
  * The progress indicator.
  */
-export default function ProgressIndicator(
-  { completedTasksCount, allTasksCount, inMobileView }: Props,
-): ReactElement {
+export default function ProgressIndicator({
+  completedTasksCount,
+  allTasksCount,
+  inMobileView,
+}: Props): ReactElement {
   const containerStyle: CSSProperties = inMobileView
     ? { height: '32px' }
     : { flexDirection: 'column-reverse', margin: '0', width: '32px' };

@@ -16,7 +16,7 @@
 .TagName {
   display: inline-block;
   font-weight: bold;
-  width:150px;
+  width: 150px;
 }
 
 .ClassExpandedTitle {
@@ -29,11 +29,12 @@
   margin: 0;
   padding: 0;
   color: white;
+  border: none;
 }
 
 .DeleteTag:hover,
 .DeleteTag:focus {
-  opacity: 0.50;
+  opacity: 0.5;
   stroke-width: 3px;
 }
 
@@ -48,11 +49,11 @@
   color: rgb(188, 188, 188);
 }
 
-.TagEdit{
+.TagEdit {
   width: calc(100% - 150px);
   font-size: 14px;
   background: none;
   border: none;
   color: white;
-  font-weight:bold;
+  font-weight: bold;
 }

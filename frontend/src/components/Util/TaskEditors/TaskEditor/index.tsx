@@ -21,7 +21,6 @@ import OneSubTaskEditor from './OneSubTaskEditor';
 import { CalendarPosition } from '../editors-types';
 import useTaskDiffReducer, { diffIsEmpty, Diff } from './task-diff-reducer';
 
-
 type DefaultProps = {
   readonly displayGrabber?: boolean;
   readonly className?: string;
@@ -65,27 +64,25 @@ type TaskToFocus = number | 'new-subtask' | null;
  * editor itself does not remember the state of editing a task, a wrapper component should.
  * You can read the docs for props above.
  */
-function TaskEditor(
-  {
-    id,
-    type,
-    icalUID,
-    taskAppearedDate,
-    mainTask: initMainTask,
-    subTasks: initSubTasks,
-    actions,
-    displayGrabber,
-    getTag,
-    className,
-    newSubTaskAutoFocused,
-    active,
-    onFocus,
-    onBlur,
-    editorRef,
-    calendarPosition,
-    settings,
-  }: Props,
-): ReactElement {
+function TaskEditor({
+  id,
+  type,
+  icalUID,
+  taskAppearedDate,
+  mainTask: initMainTask,
+  subTasks: initSubTasks,
+  actions,
+  displayGrabber,
+  getTag,
+  className,
+  newSubTaskAutoFocused,
+  active,
+  onFocus,
+  onBlur,
+  editorRef,
+  calendarPosition,
+  settings,
+}: Props): ReactElement {
   const { onChange, removeTask, onSaveClicked } = actions;
   const {
     mainTask,
@@ -105,19 +102,11 @@ function TaskEditor(
   const { canvasCalendar } = settings;
   const canvasLinked = canvasCalendar != null;
 
-  const onMouseLeave = (): void => {
-    if (type === 'ONE_TIME') {
-      onSave();
-    }
-    if (onBlur) {
-      onBlur();
-    }
-  };
   const onSave = useCallback((): boolean => {
     if (diffIsEmpty(diff)) {
       return false;
     }
-    if (type === 'ONE_TIME') {
+    if (type === 'ONE_TIME' || type === 'GROUP') {
       editTaskWithDiff(id, 'EDITING_ONE_TIME_TASK', diff);
       return true;
     }
@@ -145,11 +134,13 @@ function TaskEditor(
             break;
           case 'FORK': {
             const replaceDate = getDateWithDateString(
-              date instanceof Date ? date : null, taskAppearedDate,
+              date instanceof Date ? date : null,
+              taskAppearedDate
             );
             const correctDate = diff.mainTaskEdits.date ?? replaceDate;
             const diffForFork: Diff = {
-              ...diff, mainTaskEdits: { ...diff.mainTaskEdits, date: correctDate },
+              ...diff,
+              mainTaskEdits: { ...diff.mainTaskEdits, date: correctDate },
             };
             forkTaskWithDiff(id, replaceDate, diffForFork);
             break;
@@ -161,6 +152,16 @@ function TaskEditor(
     }
     return true;
   }, [date, diff, id, reset, taskAppearedDate, type]);
+
+  const onMouseLeave = (): void => {
+    if (type === 'ONE_TIME') {
+      onSave();
+    }
+    if (onBlur) {
+      onBlur();
+    }
+  };
+
   const onSaveButtonClicked = (): void => {
     if (onSave() && type !== 'ONE_TIME') {
       onSaveClicked();
@@ -171,7 +172,10 @@ function TaskEditor(
   const handleCreatedNewSubtask = (firstTypedValue: string): void => {
     const order = subTasks.reduce((acc, s) => Math.max(acc, s.order), 0) + 1;
     dispatchAddSubTask({
-      order, name: firstTypedValue, complete: false, inFocus: newSubTaskAutoFocused === true,
+      order,
+      name: firstTypedValue,
+      complete: false,
+      inFocus: newSubTaskAutoFocused === true,
     });
     setSubTaskToFocus(order);
   };
@@ -206,8 +210,8 @@ function TaskEditor(
   const formStyle = isOverdue
     ? { backgroundColor, border: '5px solid #D0021B' }
     : { backgroundColor };
-  const actualClassName = className == null
-    ? styles.TaskEditor : `${styles.TaskEditor} ${className}`;
+  const actualClassName =
+    className == null ? styles.TaskEditor : `${styles.TaskEditor} ${className}`;
 
   useEffect(() => {
     const intervalID = setInterval(() => {
@@ -230,11 +234,7 @@ function TaskEditor(
     >
       {isOverdue && <OverdueAlert target="task-card" />}
       <div>
-        <RepeatFrequencyHeader
-          taskId={id}
-          tag={tag}
-          getTag={getTag}
-        />
+        <RepeatFrequencyHeader taskId={id} tag={tag} getTag={getTag} />
         <EditorHeader
           tag={tag}
           date={date}
@@ -272,36 +272,31 @@ function TaskEditor(
             onPressEnter={pressEnterHandler}
           />
         ))}
-        <div
-          className={styles.SubtaskHide}
-          style={active === true ? { maxHeight: 0 } : undefined}
-        >
+        <div className={styles.SubtaskHide} style={active === true ? { maxHeight: 0 } : undefined}>
           <NewSubTaskEditor
             onFirstType={handleCreatedNewSubtask}
             onPressEnter={onSaveButtonClicked}
             needToBeFocused={subTaskToFocus === 'new-subtask'}
-            type={type}
           />
         </div>
       </div>
-      {
-        type !== 'ONE_TIME' && (
-          <div
-            className={styles.SaveButtonRow}
-            style={diffIsEmpty(diff) ? { maxHeight: 0, padding: 0 } : undefined}
-          >
-            <span className={styles.TaskEditorFlexiblePadding} />
-            <div role="presentation" className={styles.SaveButton} onClick={onSaveButtonClicked}>
-              <span className={styles.SaveButtonText}>Save</span>
-            </div>
+      {type !== 'ONE_TIME' && (
+        <div
+          className={styles.SaveButtonRow}
+          style={diffIsEmpty(diff) ? { maxHeight: 0, padding: 0 } : undefined}
+        >
+          <span className={styles.TaskEditorFlexiblePadding} />
+          <div role="presentation" className={styles.SaveButton} onClick={onSaveButtonClicked}>
+            <span className={styles.SaveButtonText}>Save</span>
           </div>
-        )
-      }
+        </div>
+      )}
     </form>
   );
 }
 
-const Connected = connect(
-  ({ tags, settings }: State) => ({ getTag: (id: string) => tags.get(id) ?? NONE_TAG, settings }),
-)(TaskEditor);
+const Connected = connect(({ tags, settings }: State) => ({
+  getTag: (id: string) => tags.get(id) ?? NONE_TAG,
+  settings,
+}))(TaskEditor);
 export default Connected;

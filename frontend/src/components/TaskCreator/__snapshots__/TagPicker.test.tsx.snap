@@ -9,22 +9,31 @@ exports[`TagPicker(THE_GLORIOUS_NONE_TAG, false) matches snapshot 1`] = `
     onClick={[Function]}
     onKeyPress={[Function]}
     role="presentation"
-    style={Object {}}
+    style={
+      Object {
+        "background": "#969696",
+      }
+    }
   >
     <span
-      title="Tag"
+      className="TagDisplay"
     >
-      <svg
-        alt="Tag"
-        className="CenterIcon"
-        height="1em"
-        onKeyUp={[Function]}
-        tabIndex={0}
+      <span
         title="Tag"
-        width="1em"
       >
-        tag.svg
-      </svg>
+        <svg
+          alt="Tag"
+          className="CenterIcon"
+          height="1em"
+          onKeyUp={[Function]}
+          tabIndex={0}
+          title="Tag"
+          width="1em"
+        >
+          tag-light.svg
+        </svg>
+      </span>
+       add class  
     </span>
   </span>
 </div>
@@ -39,22 +48,31 @@ exports[`TagPicker(THE_GLORIOUS_NONE_TAG, true) matches snapshot 1`] = `
     onClick={[Function]}
     onKeyPress={[Function]}
     role="presentation"
-    style={Object {}}
+    style={
+      Object {
+        "background": "#969696",
+      }
+    }
   >
     <span
-      title="Tag"
+      className="TagDisplay"
     >
-      <svg
-        alt="Tag"
-        className="CenterIcon"
-        height="1em"
-        onKeyUp={[Function]}
-        tabIndex={0}
+      <span
         title="Tag"
-        width="1em"
       >
-        tag.svg
-      </svg>
+        <svg
+          alt="Tag"
+          className="CenterIcon"
+          height="1em"
+          onKeyUp={[Function]}
+          tabIndex={0}
+          title="Tag"
+          width="1em"
+        >
+          tag-light.svg
+        </svg>
+      </span>
+       add class  
     </span>
   </span>
   <div

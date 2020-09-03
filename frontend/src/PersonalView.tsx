@@ -13,7 +13,7 @@ export default (): ReactElement => (
   <>
     <Onboard />
     <TitleBar />
-    <TaskCreator />
+    <TaskCreator view="personal" />
     <TaskView className={styles.TaskView} />
     <AllComplete />
   </>

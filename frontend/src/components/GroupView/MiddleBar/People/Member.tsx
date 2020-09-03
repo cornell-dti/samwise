@@ -1,10 +1,12 @@
 import React, { ReactElement } from 'react';
 import SamwiseIcon from 'components/UI/SamwiseIcon';
-import styles from './Member.module.scss';
+import { faPlus } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import styles from './Member.module.css';
 
 type Props = {
   memberName: string;
-}
+};
 
 export default ({ memberName }: Props): ReactElement => {
   const initials = `${memberName.split(' ')[0].charAt(0)}${memberName.split(' ')[1].charAt(0)}`;
@@ -12,7 +14,10 @@ export default ({ memberName }: Props): ReactElement => {
     <div className={styles.Member}>
       <div className={styles.Initials}>{initials}</div>
       <p>{memberName}</p>
-      <SamwiseIcon className={styles.MemberIcon} iconName="poke" />
+      <div className={styles.Plus}>
+        <FontAwesomeIcon icon={faPlus} />
+      </div>
+      <SamwiseIcon className={styles.MemberIcon} iconName="bell" />
       <SamwiseIcon className={styles.MemberIcon} iconName="hug" />
     </div>
   );

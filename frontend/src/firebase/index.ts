@@ -1,6 +1,6 @@
 import firebase from 'firebase/app';
 
-let firebaseConfig: object;
+let firebaseConfig: Record<string, string>;
 
 if (process.env.NODE_ENV === 'production' && process.env.REACT_APP_IS_STAGING !== 'true') {
   firebaseConfig = {

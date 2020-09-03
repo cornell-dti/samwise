@@ -26,7 +26,8 @@ const uiConfig = {
     {
       provider: firebase.auth.GoogleAuthProvider.PROVIDER_ID,
       customParameters: { hd: 'cornell.edu' },
-    }],
+    },
+  ],
   signInSuccessUrl: '/',
   callbacks: {
     // Avoid redirects after sign-in.
@@ -63,13 +64,17 @@ export default function LoginBarrier({ appRenderer }: Props): ReactElement {
           cacheAppUser(currentUserFromFirebase);
           setLoginStatus(true);
         } else {
-          const alertMessage = 'Sorry, but Samwise registration is currently restricted to Cornell students. Please login with an @cornell.edu email address';
-          firebase.auth().signOut().then(() => {
-            // eslint-disable-next-line no-alert
-            alert(alertMessage);
-            // eslint-disable-next-line no-restricted-globals
-            location.reload(false);
-          });
+          const alertMessage =
+            'Sorry, but Samwise registration is currently restricted to Cornell students. Please login with an @cornell.edu email address';
+          firebase
+            .auth()
+            .signOut()
+            .then(() => {
+              // eslint-disable-next-line no-alert
+              alert(alertMessage);
+              // eslint-disable-next-line no-restricted-globals
+              location.reload(false);
+            });
         }
       });
     });
@@ -110,29 +115,35 @@ export default function LoginBarrier({ appRenderer }: Props): ReactElement {
       </div>
       <div className={styles.LandingLower}>
         <img src={blueCurve} className={styles.LandingBlue} alt="" />
-        <img src={splashScreenshot} className={styles.LandingScreenshot} alt="Screenshot of the Samwise app interface" />
+        <img
+          src={splashScreenshot}
+          className={styles.LandingScreenshot}
+          alt="Screenshot of the Samwise app interface"
+        />
         <h2>
-          Samwise is a task manager for Cornell students who
-          {' '}
-          <span>put in work.</span>
+          Samwise is a task manager for Cornell students who <span>put in work.</span>
         </h2>
         <img src={splashMidImage} alt="" className={styles.LandingMidImg} />
         <div>
-          <img src={feature1} className={styles.LandingFeatures} alt="Take control of your schedule" />
+          <img
+            src={feature1}
+            className={styles.LandingFeatures}
+            alt="Take control of your schedule"
+          />
           <img src={feature2} className={styles.LandingFeatures} alt="Your workload, visualized" />
-          <img src={feature3} className={styles.LandingFeatures} alt="Create actionable (sub)tasks" />
+          <img
+            src={feature3}
+            className={styles.LandingFeatures}
+            alt="Create actionable (sub)tasks"
+          />
         </div>
         <footer>
           <p>
-            Made by DTI
-            {' '}
-            <img src={logoHeart} alt="with love" />
+            Made by DTI <img src={logoHeart} alt="with love" />
           </p>
           <p>
             <a href="https://cornelldti.org">
-              Cornell Design &amp; Tech Initiative
-              {' '}
-              <img src={logoLink} alt="external link" />
+              Cornell Design &amp; Tech Initiative <img src={logoLink} alt="external link" />
             </a>
           </p>
         </footer>
@@ -154,10 +165,7 @@ export default function LoginBarrier({ appRenderer }: Props): ReactElement {
       </div>
       <footer className={styles.LoginFooter}>
         <a href="https://cornelldti.org">
-          <img
-            src={dtiLogo}
-            alt="Cornell DTI"
-          />
+          <img src={dtiLogo} alt="Cornell DTI" />
         </a>
       </footer>
     </div>

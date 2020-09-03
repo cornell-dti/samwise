@@ -47,7 +47,7 @@
   width: 4em;
   height: 4em;
   color: white;
-  background-color: #81B2EB;
+  background-color: #81b2eb;
   border-radius: 2em;
   box-shadow: 0 1px 5px 0 rgba(0, 0, 0, 0.5);
 }
@@ -70,6 +70,6 @@
   bottom: 90px;
   right: 0.5em;
   font-size: 2em;
-  color: #84BCF6;
+  color: #84bcf6;
   z-index: 2;
 }

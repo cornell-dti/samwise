@@ -16,6 +16,8 @@ jobs:
           restore-keys: yarn-
       - name: Yarn Install
         run: yarn install
+      - name: Run Prettier
+        run: yarn format:check
       - name: Create Dummy Files
         run: echo "{}" > functions/src/firebase-adminsdk.json
       - name: Run Linter

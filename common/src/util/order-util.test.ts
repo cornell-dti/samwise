@@ -29,10 +29,10 @@ function getInfoFromList(list: IdOrder[]): ListInfo {
 function testOrderUnique(reorderList: IdOrder[]): void {
   const { allOrders: allNewOrders } = getInfoFromList(reorderList);
   const orderSet: Set<number> = new Set<number>();
-  for (const order of allNewOrders) {
+  allNewOrders.forEach((order) => {
     expect(!orderSet.has(order));
     orderSet.add(order);
-  }
+  });
 }
 
 /**
@@ -135,6 +135,6 @@ for (let i = 0; i < 5; i += 2) {
     const item = { id: String(order), order };
     list.push(item);
   }
-  it(`reorder works on discontinuous order lists of ${list.length - 1 - i}`,
-    () => testReorderUniqueOrders(list));
+  it(`reorder works on discontinuous order lists of ${list.length - 1 - i}`, () =>
+    testReorderUniqueOrders(list));
 }

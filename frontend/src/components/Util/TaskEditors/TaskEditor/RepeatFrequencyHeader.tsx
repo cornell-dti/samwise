@@ -1,11 +1,19 @@
 import React, { ReactElement } from 'react';
 import { connect } from 'react-redux';
-import { State, Tag, RepeatingPattern, Task, RepeatingTaskMetadata } from 'common/lib/types/store-types';
+import {
+  State,
+  Tag,
+  RepeatingPattern,
+  Task,
+  RepeatingTaskMetadata,
+} from 'common/lib/types/store-types';
 import { DAYS_IN_WEEK, isBitSet } from 'common/lib/util/bitwise-util';
 import SamwiseIcon from '../../../UI/SamwiseIcon';
 import styles from './RepeatFrequencyHeader.module.css';
 
 type OwnProps = {
+  // Needed for react-redux. See connect function at the bottom.
+  // eslint-disable-next-line react/no-unused-prop-types
   readonly taskId: string;
   readonly tag: string;
   readonly getTag: (id: string) => Tag;
@@ -19,9 +27,12 @@ const arrOfWeeks = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Fri
 
 const patternTypeToString = (patternType: string): string => {
   switch (patternType) {
-    case 'WEEKLY': return 'week';
-    case 'BIWEEKLY': return 'two weeks';
-    case 'MONTHLY': return 'month';
+    case 'WEEKLY':
+      return 'week';
+    case 'BIWEEKLY':
+      return 'two weeks';
+    case 'MONTHLY':
+      return 'month';
     default:
       throw new Error();
   }
@@ -32,7 +43,7 @@ const bitsetToBinaryCount = (bit: number): BinaryCount => {
   let count = 0;
   for (let i = 0; i < DAYS_IN_WEEK; i += 1) {
     if (isBitSet(bit, i, DAYS_IN_WEEK)) {
-      binary += (1 * 10 ** (DAYS_IN_WEEK - 1 - i));
+      binary += 1 * 10 ** (DAYS_IN_WEEK - 1 - i);
       count += 1;
     }
   }
@@ -59,9 +70,7 @@ const getRepeatedDays = ({ type, bitSet }: RepeatingPattern): string => {
   return `Repeats every ${repeatedDays.reverse().join(', ')}`;
 };
 
-function RepeatFrequencyHeader(
-  { pattern, tag, getTag }: Props,
-): ReactElement | null {
+function RepeatFrequencyHeader({ pattern, tag, getTag }: Props): ReactElement | null {
   if (pattern == null) {
     return null;
   }
@@ -76,14 +85,19 @@ function RepeatFrequencyHeader(
 
 const getRepeatingPattern = (
   { tasks, repeatedTaskSet }: State,
-  taskId: string,
+  taskId: string
 ): RepeatingPattern | null => {
   const repeatedTaskIds = repeatedTaskSet.toArray();
   for (let i = 0; i < repeatedTaskIds.length; i += 1) {
     const repeatedTaskId = repeatedTaskIds[i];
     const repeatingTask = tasks.get(repeatedTaskId) as Task<RepeatingTaskMetadata> | undefined;
     if (repeatingTask != null) {
-      const { metadata: { date: { pattern }, forks } } = repeatingTask;
+      const {
+        metadata: {
+          date: { pattern },
+          forks,
+        },
+      } = repeatingTask;
       if (taskId === repeatedTaskId) {
         return pattern;
       }
@@ -98,7 +112,7 @@ const getRepeatingPattern = (
   return null;
 };
 
-const Connected = connect(
-  (state: State, { taskId }: OwnProps) => ({ pattern: getRepeatingPattern(state, taskId) }),
-)(RepeatFrequencyHeader);
+const Connected = connect((state: State, { taskId }: OwnProps) => ({
+  pattern: getRepeatingPattern(state, taskId),
+}))(RepeatFrequencyHeader);
 export default Connected;

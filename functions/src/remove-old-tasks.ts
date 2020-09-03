@@ -12,7 +12,7 @@ const nDaysBeforeNow = (n: number): Date => {
 // Visible for testing.
 export const partition = (
   idList: readonly string[],
-  partitionSize: number,
+  partitionSize: number
 ): readonly string[][] => {
   const partitioned: string[][] = [];
   let collector: string[] = [];
@@ -31,10 +31,7 @@ export const partition = (
 
 export default async (): Promise<void> => {
   const cutoff = nDaysBeforeNow(N);
-  const snapshot = await database
-    .tasksCollection()
-    .where('date', '<', cutoff)
-    .get();
+  const snapshot = await database.tasksCollection().where('date', '<', cutoff).get();
   const idListToDelete: string[] = [];
   snapshot.docs.forEach((document) => {
     const { id } = document;
@@ -46,6 +43,7 @@ export default async (): Promise<void> => {
   });
   // Used to overcome to the 500 item per batch limit.
   const partitioned = partition(idListToDelete, 500);
+  // eslint-disable-next-line no-restricted-syntax
   for (const idList of partitioned) {
     const batch = database.db().batch();
     idList.forEach((id) => batch.delete(database.tasksCollection().doc(id)));

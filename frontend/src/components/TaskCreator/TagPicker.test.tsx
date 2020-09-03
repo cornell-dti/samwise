@@ -4,20 +4,22 @@ import { ProviderForTesting } from 'store';
 import { NONE_TAG_ID } from 'common/lib/util/tag-util';
 import TagPicker from './TagPicker';
 
-const dummyHandler = (): void => { };
+const dummyHandler = (): void => {};
 
 const createTest = (tag: string, opened: boolean): void => {
   it(`TagPicker(${tag}, ${opened}) matches snapshot`, () => {
-    const tree = renderer.create(
-      <ProviderForTesting>
-        <TagPicker
-          tag={tag}
-          opened={opened}
-          onTagChange={dummyHandler}
-          onPickerOpened={dummyHandler}
-        />
-      </ProviderForTesting>,
-    ).toJSON();
+    const tree = renderer
+      .create(
+        <ProviderForTesting>
+          <TagPicker
+            tag={tag}
+            opened={opened}
+            onTagChange={dummyHandler}
+            onPickerOpened={dummyHandler}
+          />
+        </ProviderForTesting>
+      )
+      .toJSON();
     expect(tree).toMatchSnapshot();
   });
 };

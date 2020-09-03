@@ -77,9 +77,8 @@ function getExamInfoList(rawText: string, isFinal: boolean): readonly ExamInfo[]
   return infoList;
 }
 
-const createJson = (url: string, isFinal: boolean): Promise<readonly ExamInfo[]> => (
-  fetchExamText(url).then((rawText) => getExamInfoList(rawText, isFinal))
-);
+const createJson = (url: string, isFinal: boolean): Promise<readonly ExamInfo[]> =>
+  fetchExamText(url).then((rawText) => getExamInfoList(rawText, isFinal));
 
 export const createFinalJson = (): Promise<readonly ExamInfo[]> => createJson(finalUrl, true);
 export const createPrelimJson = (): Promise<readonly ExamInfo[]> => createJson(prelimUrl, false);

@@ -10,6 +10,7 @@ it('reducer works: new task creation -> subtask creation', () => {
       {
         id: '1',
         order: 4,
+        owner: 'foo',
         name: 'test',
         tag: 'foo',
         complete: true,
@@ -25,7 +26,10 @@ it('reducer works: new task creation -> subtask creation', () => {
     deleted: [],
   });
   expect(intermediateState1.tasks.get('1')?.children).toEqual([]);
-  expect(Array.from(intermediateState1.missingSubTasks.entries())).toEqual([['s1', '1'], ['s2', '1']]);
+  expect(Array.from(intermediateState1.missingSubTasks.entries())).toEqual([
+    ['s1', '1'],
+    ['s2', '1'],
+  ]);
   expect(Array.from(intermediateState1.orphanSubTasks.entries())).toEqual([]);
 
   const intermediateState2 = rootReducer(intermediateState1, {
@@ -76,6 +80,7 @@ it('reducer works: subtask creation -> new task creation', () => {
       {
         id: '1',
         order: 4,
+        owner: 'foo',
         name: 'test',
         tag: 'foo',
         complete: true,
@@ -106,6 +111,7 @@ it('reducer works, task edit -> subtask creation', () => {
       {
         id: 'foo',
         order: 1,
+        owner: 'foo',
         name: 'Foo',
         tag: 'foo',
         complete: true,
@@ -155,6 +161,7 @@ it('reducer works, subtask creation -> task edit', () => {
       {
         id: 'foo',
         order: 1,
+        owner: 'foo',
         name: 'Foo',
         tag: 'foo',
         complete: true,

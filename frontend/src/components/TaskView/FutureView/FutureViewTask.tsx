@@ -40,19 +40,17 @@ type Props = OwnProps & {
 /**
  * The component used to render one task in backlog day.
  */
-function FutureViewTask(
-  {
-    taskId,
-    index,
-    compoundTask,
-    containerDate,
-    inNDaysView,
-    taskEditorPosition,
-    isInMainList,
-    calendarPosition,
-    settings,
-  }: Props,
-): ReactElement | null {
+function FutureViewTask({
+  taskId,
+  index,
+  compoundTask,
+  containerDate,
+  inNDaysView,
+  taskEditorPosition,
+  isInMainList,
+  calendarPosition,
+  settings,
+}: Props): ReactElement | null {
   const isSmallScreen = useMappedWindowSize(({ width }) => width <= 768);
 
   if (compoundTask === null) {
@@ -88,7 +86,8 @@ function FutureViewTask(
   };
 
   const replaceDateForFork = getDateWithDateString(
-    original.metadata.type === 'ONE_TIME' ? original.metadata.date : null, containerDate,
+    original.metadata.type === 'ONE_TIME' ? original.metadata.date : null,
+    containerDate
   );
   const replaceDateForForkOpt = original.metadata.type === 'ONE_TIME' ? null : replaceDateForFork;
   const TaskCheckBox = (): ReactElement => {
@@ -99,7 +98,11 @@ function FutureViewTask(
   const TaskName = (): ReactElement => {
     const { name, complete } = original;
     const tagStyle = complete ? { textDecoration: 'line-through' } : {};
-    return <span className={styles.TaskText} style={tagStyle}>{name}</span>;
+    return (
+      <span className={styles.TaskText} style={tagStyle}>
+        {name}
+      </span>
+    );
   };
 
   const RemoveTaskIcon = (): ReactElement => {
@@ -107,7 +110,11 @@ function FutureViewTask(
     return <SamwiseIcon iconName="x-light" className={styles.TaskIcon} onClick={handler} />;
   };
 
-  const Placeholder = (): ReactElement => <div className={styles.hide}><RemoveTaskIcon /></div>;
+  const Placeholder = (): ReactElement => (
+    <div className={styles.hide}>
+      <RemoveTaskIcon />
+    </div>
+  );
 
   const PinIcon = (): ReactElement => {
     const { id, inFocus } = original;
@@ -120,8 +127,12 @@ function FutureViewTask(
       />
     );
   };
-  const DragIcon = (): ReactElement => <SamwiseIcon iconName="grabber" className={styles.TaskIcon} />;
-  const RepeatingIcon = (): ReactElement => <SamwiseIcon iconName="repeat-light" className={styles.TaskIconNoHover} />;
+  const DragIcon = (): ReactElement => (
+    <SamwiseIcon iconName="grabber" className={styles.TaskIcon} />
+  );
+  const RepeatingIcon = (): ReactElement => (
+    <SamwiseIcon iconName="repeat-light" className={styles.TaskIconNoHover} />
+  );
   let Icon = (): ReactElement => <RepeatingIcon />;
   if (compoundTask.original.metadata.type === 'ONE_TIME') {
     Icon = isCanvasTask ? Placeholder : DragIcon;
@@ -142,18 +153,22 @@ function FutureViewTask(
     );
   };
 
-  const renderSubTasks = (): ReactNode => filteredSubTasks.map((s) => (
-    <FutureViewSubTask
-      key={s.id}
-      subTask={s}
-      mainTaskId={original.id}
-      replaceDateForFork={replaceDateForForkOpt}
-      mainTaskCompleted={original.complete}
-    />
-  ));
+  const renderSubTasks = (): ReactNode =>
+    filteredSubTasks.map((s) => (
+      <FutureViewSubTask
+        key={s.id}
+        subTask={s}
+        mainTaskId={original.id}
+        replaceDateForFork={replaceDateForForkOpt}
+        mainTaskCompleted={original.complete}
+      />
+    ));
 
-  const { metadata: { date }, complete } = original;
-  const overdueComponentOpt = (date < getTodayAtZeroAM() && !complete) && (
+  const {
+    metadata: { date },
+    complete,
+  } = original;
+  const overdueComponentOpt = date < getTodayAtZeroAM() && !complete && (
     <OverdueAlert target="future-view-task" />
   );
   // Construct the trigger for the floating task editor.
@@ -165,9 +180,7 @@ function FutureViewTask(
       }
     };
     const style = opened ? { zIndex: 8 } : {};
-    const mainTasks = inNDaysView
-      ? renderMainTaskInfo()
-      : renderMainTaskInfo(isSmallScreen);
+    const mainTasks = inNDaysView ? renderMainTaskInfo() : renderMainTaskInfo(isSmallScreen);
     const subtasks = inNDaysView ? renderSubTasks() : null;
     return (
       <div
@@ -208,7 +221,8 @@ function FutureViewTask(
 }
 
 const getCompoundTask = (
-  { tasks, tags }: State, { taskId, doesShowCompletedTasks }: OwnProps,
+  { tasks, tags }: State,
+  { taskId, doesShowCompletedTasks }: OwnProps
 ): CompoundTask | null => {
   const original = tasks.get(taskId);
   if (original == null) {
@@ -229,7 +243,8 @@ const getCompoundTask = (
 };
 
 const mapStateToProps = (
-  state: State, ownProps: OwnProps,
+  state: State,
+  ownProps: OwnProps
 ): { readonly compoundTask: CompoundTask | null; readonly settings: Settings } => ({
   compoundTask: getCompoundTask(state, ownProps),
   settings: state.settings,

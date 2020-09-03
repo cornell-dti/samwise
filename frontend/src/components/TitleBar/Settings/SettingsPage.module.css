@@ -34,7 +34,6 @@ p.SettingsSectionTitle {
   border-radius: 5px;
   padding: 5px 10px;
   line-height: 14px;
-
   margin-top: 5px;
 }
 
@@ -60,8 +59,8 @@ p.SettingsSectionTitle {
 }
 
 .SignButton {
-   background: #e93838 !important;
- }
+  background: #e93838 !important;
+}
 
 .SignButton:hover,
 .SignButton:focus {

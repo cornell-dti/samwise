@@ -4,6 +4,7 @@
   right: 32px;
   color: white;
   font-size: 30px;
+  border: none;
 }
 
 .CloseButton:hover > *,
@@ -34,9 +35,8 @@
   overflow-y: auto;
 }
 
-.SettingsButton {
-  width: 17.5px;
-  height: 17.5px;
+button.SettingsButton {
+  border: none;
 }
 
 .ContentWrap {

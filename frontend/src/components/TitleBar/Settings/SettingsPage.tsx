@@ -30,11 +30,12 @@ export const ExamImporter = (): ReactElement => (
   <div className={styles.SettingsSection}>
     <p className={styles.SettingsSectionTitle}>Auto Import Exams</p>
     <div className={`${styles.SettingsButton} ${styles.SettingsSectionContent}`}>
-      Click the following button to reimport the prelims and finals
-      from your classes into your planner. We will only import those that
-      appears on Cornell prelim/final schedule webpage.
+      Click the following button to reimport the prelims and finals from your classes into your
+      planner. We will only import those that appears on Cornell prelim/final schedule webpage.
       <br />
-      <button type="button" title="Reimport Exams" onClick={importCourseExams} tabIndex={0}>Reimport Exams</button>
+      <button type="button" title="Reimport Exams" onClick={importCourseExams} tabIndex={0}>
+        Reimport Exams
+      </button>
     </div>
   </div>
 );
@@ -53,9 +54,7 @@ export const TagsContainer = ({ title, children }: TagsContainerProps): ReactEle
   <div className={styles.SettingsSection}>
     <p className={styles.SettingsSectionTitle}>{title}</p>
     <div className={styles.SettingsSectionContent}>
-      <ul className={styles.ColorConfigItemList}>
-        {children}
-      </ul>
+      <ul className={styles.ColorConfigItemList}>{children}</ul>
     </div>
   </div>
 );
@@ -77,16 +76,13 @@ export function SettingsPage({ tags }: Props): ReactElement {
       otherTags.push(tag);
     }
   });
-  const renderTags = (arr: Tag[]): ReactNode => arr.map((tag: Tag) => (
-    <TagItem key={tag.id} tag={tag} />
-  ));
+  const renderTags = (arr: Tag[]): ReactNode =>
+    arr.map((tag: Tag) => <TagItem key={tag.id} tag={tag} />);
 
   return (
     <div>
       <ClassAdder />
-      <TagsContainer title="Class Tags">
-        {renderTags(classTags)}
-      </TagsContainer>
+      <TagsContainer title="Class Tags">{renderTags(classTags)}</TagsContainer>
       <ExamImporter />
       <TagsContainer title="Other Tags">
         {renderTags(otherTags)}

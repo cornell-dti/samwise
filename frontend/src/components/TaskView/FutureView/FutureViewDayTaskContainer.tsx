@@ -35,18 +35,16 @@ type Props = OwnProps & {
 /**
  * The component to render a list of tasks in backlog day or its floating expanding list.
  */
-function FutureViewDayTaskContainer(
-  {
-    date,
-    idOrderList,
-    inNDaysView,
-    taskEditorPosition,
-    doesShowCompletedTasks,
-    calendarPosition,
-    isInMainList,
-    onHeightChange,
-  }: Props,
-): ReactElement {
+function FutureViewDayTaskContainer({
+  date,
+  idOrderList,
+  inNDaysView,
+  taskEditorPosition,
+  doesShowCompletedTasks,
+  calendarPosition,
+  isInMainList,
+  onHeightChange,
+}: Props): ReactElement {
   const containerRef = React.useRef<HTMLDivElement>(null);
   const [prevHeights, setPrevHeights] = React.useState(() => [0, 0]);
 
@@ -82,19 +80,20 @@ function FutureViewDayTaskContainer(
   ));
   if (isInMainList) {
     return (
-      <div
-        className={styles.Container}
-        ref={containerRef}
-      >
+      <div className={styles.Container} ref={containerRef}>
         {taskListComponent}
       </div>
     );
   }
-  return <div className={styles.Container} ref={containerRef}>{taskListComponent}</div>;
+  return (
+    <div className={styles.Container} ref={containerRef}>
+      {taskListComponent}
+    </div>
+  );
 }
 
-const Connected = connect(
-  (state: State, { date }: OwnProps) => createGetIdOrderListByDate(date)(state),
+const Connected = connect((state: State, { date }: OwnProps) =>
+  createGetIdOrderListByDate(date)(state)
 )(FutureViewDayTaskContainer);
 
 export default Connected;

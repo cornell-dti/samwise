@@ -1,9 +1,4 @@
-import {
-  SubTask,
-  Task,
-  RepeatingPattern,
-  RepeatingTaskMetadata,
-} from '../types/store-types';
+import { SubTask, Task, RepeatingPattern, RepeatingTaskMetadata } from '../types/store-types';
 import { isBitSet } from './bitwise-util';
 
 /**
@@ -96,11 +91,12 @@ export const computeTaskProgress = (inFocusTasks: Task[]): TasksProgressProps =>
     if (task.complete) {
       completedTasksCount += task.children.reduce(
         (acc, subTask) => acc + (task.inFocus || subTask.inFocus ? 1 : 0),
-        task.inFocus ? 1 : 0,
+        task.inFocus ? 1 : 0
       );
     } else {
       completedTasksCount += task.children.reduce(
-        (acc, subTask) => acc + ((task.inFocus || subTask.inFocus) && subTask.complete ? 1 : 0), 0,
+        (acc, subTask) => acc + ((task.inFocus || subTask.inFocus) && subTask.complete ? 1 : 0),
+        0
       );
     }
   }
@@ -132,7 +128,7 @@ function dateMatchRepeatPattern(date: Date, pattern: RepeatingPattern): boolean 
  */
 export function dateMatchRepeats(
   date: Date,
-  { date: { startDate, endDate, pattern }, forks }: RepeatingTaskMetadata,
+  { date: { startDate, endDate, pattern }, forks }: RepeatingTaskMetadata
 ): boolean {
   const dateString = date.toDateString();
   if (forks.some(({ replaceDate }) => replaceDate.toDateString() === dateString)) {

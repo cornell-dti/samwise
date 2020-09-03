@@ -1,15 +1,17 @@
 import { readFileSync, writeFileSync } from 'fs';
 import { CourseInfo, ExamInfo, ExamType, ExamTimeType, FullInfo } from './types';
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { createFinalJson, createPrelimJson } from './fetch-exam';
 
 class Course {
   public readonly examTimes: Map<number, ExamType> = new Map();
 
+  // eslint-disable-next-line no-useless-constructor
   constructor(
     private readonly courseId: number,
     private readonly subject: string,
     private readonly courseNumber: string,
-    private readonly title: string,
+    private readonly title: string
   ) {}
 
   get identifier(): string {
@@ -38,10 +40,11 @@ function processCourseInfoJson(map: Map<string, Course>, json: CourseInfo[]): vo
   });
 }
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 function processExamInfoJson(
   map: Map<string, Course>,
   json: readonly ExamInfo[],
-  type: ExamType,
+  type: ExamType
 ): void {
   json.forEach(({ subject, courseNumber, time }) => {
     const identifier = `${subject}${courseNumber}`;
@@ -57,11 +60,12 @@ function processExamInfoJson(
 
 async function main(): Promise<void> {
   const map = new Map<string, Course>();
-  processCourseInfoJson(map, JSON.parse(readFileSync('sp20-courses.json', 'utf8')));
-  processExamInfoJson(map, await createFinalJson(), 'final');
-  processExamInfoJson(map, await createPrelimJson(), 'prelim');
+  processCourseInfoJson(map, JSON.parse(readFileSync('fa20-courses.json', 'utf8')));
+  // TODO: re-enable them when Cornell published exams (no idea when it will happen)
+  // processExamInfoJson(map, await createFinalJson(), 'final');
+  // processExamInfoJson(map, await createPrelimJson(), 'prelim');
   const result = Array.from(map.values()).map((course) => course.plainJs);
-  writeFileSync('sp20-courses-with-exams-min.json', JSON.stringify(result));
+  writeFileSync('fa20-courses-with-exams-min.json', JSON.stringify(result));
 }
 
 main();

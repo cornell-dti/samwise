@@ -62,6 +62,11 @@ input[type='password'] {
   -moz-appearance: none;
 }
 
+.react-calendar {
+  border: 1px solid #a0a096;
+  text-align: center;
+}
+
 .react-calendar__month-view__weekdays__weekday {
   color: $very-dark-grey;
 }
@@ -72,19 +77,53 @@ input[type='password'] {
 
 $calendar-selected-background: #50e3c2;
 
+button.react-calendar__tile {
+  border: none;
+}
+
+button.react-calendar__tile:hover {
+  cursor: pointer;
+}
+
 button.react-calendar__tile--active {
-  background: $calendar-selected-background;
+  background: $calendar-selected-background !important;
   color: white !important;
   font-weight: bold;
   box-shadow: 1px 1px 5px 2px rgba(0, 0, 0, 0.1);
 }
+
 button.react-calendar__tile--active:hover {
   background: $calendar-selected-background;
+  cursor: pointer;
 }
+
 button.react-calendar__month-view__days__day {
-  /*padding:0.5em 2em;*/
+  background: white;
   padding-top: 0.4em;
   padding-bottom: 0.4em;
+}
+
+button.react-calendar__month-view__days__day:hover {
+  background: #e6e6e6;
+  border: none;
+}
+
+button.react-calendar__month-view__days__day:disabled {
+  background: #e6e6e6;
+  cursor: not-allowed;
+}
+
+.react-calendar__tile {
+  background: white;
+  padding: 2em 0.5em;
+}
+
+.react-calendar__tile:disabled {
+  background: #f0f0f0;
+}
+
+.react-calendar__tile--hasActive {
+  background: #76baff !important;
 }
 
 .NewTaskDatePick div > abbr {
@@ -92,14 +131,39 @@ button.react-calendar__month-view__days__day {
   font-weight: normal;
 }
 
+.react-calendar {
+  background: white;
+}
+
 .react-calendar__navigation {
   height: 30px;
   margin-bottom: 10px;
 }
 
+.react-calendar__navigation__label {
+  background: white;
+}
+
+.react-calendar__navigation button {
+  background: white;
+  border: none;
+  min-width: 44px;
+}
+
+.react-calendar__navigation button:hover {
+  background: #e6e6e6;
+  cursor: pointer;
+}
+
+.react-calendar__navigation button:disabled {
+  background: #e6e6e6;
+  cursor: not-allowed;
+}
+
 .react-calendar__navigation button:first-child {
   border-top-left-radius: 2px;
 }
+
 .react-calendar__navigation button:last-child {
   border-top-right-radius: 2px;
 }

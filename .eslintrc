@@ -1,5 +1,11 @@
 {
-  "extends": ["airbnb", "plugin:@typescript-eslint/recommended", "react-app"],
+  "extends": [
+    "airbnb",
+    "plugin:@typescript-eslint/recommended",
+    "plugin:react-hooks/recommended",
+    "prettier",
+    "prettier/react"
+  ],
   "parser": "@typescript-eslint/parser",
   "plugins": ["@typescript-eslint", "jest"],
   "env": { "browser": true, "node": true, "jest/globals": true },
@@ -16,11 +22,12 @@
     "react/prop-types": "off",
     "react/jsx-props-no-spreading": "warn",
     "react/jsx-filename-extension": ["error", { "extensions": [".jsx", ".tsx"] }],
+    "react/require-default-props": "off",
     "react/state-in-constructor": "off",
     "import/extensions": "off",
     "indent": "off",
-    "@typescript-eslint/ban-ts-ignore": "warn",
-    "@typescript-eslint/indent": ["error", 2],
+    "@typescript-eslint/ban-ts-comment": ["error", { "ts-expect-error": "allow-with-description" }],
+    "@typescript-eslint/indent": "off",
     "@typescript-eslint/prefer-interface": "off",
     "@typescript-eslint/explicit-function-return-type": ["error", { "allowExpressions": true }],
     "@typescript-eslint/no-angle-bracket-type-assertion": "off",

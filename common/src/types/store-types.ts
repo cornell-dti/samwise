@@ -34,7 +34,7 @@ export type GroupTaskMetadata = {
   readonly type: 'GROUP';
   readonly date: Date;
   group: string; // documentid for associated group
-}
+};
 
 export type RepeatingPattern =
   | { readonly type: 'WEEKLY'; readonly bitSet: number /* 7-bit */ }
@@ -50,7 +50,7 @@ export type RepeatingDate = {
   readonly startDate: Date;
   readonly endDate: Date | number;
   readonly pattern: RepeatingPattern;
-}
+};
 
 export type RepeatingTaskMetadata = {
   readonly type: 'MASTER_TEMPLATE';
@@ -58,12 +58,12 @@ export type RepeatingTaskMetadata = {
   readonly forks: readonly ForkedTaskMetaData[];
 };
 
-export type TaskMetadata =
-  OneTimeTaskMetadata | RepeatingTaskMetadata | GroupTaskMetadata;
+export type TaskMetadata = OneTimeTaskMetadata | RepeatingTaskMetadata | GroupTaskMetadata;
 
 export type Task<M = TaskMetadata> = {
   readonly id: string;
   readonly order: number;
+  readonly owner: string;
   readonly name: string; // Example: "Task 1 name"
   readonly tag: string; // ID of the tag
   readonly complete: boolean;
@@ -73,6 +73,7 @@ export type Task<M = TaskMetadata> = {
 };
 
 export type MainTask = {
+  readonly owner: string;
   readonly name: string;
   readonly tag: string;
   readonly date: Date | RepeatingDate;
@@ -101,6 +102,18 @@ export type BannerMessageStatus = {
 };
 
 /**
+ * The type of a group entry.
+ */
+
+export type Group = {
+  readonly id: string;
+  readonly name: string;
+  readonly members: readonly string[];
+  readonly deadline: Date;
+  readonly classCode?: string;
+};
+
+/**
  * The type of a course info entry.
  */
 export type Course = {
@@ -109,6 +122,15 @@ export type Course = {
   readonly courseNumber: string;
   readonly title: string;
   readonly examTimes: { readonly type: 'final' | 'prelim'; readonly time: number }[];
+};
+
+/**
+ * The type for a pending group invite
+ */
+export type PendingGroupInvite = {
+  readonly id: string;
+  readonly group: string;
+  readonly inviterName: string; // Name of person who sent invite
 };
 
 /**
@@ -125,9 +147,14 @@ export type State = {
   readonly orphanSubTasks: Map<string, SubTask>;
   // A fast access map to quickly find all main task id within a date.
   readonly dateTaskMap: Map<string, Set<string>>;
+  // A fast access map to quickly find all task ids under a certain group ID.
+  readonly groupTaskMap: Map<string, Set<string>>;
   // A set of all ids of repeating tasks.
   readonly repeatedTaskSet: Set<string>;
+  readonly groupTaskSet: Set<string>;
   readonly settings: Settings;
   readonly bannerMessageStatus: BannerMessageStatus;
   readonly courses: Map<string, Course[]>;
+  readonly groups: Map<string, Group>;
+  readonly pendingInvites: Map<string, PendingGroupInvite>;
 };

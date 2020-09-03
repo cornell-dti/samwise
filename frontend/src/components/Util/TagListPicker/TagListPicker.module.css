@@ -1,8 +1,7 @@
-
 /*
  * Class Picker
  */
-.NewTaskClass{
+.NewTaskClass {
   position: absolute;
   top: 21px;
   right: 90px;
@@ -11,10 +10,10 @@
   padding: 3px 5px 0 5px;
   list-style: none;
   background: white;
-  box-shadow: 1px 1px 10px 5px rgba(0,0,0,0.15);
+  box-shadow: 1px 1px 10px 5px rgba(0, 0, 0, 0.15);
 }
 
-.NewTaskClass li{
+.NewTaskClass li {
   position: relative;
 
   text-align: left;
@@ -38,28 +37,31 @@
   transition: opacity 0.1s ease-in-out;
 }
 
-.NewTaskClass li:last-child{
-  background:white;
-  border:2px black solid;
-  color:black;
+.NewTaskClass li:last-child {
+  background: white;
+  border: 2px black solid;
+  color: black;
 }
 
 .NewTaskClass li:hover {
-  opacity:0.8;
+  opacity: 0.8;
 }
 .NewTaskClass li:active {
-  opacity:1;
+  opacity: 1;
 }
 
-.NewTaskClass li input[type="checkbox"]{
-  position:absolute;
-  width:100%;height:100%;
-  margin:0;padding:0;
-  left:0;top:0;
-  opacity:0;
-  cursor:pointer;
+.NewTaskClass li input[type='checkbox'] {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  left: 0;
+  top: 0;
+  opacity: 0;
+  cursor: pointer;
 }
 
-.NewTaskClass input[type="checkbox"]:checked+label+ul{
-  display:block;
+.NewTaskClass input[type='checkbox']:checked + label + ul {
+  display: block;
 }
