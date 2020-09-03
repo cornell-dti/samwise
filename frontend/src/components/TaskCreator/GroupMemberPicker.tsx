@@ -39,7 +39,8 @@ function GroupMemberPicker({
     const internal = isDefault ? (
       <>
         <span className={styles.TagDisplay}>
-          <SamwiseIcon iconName="user-plus" className={styles.CenterIcon} /> assign to&nbsp;&nbsp;
+          <SamwiseIcon iconName="user-plus" className={styles.CenterIcon} />
+          &nbsp;assign to&nbsp;&nbsp;
         </span>
       </>
     ) : (
