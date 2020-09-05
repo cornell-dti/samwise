@@ -27,7 +27,6 @@
   font-size: 12px;
   line-height: 14px !important;
   text-align: left;
-
   position: relative;
 }
 
@@ -36,7 +35,7 @@
   border: 2px white solid !important;
 }
 
-.ColorEdit:first-letter {
+.ColorEdit::first-letter {
   text-transform: capitalize;
 }
 
