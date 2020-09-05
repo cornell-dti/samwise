@@ -1,24 +1,26 @@
 import React, { ReactElement } from 'react';
 import firebase from 'firebase/app';
-import { FirebaseAuth } from 'react-firebaseui';
+import StyledFirebaseAuth from 'react-firebaseui/StyledFirebaseAuth';
 import { setGAUser } from '../../../util/ga-util';
 import styles from './Login.module.css';
 import { cacheAppUser, toAppUser } from '../../../firebase/auth-util';
 import initListeners from '../../../firebase/listeners';
 
-import dtiLogo from '../../../assets/splash/wordmark.png';
-import screenshot from '../../../assets/splash/header_final.png';
-import samwiseLogo from '../../../assets/splash/samwise_logo.svg';
-import splashTopImage from '../../../assets/splash/splash_top_image.svg';
-import splashPeakBear from '../../../assets/splash/splash_peak_bear.svg';
-import blueCurve from '../../../assets/splash/blue.svg';
-import splashScreenshot from '../../../assets/splash/screenshot.png';
-import splashMidImage from '../../../assets/splash/splash_mid_image.svg';
-import feature1 from '../../../assets/splash/feature1.svg';
-import feature2 from '../../../assets/splash/feature2.svg';
-import feature3 from '../../../assets/splash/feature3.svg';
-import logoHeart from '../../../assets/splash/heart_logo.svg';
-import logoLink from '../../../assets/splash/link_logo.svg';
+import {
+  dtiLogo,
+  screenshot,
+  samwiseLogo,
+  splashTopImage,
+  splashPeakBear,
+  blueCurve,
+  splashScreenshot,
+  splashMidImage,
+  feature1,
+  feature2,
+  feature3,
+  logoHeart,
+  logoLink,
+} from '../../../assets/assets-constants';
 
 const uiConfig = {
   signInFlow: 'popup',
@@ -110,7 +112,7 @@ export default function LoginBarrier({ appRenderer }: Props): ReactElement {
         <img src={splashTopImage} alt="" />
         <div className={styles.LandingHeroLogin}>
           <img src={splashPeakBear} alt="" />
-          <FirebaseAuth uiConfig={uiConfig} firebaseAuth={firebase.auth()} />
+          <StyledFirebaseAuth uiConfig={uiConfig} firebaseAuth={firebase.auth()} />
         </div>
       </div>
       <div className={styles.LandingLower}>

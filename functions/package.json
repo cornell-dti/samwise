@@ -9,7 +9,6 @@
     "shell": "yarn tsc && firebase functions:shell",
     "start": "yarn shell",
     "deploy": "firebase deploy --only functions",
-    "test": "TEST_MODE=true react-scripts test --watchAll=false",
     "logs": "firebase functions:log"
   },
   "main": "dist/index.js",

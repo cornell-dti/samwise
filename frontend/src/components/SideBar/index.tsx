@@ -29,7 +29,7 @@ export default ({ groups, changeView }: Props): ReactElement => {
         onClick={() => handleIconClick('personal')}
         className={styles.PersonalViewButton}
       >
-        <SamwiseIcon iconName="personal-view" />
+        <SamwiseIcon iconName="personal-view" className={styles.PersonalViewButtonIcon} />
       </button>
       <div className={styles.GroupIcons}>
         <p>My Groups</p>

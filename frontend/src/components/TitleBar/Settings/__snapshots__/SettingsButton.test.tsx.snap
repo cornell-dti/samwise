@@ -22,18 +22,16 @@ exports[`SettingsButton matches snapshot. 1`] = `
       title="Settings Button"
     >
       <span
+        onKeyUp={[Function]}
+        role="button"
+        tabIndex={0}
         title="Settings"
       >
-        <svg
+        <img
           alt="Settings"
-          height="1em"
-          onKeyUp={[Function]}
-          tabIndex={0}
-          title="Settings"
-          width="1em"
-        >
-          settings.svg
-        </svg>
+          className="SamwiseIconDefaultStyle"
+          src="/svgs/settings.svg"
+        />
       </span>
     </p>
   </button>

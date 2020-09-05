@@ -1,6 +1,6 @@
 import React, { ReactElement } from 'react';
-import ModeIndicator from 'components/UI/ModeIndicator';
-import ViewSwitcher from 'ViewSwitcher';
+import ModeIndicator from './components/UI/ModeIndicator';
+import ViewSwitcher from './ViewSwitcher';
 import { ModalsContainer } from './components/Util/Modals';
 import { isGroupTaskEnabled } from './util/gate-keeper';
 import PersonalView from './PersonalView';

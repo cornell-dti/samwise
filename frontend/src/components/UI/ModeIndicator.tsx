@@ -1,5 +1,5 @@
 import React, { ReactElement } from 'react';
-import systemMode, { Mode } from 'util/mode-util';
+import systemMode, { Mode } from '../../util/mode-util';
 import styles from './ModeIndicator.module.css';
 
 type Props = { readonly mode: Mode };

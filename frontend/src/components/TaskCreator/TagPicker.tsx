@@ -33,7 +33,8 @@ function TagPicker({ tag, opened, onTagChange, onPickerOpened, getTag }: Props):
     const internal = isDefault ? (
       <>
         <span className={styles.TagDisplay}>
-          <SamwiseIcon iconName="tag-light" className={styles.CenterIcon} /> add class&nbsp;&nbsp;
+          <SamwiseIcon iconName="tag-light" className={styles.CenterIcon} />
+          &nbsp;add class&nbsp;&nbsp;
         </span>
       </>
     ) : (

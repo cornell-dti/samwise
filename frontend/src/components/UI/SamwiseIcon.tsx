@@ -2,206 +2,230 @@
  * The Icon Set for Samwise.
  */
 
-import React, { KeyboardEvent, MouseEvent, ReactElement, SVGProps } from 'react';
+import React, { ReactElement, CSSProperties } from 'react';
 import { IconName } from './samwise-icon-types';
-import { ReactComponent as Alert } from '../../assets/svgs/alert.svg';
-import { ReactComponent as Bell } from '../../assets/svgs/bell.svg';
-import { ReactComponent as CalendarDark } from '../../assets/svgs/calendar-dark.svg';
-import { ReactComponent as CalendarLight } from '../../assets/svgs/calendar-light.svg';
-import { ReactComponent as CheckedDark } from '../../assets/svgs/checked-dark.svg';
-import { ReactComponent as CheckedLight } from '../../assets/svgs/checked.svg';
-import { ReactComponent as Clock } from '../../assets/svgs/clock.svg';
-import { ReactComponent as Exit } from '../../assets/svgs/exit.svg';
-import { ReactComponent as Grabber } from '../../assets/svgs/grabbers.svg';
-import { ReactComponent as Hide } from '../../assets/svgs/hide.svg';
-import { ReactComponent as Hug } from '../../assets/svgs/hug.svg';
-import { ReactComponent as Pencil } from '../../assets/svgs/pencil.svg';
-import { ReactComponent as PersonalView } from '../../assets/svgs/personal-view.svg';
-import { ReactComponent as PinDarkFilled } from '../../assets/svgs/pin-2-dark-filled.svg';
-import { ReactComponent as PinDarkOutline } from '../../assets/svgs/pin-2-dark-outline.svg';
-import { ReactComponent as PinLightFilled } from '../../assets/svgs/pin-2-light-filled.svg';
-import { ReactComponent as PinLightOutline } from '../../assets/svgs/pin-2-light-outline.svg';
-import { ReactComponent as Poke } from '../../assets/svgs/poke.svg';
-import { ReactComponent as Repeat } from '../../assets/svgs/repeat.svg';
-import { ReactComponent as RepeatLight } from '../../assets/svgs/repeat-light.svg';
-import { ReactComponent as Settings } from '../../assets/svgs/settings.svg';
-import { ReactComponent as Show } from '../../assets/svgs/show.svg';
-import { ReactComponent as Tag } from '../../assets/svgs/tag.svg';
-import { ReactComponent as TagLight } from '../../assets/svgs/tag-light.svg';
-import { ReactComponent as Unchecked } from '../../assets/svgs/unchecked.svg';
-import { ReactComponent as DropDown } from '../../assets/svgs/v.svg';
-import { ReactComponent as XDark } from '../../assets/svgs/XDark.svg';
-import { ReactComponent as XLight } from '../../assets/svgs/XLight.svg';
-import { ReactComponent as RepeatFrequency } from '../../assets/svgs/repeat-frequency.svg';
-import { ReactComponent as UserPlus } from '../../assets/svgs/user-plus.svg';
-import { ReactComponent as AddTask } from '../../assets/svgs/add-task.svg';
-import { ReactComponent as Edit } from '../../assets/svgs/edit.svg';
+import styles from './SamwiseIcon.module.css';
+import {
+  Alert,
+  ArrowDownDark,
+  Bell,
+  CalendarDark,
+  CalendarLight,
+  CheckedDark,
+  CheckedLight,
+  Clock,
+  Exit,
+  Grabber,
+  Hide,
+  Hug,
+  Pencil,
+  PersonalView,
+  PinDarkFilled,
+  PinDarkOutline,
+  PinLightFilled,
+  PinLightOutline,
+  Poke,
+  Repeat,
+  RepeatLight,
+  Settings,
+  Show,
+  Tag,
+  TagLight,
+  Unchecked,
+  DropDown,
+  XDark,
+  XLight,
+  RepeatFrequency,
+  UserPlus,
+  AddTask,
+  Edit,
+} from '../../assets/assets-constants';
 
-type Props = SVGProps<SVGSVGElement> & {
+type Props = {
   readonly iconName: IconName;
   readonly title?: string;
+  readonly className?: string;
+  readonly style?: CSSProperties;
+  readonly tabIndex?: number;
+  readonly onClick?: () => void;
 };
 
-const SamwiseIcon = ({ iconName, title, ...otherProps }: Props): ReactElement => {
-  let SvgComponent: typeof Alert;
+const SamwiseIcon = ({
+  iconName,
+  className,
+  style,
+  tabIndex,
+  title,
+  onClick,
+}: Props): ReactElement => {
+  let svg: string;
   let altText: string;
   // let title: string;
 
   switch (iconName) {
     case 'alert':
-      SvgComponent = Alert;
+      svg = Alert;
       altText = 'alert';
       break;
+    case 'arrow-down-dark':
+      svg = ArrowDownDark;
+      altText = 'Forward/Backward';
+      break;
     case 'bell':
-      SvgComponent = Bell;
+      svg = Bell;
       altText = 'Nudge!';
       break;
     case 'calendar-dark':
-      SvgComponent = CalendarDark;
+      svg = CalendarDark;
       altText = 'Due date';
       break;
     case 'calendar-light':
-      SvgComponent = CalendarLight;
+      svg = CalendarLight;
       altText = 'Due date';
       break;
     case 'checked-dark':
-      SvgComponent = CheckedDark;
+      svg = CheckedDark;
       altText = 'Checked';
       break;
     case 'checked-light':
-      SvgComponent = CheckedLight;
+      svg = CheckedLight;
       altText = 'Checked';
       break;
     case 'clock':
-      SvgComponent = Clock;
+      svg = Clock;
       altText = 'clock';
       break;
     case 'exit':
-      SvgComponent = Exit;
+      svg = Exit;
       altText = 'Leave group';
       break;
     case 'grabber':
-      SvgComponent = Grabber;
+      svg = Grabber;
       altText = 'Reorder';
       break;
     case 'hide':
-      SvgComponent = Hide;
+      svg = Hide;
       altText = 'Hide';
       break;
     case 'hug':
-      SvgComponent = Hug;
+      svg = Hug;
       altText = 'Give a hug';
       break;
     case 'pencil':
-      SvgComponent = Pencil;
+      svg = Pencil;
       altText = 'Edit';
       break;
     case 'personal-view':
-      SvgComponent = PersonalView;
+      svg = PersonalView;
       altText = 'Switch to Personal Samwise';
       break;
     case 'pin-dark-filled':
-      SvgComponent = PinDarkFilled;
+      svg = PinDarkFilled;
       altText = 'Unpin from Focus';
       break;
     case 'pin-dark-outline':
-      SvgComponent = PinDarkOutline;
+      svg = PinDarkOutline;
       altText = 'Pin to Focus';
       break;
     case 'pin-light-filled':
-      SvgComponent = PinLightFilled;
+      svg = PinLightFilled;
       altText = 'Unpin from Focus';
       break;
     case 'pin-light-outline':
-      SvgComponent = PinLightOutline;
+      svg = PinLightOutline;
       altText = 'Pin to Focus';
       break;
     case 'poke':
-      SvgComponent = Poke;
+      svg = Poke;
       altText = 'Poke!';
       break;
     case 'repeat':
-      SvgComponent = Repeat;
+      svg = Repeat;
       altText = 'Repeating';
       break;
     case 'repeat-light':
-      SvgComponent = RepeatLight;
+      svg = RepeatLight;
       altText = 'Repeating Task';
       break;
     case 'settings':
-      SvgComponent = Settings;
+      svg = Settings;
       altText = 'Settings';
       break;
     case 'show':
-      SvgComponent = Show;
+      svg = Show;
       altText = 'Show';
       break;
     case 'tag':
-      SvgComponent = Tag;
+      svg = Tag;
       altText = 'Tag';
       break;
     case 'tag-light':
-      SvgComponent = TagLight;
+      svg = TagLight;
       altText = 'Tag';
       break;
     case 'unchecked':
-      SvgComponent = Unchecked;
+      svg = Unchecked;
       altText = 'unchecked';
       break;
     case 'dropdown':
-      SvgComponent = DropDown;
+      svg = DropDown;
       altText = 'More';
       break;
     case 'x-dark':
-      SvgComponent = XDark;
+      svg = XDark;
       altText = 'Delete';
       break;
     case 'x-light':
-      SvgComponent = XLight;
+      svg = XLight;
       altText = 'Delete';
       break;
     case 'x-light-settings':
-      SvgComponent = XLight;
+      svg = XLight;
       altText = 'Close Settings';
       break;
     case 'repeat-frequency':
-      SvgComponent = RepeatFrequency;
+      svg = RepeatFrequency;
       altText = 'Repeat Frequency';
       break;
     case 'user-plus':
-      SvgComponent = UserPlus;
+      svg = UserPlus;
       altText = 'Add User';
       break;
     case 'add-task':
-      SvgComponent = AddTask;
+      svg = AddTask;
       altText = 'Add Task';
       break;
     case 'edit':
-      SvgComponent = Edit;
+      svg = Edit;
       altText = 'Subtask';
       break;
     default:
       throw new Error(`Unrecognized icon name: ${iconName}`);
   }
-  const allPropsToSvg = {
-    width: '1em',
-    height: '1em',
-    alt: altText,
-    tabIndex: 0,
-    title: altText,
-    onKeyUp: (e: KeyboardEvent<SVGElement>) => {
-      e.stopPropagation();
-      if (e.key === ' ' && otherProps.onClick != null) {
-        // hacky way to convert space to click. Potentially unsafe but generally OK.
-        otherProps.onClick((e as unknown) as MouseEvent<SVGSVGElement>);
-      }
-    },
-    ...otherProps,
-  };
   return (
-    <span title={title ?? altText}>
-      {/* eslint-disable-next-line react/jsx-props-no-spreading */}
-      <SvgComponent {...allPropsToSvg} />
+    <span
+      role="button"
+      title={title ?? altText}
+      tabIndex={0}
+      onClick={onClick}
+      onKeyUp={(e) => {
+        e.stopPropagation();
+        if (e.key === ' ' && onClick != null) {
+          onClick();
+        }
+      }}
+    >
+      <img
+        src={svg}
+        className={
+          className != null
+            ? `${styles.SamwiseIconDefaultStyle} ${className}`
+            : styles.SamwiseIconDefaultStyle
+        }
+        tabIndex={tabIndex}
+        style={style}
+        alt={altText}
+      />
     </span>
   );
 };

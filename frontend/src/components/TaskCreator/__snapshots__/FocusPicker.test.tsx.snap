@@ -11,19 +11,16 @@ exports[`Pinned FocusPicker matches snapshot 1`] = `
     role="presentation"
   >
     <span
+      onKeyUp={[Function]}
+      role="button"
+      tabIndex={0}
       title="Unpin from Focus"
     >
-      <svg
+      <img
         alt="Unpin from Focus"
-        className="CenterIcon"
-        height="1em"
-        onKeyUp={[Function]}
-        tabIndex={0}
-        title="Unpin from Focus"
-        width="1em"
-      >
-        pin-2-dark-filled.svg
-      </svg>
+        className="SamwiseIconDefaultStyle CenterIcon"
+        src="/svgs/pin-2-dark-filled.svg"
+      />
     </span>
   </span>
 </div>
@@ -40,19 +37,16 @@ exports[`Unpinned FocusPicker matches snapshot 1`] = `
     role="presentation"
   >
     <span
+      onKeyUp={[Function]}
+      role="button"
+      tabIndex={0}
       title="Pin to Focus"
     >
-      <svg
+      <img
         alt="Pin to Focus"
-        className="CenterIcon"
-        height="1em"
-        onKeyUp={[Function]}
-        tabIndex={0}
-        title="Pin to Focus"
-        width="1em"
-      >
-        pin-2-dark-outline.svg
-      </svg>
+        className="SamwiseIconDefaultStyle CenterIcon"
+        src="/svgs/pin-2-dark-outline.svg"
+      />
     </span>
   </span>
 </div>

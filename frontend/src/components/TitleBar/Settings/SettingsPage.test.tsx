@@ -2,7 +2,7 @@ import React from 'react';
 import { Map } from 'immutable';
 import renderer from 'react-test-renderer';
 import { Tag } from 'common/lib/types/store-types';
-import { ProviderForTesting } from 'store';
+import { ProviderForTesting } from '../../../store';
 import { ClassAdder, ExamImporter, TagsContainer, SettingsPage } from './SettingsPage';
 
 it('ClassAdder matches snapshot.', () => {

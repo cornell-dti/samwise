@@ -9,18 +9,16 @@ exports[`Tooltip matches snapshot 1`] = `
     onMouseOver={[Function]}
   >
     <span
+      onKeyUp={[Function]}
+      role="button"
+      tabIndex={0}
       title="alert"
     >
-      <svg
+      <img
         alt="alert"
-        height="1em"
-        onKeyUp={[Function]}
-        tabIndex={0}
-        title="alert"
-        width="1em"
-      >
-        alert.svg
-      </svg>
+        className="SamwiseIconDefaultStyle"
+        src="/svgs/alert.svg"
+      />
     </span>
   </div>
   <div
