@@ -9,7 +9,7 @@ import TitleBar from './components/TitleBar';
 /**
  * The top level Personal Samwise view component.
  */
-export default (): ReactElement => (
+const PersonalView = (): ReactElement => (
   <>
     <Onboard />
     <TitleBar />
@@ -18,3 +18,5 @@ export default (): ReactElement => (
     <AllComplete />
   </>
 );
+
+export default PersonalView;

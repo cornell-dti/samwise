@@ -43,7 +43,7 @@ export type TextInputModalProps = {
   readonly onCancel: () => void;
 };
 
-export default ({
+const TextInputModal = ({
   open,
   title,
   subText,
@@ -96,3 +96,5 @@ export default ({
     </Modal>
   );
 };
+
+export default TextInputModal;

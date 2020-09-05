@@ -19,7 +19,7 @@ const pressedAddGroupTask = (e: KeyboardEvent): void => {
   }
 };
 
-export default ({ memberName }: Props): ReactElement => {
+const GroupTaskRow = ({ memberName }: Props): ReactElement => {
   const initials = `${memberName.split(' ')[0].charAt(0)}${memberName.split(' ')[1].charAt(0)}`;
 
   return (
@@ -42,3 +42,5 @@ export default ({ memberName }: Props): ReactElement => {
     </div>
   );
 };
+
+export default GroupTaskRow;

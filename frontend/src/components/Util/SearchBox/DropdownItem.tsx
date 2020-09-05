@@ -7,7 +7,11 @@ type Props<T extends FuseItem> = {
   readonly onSelect: (selected: T) => void;
 };
 
-export default <T extends FuseItem>({ item, className, onSelect }: Props<T>): ReactElement => (
+const DropdownItem = <T extends FuseItem>({
+  item,
+  className,
+  onSelect,
+}: Props<T>): ReactElement => (
   <button
     type="button"
     className={className}
@@ -18,3 +22,5 @@ export default <T extends FuseItem>({ item, className, onSelect }: Props<T>): Re
     {item.value}
   </button>
 );
+
+export default DropdownItem;

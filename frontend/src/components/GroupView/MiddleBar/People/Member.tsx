@@ -8,7 +8,7 @@ type Props = {
   memberName: string;
 };
 
-export default ({ memberName }: Props): ReactElement => {
+const Member = ({ memberName }: Props): ReactElement => {
   const initials = `${memberName.split(' ')[0].charAt(0)}${memberName.split(' ')[1].charAt(0)}`;
   return (
     <div className={styles.Member}>
@@ -22,3 +22,5 @@ export default ({ memberName }: Props): ReactElement => {
     </div>
   );
 };
+
+export default Member;

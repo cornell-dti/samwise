@@ -77,7 +77,7 @@ const transformDate = (dateOrTimestamp: Date | Timestamp): Date =>
 /**
  * Initialize listeners bind to firestore.
  */
-export default (onFirstFetched: () => void): (() => void) => {
+const initializeFirebaseListeners = (onFirstFetched: () => void): (() => void) => {
   let firstTagsFetched = false;
   let firstTasksFetched = false;
   let firstSubTasksFetched = false;
@@ -312,3 +312,5 @@ export default (onFirstFetched: () => void): (() => void) => {
     unmountPendingInviteListener();
   };
 };
+
+export default initializeFirebaseListeners;

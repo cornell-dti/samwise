@@ -5,10 +5,7 @@ import { HappyBear, RegularBear } from '../../../assets/assets-constants';
 
 type Props = TasksProgressProps & { readonly inMobileView: boolean };
 
-/**
- * The bear as a progress checker.
- */
-export default ({ completedTasksCount, allTasksCount, inMobileView }: Props): ReactElement => {
+const Bear = ({ completedTasksCount, allTasksCount, inMobileView }: Props): ReactElement => {
   const allCompleted = completedTasksCount === allTasksCount;
   let style: CSSProperties = { backgroundImage: `url(${allCompleted ? HappyBear : RegularBear})` };
   if (!inMobileView) {
@@ -16,3 +13,8 @@ export default ({ completedTasksCount, allTasksCount, inMobileView }: Props): Re
   }
   return <div className={styles.Bear} style={style} />;
 };
+
+/**
+ * The bear as a progress checker.
+ */
+export default Bear;

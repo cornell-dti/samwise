@@ -5,10 +5,8 @@ import GroupView from 'components/GroupView';
 import styles from 'App.module.css';
 
 type Views = 'personal' | 'group';
-/**
- * Handles switching the view from Personal to Group
- */
-export default (): React.ReactElement => {
+
+const ViewSwitcher = (): React.ReactElement => {
   const groups = ['CS 2110', 'CS 3110', 'INFO 3450'];
 
   const [view, setView] = useState<Views>('personal');
@@ -28,3 +26,8 @@ export default (): React.ReactElement => {
     </div>
   );
 };
+
+/**
+ * Handles switching the view from Personal to Group
+ */
+export default ViewSwitcher;

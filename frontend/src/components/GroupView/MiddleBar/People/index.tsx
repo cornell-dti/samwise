@@ -30,7 +30,7 @@ type Props = {
   groupMemberNames: string[];
 };
 
-export default ({ groupMemberNames }: Props): ReactElement => (
+const People = ({ groupMemberNames }: Props): ReactElement => (
   <div className={styles.People}>
     <h2>People</h2>
     <div className={styles.MemberList}>
@@ -55,3 +55,5 @@ export default ({ groupMemberNames }: Props): ReactElement => (
     </button>
   </div>
 );
+
+export default People;

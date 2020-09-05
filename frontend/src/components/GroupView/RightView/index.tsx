@@ -16,7 +16,7 @@ const EditGroupNameIcon = (): ReactElement => {
   return <SamwiseIcon iconName="pencil" className={styles.EditGroupNameIcon} onClick={handler} />;
 };
 
-export default ({ groupName, groupMemberNames }: Props): ReactElement => (
+const RightView = ({ groupName, groupMemberNames }: Props): ReactElement => (
   <div className={styles.RightView}>
     <div className={styles.GroupTaskCreator}>
       <TaskCreator view="group" group={groupName} />
@@ -35,3 +35,5 @@ export default ({ groupName, groupMemberNames }: Props): ReactElement => (
     </div>
   </div>
 );
+
+export default RightView;

@@ -8,9 +8,11 @@ const EmptyTaskQueue = (): React.ReactElement => (
   </div>
 );
 
-export default (): React.ReactElement => (
+const TaskQueue = (): React.ReactElement => (
   <div className={styles.TaskQueue}>
     <h2>Task Queue</h2>
     <EmptyTaskQueue />
   </div>
 );
+
+export default TaskQueue;
