@@ -43,11 +43,13 @@
 
 .NavButtonPrev {
   @extend %NavButtonCommon;
+
   transform: rotate(90deg);
 }
 
 .NavButtonNext {
   @extend %NavButtonCommon;
+
   transform: rotate(270deg);
 }
 

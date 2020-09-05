@@ -117,7 +117,6 @@ img.TaskEditorIcon:focus,
   cursor: pointer;
   background-color: rgba(255, 255, 255, 0);
   border-color: transparent;
-
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -133,7 +132,7 @@ img.TaskEditorIcon:focus,
   left: 8px;
   top: 4px;
   z-index: 4;
-  color: #333333;
+  color: #333;
   background: white;
 }
 

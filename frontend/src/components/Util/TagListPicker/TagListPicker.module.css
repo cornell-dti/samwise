@@ -15,24 +15,17 @@
 
 .NewTaskClass li {
   position: relative;
-
   text-align: left;
-
   padding: 1px 7px;
   margin-bottom: 3px;
   border: none;
   border-radius: 15px;
-
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
   width: 130px;
-
-  text-align: center;
-
   color: white;
   background: var(--custom-color);
-
   opacity: 1;
   transition: opacity 0.1s ease-in-out;
 }

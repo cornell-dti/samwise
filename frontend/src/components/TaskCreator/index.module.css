@@ -176,7 +176,6 @@
   list-style-type: none;
   margin: 0;
   padding: 0;
-
   top: 72px;
 }
 
@@ -184,12 +183,9 @@
   border-top: none;
   border-left: none;
   border-right: none;
-
   width: calc(100% - 60px);
   padding: 10px 20px 10px 50px;
-
   outline: none;
-
   top: 72px;
 }
 

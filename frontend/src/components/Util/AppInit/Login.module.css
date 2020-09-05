@@ -9,13 +9,10 @@
   right: 0;
   overflow: hidden;
   color: black;
-  background-color: white;
   text-align: center;
   margin: 0;
   padding: 0;
-
   background: linear-gradient(282deg, #289de9, white);
-  overflow: hidden;
   font-family: 'Open Sans', sans-serif;
 }
 
@@ -67,14 +64,12 @@
   width: 100%;
   bottom: 0;
   font-size: 14px;
-
   text-align: center;
 }
 
 .LoginFooter img {
   max-width: 150px;
   margin: 10px;
-
   padding: 10px;
   background: black;
   border-radius: 5px;
@@ -101,7 +96,6 @@
   color: black;
   margin: 0;
   padding: 0;
-
   background: white;
   font-family: 'DM Sans', sans-serif;
 }
