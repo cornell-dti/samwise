@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import SideBar from 'components/SideBar';
 import PersonalView from 'PersonalView';
 import GroupView from 'components/GroupView';
-import styles from 'App.module.css';
+import styles from './App.module.scss';
 
 type Views = 'personal' | 'group';
 

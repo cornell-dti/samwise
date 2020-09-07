@@ -1,5 +1,5 @@
 import React from 'react';
-import styles from './index.module.css';
+import styles from './index.module.scss';
 
 const EmptyTaskQueue = (): React.ReactElement => (
   <div className={styles.EmptyTaskQueue}>

@@ -13,7 +13,7 @@ import SamwiseIcon from 'components/UI/SamwiseIcon';
 import { removeTaskWithPotentialPrompt } from 'util/task-util';
 import { Draggable } from 'react-beautiful-dnd';
 import FutureViewSubTask from './FutureViewSubTask';
-import styles from './FutureViewTask.module.css';
+import styles from './FutureViewTask.module.scss';
 
 type CompoundTask = {
   readonly original: Task;

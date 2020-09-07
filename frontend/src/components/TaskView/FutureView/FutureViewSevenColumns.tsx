@@ -1,6 +1,6 @@
 import React, { ReactElement } from 'react';
 import FutureViewDay from './FutureViewDay';
-import styles from './FutureViewSevenColumns.module.css';
+import styles from './FutureViewSevenColumns.module.scss';
 import { SimpleDate } from './future-view-types';
 
 type Props = { readonly days: readonly SimpleDate[]; readonly doesShowCompletedTasks: boolean };

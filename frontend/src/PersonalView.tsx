@@ -1,5 +1,5 @@
 import React, { ReactElement } from 'react';
-import styles from './App.module.css';
+import styles from './App.module.scss';
 import AllComplete from './components/Popup/AllComplete';
 import Onboard from './components/TitleBar/Onboarding/Onboard';
 import TaskCreator from './components/TaskCreator';

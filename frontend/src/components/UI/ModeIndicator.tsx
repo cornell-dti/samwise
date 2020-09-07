@@ -1,6 +1,6 @@
 import React, { ReactElement } from 'react';
 import systemMode, { Mode } from '../../util/mode-util';
-import styles from './ModeIndicator.module.css';
+import styles from './ModeIndicator.module.scss';
 
 type Props = { readonly mode: Mode };
 

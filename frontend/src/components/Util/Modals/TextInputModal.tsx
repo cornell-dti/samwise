@@ -1,7 +1,7 @@
 import React, { ReactElement, useState } from 'react';
 import Modal from 'react-modal';
-import modalStyles from './Modal.module.css';
-import textInputModalStyles from './TextInputModal.module.css';
+import modalStyles from './Modal.module.scss';
+import textInputModalStyles from './TextInputModal.module.scss';
 
 /**
  * The types of input this Modal will support (add more as necessary)

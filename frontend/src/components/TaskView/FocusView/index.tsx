@@ -3,7 +3,7 @@ import React, { ReactElement, useState, ReactNode } from 'react';
 import { DragDropContext, Droppable, DropResult } from 'react-beautiful-dnd';
 import { connect } from 'react-redux';
 import { computeReorderMap } from 'common/lib/util/order-util';
-import styles from './index.module.css';
+import styles from './index.module.scss';
 import ClearFocus from './ClearFocus';
 import CompletedSeparator from './CompletedSeparator';
 import FocusTask from './FocusTask';

@@ -6,7 +6,7 @@ import { Task } from 'common/lib/types/store-types';
 import { useWindowSizeCallback, WindowSize } from 'hooks/window-size-hook';
 import { CalendarPosition, FloatingPosition } from './editors-types';
 import TaskEditor from './TaskEditor';
-import styles from './FloatingTaskEditor.module.css';
+import styles from './FloatingTaskEditor.module.scss';
 
 const EDITOR_WIDTH = 300;
 

@@ -16,7 +16,7 @@ import FocusPicker from './FocusPicker';
 import GroupMemberPicker from './GroupMemberPicker';
 import { addTask, TaskWithoutIdOrderChildren } from '../../firebase/actions';
 import SamwiseIcon from '../UI/SamwiseIcon';
-import styles from './index.module.css';
+import styles from './index.module.scss';
 
 type SimpleTask = Omit<Task, 'type' | 'order' | 'children' | 'metadata'>;
 

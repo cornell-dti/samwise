@@ -1,7 +1,7 @@
 import React, { ReactElement } from 'react';
 import Modal from 'react-modal';
-import modalStyles from './Modal.module.css';
-import choiceStyles from './ChoiceModal.module.css';
+import modalStyles from './Modal.module.scss';
+import choiceStyles from './ChoiceModal.module.scss';
 
 export type ChoiceObj = { readonly [key: string]: string };
 

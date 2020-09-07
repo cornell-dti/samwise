@@ -5,7 +5,7 @@ import { Tag, State } from 'common/lib/types/store-types';
 import TagItem from '../Tags/TagItem';
 import ClassTagAdder from '../Tags/ClassTagAdder';
 import OtherTagAdder from '../Tags/OtherTagAdder';
-import styles from './SettingsPage.module.css';
+import styles from './SettingsPage.module.scss';
 import { completeOnboarding, importCourseExams } from '../../../firebase/actions';
 import { firebaseSignOut } from '../../../firebase/auth-util';
 import CanvasCalendar from '../Canvas/CanvasCalendar';

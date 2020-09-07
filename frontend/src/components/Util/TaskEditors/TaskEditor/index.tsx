@@ -12,7 +12,7 @@ import { ignore } from 'common/lib/util/general-util';
 import { confirmRepeatedTaskEditMaster, promptRepeatedTaskEditChoice } from 'util/task-util';
 import { editTaskWithDiff, forkTaskWithDiff } from 'firebase/actions';
 import { getTodayAtZeroAM, getDateWithDateString } from 'common/lib/util/datetime-util';
-import styles from './index.module.css';
+import styles from './index.module.scss';
 import RepeatFrequencyHeader from './RepeatFrequencyHeader';
 import EditorHeader from './EditorHeader';
 import MainTaskEditor from './MainTaskEditor';

@@ -5,7 +5,7 @@ import { date2FullDateString } from 'common/lib/util/datetime-util';
 import { State, Theme } from 'common/lib/types/store-types';
 import Banner from './Banner';
 import GroupInvites from './GroupInvites';
-import styles from './index.module.css';
+import styles from './index.module.scss';
 import SettingsButton from './Settings/SettingsButton';
 
 /**

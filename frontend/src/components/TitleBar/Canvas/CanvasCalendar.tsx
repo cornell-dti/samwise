@@ -2,8 +2,8 @@ import React, { ReactElement, useState } from 'react';
 import { connect } from 'react-redux';
 import { Settings, State } from 'common/lib/types/store-types';
 import { promptConfirm } from '../../Util/Modals';
-import settingStyles from '../Settings/SettingsPage.module.css';
-import styles from './CanvasCalendar.module.css';
+import settingStyles from '../Settings/SettingsPage.module.scss';
+import styles from './CanvasCalendar.module.scss';
 import { setCanvasCalendar } from '../../../firebase/actions';
 
 type Props = { readonly settings: Settings };

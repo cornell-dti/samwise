@@ -1,6 +1,6 @@
 import React, { ReactElement, useState, ReactNode } from 'react';
 import { connect } from 'react-redux';
-import styles from './GroupTasksContainer.module.css';
+import styles from './GroupTasksContainer.module.scss';
 import GroupTask from './GroupTask';
 import {
   getFocusViewProps,
