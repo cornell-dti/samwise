@@ -26,6 +26,7 @@
     "react/state-in-constructor": "off",
     "import/extensions": "off",
     "indent": "off",
+    "import/no-anonymous-default-export": "error",
     "@typescript-eslint/ban-ts-comment": ["error", { "ts-expect-error": "allow-with-description" }],
     "@typescript-eslint/indent": "off",
     "@typescript-eslint/prefer-interface": "off",

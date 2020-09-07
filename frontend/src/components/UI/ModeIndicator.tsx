@@ -14,4 +14,6 @@ export const ConfigurableModeIndicator = ({ mode }: Props): ReactElement | null 
   return <div className={styles.Indicator}>{mode}</div>;
 };
 
-export default (): ReactElement | null => <ConfigurableModeIndicator mode={systemMode} />;
+const ModeIndicator = (): ReactElement | null => <ConfigurableModeIndicator mode={systemMode} />;
+
+export default ModeIndicator;

@@ -29,7 +29,7 @@ export const partition = (
   return partitioned;
 };
 
-export default async (): Promise<void> => {
+const removeOldTasks = async (): Promise<void> => {
   const cutoff = nDaysBeforeNow(N);
   const snapshot = await database.tasksCollection().where('date', '<', cutoff).get();
   const idListToDelete: string[] = [];
@@ -52,3 +52,5 @@ export default async (): Promise<void> => {
     await batch.commit();
   }
 };
+
+export default removeOldTasks;

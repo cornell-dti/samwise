@@ -7,9 +7,11 @@ type Props = {
   groupMemberNames: string[];
 };
 
-export default ({ groupMemberNames }: Props): ReactElement => (
+const MiddleBar = ({ groupMemberNames }: Props): ReactElement => (
   <div className={styles.MiddleBar}>
     <TaskQueue />
     <People groupMemberNames={groupMemberNames} />
   </div>
 );
+
+export default MiddleBar;

@@ -1,6 +1,6 @@
 import database from './db';
 
-export default async (): Promise<void> => {
+const focusTasksThatAreDueToday = async (): Promise<void> => {
   const todayAtZero = new Date();
   todayAtZero.setHours(0, 0, 0, 0);
   const todayAt235959 = new Date();
@@ -17,3 +17,5 @@ export default async (): Promise<void> => {
   });
   batch.commit();
 };
+
+export default focusTasksThatAreDueToday;

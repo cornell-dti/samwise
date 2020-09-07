@@ -13,7 +13,7 @@ type Props = {
   changeView: (selectedView: Views, selectedGroup: string | undefined) => void;
 };
 
-export default ({ groups, changeView }: Props): ReactElement => {
+const SideBar = ({ groups, changeView }: Props): ReactElement => {
   const [showDropdown, setShowDropdown] = useState(false);
   const [selected, setSelected] = useState('personal');
 
@@ -60,3 +60,5 @@ export default ({ groups, changeView }: Props): ReactElement => {
     </div>
   );
 };
+
+export default SideBar;

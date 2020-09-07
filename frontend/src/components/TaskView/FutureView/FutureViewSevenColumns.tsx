@@ -5,10 +5,7 @@ import { SimpleDate } from './future-view-types';
 
 type Props = { readonly days: readonly SimpleDate[]; readonly doesShowCompletedTasks: boolean };
 
-/**
- * The component used to contain all the backlog days in 7 columns.
- */
-export default ({ days, doesShowCompletedTasks }: Props): ReactElement => {
+const FutureViewSevenColumns = ({ days, doesShowCompletedTasks }: Props): ReactElement => {
   const interval = days.length === 14 ? '2W' : 'Monthly';
   // Start building items
   const items = days.map((date: SimpleDate, i: number) => (
@@ -36,3 +33,8 @@ export default ({ days, doesShowCompletedTasks }: Props): ReactElement => {
     </div>
   );
 };
+
+/**
+ * The component used to contain all the backlog days in 7 columns.
+ */
+export default FutureViewSevenColumns;

@@ -11,7 +11,7 @@ type Props = {
 const getIconClassName = (notInverted: boolean): string =>
   notInverted ? styles.Icon : `${styles.Icon} ${styles.Inverted}`;
 
-export default ({
+const CompletedSeparator = ({
   count,
   doesShowCompletedTasks,
   onDoesShowCompletedTasksChange,
@@ -26,3 +26,5 @@ export default ({
     <div className={styles.Line} />
   </div>
 );
+
+export default CompletedSeparator;

@@ -8,7 +8,7 @@ type Props = {
   selected: boolean;
 };
 
-export default ({ classCode, handleClick, selected }: Props): ReactElement => (
+const GroupIcon = ({ classCode, handleClick, selected }: Props): ReactElement => (
   <button
     type="button"
     onClick={() => handleClick('group', classCode)}
@@ -17,3 +17,5 @@ export default ({ classCode, handleClick, selected }: Props): ReactElement => (
     {classCode.charAt(0)}
   </button>
 );
+
+export default GroupIcon;

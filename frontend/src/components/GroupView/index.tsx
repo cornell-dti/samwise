@@ -9,9 +9,11 @@ type Props = {
 
 const members = ['Darien Lopez', 'Sarah Johnson', 'Michelle Parker', 'Samwise Bear'];
 
-export default ({ groupName }: Props): ReactElement => (
+const GroupView = ({ groupName }: Props): ReactElement => (
   <div className={styles.GroupView}>
     <MiddleBar groupMemberNames={members} />
     <RightView groupName={groupName} groupMemberNames={members} />
   </div>
 );
+
+export default GroupView;
