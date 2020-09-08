@@ -7,7 +7,7 @@ import { useMappedWindowSize } from '../../hooks/window-size-hook';
 import FocusView from './FocusView';
 import FutureView, { futureViewConfigProvider, FutureViewConfig } from './FutureView';
 import ProgressTracker from './ProgressTracker';
-import styles from './index.module.css';
+import styles from './index.module.scss';
 import SamwiseIcon from '../UI/SamwiseIcon';
 
 const FocusPanel = (): ReactElement => (

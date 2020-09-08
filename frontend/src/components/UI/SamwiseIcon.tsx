@@ -4,7 +4,7 @@
 
 import React, { ReactElement, CSSProperties } from 'react';
 import { IconName } from './samwise-icon-types';
-import styles from './SamwiseIcon.module.css';
+import styles from './SamwiseIcon.module.scss';
 import {
   Alert,
   ArrowDownDark,

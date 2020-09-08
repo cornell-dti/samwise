@@ -2,7 +2,7 @@ import React, { ReactElement, SyntheticEvent, KeyboardEvent } from 'react';
 import { faPlus } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import GroupTasksContainer from './GroupTasksContainer';
-import styles from './index.module.css';
+import styles from './index.module.scss';
 
 type Props = {
   memberName: string;

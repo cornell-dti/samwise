@@ -11,8 +11,8 @@ import {
   DAYS_IN_WEEK,
 } from 'common/lib/util/bitwise-util';
 import { useTodayLastSecondTime, useTodayFirstSecondTime } from '../../hooks/time-hook';
-import styles from './Picker.module.css';
-import dateStyles from './DatePicker.module.css';
+import styles from './Picker.module.scss';
+import dateStyles from './DatePicker.module.scss';
 import SamwiseIcon from '../UI/SamwiseIcon';
 
 type Props = {

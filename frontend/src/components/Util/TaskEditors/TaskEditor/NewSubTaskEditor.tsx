@@ -1,5 +1,5 @@
 import React, { KeyboardEvent, ReactElement, SyntheticEvent, useEffect, useRef } from 'react';
-import styles from './index.module.css';
+import styles from './index.module.scss';
 
 type Props = {
   readonly onFirstType: (change: string) => void;

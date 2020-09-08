@@ -4,7 +4,7 @@ import { getDateWithDateString } from 'common/lib/util/datetime-util';
 import CheckBox from '../../../UI/CheckBox';
 import SamwiseIcon from '../../../UI/SamwiseIcon';
 import { editSubTask } from '../../../../firebase/actions';
-import styles from './index.module.css';
+import styles from './index.module.scss';
 
 type Props = {
   readonly subTask: SubTask; // the subtask to edit

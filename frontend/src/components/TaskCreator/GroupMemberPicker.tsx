@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { NONE_TAG, NONE_TAG_ID } from 'common/lib/util/tag-util';
 import { State, Tag } from 'common/lib/types/store-types';
 import TagListPicker from '../Util/TagListPicker/TagListPicker';
-import styles from './Picker.module.css';
+import styles from './Picker.module.scss';
 import SamwiseIcon from '../UI/SamwiseIcon';
 
 type OwnProps = {
