@@ -2,7 +2,7 @@ import React, { ReactElement } from 'react';
 import { Map } from 'immutable';
 import { connect } from 'react-redux';
 import Fuse from 'fuse.js';
-import { Course, State } from 'common/lib/types/store-types';
+import { Course, State } from 'common/types/store-types';
 import SearchBox from '../../Util/SearchBox';
 import styles from './TagAdder.module.scss';
 import { addTag } from '../../../firebase/actions';

@@ -1,4 +1,4 @@
-import { FirestoreCommonTask } from 'common/lib/types/firestore-types';
+import { FirestoreCommonTask } from 'common/types/firestore-types';
 import database from './db';
 
 const N = 40;

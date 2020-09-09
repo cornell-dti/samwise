@@ -1,6 +1,6 @@
 import { createStore, Store } from 'redux';
-import { State } from 'common/lib/types/store-types';
-import { Action } from 'common/lib/types/action-types';
+import { State } from 'common/types/store-types';
+import { Action } from 'common/types/action-types';
 import rootReducer from './reducers';
 import { initialStateForTesting } from './state';
 

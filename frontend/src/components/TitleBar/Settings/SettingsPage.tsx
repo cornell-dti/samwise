@@ -1,7 +1,7 @@
 import React, { ReactElement, ReactNode } from 'react';
 import { Map } from 'immutable';
 import { connect } from 'react-redux';
-import { Tag, State } from 'common/lib/types/store-types';
+import { Tag, State } from 'common/types/store-types';
 import TagItem from '../Tags/TagItem';
 import ClassTagAdder from '../Tags/ClassTagAdder';
 import OtherTagAdder from '../Tags/OtherTagAdder';

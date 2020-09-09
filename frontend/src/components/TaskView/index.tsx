@@ -2,7 +2,7 @@ import React, { ReactElement, ReactNode, useState } from 'react';
 import { connect } from 'react-redux';
 import { FontAwesomeIcon as Icon } from '@fortawesome/react-fontawesome';
 import { faChevronRight, faChevronLeft } from '@fortawesome/free-solid-svg-icons';
-import { State, Theme } from 'common/lib/types/store-types';
+import { State, Theme } from 'common/types/store-types';
 import { useMappedWindowSize } from '../../hooks/window-size-hook';
 import FocusView from './FocusView';
 import FutureView, { futureViewConfigProvider, FutureViewConfig } from './FutureView';

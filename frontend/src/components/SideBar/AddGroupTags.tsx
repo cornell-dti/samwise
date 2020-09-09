@@ -1,6 +1,6 @@
 import React from 'react';
 import { store } from 'store/store';
-import { Tag } from 'common/lib/types/store-types';
+import { Tag } from 'common/types/store-types';
 import styles from './AddGroupTags.module.scss';
 
 type AddGroupTagsProps = {

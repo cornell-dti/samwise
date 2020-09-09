@@ -6,8 +6,8 @@ import {
   RepeatingPattern,
   Task,
   RepeatingTaskMetadata,
-} from 'common/lib/types/store-types';
-import { DAYS_IN_WEEK, isBitSet } from 'common/lib/util/bitwise-util';
+} from 'common/types/store-types';
+import { DAYS_IN_WEEK, isBitSet } from 'common/util/bitwise-util';
 import SamwiseIcon from '../../../UI/SamwiseIcon';
 import styles from './RepeatFrequencyHeader.module.scss';
 

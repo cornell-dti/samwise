@@ -1,8 +1,8 @@
 /* eslint-disable no-param-reassign */
 import React, { ReactElement, ReactNode } from 'react';
-import { getDateWithDateString } from 'common/lib/util/datetime-util';
+import { getDateWithDateString } from 'common/util/datetime-util';
 import { removeTaskWithPotentialPrompt } from 'util/task-util';
-import { Task } from 'common/lib/types/store-types';
+import { Task } from 'common/types/store-types';
 import { useWindowSizeCallback, WindowSize } from 'hooks/window-size-hook';
 import { CalendarPosition, FloatingPosition } from './editors-types';
 import TaskEditor from './TaskEditor';

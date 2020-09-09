@@ -1,6 +1,6 @@
 import React, { ReactElement } from 'react';
-import { day2String, getTodayAtZeroAM } from 'common/lib/util/datetime-util';
-import { Theme } from 'common/lib/types/store-types';
+import { day2String, getTodayAtZeroAM } from 'common/util/datetime-util';
+import { Theme } from 'common/types/store-types';
 import { Droppable } from 'react-beautiful-dnd';
 import { SimpleDate } from './future-view-types';
 import { CalendarPosition, FloatingPosition } from '../../Util/TaskEditors/editors-types';

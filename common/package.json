@@ -3,9 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "postinstall": "yarn build",
-    "dev": "tsc --incremental --watch --noEmit false",
-    "build": "tsc --incremental --noEmit false"
+    "build": "tsc --noEmit false"
   },
   "dependencies": {
     "firebase": "^7.5.0",

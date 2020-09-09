@@ -1,5 +1,5 @@
 import { promptChoice, promptConfirm } from 'components/Util/Modals';
-import { Task, OneTimeTaskMetadata, RepeatingTaskMetadata } from 'common/lib/types/store-types';
+import { Task, OneTimeTaskMetadata, RepeatingTaskMetadata } from 'common/types/store-types';
 import { removeTask, removeOneRepeatedTask } from 'firebase/actions';
 import { store } from 'store/store';
 

@@ -1,5 +1,5 @@
 import { Set } from 'immutable';
-import { TaskWithChildrenId } from 'common/lib/types/action-types';
+import { TaskWithChildrenId } from 'common/types/action-types';
 import {
   SubTask,
   Tag,
@@ -9,17 +9,17 @@ import {
   Course,
   Group,
   PendingGroupInvite,
-} from 'common/lib/types/store-types';
-import buildCoursesMap from 'common/lib/util/courses-util';
-import { ignore } from 'common/lib/util/general-util';
+} from 'common/types/store-types';
+import buildCoursesMap from 'common/util/courses-util';
+import { ignore } from 'common/util/general-util';
 import {
   FirestoreSubTask,
   FirestoreTag,
   FirestoreTask,
   FirestorePendingGroupInvite,
   FirestoreGroup,
-} from 'common/lib/types/firestore-types';
-import { QuerySnapshot, DocumentSnapshot } from 'common/lib/firebase/database';
+} from 'common/types/firestore-types';
+import { QuerySnapshot, DocumentSnapshot } from 'common/firebase/database';
 import { database } from './db';
 import { getAppUser } from './auth-util';
 import {

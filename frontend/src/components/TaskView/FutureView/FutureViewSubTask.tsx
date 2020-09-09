@@ -1,5 +1,5 @@
 import React, { ReactElement } from 'react';
-import { SubTask } from 'common/lib/types/store-types';
+import { SubTask } from 'common/types/store-types';
 import styles from './FutureViewTask.module.scss';
 import CheckBox from '../../UI/CheckBox';
 import { editSubTask, removeSubTask } from '../../../firebase/actions';

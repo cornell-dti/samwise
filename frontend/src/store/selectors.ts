@@ -6,15 +6,15 @@ import {
   Task,
   BannerMessageStatus,
   RepeatingTaskMetadata,
-} from 'common/lib/types/store-types';
-import { NONE_TAG } from 'common/lib/util/tag-util';
+} from 'common/types/store-types';
+import { NONE_TAG } from 'common/util/tag-util';
 import {
   computeTaskProgress,
   TasksProgressProps,
   getFilteredCompletedInFocusTask,
   getFilteredNotCompletedInFocusTask,
   dateMatchRepeats,
-} from 'common/lib/util/task-util';
+} from 'common/util/task-util';
 import findMessageToDisplay, { MessageWithId } from '../components/TitleBar/Banner/messages';
 
 /*
