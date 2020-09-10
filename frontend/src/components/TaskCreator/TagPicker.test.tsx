@@ -1,6 +1,6 @@
 import React from 'react';
 import renderer from 'react-test-renderer';
-import { NONE_TAG_ID } from 'common/lib/util/tag-util';
+import { NONE_TAG_ID } from 'common/util/tag-util';
 import { ProviderForTesting } from '../../store';
 import TagPicker from './TagPicker';
 

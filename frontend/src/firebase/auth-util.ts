@@ -1,6 +1,6 @@
 import firebase from 'firebase/app';
 import 'firebase/auth';
-import { error } from 'common/lib/util/general-util';
+import { error } from 'common/util/general-util';
 
 export type AppUser = {
   readonly uid: string;

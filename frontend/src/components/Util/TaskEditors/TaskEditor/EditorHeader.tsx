@@ -1,6 +1,6 @@
 import React, { ReactElement } from 'react';
 import Calendar from 'react-calendar';
-import { Tag, RepeatingDate } from 'common/lib/types/store-types';
+import { Tag, RepeatingDate } from 'common/types/store-types';
 import styles from './index.module.scss';
 import TagListPicker from '../../TagListPicker/TagListPicker';
 import { CalendarPosition } from '../editors-types';

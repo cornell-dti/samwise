@@ -1,7 +1,7 @@
 /* eslint-disable no-await-in-loop */
 import fetch, { Response } from 'node-fetch';
-import OrderManager from 'common/lib/firebase/order-manager';
-import { QuerySnapshot, DocumentSnapshot } from 'common/lib/firebase/database';
+import OrderManager from 'common/firebase/order-manager';
+import { QuerySnapshot, DocumentSnapshot } from 'common/firebase/database';
 import icalParse from './ical-parser';
 import db from './db';
 

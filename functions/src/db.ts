@@ -1,5 +1,5 @@
 import * as admin from 'firebase-admin';
-import Database from 'common/lib/firebase/database';
+import Database from 'common/firebase/database';
 import serviceAccount from './firebase-adminsdk.json';
 
 if (process.env.TEST_MODE) {

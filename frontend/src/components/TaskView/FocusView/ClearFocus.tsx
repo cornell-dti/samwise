@@ -1,7 +1,7 @@
 import React, { ReactElement } from 'react';
 import { Map } from 'immutable';
 import { connect } from 'react-redux';
-import { Task, State } from 'common/lib/types/store-types';
+import { Task, State } from 'common/types/store-types';
 import SquareTextButton from '../../UI/SquareTextButton';
 import { clearFocus } from '../../../firebase/actions';
 

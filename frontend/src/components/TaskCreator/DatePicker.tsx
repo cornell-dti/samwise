@@ -1,15 +1,15 @@
 import React, { ReactElement, SyntheticEvent, ChangeEvent, KeyboardEvent } from 'react';
 import Calendar from 'react-calendar';
-import { date2String, getDateAfterXWeeks } from 'common/lib/util/datetime-util';
-import { NONE_TAG } from 'common/lib/util/tag-util';
-import { RepeatingDate } from 'common/lib/types/store-types';
-import { LAST_DAY_OF_CLASS, LAST_DAY_OF_EXAMS } from 'common/lib/util/const-util';
+import { date2String, getDateAfterXWeeks } from 'common/util/datetime-util';
+import { NONE_TAG } from 'common/util/tag-util';
+import { RepeatingDate } from 'common/types/store-types';
+import { LAST_DAY_OF_CLASS, LAST_DAY_OF_EXAMS } from 'common/util/const-util';
 import {
   setDayOfWeek,
   unsetDayOfWeek,
   isDayOfWeekSet,
   DAYS_IN_WEEK,
-} from 'common/lib/util/bitwise-util';
+} from 'common/util/bitwise-util';
 import { useTodayLastSecondTime, useTodayFirstSecondTime } from '../../hooks/time-hook';
 import styles from './Picker.module.scss';
 import dateStyles from './DatePicker.module.scss';

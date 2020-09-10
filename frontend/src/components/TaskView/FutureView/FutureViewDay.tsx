@@ -1,7 +1,7 @@
 import React, { ReactElement } from 'react';
 import { connect } from 'react-redux';
-import { getTodayAtZeroAM } from 'common/lib/util/datetime-util';
-import { State, Theme } from 'common/lib/types/store-types';
+import { getTodayAtZeroAM } from 'common/util/datetime-util';
+import { State, Theme } from 'common/types/store-types';
 import { SimpleDate } from './future-view-types';
 import { CalendarPosition, FloatingPosition } from '../../Util/TaskEditors/editors-types';
 import styles from './FutureViewDay.module.scss';

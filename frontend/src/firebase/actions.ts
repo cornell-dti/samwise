@@ -11,18 +11,18 @@ import {
   TaskMetadata,
   RepeatingTaskMetadata,
   OneTimeTaskMetadata,
-} from 'common/lib/types/store-types';
-import { error, ignore } from 'common/lib/util/general-util';
+} from 'common/types/store-types';
+import { error, ignore } from 'common/util/general-util';
 import {
   FirestoreCommon,
   FirestoreTask,
   FirestoreSubTask,
   FirestoreGroup,
   FirestorePendingGroupInvite,
-} from 'common/lib/types/firestore-types';
-import { WriteBatch } from 'common/lib/firebase/database';
-import Actions from 'common/lib/firebase/common-actions';
-import { TaskWithChildrenId } from 'common/lib/types/action-types';
+} from 'common/types/firestore-types';
+import { WriteBatch } from 'common/firebase/database';
+import Actions from 'common/firebase/common-actions';
+import { TaskWithChildrenId } from 'common/types/action-types';
 import {
   reportAddTagEvent,
   reportEditTagEvent,

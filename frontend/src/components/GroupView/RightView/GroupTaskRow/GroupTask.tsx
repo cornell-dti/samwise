@@ -1,11 +1,11 @@
 import React, { ReactElement } from 'react';
 import { connect } from 'react-redux';
-import { error } from 'common/lib/util/general-util';
-import { State, Task } from 'common/lib/types/store-types';
+import { error } from 'common/util/general-util';
+import { State, Task } from 'common/types/store-types';
 import {
   getFilteredNotCompletedInFocusTask,
   getFilteredCompletedInFocusTask,
-} from 'common/lib/util/task-util';
+} from 'common/util/task-util';
 import InlineTaskEditor from '../../../Util/TaskEditors/InlineTaskEditor';
 import styles from './GroupTask.module.scss';
 

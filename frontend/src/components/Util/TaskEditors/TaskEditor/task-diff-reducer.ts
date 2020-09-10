@@ -1,13 +1,13 @@
 import { Map, Set } from 'immutable';
 import { useReducer } from 'react';
-import { shallowEqual, shallowArrayEqual } from 'common/lib/util/general-util';
+import { shallowEqual, shallowArrayEqual } from 'common/util/general-util';
 import {
   MainTask,
   PartialMainTask,
   PartialSubTask,
   SubTask,
   SubTaskWithoutId,
-} from 'common/lib/types/store-types';
+} from 'common/types/store-types';
 import { getNewSubTaskId } from '../../../../firebase/id-provider';
 
 type Action =

@@ -1,6 +1,6 @@
 import React, { ReactElement, useState } from 'react';
 import { connect } from 'react-redux';
-import { Settings, State } from 'common/lib/types/store-types';
+import { Settings, State } from 'common/types/store-types';
 import { promptConfirm } from '../../Util/Modals';
 import settingStyles from '../Settings/SettingsPage.module.scss';
 import styles from './CanvasCalendar.module.scss';

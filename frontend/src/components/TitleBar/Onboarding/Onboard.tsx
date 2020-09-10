@@ -1,6 +1,6 @@
 import React, { ReactElement, CSSProperties, useState, useRef, useEffect } from 'react';
 import { connect } from 'react-redux';
-import { State, Tag } from 'common/lib/types/store-types';
+import { State, Tag } from 'common/types/store-types';
 import TagItem from '../Tags/TagItem';
 import ClassTagAdder from '../Tags/ClassTagAdder';
 import styles from './Onboard.module.scss';

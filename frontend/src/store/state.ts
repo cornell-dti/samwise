@@ -1,6 +1,6 @@
 import { Map, Set } from 'immutable';
-import { State } from 'common/lib/types/store-types';
-import { NONE_TAG_ID, NONE_TAG } from 'common/lib/util/tag-util';
+import { State } from 'common/types/store-types';
+import { NONE_TAG_ID, NONE_TAG } from 'common/util/tag-util';
 
 /**
  * The initial state of the app.
