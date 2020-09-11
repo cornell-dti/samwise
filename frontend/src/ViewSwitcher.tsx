@@ -6,6 +6,7 @@ import styles from './App.module.scss';
 
 type Views = 'personal' | 'group';
 
+/** Handles switching the view from Personal to Group */
 const ViewSwitcher = (): React.ReactElement => {
   const groups = ['CS 2110', 'CS 3110', 'INFO 3450'];
 
@@ -27,7 +28,4 @@ const ViewSwitcher = (): React.ReactElement => {
   );
 };
 
-/**
- * Handles switching the view from Personal to Group
- */
 export default ViewSwitcher;
