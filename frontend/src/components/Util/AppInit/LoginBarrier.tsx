@@ -61,9 +61,9 @@ export default function LoginBarrier({ appRenderer }: Props): ReactElement {
           setLoaded(false);
           return;
         }
-        const { email, displayName } = currentUserFromFirebase;
+        const { email, displayName, photoURL } = currentUserFromFirebase;
         if (email.endsWith('@cornell.edu')) {
-          addUserInfo(email, displayName);
+          addUserInfo(email, displayName, photoURL);
           setGAUser(currentUserFromFirebase);
           cacheAppUser(currentUserFromFirebase);
           setLoginStatus(true);

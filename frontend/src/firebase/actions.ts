@@ -476,16 +476,28 @@ export const sendInvite = async (
   await database.pendingInvitesCollection().add(newInvitation);
 };
 
-export const addUserInfo = async (email: string, fullName: string): Promise<void> => {
-  const userInfo: FirestoreUserData = {
-    name: fullName,
-  };
-  const userDoc = await database.usersCollection().doc(email);
-  const snapshot = await userDoc.get();
-  // since user info is only a name, we don't update if the user's current info already exists
-  if (!snapshot.exists) {
-    await userDoc.set(userInfo);
-  }
+export const addUserInfo = async (
+  email: string,
+  fullName: string,
+  photoURL: string | null
+): Promise<void> => {
+  database.db().runTransaction(async (transaction) => {
+    const userDoc = await database.usersCollection().doc(email);
+    const snapshot = await transaction.get(userDoc);
+
+    if (snapshot.exists) {
+      const userInfoPartial: Partial<FirestoreUserData> = {
+        photoURL: photoURL || 'Default Photo',
+      };
+      transaction.update(userDoc, userInfoPartial);
+    } else {
+      const userInfo: FirestoreUserData = {
+        name: fullName,
+        photoURL: photoURL || 'Default Photo',
+      };
+      transaction.set(userDoc, userInfo);
+    }
+  });
 };
 /*
  * --------------------------------------------------------------------------------

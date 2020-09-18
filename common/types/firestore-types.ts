@@ -70,6 +70,7 @@ export type FirestorePendingGroupInvite = {
 
 export type FirestoreUserData = {
   readonly name: string;
+  readonly photoURL: string;
 };
 
 // all these tasks stay in 'samwise-tasks'
