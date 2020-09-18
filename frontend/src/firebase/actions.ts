@@ -19,6 +19,7 @@ import {
   FirestoreSubTask,
   FirestoreGroup,
   FirestorePendingGroupInvite,
+  FirestoreUserData,
 } from 'common/types/firestore-types';
 import { WriteBatch } from 'common/firebase/database';
 import Actions from 'common/firebase/common-actions';
@@ -475,6 +476,17 @@ export const sendInvite = async (
   await database.pendingInvitesCollection().add(newInvitation);
 };
 
+export const addUserInfo = async (email: string, fullName: string): Promise<void> => {
+  const userInfo: FirestoreUserData = {
+    name: fullName,
+  };
+  const userDoc = await database.usersCollection().doc(email);
+  const snapshot = await userDoc.get();
+  // since user info is only a name, we don't update if the user's current info already exists
+  if (!snapshot.exists) {
+    await userDoc.set(userInfo);
+  }
+};
 /*
  * --------------------------------------------------------------------------------
  * Section 4: Other Compound Actions
