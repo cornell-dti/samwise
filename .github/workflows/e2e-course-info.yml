@@ -1,6 +1,6 @@
 on:
   schedule:
-    - cron: '0 15 * * 6'
+    - cron: '0 19 * * 6'
   pull_request:
     paths:
       - .github/workflows/e2e-course-info.yml
