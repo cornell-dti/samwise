@@ -1,6 +1,7 @@
 import React, { ReactElement } from 'react';
 import firebase from 'firebase/app';
 import StyledFirebaseAuth from 'react-firebaseui/StyledFirebaseAuth';
+import { addUserInfo } from 'firebase/actions';
 import { setGAUser } from '../../../util/ga-util';
 import styles from './Login.module.scss';
 import { cacheAppUser, toAppUser } from '../../../firebase/auth-util';
@@ -60,8 +61,9 @@ export default function LoginBarrier({ appRenderer }: Props): ReactElement {
           setLoaded(false);
           return;
         }
-        const { email } = currentUserFromFirebase;
+        const { email, displayName, photoURL } = currentUserFromFirebase;
         if (email.endsWith('@cornell.edu')) {
+          addUserInfo(email, displayName, photoURL);
           setGAUser(currentUserFromFirebase);
           cacheAppUser(currentUserFromFirebase);
           setLoginStatus(true);
