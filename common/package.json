@@ -6,7 +6,7 @@
     "build": "tsc --noEmit false"
   },
   "dependencies": {
-    "firebase": "^7.5.0",
+    "firebase": "^7.21.0",
     "immutable": "^4.0.0-rc.12"
   }
 }
