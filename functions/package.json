@@ -14,8 +14,8 @@
   "main": "dist/index.js",
   "dependencies": {
     "common": "0.1.0",
-    "firebase-admin": "^8.9.2",
-    "firebase-functions": "^3.3.0",
+    "firebase-admin": "^9.2.0",
+    "firebase-functions": "^3.11.0",
     "ical": "^0.6.0",
     "json-bigint": "^0.3.0",
     "node-fetch": "^2.6.0"
