@@ -1,8 +1,8 @@
 import React, { ReactElement } from 'react';
 import { connect } from 'react-redux';
-import { useTime } from 'hooks/time-hook';
 import { date2FullDateString } from 'common/util/datetime-util';
 import { State, Theme } from 'common/types/store-types';
+import { useTime } from '../../hooks/time-hook';
 import Banner from './Banner';
 import GroupInvites from './GroupInvites';
 import styles from './index.module.scss';

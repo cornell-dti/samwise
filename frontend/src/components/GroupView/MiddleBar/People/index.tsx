@@ -1,8 +1,8 @@
 import React, { ReactElement } from 'react';
 import { faPlus } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import SamwiseIcon from 'components/UI/SamwiseIcon';
-import { promptConfirm, promptTextInput } from 'components/Util/Modals';
+import SamwiseIcon from '../../../UI/SamwiseIcon';
+import { promptConfirm, promptTextInput } from '../../../Util/Modals';
 import Member from './Member';
 import styles from './index.module.scss';
 
