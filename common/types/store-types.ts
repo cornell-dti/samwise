@@ -110,7 +110,7 @@ export type Group = {
   readonly name: string;
   readonly members: readonly string[];
   readonly deadline: Date;
-  readonly classCode?: string;
+  readonly classCode: string;
 };
 
 /**

@@ -57,9 +57,9 @@ export type FirestoreGroupTask = FirestoreCommonTask & {
 
 export type FirestoreGroup = {
   readonly name: string;
-  readonly members: string[];
+  readonly members: readonly string[];
   readonly deadline: Date;
-  readonly classCode?: string;
+  readonly classCode: string;
 };
 
 export type FirestorePendingGroupInvite = {
