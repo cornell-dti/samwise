@@ -487,6 +487,7 @@ export const addUserInfo = async (
 
     if (snapshot.exists) {
       const userInfoPartial: Partial<FirestoreUserData> = {
+        name: fullName,
         photoURL: photoURL || 'Default Photo',
       };
       transaction.update(userDoc, userInfoPartial);
