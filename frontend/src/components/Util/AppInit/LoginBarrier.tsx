@@ -22,6 +22,7 @@ import {
   logoHeart,
   logoLink,
 } from '../../../assets/assets-constants';
+import mode from '../../../util/mode-util';
 
 const uiConfig = {
   signInFlow: 'popup',
@@ -62,7 +63,9 @@ export default function LoginBarrier({ appRenderer }: Props): ReactElement {
           return;
         }
         const { email, displayName, photoURL } = currentUserFromFirebase;
-        if (email.endsWith('@cornell.edu')) {
+        // By pass @cornell.edu check locally to allow ourselves
+        // to test inter-user interactions using two google accounts.
+        if (mode === 'DEV' || email.endsWith('@cornell.edu')) {
           addUserInfo(email, displayName, photoURL);
           setGAUser(currentUserFromFirebase);
           cacheAppUser(currentUserFromFirebase);
