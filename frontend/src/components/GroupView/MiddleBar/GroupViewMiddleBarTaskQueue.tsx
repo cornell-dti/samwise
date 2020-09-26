@@ -1,5 +1,5 @@
 import React from 'react';
-import styles from './index.module.scss';
+import styles from './GroupViewMiddleBarTaskQueue.module.scss';
 
 const EmptyTaskQueue = (): React.ReactElement => (
   <div className={styles.EmptyTaskQueue}>

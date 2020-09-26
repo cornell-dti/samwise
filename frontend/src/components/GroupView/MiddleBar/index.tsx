@@ -1,17 +1,17 @@
 import React, { ReactElement } from 'react';
-import People from './People';
-import TaskQueue from './TaskQueue';
+import GroupViewMiddleBarPeopleList from './GroupViewMiddleBarPeopleList';
+import GroupViewMiddleBarTaskQueue from './GroupViewMiddleBarTaskQueue';
 import styles from './index.module.scss';
 
 type Props = {
   groupMemberNames: string[];
 };
 
-const MiddleBar = ({ groupMemberNames }: Props): ReactElement => (
+const GroupViewMiddleBar = ({ groupMemberNames }: Props): ReactElement => (
   <div className={styles.MiddleBar}>
-    <TaskQueue />
-    <People groupMemberNames={groupMemberNames} />
+    <GroupViewMiddleBarTaskQueue />
+    <GroupViewMiddleBarPeopleList groupMemberNames={groupMemberNames} />
   </div>
 );
 
-export default MiddleBar;
+export default GroupViewMiddleBar;

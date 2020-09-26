@@ -6,7 +6,7 @@ import {
   getFilteredNotCompletedInFocusTask,
   getFilteredCompletedInFocusTask,
 } from 'common/util/task-util';
-import InlineTaskEditor from '../../../Util/TaskEditors/InlineTaskEditor';
+import InlineTaskEditor from '../../Util/TaskEditors/InlineTaskEditor';
 import styles from './GroupTask.module.scss';
 
 type OwnProps = {
