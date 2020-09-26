@@ -1,7 +1,7 @@
 import React, { ReactElement } from 'react';
 import firebase from 'firebase/app';
 import StyledFirebaseAuth from 'react-firebaseui/StyledFirebaseAuth';
-import { addUserInfo } from 'firebase/actions';
+import { addUserInfo } from '../../../firebase/actions';
 import { setGAUser } from '../../../util/ga-util';
 import styles from './Login.module.scss';
 import { cacheAppUser, toAppUser } from '../../../firebase/auth-util';

@@ -1,7 +1,7 @@
-import { promptChoice, promptConfirm } from 'components/Util/Modals';
 import { Task, OneTimeTaskMetadata, RepeatingTaskMetadata } from 'common/types/store-types';
-import { removeTask, removeOneRepeatedTask } from 'firebase/actions';
-import { store } from 'store/store';
+import { promptChoice, promptConfirm } from '../components/Util/Modals';
+import { removeTask, removeOneRepeatedTask } from '../firebase/actions';
+import { store } from '../store/store';
 
 /**
  * This is the utility module for array of tasks and subtasks.
