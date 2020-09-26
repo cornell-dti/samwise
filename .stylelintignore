@@ -1,0 +1,8 @@
+build/
+coverage/
+node_modules/
+dist/
+out/
+.next/
+compiled/
+common/lib
