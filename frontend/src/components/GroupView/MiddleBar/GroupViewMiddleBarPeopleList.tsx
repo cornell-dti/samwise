@@ -1,10 +1,10 @@
 import React, { ReactElement } from 'react';
 import { faPlus } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import SamwiseIcon from '../../../UI/SamwiseIcon';
-import { promptConfirm, promptTextInput } from '../../../Util/Modals';
-import Member from './Member';
-import styles from './index.module.scss';
+import SamwiseIcon from '../../UI/SamwiseIcon';
+import { promptConfirm, promptTextInput } from '../../Util/Modals';
+import GroupViewMiddleBarMemberRow from './GroupViewMiddleBarMemberRow';
+import styles from './GroupViewMiddleBarPeopleList.module.scss';
 
 const leaveGroupPrompt = 'Are you sure you want to leave this group?';
 
@@ -35,7 +35,7 @@ const People = ({ groupMemberNames }: Props): ReactElement => (
     <h2>People</h2>
     <div className={styles.MemberList}>
       {groupMemberNames.map((m) => (
-        <Member memberName={m} key={m} />
+        <GroupViewMiddleBarMemberRow memberName={m} key={m} />
       ))}
     </div>
     <button
