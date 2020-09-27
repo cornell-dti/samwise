@@ -1,11 +1,12 @@
 import React, { ReactElement } from 'react';
+import type { Group } from 'common/types/store-types';
 import SamwiseIcon from '../../UI/SamwiseIcon';
 import GroupTaskRow from './GroupTaskRow';
 import styles from './index.module.scss';
 import TaskCreator from '../../TaskCreator';
 
 type Props = {
-  groupName: string;
+  readonly group: Group;
   groupMemberNames: string[];
 };
 
@@ -16,15 +17,15 @@ const EditGroupNameIcon = (): ReactElement => {
   return <SamwiseIcon iconName="pencil" className={styles.EditGroupNameIcon} onClick={handler} />;
 };
 
-const RightView = ({ groupName, groupMemberNames }: Props): ReactElement => (
+const RightView = ({ group, groupMemberNames }: Props): ReactElement => (
   <div className={styles.RightView}>
     <div className={styles.GroupTaskCreator}>
-      <TaskCreator view="group" group={groupName} />
+      <TaskCreator view="group" group={group.name} />
     </div>
 
     <div className={styles.RightView}>
       <div>
-        <h2>{groupName}</h2>
+        <h2>{group.name}</h2>
         <EditGroupNameIcon />
       </div>
       <div className={styles.GroupTaskRowContainer}>

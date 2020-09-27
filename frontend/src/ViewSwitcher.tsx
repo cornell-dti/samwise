@@ -1,30 +1,26 @@
 import React, { useState } from 'react';
+import type { Group, State } from 'common/types/store-types';
+import { useSelector } from 'react-redux';
 import SideBar from './components/SideBar';
 import PersonalView from './PersonalView';
 import GroupView from './components/GroupView';
 import styles from './App.module.scss';
 
-type Views = 'personal' | 'group';
-
 /** Handles switching the view from Personal to Group */
 const ViewSwitcher = (): React.ReactElement => {
-  const groups = ['CS 2110', 'CS 3110', 'INFO 3450'];
+  const groups = useSelector((state: State) => Array.from(state.groups.values()));
 
-  const [view, setView] = useState<Views>('personal');
-  const [group, setGroup] = useState('');
+  const [group, setGroup] = useState<Group | undefined>();
 
-  const changeView = (selectedView: Views, selectedGroup?: string | undefined): void => {
-    setView(selectedView);
-    if (selectedGroup !== undefined) {
-      setGroup(selectedGroup);
-    }
+  const changeView = (selectedGroupID?: string | undefined): void => {
+    setGroup(groups.find((oneGroup) => oneGroup.id === selectedGroupID));
   };
 
   return (
     <div className={styles.GroupScreen}>
       <SideBar groups={groups} changeView={changeView} />
       <div className={styles.GroupScreenContent}>
-        {view === 'personal' ? <PersonalView /> : <GroupView groupName={group} />}
+        {group === undefined ? <PersonalView /> : <GroupView group={group} />}
       </div>
     </div>
   );
