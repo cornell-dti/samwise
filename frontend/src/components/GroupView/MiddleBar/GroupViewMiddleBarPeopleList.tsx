@@ -1,6 +1,7 @@
 import React, { ReactElement } from 'react';
 import { faPlus } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import type { SamwiseUserProfile } from 'common/types/store-types';
 import SamwiseIcon from '../../UI/SamwiseIcon';
 import { promptConfirm, promptTextInput } from '../../Util/Modals';
 import GroupViewMiddleBarMemberRow from './GroupViewMiddleBarMemberRow';
@@ -26,16 +27,14 @@ const promptAddMember = (): void => {
   });
 };
 
-type Props = {
-  groupMemberNames: string[];
-};
+type Props = { readonly groupMemberProfiles: readonly SamwiseUserProfile[] };
 
-const People = ({ groupMemberNames }: Props): ReactElement => (
+const People = ({ groupMemberProfiles }: Props): ReactElement => (
   <div className={styles.People}>
     <h2>People</h2>
     <div className={styles.MemberList}>
-      {groupMemberNames.map((m) => (
-        <GroupViewMiddleBarMemberRow memberName={m} key={m} />
+      {groupMemberProfiles.map((profile) => (
+        <GroupViewMiddleBarMemberRow memberName={profile.name} key={profile.email} />
       ))}
     </div>
     <button

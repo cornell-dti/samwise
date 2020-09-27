@@ -104,13 +104,19 @@ export type BannerMessageStatus = {
 /**
  * The type of a group entry.
  */
-
 export type Group = {
   readonly id: string;
   readonly name: string;
   readonly members: readonly string[];
   readonly deadline: Date;
   readonly classCode: string;
+};
+
+/** The user profile of any samwise user. */
+export type SamwiseUserProfile = {
+  readonly email: string;
+  readonly name: string;
+  readonly photoURL: string;
 };
 
 /**

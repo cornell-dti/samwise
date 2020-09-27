@@ -1,14 +1,11 @@
 import React, { ReactElement } from 'react';
-import type { Group } from 'common/types/store-types';
+import type { Group, SamwiseUserProfile } from 'common/types/store-types';
 import SamwiseIcon from '../../UI/SamwiseIcon';
 import GroupTaskRow from './GroupTaskRow';
 import styles from './index.module.scss';
 import TaskCreator from '../../TaskCreator';
 
-type Props = {
-  readonly group: Group;
-  groupMemberNames: string[];
-};
+type Props = { readonly group: Group; readonly groupMemberProfiles: readonly SamwiseUserProfile[] };
 
 const EditGroupNameIcon = (): ReactElement => {
   const handler = (): void => {
@@ -17,7 +14,7 @@ const EditGroupNameIcon = (): ReactElement => {
   return <SamwiseIcon iconName="pencil" className={styles.EditGroupNameIcon} onClick={handler} />;
 };
 
-const RightView = ({ group, groupMemberNames }: Props): ReactElement => (
+const RightView = ({ group, groupMemberProfiles }: Props): ReactElement => (
   <div className={styles.RightView}>
     <div className={styles.GroupTaskCreator}>
       <TaskCreator view="group" group={group.name} />
@@ -29,8 +26,8 @@ const RightView = ({ group, groupMemberNames }: Props): ReactElement => (
         <EditGroupNameIcon />
       </div>
       <div className={styles.GroupTaskRowContainer}>
-        {groupMemberNames.map((m) => (
-          <GroupTaskRow memberName={m} key={m} />
+        {groupMemberProfiles.map((samwiseUserProfile) => (
+          <GroupTaskRow memberName={samwiseUserProfile.name} key={samwiseUserProfile.email} />
         ))}
       </div>
     </div>
