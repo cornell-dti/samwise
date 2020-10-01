@@ -2,8 +2,8 @@ import fetch from 'node-fetch';
 import { JSDOM } from 'jsdom';
 import { ExamInfo } from './types';
 
-const prelimUrl = 'https://registrar.cornell.edu/exams/spring-prelim-schedule';
-const finalUrl = 'https://registrar.cornell.edu/exams/spring-final-exam-schedule';
+const prelimUrl = 'https://registrar.cornell.edu/exams/fall-prelim-exam-schedule';
+const finalUrl = 'https://registrar.cornell.edu/exams/fall-final-exam-schedule';
 
 const currentYear = new Date().getFullYear();
 
@@ -19,15 +19,8 @@ function parsePrelimLine(line: string): ExamInfo {
   const segments = line.split(' ');
   const subject = segments[0];
   const courseNumber = segments[1];
-  let datetimeString = '';
-  for (let i = 2; i < segments.length; i += 1) {
-    const s = segments[i];
-    if (s !== '') {
-      datetimeString = s;
-      break;
-    }
-  }
-  const date = new Date(datetimeString);
+  const dateTimeString = `${segments[3]} ${segments[4]} ${currentYear}`;
+  const date = new Date(dateTimeString);
   date.setFullYear(currentYear);
   date.setHours(19, 30); // 7:30 prelim time
   return {
@@ -69,7 +62,7 @@ function getExamInfoList(rawText: string, isFinal: boolean): readonly ExamInfo[]
   const infoList: ExamInfo[] = [];
   for (let i = 0; i < lines.length; i += 1) {
     const line = lines[i].trim();
-    if (line !== '' && !line.startsWith('Class') && !line.startsWith('final exam')) {
+    if (line !== '' && !line.startsWith('Course') && !line.startsWith('final exam')) {
       const info = isFinal ? parseFinalLine(line) : parsePrelimLine(line);
       infoList.push(info);
     }
