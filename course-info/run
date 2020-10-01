@@ -6,7 +6,7 @@ set -x # Turn this on to debug
 ### - JDK 11+
 ### - Node.js 10+
 
-# Outcome: produce a JSON file sp20-courses.json with all the courses in SP20.
+# Outcome: produce a JSON file fa20-courses.json with all the courses in FA20.
 function createCourseInfoJson() {
     git clone https://github.com/cornell-dti/cornell-api-libs.git
     cd cornell-api-libs
