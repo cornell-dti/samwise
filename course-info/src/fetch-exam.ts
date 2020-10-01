@@ -16,7 +16,7 @@ async function fetchExamText(url: string): Promise<string> {
 }
 
 function parsePrelimLine(line: string): ExamInfo {
-  const segments = line.split(' ');
+  const segments = line.split(/\s+/);
   const subject = segments[0];
   const courseNumber = segments[1];
   const dateTimeString = `${segments[3]} ${segments[4]} ${currentYear}`;
