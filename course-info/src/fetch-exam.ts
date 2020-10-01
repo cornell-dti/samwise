@@ -20,9 +20,11 @@ function parsePrelimLine(line: string): ExamInfo {
   const subject = segments[0];
   const courseNumber = segments[1];
   const dateTimeString = `${segments[3]} ${segments[4]} ${currentYear}`;
+  const dateHours = parseInt(segments[5].substring(0, 2), 10);
+  const dateMinutes = parseInt(segments[5].substring(3, 5), 10);
   const date = new Date(dateTimeString);
   date.setFullYear(currentYear);
-  date.setHours(19, 30); // 7:30 prelim time
+  date.setHours(segments[6] === 'PM' ? dateHours + 12 : dateHours, dateMinutes);
   return {
     subject,
     courseNumber,
