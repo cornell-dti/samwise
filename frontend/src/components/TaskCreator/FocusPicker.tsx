@@ -21,14 +21,19 @@ export default function FocusPicker({ pinned, onPinChange }: Props): ReactElemen
   const pinIconName = pinned ? 'pin-dark-filled' : 'pin-dark-outline';
   return (
     <div className={styles.Main}>
-      <span
-        role="presentation"
+      <button
+        type="button"
         onClick={clickPicker}
         onKeyPress={pressedPicker}
-        className={styles.Label}
+        className={`${styles.TestBorder} ${styles.Label}`}
       >
-        <SamwiseIcon iconName={pinIconName} className={styles.CenterIcon} />
-      </span>
+        <SamwiseIcon
+          iconName={pinIconName}
+          className={`${styles.CenterIcon} ${styles.ImageSize}`}
+        />
+      </button>
     </div>
   );
 }
+// role="presentation"
+//

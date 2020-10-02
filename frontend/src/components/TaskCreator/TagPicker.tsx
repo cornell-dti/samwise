@@ -46,15 +46,17 @@ function TagPicker({ tag, opened, onTagChange, onPickerOpened, getTag }: Props):
       </>
     );
     return (
-      <span
-        role="presentation"
+      <button
+        type="button"
+        // role="presentation"
         onClick={clickPicker}
         onKeyPress={pressedPicker}
-        className={styles.Label}
+        // className={styles.Label}
+        className={`${styles.TagButton} ${styles.Label}`}
         style={style}
       >
         {internal}
-      </span>
+      </button>
     );
   };
   return (
