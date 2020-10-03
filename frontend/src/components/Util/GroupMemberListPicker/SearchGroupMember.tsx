@@ -1,6 +1,6 @@
 import React, { ReactElement } from 'react';
 import Fuse from 'fuse.js';
-import { GroupMember } from 'common/types/store-types';
+import { SamwiseUserProfile } from 'common/types/store-types';
 import GroupMemberSearchBox from '../GroupMemberSearchBox/GroupMemberSearchBox';
 import styles from './SearchGroupMember.module.scss';
 
@@ -10,7 +10,7 @@ type SimpleMember = {
   readonly id: string; // netId of student
 };
 
-type Props = { readonly members: GroupMember[] };
+type Props = { readonly members: SamwiseUserProfile[] };
 
 /**
  * Returns computed group member options.
@@ -18,18 +18,16 @@ type Props = { readonly members: GroupMember[] };
  * @param {GroupMember[]} group members.
  * @return {SimpleMember[]} group member options.
  */
-function getMemberOptions(members: GroupMember[]): SimpleMember[] {
+function getMemberOptions(members: SamwiseUserProfile[]): SimpleMember[] {
   const memberOptions: SimpleMember[] = [];
-  let i = 0;
-  members.forEach((member: GroupMember) => {
-    const { netId, name } = member;
-    const id = netId;
+  members.forEach((member: SamwiseUserProfile, index: number) => {
+    const { email, name } = member;
+    const id = email.split('@')[0]; // extract netId from user's email
     memberOptions.push({
-      key: i,
+      key: index,
       value: name,
       id,
     });
-    i += 1;
   });
   return memberOptions;
 }
