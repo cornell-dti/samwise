@@ -1,8 +1,8 @@
 import React, { ReactElement, KeyboardEvent } from 'react';
 import { connect } from 'react-redux';
 import { NONE_TAG, NONE_TAG_ID } from 'common/util/tag-util';
-import { State, Tag } from 'common/types/store-types';
-import TagListPicker from '../Util/TagListPicker/TagListPicker';
+import { State, Tag, SamwiseUserProfile } from 'common/types/store-types';
+import SearchGroupMember from '../Util/GroupMemberListPicker/SearchGroupMember';
 import styles from './Picker.module.scss';
 import SamwiseIcon from '../UI/SamwiseIcon';
 
@@ -16,6 +16,14 @@ type Props = OwnProps & {
   // subscribed from redux store.
   readonly getTag: (id: string) => Tag;
 };
+
+// hardcoded member list
+const members: SamwiseUserProfile[] = [
+  { email: 'dl123@cornell.edu', name: 'Darien Lopez', photoURL: '' },
+  { email: 'sj234@cornell.edu', name: 'Sarah Johnson', photoURL: '' },
+  { email: 'mp678@cornell.edu', name: 'Michelle Parker', photoURL: '' },
+  { email: 'sj99@cornell.edu', name: 'Sarah Jo', photoURL: '' },
+];
 
 function GroupMemberPicker({
   tag,
@@ -67,8 +75,8 @@ function GroupMemberPicker({
     <div className={styles.Main}>
       {displayedNode(tag === NONE_TAG_ID)}
       {opened && (
-        <div className={styles.NewTaskClassPick}>
-          <TagListPicker onTagChange={onTagChange} />
+        <div>
+          <SearchGroupMember members={members} />
         </div>
       )}
     </div>
