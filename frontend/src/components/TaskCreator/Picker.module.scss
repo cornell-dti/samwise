@@ -60,11 +60,11 @@
 }
 
 .TagDisplay {
-  padding: 0 2px 0 10px !important;
+  padding: 0 2px 0 10px;
   height: 15px;
-  text-overflow: ellipsis !important;
-  overflow: hidden !important;
-  white-space: nowrap !important;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
 
   /* Any narrower and some long class tags will begin to be truncated. */
   max-width: 110px;
