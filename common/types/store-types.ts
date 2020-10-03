@@ -112,6 +112,14 @@ export type Group = {
   readonly classCode: string;
 };
 
+/**
+ * The type of a group member.
+ */
+export type GroupMember = {
+  readonly netId: string;
+  readonly name: string;
+};
+
 /** The user profile of any samwise user. */
 export type SamwiseUserProfile = {
   readonly email: string;
