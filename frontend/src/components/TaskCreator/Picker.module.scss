@@ -29,9 +29,9 @@
   border-color: transparent;
   color: #fff;
   font: 14px 'Open Sans', sans-serif;
-  width: 96.84px;
+  // width: 96.84px;
   height: 20px;
-  padding: 0;
+  padding: 0 5px;
 }
 
 .DateButton {
@@ -39,9 +39,10 @@
   border-color: transparent;
   color: #fff;
   font: 14px 'Open Sans', sans-serif;
-  width: 94.03px;
+  width: 100%;
+  padding: 0 5px 0 10px;
   height: 20px;
-  padding: 0;
+  // padding: 0;
 }
 
 .Label {
@@ -104,9 +105,11 @@
   border-radius: 10px;
   margin: 0;
   padding: 0;
-  line-height: 21px;
   position: relative;
   bottom: 0;
+  line-height: 16px;
+  margin-right: -7px;
+  margin-top: -1px;
 }
 
 .ResetButton:hover {
