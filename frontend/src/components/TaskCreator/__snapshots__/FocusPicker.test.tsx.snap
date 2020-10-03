@@ -4,11 +4,11 @@ exports[`Pinned FocusPicker matches snapshot 1`] = `
 <div
   className="Main"
 >
-  <span
-    className="Label"
+  <button
+    className="TestBorder Label"
     onClick={[Function]}
     onKeyPress={[Function]}
-    role="presentation"
+    type="button"
   >
     <span
       onKeyUp={[Function]}
@@ -18,11 +18,11 @@ exports[`Pinned FocusPicker matches snapshot 1`] = `
     >
       <img
         alt="Unpin from Focus"
-        className="SamwiseIconDefaultStyle CenterIcon"
+        className="SamwiseIconDefaultStyle CenterIcon ImageSize"
         src="/svgs/pin-2-dark-filled.svg"
       />
     </span>
-  </span>
+  </button>
 </div>
 `;
 
@@ -30,11 +30,11 @@ exports[`Unpinned FocusPicker matches snapshot 1`] = `
 <div
   className="Main"
 >
-  <span
-    className="Label"
+  <button
+    className="TestBorder Label"
     onClick={[Function]}
     onKeyPress={[Function]}
-    role="presentation"
+    type="button"
   >
     <span
       onKeyUp={[Function]}
@@ -44,10 +44,10 @@ exports[`Unpinned FocusPicker matches snapshot 1`] = `
     >
       <img
         alt="Pin to Focus"
-        className="SamwiseIconDefaultStyle CenterIcon"
+        className="SamwiseIconDefaultStyle CenterIcon ImageSize"
         src="/svgs/pin-2-dark-outline.svg"
       />
     </span>
-  </span>
+  </button>
 </div>
 `;

@@ -1,10 +1,10 @@
 .Main {
   display: inline-flex;
   height: 20px;
-  line-height: 20px !important;
-  text-align: center !important;
+  line-height: 20px;
+  text-align: center;
   position: relative;
-  color: white !important;
+  color: white;
   margin-left: 5px;
   transform: translateY(-30px);
   z-index: 2;
@@ -18,32 +18,30 @@
 }
 
 .TestBorder {
-  border-color: transparent !important;
-  color: transparent !important;
-  background-color: transparent !important;
-  padding: 0px;
+  border-color: transparent;
+  color: transparent;
+  background-color: transparent;
+  padding: 0;
 }
 
 .TagButton {
-  background: rgb(150, 150, 150) !important;
-  border-color: transparent !important;
-  color: #ffffff !important;
-  // padding: 0px 2px 0px 10px !important;
-  font: 14px 'Open Sans', sans-serif !important;
-  width: 96.84px !important;
-  height: 20px !important;
-  padding: 0px !important;
+  background: rgb(150, 150, 150);
+  border-color: transparent;
+  color: #fff;
+  font: 14px 'Open Sans', sans-serif;
+  width: 96.84px;
+  height: 20px;
+  padding: 0;
 }
 
 .DateButton {
-  background: rgb(150, 150, 150) !important;
-  border-color: transparent !important;
-  color: #ffffff !important;
-  // padding: 0px 2px 0px 10px !important;
-  font: 14px 'Open Sans', sans-serif !important;
-  width: 94.03px !important;
-  height: 20px !important;
-  padding: 0px !important;
+  background: rgb(150, 150, 150);
+  border-color: transparent;
+  color: #fff;
+  font: 14px 'Open Sans', sans-serif;
+  width: 94.03px;
+  height: 20px;
+  padding: 0;
 }
 
 .Label {
@@ -58,12 +56,11 @@
 .DateDisplay {
   display: inline-flex;
   align-items: center;
-  //padding: 0 5px 0 10px;
   height: 15px;
 }
 
 .TagDisplay {
-  padding: 0 2px 0px 10px !important;
+  padding: 0 2px 0 10px !important;
   height: 15px;
   text-overflow: ellipsis !important;
   overflow: hidden !important;

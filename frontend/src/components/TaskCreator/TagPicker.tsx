@@ -48,10 +48,8 @@ function TagPicker({ tag, opened, onTagChange, onPickerOpened, getTag }: Props):
     return (
       <button
         type="button"
-        // role="presentation"
         onClick={clickPicker}
         onKeyPress={pressedPicker}
-        // className={styles.Label}
         className={`${styles.TagButton} ${styles.Label}`}
         style={style}
       >

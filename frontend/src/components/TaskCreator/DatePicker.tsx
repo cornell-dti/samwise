@@ -133,7 +133,6 @@ export default function DatePicker(props: Props): ReactElement {
     );
     return (
       <button
-        // role="presentation"
         onClick={clickPicker}
         onKeyPress={pressedPicker}
         className={`${styles.DateButton} ${styles.Label}`}

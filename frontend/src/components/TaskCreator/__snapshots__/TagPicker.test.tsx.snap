@@ -4,16 +4,16 @@ exports[`TagPicker(THE_GLORIOUS_NONE_TAG, false) matches snapshot 1`] = `
 <div
   className="Main"
 >
-  <span
-    className="Label"
+  <button
+    className="TagButton Label"
     onClick={[Function]}
     onKeyPress={[Function]}
-    role="presentation"
     style={
       Object {
         "background": "#969696",
       }
     }
+    type="button"
   >
     <span
       className="TagDisplay"
@@ -32,7 +32,7 @@ exports[`TagPicker(THE_GLORIOUS_NONE_TAG, false) matches snapshot 1`] = `
       </span>
        add class  
     </span>
-  </span>
+  </button>
 </div>
 `;
 
@@ -40,16 +40,16 @@ exports[`TagPicker(THE_GLORIOUS_NONE_TAG, true) matches snapshot 1`] = `
 <div
   className="Main"
 >
-  <span
-    className="Label"
+  <button
+    className="TagButton Label"
     onClick={[Function]}
     onKeyPress={[Function]}
-    role="presentation"
     style={
       Object {
         "background": "#969696",
       }
     }
+    type="button"
   >
     <span
       className="TagDisplay"
@@ -68,7 +68,7 @@ exports[`TagPicker(THE_GLORIOUS_NONE_TAG, true) matches snapshot 1`] = `
       </span>
        add class  
     </span>
-  </span>
+  </button>
   <div
     className="NewTaskClassPick"
   >
@@ -136,16 +136,16 @@ exports[`TagPicker(bar, false) matches snapshot 1`] = `
 <div
   className="Main"
 >
-  <span
-    className="Label"
+  <button
+    className="TagButton Label"
     onClick={[Function]}
     onKeyPress={[Function]}
-    role="presentation"
     style={
       Object {
         "background": "blue",
       }
     }
+    type="button"
   >
     <span
       className="TagDisplay"
@@ -159,7 +159,7 @@ exports[`TagPicker(bar, false) matches snapshot 1`] = `
     >
       ×
     </button>
-  </span>
+  </button>
 </div>
 `;
 
@@ -167,16 +167,16 @@ exports[`TagPicker(bar, true) matches snapshot 1`] = `
 <div
   className="Main"
 >
-  <span
-    className="Label"
+  <button
+    className="TagButton Label"
     onClick={[Function]}
     onKeyPress={[Function]}
-    role="presentation"
     style={
       Object {
         "background": "blue",
       }
     }
+    type="button"
   >
     <span
       className="TagDisplay"
@@ -190,7 +190,7 @@ exports[`TagPicker(bar, true) matches snapshot 1`] = `
     >
       ×
     </button>
-  </span>
+  </button>
   <div
     className="NewTaskClassPick"
   >
@@ -258,16 +258,16 @@ exports[`TagPicker(baz, false) matches snapshot 1`] = `
 <div
   className="Main"
 >
-  <span
-    className="Label"
+  <button
+    className="TagButton Label"
     onClick={[Function]}
     onKeyPress={[Function]}
-    role="presentation"
     style={
       Object {
         "background": "green",
       }
     }
+    type="button"
   >
     <span
       className="TagDisplay"
@@ -281,7 +281,7 @@ exports[`TagPicker(baz, false) matches snapshot 1`] = `
     >
       ×
     </button>
-  </span>
+  </button>
 </div>
 `;
 
@@ -289,16 +289,16 @@ exports[`TagPicker(baz, true) matches snapshot 1`] = `
 <div
   className="Main"
 >
-  <span
-    className="Label"
+  <button
+    className="TagButton Label"
     onClick={[Function]}
     onKeyPress={[Function]}
-    role="presentation"
     style={
       Object {
         "background": "green",
       }
     }
+    type="button"
   >
     <span
       className="TagDisplay"
@@ -312,7 +312,7 @@ exports[`TagPicker(baz, true) matches snapshot 1`] = `
     >
       ×
     </button>
-  </span>
+  </button>
   <div
     className="NewTaskClassPick"
   >
@@ -380,16 +380,16 @@ exports[`TagPicker(foo, false) matches snapshot 1`] = `
 <div
   className="Main"
 >
-  <span
-    className="Label"
+  <button
+    className="TagButton Label"
     onClick={[Function]}
     onKeyPress={[Function]}
-    role="presentation"
     style={
       Object {
         "background": "red",
       }
     }
+    type="button"
   >
     <span
       className="TagDisplay"
@@ -403,7 +403,7 @@ exports[`TagPicker(foo, false) matches snapshot 1`] = `
     >
       ×
     </button>
-  </span>
+  </button>
 </div>
 `;
 
@@ -411,16 +411,16 @@ exports[`TagPicker(foo, true) matches snapshot 1`] = `
 <div
   className="Main"
 >
-  <span
-    className="Label"
+  <button
+    className="TagButton Label"
     onClick={[Function]}
     onKeyPress={[Function]}
-    role="presentation"
     style={
       Object {
         "background": "red",
       }
     }
+    type="button"
   >
     <span
       className="TagDisplay"
@@ -434,7 +434,7 @@ exports[`TagPicker(foo, true) matches snapshot 1`] = `
     >
       ×
     </button>
-  </span>
+  </button>
   <div
     className="NewTaskClassPick"
   >

@@ -35,5 +35,3 @@ export default function FocusPicker({ pinned, onPinChange }: Props): ReactElemen
     </div>
   );
 }
-// role="presentation"
-//
