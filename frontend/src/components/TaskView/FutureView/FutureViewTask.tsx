@@ -133,9 +133,11 @@ function FutureViewTask({
   const RepeatingIcon = (): ReactElement => (
     <SamwiseIcon iconName="repeat-light" className={styles.TaskIconNoHover} />
   );
-  let Icon = (): ReactElement => <RepeatingIcon />;
-  if (compoundTask.original.metadata.type === 'ONE_TIME') {
-    Icon = isCanvasTask ? Placeholder : DragIcon;
+  let Icon = Placeholder;
+  if (compoundTask.original.metadata.type === 'MASTER_TEMPLATE') {
+    Icon = RepeatingIcon;
+  } else if (compoundTask.original.metadata.type === 'ONE_TIME' && !isCanvasTask) {
+    Icon = DragIcon;
   }
   const renderMainTaskInfo = (simplified = false): ReactElement => {
     if (simplified && isInMainList) {
