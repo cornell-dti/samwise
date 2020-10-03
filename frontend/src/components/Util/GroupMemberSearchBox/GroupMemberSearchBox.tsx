@@ -1,7 +1,7 @@
-import React, { ReactElement, ChangeEvent, useState } from "react";
-import Fuse from "fuse.js";
-import { FuseItem } from "../SearchBox/types";
-import styles from "../GroupMemberListPicker/SearchGroupMember.module.scss";
+import React, { ReactElement, ChangeEvent, useState } from 'react';
+import Fuse from 'fuse.js';
+import { FuseItem } from '../SearchBox/types';
+import styles from '../GroupMemberListPicker/SearchGroupMember.module.scss';
 
 type Props<T extends FuseItem> = {
   readonly fuse: Fuse<T>;
@@ -20,7 +20,7 @@ const GroupMemberSearchBox = <T extends FuseItem>({
   inputClassname,
 }: Props<T>): ReactElement => {
   const [{ searchInput, searchResults }, setState] = useState<State<T>>({
-    searchInput: "",
+    searchInput: '',
     searchResults: [],
   });
 
