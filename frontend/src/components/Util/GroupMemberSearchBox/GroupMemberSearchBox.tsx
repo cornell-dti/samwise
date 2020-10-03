@@ -26,12 +26,8 @@ const GroupMemberSearchBox = <T extends FuseItem>({
 
   const onSearchChange = (event: ChangeEvent<HTMLInputElement>): void => {
     const input = event.currentTarget.value;
-    if (input.length > 1) {
-      const newResults = fuse.search(input).map((result) => result.item) as T[];
-      setState({ searchInput: input, searchResults: newResults });
-    } else {
-      setState({ searchInput: input, searchResults: [] });
-    }
+    const newResults = fuse.search(input).map((result) => result.item) as T[];
+    setState({ searchInput: input, searchResults: newResults });
   };
 
   return (
