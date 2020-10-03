@@ -17,6 +17,33 @@
   align-items: center;
 }
 
+.TestBorder {
+  border-color: transparent;
+  color: transparent;
+  background-color: transparent;
+  padding: 0;
+}
+
+.TagButton {
+  background: rgb(150, 150, 150);
+  border-color: transparent;
+  color: #fff;
+  font: 14px 'Open Sans', sans-serif;
+  width: 96.84px;
+  height: 20px;
+  padding: 0;
+}
+
+.DateButton {
+  background: rgb(150, 150, 150);
+  border-color: transparent;
+  color: #fff;
+  font: 14px 'Open Sans', sans-serif;
+  width: 94.03px;
+  height: 20px;
+  padding: 0;
+}
+
 .Label {
   background: none;
   border-radius: 10px;
@@ -29,11 +56,12 @@
 .DateDisplay {
   display: inline-flex;
   align-items: center;
-  padding: 0 5px 0 10px;
+  height: 15px;
 }
 
 .TagDisplay {
   padding: 0 2px 0 10px;
+  height: 15px;
   text-overflow: ellipsis;
   overflow: hidden;
   white-space: nowrap;
@@ -47,6 +75,11 @@
 .TagDisplay > span,
 .DateDisplay > span {
   display: flex;
+}
+
+.ImageSize {
+  width: 1.15em;
+  height: 1.15em;
 }
 
 .CenterIcon {
