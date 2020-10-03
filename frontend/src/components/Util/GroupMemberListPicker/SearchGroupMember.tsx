@@ -55,7 +55,7 @@ export default function SearchGroupMember({ members }: Props): ReactElement | nu
     <div>
       <GroupMemberSearchBox
         placeholder="assign to"
-        inputClassname={styles.SearchInput} // {tagStyles.SearchInput}
+        inputClassname={styles.SearchInput}
         fuse={fuse}
       />
     </div>

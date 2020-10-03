@@ -75,7 +75,6 @@ function GroupMemberPicker({
     <div className={styles.Main}>
       {displayedNode(tag === NONE_TAG_ID)}
       {opened && (
-        // <div className={styles.NewTaskClassPick}>
         <div>
           <SearchGroupMember members={members} />
         </div>
