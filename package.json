@@ -8,7 +8,7 @@
     "format": "prettier --write '**/*.{ts,js,tsx,jsx,scss,css,html}'",
     "format:check": "prettier --check '**/*.{ts,js,tsx,jsx,scss,css,html}'",
     "test": "env-cmd -f .env.testing jest",
-    "tssa": "tssa common frontend functions \"--\""
+    "tssa": "tssa common frontend functions"
   },
   "workspaces": [
     "common",
@@ -17,7 +17,7 @@
   ],
   "devDependencies": {
     "@babel/core": "^7.11.4",
-    "@dev-sam/tssa": "^0.0.4",
+    "@dev-sam/tssa": "^0.0.9",
     "@types/jest": "^26.0.10",
     "@types/node": "^13.7.0",
     "@typescript-eslint/eslint-plugin": "^3.9.1",
