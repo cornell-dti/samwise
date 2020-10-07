@@ -1,5 +1,5 @@
 import React, { ReactElement, useState, useEffect } from 'react';
-import type { Group, SamwiseUserProfile } from 'common/types/store-types';
+import type { Group, SamwiseUserProfile, Task } from 'common/types/store-types';
 import type { FirestoreUserData } from 'common/types/firestore-types';
 import MiddleBar from './MiddleBar';
 import RightView from './RightView';
@@ -44,12 +44,27 @@ const useGroupMemberProfiles = (
 };
 
 const GroupView = ({ group }: Props): ReactElement => {
+  const [groupTaskArray, setGroupTaskArray] = useState<Task[]>([]);
+  useEffect(() => {
+    database
+      .tasksCollection()
+      .where('type', '==', 'GROUP')
+      .where('group', '==', group.id)
+      .onSnapshot((s) =>
+        s.forEach((it) => {
+          const task = { ...it.data(), id: it.id } as Task;
+          // get rid of groupTaskArray from dependency array
+          setGroupTaskArray((ary) => [...ary, task]);
+        })
+      );
+  }, [group]);
+
   const groupMemberProfiles = useGroupMemberProfiles(group.members);
 
   return (
     <div className={styles.GroupView}>
       <MiddleBar groupMemberProfiles={groupMemberProfiles} />
-      <RightView group={group} groupMemberProfiles={groupMemberProfiles} />
+      <RightView group={group} groupMemberProfiles={groupMemberProfiles} tasks={groupTaskArray} />
     </div>
   );
 };
