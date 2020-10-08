@@ -1,40 +1,23 @@
-import React, { ReactElement, useState, ReactNode } from 'react';
-import { connect } from 'react-redux';
+import React, { ReactElement, ReactNode } from 'react';
+import { Task } from 'common/types/store-types';
 import styles from './GroupTasksContainer.module.scss';
 import GroupTask from './GroupTask';
-import { getFocusViewProps, FocusViewTaskMetaData, FocusViewProps } from '../../../store/selectors';
 
-type IdOrder = { readonly id: string; readonly order: number };
+type Props = {
+  readonly tasks: readonly Task[];
+};
 
-function renderTaskList(list: IdOrder[], filterCompleted: boolean): ReactNode {
-  return list.map(({ id }, index) => (
-    <GroupTask key={id} id={id} order={index} filterCompleted={filterCompleted} />
-  ));
+type IdOrder = {
+  readonly id: string;
+  readonly order: number;
+};
+
+function renderTaskList(list: readonly Task[]): ReactNode {
+  return list.map((item) => <GroupTask key={item.id} original={item} />);
 }
 
-function GroupTasksContainer({ tasks }: FocusViewProps): ReactElement {
-  const [localTasks, setLocalTasks] = useState<FocusViewTaskMetaData[]>(tasks);
-  if (localTasks !== tasks) {
-    setLocalTasks(tasks);
-  }
-  const localCompletedList: IdOrder[] = [];
-  const localUncompletedList: IdOrder[] = [];
-  localTasks.forEach(({ id, order, inFocusView, inCompleteFocusView }: FocusViewTaskMetaData) => {
-    if (!inFocusView) {
-      return;
-    }
-    const idOrder = { id, order };
-    if (inCompleteFocusView) {
-      localCompletedList.push(idOrder);
-    } else {
-      localUncompletedList.push(idOrder);
-    }
-  });
-
-  return (
-    <div className={styles.GroupTasksContainer}>{renderTaskList(localUncompletedList, false)}</div>
-  );
+function GroupTasksContainer({ tasks }: Props): ReactElement {
+  return <div className={styles.GroupTasksContainer}>{renderTaskList(tasks)}</div>;
 }
 
-const Connected = connect(getFocusViewProps)(GroupTasksContainer);
-export default Connected;
+export default GroupTasksContainer;

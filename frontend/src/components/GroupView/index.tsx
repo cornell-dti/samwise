@@ -1,5 +1,11 @@
 import React, { ReactElement, useState, useEffect } from 'react';
-import type { Group, SamwiseUserProfile } from 'common/types/store-types';
+import type {
+  Group,
+  SamwiseUserProfile,
+  Task,
+  GroupTaskMetadata,
+  SubTask,
+} from 'common/types/store-types';
 import type { FirestoreUserData } from 'common/types/firestore-types';
 import MiddleBar from './MiddleBar';
 import RightView from './RightView';
@@ -44,12 +50,39 @@ const useGroupMemberProfiles = (
 };
 
 const GroupView = ({ group }: Props): ReactElement => {
+  const [groupTaskArray, setGroupTaskArray] = useState<Task[]>([]);
+  useEffect(() => {
+    database
+      .tasksCollection()
+      .where('type', '==', 'GROUP')
+      .where('group', '==', group.id)
+      .onSnapshot((s) => {
+        setGroupTaskArray([]);
+        // this is problematic because it does not account for subtasks yet
+        s.forEach((docSnapshot) => {
+          const docData = docSnapshot.data();
+          const task = {
+            ...docData,
+            id: docSnapshot.id,
+            metadata: {
+              type: 'GROUP',
+              date: docData.date.toDate(),
+              group: docData.group,
+            } as GroupTaskMetadata,
+            children: [] as readonly SubTask[],
+          } as Task;
+          // get rid of groupTaskArray from dependency array
+          setGroupTaskArray((ary) => [...ary, task]);
+        });
+      });
+  }, [group]);
+
   const groupMemberProfiles = useGroupMemberProfiles(group.members);
 
   return (
     <div className={styles.GroupView}>
       <MiddleBar groupMemberProfiles={groupMemberProfiles} />
-      <RightView group={group} groupMemberProfiles={groupMemberProfiles} />
+      <RightView group={group} groupMemberProfiles={groupMemberProfiles} tasks={groupTaskArray} />
     </div>
   );
 };

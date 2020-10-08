@@ -1,11 +1,13 @@
 import React, { ReactElement, SyntheticEvent, KeyboardEvent } from 'react';
 import { faPlus } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { Task } from 'common/types/store-types';
 import GroupTasksContainer from './GroupTasksContainer';
 import styles from './GroupTaskRow.module.scss';
 
 type Props = {
   memberName: string;
+  readonly tasks: readonly Task[];
 };
 
 const clickAddGroupTask = (e: SyntheticEvent<HTMLElement>): void => {
@@ -19,7 +21,7 @@ const pressedAddGroupTask = (e: KeyboardEvent): void => {
   }
 };
 
-const GroupTaskRow = ({ memberName }: Props): ReactElement => {
+const GroupTaskRow = ({ tasks, memberName }: Props): ReactElement => {
   const initials = `${memberName.split(' ')[0].charAt(0)}${memberName.split(' ')[1].charAt(0)}`;
 
   return (
@@ -38,7 +40,7 @@ const GroupTaskRow = ({ memberName }: Props): ReactElement => {
         </div>
       </button>
 
-      <GroupTasksContainer />
+      <GroupTasksContainer tasks={tasks} />
     </div>
   );
 };
