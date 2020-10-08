@@ -8,7 +8,7 @@ import TaskCreator from '../../TaskCreator';
 type Props = {
   readonly group: Group;
   readonly groupMemberProfiles: readonly SamwiseUserProfile[];
-  readonly tasks: Task[];
+  readonly tasks: readonly Task[];
 };
 
 const EditGroupNameIcon = (): ReactElement => {

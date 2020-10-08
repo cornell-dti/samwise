@@ -4,7 +4,7 @@ import styles from './GroupTasksContainer.module.scss';
 import GroupTask from './GroupTask';
 
 type Props = {
-  readonly tasks: Task[];
+  readonly tasks: readonly Task[];
 };
 
 type IdOrder = {
@@ -12,7 +12,7 @@ type IdOrder = {
   readonly order: number;
 };
 
-function renderTaskList(list: Task[]): ReactNode {
+function renderTaskList(list: readonly Task[]): ReactNode {
   return list.map((item) => <GroupTask key={item.id} original={item} />);
 }
 

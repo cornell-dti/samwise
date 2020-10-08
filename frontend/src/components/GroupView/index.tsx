@@ -59,12 +59,16 @@ const GroupView = ({ group }: Props): ReactElement => {
       .onSnapshot((s) => {
         setGroupTaskArray([]);
         // this is problematic because it does not account for subtasks yet
-        s.forEach((it) => {
-          const d = it.data();
+        s.forEach((docSnapshot) => {
+          const docData = docSnapshot.data();
           const task = {
-            ...d,
-            id: it.id,
-            metadata: { type: 'GROUP', date: d.date.toDate(), group: d.group } as GroupTaskMetadata,
+            ...docData,
+            id: docSnapshot.id,
+            metadata: {
+              type: 'GROUP',
+              date: docData.date.toDate(),
+              group: docData.group,
+            } as GroupTaskMetadata,
             children: [] as readonly SubTask[],
           } as Task;
           // get rid of groupTaskArray from dependency array

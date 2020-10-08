@@ -7,7 +7,7 @@ import styles from './GroupTaskRow.module.scss';
 
 type Props = {
   memberName: string;
-  readonly tasks: Task[];
+  readonly tasks: readonly Task[];
 };
 
 const clickAddGroupTask = (e: SyntheticEvent<HTMLElement>): void => {
