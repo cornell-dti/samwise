@@ -2,12 +2,12 @@ import React, { ReactElement } from 'react';
 import { faPlus } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import type { Group, SamwiseUserProfile, State } from 'common/types/store-types';
+import { useSelector } from 'react-redux';
 import SamwiseIcon from '../../UI/SamwiseIcon';
 import { promptConfirm, promptTextInput } from '../../Util/Modals';
 import GroupViewMiddleBarMemberRow from './GroupViewMiddleBarMemberRow';
 import styles from './GroupViewMiddleBarPeopleList.module.scss';
 import { leaveGroup } from '../../../firebase/actions';
-import { useSelector } from 'react-redux';
 
 const leaveGroupPrompt = 'Are you sure you want to leave this group?';
 
