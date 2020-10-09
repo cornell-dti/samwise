@@ -1,12 +1,12 @@
 /* eslint-disable no-param-reassign */
 import React, { ReactElement, ReactNode } from 'react';
-import { getDateWithDateString } from 'common/lib/util/datetime-util';
-import { removeTaskWithPotentialPrompt } from 'util/task-util';
-import { Task } from 'common/lib/types/store-types';
-import { useWindowSizeCallback, WindowSize } from 'hooks/window-size-hook';
+import { getDateWithDateString } from 'common/util/datetime-util';
+import { Task } from 'common/types/store-types';
+import { removeTaskWithPotentialPrompt } from '../../../util/task-util';
+import { useWindowSizeCallback, WindowSize } from '../../../hooks/window-size-hook';
 import { CalendarPosition, FloatingPosition } from './editors-types';
 import TaskEditor from './TaskEditor';
-import styles from './FloatingTaskEditor.module.css';
+import styles from './FloatingTaskEditor.module.scss';
 
 const EDITOR_WIDTH = 300;
 

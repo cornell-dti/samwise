@@ -1,19 +1,19 @@
 import React, { KeyboardEvent, ReactElement, SyntheticEvent, ReactNode } from 'react';
 import { connect } from 'react-redux';
-import FloatingTaskEditor from 'components/Util/TaskEditors/FloatingTaskEditor';
-import { Settings, State, SubTask, Task } from 'common/lib/types/store-types';
-import CheckBox from 'components/UI/CheckBox';
-import { FloatingPosition, CalendarPosition } from 'components/Util/TaskEditors/editors-types';
-import { getTodayAtZeroAM, getDateWithDateString } from 'common/lib/util/datetime-util';
-import OverdueAlert from 'components/UI/OverdueAlert';
-import { editMainTask } from 'firebase/actions';
-import { useMappedWindowSize } from 'hooks/window-size-hook';
-import { NONE_TAG } from 'common/lib/util/tag-util';
-import SamwiseIcon from 'components/UI/SamwiseIcon';
-import { removeTaskWithPotentialPrompt } from 'util/task-util';
 import { Draggable } from 'react-beautiful-dnd';
+import { Settings, State, SubTask, Task } from 'common/types/store-types';
+import { getTodayAtZeroAM, getDateWithDateString } from 'common/util/datetime-util';
+import { NONE_TAG } from 'common/util/tag-util';
+import FloatingTaskEditor from '../../Util/TaskEditors/FloatingTaskEditor';
+import CheckBox from '../../UI/CheckBox';
+import { FloatingPosition, CalendarPosition } from '../../Util/TaskEditors/editors-types';
+import OverdueAlert from '../../UI/OverdueAlert';
+import { editMainTask } from '../../../firebase/actions';
+import { useMappedWindowSize } from '../../../hooks/window-size-hook';
+import SamwiseIcon from '../../UI/SamwiseIcon';
+import { removeTaskWithPotentialPrompt } from '../../../util/task-util';
 import FutureViewSubTask from './FutureViewSubTask';
-import styles from './FutureViewTask.module.css';
+import styles from './FutureViewTask.module.scss';
 
 type CompoundTask = {
   readonly original: Task;
@@ -133,9 +133,11 @@ function FutureViewTask({
   const RepeatingIcon = (): ReactElement => (
     <SamwiseIcon iconName="repeat-light" className={styles.TaskIconNoHover} />
   );
-  let Icon = (): ReactElement => <RepeatingIcon />;
-  if (compoundTask.original.metadata.type === 'ONE_TIME') {
-    Icon = isCanvasTask ? Placeholder : DragIcon;
+  let Icon = Placeholder;
+  if (compoundTask.original.metadata.type === 'MASTER_TEMPLATE') {
+    Icon = RepeatingIcon;
+  } else if (compoundTask.original.metadata.type === 'ONE_TIME' && !isCanvasTask) {
+    Icon = DragIcon;
   }
   const renderMainTaskInfo = (simplified = false): ReactElement => {
     if (simplified && isInMainList) {

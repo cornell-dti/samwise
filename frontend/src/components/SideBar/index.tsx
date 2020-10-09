@@ -1,44 +1,41 @@
 import React, { ReactElement, useState } from 'react';
-import SamwiseIcon from 'components/UI/SamwiseIcon';
 import { faPlus } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import SettingsButton from 'components/TitleBar/Settings/SettingsButton';
+import type { Group } from 'common/types/store-types';
+import SamwiseIcon from '../UI/SamwiseIcon';
+import SettingsButton from '../TitleBar/Settings/SettingsButton';
 import GroupIcon from './GroupIcon';
-import styles from './index.module.css';
+import styles from './index.module.scss';
 import AddGroupTags from './AddGroupTags';
-import { Views } from './types';
 
 type Props = {
-  groups: string[];
-  changeView: (selectedView: Views, selectedGroup: string | undefined) => void;
+  readonly groups: readonly Group[];
+  /** When selectedGroup is undefined, it means that we selected personal view */
+  readonly changeView: (selectedGroup: string | undefined) => void;
 };
 
-export default ({ groups, changeView }: Props): ReactElement => {
+const SideBar = ({ groups, changeView }: Props): ReactElement => {
   const [showDropdown, setShowDropdown] = useState(false);
   const [selected, setSelected] = useState('personal');
 
-  const handleIconClick = (view: Views, group?: string): void => {
-    changeView(view, group);
-    setSelected(group !== undefined ? group : view);
+  const handleIconClick = (groupID?: string): void => {
+    setSelected(groupID ?? 'personal');
+    changeView(groupID);
   };
 
   return (
     <div className={styles.SideBar}>
-      <button
-        type="button"
-        onClick={() => handleIconClick('personal')}
-        className={styles.PersonalViewButton}
-      >
-        <SamwiseIcon iconName="personal-view" />
+      <button type="button" onClick={() => handleIconClick()} className={styles.PersonalViewButton}>
+        <SamwiseIcon iconName="personal-view" className={styles.PersonalViewButtonIcon} />
       </button>
       <div className={styles.GroupIcons}>
         <p>My Groups</p>
         {groups.map((g) => (
           <GroupIcon
-            classCode={g}
-            handleClick={() => handleIconClick('group', g)}
-            selected={selected === g}
-            key={g}
+            key={g.id}
+            classCode={g.classCode}
+            handleClick={() => handleIconClick(g.id)}
+            selected={selected === g.id}
           />
         ))}
         <span>
@@ -60,3 +57,5 @@ export default ({ groups, changeView }: Props): ReactElement => {
     </div>
   );
 };
+
+export default SideBar;

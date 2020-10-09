@@ -1,0 +1,63 @@
+@media (max-width: 500px) {
+  .ColorEdit {
+    width: 54px !important;
+    font-size: 0 !important;
+    float: right;
+    position: absolute;
+    right: 70px;
+  }
+
+  .ColorPicker {
+    position: absolute;
+    right: 79px !important;
+    top: 50px;
+    z-index: 3;
+  }
+}
+
+.ColorEdit {
+  display: inline-flex;
+  align-items: center;
+  width: 125px;
+  margin: 0;
+  padding: 2px 0 2px 10px;
+  color: white;
+  border: 1px white solid !important;
+  border-radius: 5px;
+  font-size: 12px;
+  line-height: 14px !important;
+  text-align: left;
+  position: relative;
+}
+
+.ColorEdit:hover,
+.ColorEdit:focus {
+  border: 2px white solid !important;
+}
+
+.ColorEdit::first-letter {
+  text-transform: capitalize;
+}
+
+.ColorDisplay {
+  display: block;
+  position: absolute;
+  right: 20px;
+  top: 3px;
+  width: 12px;
+  height: 12px;
+  border-radius: 6px;
+}
+
+.Arrow {
+  color: white;
+  position: absolute;
+  right: 0;
+  top: 3px;
+}
+
+.ColorPicker {
+  position: absolute !important;
+  right: 59px;
+  z-index: 3;
+}

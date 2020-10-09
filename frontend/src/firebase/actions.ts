@@ -11,18 +11,19 @@ import {
   TaskMetadata,
   RepeatingTaskMetadata,
   OneTimeTaskMetadata,
-} from 'common/lib/types/store-types';
-import { error, ignore } from 'common/lib/util/general-util';
+} from 'common/types/store-types';
+import { error, ignore } from 'common/util/general-util';
 import {
   FirestoreCommon,
   FirestoreTask,
   FirestoreSubTask,
   FirestoreGroup,
   FirestorePendingGroupInvite,
-} from 'common/lib/types/firestore-types';
-import { WriteBatch } from 'common/lib/firebase/database';
-import Actions from 'common/lib/firebase/common-actions';
-import { TaskWithChildrenId } from 'common/lib/types/action-types';
+  FirestoreUserData,
+} from 'common/types/firestore-types';
+import { WriteBatch } from 'common/firebase/database';
+import Actions from 'common/firebase/common-actions';
+import { TaskWithChildrenId } from 'common/types/action-types';
 import {
   reportAddTagEvent,
   reportEditTagEvent,
@@ -475,6 +476,30 @@ export const sendInvite = async (
   await database.pendingInvitesCollection().add(newInvitation);
 };
 
+export const addUserInfo = async (
+  email: string,
+  fullName: string,
+  photoURL: string | null
+): Promise<void> => {
+  database.db().runTransaction(async (transaction) => {
+    const userDoc = await database.usersCollection().doc(email);
+    const snapshot = await transaction.get(userDoc);
+
+    if (snapshot.exists) {
+      const userInfoPartial: Partial<FirestoreUserData> = {
+        name: fullName,
+        photoURL: photoURL || 'Default Photo',
+      };
+      transaction.update(userDoc, userInfoPartial);
+    } else {
+      const userInfo: FirestoreUserData = {
+        name: fullName,
+        photoURL: photoURL || 'Default Photo',
+      };
+      transaction.set(userDoc, userInfo);
+    }
+  });
+};
 /*
  * --------------------------------------------------------------------------------
  * Section 4: Other Compound Actions

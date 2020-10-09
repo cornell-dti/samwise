@@ -1,7 +1,7 @@
 import React, { Component, ReactElement } from 'react';
 import SamwiseIcon from './SamwiseIcon';
 import { IconName } from './samwise-icon-types';
-import styles from './Tooltip.module.css';
+import styles from './Tooltip.module.scss';
 
 type Props = {
   readonly text: string;

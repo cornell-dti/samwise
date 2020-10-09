@@ -1,0 +1,24 @@
+name: TSSA
+on: pull_request
+
+jobs:
+  analyze:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up Node
+        uses: actions/setup-node@v2-beta
+      - name: Use Yarn Cache
+        uses: actions/cache@v1
+        with:
+          path: ~/.cache/yarn
+          key: yarn-${{ hashFiles(format('{0}{1}', github.workspace, '/yarn.lock')) }}
+          restore-keys: yarn-
+      - name: Yarn Install
+        run: yarn install
+      - name: Analyze
+        run: yarn tssa
+        env:
+          USER_LOGIN: dti-github-bot
+          GITHUB_TOKEN: ${{ secrets.BOT_TOKEN }}
+          GITHUB_PR_NUMBER: ${{ github.event.number }}

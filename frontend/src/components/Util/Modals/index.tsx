@@ -4,7 +4,7 @@ import ChoiceModal, { ChoiceObj, ChoiceModalProps } from './ChoiceModal';
 import TextInputModal, { TextInputModalProps, TextInputTypes } from './TextInputModal';
 
 export function initModal(): void {
-  Modal.setAppElement('#root');
+  Modal.setAppElement('#__next');
 }
 
 const dummyChoiceModalProps: ChoiceModalProps<ChoiceObj> = {

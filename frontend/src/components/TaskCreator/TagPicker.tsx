@@ -1,9 +1,9 @@
 import React, { ReactElement, KeyboardEvent } from 'react';
 import { connect } from 'react-redux';
-import { NONE_TAG, NONE_TAG_ID } from 'common/lib/util/tag-util';
-import { State, Tag } from 'common/lib/types/store-types';
+import { NONE_TAG, NONE_TAG_ID } from 'common/util/tag-util';
+import { State, Tag } from 'common/types/store-types';
 import TagListPicker from '../Util/TagListPicker/TagListPicker';
-import styles from './Picker.module.css';
+import styles from './Picker.module.scss';
 import SamwiseIcon from '../UI/SamwiseIcon';
 
 type OwnProps = {
@@ -33,7 +33,8 @@ function TagPicker({ tag, opened, onTagChange, onPickerOpened, getTag }: Props):
     const internal = isDefault ? (
       <>
         <span className={styles.TagDisplay}>
-          <SamwiseIcon iconName="tag-light" className={styles.CenterIcon} /> add class&nbsp;&nbsp;
+          <SamwiseIcon iconName="tag-light" className={styles.CenterIcon} />
+          &nbsp;add class&nbsp;&nbsp;
         </span>
       </>
     ) : (
@@ -45,15 +46,15 @@ function TagPicker({ tag, opened, onTagChange, onPickerOpened, getTag }: Props):
       </>
     );
     return (
-      <span
-        role="presentation"
+      <button
+        type="button"
         onClick={clickPicker}
         onKeyPress={pressedPicker}
-        className={styles.Label}
+        className={`${styles.TagButton} ${styles.Label}`}
         style={style}
       >
         {internal}
-      </span>
+      </button>
     );
   };
   return (

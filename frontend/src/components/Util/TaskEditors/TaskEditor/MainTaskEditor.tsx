@@ -1,6 +1,6 @@
 import React, { KeyboardEvent, ReactElement, SyntheticEvent } from 'react';
-import { getDateWithDateString } from 'common/lib/util/datetime-util';
-import styles from './index.module.css';
+import { getDateWithDateString } from 'common/util/datetime-util';
+import styles from './index.module.scss';
 import CheckBox from '../../../UI/CheckBox';
 import SamwiseIcon from '../../../UI/SamwiseIcon';
 import { editMainTask } from '../../../../firebase/actions';

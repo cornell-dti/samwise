@@ -13,7 +13,7 @@ type Props<T extends FuseItem> = {
 
 type State<T> = { readonly searchInput: string; readonly searchResults: readonly T[] };
 
-export default <T extends FuseItem>({
+const SearchBox = <T extends FuseItem>({
   placeholder,
   fuse,
   inputClassname,
@@ -62,3 +62,5 @@ export default <T extends FuseItem>({
     </div>
   );
 };
+
+export default SearchBox;

@@ -3,20 +3,19 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "tsc": "tsc --module commonjs --noEmit false --sourceMap false --isolatedModules false",
-    "build": "yarn tsc && ncc build dist/index.js -o compiled -m",
+    "tsc": "tsc --noEmit --isolatedModules false",
+    "build": "ncc build src/index.ts -o compiled -m --no-source-map-register --transpile-only",
     "serve": "yarn tsc && firebase serve --only functions",
     "shell": "yarn tsc && firebase functions:shell",
     "start": "yarn shell",
     "deploy": "firebase deploy --only functions",
-    "test": "TEST_MODE=true react-scripts test --watchAll=false",
     "logs": "firebase functions:log"
   },
   "main": "dist/index.js",
   "dependencies": {
     "common": "0.1.0",
-    "firebase-admin": "^8.9.2",
-    "firebase-functions": "^3.3.0",
+    "firebase-admin": "^9.2.0",
+    "firebase-functions": "^3.11.0",
     "ical": "^0.6.0",
     "json-bigint": "^0.3.0",
     "node-fetch": "^2.6.0"
@@ -24,7 +23,7 @@
   "devDependencies": {
     "@types/ical": "^0.6.1",
     "@types/node-fetch": "^2.5.3",
-    "@zeit/ncc": "^0.20.5",
+    "@vercel/ncc": "^0.24.0",
     "firebase-functions-test": "^0.1.6"
   }
 }

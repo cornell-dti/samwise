@@ -5,14 +5,17 @@
 
 import React, { ReactElement, useEffect, useState, useCallback } from 'react';
 import { connect } from 'react-redux';
-import { MainTask, Settings, State, SubTask, Tag } from 'common/lib/types/store-types';
-import OverdueAlert from 'components/UI/OverdueAlert';
-import { NONE_TAG } from 'common/lib/util/tag-util';
-import { ignore } from 'common/lib/util/general-util';
-import { confirmRepeatedTaskEditMaster, promptRepeatedTaskEditChoice } from 'util/task-util';
-import { editTaskWithDiff, forkTaskWithDiff } from 'firebase/actions';
-import { getTodayAtZeroAM, getDateWithDateString } from 'common/lib/util/datetime-util';
-import styles from './index.module.css';
+import { MainTask, Settings, State, SubTask, Tag } from 'common/types/store-types';
+import { NONE_TAG } from 'common/util/tag-util';
+import { ignore } from 'common/util/general-util';
+import { getTodayAtZeroAM, getDateWithDateString } from 'common/util/datetime-util';
+import OverdueAlert from '../../../UI/OverdueAlert';
+import {
+  confirmRepeatedTaskEditMaster,
+  promptRepeatedTaskEditChoice,
+} from '../../../../util/task-util';
+import { editTaskWithDiff, forkTaskWithDiff } from '../../../../firebase/actions';
+import styles from './index.module.scss';
 import RepeatFrequencyHeader from './RepeatFrequencyHeader';
 import EditorHeader from './EditorHeader';
 import MainTaskEditor from './MainTaskEditor';

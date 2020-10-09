@@ -32,9 +32,6 @@ p.SettingsSectionTitle {
 
 .SettingsSectionContent {
   width: 100% !important;
-}
-
-.SettingsSectionContent {
   vertical-align: top;
 }
 
@@ -109,7 +106,6 @@ p.SettingsSectionTitle {
   padding: 0;
   width: 50px;
   margin: 0;
-  cursor: pointer;
   transition: background 0.1s ease-in-out;
   display: inline-block;
   height: 100%;
@@ -128,15 +124,11 @@ p.SettingsSectionTitle {
 
 .ModalWrap {
   text-align: center;
-
   margin: 50px 150px;
-
   background: white;
   color: black;
-
   width: calc(100% - 300px);
   height: calc(100% - 100px);
-
   border-radius: 5px;
 }
 

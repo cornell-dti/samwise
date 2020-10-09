@@ -3,13 +3,10 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "postinstall": "yarn build",
-    "dev": "tsc --incremental --watch --noEmit false",
-    "build": "tsc --incremental --noEmit false",
-    "test": "react-scripts test --watchAll=false"
+    "build": "tsc --noEmit false"
   },
   "dependencies": {
-    "firebase": "^7.5.0",
+    "firebase": "^7.21.0",
     "immutable": "^4.0.0-rc.12"
   }
 }

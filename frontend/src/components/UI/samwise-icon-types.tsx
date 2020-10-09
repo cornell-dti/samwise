@@ -1,6 +1,7 @@
 // eslint-disable-next-line import/prefer-default-export
 export type IconName =
   | 'alert'
+  | 'arrow-down-dark'
   | 'bell'
   | 'calendar-dark'
   | 'calendar-light'

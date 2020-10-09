@@ -1,6 +1,6 @@
 import React, { SyntheticEvent, ReactElement } from 'react';
-import { Tag } from 'common/lib/types/store-types';
-import styles from './TagItem.module.css';
+import { Tag } from 'common/types/store-types';
+import styles from './TagItem.module.scss';
 import ColorEditor from './ColorEditor';
 import { editTag, removeTag } from '../../../firebase/actions';
 import SamwiseIcon from '../../UI/SamwiseIcon';

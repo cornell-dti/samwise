@@ -1,0 +1,15 @@
+.Main {
+  position: fixed;
+}
+
+.Hidden {
+  display: none;
+}
+
+.ConfWrap {
+  position: fixed;
+  z-index: 999;
+  top: 30%;
+  left: 250px;
+  pointer-events: none;
+}

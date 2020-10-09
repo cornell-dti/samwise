@@ -1,6 +1,6 @@
 import React, { ReactElement } from 'react';
-import systemMode, { Mode } from 'util/mode-util';
-import styles from './ModeIndicator.module.css';
+import systemMode, { Mode } from '../../util/mode-util';
+import styles from './ModeIndicator.module.scss';
 
 type Props = { readonly mode: Mode };
 
@@ -14,4 +14,6 @@ export const ConfigurableModeIndicator = ({ mode }: Props): ReactElement | null 
   return <div className={styles.Indicator}>{mode}</div>;
 };
 
-export default (): ReactElement | null => <ConfigurableModeIndicator mode={systemMode} />;
+const ModeIndicator = (): ReactElement | null => <ConfigurableModeIndicator mode={systemMode} />;
+
+export default ModeIndicator;

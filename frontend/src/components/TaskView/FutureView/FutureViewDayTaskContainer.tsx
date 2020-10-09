@@ -1,9 +1,9 @@
 import React, { ReactElement } from 'react';
 import { connect } from 'react-redux';
-import { State, SubTask, Task } from 'common/lib/types/store-types';
+import { State, SubTask, Task } from 'common/types/store-types';
 import { CalendarPosition, FloatingPosition } from '../../Util/TaskEditors/editors-types';
 import FutureViewTask from './FutureViewTask';
-import styles from './FutureViewDayTaskContainer.module.css';
+import styles from './FutureViewDayTaskContainer.module.scss';
 import { useWindowSizeCallback } from '../../../hooks/window-size-hook';
 import { createGetIdOrderListByDate } from '../../../store/selectors';
 

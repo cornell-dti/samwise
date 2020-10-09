@@ -1,8 +1,8 @@
 import React, { ReactElement } from 'react';
 import { connect } from 'react-redux';
 import { Map } from 'immutable';
-import { State, PendingGroupInvite } from 'common/lib/types/store-types';
-import styles from './index.module.css';
+import { State, PendingGroupInvite } from 'common/types/store-types';
+import styles from './index.module.scss';
 import { joinGroup, rejectInvite } from '../../../firebase/actions';
 
 type Props = {

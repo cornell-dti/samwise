@@ -1,6 +1,6 @@
 import React, { ReactElement, useState } from 'react';
-import { removeTaskWithPotentialPrompt } from 'util/task-util';
-import { Task } from 'common/lib/types/store-types';
+import { Task } from 'common/types/store-types';
+import { removeTaskWithPotentialPrompt } from '../../../util/task-util';
 import TaskEditor from './TaskEditor';
 import { CalendarPosition } from './editors-types';
 

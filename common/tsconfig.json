@@ -3,8 +3,6 @@
     "target": "es6",
     "lib": ["dom", "dom.iterable", "esnext"],
     "allowJs": false,
-    "outDir": "lib",
-    "baseUrl": "./src",
     "declaration": true,
     "skipLibCheck": true,
     "allowSyntheticDefaultImports": true,
@@ -15,9 +13,7 @@
     "esModuleInterop": true,
     "resolveJsonModule": true,
     "isolatedModules": true,
-    "jsx": "react",
-    "noEmit": true
+    "jsx": "react"
   },
-  "compileOnSave": true,
-  "include": ["src"]
+  "compileOnSave": true
 }

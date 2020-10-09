@@ -1,0 +1,42 @@
+.AddGroupTags {
+  background-color: white;
+  width: 100px;
+  position: absolute;
+  left: 15px;
+  border-radius: 5px;
+}
+
+.ClassItem {
+  display: flex;
+  padding: 0 0.5em;
+}
+
+.ClassItem:first-of-type {
+  padding-top: 0.5em;
+}
+
+.ClassItem:last-of-type {
+  padding-bottom: 0.5em;
+}
+
+.ClassItem:hover {
+  background-color: #8080801a;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.Color {
+  width: 9px;
+  height: 9px;
+  line-height: 20px;
+  border-radius: 50%;
+  background-color: skyblue;
+  position: relative;
+  top: 5px;
+}
+
+div.ClassItem > p {
+  text-align: left;
+  margin-left: 10px;
+  font-size: 10px;
+}

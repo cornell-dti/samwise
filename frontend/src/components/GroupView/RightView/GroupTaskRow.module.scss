@@ -1,0 +1,60 @@
+.GroupTaskRow {
+  display: flex;
+  direction: row;
+  margin-bottom: 1em;
+}
+
+.Initials {
+  height: 56px;
+  width: 56px;
+  border-radius: 50%;
+  background-color: #d7b6dc;
+  text-align: center;
+  font-size: 22px;
+  line-height: 56px;
+  color: white;
+  margin-top: auto;
+  margin-bottom: auto;
+  margin-right: 26px;
+}
+
+.AddTaskContainer {
+  width: 105px;
+  height: 121px;
+  border: 3px dashed rgba(255, 138, 138, 0.5);
+  box-sizing: border-box;
+  border-radius: 10px;
+  display: flex;
+  align-content: center;
+  margin: auto;
+  margin-right: 26px;
+  background-color: rgb(255, 255, 255);
+}
+
+.AddTaskContainer :hover {
+  cursor: pointer;
+}
+
+.AddTask {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+  justify-content: center;
+  align-items: center;
+}
+
+.AddTask svg {
+  font-size: 22px;
+  color: rgba(255, 138, 138, 0.5);
+  margin-bottom: 0;
+}
+
+.AddTask h3 {
+  text-align: center;
+  color: #bebebe;
+  font-family: 'DM Sans', sans-serif;
+  font-weight: bold;
+  font-size: 10px;
+  line-height: 12px;
+}

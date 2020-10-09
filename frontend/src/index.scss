@@ -2,8 +2,8 @@
 @import 'colors.scss';
 
 *,
-*:before,
-*:after {
+*::before,
+*::after {
   box-sizing: inherit;
 }
 
@@ -33,7 +33,7 @@ body {
   }
 }
 
-#root {
+#__next {
   position: fixed;
   display: flex;
   flex-direction: column;
@@ -65,6 +65,7 @@ input[type='password'] {
 .react-calendar {
   border: 1px solid #a0a096;
   text-align: center;
+  background: white;
 }
 
 .react-calendar__month-view__weekdays__weekday {
@@ -129,10 +130,6 @@ button.react-calendar__month-view__days__day:disabled {
 .NewTaskDatePick div > abbr {
   color: #7f8fa4;
   font-weight: normal;
-}
-
-.react-calendar {
-  background: white;
 }
 
 .react-calendar__navigation {

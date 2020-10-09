@@ -1,10 +1,9 @@
 import React, { ReactElement } from 'react';
 import { connect } from 'react-redux';
 import Confetti from 'react-dom-confetti';
-import { TasksProgressProps } from 'common/lib/util/task-util';
-import styles from './Celebrate.module.css';
+import { TasksProgressProps } from 'common/util/task-util';
+import styles from './Celebrate.module.scss';
 import { getProgress } from '../../../store/selectors';
-// import Bear from '../../../assets/bear/happy-bear.png';
 
 type Props = TasksProgressProps;
 

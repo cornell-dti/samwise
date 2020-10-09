@@ -1,6 +1,6 @@
 import firebase from 'firebase/app';
 import 'firebase/analytics';
-import { AppUser } from 'firebase/auth-util';
+import { AppUser } from '../firebase/auth-util';
 
 export const initialize = (): void => {
   firebase.analytics().logEvent('screen-view', { screenName: 'Homepage' });

@@ -1,9 +1,9 @@
 import React, { ReactElement } from 'react';
-import { useTodayLastSecondTime } from 'hooks/time-hook';
 import { DragDropContext, DropResult } from 'react-beautiful-dnd';
-import { computeReorderMap } from 'common/lib/util/order-util';
-import { dateMatchRepeats } from 'common/lib/util/task-util';
-import { Task, RepeatingTaskMetadata, OneTimeTaskMetadata } from 'common/lib/types/store-types';
+import { computeReorderMap } from 'common/util/order-util';
+import { dateMatchRepeats } from 'common/util/task-util';
+import { Task, RepeatingTaskMetadata, OneTimeTaskMetadata } from 'common/types/store-types';
+import { useTodayLastSecondTime } from '../../../hooks/time-hook';
 import FutureViewControl from './FutureViewControl';
 import FutureViewNDays from './FutureViewNDays';
 import FutureViewSevenColumns from './FutureViewSevenColumns';

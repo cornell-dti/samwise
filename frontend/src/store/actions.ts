@@ -9,7 +9,7 @@ import {
   PatchGroups,
   TaskWithChildrenId,
   PatchPendingInvite,
-} from 'common/lib/types/action-types';
+} from 'common/types/action-types';
 import {
   Course,
   Tag,
@@ -18,7 +18,7 @@ import {
   BannerMessageStatus,
   Group,
   PendingGroupInvite,
-} from 'common/lib/types/store-types';
+} from 'common/types/store-types';
 
 export const patchTags = (created: Tag[], edited: Tag[], deleted: string[]): PatchTags => ({
   type: 'PATCH_TAGS',

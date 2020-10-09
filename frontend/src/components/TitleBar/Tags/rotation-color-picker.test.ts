@@ -1,5 +1,5 @@
 import { Map } from 'immutable';
-import { Tag } from 'common/lib/types/store-types';
+import { Tag } from 'common/types/store-types';
 import { getUnusedColorForTesting } from './rotation-color-picker';
 
 it('Colors correctly rotate', () => {

@@ -2,9 +2,9 @@ import React, { ReactElement } from 'react';
 import { Map } from 'immutable';
 import { connect } from 'react-redux';
 import Fuse from 'fuse.js';
-import SearchBox from 'components/Util/SearchBox';
-import { Course, State } from 'common/lib/types/store-types';
-import styles from './TagAdder.module.css';
+import { Course, State } from 'common/types/store-types';
+import SearchBox from '../../Util/SearchBox';
+import styles from './TagAdder.module.scss';
 import { addTag } from '../../../firebase/actions';
 import getUnusedColor from './rotation-color-picker';
 

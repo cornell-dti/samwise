@@ -1,7 +1,7 @@
 import React, { ReactElement } from 'react';
 import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
-import { useTodayLastSecondTime } from 'hooks/time-hook';
-import { date2YearMonth } from 'common/lib/util/datetime-util';
+import { date2YearMonth } from 'common/util/datetime-util';
+import { useTodayLastSecondTime } from '../../../hooks/time-hook';
 import { FutureViewContainerType, FutureViewDisplayOption } from './future-view-types';
 import SquareTextButton from '../../UI/SquareTextButton';
 import SquareIconToggle from '../../UI/SquareIconToggle';
@@ -95,7 +95,7 @@ function NavControl(props: NavControlProps): ReactElement {
       <>
         {futureViewOffset >= 0 && (
           <SamwiseIcon
-            iconName="dropdown"
+            iconName="arrow-down-dark"
             title="Go back"
             className={`${styles.NavButtonPrev} ${styles.NavButtonNDays}`}
             style={prevStyle}
@@ -103,7 +103,7 @@ function NavControl(props: NavControlProps): ReactElement {
           />
         )}
         <SamwiseIcon
-          iconName="dropdown"
+          iconName="arrow-down-dark"
           title="Go forward"
           className={`${styles.NavButtonNext} ${styles.NavButtonNDays}`}
           style={nextStyle}
@@ -115,7 +115,7 @@ function NavControl(props: NavControlProps): ReactElement {
 
   const prev = (
     <SamwiseIcon
-      iconName="dropdown"
+      iconName="arrow-down-dark"
       title="Go back"
       className={styles.NavButtonPrev}
       onClick={prevHandler}
@@ -123,7 +123,7 @@ function NavControl(props: NavControlProps): ReactElement {
   );
   const next = (
     <SamwiseIcon
-      iconName="dropdown"
+      iconName="arrow-down-dark"
       title="Go forward"
       className={styles.NavButtonNext}
       onClick={nextHandler}

@@ -2,323 +2,285 @@
 
 exports[`SamwiseIcon matches snapshot. 1`] = `
 <span
+  onKeyUp={[Function]}
+  role="button"
+  tabIndex={0}
   title="alert"
 >
-  <svg
+  <img
     alt="alert"
-    height="1em"
-    onKeyUp={[Function]}
-    tabIndex={0}
-    title="alert"
-    width="1em"
-  >
-    alert.svg
-  </svg>
+    className="SamwiseIconDefaultStyle"
+    src="/svgs/alert.svg"
+  />
 </span>
 `;
 
 exports[`SamwiseIcon matches snapshot. 2`] = `
 <span
+  onKeyUp={[Function]}
+  role="button"
+  tabIndex={0}
   title="Due date"
 >
-  <svg
+  <img
     alt="Due date"
-    height="1em"
-    onKeyUp={[Function]}
-    tabIndex={0}
-    title="Due date"
-    width="1em"
-  >
-    calendar-dark.svg
-  </svg>
+    className="SamwiseIconDefaultStyle"
+    src="/svgs/calendar-dark.svg"
+  />
 </span>
 `;
 
 exports[`SamwiseIcon matches snapshot. 3`] = `
 <span
+  onKeyUp={[Function]}
+  role="button"
+  tabIndex={0}
   title="Due date"
 >
-  <svg
+  <img
     alt="Due date"
-    height="1em"
-    onKeyUp={[Function]}
-    tabIndex={0}
-    title="Due date"
-    width="1em"
-  >
-    calendar-light.svg
-  </svg>
+    className="SamwiseIconDefaultStyle"
+    src="/svgs/calendar-light.svg"
+  />
 </span>
 `;
 
 exports[`SamwiseIcon matches snapshot. 4`] = `
 <span
+  onKeyUp={[Function]}
+  role="button"
+  tabIndex={0}
   title="Checked"
 >
-  <svg
+  <img
     alt="Checked"
-    height="1em"
-    onKeyUp={[Function]}
-    tabIndex={0}
-    title="Checked"
-    width="1em"
-  >
-    checked-dark.svg
-  </svg>
+    className="SamwiseIconDefaultStyle"
+    src="/svgs/checked-dark.svg"
+  />
 </span>
 `;
 
 exports[`SamwiseIcon matches snapshot. 5`] = `
 <span
+  onKeyUp={[Function]}
+  role="button"
+  tabIndex={0}
   title="Checked"
 >
-  <svg
+  <img
     alt="Checked"
-    height="1em"
-    onKeyUp={[Function]}
-    tabIndex={0}
-    title="Checked"
-    width="1em"
-  >
-    checked.svg
-  </svg>
+    className="SamwiseIconDefaultStyle"
+    src="/svgs/checked.svg"
+  />
 </span>
 `;
 
 exports[`SamwiseIcon matches snapshot. 6`] = `
 <span
+  onKeyUp={[Function]}
+  role="button"
+  tabIndex={0}
   title="clock"
 >
-  <svg
+  <img
     alt="clock"
-    height="1em"
-    onKeyUp={[Function]}
-    tabIndex={0}
-    title="clock"
-    width="1em"
-  >
-    clock.svg
-  </svg>
+    className="SamwiseIconDefaultStyle"
+    src="/svgs/clock.svg"
+  />
 </span>
 `;
 
 exports[`SamwiseIcon matches snapshot. 7`] = `
 <span
+  onKeyUp={[Function]}
+  role="button"
+  tabIndex={0}
   title="Reorder"
 >
-  <svg
+  <img
     alt="Reorder"
-    height="1em"
-    onKeyUp={[Function]}
-    tabIndex={0}
-    title="Reorder"
-    width="1em"
-  >
-    grabbers.svg
-  </svg>
+    className="SamwiseIconDefaultStyle"
+    src="/svgs/grabbers.svg"
+  />
 </span>
 `;
 
 exports[`SamwiseIcon matches snapshot. 8`] = `
 <span
+  onKeyUp={[Function]}
+  role="button"
+  tabIndex={0}
   title="Hide"
 >
-  <svg
+  <img
     alt="Hide"
-    height="1em"
-    onKeyUp={[Function]}
-    tabIndex={0}
-    title="Hide"
-    width="1em"
-  >
-    hide.svg
-  </svg>
+    className="SamwiseIconDefaultStyle"
+    src="/svgs/hide.svg"
+  />
 </span>
 `;
 
 exports[`SamwiseIcon matches snapshot. 9`] = `
 <span
+  onKeyUp={[Function]}
+  role="button"
+  tabIndex={0}
   title="Unpin from Focus"
 >
-  <svg
+  <img
     alt="Unpin from Focus"
-    height="1em"
-    onKeyUp={[Function]}
-    tabIndex={0}
-    title="Unpin from Focus"
-    width="1em"
-  >
-    pin-2-dark-filled.svg
-  </svg>
+    className="SamwiseIconDefaultStyle"
+    src="/svgs/pin-2-dark-filled.svg"
+  />
 </span>
 `;
 
 exports[`SamwiseIcon matches snapshot. 10`] = `
 <span
+  onKeyUp={[Function]}
+  role="button"
+  tabIndex={0}
   title="Pin to Focus"
 >
-  <svg
+  <img
     alt="Pin to Focus"
-    height="1em"
-    onKeyUp={[Function]}
-    tabIndex={0}
-    title="Pin to Focus"
-    width="1em"
-  >
-    pin-2-dark-outline.svg
-  </svg>
+    className="SamwiseIconDefaultStyle"
+    src="/svgs/pin-2-dark-outline.svg"
+  />
 </span>
 `;
 
 exports[`SamwiseIcon matches snapshot. 11`] = `
 <span
+  onKeyUp={[Function]}
+  role="button"
+  tabIndex={0}
   title="Unpin from Focus"
 >
-  <svg
+  <img
     alt="Unpin from Focus"
-    height="1em"
-    onKeyUp={[Function]}
-    tabIndex={0}
-    title="Unpin from Focus"
-    width="1em"
-  >
-    pin-2-light-filled.svg
-  </svg>
+    className="SamwiseIconDefaultStyle"
+    src="/svgs/pin-2-light-filled.svg"
+  />
 </span>
 `;
 
 exports[`SamwiseIcon matches snapshot. 12`] = `
 <span
+  onKeyUp={[Function]}
+  role="button"
+  tabIndex={0}
   title="Pin to Focus"
 >
-  <svg
+  <img
     alt="Pin to Focus"
-    height="1em"
-    onKeyUp={[Function]}
-    tabIndex={0}
-    title="Pin to Focus"
-    width="1em"
-  >
-    pin-2-light-outline.svg
-  </svg>
+    className="SamwiseIconDefaultStyle"
+    src="/svgs/pin-2-light-outline.svg"
+  />
 </span>
 `;
 
 exports[`SamwiseIcon matches snapshot. 13`] = `
 <span
+  onKeyUp={[Function]}
+  role="button"
+  tabIndex={0}
   title="Settings"
 >
-  <svg
+  <img
     alt="Settings"
-    height="1em"
-    onKeyUp={[Function]}
-    tabIndex={0}
-    title="Settings"
-    width="1em"
-  >
-    settings.svg
-  </svg>
+    className="SamwiseIconDefaultStyle"
+    src="/svgs/settings.svg"
+  />
 </span>
 `;
 
 exports[`SamwiseIcon matches snapshot. 14`] = `
 <span
+  onKeyUp={[Function]}
+  role="button"
+  tabIndex={0}
   title="Show"
 >
-  <svg
+  <img
     alt="Show"
-    height="1em"
-    onKeyUp={[Function]}
-    tabIndex={0}
-    title="Show"
-    width="1em"
-  >
-    show.svg
-  </svg>
+    className="SamwiseIconDefaultStyle"
+    src="/svgs/show.svg"
+  />
 </span>
 `;
 
 exports[`SamwiseIcon matches snapshot. 15`] = `
 <span
+  onKeyUp={[Function]}
+  role="button"
+  tabIndex={0}
   title="Tag"
 >
-  <svg
+  <img
     alt="Tag"
-    height="1em"
-    onKeyUp={[Function]}
-    tabIndex={0}
-    title="Tag"
-    width="1em"
-  >
-    tag.svg
-  </svg>
+    className="SamwiseIconDefaultStyle"
+    src="/svgs/tag.svg"
+  />
 </span>
 `;
 
 exports[`SamwiseIcon matches snapshot. 16`] = `
 <span
+  onKeyUp={[Function]}
+  role="button"
+  tabIndex={0}
   title="unchecked"
 >
-  <svg
+  <img
     alt="unchecked"
-    height="1em"
-    onKeyUp={[Function]}
-    tabIndex={0}
-    title="unchecked"
-    width="1em"
-  >
-    unchecked.svg
-  </svg>
+    className="SamwiseIconDefaultStyle"
+    src="/svgs/unchecked.svg"
+  />
 </span>
 `;
 
 exports[`SamwiseIcon matches snapshot. 17`] = `
 <span
+  onKeyUp={[Function]}
+  role="button"
+  tabIndex={0}
   title="More"
 >
-  <svg
+  <img
     alt="More"
-    height="1em"
-    onKeyUp={[Function]}
-    tabIndex={0}
-    title="More"
-    width="1em"
-  >
-    v.svg
-  </svg>
+    className="SamwiseIconDefaultStyle"
+    src="/svgs/v.svg"
+  />
 </span>
 `;
 
 exports[`SamwiseIcon matches snapshot. 18`] = `
 <span
+  onKeyUp={[Function]}
+  role="button"
+  tabIndex={0}
   title="Delete"
 >
-  <svg
+  <img
     alt="Delete"
-    height="1em"
-    onKeyUp={[Function]}
-    tabIndex={0}
-    title="Delete"
-    width="1em"
-  >
-    XDark.svg
-  </svg>
+    className="SamwiseIconDefaultStyle"
+    src="/svgs/XDark.svg"
+  />
 </span>
 `;
 
 exports[`SamwiseIcon matches snapshot. 19`] = `
 <span
+  onKeyUp={[Function]}
+  role="button"
+  tabIndex={0}
   title="Delete"
 >
-  <svg
+  <img
     alt="Delete"
-    height="1em"
-    onKeyUp={[Function]}
-    tabIndex={0}
-    title="Delete"
-    width="1em"
-  >
-    XLight.svg
-  </svg>
+    className="SamwiseIconDefaultStyle"
+    src="/svgs/XLight.svg"
+  />
 </span>
 `;

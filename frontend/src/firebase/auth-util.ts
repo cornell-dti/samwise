@@ -1,12 +1,13 @@
 import firebase from 'firebase/app';
 import 'firebase/auth';
-import { error } from 'common/lib/util/general-util';
+import { error } from 'common/util/general-util';
 
 export type AppUser = {
   readonly uid: string;
   readonly displayName: string;
   readonly email: string;
   readonly token: string;
+  readonly photoURL: string | null;
 };
 
 /**
@@ -19,12 +20,12 @@ export async function toAppUser(firebaseUser: firebase.User | null): Promise<App
   if (firebaseUser == null) {
     return null;
   }
-  const { uid, displayName, email } = firebaseUser;
+  const { uid, displayName, email, photoURL } = firebaseUser;
   if (typeof displayName !== 'string' || typeof email !== 'string') {
     throw new Error('Bad user!');
   }
   const token: string = await firebaseUser.getIdToken(true);
-  return { uid, displayName, email, token };
+  return { uid, displayName, email, token, photoURL };
 }
 
 let appUser: AppUser | null = null;

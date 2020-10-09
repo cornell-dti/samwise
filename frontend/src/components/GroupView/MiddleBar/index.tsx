@@ -1,15 +1,17 @@
 import React, { ReactElement } from 'react';
-import People from './People';
-import TaskQueue from './TaskQueue';
+import { SamwiseUserProfile } from 'common/types/store-types';
+
+import GroupViewMiddleBarPeopleList from './GroupViewMiddleBarPeopleList';
+import GroupViewMiddleBarTaskQueue from './GroupViewMiddleBarTaskQueue';
 import styles from './index.module.scss';
 
-type Props = {
-  groupMemberNames: string[];
-};
+type Props = { readonly groupMemberProfiles: readonly SamwiseUserProfile[] };
 
-export default ({ groupMemberNames }: Props): ReactElement => (
+const GroupViewMiddleBar = ({ groupMemberProfiles }: Props): ReactElement => (
   <div className={styles.MiddleBar}>
-    <TaskQueue />
-    <People groupMemberNames={groupMemberNames} />
+    <GroupViewMiddleBarTaskQueue />
+    <GroupViewMiddleBarPeopleList groupMemberProfiles={groupMemberProfiles} />
   </div>
 );
+
+export default GroupViewMiddleBar;

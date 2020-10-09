@@ -4,6 +4,7 @@
 # Cache & History
 .npm
 .eslintcache
+.next
 .firebase/
 .node_repl_history
 .mypy_cache/
@@ -33,6 +34,7 @@ coverage.xml
 # Compiled Output
 **/build
 **/dist
+**/out
 **/compiled
 common/lib
 

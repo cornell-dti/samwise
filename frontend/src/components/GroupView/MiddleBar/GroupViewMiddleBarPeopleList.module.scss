@@ -1,0 +1,59 @@
+.People {
+  min-height: 40%;
+  margin: 0.5em 0;
+}
+
+.People button:hover {
+  opacity: 0.7;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.People h2 {
+  font-weight: bold;
+}
+
+.AddMember {
+  height: 40px;
+  line-height: 40px;
+  font-size: 16px;
+  display: flex;
+  background-color: transparent;
+  border: none;
+  padding: 0;
+  font-family: 'DM Sans', sans-serif;
+  color: #bebebe;
+  margin: 0.5em 0;
+}
+
+.AddMember svg {
+  font-size: 20px;
+  color: #bebebe;
+}
+
+.AddMember div {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 2px dashed #bebebe;
+  text-align: center;
+  margin-right: 1em;
+}
+
+.LeaveGroup {
+  color: #ff7a7a;
+  position: absolute;
+  bottom: 10px;
+  border: none;
+  background-color: transparent;
+}
+
+.LeaveGroup p {
+  display: inline;
+  margin: 0 0.5em;
+}
+
+.MemberList {
+  max-height: 60%;
+  overflow-y: auto;
+}

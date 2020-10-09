@@ -1,16 +1,18 @@
 import React, { ReactElement, CSSProperties, useState, useRef, useEffect } from 'react';
 import { connect } from 'react-redux';
-import { State, Tag } from 'common/lib/types/store-types';
+import { State, Tag } from 'common/types/store-types';
 import TagItem from '../Tags/TagItem';
 import ClassTagAdder from '../Tags/ClassTagAdder';
 import styles from './Onboard.module.scss';
-import Tutorial1 from '../../../assets/tutorial/t1.png';
-import Tutorial2 from '../../../assets/tutorial/t2.png';
-import Tutorial3 from '../../../assets/tutorial/t3.png';
-import Tutorial4 from '../../../assets/tutorial/t4.png';
-import Tutorial5 from '../../../assets/tutorial/t5.png';
-import Tutorial6 from '../../../assets/tutorial/t6.png';
 import { completeOnboarding, importCourseExams } from '../../../firebase/actions';
+import {
+  Tutorial1,
+  Tutorial2,
+  Tutorial3,
+  Tutorial4,
+  Tutorial5,
+  Tutorial6,
+} from '../../../assets/assets-constants';
 
 type TaggedImage = { readonly src: string; readonly alt: string };
 

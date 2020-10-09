@@ -1,22 +1,16 @@
 import React, { CSSProperties, KeyboardEvent, SyntheticEvent, ReactElement } from 'react';
 import { connect } from 'react-redux';
-import { randomId } from 'common/lib/util/general-util';
-import {
-  Task,
-  RepeatingDate,
-  SubTask,
-  State as StoreState,
-  Theme,
-} from 'common/lib/types/store-types';
-import { NONE_TAG_ID } from 'common/lib/util/tag-util';
-import { isToday } from 'common/lib/util/datetime-util';
+import { randomId } from 'common/util/general-util';
+import { Task, RepeatingDate, SubTask, State as StoreState, Theme } from 'common/types/store-types';
+import { NONE_TAG_ID } from 'common/util/tag-util';
+import { isToday } from 'common/util/datetime-util';
 import TagPicker from './TagPicker';
 import DatePicker from './DatePicker';
 import FocusPicker from './FocusPicker';
 import GroupMemberPicker from './GroupMemberPicker';
 import { addTask, TaskWithoutIdOrderChildren } from '../../firebase/actions';
 import SamwiseIcon from '../UI/SamwiseIcon';
-import styles from './index.module.css';
+import styles from './index.module.scss';
 
 type SimpleTask = Omit<Task, 'type' | 'order' | 'children' | 'metadata'>;
 

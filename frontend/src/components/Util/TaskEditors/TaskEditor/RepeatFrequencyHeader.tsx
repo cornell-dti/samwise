@@ -6,10 +6,10 @@ import {
   RepeatingPattern,
   Task,
   RepeatingTaskMetadata,
-} from 'common/lib/types/store-types';
-import { DAYS_IN_WEEK, isBitSet } from 'common/lib/util/bitwise-util';
+} from 'common/types/store-types';
+import { DAYS_IN_WEEK, isBitSet } from 'common/util/bitwise-util';
 import SamwiseIcon from '../../../UI/SamwiseIcon';
-import styles from './RepeatFrequencyHeader.module.css';
+import styles from './RepeatFrequencyHeader.module.scss';
 
 type OwnProps = {
   // Needed for react-redux. See connect function at the bottom.

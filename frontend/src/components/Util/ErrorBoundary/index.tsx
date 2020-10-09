@@ -1,5 +1,5 @@
 import React, { ReactElement } from 'react';
-import FrontendCrash from '../../../assets/error/frontendCrash.png';
+import { FrontendCrash } from '../../../assets/assets-constants';
 
 type Props = { readonly children: ReactElement };
 

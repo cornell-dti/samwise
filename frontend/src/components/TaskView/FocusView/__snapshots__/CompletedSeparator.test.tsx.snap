@@ -10,20 +10,17 @@ exports[`CompletedSeparator when not showing completed tasks matches snapshot 1`
     Completed: (5)
   </span>
   <span
+    onClick={[Function]}
+    onKeyUp={[Function]}
+    role="button"
+    tabIndex={0}
     title="More"
   >
-    <svg
+    <img
       alt="More"
-      className="Icon Inverted"
-      height="1em"
-      onClick={[Function]}
-      onKeyUp={[Function]}
-      tabIndex={0}
-      title="More"
-      width="1em"
-    >
-      v.svg
-    </svg>
+      className="SamwiseIconDefaultStyle Icon Inverted"
+      src="/svgs/v.svg"
+    />
   </span>
   <div
     className="Line"
@@ -41,20 +38,17 @@ exports[`CompletedSeparator when showing completed tasks matches snapshot 1`] = 
     Completed: (10)
   </span>
   <span
+    onClick={[Function]}
+    onKeyUp={[Function]}
+    role="button"
+    tabIndex={0}
     title="More"
   >
-    <svg
+    <img
       alt="More"
-      className="Icon"
-      height="1em"
-      onClick={[Function]}
-      onKeyUp={[Function]}
-      tabIndex={0}
-      title="More"
-      width="1em"
-    >
-      v.svg
-    </svg>
+      className="SamwiseIconDefaultStyle Icon"
+      src="/svgs/v.svg"
+    />
   </span>
   <div
     className="Line"

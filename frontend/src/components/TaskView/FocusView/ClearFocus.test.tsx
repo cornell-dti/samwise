@@ -1,6 +1,6 @@
 import React from 'react';
 import renderer from 'react-test-renderer';
-import { ProviderForTesting } from 'store';
+import { ProviderForTesting } from '../../../store';
 import ClearFocus from './ClearFocus';
 
 it('ClearFocus matches snapshot', () => {

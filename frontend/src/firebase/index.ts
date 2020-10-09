@@ -2,7 +2,7 @@ import firebase from 'firebase/app';
 
 let firebaseConfig: Record<string, string>;
 
-if (process.env.NODE_ENV === 'production' && process.env.REACT_APP_IS_STAGING !== 'true') {
+if (process.env.NODE_ENV === 'production' && process.env.NEXT_PUBLIC_IS_STAGING !== 'true') {
   firebaseConfig = {
     apiKey: 'AIzaSyBrnR-ai3ZQrr3aYnezDZTZdw9e2TWTRtc',
     authDomain: 'dti-samwise.firebaseapp.com',
@@ -26,4 +26,6 @@ if (process.env.NODE_ENV === 'production' && process.env.REACT_APP_IS_STAGING !=
   };
 }
 
-firebase.initializeApp(firebaseConfig);
+if (firebase.apps.length === 0) {
+  firebase.initializeApp(firebaseConfig);
+}

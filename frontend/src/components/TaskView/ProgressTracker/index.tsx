@@ -1,9 +1,9 @@
 import React, { ReactElement } from 'react';
 import { connect } from 'react-redux';
-import { TasksProgressProps } from 'common/lib/util/task-util';
+import { TasksProgressProps } from 'common/util/task-util';
 import Bear from './Bear';
 import ProgressIndicator from './ProgressIndicator';
-import styles from './index.module.css';
+import styles from './index.module.scss';
 import { getProgress } from '../../../store/selectors';
 
 const mobileViewStyle = `${styles.ProgressTracker} ${styles.MobileView}`;
