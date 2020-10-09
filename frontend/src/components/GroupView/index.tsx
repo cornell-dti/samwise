@@ -12,7 +12,10 @@ import RightView from './RightView';
 import styles from './index.module.scss';
 import { database } from '../../firebase/db';
 
-type Props = { readonly group: Group };
+type Props = {
+  readonly group: Group;
+  readonly changeView: (selectedGroup: string | undefined) => void;
+};
 
 const useGroupMemberProfiles = (
   groupMemberEmails: readonly string[]
@@ -49,7 +52,7 @@ const useGroupMemberProfiles = (
   return profiles.length === groupMemberEmails.length ? profiles : [];
 };
 
-const GroupView = ({ group }: Props): ReactElement => {
+const GroupView = ({ group, changeView }: Props): ReactElement => {
   const [groupTaskArray, setGroupTaskArray] = useState<Task[]>([]);
   useEffect(() => {
     database
@@ -81,7 +84,7 @@ const GroupView = ({ group }: Props): ReactElement => {
 
   return (
     <div className={styles.GroupView}>
-      <MiddleBar group={group} groupMemberProfiles={groupMemberProfiles} />
+      <MiddleBar group={group} groupMemberProfiles={groupMemberProfiles} changeView={changeView} />
       <RightView group={group} groupMemberProfiles={groupMemberProfiles} tasks={groupTaskArray} />
     </div>
   );

@@ -8,12 +8,17 @@ import styles from './index.module.scss';
 type Props = {
   readonly group: Group;
   readonly groupMemberProfiles: readonly SamwiseUserProfile[];
+  readonly changeView: (selectedGroup: string | undefined) => void;
 };
 
-const GroupViewMiddleBar = ({ groupMemberProfiles, group }: Props): ReactElement => (
+const GroupViewMiddleBar = ({ groupMemberProfiles, group, changeView }: Props): ReactElement => (
   <div className={styles.MiddleBar}>
     <GroupViewMiddleBarTaskQueue />
-    <GroupViewMiddleBarPeopleList group={group} groupMemberProfiles={groupMemberProfiles} />
+    <GroupViewMiddleBarPeopleList
+      group={group}
+      groupMemberProfiles={groupMemberProfiles}
+      changeView={changeView}
+    />
   </div>
 );
 

@@ -10,7 +10,7 @@ type AddGroupTagsProps = {
 };
 
 function newGroup(classCode: string): void {
-  createGroup('default group name', new Date(), classCode);
+  createGroup('New group', new Date(), classCode);
 }
 
 export default function AddGroupTags({ show, setShow }: AddGroupTagsProps): ReactElement {
