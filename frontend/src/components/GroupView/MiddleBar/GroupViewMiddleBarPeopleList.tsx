@@ -1,18 +1,20 @@
 import React, { ReactElement } from 'react';
 import { faPlus } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import type { SamwiseUserProfile } from 'common/types/store-types';
+import type { Group, SamwiseUserProfile } from 'common/types/store-types';
 import SamwiseIcon from '../../UI/SamwiseIcon';
 import { promptConfirm, promptTextInput } from '../../Util/Modals';
 import GroupViewMiddleBarMemberRow from './GroupViewMiddleBarMemberRow';
 import styles from './GroupViewMiddleBarPeopleList.module.scss';
+import { leaveGroup } from '../../../firebase/actions';
 
 const leaveGroupPrompt = 'Are you sure you want to leave this group?';
 
-function confirmLeaveGroup(): void {
-  promptConfirm(leaveGroupPrompt).then(() => {
-    console.log('Leave success');
-  });
+async function confirmLeaveGroup(groupID: string): Promise<void> {
+  const confirmed = await promptConfirm(leaveGroupPrompt);
+  if (confirmed) {
+    await leaveGroup(groupID);
+  }
 }
 
 const promptAddMember = (): void => {
@@ -27,9 +29,12 @@ const promptAddMember = (): void => {
   });
 };
 
-type Props = { readonly groupMemberProfiles: readonly SamwiseUserProfile[] };
+type Props = {
+  readonly group: Group;
+  readonly groupMemberProfiles: readonly SamwiseUserProfile[];
+};
 
-const People = ({ groupMemberProfiles }: Props): ReactElement => (
+const People = ({ group, groupMemberProfiles }: Props): ReactElement => (
   <div className={styles.People}>
     <h2>People</h2>
     <div className={styles.MemberList}>
@@ -48,7 +53,7 @@ const People = ({ groupMemberProfiles }: Props): ReactElement => (
       </div>
       Add member
     </button>
-    <button type="button" className={styles.LeaveGroup} onClick={confirmLeaveGroup}>
+    <button type="button" className={styles.LeaveGroup} onClick={() => confirmLeaveGroup(group.id)}>
       <SamwiseIcon iconName="exit" />
       <p>Leave Group</p>
     </button>

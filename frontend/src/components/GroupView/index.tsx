@@ -81,7 +81,7 @@ const GroupView = ({ group }: Props): ReactElement => {
 
   return (
     <div className={styles.GroupView}>
-      <MiddleBar groupMemberProfiles={groupMemberProfiles} />
+      <MiddleBar group={group} groupMemberProfiles={groupMemberProfiles} />
       <RightView group={group} groupMemberProfiles={groupMemberProfiles} tasks={groupTaskArray} />
     </div>
   );
