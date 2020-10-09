@@ -30,7 +30,6 @@
   padding: 8px;
   align-content: center;
   align-items: center;
-  width: 292px;
 }
 
 .TaskEditorFlexiblePadding {
@@ -74,8 +73,11 @@ input.TaskEditorFlexibleInput:focus-within::placeholder {
   margin-right: 0;
 }
 
-.TaskEditorSubtaskCheckBox label {
-  min-width: 16px;
+.TaskEditorSubtaskCheckBox {
+  &label {
+    min-width: 16px;
+    width: auto;
+  }
 }
 
 img.TaskEditorIcon {
@@ -146,7 +148,7 @@ img.TaskEditorIcon:focus,
 
 .TaskEditorCalendarBottom {
   position: absolute;
-  right: -8px;
+  right: -1px;
   z-index: 4;
   top: 36px;
 }
