@@ -33,8 +33,8 @@ const People = ({ groupMemberProfiles }: Props): ReactElement => (
   <div className={styles.People}>
     <h2>People</h2>
     <div className={styles.MemberList}>
-      {groupMemberProfiles.map((profile) => (
-        <GroupViewMiddleBarMemberRow memberName={profile.name} key={profile.email} />
+      {groupMemberProfiles.map(({ name, email, photoURL }) => (
+        <GroupViewMiddleBarMemberRow memberName={name} key={email} profilePicURL={photoURL} />
       ))}
     </div>
     <button

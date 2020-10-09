@@ -3,16 +3,21 @@ import { faPlus } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import SamwiseIcon from '../../UI/SamwiseIcon';
 import styles from './GroupViewMiddleBarMemberRow.module.scss';
+import ProfileImage from './ProfileImage';
 
 type Props = {
   memberName: string;
+  profilePicURL: string;
 };
 
-const Member = ({ memberName }: Props): ReactElement => {
-  const initials = `${memberName.split(' ')[0].charAt(0)}${memberName.split(' ')[1].charAt(0)}`;
+const Member = ({ memberName, profilePicURL }: Props): ReactElement => {
   return (
     <div className={styles.Member}>
-      <div className={styles.Initials}>{initials}</div>
+      <ProfileImage
+        className={styles.MemberProfilePic}
+        memberName={memberName}
+        imageURL={profilePicURL}
+      />
       <p>{memberName}</p>
       <div className={styles.Plus}>
         <FontAwesomeIcon icon={faPlus} />
