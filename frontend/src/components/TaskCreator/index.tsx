@@ -1,7 +1,7 @@
 import React, { CSSProperties, KeyboardEvent, SyntheticEvent, ReactElement } from 'react';
 import { connect } from 'react-redux';
 import { randomId } from 'common/util/general-util';
-import { Task, RepeatingDate, SubTask, State as StoreState, Theme } from 'common/types/store-types';
+import { Task, RepeatingDate, SamwiseUserProfile, SubTask, State as StoreState, Theme } from 'common/types/store-types';
 import { NONE_TAG_ID } from 'common/util/tag-util';
 import { isToday } from 'common/util/datetime-util';
 import TagPicker from './TagPicker';
@@ -32,6 +32,8 @@ type OwnProps = {
 type Props = OwnProps & {
   readonly view: string;
   readonly group?: string;
+  readonly assign?: boolean;
+  readonly assignedMember?: SamwiseUserProfile;
 };
 
 /**
@@ -338,8 +340,8 @@ export class TaskCreator extends React.PureComponent<Props, State> {
    */
   private renderOtherInfoEditor(): ReactElement | null {
     const { opened } = this.state;
-    const { view } = this.props;
-    if (!opened) {
+    const { view, assign, assignedMember } = this.props;
+    if (!opened && !assign) {
       return null;
     }
     const {
@@ -424,13 +426,14 @@ export class TaskCreator extends React.PureComponent<Props, State> {
                 onPickerOpened={this.openTagPicker}
               />
             ) : (
-              <GroupMemberPicker
-                tag={tag}
-                opened={tagPickerOpened}
-                onTagChange={this.editTag}
-                onPickerOpened={this.openTagPicker}
-              />
-            )}
+                <GroupMemberPicker
+                  tag={tag}
+                  opened={tagPickerOpened}
+                  onTagChange={this.editTag}
+                  onPickerOpened={this.openTagPicker}
+                  assignedMember={assignedMember}
+                />
+              )}
           </div>
           <DatePicker
             date={date}
