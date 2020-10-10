@@ -32,6 +32,7 @@ type OwnProps = {
 type Props = OwnProps & {
   readonly view: string;
   readonly group?: string;
+  readonly groupMemberProfiles?: SamwiseUserProfile[];
   readonly taskCreatorOpened?: boolean;
   readonly assignedMember?: SamwiseUserProfile;
 };
@@ -340,7 +341,7 @@ export class TaskCreator extends React.PureComponent<Props, State> {
    */
   private renderOtherInfoEditor(): ReactElement | null {
     const { opened } = this.state;
-    const { view, taskCreatorOpened, assignedMember } = this.props;
+    const { view, groupMemberProfiles, taskCreatorOpened, assignedMember } = this.props;
     if (!opened && !taskCreatorOpened) {
       return null;
     }
@@ -431,6 +432,7 @@ export class TaskCreator extends React.PureComponent<Props, State> {
                   opened={tagPickerOpened}
                   onTagChange={this.editTag}
                   onPickerOpened={this.openTagPicker}
+                  groupMemberProfiles={groupMemberProfiles}
                   assignedMember={assignedMember}
                 />
               )}

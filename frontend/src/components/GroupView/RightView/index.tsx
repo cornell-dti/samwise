@@ -41,7 +41,13 @@ export default class RightView extends React.PureComponent<Props, State> {
     return (
       <div className={styles.RightView}>
         <div className={styles.GroupTaskCreator}>
-          <TaskCreator view="group" group={group.name} taskCreatorOpened={taskCreatorOpened} assignedMember={assignedMember} />
+          <TaskCreator
+            view="group"
+            group={group.name}
+            groupMemberProfiles={groupMemberProfiles}
+            taskCreatorOpened={taskCreatorOpened}
+            assignedMember={assignedMember}
+          />
         </div>
 
         <div className={styles.RightView}>

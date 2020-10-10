@@ -16,15 +16,8 @@ type Props = OwnProps & {
   // subscribed from redux store.
   readonly getTag: (id: string) => Tag;
   readonly assignedMember?: SamwiseUserProfile;
+  readonly groupMemberProfiles: SamwiseUserProfile[],
 };
-
-// hardcoded member list
-const members: SamwiseUserProfile[] = [
-  { email: 'dl123@cornell.edu', name: 'Darien Lopez', photoURL: '' },
-  { email: 'sj234@cornell.edu', name: 'Sarah Johnson', photoURL: '' },
-  { email: 'mp678@cornell.edu', name: 'Michelle Parker', photoURL: '' },
-  { email: 'sj99@cornell.edu', name: 'Sarah Jo', photoURL: '' },
-];
 
 function GroupMemberPicker({
   tag,
@@ -33,6 +26,7 @@ function GroupMemberPicker({
   onPickerOpened,
   getTag,
   assignedMember,
+  groupMemberProfiles
 }: Props): ReactElement {
   // Controllers
   const clickPicker = (): void => {
@@ -78,7 +72,10 @@ function GroupMemberPicker({
       {displayedNode(tag === NONE_TAG_ID)}
       {opened && (
         <div>
-          <SearchGroupMember members={members} assignedMember={assignedMember} />
+          <SearchGroupMember
+            members={groupMemberProfiles}
+            assignedMember={assignedMember}
+          />
         </div>
       )}
     </div>
