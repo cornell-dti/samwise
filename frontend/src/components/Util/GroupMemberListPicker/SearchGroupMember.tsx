@@ -8,10 +8,12 @@ type SimpleMember = {
   readonly key: number;
   readonly value: string; // name of student
   readonly id: string; // netId of student
-  readonly assignedMember?: SamwiseUserProfile;
 };
 
-type Props = { readonly members: SamwiseUserProfile[] };
+type Props = {
+  readonly members: SamwiseUserProfile[];
+  readonly assignedMember?: SamwiseUserProfile;
+};
 
 /**
  * Returns computed group member options.

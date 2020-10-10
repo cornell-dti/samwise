@@ -6,7 +6,7 @@ import styles from './index.module.scss';
 import TaskCreator from '../../TaskCreator';
 
 type State = {
-  readonly assign: boolean;
+  readonly taskCreatorOpened: boolean;
   readonly assignedMember?: SamwiseUserProfile;
 }
 
@@ -16,7 +16,7 @@ type Props = {
 };
 
 const initialState = (): State => ({
-  assign: false
+  taskCreatorOpened: false
 });
 
 const EditGroupNameIcon = (): ReactElement => {
@@ -30,18 +30,18 @@ export default class RightView extends React.PureComponent<Props, State> {
   public readonly state: State = initialState();
 
   private openTaskCreator = (member: SamwiseUserProfile): void =>
-    this.setState(({ assign }: State) => ({
-      assign: !assign,
+    this.setState(({ taskCreatorOpened }: State) => ({
+      taskCreatorOpened: !taskCreatorOpened,
       assignedMember: member,
     }));
 
   public render(): ReactElement {
-    const { assign, assignedMember } = this.state;
+    const { taskCreatorOpened, assignedMember } = this.state;
     const { group, groupMemberProfiles } = this.props;
     return (
       <div className={styles.RightView}>
         <div className={styles.GroupTaskCreator}>
-          <TaskCreator view="group" group={group.name} assign={assign} assignedMember={assignedMember} />
+          <TaskCreator view="group" group={group.name} taskCreatorOpened={taskCreatorOpened} assignedMember={assignedMember} />
         </div>
 
         <div className={styles.RightView}>

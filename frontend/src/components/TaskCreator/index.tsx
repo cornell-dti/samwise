@@ -32,7 +32,7 @@ type OwnProps = {
 type Props = OwnProps & {
   readonly view: string;
   readonly group?: string;
-  readonly assign?: boolean;
+  readonly taskCreatorOpened?: boolean;
   readonly assignedMember?: SamwiseUserProfile;
 };
 
@@ -340,8 +340,8 @@ export class TaskCreator extends React.PureComponent<Props, State> {
    */
   private renderOtherInfoEditor(): ReactElement | null {
     const { opened } = this.state;
-    const { view, assign, assignedMember } = this.props;
-    if (!opened && !assign) {
+    const { view, taskCreatorOpened, assignedMember } = this.props;
+    if (!opened && !taskCreatorOpened) {
       return null;
     }
     const {
