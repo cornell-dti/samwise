@@ -283,7 +283,7 @@ function TaskEditor({
           />
         </div>
       </div>
-      {type === 'MASTER_TEMPLATE' && (
+      {type !== 'ONE_TIME' && (
         <div
           className={styles.SaveButtonRow}
           style={diffIsEmpty(diff) ? { maxHeight: 0, padding: 0 } : undefined}
