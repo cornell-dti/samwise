@@ -31,13 +31,14 @@ const RightView = ({ group, groupMemberProfiles, tasks }: Props): ReactElement =
           <EditGroupNameIcon />
         </div>
         <div className={styles.GroupTaskRowContainer}>
-          {groupMemberProfiles.map((samwiseUserProfile) => {
-            const filteredTasks = tasks.filter((t) => t.owner === samwiseUserProfile.email);
+          {groupMemberProfiles.map(({ name, photoURL, email }) => {
+            const filteredTasks = tasks.filter((t) => t.owner === email);
             return (
               <GroupTaskRow
                 tasks={filteredTasks}
-                memberName={samwiseUserProfile.name}
-                key={samwiseUserProfile.email}
+                memberName={name}
+                profilePicURL={photoURL}
+                key={email}
               />
             );
           })}

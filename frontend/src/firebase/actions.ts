@@ -425,8 +425,9 @@ export const joinGroup = async (groupId: string, inviteID: string): Promise<void
 
 /**
  * Create a group.
- * @param groupID Document ID of the group's Firestore document. The user calling this function must
- *                be a member of this group.
+ * @param name The name of the group
+ * @param deadline Deadline for the group project
+ * @param classCode Class code for the class associated with the group
  */
 export const createGroup = (name: string, deadline: Date, classCode: string): void => {
   const { email } = getAppUser();
@@ -447,7 +448,7 @@ export const leaveGroup = async (groupID: string): Promise<void> => {
     return;
   }
   const { email } = getAppUser();
-  const newMembers: string[] = members.filter((m: string) => m !== email);
+  const newMembers: string[] = members.filter((m) => m !== email);
   const groupDoc = await database.groupsCollection().doc(groupID);
   if (newMembers.length === 0) {
     await groupDoc.delete();
