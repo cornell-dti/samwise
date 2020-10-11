@@ -10,7 +10,7 @@ type AddGroupTagsProps = {
 };
 
 function newGroup(classCode: string): void {
-  createGroup('New group', new Date(), classCode);
+  createGroup(`New ${classCode} Group`, new Date(), classCode);
 }
 
 export default function AddGroupTags({ show, setShow }: AddGroupTagsProps): ReactElement {
@@ -30,22 +30,25 @@ export default function AddGroupTags({ show, setShow }: AddGroupTagsProps): Reac
           onMouseEnter={() => setShow(true)}
           onMouseLeave={() => setShow(false)}
         >
-          {classes.map(({ name, classId, color }): ReactElement | undefined => (
-            <div key={name}>
-              {classId !== null && (
-                <button
-                  type="button"
-                  className={styles.ClassItem}
-                  onClick={() => newGroup(name.split(':')[0])}
-                >
-                  <div className={styles.Color} style={{ backgroundColor: color }}>
-                    {' '}
-                  </div>
-                  <p>{name.split(':')[0]}</p>
-                </button>
-              )}
-            </div>
-          ))}
+          {classes.map(({ name, classId, color }): ReactElement | undefined => {
+            const classCode = name.split(':')[0];
+            return (
+              <div key={name}>
+                {classId !== null && (
+                  <button
+                    type="button"
+                    className={styles.ClassItem}
+                    onClick={() => newGroup(classCode)}
+                  >
+                    <div className={styles.Color} style={{ backgroundColor: color }}>
+                      {' '}
+                    </div>
+                    <p>{classCode}</p>
+                  </button>
+                )}
+              </div>
+            );
+          })}
         </div>
       )}
     </div>
