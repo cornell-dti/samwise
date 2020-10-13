@@ -26,7 +26,7 @@ jobs:
           FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
         run: |
           ./node_modules/.bin/firebase use default
-          ./node_modules/.bin/firebase deploy --token=$FIREBASE_TOKEN --non-interactive --only hosting
+          ./node_modules/.bin/firebase deploy --token=$FIREBASE_TOKEN --non-interactive --only hosting,firestore:rules
       - name: Deploy Functions to Firebase Staging Project
         env:
           FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
