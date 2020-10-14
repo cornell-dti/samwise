@@ -1,6 +1,5 @@
 import React, { ReactElement, ChangeEvent, useState } from 'react';
 import Fuse from 'fuse.js';
-import { SamwiseUserProfile } from 'common/types/store-types';
 import { FuseItem } from '../SearchBox/types';
 import styles from '../GroupMemberListPicker/SearchGroupMember.module.scss';
 
@@ -8,7 +7,7 @@ type Props<T extends FuseItem> = {
   readonly fuse: Fuse<T>;
   readonly placeholder?: string;
   readonly inputClassname: string;
-  readonly assignedMember?: SamwiseUserProfile;
+  readonly onMemberChange: (member: string) => void;
 };
 
 type State<T> = {
@@ -20,7 +19,7 @@ const GroupMemberSearchBox = <T extends FuseItem>({
   placeholder,
   fuse,
   inputClassname,
-  assignedMember,
+  onMemberChange
 }: Props<T>): ReactElement => {
   const [{ searchInput, searchResults }, setState] = useState<State<T>>({
     searchInput: '',
@@ -42,13 +41,14 @@ const GroupMemberSearchBox = <T extends FuseItem>({
         value={searchInput}
         onChange={onSearchChange}
       />
-      {typeof assignedMember !== 'undefined' ? <li>{assignedMember.name}</li> :
-        <div>
-          {searchResults.map((item) => (
-            <li>{item.value}</li>
-          ))}
-        </div>
-      }
+      <div>
+        {searchResults.map((item) => (
+          <li>
+            <input onClick={() => onMemberChange(item.value)} type="checkbox" />
+            {item.value}
+          </li>
+        ))}
+      </div>
     </div>
   );
 };

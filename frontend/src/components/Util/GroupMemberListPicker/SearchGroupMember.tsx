@@ -12,7 +12,7 @@ type SimpleMember = {
 
 type Props = {
   readonly members: SamwiseUserProfile[];
-  readonly assignedMember?: SamwiseUserProfile;
+  readonly onMemberChange: (member: string) => void;
 };
 
 /**
@@ -46,7 +46,7 @@ const fuseConfigs = {
   distance: 100, // how close the match must be to the fuzzy location
 };
 
-export default function SearchGroupMember({ members, assignedMember }: Props): ReactElement | null {
+export default function SearchGroupMember({ members, onMemberChange }: Props): ReactElement | null {
   if (members === null) {
     return null;
   }
@@ -58,7 +58,7 @@ export default function SearchGroupMember({ members, assignedMember }: Props): R
         placeholder="assign to"
         inputClassname={styles.SearchInput}
         fuse={fuse}
-        assignedMember={assignedMember}
+        onMemberChange={onMemberChange}
       />
     </div>
   );

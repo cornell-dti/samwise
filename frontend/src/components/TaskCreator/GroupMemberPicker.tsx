@@ -1,31 +1,27 @@
 import React, { ReactElement, KeyboardEvent } from 'react';
-import { connect } from 'react-redux';
-import { NONE_TAG, NONE_TAG_ID } from 'common/util/tag-util';
-import { State, Tag, SamwiseUserProfile } from 'common/types/store-types';
+import { NONE_TAG } from 'common/util/tag-util';
+import { SamwiseUserProfile } from 'common/types/store-types';
 import SearchGroupMember from '../Util/GroupMemberListPicker/SearchGroupMember';
 import styles from './Picker.module.scss';
 import SamwiseIcon from '../UI/SamwiseIcon';
 
 type OwnProps = {
-  readonly tag: string;
+  readonly member: string;
   readonly opened: boolean;
   readonly onTagChange: (tag: string) => void;
   readonly onPickerOpened: () => void;
 };
 type Props = OwnProps & {
-  // subscribed from redux store.
-  readonly getTag: (id: string) => Tag;
-  readonly assignedMember?: SamwiseUserProfile;
+  readonly clearAssignedMember?: () => void;
   readonly groupMemberProfiles: SamwiseUserProfile[],
 };
 
-function GroupMemberPicker({
-  tag,
+export default function GroupMemberPicker({
+  member,
   opened,
   onTagChange,
   onPickerOpened,
-  getTag,
-  assignedMember,
+  clearAssignedMember,
   groupMemberProfiles
 }: Props): ReactElement {
   // Controllers
@@ -35,11 +31,13 @@ function GroupMemberPicker({
   const pressedPicker = (e: KeyboardEvent): void => {
     if (e.key === 'Enter' || e.key === ' ') onPickerOpened();
   };
-  const reset = (): void => onTagChange(NONE_TAG_ID);
+  const reset = (): void => {
+    onTagChange('');
+    if (clearAssignedMember) clearAssignedMember();
+  }
   // Nodes
   const displayedNode = (isDefault: boolean): ReactElement => {
-    const { name, color, classId } = getTag(tag);
-    const style = isDefault ? { background: NONE_TAG.color } : { background: color };
+    const style = { background: NONE_TAG.color };
     const internal = isDefault ? (
       <>
         <span className={styles.TagDisplay}>
@@ -49,7 +47,7 @@ function GroupMemberPicker({
       </>
     ) : (
         <>
-          <span className={styles.TagDisplay}>{classId != null ? name.split(':')[0] : name}</span>
+          <span className={styles.TagDisplay}>{member}</span>
           <button type="button" className={styles.ResetButton} onClick={reset}>
             &times;
         </button>
@@ -69,20 +67,15 @@ function GroupMemberPicker({
   };
   return (
     <div className={styles.Main}>
-      {displayedNode(tag === NONE_TAG_ID)}
+      {displayedNode(member === '')}
       {opened && (
         <div>
           <SearchGroupMember
             members={groupMemberProfiles}
-            assignedMember={assignedMember}
+            onMemberChange={onTagChange}
           />
         </div>
       )}
     </div>
   );
 }
-
-const Connected = connect(({ tags }: State) => ({
-  getTag: (id: string) => tags.get(id) ?? NONE_TAG,
-}))(GroupMemberPicker);
-export default Connected;

@@ -16,6 +16,7 @@ type SimpleTask = Omit<Task, 'type' | 'order' | 'children' | 'metadata'>;
 
 type State = SimpleTask & {
   readonly owner: string;
+  readonly member: string;
   readonly date: Date | RepeatingDate;
   readonly subTasks: SubTask[];
   readonly opened: boolean;
@@ -35,6 +36,7 @@ type Props = OwnProps & {
   readonly groupMemberProfiles?: SamwiseUserProfile[];
   readonly taskCreatorOpened?: boolean;
   readonly assignedMember?: SamwiseUserProfile;
+  readonly clearAssignedMember?: () => void;
 };
 
 /**
@@ -49,6 +51,7 @@ const initialState = (): State => ({
   owner: '',
   name: '',
   tag: NONE_TAG_ID, // the id of the None tag.
+  member: '',
   date: new Date(),
   complete: false,
   inFocus: false,
@@ -133,7 +136,7 @@ export class TaskCreator extends React.PureComponent<Props, State> {
     if (e != null) {
       e.preventDefault();
     }
-    const { owner, name, tag, date, complete, inFocus, subTasks } = this.state;
+    const { owner, name, tag, member, date, complete, inFocus, subTasks } = this.state;
     if (name === '') {
       return;
     }
@@ -205,6 +208,14 @@ export class TaskCreator extends React.PureComponent<Props, State> {
    */
   private editTag = (tag: string): void =>
     this.setState({ tag, tagPickerOpened: false }, this.focusTaskName);
+
+  /**
+   * Edit the member.
+   *
+   * @param {string} member the new member.
+   */
+  private editMember = (member: string): void =>
+    this.setState({ member, tagPickerOpened: false }, this.focusTaskName);
 
   /**
    * Edit the date.
@@ -341,12 +352,13 @@ export class TaskCreator extends React.PureComponent<Props, State> {
    */
   private renderOtherInfoEditor(): ReactElement | null {
     const { opened } = this.state;
-    const { view, groupMemberProfiles, taskCreatorOpened, assignedMember } = this.props;
+    const { view, groupMemberProfiles, taskCreatorOpened, assignedMember, clearAssignedMember } = this.props;
     if (!opened && !taskCreatorOpened) {
       return null;
     }
     const {
       tag,
+      member,
       date,
       inFocus,
       subTasks,
@@ -428,12 +440,12 @@ export class TaskCreator extends React.PureComponent<Props, State> {
               />
             ) : (
                 <GroupMemberPicker
-                  tag={tag}
+                  member={assignedMember ? assignedMember.name : member}
                   opened={tagPickerOpened}
-                  onTagChange={this.editTag}
+                  onTagChange={this.editMember}
                   onPickerOpened={this.openTagPicker}
-                  groupMemberProfiles={groupMemberProfiles}
-                  assignedMember={assignedMember}
+                  groupMemberProfiles={groupMemberProfiles || []}
+                  clearAssignedMember={clearAssignedMember}
                 />
               )}
           </div>

@@ -12,7 +12,7 @@ type State = {
 
 type Props = {
   readonly group: Group;
-  readonly groupMemberProfiles: readonly SamwiseUserProfile[],
+  readonly groupMemberProfiles: SamwiseUserProfile[],
 };
 
 const initialState = (): State => ({
@@ -35,6 +35,8 @@ export default class RightView extends React.PureComponent<Props, State> {
       assignedMember: member,
     }));
 
+  private clearAssignedMember = (): void => this.setState({ assignedMember: undefined });
+
   public render(): ReactElement {
     const { taskCreatorOpened, assignedMember } = this.state;
     const { group, groupMemberProfiles } = this.props;
@@ -47,6 +49,7 @@ export default class RightView extends React.PureComponent<Props, State> {
             groupMemberProfiles={groupMemberProfiles}
             taskCreatorOpened={taskCreatorOpened}
             assignedMember={assignedMember}
+            clearAssignedMember={this.clearAssignedMember}
           />
         </div>
 
