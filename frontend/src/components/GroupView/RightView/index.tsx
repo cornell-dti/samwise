@@ -1,4 +1,4 @@
-import React, { ReactElement } from 'react';
+import React, { ReactElement, useState } from 'react';
 import type { Group, SamwiseUserProfile } from 'common/types/store-types';
 import SamwiseIcon from '../../UI/SamwiseIcon';
 import GroupTaskRow from './GroupTaskRow';
@@ -15,10 +15,6 @@ type Props = {
   readonly groupMemberProfiles: SamwiseUserProfile[],
 };
 
-const initialState = (): State => ({
-  taskCreatorOpened: false
-});
-
 const EditGroupNameIcon = (): ReactElement => {
   const handler = (): void => {
     console.log('edit group');
@@ -26,45 +22,54 @@ const EditGroupNameIcon = (): ReactElement => {
   return <SamwiseIcon iconName="pencil" className={styles.EditGroupNameIcon} onClick={handler} />;
 };
 
-export default class RightView extends React.PureComponent<Props, State> {
-  public readonly state: State = initialState();
+const RightView = ({
+  group,
+  groupMemberProfiles,
+}: Props): ReactElement => {
+  const [{ taskCreatorOpened, assignedMember }, setState] = useState<State>({
+    taskCreatorOpened: false,
+    assignedMember: undefined,
+  });
 
-  private openTaskCreator = (member: SamwiseUserProfile): void =>
-    this.setState(({ taskCreatorOpened }: State) => ({
+  const openTaskCreator = (member: SamwiseUserProfile): void =>
+    setState({
       taskCreatorOpened: !taskCreatorOpened,
       assignedMember: member,
-    }));
+    });
 
-  private clearAssignedMember = (): void => this.setState({ assignedMember: undefined });
+  const clearAssignedMember = (): void => setState({ taskCreatorOpened, assignedMember: undefined });
 
-  public render(): ReactElement {
-    const { taskCreatorOpened, assignedMember } = this.state;
-    const { group, groupMemberProfiles } = this.props;
-    return (
+  return (
+    <div className={styles.RightView}>
+      <div className={styles.GroupTaskCreator}>
+        <TaskCreator
+          view="group"
+          group={group.name}
+          groupMemberProfiles={groupMemberProfiles}
+          taskCreatorOpened={taskCreatorOpened}
+          assignedMember={assignedMember}
+          clearAssignedMember={clearAssignedMember}
+        />
+      </div>
+
       <div className={styles.RightView}>
-        <div className={styles.GroupTaskCreator}>
-          <TaskCreator
-            view="group"
-            group={group.name}
-            groupMemberProfiles={groupMemberProfiles}
-            taskCreatorOpened={taskCreatorOpened}
-            assignedMember={assignedMember}
-            clearAssignedMember={this.clearAssignedMember}
-          />
+        <div>
+          <h2>{group.name}</h2>
+          <EditGroupNameIcon />
         </div>
-
-        <div className={styles.RightView}>
-          <div>
-            <h2>{group.name}</h2>
-            <EditGroupNameIcon />
-          </div>
-          <div className={styles.GroupTaskRowContainer}>
-            {groupMemberProfiles.map((samwiseUserProfile) => (
-              <GroupTaskRow onClick={this.openTaskCreator} memberName={samwiseUserProfile.name} userProfile={samwiseUserProfile} key={samwiseUserProfile.email} />
-            ))}
-          </div>
+        <div className={styles.GroupTaskRowContainer}>
+          {groupMemberProfiles.map((samwiseUserProfile) => (
+            <GroupTaskRow
+              onClick={openTaskCreator}
+              memberName={samwiseUserProfile.name}
+              userProfile={samwiseUserProfile}
+              key={samwiseUserProfile.email}
+            />
+          ))}
         </div>
       </div>
-    );
-  }
-}
+    </div>
+  );
+};
+
+export default RightView;
