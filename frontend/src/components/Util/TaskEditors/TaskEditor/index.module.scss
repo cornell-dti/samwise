@@ -11,7 +11,7 @@
   width: 100%;
   height: auto;
   color: white;
-  font-size: 12px;
+  font-size: 16px;
 }
 
 /*
@@ -44,8 +44,9 @@
 
 input.TaskEditorFlexibleInput,
 input.TaskEditorStrikethrough {
+  font: 1.15em 'Open Sans', sans-serif;
   flex: 1 1 auto;
-  margin-left: 0.5em;
+  margin-left: 1em;
   padding: 0.5em 0;
   border-radius: 0;
   background-color: transparent;
@@ -110,7 +111,7 @@ img.TaskEditorIcon:focus,
 
 .TaskEditorTag {
   margin-left: 0.5em;
-  font-size: 1em;
+  font: 1.3em 'Open Sans', sans-serif;
   padding: 5px;
   border-radius: 2px;
   color: white;
