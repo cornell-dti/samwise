@@ -53,6 +53,7 @@ type OwnProps = DefaultProps & {
   readonly actions: Actions; // The actions to perform under different events
   readonly calendarPosition: CalendarPosition;
   readonly isGroupTask?: boolean;
+  readonly memberName?: string; // only supplied if task is a group task
 };
 type Props = OwnProps & {
   // subscribed from redux store.
@@ -87,6 +88,7 @@ function TaskEditor({
   calendarPosition,
   settings,
   isGroupTask,
+  memberName,
 }: Props): ReactElement {
   const { onChange, removeTask, onSaveClicked } = actions;
   const {
@@ -287,6 +289,7 @@ function TaskEditor({
             needToBeFocused={subTaskToFocus === 'new-subtask'}
           />
         </div>
+        {isGroupTask ? <p className={styles.GroupMemberNameText}>@{memberName}</p> : null}
       </div>
       {type === 'MASTER_TEMPLATE' && (
         <div
