@@ -1,3 +1,12 @@
+.SettingsButtonContainer {
+  display: inline-block;
+
+  & button {
+    background: none;
+    cursor: pointer;
+  }
+}
+
 .CloseButton {
   position: absolute;
   top: 32px;
