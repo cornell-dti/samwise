@@ -71,8 +71,8 @@
   align-items: center;
 }
 
-.TagDisplay > span,
-.DateDisplay > span {
+.CenterIcon,
+.RepeatIcon {
   display: flex;
 }
 
@@ -82,7 +82,6 @@
 }
 
 .CenterIcon {
-  display: inline;
   color: black;
 }
 
