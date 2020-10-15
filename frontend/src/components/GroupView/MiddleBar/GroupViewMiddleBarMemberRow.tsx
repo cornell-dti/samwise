@@ -22,7 +22,7 @@ const Member = ({ memberName, profilePicURL }: Props): ReactElement => {
       <div className={styles.Plus}>
         <FontAwesomeIcon icon={faPlus} />
       </div>
-      <SamwiseIcon className={styles.MemberIcon} iconName="bell" />
+      <SamwiseIcon className={styles.MemberIcon} iconName="bell-outline" />
       <SamwiseIcon className={styles.MemberIcon} iconName="hug" />
     </div>
   );

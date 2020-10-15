@@ -52,6 +52,7 @@ type OwnProps = DefaultProps & {
   readonly subTasks: readonly SubTask[];
   readonly actions: Actions; // The actions to perform under different events
   readonly calendarPosition: CalendarPosition;
+  readonly isGroupTask?: boolean;
 };
 type Props = OwnProps & {
   // subscribed from redux store.
@@ -85,6 +86,7 @@ function TaskEditor({
   editorRef,
   calendarPosition,
   settings,
+  isGroupTask,
 }: Props): ReactElement {
   const { onChange, removeTask, onSaveClicked } = actions;
   const {
@@ -246,6 +248,7 @@ function TaskEditor({
           calendarPosition={calendarPosition}
           displayGrabber={displayGrabber == null ? false : displayGrabber}
           icalUID={canvasLinked ? icalUID : undefined}
+          isGroupTask={isGroupTask}
         />
         <MainTaskEditor
           id={id}
@@ -258,6 +261,7 @@ function TaskEditor({
           onChange={dispatchEditMainTask}
           onRemove={removeTask}
           onPressEnter={pressEnterHandler}
+          isGroupTask={isGroupTask}
         />
       </div>
       <div className={styles.TaskEditorSubTasksIndentedContainer}>
@@ -273,6 +277,7 @@ function TaskEditor({
             editThisSubTask={dispatchEditSubTask}
             removeSubTask={dispatchDeleteSubTask}
             onPressEnter={pressEnterHandler}
+            isGroupTask={isGroupTask}
           />
         ))}
         <div className={styles.SubtaskHide} style={active === true ? { maxHeight: 0 } : undefined}>

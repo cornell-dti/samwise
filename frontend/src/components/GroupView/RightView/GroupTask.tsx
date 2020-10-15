@@ -14,6 +14,7 @@ function GroupTask({ original }: Props): ReactElement {
       calendarPosition="bottom"
       original={original}
       filtered={original}
+      isGroupTask
     />
   );
 }

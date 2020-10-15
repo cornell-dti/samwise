@@ -8,7 +8,8 @@ import styles from './SamwiseIcon.module.scss';
 import {
   Alert,
   ArrowDownDark,
-  Bell,
+  BellOutline,
+  BellLight,
   CalendarDark,
   CalendarLight,
   CheckedDark,
@@ -71,9 +72,13 @@ const SamwiseIcon = ({
       svg = ArrowDownDark;
       altText = 'Forward/Backward';
       break;
-    case 'bell':
-      svg = Bell;
+    case 'bell-outline':
+      svg = BellOutline;
       altText = 'Nudge!';
+      break;
+    case 'bell-light':
+      svg = BellLight;
+      altText = 'Remove nudge';
       break;
     case 'calendar-dark':
       svg = CalendarDark;
