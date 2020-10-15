@@ -435,11 +435,11 @@ export default function DatePicker(props: Props): ReactElement {
             />
           )}
           {internalDate.type !== 'normal' && openedRepeat}
-          <p className={styles.NewTaskDateSave}>
-            <button type="button" onClick={onCancel}>
+          <p className={styles.NewTaskDateCancelSaveButtonsContainer}>
+            <button type="button" className={styles.NewTaskDateCancelButton} onClick={onCancel}>
               Cancel
             </button>
-            <button type="button" onClick={onSubmit}>
+            <button type="button" className={styles.NewTaskDateSaveButton} onClick={onSubmit}>
               Done
             </button>
           </p>
