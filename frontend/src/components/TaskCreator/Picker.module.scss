@@ -192,20 +192,22 @@
   color: rgba(150, 0, 0, 1);
 }
 
-.NewTaskDateSave {
+.NewTaskDateCancelSaveButtonsContainer {
   margin-top: 10px;
   margin-bottom: 0;
   text-align: right;
 }
 
-.NewTaskDateSave button {
+.NewTaskDateCancelButton {
   padding: 3px 10px;
   background: none;
   border-radius: 3px;
   border: none;
   cursor: pointer;
 }
-.NewTaskDateSave button:last-child {
+.NewTaskDateSaveButton {
+  @extend .NewTaskDateCancelButton;
+
   border: 1px black solid;
 }
 
