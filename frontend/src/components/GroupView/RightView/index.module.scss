@@ -10,8 +10,9 @@
   clear: both;
 }
 
-.EditGroupNameIcon :hover {
+.EditGroupNameIcon:hover {
   cursor: pointer;
+  opacity: 0.8;
 }
 
 .GroupTaskRowContainer {
