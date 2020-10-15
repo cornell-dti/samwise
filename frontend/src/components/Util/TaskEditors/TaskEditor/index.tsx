@@ -157,7 +157,7 @@ function TaskEditor({
   }, [date, diff, id, reset, taskAppearedDate, type]);
 
   const onMouseLeave = (): void => {
-    if (type === 'ONE_TIME') {
+    if (type !== 'MASTER_TEMPLATE') {
       onSave();
     }
     if (onBlur) {
