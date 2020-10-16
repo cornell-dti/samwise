@@ -1,0 +1,12 @@
+.DaysUntilDeadline {
+  width: 150px;
+  padding: 10px;
+  font-size: 18px;
+  text-align: center;
+}
+
+.BeforeDeadline {
+  font-size: 16px;
+  font-weight: 700;
+  color: #9b9b9b;
+}
