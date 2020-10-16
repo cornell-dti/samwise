@@ -17,13 +17,14 @@ type Props = TagAndDate & {
   readonly displayGrabber: boolean;
   readonly calendarPosition: CalendarPosition;
   readonly icalUID?: string;
+  readonly computedCalendarPos: any;
 };
 
 type EditorDisplayStatus = {
   readonly doesShowTagEditor: boolean;
   readonly doesShowDateEditor: boolean;
 };
-
+// const calendarComputedPosition = null;
 const calendarIconClass = [styles.TaskEditorIconButton, styles.TaskEditorIcon].join(' ');
 
 export default function EditorHeader({
@@ -34,6 +35,7 @@ export default function EditorHeader({
   displayGrabber,
   calendarPosition,
   icalUID,
+  computedCalendarPos,
 }: Props): ReactElement {
   const [editorDisplayStatus, setEditorDisplayStatus] = React.useState<EditorDisplayStatus>({
     doesShowTagEditor: false,
@@ -80,16 +82,31 @@ export default function EditorHeader({
     ) : (
       <span>Repeated</span>
     );
+
   const dateEditor = doesShowDateEditor && date instanceof Date && (
-    <Calendar
-      value={date}
-      className={
-        calendarPosition === 'top' ? styles.TaskEditorCalendarTop : styles.TaskEditorCalendarBottom
-      }
-      minDate={new Date()}
-      onChange={editTaskDate}
-      calendarType="US"
-    />
+    <div
+      style={{
+        position: 'fixed',
+        bottom: 452.48046875,
+        height: 223.57421875,
+        left: 967.59765625,
+        right: 1267.59765625,
+        top: 228.90625,
+        width: 300,
+      }}
+    >
+      <Calendar
+        value={date}
+        className={`${
+          calendarPosition === 'top'
+            ? styles.TaskEditorCalendarTop
+            : styles.TaskEditorCalendarBottom
+        } `}
+        minDate={new Date()}
+        onChange={editTaskDate}
+        calendarType="US"
+      />
+    </div>
   );
   const isCanvasTask = typeof icalUID === 'string' ? icalUID !== '' : false;
 

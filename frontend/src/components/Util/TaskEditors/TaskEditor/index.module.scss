@@ -204,3 +204,19 @@ img.TaskEditorIcon:focus,
   color: white;
   margin: 0 0.5em;
 }
+
+.calendarComputedPos {
+  position: fixed;
+  //bottom: 475.52734375px;
+  // height: 266.54296875,
+  // height: 300px;
+  left: 768.7890625px;
+  //right: 1068.7890625px;
+  top: 208.984375px;
+  width: 300px;
+  z-index: 10;
+}
+
+// className={`${
+//   calendarPosition === 'top' ? styles.TaskEditorCalendarTop : styles.TaskEditorCalendarBottom
+// } ${styles.calendarComputedPos}`}

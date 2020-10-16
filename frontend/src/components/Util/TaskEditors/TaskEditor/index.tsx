@@ -52,6 +52,7 @@ type OwnProps = DefaultProps & {
   readonly subTasks: readonly SubTask[];
   readonly actions: Actions; // The actions to perform under different events
   readonly calendarPosition: CalendarPosition;
+  readonly computedCalendarPos: any;
 };
 type Props = OwnProps & {
   // subscribed from redux store.
@@ -190,8 +191,10 @@ function TaskEditor({
    * @param caller the caller of the handler.
    */
   const pressEnterHandler = (caller: 'main-task' | number): void => {
+    // console.log(editorRef.current.getBoundingClientRect());
     const order = caller === 'main-task' ? -1 : caller;
     let focused = false;
+
     for (let i = 0; i < subTasks.length; i += 1) {
       const { order: subtaskOrder } = subTasks[i];
       if (subtaskOrder > order) {
@@ -246,6 +249,7 @@ function TaskEditor({
           calendarPosition={calendarPosition}
           displayGrabber={displayGrabber == null ? false : displayGrabber}
           icalUID={canvasLinked ? icalUID : undefined}
+          computedCalendarPos={editorRef}
         />
         <MainTaskEditor
           id={id}
