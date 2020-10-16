@@ -84,6 +84,19 @@ p.SettingsSectionTitle {
 
 */
 
+.ModalOptions {
+  text-align: right;
+  margin-right: 15vw;
+}
+
+.ModalOptions button {
+  white-space: nowrap;
+  color: #459ae5;
+  padding: 5px;
+  margin: 10px 10px 0 0;
+  cursor: pointer;
+}
+
 .TutorialImg {
   width: calc(100% - 120px);
   height: 100%;
@@ -134,19 +147,6 @@ p.SettingsSectionTitle {
 
 .ModalWrap h2 {
   padding-top: 20px;
-}
-
-.ModalOptions {
-  text-align: right;
-  margin-right: 15vw;
-}
-
-.ModalOptions button {
-  white-space: nowrap;
-  color: #459ae5;
-  padding: 5px;
-  margin: 10px 10px 0 0;
-  cursor: pointer;
 }
 
 .ImportExamContainer {

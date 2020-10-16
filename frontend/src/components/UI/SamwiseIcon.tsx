@@ -46,6 +46,7 @@ type Props = {
   readonly iconName: IconName;
   readonly title?: string;
   readonly className?: string;
+  readonly containerClassName?: string;
   readonly style?: CSSProperties;
   readonly tabIndex?: number;
   readonly onClick?: () => void;
@@ -54,6 +55,7 @@ type Props = {
 const SamwiseIcon = ({
   iconName,
   className,
+  containerClassName,
   style,
   tabIndex,
   title,
@@ -210,6 +212,7 @@ const SamwiseIcon = ({
   return (
     <span
       role="button"
+      className={containerClassName}
       title={title ?? altText}
       tabIndex={0}
       onClick={onClick}
