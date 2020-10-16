@@ -4,6 +4,7 @@ import SamwiseIcon from '../../UI/SamwiseIcon';
 import GroupTaskRow from './GroupTaskRow';
 import styles from './index.module.scss';
 import TaskCreator from '../../TaskCreator';
+import GroupTaskProgress from './GroupTaskProgress';
 
 type Props = {
   readonly group: Group;
@@ -43,6 +44,9 @@ const RightView = ({ group, groupMemberProfiles, tasks }: Props): ReactElement =
             );
           })}
         </div>
+      </div>
+      <div className={styles.GroupTaskProgress}>
+        <GroupTaskProgress tasks={tasks} deadline={group.deadline} />
       </div>
     </div>
   );
