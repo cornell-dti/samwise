@@ -1,6 +1,7 @@
 import { Task } from 'common/types/store-types';
 import React, { ReactElement } from 'react';
 import styles from './GroupTaskProgress.module.css';
+import { GroupDeadline, PeakingBear } from '../../../assets/assets-constants';
 
 type Props = {
   readonly tasks: readonly Task[];
@@ -21,7 +22,10 @@ const GroupTaskProgress = ({ tasks, deadline }: Props): ReactElement => {
       <div className={styles.DaysUntilDeadline}>
         {daysLeft} day{daysLeft === 1 ? '' : 's'}
         <br />
-        <span className={styles.BeforeDeadline}>before deadline</span>
+        <span className={styles.BeforeDeadlineText}>before deadline</span>
+      </div>
+      <div className={styles.Deadline}>
+        <img src={GroupDeadline} className={styles.DeadlineIcon} alt="group deadline" />
       </div>
     </div>
   );
