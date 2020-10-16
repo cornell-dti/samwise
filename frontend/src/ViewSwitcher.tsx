@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import type { Group, State } from 'common/types/store-types';
+import type { State } from 'common/types/store-types';
 import { useSelector } from 'react-redux';
 import SideBar from './components/SideBar';
 import PersonalView from './PersonalView';
@@ -10,20 +10,17 @@ import styles from './App.module.scss';
 const ViewSwitcher = (): React.ReactElement => {
   const groups = useSelector((state: State) => Array.from(state.groups.values()));
 
-  const [group, setGroup] = useState<Group | undefined>();
-
-  const changeView = (selectedGroupID?: string | undefined): void => {
-    setGroup(groups.find((oneGroup) => oneGroup.id === selectedGroupID));
-  };
+  const [selectedGroupID, setSelectedGroupID] = useState<string | undefined>();
+  const selectedGroup = groups.find((oneGroup) => oneGroup.id === selectedGroupID);
 
   return (
     <div className={styles.GroupScreen}>
-      <SideBar groups={groups} changeView={changeView} />
+      <SideBar groups={groups} changeView={setSelectedGroupID} />
       <div className={styles.GroupScreenContent}>
-        {group === undefined ? (
+        {selectedGroup === undefined ? (
           <PersonalView />
         ) : (
-          <GroupView group={group} changeView={changeView} />
+          <GroupView group={selectedGroup} changeView={setSelectedGroupID} />
         )}
       </div>
     </div>
