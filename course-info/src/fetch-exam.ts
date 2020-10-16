@@ -3,7 +3,7 @@ import { JSDOM } from 'jsdom';
 import { ExamInfo } from './types';
 
 const prelimUrl = 'https://registrar.cornell.edu/exams/fall-prelim-exam-schedule';
-const finalUrl = 'https://registrar.cornell.edu/calendars-exams/semifinal-exam-schedule';
+const semiFinalUrl = 'https://registrar.cornell.edu/calendars-exams/semifinal-exam-schedule';
 
 const currentYear = new Date().getFullYear();
 
@@ -33,7 +33,7 @@ function parsePrelimLine(line: string): ExamInfo {
   };
 }
 
-function parseFinalLine(line: string): ExamInfo {
+function parseSemiFinalLine(line: string): ExamInfo {
   // Adapted for FA20 semifinals.
   const segments = line.split(/\s+/);
   const subject = segments[0];
@@ -71,7 +71,7 @@ function parseFinalLine(line: string): ExamInfo {
   };
 }
 
-function getExamInfoList(rawText: string, isFinal: boolean): readonly ExamInfo[] {
+function getExamInfoList(rawText: string, isSemiFinal: boolean): readonly ExamInfo[] {
   const lines = rawText.split('\n');
   const infoList: ExamInfo[] = [];
   for (let i = 0; i < lines.length; i += 1) {
@@ -82,7 +82,7 @@ function getExamInfoList(rawText: string, isFinal: boolean): readonly ExamInfo[]
       !line.startsWith('final exam') &&
       !line.startsWith('Course')
     ) {
-      const info = isFinal ? parseFinalLine(line) : parsePrelimLine(line);
+      const info = isSemiFinal ? parseSemiFinalLine(line) : parsePrelimLine(line);
       infoList.push(info);
     }
   }
@@ -92,5 +92,6 @@ function getExamInfoList(rawText: string, isFinal: boolean): readonly ExamInfo[]
 const createJson = (url: string, isFinal: boolean): Promise<readonly ExamInfo[]> =>
   fetchExamText(url).then((rawText) => getExamInfoList(rawText, isFinal));
 
-export const createFinalJson = (): Promise<readonly ExamInfo[]> => createJson(finalUrl, true);
+export const createSemiFinalJson = (): Promise<readonly ExamInfo[]> =>
+  createJson(semiFinalUrl, true);
 export const createPrelimJson = (): Promise<readonly ExamInfo[]> => createJson(prelimUrl, false);
