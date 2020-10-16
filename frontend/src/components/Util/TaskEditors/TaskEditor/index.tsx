@@ -52,7 +52,7 @@ type OwnProps = DefaultProps & {
   readonly subTasks: readonly SubTask[];
   readonly actions: Actions; // The actions to perform under different events
   readonly calendarPosition: CalendarPosition;
-  readonly computedCalendarPos: any;
+  readonly computedCalendarPos: { current: HTMLFormElement | null };
 };
 type Props = OwnProps & {
   // subscribed from redux store.
@@ -192,6 +192,7 @@ function TaskEditor({
    */
   const pressEnterHandler = (caller: 'main-task' | number): void => {
     // console.log(editorRef.current.getBoundingClientRect());
+
     const order = caller === 'main-task' ? -1 : caller;
     let focused = false;
 

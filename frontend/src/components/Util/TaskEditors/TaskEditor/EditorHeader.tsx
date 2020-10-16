@@ -24,7 +24,7 @@ type EditorDisplayStatus = {
   readonly doesShowTagEditor: boolean;
   readonly doesShowDateEditor: boolean;
 };
-// const calendarComputedPosition = null;
+
 const calendarIconClass = [styles.TaskEditorIconButton, styles.TaskEditorIcon].join(' ');
 
 export default function EditorHeader({
@@ -85,15 +85,20 @@ export default function EditorHeader({
 
   const dateEditor = doesShowDateEditor && date instanceof Date && (
     <div
-      style={{
-        position: 'fixed',
-        bottom: 452.48046875,
-        height: 223.57421875,
-        left: 967.59765625,
-        right: 1267.59765625,
-        top: 228.90625,
-        width: 300,
-      }}
+      style={
+        !computedCalendarPos
+          ? {}
+          : {
+              position: 'fixed',
+              bottom: computedCalendarPos.current.getBoundingClientRect().bottom,
+              height: computedCalendarPos.current.getBoundingClientRect().height,
+              left: computedCalendarPos.current.getBoundingClientRect().left,
+              right: computedCalendarPos.current.getBoundingClientRect().right,
+              top: computedCalendarPos.current.getBoundingClientRect().top,
+              width: computedCalendarPos.current.getBoundingClientRect().width,
+              zIndex: 10,
+            }
+      }
     >
       <Calendar
         value={date}
