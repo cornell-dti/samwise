@@ -433,7 +433,12 @@ export const joinGroup = async (groupId: string, inviteID: string): Promise<void
 export const createGroup = (name: string, deadline: Date, classCode: string): void => {
   const { email } = getAppUser();
   // creator is the only member at first
-  const newGroup: FirestoreGroup = { name, deadline, classCode, members: [email] };
+  const newGroup: FirestoreGroup = {
+    name,
+    deadline: firestore.Timestamp.fromDate(deadline),
+    classCode,
+    members: [email],
+  };
   database.groupsCollection().doc().set(newGroup);
 };
 
