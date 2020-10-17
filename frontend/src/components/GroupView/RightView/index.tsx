@@ -18,14 +18,7 @@ type Props = {
   readonly tasks: readonly Task[];
 };
 
-const EditGroupNameIcon = (): ReactElement => {
-  const handler = (): void => {
-    console.log('edit group');
-  };
-  return <SamwiseIcon iconName="pencil" className={styles.EditGroupNameIcon} onClick={handler} />;
-};
-
-const RightView = ({ group, groupMemberProfiles }: Props): ReactElement => {
+const RightView = ({ group, groupMemberProfiles, tasks }: Props): ReactElement => {
   const [{ taskCreatorOpened, assignedMember }, setState] = useState<State>({
     taskCreatorOpened: false,
     assignedMember: undefined,
@@ -69,14 +62,16 @@ const RightView = ({ group, groupMemberProfiles }: Props): ReactElement => {
           />
         </div>
         <div className={styles.GroupTaskRowContainer}>
-          {groupMemberProfiles.map(({ name, photoURL, email }) => {
-            const filteredTasks = tasks.filter((t) => t.owner === email);
+          {groupMemberProfiles.map((user) => {
+            const filteredTasks = tasks.filter((t) => t.owner === user.email);
             return (
               <GroupTaskRow
+                key={user.email}
+                memberName={user.name}
+                userProfile={user}
+                onClick={openTaskCreator}
                 tasks={filteredTasks}
-                memberName={name}
-                profilePicURL={photoURL}
-                key={email}
+                profilePicURL={user.photoURL}
               />
             );
           })}

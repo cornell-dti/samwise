@@ -28,7 +28,6 @@ const GroupTaskRow = ({
   userProfile,
   onClick,
 }: Props): ReactElement => {
-  const initials = `${memberName.split(' ')[0].charAt(0)}${memberName.split(' ')[1].charAt(0)}`;
 
   return (
     <div className={styles.GroupTaskRow}>
