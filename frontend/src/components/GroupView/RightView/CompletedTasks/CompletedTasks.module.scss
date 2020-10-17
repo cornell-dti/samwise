@@ -1,3 +1,12 @@
+.CompletedTasksTitle {
+  font-weight: bold;
+  color: rgb(207, 207, 207);
+  font-size: 10px;
+  position: relative;
+  top: -20px;
+  margin: 0;
+}
+
 .CompletedTask,
 .AdditionalCompletedTask {
   display: flex;
@@ -35,5 +44,7 @@
 
 .CompletedTasksContainer {
   width: 270px;
-  margin-right: 14px;
+  margin-right: 22px;
+  position: relative;
+  top: -18px;
 }

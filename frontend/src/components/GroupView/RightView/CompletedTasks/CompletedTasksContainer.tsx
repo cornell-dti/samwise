@@ -40,8 +40,11 @@ function renderTaskList(list: readonly Task[]): ReactNode {
 
 function CompletedTasksContainer({ tasks }: Props): ReactElement {
   return (
-    <div className={styles.CompletedTasksContainer}>
-      {renderTaskList(tasks)}
+    <div>
+      <p className={styles.CompletedTasksTitle}>Completed</p>
+      <div className={styles.CompletedTasksContainer}>
+        {renderTaskList(tasks)}
+      </div>
     </div>
   );
 }
