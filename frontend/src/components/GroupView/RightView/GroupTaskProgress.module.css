@@ -6,7 +6,7 @@
   display: inline-block;
 }
 
-.BeforeDeadlineText {
+.GrayBoldText {
   font-size: 16px;
   font-weight: 700;
   color: #9b9b9b;
@@ -15,8 +15,45 @@
 .Deadline {
   display: inline-block;
   height: 100%;
+  font-size: 18px;
 }
 
 .DeadlineIcon {
+  margin: 0 auto;
+  height: 30px;
+}
+
+.DeadlineDate {
+  margin: 0;
+  text-align: center;
+}
+
+.GroupProgress {
+  width: 95%;
+  display: flex;
+}
+
+.NoTasks {
+  display: inline-block;
+  margin: auto;
+}
+
+.NoTasksText {
+  display: inline-block;
+  margin: 0;
+  font-size: 16px;
+}
+
+.NoTasksText > p {
+  margin: 5px 0;
+}
+
+.CreateTaskTextBottom {
+  font-weight: 700;
+}
+
+.PeakingBear {
+  display: inline-block;
   height: 100%;
+  margin: 0 60px;
 }
