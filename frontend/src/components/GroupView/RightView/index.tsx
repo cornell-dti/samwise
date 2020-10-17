@@ -8,11 +8,11 @@ import TaskCreator from '../../TaskCreator';
 type State = {
   readonly taskCreatorOpened: boolean;
   readonly assignedMember?: SamwiseUserProfile;
-}
+};
 
 type Props = {
   readonly group: Group;
-  readonly groupMemberProfiles: SamwiseUserProfile[],
+  readonly groupMemberProfiles: SamwiseUserProfile[];
 };
 
 const EditGroupNameIcon = (): ReactElement => {
@@ -22,10 +22,7 @@ const EditGroupNameIcon = (): ReactElement => {
   return <SamwiseIcon iconName="pencil" className={styles.EditGroupNameIcon} onClick={handler} />;
 };
 
-const RightView = ({
-  group,
-  groupMemberProfiles,
-}: Props): ReactElement => {
+const RightView = ({ group, groupMemberProfiles }: Props): ReactElement => {
   const [{ taskCreatorOpened, assignedMember }, setState] = useState<State>({
     taskCreatorOpened: false,
     assignedMember: undefined,
@@ -37,7 +34,8 @@ const RightView = ({
       assignedMember: member,
     });
 
-  const clearAssignedMember = (): void => setState({ taskCreatorOpened, assignedMember: undefined });
+  const clearAssignedMember = (): void =>
+    setState({ taskCreatorOpened, assignedMember: undefined });
 
   return (
     <div className={styles.RightView}>

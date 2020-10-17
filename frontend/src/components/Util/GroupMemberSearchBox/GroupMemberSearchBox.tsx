@@ -19,7 +19,7 @@ const GroupMemberSearchBox = <T extends FuseItem>({
   placeholder,
   fuse,
   inputClassname,
-  onMemberChange
+  onMemberChange,
 }: Props<T>): ReactElement => {
   const [{ searchInput, searchResults }, setState] = useState<State<T>>({
     searchInput: '',

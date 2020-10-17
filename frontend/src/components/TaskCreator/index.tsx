@@ -1,7 +1,14 @@
 import React, { CSSProperties, KeyboardEvent, SyntheticEvent, ReactElement } from 'react';
 import { connect } from 'react-redux';
 import { randomId } from 'common/util/general-util';
-import { Task, RepeatingDate, SamwiseUserProfile, SubTask, State as StoreState, Theme } from 'common/types/store-types';
+import {
+  Task,
+  RepeatingDate,
+  SamwiseUserProfile,
+  SubTask,
+  State as StoreState,
+  Theme,
+} from 'common/types/store-types';
 import { NONE_TAG_ID } from 'common/util/tag-util';
 import { isToday } from 'common/util/datetime-util';
 import TagPicker from './TagPicker';
@@ -352,7 +359,13 @@ export class TaskCreator extends React.PureComponent<Props, State> {
    */
   private renderOtherInfoEditor(): ReactElement | null {
     const { opened } = this.state;
-    const { view, groupMemberProfiles, taskCreatorOpened, assignedMember, clearAssignedMember } = this.props;
+    const {
+      view,
+      groupMemberProfiles,
+      taskCreatorOpened,
+      assignedMember,
+      clearAssignedMember,
+    } = this.props;
     if (!opened && !taskCreatorOpened) {
       return null;
     }
@@ -439,15 +452,15 @@ export class TaskCreator extends React.PureComponent<Props, State> {
                 onPickerOpened={this.openTagPicker}
               />
             ) : (
-                <GroupMemberPicker
-                  member={assignedMember ? assignedMember.name : member}
-                  opened={tagPickerOpened}
-                  onTagChange={this.editMember}
-                  onPickerOpened={this.openTagPicker}
-                  groupMemberProfiles={groupMemberProfiles || []}
-                  clearAssignedMember={clearAssignedMember}
-                />
-              )}
+              <GroupMemberPicker
+                member={assignedMember ? assignedMember.name : member}
+                opened={tagPickerOpened}
+                onTagChange={this.editMember}
+                onPickerOpened={this.openTagPicker}
+                groupMemberProfiles={groupMemberProfiles || []}
+                clearAssignedMember={clearAssignedMember}
+              />
+            )}
           </div>
           <DatePicker
             date={date}

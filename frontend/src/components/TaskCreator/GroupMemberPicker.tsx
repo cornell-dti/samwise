@@ -13,7 +13,7 @@ type OwnProps = {
 };
 type Props = OwnProps & {
   readonly clearAssignedMember?: () => void;
-  readonly groupMemberProfiles: SamwiseUserProfile[],
+  readonly groupMemberProfiles: SamwiseUserProfile[];
 };
 
 export default function GroupMemberPicker({
@@ -22,7 +22,7 @@ export default function GroupMemberPicker({
   onTagChange,
   onPickerOpened,
   clearAssignedMember,
-  groupMemberProfiles
+  groupMemberProfiles,
 }: Props): ReactElement {
   // Controllers
   const clickPicker = (): void => {
@@ -34,7 +34,7 @@ export default function GroupMemberPicker({
   const reset = (): void => {
     onTagChange('');
     if (clearAssignedMember) clearAssignedMember();
-  }
+  };
   // Nodes
   const displayedNode = (isDefault: boolean): ReactElement => {
     const style = { background: NONE_TAG.color };
@@ -46,13 +46,13 @@ export default function GroupMemberPicker({
         </span>
       </>
     ) : (
-        <>
-          <span className={styles.TagDisplay}>{member}</span>
-          <button type="button" className={styles.ResetButton} onClick={reset}>
-            &times;
+      <>
+        <span className={styles.TagDisplay}>{member}</span>
+        <button type="button" className={styles.ResetButton} onClick={reset}>
+          &times;
         </button>
-        </>
-      );
+      </>
+    );
     return (
       <span
         role="presentation"
@@ -70,10 +70,7 @@ export default function GroupMemberPicker({
       {displayedNode(member === '')}
       {opened && (
         <div>
-          <SearchGroupMember
-            members={groupMemberProfiles}
-            onMemberChange={onTagChange}
-          />
+          <SearchGroupMember members={groupMemberProfiles} onMemberChange={onTagChange} />
         </div>
       )}
     </div>

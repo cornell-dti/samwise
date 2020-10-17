@@ -5,7 +5,6 @@ import type { SamwiseUserProfile } from 'common/types/store-types';
 import GroupTasksContainer from './GroupTasksContainer';
 import styles from './GroupTaskRow.module.scss';
 
-
 type Props = {
   readonly memberName: string;
   readonly userProfile: SamwiseUserProfile;
