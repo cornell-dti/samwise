@@ -12,6 +12,7 @@ function renderTaskList(completedTasks: readonly Task[]): ReactNode {
   if (completedTasks.length <= 3) {
     const taskBars = completedTasks.slice(0, completedTasks.length).map((task) =>
       <CompletedTask
+        key={task.id}
         original={task}
         completedTaskCount={completedTasks.length}
         overflow={false}
@@ -22,12 +23,14 @@ function renderTaskList(completedTasks: readonly Task[]): ReactNode {
   // how many more tasks are complete
   const taskBars = completedTasks.slice(0, 2).map((task) =>
     <CompletedTask
+      key={task.id}
       original={task}
       completedTaskCount={completedTasks.length}
       overflow={false}
     />);
   const bottomTaskBar =
     <CompletedTask
+      key={completedTasks[2].id}
       original={completedTasks[2]}
       completedTaskCount={completedTasks.length}
       overflow={completedTasks.length > 3}
