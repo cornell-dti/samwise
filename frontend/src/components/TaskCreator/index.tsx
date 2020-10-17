@@ -143,7 +143,7 @@ export class TaskCreator extends React.PureComponent<Props, State> {
     if (e != null) {
       e.preventDefault();
     }
-    const { owner, name, tag, member, date, complete, inFocus, subTasks } = this.state;
+    const { owner, name, tag, date, complete, inFocus, subTasks } = this.state;
     if (name === '') {
       return;
     }
