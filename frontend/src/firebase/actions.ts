@@ -648,7 +648,20 @@ export const importCourseExams = (): void => {
     }
     allCoursesWithId.forEach((course: Course) => {
       course.examTimes.forEach(({ type, time }) => {
-        const courseType = type === 'final' ? 'Final' : 'Prelim';
+        let courseType: string;
+        switch (type) {
+          case 'final':
+            courseType = 'Final';
+            break;
+          case 'prelim':
+            courseType = 'Prelim';
+            break;
+          case 'semifinal':
+            courseType = 'Semifinal';
+            break;
+          default:
+            throw new Error('Undefined course exam type');
+        }
         const examName = `${course.subject} ${course.courseNumber} ${courseType}`;
         const t = new Date(time);
         const filter = (task: Task): boolean => {
