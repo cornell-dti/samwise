@@ -191,8 +191,6 @@ function TaskEditor({
    * @param caller the caller of the handler.
    */
   const pressEnterHandler = (caller: 'main-task' | number): void => {
-    // console.log(editorRef.current.getBoundingClientRect());
-
     const order = caller === 'main-task' ? -1 : caller;
     let focused = false;
 

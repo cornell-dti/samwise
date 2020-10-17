@@ -83,19 +83,20 @@ export default function EditorHeader({
       <span>Repeated</span>
     );
 
+  const editorRefPos = editorRef?.current?.getBoundingClientRect();
   const dateEditor = doesShowDateEditor && date instanceof Date && (
     <div
       style={
-        !editorRef
+        !editorRefPos
           ? {}
           : {
               position: 'fixed',
-              bottom: editorRef.current.getBoundingClientRect().bottom,
-              height: editorRef.current.getBoundingClientRect().height,
-              left: editorRef.current.getBoundingClientRect().left,
-              right: editorRef.current.getBoundingClientRect().right,
-              top: editorRef.current.getBoundingClientRect().top,
-              width: editorRef.current.getBoundingClientRect().width,
+              bottom: editorRefPos.bottom,
+              height: editorRefPos.height,
+              left: editorRefPos.left,
+              right: editorRefPos.right,
+              top: editorRefPos.top,
+              width: editorRefPos.width,
               zIndex: 10,
             }
       }
