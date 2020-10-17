@@ -5,6 +5,7 @@ import { Task } from 'common/types/store-types';
 import GroupTasksContainer from './GroupTasksContainer';
 import styles from './GroupTaskRow.module.scss';
 import ProfileImage from '../MiddleBar/ProfileImage';
+import CompletedTasksContainer from './CompletedTasks/CompletedTasksContainer'
 
 type Props = {
   readonly memberName: string;
@@ -44,6 +45,7 @@ const GroupTaskRow = ({ tasks, memberName, profilePicURL }: Props): ReactElement
         </div>
       </button>
 
+      <CompletedTasksContainer tasks={tasks} />
       <GroupTasksContainer tasks={tasks} />
     </div>
   );

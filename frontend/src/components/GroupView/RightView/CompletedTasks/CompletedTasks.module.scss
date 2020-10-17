@@ -1,0 +1,27 @@
+.CompletedTask,
+.AdditionalCompletedTask {
+  list-style-type:none;
+  width: 100%;
+  background: lightseagreen;
+  color: white;
+  padding: 6px 8px;
+  margin-bottom: 12px;
+  display: flex;
+  justify-content: space-between;
+}
+
+.AdditionalCompletedTask {
+  font-weight: bold;
+}
+
+.GrabberIcon {
+  cursor: pointer;
+  width: 20px;
+  height: 20px;
+}
+
+.CompletedTasksContainer {
+  width: 250px;
+  margin-right: 14px;
+  background: lightsalmon;
+}
