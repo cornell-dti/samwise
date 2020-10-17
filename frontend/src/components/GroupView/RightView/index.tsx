@@ -1,9 +1,11 @@
 import React, { ReactElement, useState } from 'react';
-import type { Group, SamwiseUserProfile } from 'common/types/store-types';
+import type { Group, SamwiseUserProfile, Task } from 'common/types/store-types';
 import SamwiseIcon from '../../UI/SamwiseIcon';
 import GroupTaskRow from './GroupTaskRow';
 import styles from './index.module.scss';
 import TaskCreator from '../../TaskCreator';
+import { promptTextInput } from '../../Util/Modals';
+import { updateGroup } from '../../../firebase/actions';
 
 type State = {
   readonly taskCreatorOpened: boolean;
@@ -13,6 +15,7 @@ type State = {
 type Props = {
   readonly group: Group;
   readonly groupMemberProfiles: SamwiseUserProfile[];
+  readonly tasks: readonly Task[];
 };
 
 const EditGroupNameIcon = (): ReactElement => {
@@ -27,6 +30,12 @@ const RightView = ({ group, groupMemberProfiles }: Props): ReactElement => {
     taskCreatorOpened: false,
     assignedMember: undefined,
   });
+    
+  const onEditGroupNameClicked = (): void => {
+    promptTextInput('Edit your group name', '', 'New Group Name', 'Submit', 'text').then((name) =>
+      updateGroup({ ...group, name })
+    );
+  };
 
   const openTaskCreator = (member: SamwiseUserProfile): void =>
     setState({
@@ -53,17 +62,24 @@ const RightView = ({ group, groupMemberProfiles }: Props): ReactElement => {
       <div className={styles.RightView}>
         <div>
           <h2>{group.name}</h2>
-          <EditGroupNameIcon />
+          <SamwiseIcon
+            iconName="pencil"
+            className={styles.EditGroupNameIcon}
+            onClick={onEditGroupNameClicked}
+          />
         </div>
         <div className={styles.GroupTaskRowContainer}>
-          {groupMemberProfiles.map((samwiseUserProfile) => (
-            <GroupTaskRow
-              onClick={openTaskCreator}
-              memberName={samwiseUserProfile.name}
-              userProfile={samwiseUserProfile}
-              key={samwiseUserProfile.email}
-            />
-          ))}
+          {groupMemberProfiles.map(({ name, photoURL, email }) => {
+            const filteredTasks = tasks.filter((t) => t.owner === email);
+            return (
+              <GroupTaskRow
+                tasks={filteredTasks}
+                memberName={name}
+                profilePicURL={photoURL}
+                key={email}
+              />
+            );
+          })}
         </div>
       </div>
     </div>

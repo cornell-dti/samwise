@@ -157,7 +157,7 @@ function TaskEditor({
   }, [date, diff, id, reset, taskAppearedDate, type]);
 
   const onMouseLeave = (): void => {
-    if (type === 'ONE_TIME') {
+    if (type !== 'MASTER_TEMPLATE') {
       onSave();
     }
     if (onBlur) {
@@ -283,7 +283,7 @@ function TaskEditor({
           />
         </div>
       </div>
-      {type !== 'ONE_TIME' && (
+      {type === 'MASTER_TEMPLATE' && (
         <div
           className={styles.SaveButtonRow}
           style={diffIsEmpty(diff) ? { maxHeight: 0, padding: 0 } : undefined}
