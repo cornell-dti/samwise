@@ -10,7 +10,7 @@ export default function SettingsButton(): ReactElement {
   const closeModal = (): void => setShowSettings(false);
 
   return (
-    <div style={{ display: 'inline-block' }}>
+    <div className={styles.SettingsButtonContainer}>
       <button type="submit" onClick={displayModal} className={styles.SettingsButton}>
         <p style={{ transform: 'scale(2)translateY(-5px)' }} title="Settings Button">
           <SamwiseIcon iconName="settings" />

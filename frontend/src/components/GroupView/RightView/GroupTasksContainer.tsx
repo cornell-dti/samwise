@@ -5,6 +5,7 @@ import GroupTask from './GroupTask';
 
 type Props = {
   readonly tasks: readonly Task[];
+  readonly memberName: string;
 };
 
 type IdOrder = {
@@ -12,12 +13,12 @@ type IdOrder = {
   readonly order: number;
 };
 
-function renderTaskList(list: readonly Task[]): ReactNode {
-  return list.map((item) => <GroupTask key={item.id} original={item} />);
+function renderTaskList(list: readonly Task[], memberName: string): ReactNode {
+  return list.map((item) => <GroupTask key={item.id} original={item} memberName={memberName} />);
 }
 
-function GroupTasksContainer({ tasks }: Props): ReactElement {
-  return <div className={styles.GroupTasksContainer}>{renderTaskList(tasks)}</div>;
+function GroupTasksContainer({ tasks, memberName }: Props): ReactElement {
+  return <div className={styles.GroupTasksContainer}>{renderTaskList(tasks, memberName)}</div>;
 }
 
 export default GroupTasksContainer;

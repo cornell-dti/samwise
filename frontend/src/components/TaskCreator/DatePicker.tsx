@@ -114,7 +114,7 @@ export default function DatePicker(props: Props): ReactElement {
     const internal = isDefault ? (
       <>
         <span className={styles.DateDisplay}>
-          <SamwiseIcon iconName="calendar-light" className={styles.CenterIcon} />
+          <SamwiseIcon iconName="calendar-light" containerClassName={styles.CenterIcon} />
           &nbsp;add date&nbsp;
         </span>
       </>
@@ -122,7 +122,7 @@ export default function DatePicker(props: Props): ReactElement {
       <>
         <span className={styles.DateDisplay}>
           {!(date instanceof Date) && (
-            <SamwiseIcon iconName="repeat" className={dateStyles.RepeatIcon} />
+            <SamwiseIcon iconName="repeat" containerClassName={dateStyles.RepeatIcon} />
           )}
           {date instanceof Date ? date2String(date) : ` ${genNextValidDay(date.pattern.bitSet)}`}
         </span>
@@ -435,11 +435,11 @@ export default function DatePicker(props: Props): ReactElement {
             />
           )}
           {internalDate.type !== 'normal' && openedRepeat}
-          <p className={styles.NewTaskDateSave}>
-            <button type="button" onClick={onCancel}>
+          <p className={styles.NewTaskDateCancelSaveButtonsContainer}>
+            <button type="button" className={styles.NewTaskDateCancelButton} onClick={onCancel}>
               Cancel
             </button>
-            <button type="button" onClick={onSubmit}>
+            <button type="button" className={styles.NewTaskDateSaveButton} onClick={onSubmit}>
               Done
             </button>
           </p>

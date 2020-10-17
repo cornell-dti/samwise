@@ -7,8 +7,14 @@
 }
 
 .ClassItem {
+  background: none;
+  border-radius: 0 !important;
   display: flex;
-  padding: 0 0.5em;
+  font-size: 100%;
+  height: 34px !important;
+  margin: 0 !important;
+  padding-left: 10px;
+  width: 100% !important;
 }
 
 .ClassItem:first-of-type {
@@ -32,6 +38,7 @@
   border-radius: 50%;
   background-color: skyblue;
   position: relative;
+  margin-right: 8px;
   top: 5px;
 }
 

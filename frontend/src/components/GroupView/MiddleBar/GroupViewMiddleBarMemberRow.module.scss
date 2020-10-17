@@ -5,17 +5,6 @@
   line-height: 40px;
 }
 
-.Initials {
-  height: 40px;
-  width: 40px;
-  border-radius: 50%;
-  background-color: #d7b6dc;
-  text-align: center;
-  font-size: 16px;
-  line-height: 40px;
-  color: white;
-}
-
 .Member p {
   font-size: 16px;
   color: #3d3d3d;
@@ -23,6 +12,11 @@
   margin: 0 1em;
   overflow-x: hidden;
   overflow-y: hidden;
+}
+
+.MemberProfilePic {
+  width: 40px;
+  height: 40px;
 }
 
 .MemberIcon {

@@ -1,14 +1,19 @@
-import React from 'react';
+import React, { ReactElement } from 'react';
 import { Tag } from 'common/types/store-types';
 import { store } from '../../store/store';
 import styles from './AddGroupTags.module.scss';
+import { createGroup } from '../../firebase/actions';
 
 type AddGroupTagsProps = {
   readonly show: boolean;
   readonly setShow: (show: boolean) => void;
 };
 
-export default function AddGroupTags({ show, setShow }: AddGroupTagsProps): React.ReactElement {
+function newGroup(classCode: string): void {
+  createGroup(`New ${classCode} Group`, new Date(), classCode);
+}
+
+export default function AddGroupTags({ show, setShow }: AddGroupTagsProps): ReactElement {
   const { tags } = store.getState();
   const classes: Tag[] = [];
   tags.forEach((t: Tag) => {
@@ -25,18 +30,25 @@ export default function AddGroupTags({ show, setShow }: AddGroupTagsProps): Reac
           onMouseEnter={() => setShow(true)}
           onMouseLeave={() => setShow(false)}
         >
-          {classes.map((t): React.ReactElement | undefined => (
-            <div key={t.name}>
-              {t.classId !== null && (
-                <div className={styles.ClassItem}>
-                  <div className={styles.Color} style={{ backgroundColor: t.color }}>
-                    {' '}
-                  </div>
-                  <p>{t.name.split(':')[0]}</p>
-                </div>
-              )}
-            </div>
-          ))}
+          {classes.map(({ name, classId, color }): ReactElement | undefined => {
+            const classCode = name.split(':')[0];
+            return (
+              <div key={name}>
+                {classId !== null && (
+                  <button
+                    type="button"
+                    className={styles.ClassItem}
+                    onClick={() => newGroup(classCode)}
+                  >
+                    <div className={styles.Color} style={{ backgroundColor: color }}>
+                      {' '}
+                    </div>
+                    <p>{classCode}</p>
+                  </button>
+                )}
+              </div>
+            );
+          })}
         </div>
       )}
     </div>

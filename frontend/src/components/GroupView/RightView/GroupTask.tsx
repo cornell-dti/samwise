@@ -5,15 +5,17 @@ import styles from './GroupTask.module.scss';
 
 type Props = {
   readonly original: Task;
+  readonly memberName: string;
 };
 
-function GroupTask({ original }: Props): ReactElement {
+function GroupTask({ original, memberName }: Props): ReactElement {
   return (
     <InlineTaskEditor
       className={styles.GroupTask}
       calendarPosition="bottom"
       original={original}
       filtered={original}
+      memberName={memberName}
     />
   );
 }

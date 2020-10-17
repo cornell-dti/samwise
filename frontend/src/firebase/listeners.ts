@@ -263,9 +263,9 @@ const initializeFirebaseListeners = (onFirstFetched: () => void): (() => void) =
       } else {
         const { name, members, deadline, classCode } = doc.data() as FirestoreGroup;
         if (type === 'added') {
-          created.push({ id, name, members, deadline, classCode });
+          created.push({ id, name, members, deadline: deadline.toDate(), classCode });
         } else {
-          edited.push({ id, name, members, deadline, classCode });
+          edited.push({ id, name, members, deadline: deadline.toDate(), classCode });
         }
       }
     });

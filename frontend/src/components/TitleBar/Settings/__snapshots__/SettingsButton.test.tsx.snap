@@ -2,11 +2,7 @@
 
 exports[`SettingsButton matches snapshot. 1`] = `
 <div
-  style={
-    Object {
-      "display": "inline-block",
-    }
-  }
+  className="SettingsButtonContainer"
 >
   <button
     className="SettingsButton"

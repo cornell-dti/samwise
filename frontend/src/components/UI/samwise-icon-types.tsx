@@ -2,7 +2,8 @@
 export type IconName =
   | 'alert'
   | 'arrow-down-dark'
-  | 'bell'
+  | 'bell-outline'
+  | 'bell-light'
   | 'calendar-dark'
   | 'calendar-light'
   | 'checked-dark'

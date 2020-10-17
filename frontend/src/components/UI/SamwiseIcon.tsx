@@ -8,7 +8,8 @@ import styles from './SamwiseIcon.module.scss';
 import {
   Alert,
   ArrowDownDark,
-  Bell,
+  BellOutline,
+  BellLight,
   CalendarDark,
   CalendarLight,
   CheckedDark,
@@ -45,6 +46,7 @@ type Props = {
   readonly iconName: IconName;
   readonly title?: string;
   readonly className?: string;
+  readonly containerClassName?: string;
   readonly style?: CSSProperties;
   readonly tabIndex?: number;
   readonly onClick?: () => void;
@@ -53,6 +55,7 @@ type Props = {
 const SamwiseIcon = ({
   iconName,
   className,
+  containerClassName,
   style,
   tabIndex,
   title,
@@ -71,9 +74,13 @@ const SamwiseIcon = ({
       svg = ArrowDownDark;
       altText = 'Forward/Backward';
       break;
-    case 'bell':
-      svg = Bell;
+    case 'bell-outline':
+      svg = BellOutline;
       altText = 'Nudge!';
+      break;
+    case 'bell-light':
+      svg = BellLight;
+      altText = 'Remove nudge';
       break;
     case 'calendar-dark':
       svg = CalendarDark;
@@ -205,6 +212,7 @@ const SamwiseIcon = ({
   return (
     <span
       role="button"
+      className={containerClassName}
       title={title ?? altText}
       tabIndex={0}
       onClick={onClick}
