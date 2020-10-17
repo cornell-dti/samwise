@@ -45,11 +45,18 @@ const GroupTaskProgress = ({ tasks, deadline }: Props): ReactElement => {
     'Nov',
     'Dec',
   ];
+
+  const convertToUTC = (date: Date): Date => {
+    const ans = new Date(date);
+    ans.setMinutes(ans.getMinutes() - ans.getTimezoneOffset());
+    return ans;
+  };
+
   const oneDay: number = 1000 * 60 * 60 * 24;
   // Always round down the number of days left. i.e. if the number of hours
   // left is <24 just say there are 0 days left
   const daysLeft: number = Math.floor(
-    Math.max((deadline.getTime() - new Date().getTime()) / oneDay, 0)
+    Math.max((convertToUTC(deadline).getTime() - convertToUTC(new Date()).getTime()) / oneDay, 0)
   );
   return (
     <div className={styles.GroupProgress}>
