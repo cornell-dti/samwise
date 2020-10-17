@@ -1,6 +1,6 @@
 .DaysUntilDeadline {
-  width: 150px;
-  padding: 10px;
+  width: 120px;
+  margin: 0 20px;
   font-size: 18px;
   text-align: center;
   display: inline-block;
@@ -16,11 +16,14 @@
   display: inline-block;
   height: 100%;
   font-size: 18px;
+  margin: 0 20px;
+  width: 80px;
 }
 
 .DeadlineIcon {
-  margin: 0 auto;
+  margin: 5px auto;
   height: 30px;
+  display: block;
 }
 
 .DeadlineDate {
@@ -56,4 +59,34 @@
   display: inline-block;
   height: 100%;
   margin: 0 60px;
+}
+
+.ProgressBubble {
+  /* doing it this way to make transitions easier later */
+  background-image: linear-gradient(to right, #f4f4f4 50%, #81ebcb 50%);
+  background-position: 0;
+  background-size: 200%;
+  display: inline-block;
+  height: 20px;
+  border-radius: 10px;
+  flex: 1 1 100%;
+  margin: auto 0;
+  margin-right: 10px;
+}
+
+.ProgressDiv {
+  flex: 1 1 100%;
+  display: flex;
+}
+
+.ProgressDiv > .ProgressBubble:last-child {
+  margin-right: 0;
+}
+
+.CompleteBubble {
+  background-position: 100%;
+}
+
+.IncompleteBubble {
+  background-position: 0%;
 }

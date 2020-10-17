@@ -11,6 +11,7 @@ import {
   TaskMetadata,
   RepeatingTaskMetadata,
   OneTimeTaskMetadata,
+  Group,
 } from 'common/types/store-types';
 import { error, ignore } from 'common/util/general-util';
 import {
@@ -460,6 +461,10 @@ export const leaveGroup = async (groupID: string): Promise<void> => {
   } else {
     await groupDoc.update({ members: newMembers });
   }
+};
+
+export const updateGroup = async ({ id, ...groupInformation }: Group): Promise<void> => {
+  await database.groupsCollection().doc(id).update(groupInformation);
 };
 
 /**

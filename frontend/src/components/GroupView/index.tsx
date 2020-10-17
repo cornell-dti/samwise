@@ -24,11 +24,13 @@ const useGroupMemberProfiles = (
     {}
   );
 
+  const connectedGroupMemberEmail = groupMemberEmails.join(',');
+
   useEffect(() => {
     // When we are reaching this line, it either means that we are running the effect for the first
     // time, or because the group member list has changed, so we have to invalidate the cache.
     setEmailProfileMapping({});
-    const unsubscribers = groupMemberEmails.map((groupMemberEmail) =>
+    const unsubscribers = connectedGroupMemberEmail.split(',').map((groupMemberEmail) =>
       database
         .usersCollection()
         .doc(groupMemberEmail)
@@ -40,7 +42,7 @@ const useGroupMemberProfiles = (
         })
     );
     return () => unsubscribers.forEach((unsubscriber) => unsubscriber());
-  }, [groupMemberEmails]);
+  }, [connectedGroupMemberEmail]);
 
   const profiles = Object.entries(emailProfileMapping).map(([email, namePhoto]) => ({
     email,
@@ -54,38 +56,45 @@ const useGroupMemberProfiles = (
 
 const GroupView = ({ group, changeView }: Props): ReactElement => {
   const [groupTaskArray, setGroupTaskArray] = useState<Task[]>([]);
+  const [showBar, setShowBar] = useState<boolean>(false);
+  const groupID = group.id;
   useEffect(() => {
     database
       .tasksCollection()
       .where('type', '==', 'GROUP')
-      .where('group', '==', group.id)
-      .onSnapshot((s) => {
-        setGroupTaskArray([]);
+      .where('group', '==', groupID)
+      .onSnapshot((snapshot) => {
+        setShowBar(snapshot.docs.length > 0);
         // this is problematic because it does not account for subtasks yet
-        s.forEach((docSnapshot) => {
-          const docData = docSnapshot.data();
-          const task = {
-            ...docData,
-            id: docSnapshot.id,
-            metadata: {
-              type: 'GROUP',
-              date: docData.date.toDate(),
-              group: docData.group,
-            } as GroupTaskMetadata,
-            children: [] as readonly SubTask[],
-          } as Task;
-          // get rid of groupTaskArray from dependency array
-          setGroupTaskArray((ary) => [...ary, task]);
-        });
+        setGroupTaskArray(
+          snapshot.docs.map((docSnapshot) => {
+            const docData = docSnapshot.data();
+            return {
+              ...docData,
+              id: docSnapshot.id,
+              metadata: {
+                type: 'GROUP',
+                date: docData.date.toDate(),
+                group: docData.group,
+              } as GroupTaskMetadata,
+              children: [] as readonly SubTask[],
+            } as Task;
+          })
+        );
       });
-  }, [group]);
+  }, [groupID]);
 
   const groupMemberProfiles = useGroupMemberProfiles(group.members);
 
   return (
     <div className={styles.GroupView}>
       <MiddleBar group={group} groupMemberProfiles={groupMemberProfiles} changeView={changeView} />
-      <RightView group={group} groupMemberProfiles={groupMemberProfiles} tasks={groupTaskArray} />
+      <RightView
+        group={group}
+        groupMemberProfiles={groupMemberProfiles}
+        tasks={groupTaskArray}
+        showBar={showBar}
+      />
     </div>
   );
 };
