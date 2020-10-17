@@ -25,6 +25,8 @@ const pressedAddGroupTask = (e: KeyboardEvent): void => {
 };
 
 const GroupTaskRow = ({ tasks, memberName, profilePicURL }: Props): ReactElement => {
+  const completedTasks = tasks.filter(task => task.complete);
+
   return (
     <div className={styles.GroupTaskRow}>
       <ProfileImage
@@ -33,19 +35,22 @@ const GroupTaskRow = ({ tasks, memberName, profilePicURL }: Props): ReactElement
         imageURL={profilePicURL}
       />
 
-      <button
-        type="button"
-        className={styles.AddTaskContainer}
-        onClick={clickAddGroupTask}
-        onKeyPress={pressedAddGroupTask}
-      >
-        <div className={styles.AddTask}>
-          <FontAwesomeIcon icon={faPlus} />
-          <h3>Assign new task</h3>
-        </div>
-      </button>
+      <div className={styles.FlexibleRow}>
+        <button
+          type="button"
+          className={styles.AddTaskContainer}
+          onClick={clickAddGroupTask}
+          onKeyPress={pressedAddGroupTask}
+        >
+          <div className={styles.AddTask}>
+            <FontAwesomeIcon icon={faPlus} />
+            <h3>Assign new task</h3>
+          </div>
+        </button>
 
-      <CompletedTasksContainer tasks={tasks} />
+        {completedTasks.length > 0 ? <CompletedTasksContainer tasks={completedTasks} /> : null}
+      </div>
+
       <GroupTasksContainer tasks={tasks} />
     </div>
   );

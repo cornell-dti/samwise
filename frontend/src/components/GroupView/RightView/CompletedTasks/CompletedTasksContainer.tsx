@@ -7,9 +7,7 @@ type Props = {
   readonly tasks: readonly Task[];
 };
 
-function renderTaskList(list: readonly Task[]): ReactNode {
-  // list of completed tasks
-  const completedTasks = list.filter(task => task.complete);
+function renderTaskList(completedTasks: readonly Task[]): ReactNode {
   // if we have 3 or fewer completed tasks, render all of them
   if (completedTasks.length <= 3) {
     const taskBars = completedTasks.slice(0, completedTasks.length).map((task) =>
