@@ -10,7 +10,8 @@ type Props = {
 };
 
 function CompletedTask({ original, completedTaskCount, overflow }: Props): ReactElement {
-  const month = original.metadata.date instanceof Date ? original.metadata.date.getMonth() + 1 : null;
+  const month =
+    original.metadata.date instanceof Date ? original.metadata.date.getMonth() + 1 : null;
   const day = original.metadata.date instanceof Date ? original.metadata.date.getDate() : null;
   const numericDate = `${month}/${day}`;
 
@@ -18,9 +19,7 @@ function CompletedTask({ original, completedTaskCount, overflow }: Props): React
     <li className={styles.CompletedTask}>
       <span>
         <SamwiseIcon iconName="grabber" className={styles.GrabberIcon} />
-        <span className={styles.CompletedTaskName}>
-          {original.name}
-        </span>
+        <span className={styles.CompletedTaskName}>{original.name}</span>
       </span>
       <span className={styles.CompletedTaskDate}>{numericDate}</span>
     </li>
@@ -32,9 +31,7 @@ function CompletedTask({ original, completedTaskCount, overflow }: Props): React
     </li>
   );
 
-  return (
-    overflow ? additionalTaskBar() : taskBar()
-  );
+  return overflow ? additionalTaskBar() : taskBar();
 }
 
 export default CompletedTask;
