@@ -28,7 +28,6 @@ const GroupTaskRow = ({
   userProfile,
   onClick,
 }: Props): ReactElement => {
-
   return (
     <div className={styles.GroupTaskRow}>
       <ProfileImage
