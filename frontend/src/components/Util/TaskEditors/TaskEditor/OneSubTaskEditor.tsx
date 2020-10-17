@@ -16,6 +16,7 @@ type Props = {
   readonly editThisSubTask: (subtaskId: string, partialSubTask: PartialSubTask) => void;
   readonly removeSubTask: (subtaskId: string) => void;
   readonly onPressEnter: (id: 'main-task' | number) => void;
+  readonly memberName?: string; // only supplied if task is a group task
 };
 
 const className = [styles.TaskEditorFlexibleContainer, styles.TaskEditorSubtaskCheckBox].join(' ');
@@ -31,6 +32,7 @@ function OneSubTaskEditor({
   editThisSubTask,
   removeSubTask,
   onPressEnter,
+  memberName,
 }: Props): ReactElement {
   const replaceDateForFork =
     taskDate == null ? getDateWithDateString(taskDate, dateAppeared) : null;
@@ -98,11 +100,13 @@ function OneSubTaskEditor({
         onMouseLeave={onBlur}
         style={{ width: 'calc(100% - 70px)' }}
       />
-      <SamwiseIcon
-        iconName={subTask.inFocus ? 'pin-light-filled' : 'pin-light-outline'}
-        className={styles.TaskEditorIcon}
-        onClick={onInFocusChange}
-      />
+      {memberName ? null : (
+        <SamwiseIcon
+          iconName={subTask.inFocus ? 'pin-light-filled' : 'pin-light-outline'}
+          className={styles.TaskEditorIcon}
+          onClick={onInFocusChange}
+        />
+      )}
       <SamwiseIcon iconName="x-light" onClick={onRemove} className={deleteIconClass} />
     </div>
   );

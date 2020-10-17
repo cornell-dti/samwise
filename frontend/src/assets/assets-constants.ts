@@ -9,7 +9,8 @@ export const FrontendCrash = `${PUBLIC_URL}/error/frontendCrash.png`;
 
 export const Alert = `${PUBLIC_URL}/svgs/alert.svg`;
 export const ArrowDownDark = `${PUBLIC_URL}/svgs/arrow-down-dark.svg`;
-export const Bell = `${PUBLIC_URL}/svgs/bell.svg`;
+export const BellOutline = `${PUBLIC_URL}/svgs/bell-outline.svg`;
+export const BellLight = `${PUBLIC_URL}/svgs/bell-light.svg`;
 export const CalendarDark = `${PUBLIC_URL}/svgs/calendar-dark.svg`;
 export const CalendarLight = `${PUBLIC_URL}/svgs/calendar-light.svg`;
 export const CheckedDark = `${PUBLIC_URL}/svgs/checked-dark.svg`;

@@ -44,7 +44,7 @@ const GroupTaskRow = ({ tasks, memberName, profilePicURL }: Props): ReactElement
         </div>
       </button>
 
-      <GroupTasksContainer tasks={tasks} />
+      <GroupTasksContainer tasks={tasks} memberName={memberName} />
     </div>
   );
 };
