@@ -56,7 +56,6 @@ const useGroupMemberProfiles = (
 
 const GroupView = ({ group, changeView }: Props): ReactElement => {
   const [groupTaskArray, setGroupTaskArray] = useState<Task[]>([]);
-  const [showBar, setShowBar] = useState<boolean>(false);
   const groupID = group.id;
   useEffect(() => {
     database
@@ -64,7 +63,6 @@ const GroupView = ({ group, changeView }: Props): ReactElement => {
       .where('type', '==', 'GROUP')
       .where('group', '==', groupID)
       .onSnapshot((snapshot) => {
-        setShowBar(snapshot.docs.length > 0);
         // this is problematic because it does not account for subtasks yet
         setGroupTaskArray(
           snapshot.docs.map((docSnapshot) => {
@@ -89,12 +87,7 @@ const GroupView = ({ group, changeView }: Props): ReactElement => {
   return (
     <div className={styles.GroupView}>
       <MiddleBar group={group} groupMemberProfiles={groupMemberProfiles} changeView={changeView} />
-      <RightView
-        group={group}
-        groupMemberProfiles={groupMemberProfiles}
-        tasks={groupTaskArray}
-        showBar={showBar}
-      />
+      <RightView group={group} groupMemberProfiles={groupMemberProfiles} tasks={groupTaskArray} />
     </div>
   );
 };

@@ -6,7 +6,6 @@ import { GroupDeadline, PeakingBear } from '../../../assets/assets-constants';
 type Props = {
   readonly tasks: readonly Task[];
   readonly deadline: Date;
-  readonly showBar: boolean;
 };
 
 type ProgressBubbleProps = {
@@ -21,9 +20,10 @@ const ProgressBubble = ({ completed }: ProgressBubbleProps): ReactElement => (
   />
 );
 
-const GroupTaskProgress = ({ tasks, deadline, showBar }: Props): ReactElement => {
+const GroupTaskProgress = ({ tasks, deadline }: Props): ReactElement => {
   const tasksDone: number = tasks.filter((task: Task): boolean => task.complete).length;
   const totalTasks: number = tasks.length;
+  const showBar = totalTasks > 0;
   let bubbles: ReactElement[] = [];
   for (let i = 0; i < tasksDone; i += 1) {
     bubbles = [...bubbles, <ProgressBubble completed key={`c${i}`} />];

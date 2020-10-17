@@ -12,10 +12,9 @@ type Props = {
   readonly group: Group;
   readonly groupMemberProfiles: readonly SamwiseUserProfile[];
   readonly tasks: readonly Task[];
-  readonly showBar: boolean;
 };
 
-const RightView = ({ group, groupMemberProfiles, tasks, showBar }: Props): ReactElement => {
+const RightView = ({ group, groupMemberProfiles, tasks }: Props): ReactElement => {
   const onEditGroupNameClicked = (): void => {
     promptTextInput('Edit your group name', '', 'New Group Name', 'Submit', 'text').then((name) =>
       updateGroup({ ...group, name })
@@ -51,7 +50,7 @@ const RightView = ({ group, groupMemberProfiles, tasks, showBar }: Props): React
         </div>
       </div>
       <div className={styles.GroupTaskProgress}>
-        <GroupTaskProgress tasks={tasks} deadline={group.deadline} showBar={showBar} />
+        <GroupTaskProgress tasks={tasks} deadline={group.deadline} />
       </div>
     </div>
   );
