@@ -1,27 +1,39 @@
 .CompletedTask,
 .AdditionalCompletedTask {
-  list-style-type:none;
-  width: 100%;
-  background: lightseagreen;
-  color: white;
-  padding: 6px 8px;
-  margin-bottom: 12px;
   display: flex;
   justify-content: space-between;
+  list-style-type:none;
+  width: 100%;
+  background: rgb(150, 150, 150);
+  color: white;
+  padding: 8px 12px;
+  padding-left: 4px;
+  margin-bottom: 12px;
+  height: 36px;
 }
 
 .AdditionalCompletedTask {
   font-weight: bold;
+  padding-left: 10px;
+}
+
+.CompletedTaskName {
+  padding-left: 4px;
+}
+
+.CompletedTaskDate {
+  margin: auto 0;
+  font-style: italic;
 }
 
 .GrabberIcon {
   cursor: pointer;
   width: 20px;
   height: 20px;
+  vertical-align: middle;
 }
 
 .CompletedTasksContainer {
-  width: 250px;
+  width: 270px;
   margin-right: 14px;
-  background: lightsalmon;
 }
