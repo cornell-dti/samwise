@@ -30,7 +30,7 @@ const RightView = ({ group, groupMemberProfiles }: Props): ReactElement => {
     taskCreatorOpened: false,
     assignedMember: undefined,
   });
-    
+
   const onEditGroupNameClicked = (): void => {
     promptTextInput('Edit your group name', '', 'New Group Name', 'Submit', 'text').then((name) =>
       updateGroup({ ...group, name })
