@@ -17,7 +17,7 @@ type Props = TagAndDate & {
   readonly displayGrabber: boolean;
   readonly calendarPosition: CalendarPosition;
   readonly icalUID?: string;
-  readonly isGroupTask?: boolean;
+  readonly memberName?: string; // only supplied if task is a group task
 };
 
 type EditorDisplayStatus = {
@@ -35,7 +35,7 @@ export default function EditorHeader({
   displayGrabber,
   calendarPosition,
   icalUID,
-  isGroupTask,
+  memberName,
 }: Props): ReactElement {
   const [editorDisplayStatus, setEditorDisplayStatus] = React.useState<EditorDisplayStatus>({
     doesShowTagEditor: false,
@@ -97,10 +97,10 @@ export default function EditorHeader({
 
   return (
     <div className={headerClassName}>
-      {displayGrabber && !isGroupTask && (
+      {displayGrabber && !memberName && (
         <SamwiseIcon iconName="grabber" className={styles.TaskEditorGrabberIcon} />
       )}
-      {isGroupTask ? null : (
+      {memberName ? null : (
         <>
           {tagDisplay}
           {tagEditor}

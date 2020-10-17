@@ -52,7 +52,6 @@ type OwnProps = DefaultProps & {
   readonly subTasks: readonly SubTask[];
   readonly actions: Actions; // The actions to perform under different events
   readonly calendarPosition: CalendarPosition;
-  readonly isGroupTask?: boolean;
   readonly memberName?: string; // only supplied if task is a group task
 };
 type Props = OwnProps & {
@@ -87,7 +86,6 @@ function TaskEditor({
   editorRef,
   calendarPosition,
   settings,
-  isGroupTask,
   memberName,
 }: Props): ReactElement {
   const { onChange, removeTask, onSaveClicked } = actions;
@@ -250,7 +248,7 @@ function TaskEditor({
           calendarPosition={calendarPosition}
           displayGrabber={displayGrabber == null ? false : displayGrabber}
           icalUID={canvasLinked ? icalUID : undefined}
-          isGroupTask={isGroupTask}
+          memberName={memberName}
         />
         <MainTaskEditor
           id={id}
@@ -263,7 +261,7 @@ function TaskEditor({
           onChange={dispatchEditMainTask}
           onRemove={removeTask}
           onPressEnter={pressEnterHandler}
-          isGroupTask={isGroupTask}
+          memberName={memberName}
         />
       </div>
       <div className={styles.TaskEditorSubTasksIndentedContainer}>
@@ -279,7 +277,7 @@ function TaskEditor({
             editThisSubTask={dispatchEditSubTask}
             removeSubTask={dispatchDeleteSubTask}
             onPressEnter={pressEnterHandler}
-            isGroupTask={isGroupTask}
+            memberName={memberName}
           />
         ))}
         <div className={styles.SubtaskHide} style={active === true ? { maxHeight: 0 } : undefined}>
@@ -289,7 +287,7 @@ function TaskEditor({
             needToBeFocused={subTaskToFocus === 'new-subtask'}
           />
         </div>
-        {isGroupTask ? <p className={styles.GroupMemberNameText}>@{memberName}</p> : null}
+        {memberName ? <p className={styles.GroupMemberNameText}>@{memberName}</p> : null}
       </div>
       {type === 'MASTER_TEMPLATE' && (
         <div

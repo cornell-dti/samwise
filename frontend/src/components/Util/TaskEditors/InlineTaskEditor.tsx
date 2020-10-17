@@ -9,7 +9,6 @@ type Props = {
   readonly filtered: Task;
   readonly calendarPosition: CalendarPosition;
   readonly className?: string; // additional class names applied to the editor.
-  readonly isGroupTask?: boolean;
   readonly memberName?: string; // only supplied if the task is a group task
 };
 
@@ -21,7 +20,6 @@ export default function InlineTaskEditor({
   filtered,
   className,
   calendarPosition,
-  isGroupTask,
   memberName,
 }: Props): ReactElement {
   const [disabled, setDisabled] = useState(true);
@@ -52,7 +50,6 @@ export default function InlineTaskEditor({
       active={disabled}
       onFocus={onFocus}
       onBlur={onBlur}
-      isGroupTask={isGroupTask}
       memberName={memberName}
     />
   );

@@ -15,7 +15,6 @@ function GroupTask({ original, memberName }: Props): ReactElement {
       calendarPosition="bottom"
       original={original}
       filtered={original}
-      isGroupTask
       memberName={memberName}
     />
   );

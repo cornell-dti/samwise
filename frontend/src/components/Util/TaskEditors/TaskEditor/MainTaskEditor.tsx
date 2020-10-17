@@ -18,7 +18,7 @@ type Props = NameCompleteInFocus & {
   readonly onChange: (change: Partial<NameCompleteInFocus>) => void;
   readonly onRemove: () => void;
   readonly onPressEnter: (id: 'main-task' | number) => void;
-  readonly isGroupTask?: boolean;
+  readonly memberName?: string; // only supplied if task is a group task
 };
 
 const deleteIconClass = [styles.TaskEditorIcon, styles.TaskEditorIconLeftPad].join(' ');
@@ -34,7 +34,7 @@ function MainTaskEditor({
   onChange,
   onRemove,
   onPressEnter,
-  isGroupTask,
+  memberName,
 }: Props): ReactElement {
   const replaceDateForFork =
     taskDate == null ? getDateWithDateString(taskDate, dateAppeared) : null;
@@ -69,7 +69,7 @@ function MainTaskEditor({
         onKeyDown={onKeyDown}
         onChange={onInputChange}
       />
-      {isGroupTask ? (
+      {memberName ? (
         <SamwiseIcon iconName="bell-light" className={styles.TaskEditorIcon} onClick={() => {}} />
       ) : (
         <SamwiseIcon
