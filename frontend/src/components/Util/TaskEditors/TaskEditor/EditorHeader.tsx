@@ -18,6 +18,7 @@ type Props = TagAndDate & {
   readonly calendarPosition: CalendarPosition;
   readonly icalUID?: string;
   readonly editorRef?: { current: HTMLFormElement | null };
+  readonly memberName?: string; // only supplied if task is a group task
 };
 
 type EditorDisplayStatus = {
@@ -36,6 +37,7 @@ export default function EditorHeader({
   calendarPosition,
   icalUID,
   editorRef,
+  memberName,
 }: Props): ReactElement {
   const [editorDisplayStatus, setEditorDisplayStatus] = React.useState<EditorDisplayStatus>({
     doesShowTagEditor: false,
@@ -118,11 +120,16 @@ export default function EditorHeader({
 
   return (
     <div className={headerClassName}>
-      {displayGrabber && (
+      {displayGrabber && !memberName && (
         <SamwiseIcon iconName="grabber" className={styles.TaskEditorGrabberIcon} />
       )}
-      {tagDisplay}
-      {tagEditor}
+      {memberName ? null : (
+        <>
+          {tagDisplay}
+          {tagEditor}
+        </>
+      )}
+
       <span className={styles.TaskEditorFlexiblePadding} />
       {isCanvasTask ? null : (
         <SamwiseIcon

@@ -12,7 +12,7 @@ export type ExamInfo = {
   readonly time: number;
 };
 
-export type ExamType = 'prelim' | 'final';
+export type ExamType = 'prelim' | 'final' | 'semifinal';
 
 export type ExamTimeType = { readonly type: ExamType; readonly time: number };
 

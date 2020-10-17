@@ -3,7 +3,7 @@ import { JSDOM } from 'jsdom';
 import { ExamInfo } from './types';
 
 const prelimUrl = 'https://registrar.cornell.edu/exams/fall-prelim-exam-schedule';
-const finalUrl = 'https://registrar.cornell.edu/exams/fall-final-exam-schedule';
+const semiFinalUrl = 'https://registrar.cornell.edu/calendars-exams/semifinal-exam-schedule';
 
 const currentYear = new Date().getFullYear();
 
@@ -33,24 +33,36 @@ function parsePrelimLine(line: string): ExamInfo {
   };
 }
 
-function parseFinalLine(line: string): ExamInfo {
-  const segments = line.split(' ').filter((part) => part !== '');
+function parseSemiFinalLine(line: string): ExamInfo {
+  // Adapted for FA20 semifinals.
+  const segments = line.split(/\s+/);
   const subject = segments[0];
   const courseNumber = segments[1];
   const sectionNumber = segments[2];
-  let datetimeString = '';
-  for (let i = 3; i < segments.length; i += 1) {
-    const s = segments[i];
-    if (s === 'final') {
+
+  const dateFormat = segments[3];
+  const dateData = dateFormat.split('-');
+  let dateTimeString = '';
+  switch (dateData[1]) {
+    case 'Oct':
+      dateTimeString += '10';
       break;
-    }
-    if (s !== '') {
-      datetimeString += ` ${s}`;
-    }
+    case 'Nov':
+      dateTimeString += '11';
+      break;
+    case 'Dec':
+      dateTimeString += '12';
+      break;
+    default:
+      throw new Error(`Invalid month of final ${dateData[1]}`);
   }
-  datetimeString = datetimeString.trim();
-  const date = new Date(datetimeString);
-  date.setFullYear(currentYear);
+  dateTimeString += `/${dateData[0]}/${currentYear}`;
+
+  const date = new Date(dateTimeString);
+  const time12Hr = segments[4];
+  const dateHours = parseInt(time12Hr.substring(0, time12Hr.indexOf(':')), 10);
+  const dateMinutes = parseInt(time12Hr.substring(time12Hr.indexOf(':') + 1, time12Hr.length), 10);
+  date.setHours(segments[5] === 'PM' ? dateHours + 12 : dateHours, dateMinutes);
   return {
     subject,
     courseNumber,
@@ -59,13 +71,18 @@ function parseFinalLine(line: string): ExamInfo {
   };
 }
 
-function getExamInfoList(rawText: string, isFinal: boolean): readonly ExamInfo[] {
+function getExamInfoList(rawText: string, isSemiFinal: boolean): readonly ExamInfo[] {
   const lines = rawText.split('\n');
   const infoList: ExamInfo[] = [];
   for (let i = 0; i < lines.length; i += 1) {
     const line = lines[i].trim();
-    if (line !== '' && !line.startsWith('Course') && !line.startsWith('final exam')) {
-      const info = isFinal ? parseFinalLine(line) : parsePrelimLine(line);
+    if (
+      line !== '' &&
+      !line.startsWith('<b>class') &&
+      !line.startsWith('final exam') &&
+      !line.startsWith('Course')
+    ) {
+      const info = isSemiFinal ? parseSemiFinalLine(line) : parsePrelimLine(line);
       infoList.push(info);
     }
   }
@@ -75,5 +92,6 @@ function getExamInfoList(rawText: string, isFinal: boolean): readonly ExamInfo[]
 const createJson = (url: string, isFinal: boolean): Promise<readonly ExamInfo[]> =>
   fetchExamText(url).then((rawText) => getExamInfoList(rawText, isFinal));
 
-export const createFinalJson = (): Promise<readonly ExamInfo[]> => createJson(finalUrl, true);
+export const createSemiFinalJson = (): Promise<readonly ExamInfo[]> =>
+  createJson(semiFinalUrl, true);
 export const createPrelimJson = (): Promise<readonly ExamInfo[]> => createJson(prelimUrl, false);

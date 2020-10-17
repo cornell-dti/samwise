@@ -5,13 +5,8 @@
  */
 
 .TaskEditor {
-  position: relative;
-  top: 0;
-  left: 0;
-  width: 100%;
   height: auto;
   color: white;
-  font-size: 12px;
 }
 
 /*
@@ -25,6 +20,7 @@
 }
 
 .TaskEditorFlexibleContainer {
+  font-size: 1em !important;
   position: relative;
   display: flex;
   padding: 8px;
@@ -44,6 +40,7 @@
 
 input.TaskEditorFlexibleInput,
 input.TaskEditorStrikethrough {
+  font: 1em 'Open Sans', sans-serif;
   flex: 1 1 auto;
   margin-left: 0.5em;
   padding: 0.5em 0;
@@ -113,7 +110,7 @@ img.TaskEditorIcon:focus,
 
 .TaskEditorTag {
   margin-left: 0.5em;
-  font-size: 1em;
+  font: 1.3em 'Open Sans', sans-serif;
   padding: 5px;
   border-radius: 2px;
   color: white;
@@ -203,4 +200,8 @@ img.TaskEditorIcon:focus,
   font-size: 12px;
   color: white;
   margin: 0 0.5em;
+}
+
+.GroupMemberNameText {
+  font-style: italic;
 }

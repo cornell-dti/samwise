@@ -11,6 +11,7 @@ import {
   TaskMetadata,
   RepeatingTaskMetadata,
   OneTimeTaskMetadata,
+  Group,
 } from 'common/types/store-types';
 import { error, ignore } from 'common/util/general-util';
 import {
@@ -425,13 +426,19 @@ export const joinGroup = async (groupId: string, inviteID: string): Promise<void
 
 /**
  * Create a group.
- * @param groupID Document ID of the group's Firestore document. The user calling this function must
- *                be a member of this group.
+ * @param name The name of the group
+ * @param deadline Deadline for the group project
+ * @param classCode Class code for the class associated with the group
  */
 export const createGroup = (name: string, deadline: Date, classCode: string): void => {
   const { email } = getAppUser();
   // creator is the only member at first
-  const newGroup: FirestoreGroup = { name, deadline, classCode, members: [email] };
+  const newGroup: FirestoreGroup = {
+    name,
+    deadline: firestore.Timestamp.fromDate(deadline),
+    classCode,
+    members: [email],
+  };
   database.groupsCollection().doc().set(newGroup);
 };
 
@@ -447,13 +454,17 @@ export const leaveGroup = async (groupID: string): Promise<void> => {
     return;
   }
   const { email } = getAppUser();
-  const newMembers: string[] = members.filter((m: string) => m !== email);
+  const newMembers: string[] = members.filter((m) => m !== email);
   const groupDoc = await database.groupsCollection().doc(groupID);
   if (newMembers.length === 0) {
     await groupDoc.delete();
   } else {
     await groupDoc.update({ members: newMembers });
   }
+};
+
+export const updateGroup = async ({ id, ...groupInformation }: Group): Promise<void> => {
+  await database.groupsCollection().doc(id).update(groupInformation);
 };
 
 /**

@@ -52,7 +52,7 @@ type OwnProps = DefaultProps & {
   readonly subTasks: readonly SubTask[];
   readonly actions: Actions; // The actions to perform under different events
   readonly calendarPosition: CalendarPosition;
-  // readonly computedCalendarPos: { current: HTMLFormElement | null };
+  readonly memberName?: string; // only supplied if task is a group task
 };
 type Props = OwnProps & {
   // subscribed from redux store.
@@ -86,6 +86,7 @@ function TaskEditor({
   editorRef,
   calendarPosition,
   settings,
+  memberName,
 }: Props): ReactElement {
   const { onChange, removeTask, onSaveClicked } = actions;
   const {
@@ -158,7 +159,7 @@ function TaskEditor({
   }, [date, diff, id, reset, taskAppearedDate, type]);
 
   const onMouseLeave = (): void => {
-    if (type === 'ONE_TIME') {
+    if (type !== 'MASTER_TEMPLATE') {
       onSave();
     }
     if (onBlur) {
@@ -249,6 +250,7 @@ function TaskEditor({
           displayGrabber={displayGrabber == null ? false : displayGrabber}
           icalUID={canvasLinked ? icalUID : undefined}
           editorRef={editorRef}
+          memberName={memberName}
         />
         <MainTaskEditor
           id={id}
@@ -261,6 +263,7 @@ function TaskEditor({
           onChange={dispatchEditMainTask}
           onRemove={removeTask}
           onPressEnter={pressEnterHandler}
+          memberName={memberName}
         />
       </div>
       <div className={styles.TaskEditorSubTasksIndentedContainer}>
@@ -276,6 +279,7 @@ function TaskEditor({
             editThisSubTask={dispatchEditSubTask}
             removeSubTask={dispatchDeleteSubTask}
             onPressEnter={pressEnterHandler}
+            memberName={memberName}
           />
         ))}
         <div className={styles.SubtaskHide} style={active === true ? { maxHeight: 0 } : undefined}>
@@ -285,8 +289,9 @@ function TaskEditor({
             needToBeFocused={subTaskToFocus === 'new-subtask'}
           />
         </div>
+        {memberName ? <p className={styles.GroupMemberNameText}>@{memberName}</p> : null}
       </div>
-      {type !== 'ONE_TIME' && (
+      {type === 'MASTER_TEMPLATE' && (
         <div
           className={styles.SaveButtonRow}
           style={diffIsEmpty(diff) ? { maxHeight: 0, padding: 0 } : undefined}
