@@ -23,7 +23,7 @@ type SimpleTask = Omit<Task, 'type' | 'order' | 'children' | 'metadata'>;
 
 type State = SimpleTask & {
   readonly owner: string;
-  readonly member: string;
+  readonly member?: SamwiseUserProfile;
   readonly date: Date | RepeatingDate;
   readonly subTasks: SubTask[];
   readonly opened: boolean;
@@ -58,7 +58,7 @@ const initialState = (): State => ({
   owner: '',
   name: '',
   tag: NONE_TAG_ID, // the id of the None tag.
-  member: '',
+  member: undefined,
   date: new Date(),
   complete: false,
   inFocus: false,
@@ -221,7 +221,7 @@ export class TaskCreator extends React.PureComponent<Props, State> {
    *
    * @param {string} member the new member.
    */
-  private editMember = (member: string): void =>
+  private editMember = (member?: SamwiseUserProfile): void =>
     this.setState({ member, tagPickerOpened: false }, this.focusTaskName);
 
   /**
@@ -453,9 +453,9 @@ export class TaskCreator extends React.PureComponent<Props, State> {
               />
             ) : (
               <GroupMemberPicker
-                member={assignedMember ? assignedMember.name : member}
+                member={assignedMember || member}
                 opened={tagPickerOpened}
-                onTagChange={this.editMember}
+                onMemberChange={this.editMember}
                 onPickerOpened={this.openTagPicker}
                 groupMemberProfiles={groupMemberProfiles || []}
                 clearAssignedMember={clearAssignedMember}

@@ -6,9 +6,9 @@ import styles from './Picker.module.scss';
 import SamwiseIcon from '../UI/SamwiseIcon';
 
 type OwnProps = {
-  readonly member: string;
+  readonly member?: SamwiseUserProfile;
   readonly opened: boolean;
-  readonly onTagChange: (tag: string) => void;
+  readonly onMemberChange: (member: SamwiseUserProfile | undefined) => void;
   readonly onPickerOpened: () => void;
 };
 type Props = OwnProps & {
@@ -19,7 +19,7 @@ type Props = OwnProps & {
 export default function GroupMemberPicker({
   member,
   opened,
-  onTagChange,
+  onMemberChange,
   onPickerOpened,
   clearAssignedMember,
   groupMemberProfiles,
@@ -32,7 +32,7 @@ export default function GroupMemberPicker({
     if (e.key === 'Enter' || e.key === ' ') onPickerOpened();
   };
   const reset = (): void => {
-    onTagChange('');
+    onMemberChange(undefined);
     if (clearAssignedMember) clearAssignedMember();
   };
   // Nodes
@@ -47,7 +47,7 @@ export default function GroupMemberPicker({
       </>
     ) : (
       <>
-        <span className={styles.TagDisplay}>{member}</span>
+        <span className={styles.TagDisplay}>{member ? member.name : 'assign to'}</span>
         <button type="button" className={styles.ResetButton} onClick={reset}>
           &times;
         </button>
@@ -67,10 +67,10 @@ export default function GroupMemberPicker({
   };
   return (
     <div className={styles.Main}>
-      {displayedNode(member === '')}
+      {displayedNode(member === undefined)}
       {opened && (
         <div>
-          <SearchGroupMember members={groupMemberProfiles} onMemberChange={onTagChange} />
+          <SearchGroupMember members={groupMemberProfiles} onMemberChange={onMemberChange} />
         </div>
       )}
     </div>
