@@ -52,7 +52,7 @@ type OwnProps = DefaultProps & {
   readonly subTasks: readonly SubTask[];
   readonly actions: Actions; // The actions to perform under different events
   readonly calendarPosition: CalendarPosition;
-  readonly computedCalendarPos: { current: HTMLFormElement | null };
+  // readonly computedCalendarPos: { current: HTMLFormElement | null };
 };
 type Props = OwnProps & {
   // subscribed from redux store.
@@ -250,7 +250,7 @@ function TaskEditor({
           calendarPosition={calendarPosition}
           displayGrabber={displayGrabber == null ? false : displayGrabber}
           icalUID={canvasLinked ? icalUID : undefined}
-          computedCalendarPos={editorRef}
+          editorRef={editorRef}
         />
         <MainTaskEditor
           id={id}

@@ -17,7 +17,7 @@ type Props = TagAndDate & {
   readonly displayGrabber: boolean;
   readonly calendarPosition: CalendarPosition;
   readonly icalUID?: string;
-  readonly computedCalendarPos: any;
+  readonly editorRef?: { current: HTMLFormElement | null };
 };
 
 type EditorDisplayStatus = {
@@ -35,7 +35,7 @@ export default function EditorHeader({
   displayGrabber,
   calendarPosition,
   icalUID,
-  computedCalendarPos,
+  editorRef,
 }: Props): ReactElement {
   const [editorDisplayStatus, setEditorDisplayStatus] = React.useState<EditorDisplayStatus>({
     doesShowTagEditor: false,
@@ -86,16 +86,16 @@ export default function EditorHeader({
   const dateEditor = doesShowDateEditor && date instanceof Date && (
     <div
       style={
-        !computedCalendarPos
+        !editorRef
           ? {}
           : {
               position: 'fixed',
-              bottom: computedCalendarPos.current.getBoundingClientRect().bottom,
-              height: computedCalendarPos.current.getBoundingClientRect().height,
-              left: computedCalendarPos.current.getBoundingClientRect().left,
-              right: computedCalendarPos.current.getBoundingClientRect().right,
-              top: computedCalendarPos.current.getBoundingClientRect().top,
-              width: computedCalendarPos.current.getBoundingClientRect().width,
+              bottom: editorRef.current.getBoundingClientRect().bottom,
+              height: editorRef.current.getBoundingClientRect().height,
+              left: editorRef.current.getBoundingClientRect().left,
+              right: editorRef.current.getBoundingClientRect().right,
+              top: editorRef.current.getBoundingClientRect().top,
+              width: editorRef.current.getBoundingClientRect().width,
               zIndex: 10,
             }
       }
