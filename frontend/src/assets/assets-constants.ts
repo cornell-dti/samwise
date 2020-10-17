@@ -41,6 +41,8 @@ export const RepeatFrequency = `${PUBLIC_URL}/svgs/repeat-frequency.svg`;
 export const UserPlus = `${PUBLIC_URL}/svgs/user-plus.svg`;
 export const AddTask = `${PUBLIC_URL}/svgs/add-task.svg`;
 export const Edit = `${PUBLIC_URL}/svgs/edit.svg`;
+export const GroupDeadline = `${PUBLIC_URL}/svgs/group-deadline.svg`;
+export const PeakingBear = `${PUBLIC_URL}/svgs/peaking-bear.svg`;
 
 export const dtiLogo = `${PUBLIC_URL}/splash/wordmark.png`;
 export const screenshot = `${PUBLIC_URL}/splash/header_final.png`;
