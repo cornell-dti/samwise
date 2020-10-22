@@ -9,7 +9,7 @@ import { updateGroup } from '../../../firebase/actions';
 
 type Props = {
   readonly group: Group;
-  readonly groupMemberProfiles: readonly SamwiseUserProfile[];
+  readonly groupMemberProfiles:  SamwiseUserProfile[];
   readonly tasks: readonly Task[];
 };
 

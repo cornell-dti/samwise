@@ -5,7 +5,6 @@ import { Task } from 'common/types/store-types';
 import GroupTasksContainer from './GroupTasksContainer';
 import styles from './GroupTaskRow.module.scss';
 import ProfileImage from '../MiddleBar/ProfileImage';
-import CompletedTasksContainer from './CompletedTasks/CompletedTasksContainer';
 
 type Props = {
   readonly memberName: string;
@@ -25,7 +24,6 @@ const pressedAddGroupTask = (e: KeyboardEvent): void => {
 };
 
 const GroupTaskRow = ({ tasks, memberName, profilePicURL }: Props): ReactElement => {
-  const completedTasks = tasks.filter((task) => task.complete);
 
   return (
     <div className={styles.GroupTaskRow}>
@@ -35,7 +33,6 @@ const GroupTaskRow = ({ tasks, memberName, profilePicURL }: Props): ReactElement
         imageURL={profilePicURL}
       />
 
-      <div className={styles.FlexibleRow}>
         <button
           type="button"
           className={styles.AddTaskContainer}
@@ -47,9 +44,6 @@ const GroupTaskRow = ({ tasks, memberName, profilePicURL }: Props): ReactElement
             <h3>Assign new task</h3>
           </div>
         </button>
-
-        {completedTasks.length > 0 ? <CompletedTasksContainer tasks={completedTasks} /> : null}
-      </div>
 
       <GroupTasksContainer tasks={tasks} />
     </div>
