@@ -204,6 +204,7 @@ export class TaskCreator extends React.PureComponent<Props, State> {
     }
     this.setState({ owner: [e.currentTarget.value] });
   };
+
   /**
    * Edit the task name.
    *
