@@ -54,15 +54,15 @@ export default function GroupMemberPicker({
       </>
     );
     return (
-      <span
-        role="presentation"
+      <button
+        type="button"
         onClick={clickPicker}
         onKeyPress={pressedPicker}
-        className={styles.Label}
+        className={`${styles.TagButton} ${styles.Label}`}
         style={style}
       >
         {internal}
-      </span>
+      </button>
     );
   };
   return (

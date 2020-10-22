@@ -40,8 +40,14 @@ export default function SearchGroupMember({ members, onMemberChange }: Props): R
       <div>
         {searchResults.map((user) => (
           <li>
-            <input onClick={() => onMemberChange(user)} type="checkbox" />
-            {user.name}
+            <button
+              type="button"
+              onClick={() => onMemberChange(user)}
+              onKeyPress={(e) => (e.key === 'Enter' || e.key === ' ') && onMemberChange(user)}
+              className={styles.MemberButton}
+            >
+              {user.name}
+            </button>
           </li>
         ))}
       </div>
