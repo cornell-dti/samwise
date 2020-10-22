@@ -19,7 +19,7 @@ export default class Actions {
     source: T
   ): Promise<T & FirestoreCommon> => {
     const order = await this.orderManager.allocateNewOrder(orderFor);
-    return { ...source, owner: this.getUserEmail(), order };
+    return { ...source, owner: [this.getUserEmail()], order };
   };
 
   /*
@@ -41,7 +41,7 @@ export default class Actions {
   removeTag = async (id: string): Promise<void> => {
     await this.database
       .tasksCollection()
-      .where('owner', '==', this.getUserEmail())
+      .where('owner', 'array-contains', this.getUserEmail())
       .where('tag', '==', id)
       .get()
       .then((s) => {

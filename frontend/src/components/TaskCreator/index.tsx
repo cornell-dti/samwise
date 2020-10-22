@@ -22,7 +22,7 @@ import styles from './index.module.scss';
 type SimpleTask = Omit<Task, 'type' | 'order' | 'children' | 'metadata'>;
 
 type State = SimpleTask & {
-  readonly owner: string;
+  readonly owner: string[];
   readonly member?: SamwiseUserProfile;
   readonly date: Date | RepeatingDate;
   readonly subTasks: SubTask[];
@@ -55,7 +55,7 @@ const PLACEHOLDER_TEXT = 'What do you have to do?';
  */
 const initialState = (): State => ({
   id: randomId(),
-  owner: '',
+  owner: [''],
   name: '',
   tag: NONE_TAG_ID, // the id of the None tag.
   member: undefined,
@@ -193,13 +193,17 @@ export class TaskCreator extends React.PureComponent<Props, State> {
    */
 
   /**
-   * Edit the owner.
+   * Edit the owner for a personal task.
    *
    * @param {string} member the new owner.
    */
-  private editOwner = (e: SyntheticEvent<HTMLInputElement>): void =>
-    this.setState({ owner: e.currentTarget.value });
-
+  private editOwner = (e: SyntheticEvent<HTMLInputElement>): void => {
+    const { owner } = this.state;
+    if (owner.length > 1) {
+      throw new Error('editOwner should only be used for personal tasks');
+    }
+    this.setState({ owner: [e.currentTarget.value] });
+  };
   /**
    * Edit the task name.
    *

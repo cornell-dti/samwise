@@ -42,16 +42,18 @@ type UnmountCallback = () => void;
 const listenTagsChange = (
   email: string,
   listener: (snapshot: QuerySnapshot) => void
-): UnmountCallback => database.tagsCollection().where('owner', '==', email).onSnapshot(listener);
+): UnmountCallback =>
+  database.tagsCollection().where('owner', 'array-contains', email).onSnapshot(listener);
 const listenTasksChange = (
   email: string,
   listener: (snapshot: QuerySnapshot) => void
-): UnmountCallback => database.tasksCollection().where('owner', '==', email).onSnapshot(listener);
+): UnmountCallback =>
+  database.tasksCollection().where('owner', 'array-contains', email).onSnapshot(listener);
 const listenSubTasksChange = (
   email: string,
   listener: (snapshot: QuerySnapshot) => void
 ): UnmountCallback =>
-  database.subTasksCollection().where('owner', '==', email).onSnapshot(listener);
+  database.subTasksCollection().where('owner', 'array-contains', email).onSnapshot(listener);
 const listenSettingsChange = (
   email: string,
   listener: (snapshot: DocumentSnapshot) => void

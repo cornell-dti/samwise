@@ -13,7 +13,7 @@ const name = 'name';
 type MainTaskTestCommon = {
   readonly id: string;
   readonly order: number;
-  readonly owner: string;
+  readonly owner: string[];
   readonly name: string;
   readonly tag: string;
   readonly metadata: {
@@ -25,7 +25,7 @@ type MainTaskTestCommon = {
 const testTaskCommon: MainTaskTestCommon = {
   id: 'random-id',
   order,
-  owner: 'user',
+  owner: ['user'],
   name,
   tag: 'TAG',
   metadata: {

@@ -64,7 +64,7 @@ const RightView = ({ group, groupMemberProfiles, tasks }: Props): ReactElement =
         </div>
         <div className={styles.GroupTaskRowContainer}>
           {groupMemberProfiles.map((user) => {
-            const filteredTasks = tasks.filter((t) => t.owner === user.email);
+            const filteredTasks = tasks.filter(({ owner }) => owner.includes(user.email));
             return (
               <GroupTaskRow
                 key={user.email}
