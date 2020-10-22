@@ -1,4 +1,4 @@
-import { partition } from './remove-old-tasks';
+import { partition } from './util';
 
 it('partition works', () => {
   expect(partition(['1', '2', '3', '4', '5', '6'], 2)).toEqual([

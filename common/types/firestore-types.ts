@@ -6,6 +6,11 @@ export type FirestoreCommon = {
   readonly order: number;
 };
 
+export type FirestoreCommonNew = {
+  readonly owner: string[];
+  readonly order: number;
+};
+
 export type FirestoreTag = FirestoreCommon & {
   readonly name: string;
   readonly color: string;
