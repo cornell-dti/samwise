@@ -50,7 +50,7 @@ const actions = new Actions(() => getAppUser().email, database);
 async function createFirestoreObject<T>(
   orderFor: 'tags' | 'tasks',
   source: T,
-  owner: string[]
+  owner: readonly string[]
 ): Promise<T & FirestoreCommon> {
   const order = await actions.orderManager.allocateNewOrder(orderFor);
   return { ...source, owner, order };
@@ -99,7 +99,7 @@ export const removeTag = (id: string): void => {
 
 const asyncAddTask = async (
   newTaskId: string,
-  owner: string[],
+  owner: readonly string[],
   task: TaskWithoutIdOrderChildren,
   subTasks: WithoutId<SubTask>[],
   batch: WriteBatch
@@ -120,7 +120,7 @@ const asyncAddTask = async (
 };
 
 export const addTask = (
-  owner: string[],
+  owner: readonly string[],
   task: TaskWithoutIdOrderChildren,
   subTasks: WithoutId<SubTask>[]
 ): void => {

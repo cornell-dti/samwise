@@ -22,7 +22,7 @@ import styles from './index.module.scss';
 type SimpleTask = Omit<Task, 'type' | 'order' | 'children' | 'metadata'>;
 
 type State = SimpleTask & {
-  readonly owner: string[];
+  readonly owner: readonly string[];
   readonly member?: SamwiseUserProfile;
   readonly date: Date | RepeatingDate;
   readonly subTasks: SubTask[];
