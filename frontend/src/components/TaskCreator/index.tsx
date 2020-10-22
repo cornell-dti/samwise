@@ -1,7 +1,14 @@
 import React, { CSSProperties, KeyboardEvent, SyntheticEvent, ReactElement } from 'react';
 import { connect } from 'react-redux';
 import { randomId } from 'common/util/general-util';
-import { Task, RepeatingDate, SubTask, State as StoreState, Theme } from 'common/types/store-types';
+import {
+  Task,
+  RepeatingDate,
+  SamwiseUserProfile,
+  SubTask,
+  State as StoreState,
+  Theme,
+} from 'common/types/store-types';
 import { NONE_TAG_ID } from 'common/util/tag-util';
 import { isToday } from 'common/util/datetime-util';
 import TagPicker from './TagPicker';
@@ -16,6 +23,7 @@ type SimpleTask = Omit<Task, 'type' | 'order' | 'children' | 'metadata'>;
 
 type State = SimpleTask & {
   readonly owner: string;
+  readonly member?: SamwiseUserProfile;
   readonly date: Date | RepeatingDate;
   readonly subTasks: SubTask[];
   readonly opened: boolean;
@@ -32,6 +40,10 @@ type OwnProps = {
 type Props = OwnProps & {
   readonly view: string;
   readonly group?: string;
+  readonly groupMemberProfiles?: SamwiseUserProfile[];
+  readonly taskCreatorOpened?: boolean;
+  readonly assignedMember?: SamwiseUserProfile;
+  readonly clearAssignedMember?: () => void;
 };
 
 /**
@@ -46,6 +58,7 @@ const initialState = (): State => ({
   owner: '',
   name: '',
   tag: NONE_TAG_ID, // the id of the None tag.
+  member: undefined,
   date: new Date(),
   complete: false,
   inFocus: false,
@@ -204,6 +217,14 @@ export class TaskCreator extends React.PureComponent<Props, State> {
     this.setState({ tag, tagPickerOpened: false }, this.focusTaskName);
 
   /**
+   * Edit the member.
+   *
+   * @param {string} member the new member.
+   */
+  private editMember = (member?: SamwiseUserProfile): void =>
+    this.setState({ member, tagPickerOpened: false }, this.focusTaskName);
+
+  /**
    * Edit the date.
    *
    * @param {Date} date the new date, or null for cancel.
@@ -338,12 +359,19 @@ export class TaskCreator extends React.PureComponent<Props, State> {
    */
   private renderOtherInfoEditor(): ReactElement | null {
     const { opened } = this.state;
-    const { view } = this.props;
-    if (!opened) {
+    const {
+      view,
+      groupMemberProfiles,
+      taskCreatorOpened,
+      assignedMember,
+      clearAssignedMember,
+    } = this.props;
+    if (!opened && !taskCreatorOpened) {
       return null;
     }
     const {
       tag,
+      member,
       date,
       inFocus,
       subTasks,
@@ -425,10 +453,12 @@ export class TaskCreator extends React.PureComponent<Props, State> {
               />
             ) : (
               <GroupMemberPicker
-                tag={tag}
+                member={assignedMember || member}
                 opened={tagPickerOpened}
-                onTagChange={this.editTag}
+                onMemberChange={this.editMember}
                 onPickerOpened={this.openTagPicker}
+                groupMemberProfiles={groupMemberProfiles || []}
+                clearAssignedMember={clearAssignedMember}
               />
             )}
           </div>

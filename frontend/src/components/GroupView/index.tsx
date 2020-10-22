@@ -17,9 +17,7 @@ type Props = {
   readonly changeView: (selectedGroup: string | undefined) => void;
 };
 
-const useGroupMemberProfiles = (
-  groupMemberEmails: readonly string[]
-): readonly SamwiseUserProfile[] => {
+const useGroupMemberProfiles = (groupMemberEmails: readonly string[]): SamwiseUserProfile[] => {
   const [emailProfileMapping, setEmailProfileMapping] = useState<Record<string, FirestoreUserData>>(
     {}
   );
