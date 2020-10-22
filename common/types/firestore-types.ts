@@ -7,7 +7,7 @@ export type FirestoreCommon = {
 };
 
 export type FirestoreCommonNew = {
-  readonly owner: string[];
+  readonly owner: readonly string[];
   readonly order: number;
 };
 
