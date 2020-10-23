@@ -98,7 +98,6 @@ export default function EditorHeader({
               left: editorRefPos.left,
               right: editorRefPos.right,
               top: editorRefPos.top + 40,
-              // top: editorRefPos.top - 516,
               width: editorRefPos.width,
               zIndex: 10,
             } as const;
@@ -118,26 +117,10 @@ export default function EditorHeader({
           position: 'absolute',
           right: '-8px',
           bottom: '30px',
-          zIndex: '4',
+          zIndex: 4,
           top: '36px',
         } as const;
       })()}
-
-      // style={
-      //   !editorRefPos
-      //     ? {}
-      //     : {
-      //         position: 'fixed',
-      //         bottom: editorRefPos.bottom,
-      //         height: editorRefPos.height,
-      //         left: editorRefPos.left,
-      //         right: editorRefPos.right,
-      //         top: editorRefPos.top + 40,
-      //         // top: editorRefPos.top - 516,
-      //         width: editorRefPos.width,
-      //         zIndex: 10,
-      //       }
-      // }
     >
       <Calendar
         value={date}
