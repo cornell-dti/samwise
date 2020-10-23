@@ -1302,10 +1302,10 @@
     exec-sh "^0.3.2"
     minimist "^1.2.0"
 
-"@dev-sam/tssa@^0.0.9":
-  version "0.0.9"
-  resolved "https://registry.yarnpkg.com/@dev-sam/tssa/-/tssa-0.0.9.tgz#5adbb0372c5466f6afe1b0c65a0fa2efc3365ed3"
-  integrity sha512-s7uk5nLNoNS9NRJkClJUid/CJlKjCB5qUom37v9ht5x1Yu/woCcGYQZBsDV7XQi1EMpruVHUF6o65yL2BEJdAQ==
+"@dev-sam/tssa@^0.0.10":
+  version "0.0.10"
+  resolved "https://registry.yarnpkg.com/@dev-sam/tssa/-/tssa-0.0.10.tgz#7dcfefaad54e71400c36a567779c4744ee938285"
+  integrity sha512-m8OAuKbAIg9N1S8i8pli07FvDVO9LJ7LYBvvdjhjbUzvDfFZEfSZNwA/Lt9D55wWWkeuAslIJ62ttFl3fUDXyg==
   dependencies:
     "@octokit/rest" "^18.0.6"
     "@types/diff" "^4.0.2"
