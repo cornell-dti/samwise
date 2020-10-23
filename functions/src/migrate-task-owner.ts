@@ -12,18 +12,12 @@ const migrateTaskOwners = async (): Promise<void> => {
     const data = document.data();
     if (data != null) {
       const task = data as FirestoreCommonTask;
-      const { children, owner } = task;
-      idListToUpdate.push({
-        id,
-        owner,
-      });
-      if (children != null) {
-        children.forEach((childId) =>
-          idListToUpdate.push({
-            id: childId,
-            owner,
-          })
-        );
+      const { owner } = task;
+      if (typeof owner === 'string') {
+        idListToUpdate.push({
+          id,
+          owner,
+        });
       }
     }
   });
