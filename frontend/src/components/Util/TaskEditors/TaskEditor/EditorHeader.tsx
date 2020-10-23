@@ -103,7 +103,6 @@ export default function EditorHeader({
               zIndex: 10,
             };
           }
-
           return {
             position: 'fixed',
             bottom: editorRefPos.bottom,
