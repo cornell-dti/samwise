@@ -88,20 +88,51 @@ export default function EditorHeader({
   const editorRefPos = editorRef?.current?.getBoundingClientRect();
   const dateEditor = doesShowDateEditor && date instanceof Date && (
     <div
-      style={
-        !editorRefPos
-          ? {}
-          : {
+      style={(() => {
+        if (editorRefPos) {
+          if (calendarPosition === 'top') {
+            return {
               position: 'fixed',
               bottom: editorRefPos.bottom,
               height: editorRefPos.height,
               left: editorRefPos.left,
               right: editorRefPos.right,
-              top: editorRefPos.top + 35,
+              top: editorRefPos.top + 40,
+              // top: editorRefPos.top - 516,
               width: editorRefPos.width,
               zIndex: 10,
-            }
-      }
+            };
+          }
+
+          return {
+            position: 'fixed',
+            bottom: editorRefPos.bottom,
+            height: editorRefPos.height,
+            left: editorRefPos.left,
+            right: editorRefPos.right,
+            top: editorRefPos.top - 516,
+            width: editorRefPos.width,
+            zIndex: 10,
+          };
+        }
+        return {};
+      })()}
+
+      // style={
+      //   !editorRefPos
+      //     ? {}
+      //     : {
+      //         position: 'fixed',
+      //         bottom: editorRefPos.bottom,
+      //         height: editorRefPos.height,
+      //         left: editorRefPos.left,
+      //         right: editorRefPos.right,
+      //         top: editorRefPos.top + 40,
+      //         // top: editorRefPos.top - 516,
+      //         width: editorRefPos.width,
+      //         zIndex: 10,
+      //       }
+      // }
     >
       <Calendar
         value={date}

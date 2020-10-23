@@ -136,19 +136,19 @@ img.TaskEditorIcon:focus,
   background: white;
 }
 
-.TaskEditorCalendarTop {
-  position: absolute;
-  right: -8px;
-  bottom: 190px;
-  z-index: 4;
-}
+// .TaskEditorCalendarTop {
+//   position: absolute;
+//   right: -8px;
+//   bottom: 30px;
+//   z-index: 4;
+// }
 
-.TaskEditorCalendarBottom {
-  position: absolute;
-  right: -1px;
-  z-index: 4;
-  top: 36px;
-}
+// .TaskEditorCalendarBottom {
+//   position: absolute;
+//   right: -1px;
+//   z-index: 4;
+//   top: 36px;
+// }
 
 .TaskEditorCalendar div > abbr {
   color: black;
