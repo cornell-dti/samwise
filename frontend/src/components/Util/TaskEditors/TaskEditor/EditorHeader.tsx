@@ -101,20 +101,26 @@ export default function EditorHeader({
               // top: editorRefPos.top - 516,
               width: editorRefPos.width,
               zIndex: 10,
-            };
+            } as const;
           }
           return {
             position: 'fixed',
             bottom: editorRefPos.bottom,
-            height: editorRefPos.height,
+            height: editorRefPos.height > 300 ? 200 : editorRefPos.height,
             left: editorRefPos.left,
             right: editorRefPos.right,
             top: editorRefPos.top - 516,
             width: editorRefPos.width,
             zIndex: 10,
-          };
+          } as const;
         }
-        return {};
+        return {
+          position: 'absolute',
+          right: '-8px',
+          bottom: '30px',
+          zIndex: '4',
+          top: '36px',
+        } as const;
       })()}
 
       // style={
