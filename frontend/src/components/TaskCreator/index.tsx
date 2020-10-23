@@ -18,7 +18,6 @@ import GroupMemberPicker from './GroupMemberPicker';
 import { addTask, TaskWithoutIdOrderChildren } from '../../firebase/actions';
 import SamwiseIcon from '../UI/SamwiseIcon';
 import styles from './index.module.scss';
-import { getAppUser } from '../../firebase/auth-util';
 
 type SimpleTask = Omit<Task, 'type' | 'order' | 'children' | 'metadata'>;
 
@@ -144,9 +143,7 @@ export class TaskCreator extends React.PureComponent<Props, State> {
     if (e != null) {
       e.preventDefault();
     }
-
     const { owner, name, tag, date, complete, inFocus, subTasks } = this.state;
-
     if (name === '') {
       return;
     }
