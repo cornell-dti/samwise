@@ -31,4 +31,6 @@ it('shallowArrayEqualWorks', () => {
   ).toBeTruthy();
   expect(shallowArrayEqual([{ foo: 'bar', bar: 'foo' }], [])).toBeFalsy();
   expect(shallowArrayEqual([{ foo: 'bar', bar: 'foo' }], [{ foo: 'bar' }])).toBeFalsy();
+  expect(shallowArrayEqual([''], [''])).toBeTruthy();
+  expect(shallowArrayEqual([3, 4, 5, 6], [3, 4, 7, 3])).toBeFalsy();
 });

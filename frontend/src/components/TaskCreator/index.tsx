@@ -18,6 +18,7 @@ import GroupMemberPicker from './GroupMemberPicker';
 import { addTask, TaskWithoutIdOrderChildren } from '../../firebase/actions';
 import SamwiseIcon from '../UI/SamwiseIcon';
 import styles from './index.module.scss';
+import { getAppUser } from '../../firebase/auth-util';
 
 type SimpleTask = Omit<Task, 'type' | 'order' | 'children' | 'metadata'>;
 
@@ -143,7 +144,9 @@ export class TaskCreator extends React.PureComponent<Props, State> {
     if (e != null) {
       e.preventDefault();
     }
+
     const { owner, name, tag, date, complete, inFocus, subTasks } = this.state;
+
     if (name === '') {
       return;
     }
@@ -191,19 +194,6 @@ export class TaskCreator extends React.PureComponent<Props, State> {
    * Part 3: Various Editors
    * --------------------------------------------------------------------------------
    */
-
-  /**
-   * Edit the owner for a personal task.
-   *
-   * @param {string} member the new owner.
-   */
-  private editOwner = (e: SyntheticEvent<HTMLInputElement>): void => {
-    const { owner } = this.state;
-    if (owner.length > 1) {
-      throw new Error('editOwner should only be used for personal tasks');
-    }
-    this.setState({ owner: [e.currentTarget.value] });
-  };
 
   /**
    * Edit the task name.

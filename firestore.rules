@@ -1,7 +1,10 @@
 service cloud.firestore {
   match /databases/{database}/documents {
   	function canCreate() {
-    	return request.auth.token.email in request.resource.data.owner || request.auth.token.email == request.resource.data.owner;
+    	return request.resource.data.owner == request.auth.token.email;
+    }
+    function canCreateTask() {
+    	return request.auth.token.email in request.resource.data.owner;
     }
     function canReadWriteDelete() {
     	return request.auth.token.email in resource.data.owner || request.auth.token.email == resource.data.owner;
@@ -26,7 +29,7 @@ service cloud.firestore {
     	allow read, write, delete: if canReadWriteDelete()
     }
   	match /samwise-tasks/{task} {
-    	allow create: if canCreate()
+    	allow create: if canCreateTask()
     	allow read, write, delete: if canReadWriteDelete()
       	|| request.auth.token.email in getGroupMembers(resource.data.group);
     }

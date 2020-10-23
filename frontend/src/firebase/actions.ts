@@ -56,8 +56,8 @@ async function createFirestoreObject<T>(
   return { ...source, owner, order };
 }
 
-const mergeWithOwner = <T>(obj: T): T & { readonly owner: string[] } => ({
-  owner: [getAppUser().email],
+const mergeWithOwner = <T>(obj: T): T & { readonly owner: string } => ({
+  owner: getAppUser().email,
   ...obj,
 });
 
@@ -124,7 +124,7 @@ export const addTask = (
   task: TaskWithoutIdOrderChildren,
   subTasks: WithoutId<SubTask>[]
 ): void => {
-  const taskOwner = owner === [''] ? [getAppUser().email] : owner;
+  const taskOwner = [''].toString() === owner.toString() ? [getAppUser().email] : owner;
   const newTaskId = getNewTaskId();
   const batch = db().batch();
   asyncAddTask(newTaskId, taskOwner, task, subTasks, batch).then(({ createdSubTasks }) => {
