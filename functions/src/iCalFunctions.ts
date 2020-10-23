@@ -35,18 +35,21 @@ export function parseICal(link: string, user: string): void {
             .get()
             .then(async (querySnapshot: QuerySnapshot) => {
               if (querySnapshot.size === 0) {
-                await db.tasksCollection().doc(taskID).set({
-                  children: [],
-                  complete: false,
-                  date: endDate,
-                  inFocus: false,
-                  name: taskName,
-                  order,
-                  owner: user,
-                  tag: 'THE_GLORIOUS_NONE_TAG',
-                  type: 'ONE_TIME',
-                  icalUID: uid,
-                });
+                await db
+                  .tasksCollection()
+                  .doc(taskID)
+                  .set({
+                    children: [],
+                    complete: false,
+                    date: endDate,
+                    inFocus: false,
+                    name: taskName,
+                    order,
+                    owner: [user],
+                    tag: 'THE_GLORIOUS_NONE_TAG',
+                    type: 'ONE_TIME',
+                    icalUID: uid,
+                  });
               } else {
                 querySnapshot.forEach((doc: DocumentSnapshot) => {
                   db.tasksCollection().doc(doc.id).update({

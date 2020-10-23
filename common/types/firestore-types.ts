@@ -2,7 +2,7 @@ import { firestore } from 'firebase/app';
 import { RepeatingPattern } from './store-types';
 
 export type FirestoreCommon = {
-  readonly owner: string;
+  readonly owner: readonly string[];
   readonly order: number;
 };
 

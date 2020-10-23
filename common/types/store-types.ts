@@ -63,7 +63,7 @@ export type TaskMetadata = OneTimeTaskMetadata | RepeatingTaskMetadata | GroupTa
 export type Task<M = TaskMetadata> = {
   readonly id: string;
   readonly order: number;
-  readonly owner: string;
+  readonly owner: readonly string[];
   readonly name: string; // Example: "Task 1 name"
   readonly tag: string; // ID of the tag
   readonly complete: boolean;
@@ -73,7 +73,7 @@ export type Task<M = TaskMetadata> = {
 };
 
 export type MainTask = {
-  readonly owner: string;
+  readonly owner: readonly string[];
   readonly name: string;
   readonly tag: string;
   readonly date: Date | RepeatingDate;
