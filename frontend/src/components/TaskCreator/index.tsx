@@ -193,19 +193,6 @@ export class TaskCreator extends React.PureComponent<Props, State> {
    */
 
   /**
-   * Edit the owner for a personal task.
-   *
-   * @param {string} member the new owner.
-   */
-  private editOwner = (e: SyntheticEvent<HTMLInputElement>): void => {
-    const { owner } = this.state;
-    if (owner.length > 1) {
-      throw new Error('editOwner should only be used for personal tasks');
-    }
-    this.setState({ owner: [e.currentTarget.value] });
-  };
-
-  /**
    * Edit the task name.
    *
    * @param e the event that contains the new task name.

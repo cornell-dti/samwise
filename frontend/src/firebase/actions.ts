@@ -50,14 +50,14 @@ const actions = new Actions(() => getAppUser().email, database);
 async function createFirestoreObject<T>(
   orderFor: 'tags' | 'tasks',
   source: T,
-  owner: readonly string[]
+  owner: readonly string[] | string
 ): Promise<T & FirestoreCommon> {
   const order = await actions.orderManager.allocateNewOrder(orderFor);
   return { ...source, owner, order };
 }
 
-const mergeWithOwner = <T>(obj: T): T & { readonly owner: string[] } => ({
-  owner: [getAppUser().email],
+const mergeWithOwner = <T>(obj: T): T & { readonly owner: string } => ({
+  owner: getAppUser().email,
   ...obj,
 });
 
@@ -113,7 +113,7 @@ const asyncAddTask = async (
   });
   const subtaskIds = createdSubTasks.map((s) => s.id);
   const { metadata, ...rest } = task;
-  rest.owner = baseTask.owner;
+  rest.owner = baseTask.owner as readonly string[];
   const firestoreTask: FirestoreTask = { ...baseTask, ...rest, ...metadata, children: subtaskIds };
   batch.set(database.tasksCollection().doc(newTaskId), firestoreTask);
   return { firestoreTask, createdSubTasks };
@@ -124,7 +124,7 @@ export const addTask = (
   task: TaskWithoutIdOrderChildren,
   subTasks: WithoutId<SubTask>[]
 ): void => {
-  const taskOwner = owner === [''] ? [getAppUser().email] : owner;
+  const taskOwner = [''].toString() === owner.toString() ? [getAppUser().email] : owner;
   const newTaskId = getNewTaskId();
   const batch = db().batch();
   asyncAddTask(newTaskId, taskOwner, task, subTasks, batch).then(({ createdSubTasks }) => {
