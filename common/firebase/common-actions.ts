@@ -19,7 +19,10 @@ export default class Actions {
     source: T
   ): Promise<T & FirestoreCommon> => {
     const order = await this.orderManager.allocateNewOrder(orderFor);
-    return { ...source, owner: [this.getUserEmail()], order };
+    if (orderFor === 'tasks') {
+      return { ...source, owner: [this.getUserEmail()], order };
+    }
+    return { ...source, owner: this.getUserEmail(), order };
   };
 
   /*
