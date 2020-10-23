@@ -55,7 +55,7 @@ const listenSubTasksChange = (
   database.subTasksCollection().where('owner', '==', email).onSnapshot(listener);
 const listenSettingsChange = (
   email: string,
-  listener: (snapshot: DocumentSnapshot) => void
+  listener: (snapshot: DocumentSnapshot<Settings>) => void
 ): UnmountCallback => database.settingsCollection().doc(email).onSnapshot(listener);
 const listenBannerMessageChange = (
   email: string,

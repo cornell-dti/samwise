@@ -69,9 +69,10 @@ export default async function getICalLink(): Promise<void> {
     .settingsCollection()
     .where('canvasCalendar', '>', '')
     .get()
-    .then((querySnapshot: QuerySnapshot) => {
-      querySnapshot.forEach((doc: DocumentSnapshot) => {
-        const link: string = doc.data()?.canvasCalendar;
+    .then((querySnapshot) => {
+      querySnapshot.forEach((doc) => {
+        const link = doc.data()?.canvasCalendar;
+        if (link == null) return;
         try {
           parseICal(link, doc.id);
         } catch {
