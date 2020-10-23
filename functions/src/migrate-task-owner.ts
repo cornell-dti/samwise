@@ -17,12 +17,14 @@ const migrateTaskOwners = async (): Promise<void> => {
         id,
         owner,
       });
-      children.forEach((childId) =>
-        idListToUpdate.push({
-          id: childId,
-          owner,
-        })
-      );
+      if (children != null) {
+        children.forEach((childId) =>
+          idListToUpdate.push({
+            id: childId,
+            owner,
+          })
+        );
+      }
     }
   });
   // Used to overcome to the 500 item per batch limit.
