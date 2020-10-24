@@ -45,7 +45,7 @@ const RightView = ({ group, groupMemberProfiles, tasks }: Props): ReactElement =
       <div className={styles.GroupTaskCreator}>
         <TaskCreator
           view="group"
-          group={group.name}
+          group={group.id}
           groupMemberProfiles={groupMemberProfiles}
           taskCreatorOpened={taskCreatorOpened}
           assignedMember={assignedMember}
