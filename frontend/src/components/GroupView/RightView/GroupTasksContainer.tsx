@@ -14,11 +14,11 @@ type IdOrder = {
   readonly order: number;
 };
 
-function renderTaskList(tasks: readonly Task[]): ReactNode {
-  return tasks.map((task) => <GroupTask key={task.id} original={task} />);
+function renderTaskList(tasks: readonly Task[], memberName: string): ReactNode {
+  return tasks.map((task) => <GroupTask key={task.id} original={task} memberName={memberName} />);
 }
 
-function GroupTasksContainer({ tasks }: Props): ReactElement {
+function GroupTasksContainer({ tasks, memberName }: Props): ReactElement {
   const completedTasks = tasks.filter((task) => task.complete);
 
   return (
@@ -27,7 +27,7 @@ function GroupTasksContainer({ tasks }: Props): ReactElement {
       style={completedTasks.length > 0 ? { padding: '12px 0 0 0' } : {}}
     >
       {completedTasks.length > 0 ? <CompletedTasksContainer tasks={completedTasks} /> : null}
-      {renderTaskList(tasks)}
+      {renderTaskList(tasks, memberName)}
     </div>
   );
 }
