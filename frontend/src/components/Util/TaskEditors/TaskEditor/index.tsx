@@ -194,6 +194,7 @@ function TaskEditor({
   const pressEnterHandler = (caller: 'main-task' | number): void => {
     const order = caller === 'main-task' ? -1 : caller;
     let focused = false;
+
     for (let i = 0; i < subTasks.length; i += 1) {
       const { order: subtaskOrder } = subTasks[i];
       if (subtaskOrder > order) {
@@ -248,6 +249,7 @@ function TaskEditor({
           calendarPosition={calendarPosition}
           displayGrabber={displayGrabber == null ? false : displayGrabber}
           icalUID={canvasLinked ? icalUID : undefined}
+          editorRef={editorRef}
           memberName={memberName}
         />
         <MainTaskEditor
