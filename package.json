@@ -7,6 +7,7 @@
     "lint:fix": "yarn lint:ts --fix",
     "format": "prettier --write '**/*.{ts,js,tsx,jsx,scss,css,html}'",
     "format:check": "prettier --check '**/*.{ts,js,tsx,jsx,scss,css,html}'",
+    "tsc": "yarn workspaces run tsc",
     "test": "env-cmd -f .env.testing jest",
     "tssa": "tssa common frontend functions"
   },
@@ -17,7 +18,7 @@
   ],
   "devDependencies": {
     "@babel/core": "^7.11.4",
-    "@dev-sam/tssa": "^0.0.9",
+    "@dev-sam/tssa": "^0.0.10",
     "@types/jest": "^26.0.10",
     "@types/node": "^13.7.0",
     "@typescript-eslint/eslint-plugin": "^3.9.1",

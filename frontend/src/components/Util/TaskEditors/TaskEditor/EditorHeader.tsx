@@ -17,6 +17,7 @@ type Props = TagAndDate & {
   readonly displayGrabber: boolean;
   readonly calendarPosition: CalendarPosition;
   readonly icalUID?: string;
+  readonly editorRef?: { current: HTMLFormElement | null };
   readonly memberName?: string; // only supplied if task is a group task
 };
 
@@ -35,6 +36,7 @@ export default function EditorHeader({
   displayGrabber,
   calendarPosition,
   icalUID,
+  editorRef,
   memberName,
 }: Props): ReactElement {
   const [editorDisplayStatus, setEditorDisplayStatus] = React.useState<EditorDisplayStatus>({
@@ -82,16 +84,56 @@ export default function EditorHeader({
     ) : (
       <span>Repeated</span>
     );
+
+  const editorRefPos = editorRef?.current?.getBoundingClientRect();
   const dateEditor = doesShowDateEditor && date instanceof Date && (
-    <Calendar
-      value={date}
-      className={
-        calendarPosition === 'top' ? styles.TaskEditorCalendarTop : styles.TaskEditorCalendarBottom
-      }
-      minDate={new Date()}
-      onChange={editTaskDate}
-      calendarType="US"
-    />
+    <div
+      style={(() => {
+        if (editorRefPos) {
+          if (calendarPosition === 'top') {
+            return {
+              position: 'fixed',
+              bottom: editorRefPos.bottom,
+              height: editorRefPos.height,
+              left: editorRefPos.left,
+              right: editorRefPos.right,
+              top: editorRefPos.top - 180,
+              width: editorRefPos.width,
+              zIndex: 10,
+            } as const;
+          }
+          return {
+            position: 'fixed',
+            bottom: editorRefPos.bottom,
+            height: editorRefPos.height > 300 ? 200 : editorRefPos.height,
+            left: editorRefPos.left,
+            right: editorRefPos.right,
+            top: editorRefPos.top + 43,
+            width: editorRefPos.width,
+            zIndex: 10,
+          } as const;
+        }
+        return {
+          position: 'absolute',
+          right: '-8px',
+          bottom: '30px',
+          zIndex: 4,
+          top: '36px',
+        } as const;
+      })()}
+    >
+      <Calendar
+        value={date}
+        className={`${
+          calendarPosition === 'top'
+            ? styles.TaskEditorCalendarTop
+            : styles.TaskEditorCalendarBottom
+        } `}
+        minDate={new Date()}
+        onChange={editTaskDate}
+        calendarType="US"
+      />
+    </div>
   );
   const isCanvasTask = typeof icalUID === 'string' ? icalUID !== '' : false;
 

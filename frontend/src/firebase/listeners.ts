@@ -46,7 +46,8 @@ const listenTagsChange = (
 const listenTasksChange = (
   email: string,
   listener: (snapshot: QuerySnapshot) => void
-): UnmountCallback => database.tasksCollection().where('owner', '==', email).onSnapshot(listener);
+): UnmountCallback =>
+  database.tasksCollection().where('owner', 'array-contains', email).onSnapshot(listener);
 const listenSubTasksChange = (
   email: string,
   listener: (snapshot: QuerySnapshot) => void
@@ -54,7 +55,7 @@ const listenSubTasksChange = (
   database.subTasksCollection().where('owner', '==', email).onSnapshot(listener);
 const listenSettingsChange = (
   email: string,
-  listener: (snapshot: DocumentSnapshot) => void
+  listener: (snapshot: DocumentSnapshot<Settings>) => void
 ): UnmountCallback => database.settingsCollection().doc(email).onSnapshot(listener);
 const listenBannerMessageChange = (
   email: string,
@@ -141,6 +142,7 @@ const initializeFirebaseListeners = (onFirstFetched: () => void): (() => void) =
           return;
         }
         const { owner, children: childrenArr, ...rest } = data as FirestoreTask;
+        const ownerArray = owner as readonly string[];
         const children = Set(childrenArr);
         const taskCommon = { id, children: children.toArray() };
         let task: TaskWithChildrenId;
@@ -149,7 +151,7 @@ const initializeFirebaseListeners = (onFirstFetched: () => void): (() => void) =
           const date = transformDate(timestamp);
           task = {
             ...taskCommon,
-            owner,
+            owner: ownerArray,
             ...oneTimeTaskRest,
             metadata: { type: 'ONE_TIME', date, icalUID },
           };
@@ -158,7 +160,7 @@ const initializeFirebaseListeners = (onFirstFetched: () => void): (() => void) =
           const date = transformDate(timestamp);
           task = {
             ...taskCommon,
-            owner,
+            owner: ownerArray,
             ...groupTaskRest,
             metadata: { type: 'GROUP', date, group },
           };
@@ -181,7 +183,7 @@ const initializeFirebaseListeners = (onFirstFetched: () => void): (() => void) =
             date: { startDate, endDate, pattern: firestoreRepeats.pattern },
             forks,
           };
-          task = { ...taskCommon, owner, ...otherTaskProps, metadata };
+          task = { ...taskCommon, owner: ownerArray, ...otherTaskProps, metadata };
         }
         if (change.type === 'added') {
           created.push(task);

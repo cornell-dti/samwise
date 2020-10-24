@@ -3,7 +3,8 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "build": "tsc --noEmit false"
+    "tsc": "tsc --noEmit",
+    "build": "yarn tsc"
   },
   "dependencies": {
     "firebase": "^7.21.0",

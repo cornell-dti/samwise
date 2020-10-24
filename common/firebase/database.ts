@@ -1,5 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
+import { Settings } from '../types/store-types';
+
 type DocumentData = { [field: string]: any };
 type UpdateData = { [fieldPath: string]: any };
 type WhereFilterOp =
@@ -16,15 +18,15 @@ export interface SetOptions {
   readonly merge?: boolean;
 }
 
-export interface DocumentReference {
+export interface DocumentReference<T = DocumentData> {
   readonly id: string;
-  readonly parent: CollectionReference;
+  readonly parent: CollectionReference<T>;
   readonly path: string;
-  set(data: DocumentData, options?: SetOptions): Promise<any>;
-  update(data: UpdateData): Promise<any>;
+  set(data: T, options?: SetOptions): Promise<any>;
+  update(data: Partial<T>): Promise<any>;
   delete(): Promise<any>;
-  get(): Promise<DocumentSnapshot>;
-  onSnapshot(onNext: (snapshot: DocumentSnapshot) => void): () => void;
+  get(): Promise<DocumentSnapshot<T>>;
+  onSnapshot(onNext: (snapshot: DocumentSnapshot<T>) => void): () => void;
 }
 
 export interface SnapshotListenOptions {
@@ -35,55 +37,54 @@ export interface SnapshotOptions {
   readonly serverTimestamps?: 'estimate' | 'previous' | 'none';
 }
 
-export interface QueryDocumentSnapshot extends DocumentSnapshot {
-  data(options?: SnapshotOptions): DocumentData;
+export interface QueryDocumentSnapshot<T = DocumentData> extends DocumentSnapshot {
+  data(options?: SnapshotOptions): T;
 }
 
-export interface DocumentChange {
+export interface DocumentChange<T = DocumentData> {
   readonly type: 'added' | 'removed' | 'modified';
-  readonly doc: QueryDocumentSnapshot;
+  readonly doc: QueryDocumentSnapshot<T>;
   readonly oldIndex: number;
   readonly newIndex: number;
 }
 
-export interface QuerySnapshot {
+export interface QuerySnapshot<T = DocumentData> {
   readonly query: Query;
-  readonly docs: QueryDocumentSnapshot[];
+  readonly docs: QueryDocumentSnapshot<T>[];
   readonly size: number;
   readonly empty: boolean;
   docChanges(options?: SnapshotListenOptions): DocumentChange[];
-  forEach(callback: (result: QueryDocumentSnapshot) => void, thisArg?: any): void;
+  forEach(callback: (result: QueryDocumentSnapshot<T>) => void, thisArg?: any): void;
 }
 
-export interface Query {
-  where(fieldPath: string, opStr: WhereFilterOp, value: any): Query;
-  orderBy(fieldPath: string, directionStr?: 'desc' | 'asc'): Query;
-  limit(limit: number): Query;
-  startAt(snapshot: DocumentSnapshot): Query;
-  startAt(...fieldValues: any[]): Query;
-  startAfter(snapshot: DocumentSnapshot): Query;
-  startAfter(...fieldValues: any[]): Query;
-  endBefore(snapshot: DocumentSnapshot): Query;
-  endBefore(...fieldValues: any[]): Query;
-  endAt(snapshot: DocumentSnapshot): Query;
-  endAt(...fieldValues: any[]): Query;
-  get(): Promise<QuerySnapshot>;
-  onSnapshot(onNext: (snapshot: QuerySnapshot) => void): () => void;
+export interface Query<T = DocumentData> {
+  where(fieldPath: string, opStr: WhereFilterOp, value: any): Query<T>;
+  orderBy(fieldPath: string, directionStr?: 'desc' | 'asc'): Query<T>;
+  limit(limit: number): Query<T>;
+  get(): Promise<QuerySnapshot<T>>;
+  onSnapshot(onNext: (snapshot: QuerySnapshot<T>) => void): () => void;
 }
 
-export interface CollectionReference extends Query {
+export interface FirestoreDataConverter<T> {
+  toFirestore(modelObject: T): DocumentData;
+  toFirestore(modelObject: Partial<T>, options: SetOptions): DocumentData;
+  fromFirestore(snapshot: QueryDocumentSnapshot): T;
+}
+
+export interface CollectionReference<T = DocumentData> extends Query<T> {
   readonly id: string;
   readonly parent: DocumentReference | null;
   readonly path: string;
-  doc(documentPath?: string): DocumentReference;
-  add(data: DocumentData): Promise<DocumentReference>;
+  doc(documentPath?: string): DocumentReference<T>;
+  add(data: T): Promise<DocumentReference<T>>;
+  withConverter<U>(converter: FirestoreDataConverter<U>): CollectionReference<U>;
 }
 
-export interface DocumentSnapshot {
+export interface DocumentSnapshot<T = DocumentData> {
   readonly exists: boolean;
-  readonly ref: DocumentReference;
+  readonly ref: DocumentReference<T>;
   readonly id: string;
-  data(): DocumentData | undefined;
+  data(): T | undefined;
 }
 
 export interface Transaction {
@@ -111,13 +112,37 @@ export interface CommonFirestore {
 
 type Collection = CollectionReference;
 
+const firestoreSettingsDataConverter: FirestoreDataConverter<Settings> = {
+  toFirestore(modelObject: Partial<Settings>) {
+    return modelObject;
+  },
+
+  fromFirestore(snapshot) {
+    const { canvasCalendar, completedOnboarding, theme } = snapshot.data() as Record<
+      string,
+      unknown
+    >;
+    if (
+      typeof canvasCalendar !== 'undefined' &&
+      canvasCalendar !== null &&
+      typeof canvasCalendar !== 'string'
+    ) {
+      throw new Error();
+    }
+    if (typeof completedOnboarding !== 'boolean') throw new Error();
+    if (theme !== 'light' && theme !== 'dark') throw new Error();
+    return { canvasCalendar, completedOnboarding, theme };
+  },
+};
+
 export default class Database {
   // eslint-disable-next-line no-useless-constructor
   constructor(public readonly db: () => CommonFirestore) {}
 
   orderManagerCollection = (): Collection => this.db().collection('samwise-order-manager');
 
-  settingsCollection = (): Collection => this.db().collection('samwise-settings');
+  settingsCollection = (): CollectionReference<Settings> =>
+    this.db().collection('samwise-settings').withConverter(firestoreSettingsDataConverter);
 
   bannerMessageStatusCollection = (): Collection => this.db().collection('samwise-banner-message');
 

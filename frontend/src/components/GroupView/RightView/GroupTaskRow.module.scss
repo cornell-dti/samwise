@@ -1,7 +1,7 @@
 .GroupTaskRow {
   display: flex;
   direction: row;
-  margin-bottom: 1em;
+  margin-bottom: 1.5em;
 }
 
 .ProfilePicGroupView {
@@ -52,4 +52,9 @@
   font-weight: bold;
   font-size: 10px;
   line-height: 12px;
+}
+
+.FlexibleRow {
+  display: flex;
+  direction: row;
 }

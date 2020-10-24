@@ -24,14 +24,13 @@ input.SearchInput {
   box-shadow: 1px 1px 10px 5px rgba(0, 0, 0, 0.15);
 }
 
-.MemberSearchBox li {
+.MemberButton {
   position: relative;
   text-align: left;
   padding: 4px 8px;
   margin: 0;
-  white-space: nowrap;
+  border: none;
   overflow: hidden;
-  text-overflow: ellipsis;
   width: 100%;
   color: black;
   background: rgba(255, 255, 255, 0.8);
@@ -39,7 +38,8 @@ input.SearchInput {
   transition: opacity 0.1s ease-in-out;
 }
 
-.MemberSearchBox li:hover,
-.MemberSearchBox li:active {
+.MemberButton:hover,
+.MemberButton:active {
   opacity: 1;
+  cursor: pointer;
 }

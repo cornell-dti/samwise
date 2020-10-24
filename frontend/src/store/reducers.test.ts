@@ -10,7 +10,7 @@ it('reducer works: new task creation -> subtask creation', () => {
       {
         id: '1',
         order: 4,
-        owner: 'foo',
+        owner: ['foo'],
         name: 'test',
         tag: 'foo',
         complete: true,
@@ -80,7 +80,7 @@ it('reducer works: subtask creation -> new task creation', () => {
       {
         id: '1',
         order: 4,
-        owner: 'foo',
+        owner: ['foo'],
         name: 'test',
         tag: 'foo',
         complete: true,
@@ -111,7 +111,7 @@ it('reducer works, task edit -> subtask creation', () => {
       {
         id: 'foo',
         order: 1,
-        owner: 'foo',
+        owner: ['foo'],
         name: 'Foo',
         tag: 'foo',
         complete: true,
@@ -161,7 +161,7 @@ it('reducer works, subtask creation -> task edit', () => {
       {
         id: 'foo',
         order: 1,
-        owner: 'foo',
+        owner: ['foo'],
         name: 'Foo',
         tag: 'foo',
         complete: true,

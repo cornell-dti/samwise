@@ -1,36 +1,28 @@
 import React, { ReactElement, KeyboardEvent } from 'react';
-import { connect } from 'react-redux';
-import { NONE_TAG, NONE_TAG_ID } from 'common/util/tag-util';
-import { State, Tag, SamwiseUserProfile } from 'common/types/store-types';
+import { NONE_TAG } from 'common/util/tag-util';
+import { SamwiseUserProfile } from 'common/types/store-types';
 import SearchGroupMember from '../Util/GroupMemberListPicker/SearchGroupMember';
 import styles from './Picker.module.scss';
 import SamwiseIcon from '../UI/SamwiseIcon';
 
 type OwnProps = {
-  readonly tag: string;
+  readonly member?: SamwiseUserProfile;
   readonly opened: boolean;
-  readonly onTagChange: (tag: string) => void;
+  readonly onMemberChange: (member: SamwiseUserProfile | undefined) => void;
   readonly onPickerOpened: () => void;
 };
 type Props = OwnProps & {
-  // subscribed from redux store.
-  readonly getTag: (id: string) => Tag;
+  readonly clearAssignedMember?: () => void;
+  readonly groupMemberProfiles: SamwiseUserProfile[];
 };
 
-// hardcoded member list
-const members: SamwiseUserProfile[] = [
-  { email: 'dl123@cornell.edu', name: 'Darien Lopez', photoURL: '' },
-  { email: 'sj234@cornell.edu', name: 'Sarah Johnson', photoURL: '' },
-  { email: 'mp678@cornell.edu', name: 'Michelle Parker', photoURL: '' },
-  { email: 'sj99@cornell.edu', name: 'Sarah Jo', photoURL: '' },
-];
-
-function GroupMemberPicker({
-  tag,
+export default function GroupMemberPicker({
+  member,
   opened,
-  onTagChange,
+  onMemberChange,
   onPickerOpened,
-  getTag,
+  clearAssignedMember,
+  groupMemberProfiles,
 }: Props): ReactElement {
   // Controllers
   const clickPicker = (): void => {
@@ -39,11 +31,13 @@ function GroupMemberPicker({
   const pressedPicker = (e: KeyboardEvent): void => {
     if (e.key === 'Enter' || e.key === ' ') onPickerOpened();
   };
-  const reset = (): void => onTagChange(NONE_TAG_ID);
+  const reset = (): void => {
+    onMemberChange(undefined);
+    if (clearAssignedMember) clearAssignedMember();
+  };
   // Nodes
   const displayedNode = (isDefault: boolean): ReactElement => {
-    const { name, color, classId } = getTag(tag);
-    const style = isDefault ? { background: NONE_TAG.color } : { background: color };
+    const style = { background: NONE_TAG.color };
     const internal = isDefault ? (
       <>
         <span className={styles.TagDisplay}>
@@ -53,37 +47,32 @@ function GroupMemberPicker({
       </>
     ) : (
       <>
-        <span className={styles.TagDisplay}>{classId != null ? name.split(':')[0] : name}</span>
+        <span className={styles.TagDisplay}>{member ? member.name : 'assign to'}</span>
         <button type="button" className={styles.ResetButton} onClick={reset}>
           &times;
         </button>
       </>
     );
     return (
-      <span
-        role="presentation"
+      <button
+        type="button"
         onClick={clickPicker}
         onKeyPress={pressedPicker}
-        className={styles.Label}
+        className={`${styles.TagButton} ${styles.Label}`}
         style={style}
       >
         {internal}
-      </span>
+      </button>
     );
   };
   return (
     <div className={styles.Main}>
-      {displayedNode(tag === NONE_TAG_ID)}
+      {displayedNode(member === undefined)}
       {opened && (
         <div>
-          <SearchGroupMember members={members} />
+          <SearchGroupMember members={groupMemberProfiles} onMemberChange={onMemberChange} />
         </div>
       )}
     </div>
   );
 }
-
-const Connected = connect(({ tags }: State) => ({
-  getTag: (id: string) => tags.get(id) ?? NONE_TAG,
-}))(GroupMemberPicker);
-export default Connected;

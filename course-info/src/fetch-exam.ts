@@ -39,7 +39,14 @@ function parseSemiFinalLine(line: string): ExamInfo {
   const subject = segments[0];
   const courseNumber = segments[1];
   const sectionNumber = segments[2];
-
+  if (subject === 'CS' && courseNumber === '2800') {
+    return {
+      subject,
+      courseNumber,
+      sectionNumber,
+      time: new Date(2020, 10, 17, 19, 30).getTime(),
+    };
+  }
   const dateFormat = segments[3];
   const dateData = dateFormat.split('-');
   let dateTimeString = '';
