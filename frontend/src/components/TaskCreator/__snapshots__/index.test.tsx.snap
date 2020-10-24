@@ -4,16 +4,6 @@ exports[`TaskCreator matches snapshot 1`] = `
 <div
   className="TaskCreator"
 >
-  <div
-    className="CloseNewTask"
-    onClick={[Function]}
-    role="presentation"
-    style={
-      Object {
-        "display": "none",
-      }
-    }
-  />
   <form
     className="NewTaskWrap"
     onFocus={[Function]}
