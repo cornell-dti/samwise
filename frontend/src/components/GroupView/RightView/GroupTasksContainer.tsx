@@ -6,6 +6,7 @@ import CompletedTasksContainer from './CompletedTasks/CompletedTasksContainer';
 
 type Props = {
   readonly tasks: readonly Task[];
+  readonly memberName: string;
 };
 
 type IdOrder = {
