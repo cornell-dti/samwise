@@ -97,7 +97,7 @@ export default function EditorHeader({
               height: editorRefPos.height,
               left: editorRefPos.left,
               right: editorRefPos.right,
-              top: editorRefPos.top + 40,
+              top: editorRefPos.top - 180,
               width: editorRefPos.width,
               zIndex: 10,
             } as const;
@@ -108,7 +108,7 @@ export default function EditorHeader({
             height: editorRefPos.height > 300 ? 200 : editorRefPos.height,
             left: editorRefPos.left,
             right: editorRefPos.right,
-            top: editorRefPos.top - 516,
+            top: editorRefPos.top + 43,
             width: editorRefPos.width,
             zIndex: 10,
           } as const;
