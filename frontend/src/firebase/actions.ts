@@ -50,7 +50,7 @@ const actions = new Actions(() => getAppUser().email, database);
 async function createFirestoreObject<T>(
   orderFor: 'tags' | 'tasks',
   source: T,
-  owner: string
+  owner: readonly string[] | string
 ): Promise<T & FirestoreCommon> {
   const order = await actions.orderManager.allocateNewOrder(orderFor);
   return { ...source, owner, order };
@@ -99,7 +99,7 @@ export const removeTag = (id: string): void => {
 
 const asyncAddTask = async (
   newTaskId: string,
-  owner: string,
+  owner: readonly string[],
   task: TaskWithoutIdOrderChildren,
   subTasks: WithoutId<SubTask>[],
   batch: WriteBatch
@@ -113,18 +113,18 @@ const asyncAddTask = async (
   });
   const subtaskIds = createdSubTasks.map((s) => s.id);
   const { metadata, ...rest } = task;
-  rest.owner = baseTask.owner;
+  rest.owner = baseTask.owner as readonly string[];
   const firestoreTask: FirestoreTask = { ...baseTask, ...rest, ...metadata, children: subtaskIds };
   batch.set(database.tasksCollection().doc(newTaskId), firestoreTask);
   return { firestoreTask, createdSubTasks };
 };
 
 export const addTask = (
-  owner: string,
+  owner: readonly string[],
   task: TaskWithoutIdOrderChildren,
   subTasks: WithoutId<SubTask>[]
 ): void => {
-  const taskOwner = owner === '' ? getAppUser().email : owner;
+  const taskOwner = [''].toString() === owner.toString() ? [getAppUser().email] : owner;
   const newTaskId = getNewTaskId();
   const batch = db().batch();
   asyncAddTask(newTaskId, taskOwner, task, subTasks, batch).then(({ createdSubTasks }) => {
@@ -259,8 +259,7 @@ export const forkTaskWithDiff = (
   });
   const batch = database.db().batch();
   const forkId = getNewTaskId();
-  // owner = '' for non-group tasks, so owner is set to the logged-in user
-  const owner = getAppUser().email;
+  const owner = [getAppUser().email];
   asyncAddTask(forkId, owner, newMainTask, newSubTasks, batch).then(() => {
     batch.update(database.tasksCollection().doc(id), {
       forks: firestore.FieldValue.arrayUnion({ forkId, replaceDate }),
@@ -648,7 +647,20 @@ export const importCourseExams = (): void => {
     }
     allCoursesWithId.forEach((course: Course) => {
       course.examTimes.forEach(({ type, time }) => {
-        const courseType = type === 'final' ? 'Final' : 'Prelim';
+        let courseType: string;
+        switch (type) {
+          case 'final':
+            courseType = 'Final';
+            break;
+          case 'prelim':
+            courseType = 'Prelim';
+            break;
+          case 'semifinal':
+            courseType = 'Semifinal';
+            break;
+          default:
+            throw new Error('Undefined course exam type');
+        }
         const examName = `${course.subject} ${course.courseNumber} ${courseType}`;
         const t = new Date(time);
         const filter = (task: Task): boolean => {
@@ -670,7 +682,7 @@ export const importCourseExams = (): void => {
         };
         if (!Array.from(tasks.values()).some(filter)) {
           const newTask: TaskWithoutIdOrderChildren<OneTimeTaskMetadata> = {
-            owner: getAppUser().email,
+            owner: [getAppUser().email],
             name: examName,
             tag: tag.id,
             complete: false,

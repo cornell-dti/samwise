@@ -35,18 +35,21 @@ export function parseICal(link: string, user: string): void {
             .get()
             .then(async (querySnapshot: QuerySnapshot) => {
               if (querySnapshot.size === 0) {
-                await db.tasksCollection().doc(taskID).set({
-                  children: [],
-                  complete: false,
-                  date: endDate,
-                  inFocus: false,
-                  name: taskName,
-                  order,
-                  owner: user,
-                  tag: 'THE_GLORIOUS_NONE_TAG',
-                  type: 'ONE_TIME',
-                  icalUID: uid,
-                });
+                await db
+                  .tasksCollection()
+                  .doc(taskID)
+                  .set({
+                    children: [],
+                    complete: false,
+                    date: endDate,
+                    inFocus: false,
+                    name: taskName,
+                    order,
+                    owner: [user],
+                    tag: 'THE_GLORIOUS_NONE_TAG',
+                    type: 'ONE_TIME',
+                    icalUID: uid,
+                  });
               } else {
                 querySnapshot.forEach((doc: DocumentSnapshot) => {
                   db.tasksCollection().doc(doc.id).update({
@@ -66,9 +69,10 @@ export default async function getICalLink(): Promise<void> {
     .settingsCollection()
     .where('canvasCalendar', '>', '')
     .get()
-    .then((querySnapshot: QuerySnapshot) => {
-      querySnapshot.forEach((doc: DocumentSnapshot) => {
-        const link: string = doc.data()?.canvasCalendar;
+    .then((querySnapshot) => {
+      querySnapshot.forEach((doc) => {
+        const link = doc.data()?.canvasCalendar;
+        if (link == null) return;
         try {
           parseICal(link, doc.id);
         } catch {
