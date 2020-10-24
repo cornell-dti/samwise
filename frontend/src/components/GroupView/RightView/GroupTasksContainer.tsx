@@ -21,9 +21,12 @@ function GroupTasksContainer({ tasks }: Props): ReactElement {
   const completedTasks = tasks.filter((task) => task.complete);
 
   return (
-    <div className={styles.GroupTasksContainer} style={completedTasks.length > 0 ? {padding: '12px 0 0 0'}:{}}>
-        {completedTasks.length > 0 ? <CompletedTasksContainer tasks={completedTasks} /> : null}
-    {renderTaskList(tasks)}
+    <div
+      className={styles.GroupTasksContainer}
+      style={completedTasks.length > 0 ? { padding: '12px 0 0 0' } : {}}
+    >
+      {completedTasks.length > 0 ? <CompletedTasksContainer tasks={completedTasks} /> : null}
+      {renderTaskList(tasks)}
     </div>
   );
 }

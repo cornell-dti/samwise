@@ -24,7 +24,6 @@ const pressedAddGroupTask = (e: KeyboardEvent): void => {
 };
 
 const GroupTaskRow = ({ tasks, memberName, profilePicURL }: Props): ReactElement => {
-
   return (
     <div className={styles.GroupTaskRow}>
       <ProfileImage
@@ -33,17 +32,17 @@ const GroupTaskRow = ({ tasks, memberName, profilePicURL }: Props): ReactElement
         imageURL={profilePicURL}
       />
 
-        <button
-          type="button"
-          className={styles.AddTaskContainer}
-          onClick={clickAddGroupTask}
-          onKeyPress={pressedAddGroupTask}
-        >
-          <div className={styles.AddTask}>
-            <FontAwesomeIcon icon={faPlus} />
-            <h3>Assign new task</h3>
-          </div>
-        </button>
+      <button
+        type="button"
+        className={styles.AddTaskContainer}
+        onClick={clickAddGroupTask}
+        onKeyPress={pressedAddGroupTask}
+      >
+        <div className={styles.AddTask}>
+          <FontAwesomeIcon icon={faPlus} />
+          <h3>Assign new task</h3>
+        </div>
+      </button>
 
       <GroupTasksContainer tasks={tasks} />
     </div>
