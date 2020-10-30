@@ -1,10 +1,10 @@
 .TaskQueue {
-  height: 60%;
+  height: 60% !important;
 }
 
 .TaskQueue h2 {
-  font-weight: bold;
-  color: #818181;
+  font-weight: bold !important;
+  color: #818181 !important;
 }
 
 .EmptyTaskQueue {
@@ -29,4 +29,7 @@
 .EmptyTaskQueue button:hover {
   cursor: pointer;
   opacity: 0.7;
+}
+.Container {
+  overflow-y: scroll;
 }
