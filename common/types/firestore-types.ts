@@ -20,7 +20,7 @@ export type FirestoreCommonTask = FirestoreCommon & {
   readonly children: readonly string[];
 };
 
-export type FirestoreSubTask = FirestoreCommon & {
+export type FirestoreSubTask = {
   readonly name: string;
   readonly complete: boolean;
   readonly inFocus: boolean;
