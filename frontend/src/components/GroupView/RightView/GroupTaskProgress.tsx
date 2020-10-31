@@ -1,6 +1,7 @@
 import { Task } from 'common/types/store-types';
 import React, { ReactElement } from 'react';
-import styles from './GroupTaskProgress.module.css';
+import { render } from 'react-dom';
+import styles from './GroupTaskProgress.module.scss';
 import { GroupDeadline, PeakingBear } from '../../../assets/assets-constants';
 
 type Props = {
@@ -10,27 +11,65 @@ type Props = {
 
 type ProgressBubbleProps = {
   readonly completed?: boolean;
+  readonly value?: number;
 };
 
-const ProgressBubble = ({ completed }: ProgressBubbleProps): ReactElement => (
+const ProgressBubble = ({ completed, value }: ProgressBubbleProps): ReactElement => (
   <div
     className={`${styles.ProgressBubble} ${
       completed ? styles.CompleteBubble : styles.IncompleteBubble
     }`}
-  />
+  >
+    {value ? `+${value}` : ''}
+  </div>
 );
 
 const GroupTaskProgress = ({ tasks, deadline }: Props): ReactElement => {
   const tasksDone: number = tasks.filter((task: Task): boolean => task.complete).length;
   const totalTasks: number = tasks.length;
+  const tasksNotDone: number = totalTasks - tasksDone;
   const showBar = totalTasks > 0;
-  let bubbles: ReactElement[] = [];
-  for (let i = 0; i < tasksDone; i += 1) {
-    bubbles = [...bubbles, <ProgressBubble completed key={`c${i}`} />];
+  let complete: ReactElement[] = [];
+  let incomplete: ReactElement[] = [];
+  if (totalTasks <= 20) {
+    for (let i = 0; i < tasksDone; i += 1) {
+      complete = [...complete, <ProgressBubble completed key={`c${i}`} />];
+    }
+    for (let i = 0; i < tasksNotDone; i += 1) {
+      incomplete = [...incomplete, <ProgressBubble key={`uc${i}`} />];
+    }
+  } else {
+    const completedVal = Math.max(tasksDone - 4, 0);
+    for (let i = 0; i < tasksDone; i += 1) {
+      if (i < 3) {
+        complete = [...complete, <ProgressBubble completed key={`c${i}`} />];
+      }
+      if (i === tasksDone - 1) {
+        complete = [
+          ...complete,
+          <ProgressBubble
+            completed
+            value={completedVal >= 2 ? completedVal : undefined}
+            key={`c${i}`}
+          />,
+        ];
+      }
+    }
+    const renderedCompletedTasks = Math.min(tasksDone, 4);
+    const incompleteVal = Math.max(tasksNotDone - (20 - renderedCompletedTasks), 0);
+    for (let i = 0; i < tasksNotDone; i += 1) {
+      if (i < 20 - renderedCompletedTasks) {
+        incomplete = [...incomplete, <ProgressBubble key={`uc${i}`} />];
+      }
+      if (i === tasksNotDone - 1) {
+        incomplete = [
+          ...incomplete,
+          <ProgressBubble value={incompleteVal >= 2 ? incompleteVal : undefined} key={`c${i}`} />,
+        ];
+      }
+    }
   }
-  for (let i = 0; i < totalTasks - tasksDone; i += 1) {
-    bubbles = [...bubbles, <ProgressBubble key={`uc${i}`} />];
-  }
+  const bubbles: ReactElement[] = [...complete, ...incomplete];
   const months = [
     'Jan',
     'Feb',
