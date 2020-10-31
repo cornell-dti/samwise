@@ -1,10 +1,14 @@
+@import '../groupview-sizes.scss';
+
 .TaskQueue {
-  height: 60%;
+  height: $taskqueue-height;
 }
 
 .TaskQueue h2 {
   font-weight: bold;
   color: #818181;
+  height: $sidebar-header-height;
+  margin: $sidebar-header-margin 0;
 }
 
 .EmptyTaskQueue {
@@ -32,6 +36,8 @@
 }
 
 .TaskList {
-  max-height: 85%;
+  max-height: calc(
+    #{$taskqueue-height} - #{$sidebar-header-height} - #{$sidebar-header-margin} * 2
+  );
   overflow-y: auto;
 }
