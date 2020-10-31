@@ -1,5 +1,6 @@
 import React, { ReactElement } from 'react';
 import { Group, SamwiseUserProfile, Task } from 'common/types/store-types';
+import { getAppUser } from '../../../firebase/auth-util';
 
 import GroupViewMiddleBarPeopleList from './GroupViewMiddleBarPeopleList';
 import GroupViewMiddleBarTaskQueue from './GroupViewMiddleBarTaskQueue';
@@ -7,7 +8,7 @@ import styles from './index.module.scss';
 
 type Props = {
   readonly group: Group;
-  readonly groupMemberProfiles: SamwiseUserProfile[];
+  readonly groupMemberProfiles: readonly SamwiseUserProfile[];
   readonly changeView: (selectedGroup: string | undefined) => void;
   readonly tasks: readonly Task[];
 };
@@ -18,9 +19,8 @@ const GroupViewMiddleBar = ({
   changeView,
   tasks,
 }: Props): ReactElement => {
-  const allInfo: any = localStorage.getItem('firebaseui::rememberedAccounts');
-  const allInfoJSON = JSON.parse(allInfo);
-  const { email } = allInfoJSON[0];
+  const { email } = getAppUser();
+
   return (
     <div>
       {groupMemberProfiles.map(() => {
