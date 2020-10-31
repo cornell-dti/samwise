@@ -5,7 +5,9 @@
 .RightView {
   display: flex;
   flex-direction: column;
-  height: 480px;
+  height: calc(100vh - 140px);
+  width: calc(100vw - 80px - 280px);
+  margin: 0 auto;
   padding: 20px;
   clear: both;
 }

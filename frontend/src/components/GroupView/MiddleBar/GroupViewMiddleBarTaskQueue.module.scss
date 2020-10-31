@@ -30,3 +30,8 @@
   cursor: pointer;
   opacity: 0.7;
 }
+
+.TaskList {
+  max-height: 85%;
+  overflow-y: auto;
+}
