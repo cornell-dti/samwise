@@ -37,7 +37,7 @@ export default function SearchGroupMember({ members, onMemberChange }: Props): R
         value={searchInput}
         onChange={onSearchChange}
       />
-      <div>
+      <div className={styles.MemberSearchResults}>
         {searchResults.map((user) => (
           <li>
             <button
