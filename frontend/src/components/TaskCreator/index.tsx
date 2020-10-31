@@ -85,6 +85,11 @@ export class TaskCreator extends React.PureComponent<Props, State> {
     };
   }
 
+  private get isOpen(): boolean {
+    // eslint-disable-next-line react/destructuring-assignment
+    return this.state.opened || this.props.taskCreatorOpened || false;
+  }
+
   /*
    * --------------------------------------------------------------------------------
    * Part 1: Openers & Closers
@@ -283,15 +288,8 @@ export class TaskCreator extends React.PureComponent<Props, State> {
    * @return the rendered other info editor.
    */
   private renderOtherInfoEditor(): ReactElement | null {
-    const { opened } = this.state;
-    const {
-      view,
-      groupMemberProfiles,
-      taskCreatorOpened,
-      assignedMember,
-      clearAssignedMember,
-    } = this.props;
-    if (!opened && !taskCreatorOpened) {
+    const { view, groupMemberProfiles, assignedMember, clearAssignedMember } = this.props;
+    if (!this.isOpen) {
       return null;
     }
     const {
@@ -409,16 +407,15 @@ export class TaskCreator extends React.PureComponent<Props, State> {
   }
 
   public render(): ReactElement {
-    const { name, opened } = this.state;
-    const { theme, view, taskCreatorOpened } = this.props;
-    const isOpen = opened || taskCreatorOpened;
+    const { name } = this.state;
+    const { theme, view } = this.props;
     return (
       <div className={styles.TaskCreator} style={theme === 'dark' ? this.darkModeStyle : undefined}>
         <div
           onClick={this.closeNewTask}
           role="presentation"
           className={styles.CloseNewTask}
-          style={isOpen ? {} : { display: 'none' }}
+          style={this.isOpen ? {} : { display: 'none' }}
         />
         <form
           className={view === 'personal' ? styles.NewTaskWrap : styles.GroupNewTaskWrap}
@@ -431,11 +428,11 @@ export class TaskCreator extends React.PureComponent<Props, State> {
             value={name}
             onChange={this.editTaskName}
             className={
-              isOpen
+              this.isOpen
                 ? `${styles.NewTaskComponent} ${styles.NewTaskComponentOpened}`
                 : styles.NewTaskComponent
             }
-            placeholder={opened ? '' : PLACEHOLDER_TEXT}
+            placeholder={this.isOpen ? '' : PLACEHOLDER_TEXT}
             ref={(e) => {
               this.addTask = e;
             }}
