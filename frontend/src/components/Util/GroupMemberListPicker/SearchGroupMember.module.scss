@@ -24,6 +24,11 @@ input.SearchInput {
   box-shadow: 1px 1px 10px 5px rgba(0, 0, 0, 0.15);
 }
 
+.MemberSearchResults {
+  max-height: 400px;
+  overflow-y: auto;
+}
+
 .MemberButton {
   position: relative;
   text-align: left;

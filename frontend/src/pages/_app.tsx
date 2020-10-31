@@ -17,10 +17,6 @@ if (process.browser) {
   initModal();
 }
 
-// Next.js cannot understand process.env destructuring
-// eslint-disable-next-line prefer-destructuring
-const PUBLIC_URL = process.env.NEXT_PUBLIC_URL ?? '';
-
 const App = (props: AppProps): ReactElement => {
   const { Component, pageProps } = props;
 
@@ -28,7 +24,7 @@ const App = (props: AppProps): ReactElement => {
     <>
       <Head>
         <meta charSet="utf-8" />
-        <link rel="shortcut icon" href={`${PUBLIC_URL}/favicon.ico`} />
+        <link rel="shortcut icon" href="/favicon.ico" />
         <meta
           name="viewport"
           content="width=device-width, initial-scale=1, maximum-scale=1, shrink-to-fit=no"
@@ -38,8 +34,8 @@ const App = (props: AppProps): ReactElement => {
           property="og:description"
           content="Samwise is a task manager for Cornell students who put in work."
         />
-        <meta property="og:image" content={`${PUBLIC_URL}/banner.png`} />
-        <link rel="manifest" href={`${PUBLIC_URL}/manifest.json`} />
+        <meta property="og:image" content="/banner.png" />
+        <link rel="manifest" href="/manifest.json" />
         <title>Samwise</title>
       </Head>
       <Component

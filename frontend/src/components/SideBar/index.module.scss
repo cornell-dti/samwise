@@ -1,7 +1,9 @@
+@import '../GroupView/groupview-sizes.scss';
+
 .SideBar {
   display: flex;
   flex-direction: column;
-  min-width: 80px;
+  width: $sidebar-width;
   align-items: center;
   background-color: #ebebeb;
 }

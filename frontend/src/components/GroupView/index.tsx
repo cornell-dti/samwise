@@ -84,7 +84,12 @@ const GroupView = ({ group, changeView }: Props): ReactElement => {
 
   return (
     <div className={styles.GroupView}>
-      <MiddleBar group={group} groupMemberProfiles={groupMemberProfiles} changeView={changeView} />
+      <MiddleBar
+        group={group}
+        groupMemberProfiles={groupMemberProfiles}
+        changeView={changeView}
+        tasks={groupTaskArray}
+      />
       <RightView group={group} groupMemberProfiles={groupMemberProfiles} tasks={groupTaskArray} />
     </div>
   );

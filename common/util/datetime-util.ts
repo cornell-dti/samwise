@@ -87,6 +87,7 @@ export function getDateWithDateString(date: Date | null, dateString: string): Da
   const newDate = date === null ? new Date() : new Date(date);
   const dateInfo = new Date(dateString);
   newDate.setFullYear(dateInfo.getFullYear());
+  newDate.setDate(1);
   newDate.setMonth(dateInfo.getMonth());
   newDate.setDate(dateInfo.getDate());
   if (date === null) {

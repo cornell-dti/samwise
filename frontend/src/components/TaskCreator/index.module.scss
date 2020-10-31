@@ -1,8 +1,13 @@
+.TaskCreator {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+}
+
 .NewTaskComponent {
   border-top: none;
   border-left: none;
   border-right: none;
-  margin-top: 20px;
   bottom: 10px;
   width: 100%;
   padding: 10px 20px;
@@ -10,6 +15,10 @@
   background: #e3e3e3;
   font-size: 18px;
   font-family: 'Open Sans', sans-serif;
+
+  &.NewTaskComponentOpened {
+    margin-top: 20px;
+  }
 }
 
 .NewTaskComponent::placeholder {
@@ -25,9 +34,7 @@
 
 .NewTaskWrap {
   position: relative;
-  left: 50%;
   text-align: center;
-  transform: translateX(-50%);
   z-index: 5;
   bottom: 20px;
   height: initial;
@@ -300,9 +307,7 @@
 
 .GroupNewTaskWrap {
   position: relative;
-  left: 50%;
   text-align: center;
-  transform: translateX(-50%);
   z-index: 5;
   height: initial;
   max-height: 44px;
