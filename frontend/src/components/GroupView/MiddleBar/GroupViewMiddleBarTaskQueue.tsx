@@ -23,9 +23,7 @@ const TaskQueue = ({ tasks }: Props): React.ReactElement => (
     {tasks.length > 0 ? (
       <div className={styles.TastQueue}>
         <h2>Task Queue</h2>
-        <div className={styles.TaskList}>
-          {renderTaskList(tasks)}
-        </div>
+        <div className={styles.TaskList}>{renderTaskList(tasks)}</div>
       </div>
     ) : (
       <div className={styles.TaskQueue}>
