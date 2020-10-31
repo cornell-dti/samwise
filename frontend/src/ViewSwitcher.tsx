@@ -16,7 +16,7 @@ const ViewSwitcher = (): React.ReactElement => {
   return (
     <div className={styles.GroupScreen}>
       <SideBar groups={groups} changeView={setSelectedGroupID} />
-      <div>
+      <div className={styles.GroupScreenContent}>
         {selectedGroup === undefined ? (
           <PersonalView />
         ) : (
