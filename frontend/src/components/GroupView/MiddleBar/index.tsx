@@ -22,20 +22,13 @@ const GroupViewMiddleBar = ({
   const { email } = getAppUser();
 
   return (
-    <div>
-      {groupMemberProfiles.map(() => {
-        const filteredTasks = tasks.filter(({ owner }) => owner.includes(email));
-        return (
-          <div className={styles.MiddleBar}>
-            <GroupViewMiddleBarTaskQueue tasks={filteredTasks} />
-            <GroupViewMiddleBarPeopleList
-              group={group}
-              groupMemberProfiles={groupMemberProfiles}
-              changeView={changeView}
-            />
-          </div>
-        );
-      })}
+    <div className={styles.MiddleBar}>
+      <GroupViewMiddleBarTaskQueue tasks={tasks.filter(({ owner }) => owner.includes(email))} />
+      <GroupViewMiddleBarPeopleList
+        group={group}
+        groupMemberProfiles={groupMemberProfiles}
+        changeView={changeView}
+      />
     </div>
   );
 };
