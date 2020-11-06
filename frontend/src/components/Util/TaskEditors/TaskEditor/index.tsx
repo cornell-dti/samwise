@@ -269,7 +269,7 @@ function TaskEditor({
       <div className={styles.TaskEditorSubTasksIndentedContainer}>
         {subTasks.map((subTask: SubTask) => (
           <OneSubTaskEditor
-            key={subTask.id}
+            key={subTask.order}
             subTask={subTask}
             mainTaskId={id}
             taskDate={date instanceof Date ? date : null}

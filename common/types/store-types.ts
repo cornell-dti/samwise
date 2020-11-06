@@ -9,19 +9,17 @@ export type Tag = {
 };
 
 export type SubTask = {
-  readonly id: string;
   readonly order: number;
   readonly name: string; // Example: "SubTask 1 Name"
   readonly complete: boolean;
   readonly inFocus: boolean; // Whether the subtask is in focus
 };
 
-export type SubTaskWithoutId = Pick<SubTask, 'order' | 'name' | 'complete' | 'inFocus'>;
-export type SubTaskWithoutIdOrder = Pick<SubTask, 'name' | 'complete' | 'inFocus'>;
+export type SubTaskWithoutOrder = Pick<SubTask, 'name' | 'complete' | 'inFocus'>;
 /**
  * The subtask type without id order and with every field as optional.
  */
-export type PartialSubTask = Partial<SubTaskWithoutIdOrder>;
+export type PartialSubTask = Partial<SubTaskWithoutOrder>;
 
 // TODO: refactor ical task to a separate category
 export type OneTimeTaskMetadata = {
@@ -79,9 +77,10 @@ export type MainTask = {
   readonly date: Date | RepeatingDate;
   readonly complete: boolean;
   readonly inFocus: boolean;
+  readonly children: readonly SubTask[];
 };
 /**
- * The task type without id and subtask, and with all properties as optional.
+ * The task type without id, and with all properties as optional.
  */
 export type PartialMainTask = Partial<MainTask>;
 

@@ -2,7 +2,6 @@ import { Map } from 'immutable';
 import {
   Course,
   Settings,
-  SubTask,
   Task,
   Tag,
   BannerMessageStatus,
@@ -17,21 +16,10 @@ export type PatchTags = {
   readonly deleted: string[];
 };
 
-export type TaskWithChildrenId = Omit<Task, 'children'> & {
-  readonly children: readonly string[];
-};
-
 export type PatchTasks = {
   readonly type: 'PATCH_TASKS';
-  readonly created: TaskWithChildrenId[];
-  readonly edited: TaskWithChildrenId[];
-  readonly deleted: string[];
-};
-
-export type PatchSubTasks = {
-  readonly type: 'PATCH_SUBTASKS';
-  readonly created: SubTask[];
-  readonly edited: SubTask[];
+  readonly created: Task[];
+  readonly edited: Task[];
   readonly deleted: string[];
 };
 
@@ -65,7 +53,6 @@ export type PatchPendingInvite = {
 export type Action =
   | PatchTags
   | PatchTasks
-  | PatchSubTasks
   | PatchSettings
   | PatchBannerMessageStatus
   | PatchCourses
