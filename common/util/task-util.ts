@@ -161,3 +161,6 @@ export function dateMatchRepeats(
   }
   return dateMatchRepeatPattern(date, pattern);
 }
+
+export const subTasksEqual = (firstSubTask: SubTask, secondSubTask: SubTask): boolean =>
+  JSON.stringify(firstSubTask) === JSON.stringify(secondSubTask);

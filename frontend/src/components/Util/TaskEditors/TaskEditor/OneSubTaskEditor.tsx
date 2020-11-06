@@ -1,5 +1,6 @@
 import React, { KeyboardEvent, ReactElement, SyntheticEvent, useEffect, useRef } from 'react';
 import { MainTask, SubTask } from 'common/types/store-types';
+import { subTasksEqual } from 'common/util/task-util';
 import CheckBox from '../../../UI/CheckBox';
 import SamwiseIcon from '../../../UI/SamwiseIcon';
 import styles from './index.module.scss';
@@ -26,9 +27,6 @@ function OneSubTaskEditor({
   onPressEnter,
   memberName,
 }: Props): ReactElement {
-  const subTasksEqual = (firstSubTask: SubTask, secondSubTask: SubTask): boolean =>
-    JSON.stringify(firstSubTask) === JSON.stringify(secondSubTask);
-
   const editThisSubTask = (update: Partial<SubTask>): void => {
     const updatedSubTasks = allCurrentSubTasks.map((curr) => {
       return subTasksEqual(curr, subTask) ? { ...curr, ...update } : curr;
