@@ -1,7 +1,6 @@
 import { useReducer } from 'react';
 import { shallowEqual, shallowArrayEqual } from 'common/util/general-util';
 import { MainTask, PartialMainTask, SubTask } from 'common/types/store-types';
-import { getNewSubTaskId } from '../../../../firebase/id-provider';
 
 type Action =
   | { readonly type: 'EDIT_MAIN_TASK'; readonly change: PartialMainTask }

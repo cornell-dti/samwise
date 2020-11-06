@@ -89,16 +89,12 @@ function TaskEditor({
   memberName,
 }: Props): ReactElement {
   const { onChange, removeTask, onSaveClicked } = actions;
-  const {
-    mainTask,
-    subTasks,
-    diff,
-    dispatchEditMainTask,
-    dispatchAddSubTask,
-    dispatchEditSubTask,
-    dispatchDeleteSubTask,
-    reset,
-  } = useTaskDiffReducer(initMainTask, initSubTasks, active ?? false, onChange ?? ignore);
+  const { mainTask, subTasks, diff, dispatchEditMainTask, reset } = useTaskDiffReducer(
+    initMainTask,
+    initSubTasks,
+    active ?? false,
+    onChange ?? ignore
+  );
 
   const { name, tag, date, complete, inFocus } = mainTask;
 
@@ -176,11 +172,14 @@ function TaskEditor({
   // called when the user types in the first char in the new subtask box. We need to shift now.
   const handleCreatedNewSubtask = (firstTypedValue: string): void => {
     const order = subTasks.reduce((acc, s) => Math.max(acc, s.order), 0) + 1;
-    dispatchAddSubTask({
+    const createdNewSubtask: SubTask = {
       order,
       name: firstTypedValue,
       complete: false,
       inFocus: newSubTaskAutoFocused === true,
+    };
+    dispatchEditMainTask({
+      children: [createdNewSubtask, ...subTasks],
     });
     setSubTaskToFocus(order);
   };
@@ -271,13 +270,10 @@ function TaskEditor({
           <OneSubTaskEditor
             key={subTask.order}
             subTask={subTask}
-            mainTaskId={id}
-            taskDate={date instanceof Date ? date : null}
-            dateAppeared={taskAppearedDate}
+            allCurrentSubTasks={subTasks}
             mainTaskComplete={complete}
             needToBeFocused={subTaskToFocus === subTask.order}
-            editThisSubTask={dispatchEditSubTask}
-            removeSubTask={dispatchDeleteSubTask}
+            editTaskCallback={dispatchEditMainTask}
             onPressEnter={pressEnterHandler}
             memberName={memberName}
           />
