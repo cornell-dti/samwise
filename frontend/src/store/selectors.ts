@@ -172,9 +172,9 @@ export const getFocusViewProps: SelectorOf<FocusViewProps> = createSelector(
     const group: Task[] = [];
     const diffGroupType: Record<string, Task[]> = {};
     const finalSorted: Task[] = [];
+    const finalReturn: Task[] = [];
     let final: Map<string, Task<TaskMetadata>> = Map();
-    // let test: Map<string, Task<TaskMetadata>> = Map();
-    // const groupMap : Record<  "ONE_TIME" | "MASTER_TEMPLATE" | "GROUP", Task[]>= {};
+
     Array.from(tasks.values()).forEach((task) => {
       const filteredUncompletedTask = getFilteredNotCompletedInFocusTask(task);
       const filteredCompletedTask = getFilteredCompletedInFocusTask(task);
@@ -242,8 +242,13 @@ export const getFocusViewProps: SelectorOf<FocusViewProps> = createSelector(
       });
     });
 
-    // need to return final here but getting undefined error
-    return { final: taskMetaDataList, progress };
+    final.forEach((task) => {
+      finalReturn.push(task);
+    });
+
+    taskMetaDataList.sort((a, b) => finalReturn.indexOf(a.id) - finalReturn.indexOf(b.id));
+
+    return { tasks: taskMetaDataList, progress };
   }
 );
 
