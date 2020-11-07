@@ -70,7 +70,7 @@ const tmpPackage = `{
   "version": "0.1.0",
   "main": "index.js",
   "engines": {
-    "node": "8"
+    "node": "12"
   }
 }`;
 fs.writeFileSync('temp/functions/package.json', tmpPackage);
