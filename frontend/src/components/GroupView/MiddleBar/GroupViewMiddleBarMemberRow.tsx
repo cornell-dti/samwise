@@ -17,7 +17,7 @@ const sendNotification = (variant: string): void => {
     body: JSON.stringify({
       senderName: 'jason',
       recipientName: 'other jason',
-      recipientEmail: 'jasontungnyc@gmail.com',
+      recipientEmail: '',
       variant: 'heart',
     }),
   };

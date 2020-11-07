@@ -5,7 +5,6 @@ import sendgridKey from './sendgrid-key.json';
 sgMail.setApiKey(sendgridKey.SENDGRID_API_KEY);
 
 const sendEmail = (req: functions.https.Request, res: functions.Response<string>): void => {
-  res.set('Access-Control-Allow-Origin', '*');
   const { senderName, recipientName, recipientEmail, variant } = req.body;
   const msg = {
     to: recipientEmail, // Change to your recipient
