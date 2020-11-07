@@ -168,7 +168,7 @@ function TaskEditor({
   };
 
   const onSaveButtonClicked = (): void => {
-    if (onSave() && type !== 'ONE_TIME') {
+    if (onSave() && type === 'MASTER_TEMPLATE') {
       onSaveClicked();
     }
   };
@@ -221,7 +221,7 @@ function TaskEditor({
 
   useEffect(() => {
     const intervalID = setInterval(() => {
-      if (type === 'ONE_TIME') {
+      if (type !== 'MASTER_TEMPLATE') {
         onSave();
       }
     }, 1000);
@@ -282,7 +282,7 @@ function TaskEditor({
             memberName={memberName}
           />
         ))}
-        <div className={styles.SubtaskHide} style={active === true ? { maxHeight: 0 } : undefined}>
+        <div className={styles.SubtaskHide} style={active === false ? { maxHeight: 0 } : undefined}>
           <NewSubTaskEditor
             onFirstType={handleCreatedNewSubtask}
             onPressEnter={onSaveButtonClicked}

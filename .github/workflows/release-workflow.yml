@@ -24,9 +24,7 @@ jobs:
       - name: Deploy to Production
         env:
           FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
-          PRODUCTION_FIREBASE_ADMIN_SDK_CONTENTS: ${{ secrets.PRODUCTION_FIREBASE_ADMIN_SDK_CONTENTS }}
         run: |
-          echo $PRODUCTION_FIREBASE_ADMIN_SDK_CONTENTS > functions/src/firebase-adminsdk.json
           ./node_modules/.bin/firebase use production
           ./node_modules/.bin/firebase deploy --token=$FIREBASE_TOKEN --non-interactive --only hosting,firestore:rules
           node ./deploy-functions.js $FIREBASE_TOKEN production

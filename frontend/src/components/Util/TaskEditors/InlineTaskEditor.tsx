@@ -47,7 +47,7 @@ export default function InlineTaskEditor({
       displayGrabber
       calendarPosition={calendarPosition}
       newSubTaskAutoFocused={!original.inFocus}
-      active={disabled}
+      active={!disabled}
       onFocus={onFocus}
       onBlur={onBlur}
       memberName={memberName}

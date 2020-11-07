@@ -60,12 +60,8 @@ export type FirestoreGroup = {
   readonly members: readonly string[];
   readonly deadline: firestore.Timestamp;
   readonly classCode: string;
-};
-
-export type FirestorePendingGroupInvite = {
-  readonly group: string;
-  readonly inviterName: string; // Name of person who sent invite
-  readonly invitee: string; // Email of person receiving invitation
+  readonly invitees: readonly string[]; // emails of invitees
+  readonly inviterNames: readonly string[]; // names of people who sent the invites
 };
 
 export type FirestoreUserData = {

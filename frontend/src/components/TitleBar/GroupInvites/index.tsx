@@ -1,25 +1,25 @@
 import React, { ReactElement } from 'react';
 import { connect } from 'react-redux';
 import { Map } from 'immutable';
-import { State, PendingGroupInvite } from 'common/types/store-types';
+import { State, Group } from 'common/types/store-types';
 import styles from './index.module.scss';
-import { joinGroup, rejectInvite } from '../../../firebase/actions';
+import { joinGroup, rejectInvite, getInviterName } from '../../../firebase/actions';
 
 type Props = {
-  readonly pendingInvites: Map<string, PendingGroupInvite>;
+  readonly groupInvites: Map<string, Group>;
 };
 
-function SingleInvitation(invite: PendingGroupInvite): ReactElement {
+function SingleInvitation(groupID: string, groupName: string, inviterName: string): ReactElement {
   return (
-    <li key={invite.group}>
+    <li key={groupID}>
       <span className={styles.Text}>
-        {`${invite.inviterName} has invited you to join their group project.`}
+        {`${inviterName} has invited you to a group called ${groupName}.`}
       </span>
       <div className={styles.ButtonWrap}>
         <button
           type="button"
           onClick={() => {
-            joinGroup(invite.group, invite.id);
+            joinGroup(groupID);
           }}
         >
           Join
@@ -27,7 +27,7 @@ function SingleInvitation(invite: PendingGroupInvite): ReactElement {
         <button
           type="button"
           onClick={() => {
-            rejectInvite(invite.id);
+            rejectInvite(groupID);
           }}
         >
           Reject
@@ -37,16 +37,18 @@ function SingleInvitation(invite: PendingGroupInvite): ReactElement {
   );
 }
 
-const GroupInvites = ({ pendingInvites }: Props): ReactElement | null => {
-  if (pendingInvites.isEmpty()) {
+const GroupInvites = ({ groupInvites }: Props): ReactElement | null => {
+  if (groupInvites.isEmpty()) {
     return null;
   }
   return (
     <ul className={styles.Banner}>
-      {pendingInvites.valueSeq().map((invite) => SingleInvitation(invite))}
+      {groupInvites
+        .valueSeq()
+        .map((group) => SingleInvitation(group.id, group.name, getInviterName(group.id)))}
     </ul>
   );
 };
 
-const Connected = connect(({ pendingInvites }: State) => ({ pendingInvites }))(GroupInvites);
+const Connected = connect(({ groupInvites }: State) => ({ groupInvites }))(GroupInvites);
 export default Connected;

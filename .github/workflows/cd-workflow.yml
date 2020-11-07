@@ -30,7 +30,5 @@ jobs:
       - name: Deploy Functions to Firebase Staging Project
         env:
           FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
-          STAGING_FIREBASE_ADMIN_SDK_CONTENTS: ${{ secrets.STAGING_FIREBASE_ADMIN_SDK_CONTENTS }}
         run: |
-          echo $STAGING_FIREBASE_ADMIN_SDK_CONTENTS > functions/src/firebase-adminsdk.json
           node ./deploy-functions.js $FIREBASE_TOKEN default
