@@ -1,6 +1,5 @@
 import { Task } from 'common/types/store-types';
 import React, { ReactElement } from 'react';
-import { render } from 'react-dom';
 import styles from './GroupTaskProgress.module.scss';
 import { GroupDeadline, PeakingBear } from '../../../assets/assets-constants';
 
