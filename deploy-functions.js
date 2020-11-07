@@ -1,3 +1,5 @@
+// @ts-check
+
 /**
  * A script to deploy functions to Firebase.
  *
@@ -13,13 +15,26 @@ const { spawnSync } = require('child_process');
 const fs = require('fs');
 const path = require('path');
 
+/**
+ *
+ * @param {string[]} commands
+ * @param {string | undefined} cwd
+ */
+function spawnSyncWithExitCodeCheck([command, ...commandArguments], cwd = undefined) {
+  const spawnedProcess = spawnSync(command, commandArguments, {
+    shell: true,
+    cwd,
+    stdio: [process.stdin, process.stdout, process.stderr],
+  });
+  if (spawnedProcess.status !== 0) {
+    process.exit(1);
+  }
+}
+
 // Step 1: Build projects
 
-spawnSync('yarn', [], { shell: true, stdio: [process.stdin, process.stdout, process.stderr] });
-spawnSync('yarn', ['workspace', 'functions', 'build'], {
-  shell: true,
-  stdio: [process.stdin, process.stdout, process.stderr],
-});
+spawnSyncWithExitCodeCheck(['yarn']);
+spawnSyncWithExitCodeCheck(['yarn', 'workspace', 'functions', 'build']);
 
 // Step 2: Make mirror folders for deployment
 
@@ -90,11 +105,7 @@ const project = process.argv[3] ? process.argv[3] : 'default';
  * @param {string[]} args Array of arguments to pass to the CLI.
  */
 function firebase(args) {
-  spawnSync(`${__dirname}/node_modules/.bin/firebase`, args, {
-    cwd: 'temp',
-    shell: true,
-    stdio: [process.stdin, process.stdout, process.stderr],
-  });
+  spawnSyncWithExitCodeCheck([`${__dirname}/node_modules/.bin/firebase`, ...args], 'temp');
 }
 
 firebase(['use', project]);
