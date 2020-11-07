@@ -41,7 +41,7 @@ export default function InlineTaskEditor({
       icalUID={icalUID}
       taskAppearedDate={taskAppearedDate}
       className={className}
-      mainTask={{ ...mainTask, date: metadata.date }}
+      mainTask={{ ...mainTask, date: metadata.date, children }}
       subTasks={children}
       actions={actions}
       displayGrabber

@@ -23,6 +23,7 @@ import {
 } from 'common/types/firestore-types';
 import { WriteBatch } from 'common/firebase/database';
 import Actions from 'common/firebase/common-actions';
+import { subTasksEqual } from 'common/util/task-util';
 import {
   reportAddTagEvent,
   reportEditTagEvent,
@@ -37,7 +38,7 @@ import { getAppUser } from './auth-util';
 import { db, database } from './db';
 import { getNewTaskId } from './id-provider';
 import { store } from '../store/store';
-import { patchTags, patchTasks, patchSubTasks } from '../store/actions';
+import { patchTags, patchTasks } from '../store/actions';
 import { Diff } from '../components/Util/TaskEditors/TaskEditor/task-diff-reducer';
 
 const actions = new Actions(() => getAppUser().email, database);
@@ -408,7 +409,10 @@ export const addUserInfo = async (
 /**
  * Clear all the completed tasks in focus view.
  */
-export const clearFocus = (taskIds: string[]): void => {
+export const clearFocus = (
+  taskIds: string[],
+  subTasksWithParentTaskId: Map<string, SubTask[]>
+): void => {
   const batch = database.db().batch();
   taskIds.forEach(async (id) => {
     const doc = database.tasksCollection().doc(id);
@@ -417,6 +421,21 @@ export const clearFocus = (taskIds: string[]): void => {
     batch.update(doc, { inFocus: false });
     batch.set(doc, {
       children: children.map(({ inFocus, ...rest }) => ({ inFocus: false, ...rest })),
+    });
+  });
+  subTasksWithParentTaskId.forEach(async (childrenToBeUpdated, taskId) => {
+    const doc = database.tasksCollection().doc(taskId);
+    const snapshot = await doc.get();
+    const { children } = (await snapshot.data()) as FirestoreCommonTask;
+
+    batch.set(doc, {
+      children: children.map(({ inFocus, ...rest }) =>
+        childrenToBeUpdated.some((s) =>
+          subTasksEqual(s, { inFocus, ...rest })
+            ? { inFocus: false, ...rest }
+            : { inFocus, ...rest }
+        )
+      ),
     });
   });
   batch.commit().then(ignore);
@@ -435,11 +454,16 @@ export function completeTaskInFocus<T extends { readonly id: string; readonly or
 ): void {
   const { tasks } = store.getState();
   const task = tasks.get(completedTaskIdOrder.id) ?? error('bad');
-  store.dispatch(patchTasks([], [{ ...task, complete: true, children: task.children }], []));
   store.dispatch(
-    patchSubTasks(
+    patchTasks(
       [],
-      task.children.map((subTask) => ({ ...subTask, complete: true })),
+      [
+        {
+          ...task,
+          complete: true,
+          children: task.children.map((subTask) => ({ ...subTask, complete: true })),
+        },
+      ],
       []
     )
   );

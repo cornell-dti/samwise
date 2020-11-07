@@ -1,52 +1,67 @@
 import React, { ReactElement } from 'react';
-import { SubTask } from 'common/types/store-types';
+import { SubTask, Task, TaskMetadata } from 'common/types/store-types';
+import { subTasksEqual } from 'common/util/task-util';
 import styles from './FutureViewTask.module.scss';
 import CheckBox from '../../UI/CheckBox';
-import { editSubTask, removeSubTask } from '../../../firebase/actions';
+import { editTaskWithDiff } from '../../../firebase/actions';
 import SamwiseIcon from '../../UI/SamwiseIcon';
 
 type Props = {
   readonly subTask: SubTask | null;
-  readonly mainTaskId: string;
-  readonly replaceDateForFork: Date | null;
+  readonly mainTask: Task<TaskMetadata>;
   readonly mainTaskCompleted: boolean;
 };
 
 /**
  * The component used to render one subtask in future view day.
  */
-function FutureViewSubTask({
-  subTask,
-  mainTaskId,
-  replaceDateForFork,
-  mainTaskCompleted,
-}: Props): ReactElement | null {
+function FutureViewSubTask({ subTask, mainTask, mainTaskCompleted }: Props): ReactElement | null {
   if (subTask == null) {
     return null;
   }
-  const { name, complete, inFocus } = subTask;
   const onCompleteChange = (): void =>
-    editSubTask(mainTaskId, subTask.id, replaceDateForFork, { complete: !complete });
+    editTaskWithDiff(mainTask.id, 'EDITING_ONE_TIME_TASK', {
+      mainTaskEdits: {
+        children: mainTask.children.map(({ complete, ...rest }) =>
+          subTasksEqual({ complete, ...rest }, subTask)
+            ? { complete: !complete, ...rest }
+            : { complete, ...rest }
+        ),
+      },
+    });
   const onFocusChange = (): void =>
-    editSubTask(mainTaskId, subTask.id, replaceDateForFork, { inFocus: !inFocus });
-  const onRemove = (): void => removeSubTask(mainTaskId, subTask.id, replaceDateForFork);
+    editTaskWithDiff(mainTask.id, 'EDITING_ONE_TIME_TASK', {
+      mainTaskEdits: {
+        children: mainTask.children.map(({ inFocus, ...rest }) =>
+          subTasksEqual({ inFocus, ...rest }, subTask)
+            ? { inFocus: !inFocus, ...rest }
+            : { inFocus, ...rest }
+        ),
+      },
+    });
+  const onRemove = (): void =>
+    editTaskWithDiff(mainTask.id, 'EDITING_ONE_TIME_TASK', {
+      mainTaskEdits: {
+        children: mainTask.children.filter((currSubTask) => !subTasksEqual(currSubTask, subTask)),
+      },
+    });
   return (
     <div className={styles.SubTask}>
       <CheckBox
         className={styles.SubTaskCheckBox}
-        checked={mainTaskCompleted || complete}
+        checked={mainTaskCompleted || subTask.complete}
         disabled={mainTaskCompleted}
         inverted
         onChange={onCompleteChange}
       />
       <span
         className={styles.TaskText}
-        style={mainTaskCompleted || complete ? { textDecoration: 'line-through' } : {}}
+        style={mainTaskCompleted || subTask.complete ? { textDecoration: 'line-through' } : {}}
       >
-        {name}
+        {subTask.name}
       </span>
       <SamwiseIcon
-        iconName={inFocus ? 'pin-dark-filled' : 'pin-dark-outline'}
+        iconName={subTask.inFocus ? 'pin-dark-filled' : 'pin-dark-outline'}
         onClick={onFocusChange}
         className={styles.TaskIcon}
       />

@@ -122,7 +122,7 @@ export default function FloatingTaskEditor({
             type={metadata.type}
             icalUID={icalUID}
             taskAppearedDate={taskAppearedDate}
-            mainTask={{ ...mainTask, date: metadata.date }}
+            mainTask={{ ...mainTask, date: metadata.date, children }}
             subTasks={children}
             actions={actions}
             className={styles.Editor}

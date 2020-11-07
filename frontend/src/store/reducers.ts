@@ -148,6 +148,13 @@ function patchTasks(state: State, { created, edited, deleted }: PatchTasks): Sta
   const newTasks = state.tasks.withMutations((tasks) => {
     let dirtyMainTaskIds = Set<string>();
 
+    created.forEach((createdMainTask) => {
+      const { children, ...mainTaskRest } = createdMainTask;
+      const mainTask: Task = { ...mainTaskRest, children };
+      dirtyMainTaskIds = dirtyMainTaskIds.add(createdMainTask.id);
+      tasks.set(createdMainTask.id, mainTask);
+    });
+
     edited.forEach((editedMainTask) => {
       const { children, ...mainTaskRest } = editedMainTask;
       const mainTask: Task = { ...mainTaskRest, children };

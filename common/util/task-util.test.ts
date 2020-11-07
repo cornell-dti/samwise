@@ -94,14 +94,17 @@ it('getFiltered(Completed|NotCompleted)InFocusTask are complementary', () => {
     if (uncompletedResult) {
       allSubTasks.push(...uncompletedResult.children);
     }
+
     // ensure disjoint union property
     const subTaskSet = allSubTasks.filter((sub) =>
-      allSubTasks.reduce((acc: boolean, curr: SubTask) => !subTasksEqual(sub, curr) && acc, true)
+      allSubTasks.reduce((acc: boolean, curr: SubTask) => subTasksEqual(sub, curr) || acc, false)
     );
     if (subTaskSet.length !== allSubTasks.length) {
       const { complete, inFocus, children } = task;
       let errorMessage = 'The subtasks in completed and uncompleted are not disjoint union.';
-      errorMessage += ` Task: { complete: ${complete}, inFocus: ${inFocus}, children: ${children} }.`;
+      errorMessage += ` Task: { complete: ${complete}, inFocus: ${inFocus}, children: ${JSON.stringify(
+        children
+      )} }.`;
       throw new Error(errorMessage);
     }
     // ensure allSubTasks are all in focus.
@@ -131,4 +134,18 @@ it('computeTaskProgress works', () => {
     expect(computeTaskProgress([t])).toEqual(expectedResults[i]);
   });
   expect(computeTaskProgress(exampleTasks)).toEqual(expectedTotal);
+});
+
+it('subTaskEqual works', () => {
+  const subTask1: SubTask = {
+    order: 0,
+    name: 'foo',
+    complete: false,
+    inFocus: true,
+  };
+  const subTask1Duplicate: SubTask = { ...subTask1 };
+  const subTask1AlteredName: SubTask = { ...subTask1, name: 'baz' };
+  expect(subTask1).toEqual(subTask1Duplicate);
+  expect(subTasksEqual(subTask1, subTask1Duplicate)).toBeTruthy();
+  expect(subTasksEqual(subTask1, subTask1AlteredName)).toBeFalsy();
 });
