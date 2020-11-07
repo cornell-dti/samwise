@@ -173,7 +173,7 @@ export const getFocusViewProps: SelectorOf<FocusViewProps> = createSelector(
     const diffGroupType: Record<string, Task[]> = {};
     const finalSorted: Task[] = [];
     let final: Map<string, Task<TaskMetadata>> = Map();
-    let test: Map<string, Task<TaskMetadata>> = Map();
+    // let test: Map<string, Task<TaskMetadata>> = Map();
     // const groupMap : Record<  "ONE_TIME" | "MASTER_TEMPLATE" | "GROUP", Task[]>= {};
     Array.from(tasks.values()).forEach((task) => {
       const filteredUncompletedTask = getFilteredNotCompletedInFocusTask(task);
@@ -200,7 +200,6 @@ export const getFocusViewProps: SelectorOf<FocusViewProps> = createSelector(
       if (task.metadata.type === 'MASTER_TEMPLATE') {
         masterTemp.push(task);
       }
-      final.set(task.id, task);
     });
 
     group.forEach((task) => {
@@ -215,15 +214,23 @@ export const getFocusViewProps: SelectorOf<FocusViewProps> = createSelector(
 
     Object.keys(diffGroupType).sort();
     // eslint-disable-next-line no-restricted-syntax
-    for (const [key, value] of Object.entries(diffGroupType)) {
-      // console.log(`before ${key}: ${value}`);
+    Object.entries(diffGroupType).forEach(([, value]) => {
       value.sort((x, y) => (x.order > y.order ? 1 : -1));
-      // console.log(`after ${key}: ${value}`);
-    }
+    });
+    // for (const [key, value] of Object.entries(diffGroupType)) {
+    //   // console.log(`before ${key}: ${value}`);
+    //   value.sort((x, y) => (x.order > y.order ? 1 : -1));
+    //   // console.log(`after ${key}: ${value}`);
+    // }
+
     // eslint-disable-next-line no-restricted-syntax
-    for (const [key, value] of Object.entries(diffGroupType)) {
+    Object.entries(diffGroupType).forEach(([, value]) => {
       finalSorted.push(...value);
-    }
+    });
+    // for (const [key, value] of Object.entries(diffGroupType)) {
+    //   finalSorted.push(...value);
+    // }
+
     oneTime = oneTime.concat(masterTemp);
     oneTime.sort((x, y) => (x.id > y.id ? 1 : -1));
     finalSorted.push(...oneTime);
@@ -234,23 +241,9 @@ export const getFocusViewProps: SelectorOf<FocusViewProps> = createSelector(
         final.set(task.id, task);
       });
     });
-    // final.forEach(task => {
-    //   console.log("task", task)
-    // });
-
-    // console.log("tasks", tasks)
-    // finalSorted.forEach((task) => {
-    //   console.log('in for each');
-    //   map1.withMutations((map) => {
-    //     map.set(task.id, task);
-    //   });
-    //   console.log('map 1',map1);
-    //   // test.merge(map1)
-    //   // console.log('test 1',test);
-    // });
 
     // need to return final here but getting undefined error
-    return { tasks: taskMetaDataList, progress };
+    return { final: taskMetaDataList, progress };
   }
 );
 
