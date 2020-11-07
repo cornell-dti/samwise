@@ -6,6 +6,7 @@ import {
   Task,
   BannerMessageStatus,
   RepeatingTaskMetadata,
+  TaskMetadata,
 } from 'common/types/store-types';
 import { NONE_TAG } from 'common/util/tag-util';
 import {
@@ -47,6 +48,10 @@ const getBannerMessageStatus = ({ bannerMessageStatus }: State): BannerMessageSt
 
 const getTasksId = ({ tasks }: State): Set<string> => Set(tasks.keys());
 
+class groupTask {
+  id: string = '';
+  tasks: Task[];
+}
 export const getTagById = ({ tags }: State, id: string): Tag => tags.get(id) ?? NONE_TAG;
 export const getTaskById = ({ tasks }: State, id: string): Task | null | undefined => tasks.get(id);
 
@@ -109,6 +114,7 @@ export const createGetIdOrderListByDate = (date: string): SelectorOf<IdOrderList
           list.push({ id, order });
         }
       });
+
       return { idOrderList: list.sort((a, b) => a.order - b.order) };
     }
   );
@@ -165,24 +171,72 @@ export const getFocusViewProps: SelectorOf<FocusViewProps> = createSelector(
   [getTasks, getProgress],
   (tasks, progress) => {
     const taskMetaDataList: FocusViewTaskMetaData[] = [];
-    Array.from(tasks.values())
-      .sort((a, b) => a.order - b.order)
-      .forEach((task) => {
-        const filteredUncompletedTask = getFilteredNotCompletedInFocusTask(task);
-        const filteredCompletedTask = getFilteredCompletedInFocusTask(task);
-        const { id, order } = task;
-        if (filteredCompletedTask != null && filteredUncompletedTask != null) {
-          taskMetaDataList.push({ id, order, inFocusView: true, inCompleteFocusView: true });
-          taskMetaDataList.push({ id, order, inFocusView: true, inCompleteFocusView: false });
-        } else if (filteredCompletedTask != null) {
-          taskMetaDataList.push({ id, order, inFocusView: true, inCompleteFocusView: true });
-        } else if (filteredUncompletedTask != null) {
-          taskMetaDataList.push({ id, order, inFocusView: true, inCompleteFocusView: false });
-        } else {
-          taskMetaDataList.push({ id, order, inFocusView: false, inCompleteFocusView: false });
-        }
-      });
-    return { tasks: taskMetaDataList, progress };
+    let oneTime: Task[] = [];
+    const masterTemp: Task[] = [];
+    const group: Task[] = [];
+    const diffGroupType: Record<string, Task[]> = {};
+    const finalSorted: Task[] = [];
+    const final: Map<string, Task<TaskMetadata>> = new Map();
+    console.log('tasks:', tasks);
+    // const groupMap : Record<  "ONE_TIME" | "MASTER_TEMPLATE" | "GROUP", Task[]>= {};
+    Array.from(tasks.values()).forEach((task) => {
+      const filteredUncompletedTask = getFilteredNotCompletedInFocusTask(task);
+      const filteredCompletedTask = getFilteredCompletedInFocusTask(task);
+      const { id, order } = task;
+      if (filteredCompletedTask != null && filteredUncompletedTask != null) {
+        taskMetaDataList.push({ id, order, inFocusView: true, inCompleteFocusView: true });
+        taskMetaDataList.push({ id, order, inFocusView: true, inCompleteFocusView: false });
+      } else if (filteredCompletedTask != null) {
+        taskMetaDataList.push({ id, order, inFocusView: true, inCompleteFocusView: true });
+      } else if (filteredUncompletedTask != null) {
+        taskMetaDataList.push({ id, order, inFocusView: true, inCompleteFocusView: false });
+      } else {
+        taskMetaDataList.push({ id, order, inFocusView: false, inCompleteFocusView: false });
+      }
+      if (task.metadata.type === 'GROUP') {
+        group.push(task);
+      }
+
+      if (task.metadata.type === 'ONE_TIME') {
+        oneTime.push(task);
+      }
+
+      if (task.metadata.type === 'MASTER_TEMPLATE') {
+        masterTemp.push(task);
+      }
+      final.set(task.id, task);
+    });
+
+    group.forEach((task) => {
+      if (diffGroupType[task.metadata.group]) {
+        diffGroupType[task.metadata.group].push(task);
+      } else {
+        diffGroupType[task.metadata.group] = [task];
+      }
+    });
+
+    Object.keys(diffGroupType).sort();
+    // eslint-disable-next-line no-restricted-syntax
+    for (const [key, value] of Object.entries(diffGroupType)) {
+      console.log(`before ${key}: ${value}`);
+      value.sort((x, y) => (x.order > y.order ? 1 : -1));
+      console.log(`after ${key}: ${value}`);
+    }
+    // eslint-disable-next-line no-restricted-syntax
+    for (const [key, value] of Object.entries(diffGroupType)) {
+      finalSorted.push(...value);
+    }
+    oneTime = oneTime.concat(masterTemp);
+    oneTime.sort((x, y) => (x.id > y.id ? 1 : -1));
+    finalSorted.push(...oneTime);
+    finalSorted.forEach((task) => {
+      console.log('task', task);
+      final.set(task.id, task);
+    });
+    console.log('after sorting', finalSorted);
+    console.log('final', final);
+
+    return { finalSorted: taskMetaDataList, progress };
   }
 );
 

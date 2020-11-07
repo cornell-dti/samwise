@@ -247,10 +247,14 @@ const getCompoundTask = (
 const mapStateToProps = (
   state: State,
   ownProps: OwnProps
-): { readonly compoundTask: CompoundTask | null; readonly settings: Settings } => ({
-  compoundTask: getCompoundTask(state, ownProps),
-  settings: state.settings,
-});
+): { readonly compoundTask: CompoundTask | null; readonly settings: Settings } => {
+  const compoundTask = getCompoundTask(state, ownProps);
+  // console.log("compoundTask", compoundTask)
+  return {
+    compoundTask: getCompoundTask(state, ownProps),
+    settings: state.settings,
+  };
+};
 
 const Connected = connect(mapStateToProps)(FutureViewTask);
 export default Connected;

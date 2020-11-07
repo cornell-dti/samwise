@@ -173,6 +173,7 @@ export default function FutureView({ config, onConfigChange }: Props): ReactElem
 
         dayTaskSet.forEach((id) => {
           const task = tasks.get(id);
+
           if (task != null) {
             const { order } = task;
             idOrderList.push({ id, order });
@@ -202,6 +203,7 @@ export default function FutureView({ config, onConfigChange }: Props): ReactElem
     } else {
       // dragging to different day
       const task = tasks.get(draggableId) as Task<OneTimeTaskMetadata>;
+
       store.dispatch(
         patchTasks(
           [],

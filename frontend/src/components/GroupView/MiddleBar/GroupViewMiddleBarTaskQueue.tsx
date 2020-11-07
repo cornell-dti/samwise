@@ -15,8 +15,13 @@ const EmptyTaskQueue = (): React.ReactElement => (
   </div>
 );
 
-function renderTaskList(tasks: readonly Task[]): ReactNode {
-  return tasks.map((task) => <GroupTask key={task.id} original={task} memberName="" />);
+function renderTaskList(tasks: Task[]): ReactNode {
+  tasks.sort((a, b) => (b.id > a.id ? 1 : -1));
+
+  return tasks.map((task) => {
+    //console.log(task);
+    return <GroupTask key={task.id} original={task} memberName="" />;
+  });
 }
 const TaskQueue = ({ tasks }: Props): React.ReactElement => (
   <div>
