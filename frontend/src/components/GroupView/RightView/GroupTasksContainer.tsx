@@ -2,6 +2,7 @@ import React, { ReactElement, ReactNode } from 'react';
 import { Task } from 'common/types/store-types';
 import styles from './GroupTasksContainer.module.scss';
 import GroupTask from './GroupTask';
+import CompletedTasksContainer from './CompletedTasks/CompletedTasksContainer';
 
 type Props = {
   readonly tasks: readonly Task[];
@@ -13,12 +14,22 @@ type IdOrder = {
   readonly order: number;
 };
 
-function renderTaskList(list: readonly Task[], memberName: string): ReactNode {
-  return list.map((item) => <GroupTask key={item.id} original={item} memberName={memberName} />);
+function renderTaskList(tasks: readonly Task[], memberName: string): ReactNode {
+  return tasks.map((task) => <GroupTask key={task.id} original={task} memberName={memberName} />);
 }
 
 function GroupTasksContainer({ tasks, memberName }: Props): ReactElement {
-  return <div className={styles.GroupTasksContainer}>{renderTaskList(tasks, memberName)}</div>;
+  const completedTasks = tasks.filter((task) => task.complete);
+
+  return (
+    <div
+      className={styles.GroupTasksContainer}
+      style={completedTasks.length > 0 ? { padding: '12px 0 0 0' } : {}}
+    >
+      {completedTasks.length > 0 ? <CompletedTasksContainer tasks={completedTasks} /> : null}
+      {renderTaskList(tasks, memberName)}
+    </div>
+  );
 }
 
 export default GroupTasksContainer;

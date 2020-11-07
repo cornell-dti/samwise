@@ -168,7 +168,7 @@ function TaskEditor({
   };
 
   const onSaveButtonClicked = (): void => {
-    if (onSave() && type !== 'ONE_TIME') {
+    if (onSave() && type === 'MASTER_TEMPLATE') {
       onSaveClicked();
     }
   };
@@ -194,6 +194,7 @@ function TaskEditor({
   const pressEnterHandler = (caller: 'main-task' | number): void => {
     const order = caller === 'main-task' ? -1 : caller;
     let focused = false;
+
     for (let i = 0; i < subTasks.length; i += 1) {
       const { order: subtaskOrder } = subTasks[i];
       if (subtaskOrder > order) {
@@ -220,7 +221,7 @@ function TaskEditor({
 
   useEffect(() => {
     const intervalID = setInterval(() => {
-      if (type === 'ONE_TIME') {
+      if (type !== 'MASTER_TEMPLATE') {
         onSave();
       }
     }, 1000);
@@ -248,6 +249,7 @@ function TaskEditor({
           calendarPosition={calendarPosition}
           displayGrabber={displayGrabber == null ? false : displayGrabber}
           icalUID={canvasLinked ? icalUID : undefined}
+          editorRef={editorRef}
           memberName={memberName}
         />
         <MainTaskEditor
@@ -280,7 +282,7 @@ function TaskEditor({
             memberName={memberName}
           />
         ))}
-        <div className={styles.SubtaskHide} style={active === true ? { maxHeight: 0 } : undefined}>
+        <div className={styles.SubtaskHide} style={active === false ? { maxHeight: 0 } : undefined}>
           <NewSubTaskEditor
             onFirstType={handleCreatedNewSubtask}
             onPressEnter={onSaveButtonClicked}

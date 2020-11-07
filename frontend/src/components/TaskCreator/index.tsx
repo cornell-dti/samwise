@@ -22,7 +22,7 @@ import styles from './index.module.scss';
 type SimpleTask = Omit<Task, 'type' | 'order' | 'children' | 'metadata'>;
 
 type State = SimpleTask & {
-  readonly owner: string;
+  readonly owner: readonly string[];
   readonly member?: SamwiseUserProfile;
   readonly date: Date | RepeatingDate;
   readonly subTasks: SubTask[];
@@ -55,7 +55,7 @@ const PLACEHOLDER_TEXT = 'What do you have to do?';
  */
 const initialState = (): State => ({
   id: randomId(),
-  owner: '',
+  owner: [''],
   name: '',
   tag: NONE_TAG_ID, // the id of the None tag.
   member: undefined,
@@ -85,20 +85,19 @@ export class TaskCreator extends React.PureComponent<Props, State> {
     };
   }
 
+  private get isOpen(): boolean {
+    // eslint-disable-next-line react/destructuring-assignment
+    return this.state.opened || this.props.taskCreatorOpened || false;
+  }
+
   /*
    * --------------------------------------------------------------------------------
    * Part 1: Openers & Closers
    * --------------------------------------------------------------------------------
    */
 
-  /**
-   * Open the new task editor.
-   */
   private openNewTask = (): void => this.setState({ opened: true });
 
-  /**
-   * Close (collapse) the new task editor.
-   */
   private closeNewTask = (): void => this.setState({ opened: false });
 
   /**
@@ -125,20 +124,12 @@ export class TaskCreator extends React.PureComponent<Props, State> {
    * --------------------------------------------------------------------------------
    */
 
-  /**
-   * Focus on the task name, if possible.
-   */
   private focusTaskName = (): void => {
     if (this.addTask) {
       this.addTask.focus();
     }
   };
 
-  /**
-   * Handle on potential save.
-   *
-   * @param e the event that signals a potential save action.
-   */
   private handleSave = (e?: SyntheticEvent<HTMLElement>): void => {
     if (e != null) {
       e.preventDefault();
@@ -192,35 +183,12 @@ export class TaskCreator extends React.PureComponent<Props, State> {
    * --------------------------------------------------------------------------------
    */
 
-  /**
-   * Edit the owner.
-   *
-   * @param {string} member the new owner.
-   */
-  private editOwner = (e: SyntheticEvent<HTMLInputElement>): void =>
-    this.setState({ owner: e.currentTarget.value });
-
-  /**
-   * Edit the task name.
-   *
-   * @param e the event that contains the new task name.
-   */
   private editTaskName = (e: SyntheticEvent<HTMLInputElement>): void =>
     this.setState({ name: e.currentTarget.value }, this.focusTaskName);
 
-  /**
-   * Edit the tag.
-   *
-   * @param {string} tag the new tag.
-   */
   private editTag = (tag: string): void =>
     this.setState({ tag, tagPickerOpened: false }, this.focusTaskName);
 
-  /**
-   * Edit the member.
-   *
-   * @param {string} member the new member.
-   */
   private editMember = (member?: SamwiseUserProfile): void =>
     this.setState({ member, tagPickerOpened: false }, this.focusTaskName);
 
@@ -257,9 +225,6 @@ export class TaskCreator extends React.PureComponent<Props, State> {
     }
   };
 
-  /**
-   * Reset the date picker
-   */
   private clearDate = (): void => {
     this.setState(
       { date: new Date(), datePickerOpened: false, datePicked: false },
@@ -267,17 +232,8 @@ export class TaskCreator extends React.PureComponent<Props, State> {
     );
   };
 
-  /**
-   * Toggle the pin status.
-   * @param {boolean} inFocus the new in-focus status.
-   */
   private togglePin = (inFocus: boolean): void => this.setState({ inFocus }, this.focusTaskName);
 
-  /**
-   * Add a new subtask.
-   *
-   * @param e the event that contains the new name for new sub-task.
-   */
   private addNewSubTask = (e: SyntheticEvent<HTMLInputElement>): void => {
     const newSubTaskName = e.currentTarget.value;
     if (newSubTaskName === '') {
@@ -298,24 +254,12 @@ export class TaskCreator extends React.PureComponent<Props, State> {
     }));
   };
 
-  /**
-   * Handle a keypress event in a new subtask box.
-   * It can potentially make the form to lose focus to exit.
-   *
-   * @param e the event that contains the key pressed in the new subtask input box.
-   */
   private newSubTaskKeyPress = (e: KeyboardEvent<HTMLInputElement>): void => {
     if (e.key === 'Tab') {
       this.closeNewTask();
     }
   };
 
-  /**
-   * Edit a subtask.
-   *
-   * @param subTaskId id of the subtask to edit.
-   * @return the event handler.
-   */
   private editSubTask = (subTaskId: string) => (e: SyntheticEvent<HTMLInputElement>) => {
     const name = e.currentTarget.value;
     this.setState(({ subTasks }: State) => ({
@@ -323,23 +267,12 @@ export class TaskCreator extends React.PureComponent<Props, State> {
     }));
   };
 
-  /**
-   * Potentially submit a subtask.
-   *
-   * @param e the keyboard event.
-   */
   private submitSubTask = (e: KeyboardEvent<HTMLInputElement>): void => {
     if (e.key === 'Enter') {
       this.handleSave();
     }
   };
 
-  /**
-   * Delete a subtask.
-   *
-   * @param {string} subtaskId id of the subtask to delete.
-   * @return {Function<SyntheticEvent<HTMLInputElement>, void>} the event handler.
-   */
   private deleteSubTask = (subtaskId: string) => (e: SyntheticEvent<HTMLButtonElement>) => {
     e.preventDefault();
     this.setState(({ subTasks }: State) => ({
@@ -347,9 +280,6 @@ export class TaskCreator extends React.PureComponent<Props, State> {
     }));
   };
 
-  /**
-   * Reset the task.
-   */
   private resetTask = (): void => this.setState({ ...initialState() }, this.focusTaskName);
 
   /**
@@ -358,15 +288,8 @@ export class TaskCreator extends React.PureComponent<Props, State> {
    * @return the rendered other info editor.
    */
   private renderOtherInfoEditor(): ReactElement | null {
-    const { opened } = this.state;
-    const {
-      view,
-      groupMemberProfiles,
-      taskCreatorOpened,
-      assignedMember,
-      clearAssignedMember,
-    } = this.props;
-    if (!opened && !taskCreatorOpened) {
+    const { view, groupMemberProfiles, assignedMember, clearAssignedMember } = this.props;
+    if (!this.isOpen) {
       return null;
     }
     const {
@@ -484,8 +407,7 @@ export class TaskCreator extends React.PureComponent<Props, State> {
   }
 
   public render(): ReactElement {
-    const { name, opened } = this.state;
-    const toggleDisplayStyle = opened ? {} : { display: 'none' };
+    const { name } = this.state;
     const { theme, view } = this.props;
     return (
       <div className={styles.TaskCreator} style={theme === 'dark' ? this.darkModeStyle : undefined}>
@@ -493,7 +415,7 @@ export class TaskCreator extends React.PureComponent<Props, State> {
           onClick={this.closeNewTask}
           role="presentation"
           className={styles.CloseNewTask}
-          style={toggleDisplayStyle}
+          style={this.isOpen ? {} : { display: 'none' }}
         />
         <form
           className={view === 'personal' ? styles.NewTaskWrap : styles.GroupNewTaskWrap}
@@ -505,8 +427,12 @@ export class TaskCreator extends React.PureComponent<Props, State> {
             type="text"
             value={name}
             onChange={this.editTaskName}
-            className={styles.NewTaskComponent}
-            placeholder={opened ? '' : PLACEHOLDER_TEXT}
+            className={
+              this.isOpen
+                ? `${styles.NewTaskComponent} ${styles.NewTaskComponentOpened}`
+                : styles.NewTaskComponent
+            }
+            placeholder={this.isOpen ? '' : PLACEHOLDER_TEXT}
             ref={(e) => {
               this.addTask = e;
             }}
