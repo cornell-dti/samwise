@@ -1,5 +1,5 @@
-import { useReducer } from 'react';
-import { shallowEqual } from 'common/util/general-util';
+import { useEffect, useReducer } from 'react';
+import { shallowArrayEqual, shallowEqual } from 'common/util/general-util';
 import { MainTask, PartialMainTask } from 'common/types/store-types';
 
 type Action =
@@ -73,9 +73,16 @@ export default function useTaskDiffReducer(
   active: boolean,
   onChange: () => void
 ): TaskDiffActions {
+  useEffect(() => console.log('foo'), []);
   const [state, dispatch] = useReducer(reducer, [initMainTask], initializer);
   const { mainTask, prevFullTask, diff } = state;
-  if (!active && !shallowEqual(prevFullTask.mainTask, initMainTask)) {
+  const { children: childrenFilteredPrev, ...prevFullTaskNoChildren } = prevFullTask.mainTask;
+  const { children: childrenFilteredInit, ...initMainTaskNoChildren } = initMainTask;
+  if (
+    !active &&
+    (!shallowEqual(prevFullTaskNoChildren, initMainTaskNoChildren) ||
+      !shallowArrayEqual(prevFullTask.mainTask.children, initMainTask.children))
+  ) {
     dispatch({ type: 'RESET', mainTask: initMainTask });
   }
   return {

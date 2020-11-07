@@ -241,7 +241,7 @@ export class TaskCreator extends React.PureComponent<Props, State> {
       subTasks: [
         ...subTasks,
         {
-          order: subTasks.length,
+          order: subTasks.reduce((acc, s) => Math.max(acc, s.order), 0) + 1,
           name: newSubTaskName,
           complete: false,
           inFocus: false,
