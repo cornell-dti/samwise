@@ -13,8 +13,6 @@ export const FocusTasksDueToday = functions.pubsub.schedule('0 0 * * *').onRun(f
 export const RemoveOldTasks = functions.pubsub.schedule('0 0 * * *').onRun(removeOldTasks);
 
 export const sendNotificationEmail = functions.https.onCall(async (data, context) => {
-  const body = data.json();
-  console.log(body);
   if (!context.auth) {
     throw new functions.https.HttpsError(
       'failed-precondition',
@@ -22,12 +20,12 @@ export const sendNotificationEmail = functions.https.onCall(async (data, context
     );
   }
   const { name, email } = context.auth.token;
-  const { recipientEmail, groupId } = body;
+  const { recipientEmail, groupId } = data;
+  console.log(recipientEmail);
   const recipientName = (await db.usersCollection().doc(recipientEmail).get()).data();
-  console.log(name, recipientName);
-  const group: FirestoreGroup = (await (
+  const group: FirestoreGroup = (
     await db.groupsCollection().doc(groupId)?.get()
-  ).data()) as FirestoreGroup;
+  ).data() as FirestoreGroup;
   if (group && group.members.includes(email as string) && group.members.includes(recipientEmail)) {
     return 'we can send the email';
   }

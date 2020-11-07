@@ -1,6 +1,7 @@
 import React, { ReactElement } from 'react';
 import { faPlus } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import firebase from 'firebase';
 import SamwiseIcon from '../../UI/SamwiseIcon';
 import styles from './GroupViewMiddleBarMemberRow.module.scss';
 import ProfileImage from './ProfileImage';
@@ -11,20 +12,18 @@ type Props = {
 };
 
 const sendNotification = (variant: string): void => {
-  const requestOptions = {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      senderName: 'jason',
-      recipientName: 'other jason',
-      recipientEmail: '',
-      variant: 'heart',
-    }),
+  const msg = {
+    data: {
+      groupId: '6es6XuBYJwZ65uFWfgOp',
+      recipientEmail: 'jt568@cornell.edu',
+    },
   };
-
-  fetch('https://us-central1-samwise-dev.cloudfunctions.net/TestHTTPRequests', requestOptions)
-    .then((response) => response.json())
-    .then((data) => console.log(data));
+  const sendMessage = firebase.functions().httpsCallable('sendNotificationEmail');
+  sendMessage(msg)
+    .then(() => {
+      console.log('lets goo');
+    })
+    .catch((e) => console.log(e));
 };
 
 const Member = ({ memberName, profilePicURL }: Props): ReactElement => {
