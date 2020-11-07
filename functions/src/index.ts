@@ -8,3 +8,7 @@ export const iCalFunction = functions.pubsub.schedule('0 0 * * *').onRun(getICal
 export const FocusTasksDueToday = functions.pubsub.schedule('0 0 * * *').onRun(focusTasksDueToday);
 
 export const RemoveOldTasks = functions.pubsub.schedule('0 0 * * *').onRun(removeOldTasks);
+
+export const TestHTTPRequests = functions.https.onRequest((req, res) => {
+  res.send('hello');
+});
