@@ -48,10 +48,6 @@ const getBannerMessageStatus = ({ bannerMessageStatus }: State): BannerMessageSt
 
 const getTasksId = ({ tasks }: State): Set<string> => Set(tasks.keys());
 
-class groupTask {
-  id: string = '';
-  tasks: Task[];
-}
 export const getTagById = ({ tags }: State, id: string): Tag => tags.get(id) ?? NONE_TAG;
 export const getTaskById = ({ tasks }: State, id: string): Task | null | undefined => tasks.get(id);
 
@@ -177,7 +173,7 @@ export const getFocusViewProps: SelectorOf<FocusViewProps> = createSelector(
     const diffGroupType: Record<string, Task[]> = {};
     const finalSorted: Task[] = [];
     let final: Map<string, Task<TaskMetadata>> = Map();
-    console.log('tasks:', tasks);
+    let test: Map<string, Task<TaskMetadata>> = Map();
     // const groupMap : Record<  "ONE_TIME" | "MASTER_TEMPLATE" | "GROUP", Task[]>= {};
     Array.from(tasks.values()).forEach((task) => {
       const filteredUncompletedTask = getFilteredNotCompletedInFocusTask(task);
@@ -208,34 +204,50 @@ export const getFocusViewProps: SelectorOf<FocusViewProps> = createSelector(
     });
 
     group.forEach((task) => {
-      if (diffGroupType[task.metadata.group]) {
-        diffGroupType[task.metadata.group].push(task);
-      } else {
-        diffGroupType[task.metadata.group] = [task];
+      if (task.metadata.type === 'GROUP') {
+        if (diffGroupType[task.metadata.group]) {
+          diffGroupType[task.metadata.group].push(task);
+        } else {
+          diffGroupType[task.metadata.group] = [task];
+        }
       }
     });
 
     Object.keys(diffGroupType).sort();
     // eslint-disable-next-line no-restricted-syntax
     for (const [key, value] of Object.entries(diffGroupType)) {
-      console.log(`before ${key}: ${value}`);
+      // console.log(`before ${key}: ${value}`);
       value.sort((x, y) => (x.order > y.order ? 1 : -1));
-      console.log(`after ${key}: ${value}`);
+      // console.log(`after ${key}: ${value}`);
     }
     // eslint-disable-next-line no-restricted-syntax
     for (const [key, value] of Object.entries(diffGroupType)) {
       finalSorted.push(...value);
     }
-    const map1: Map<string, Task<TaskMetadata>> = Map();
     oneTime = oneTime.concat(masterTemp);
     oneTime.sort((x, y) => (x.id > y.id ? 1 : -1));
     finalSorted.push(...oneTime);
-    finalSorted.forEach((task) => {
-      final = map1.withMutations((map) => {
-        map.set(task.id, task);
+
+    // eslint-disable-next-line no-shadow
+    final = final.withMutations((final) => {
+      finalSorted.forEach((task) => {
+        final.set(task.id, task);
       });
     });
-    console.log('final', final);
+    // final.forEach(task => {
+    //   console.log("task", task)
+    // });
+
+    // console.log("tasks", tasks)
+    // finalSorted.forEach((task) => {
+    //   console.log('in for each');
+    //   map1.withMutations((map) => {
+    //     map.set(task.id, task);
+    //   });
+    //   console.log('map 1',map1);
+    //   // test.merge(map1)
+    //   // console.log('test 1',test);
+    // });
 
     return { tasks: taskMetaDataList, progress };
   }

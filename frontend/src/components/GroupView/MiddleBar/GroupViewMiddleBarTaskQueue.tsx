@@ -5,7 +5,7 @@ import styles from './GroupViewMiddleBarTaskQueue.module.scss';
 import GroupTask from '../RightView/GroupTask';
 
 type Props = {
-  readonly tasks: readonly Task[];
+  readonly tasks: Task[];
 };
 
 const EmptyTaskQueue = (): React.ReactElement => (
@@ -16,10 +16,9 @@ const EmptyTaskQueue = (): React.ReactElement => (
 );
 
 function renderTaskList(tasks: Task[]): ReactNode {
-  tasks.sort((a, b) => (b.id > a.id ? 1 : -1));
+  tasks.sort((a, b) => (a.order > b.order ? 1 : -1));
 
   return tasks.map((task) => {
-    //console.log(task);
     return <GroupTask key={task.id} original={task} memberName="" />;
   });
 }
