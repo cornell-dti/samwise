@@ -11,7 +11,7 @@ type Props = {
 
 function ClearFocus({ tasks }: Props): ReactElement | null {
   const taskIds: string[] = [];
-  const subTasksWithParentTaskId: Map<string, SubTask[]> = Map();
+  let subTasksWithParentTaskId: Map<string, SubTask[]> = Map();
   tasks.forEach((t) => {
     if (t.inFocus && t.complete) {
       taskIds.push(t.id);
@@ -20,9 +20,12 @@ function ClearFocus({ tasks }: Props): ReactElement | null {
         if (s.inFocus && s.complete) {
           const completedSubtasks = subTasksWithParentTaskId.get(t.id);
           if (completedSubtasks === undefined) {
-            subTasksWithParentTaskId.set(t.id, [s]);
+            subTasksWithParentTaskId = subTasksWithParentTaskId.set(t.id, [s]);
           } else {
-            subTasksWithParentTaskId.setIn(t.id, [s, ...completedSubtasks]);
+            subTasksWithParentTaskId = subTasksWithParentTaskId.setIn(t.id, [
+              s,
+              ...completedSubtasks,
+            ]);
           }
         }
       });

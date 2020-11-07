@@ -123,7 +123,6 @@ export default function FloatingTaskEditor({
             icalUID={icalUID}
             taskAppearedDate={taskAppearedDate}
             mainTask={{ ...mainTask, date: metadata.date, children }}
-            subTasks={children}
             actions={actions}
             className={styles.Editor}
             editorRef={editorRef}

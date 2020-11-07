@@ -1,16 +1,16 @@
 import { useReducer } from 'react';
-import { shallowEqual, shallowArrayEqual } from 'common/util/general-util';
-import { MainTask, PartialMainTask, SubTask } from 'common/types/store-types';
+import { shallowEqual } from 'common/util/general-util';
+import { MainTask, PartialMainTask } from 'common/types/store-types';
 
 type Action =
   | { readonly type: 'EDIT_MAIN_TASK'; readonly change: PartialMainTask }
-  | { readonly type: 'RESET'; readonly mainTask: MainTask; readonly subTasks: readonly SubTask[] };
+  | { readonly type: 'RESET'; readonly mainTask: MainTask };
 
 export type Diff = {
   readonly mainTaskEdits: PartialMainTask;
 };
 
-type FullTask = { readonly mainTask: MainTask; readonly subTasks: readonly SubTask[] };
+type FullTask = { readonly mainTask: MainTask };
 
 type State = FullTask & { readonly prevFullTask: FullTask; readonly diff: Diff };
 
@@ -40,8 +40,8 @@ export function diffIsEmpty(diff: Diff): boolean {
  * @param subTasks an array of subtask for initial state.
  * @returns the initial state.
  */
-function initializer([mainTask, subTasks]: [MainTask, readonly SubTask[]]): State {
-  return { mainTask, subTasks, prevFullTask: { mainTask, subTasks }, diff: emptyDiff };
+function initializer([mainTask]: [MainTask]): State {
+  return { mainTask, prevFullTask: { mainTask }, diff: emptyDiff };
 }
 
 /**
@@ -60,8 +60,8 @@ function reducer(state: State, action: Action): State {
       return { ...restState, mainTask: { ...mainTask, ...change }, diff: newDiff };
     }
     case 'RESET': {
-      const { mainTask, subTasks } = action;
-      return initializer([mainTask, subTasks]);
+      const { mainTask } = action;
+      return initializer([mainTask]);
     }
     default:
       throw new Error('Bad Type!');
@@ -70,29 +70,23 @@ function reducer(state: State, action: Action): State {
 
 export default function useTaskDiffReducer(
   initMainTask: MainTask,
-  initSubTasks: readonly SubTask[],
   active: boolean,
   onChange: () => void
 ): TaskDiffActions {
-  const [state, dispatch] = useReducer(reducer, [initMainTask, initSubTasks], initializer);
-  const { mainTask, subTasks, prevFullTask, diff } = state;
-  if (
-    !active &&
-    (!shallowEqual(prevFullTask.mainTask, initMainTask) ||
-      !shallowArrayEqual(prevFullTask.subTasks, initSubTasks))
-  ) {
-    dispatch({ type: 'RESET', mainTask: initMainTask, subTasks: initSubTasks });
+  const [state, dispatch] = useReducer(reducer, [initMainTask], initializer);
+  const { mainTask, prevFullTask, diff } = state;
+  if (!active && !shallowEqual(prevFullTask.mainTask, initMainTask)) {
+    dispatch({ type: 'RESET', mainTask: initMainTask });
   }
   return {
     mainTask,
-    subTasks,
     diff,
     dispatchEditMainTask: (change: PartialMainTask): void => {
       dispatch({ type: 'EDIT_MAIN_TASK', change });
       onChange();
     },
     reset: (): void => {
-      dispatch({ type: 'RESET', mainTask: initMainTask, subTasks: initSubTasks });
+      dispatch({ type: 'RESET', mainTask: initMainTask });
       onChange();
     },
   };

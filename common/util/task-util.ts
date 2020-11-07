@@ -1,5 +1,6 @@
 import { SubTask, Task, RepeatingPattern, RepeatingTaskMetadata } from '../types/store-types';
 import { isBitSet } from './bitwise-util';
+import { shallowEqual } from './general-util';
 
 /**
  * This is the utility module for array of tasks and subtasks.
@@ -163,4 +164,4 @@ export function dateMatchRepeats(
 }
 
 export const subTasksEqual = (firstSubTask: SubTask, secondSubTask: SubTask): boolean =>
-  JSON.stringify(firstSubTask) === JSON.stringify(secondSubTask);
+  shallowEqual(firstSubTask, secondSubTask);

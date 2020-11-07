@@ -42,7 +42,6 @@ export default function InlineTaskEditor({
       taskAppearedDate={taskAppearedDate}
       className={className}
       mainTask={{ ...mainTask, date: metadata.date, children }}
-      subTasks={children}
       actions={actions}
       displayGrabber
       calendarPosition={calendarPosition}

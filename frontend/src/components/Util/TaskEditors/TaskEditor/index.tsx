@@ -48,8 +48,6 @@ type OwnProps = DefaultProps & {
   // the date string that specifies when the task appears (useful for repeated task)
   readonly taskAppearedDate: string | null;
   readonly mainTask: MainTask; // The task given to the editor.
-  // The subtask given to the editor. It should only contain those that should be displayed.
-  readonly subTasks: readonly SubTask[];
   readonly actions: Actions; // The actions to perform under different events
   readonly calendarPosition: CalendarPosition;
   readonly memberName?: string; // only supplied if task is a group task
@@ -74,7 +72,6 @@ function TaskEditor({
   icalUID,
   taskAppearedDate,
   mainTask: initMainTask,
-  subTasks: initSubTasks,
   actions,
   displayGrabber,
   getTag,
@@ -89,9 +86,8 @@ function TaskEditor({
   memberName,
 }: Props): ReactElement {
   const { onChange, removeTask, onSaveClicked } = actions;
-  const { mainTask, subTasks, diff, dispatchEditMainTask, reset } = useTaskDiffReducer(
+  const { mainTask, diff, dispatchEditMainTask, reset } = useTaskDiffReducer(
     initMainTask,
-    initSubTasks,
     active ?? false,
     onChange ?? ignore
   );
@@ -171,7 +167,7 @@ function TaskEditor({
 
   // called when the user types in the first char in the new subtask box. We need to shift now.
   const handleCreatedNewSubtask = (firstTypedValue: string): void => {
-    const order = subTasks.reduce((acc, s) => Math.max(acc, s.order), 0) + 1;
+    const order = mainTask.children.reduce((acc, s) => Math.max(acc, s.order), 0) + 1;
     const createdNewSubtask: SubTask = {
       order,
       name: firstTypedValue,
@@ -179,7 +175,7 @@ function TaskEditor({
       inFocus: newSubTaskAutoFocused === true,
     };
     dispatchEditMainTask({
-      children: [createdNewSubtask, ...subTasks],
+      children: [createdNewSubtask, ...mainTask.children],
     });
     setSubTaskToFocus(order);
   };
@@ -194,8 +190,8 @@ function TaskEditor({
     const order = caller === 'main-task' ? -1 : caller;
     let focused = false;
 
-    for (let i = 0; i < subTasks.length; i += 1) {
-      const { order: subtaskOrder } = subTasks[i];
+    for (let i = 0; i < mainTask.children.length; i += 1) {
+      const { order: subtaskOrder } = mainTask.children[i];
       if (subtaskOrder > order) {
         setSubTaskToFocus(subtaskOrder);
         focused = true;
@@ -266,11 +262,11 @@ function TaskEditor({
         />
       </div>
       <div className={styles.TaskEditorSubTasksIndentedContainer}>
-        {subTasks.map((subTask: SubTask) => (
+        {mainTask.children.map((subTask: SubTask) => (
           <OneSubTaskEditor
             key={subTask.order}
             subTask={subTask}
-            allCurrentSubTasks={subTasks}
+            allCurrentSubTasks={mainTask.children}
             mainTaskComplete={complete}
             needToBeFocused={subTaskToFocus === subTask.order}
             editTaskCallback={dispatchEditMainTask}
