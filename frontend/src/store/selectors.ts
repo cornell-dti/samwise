@@ -176,7 +176,7 @@ export const getFocusViewProps: SelectorOf<FocusViewProps> = createSelector(
     const group: Task[] = [];
     const diffGroupType: Record<string, Task[]> = {};
     const finalSorted: Task[] = [];
-    const final: Map<string, Task<TaskMetadata>> = new Map();
+    let final: Map<string, Task<TaskMetadata>> = Map();
     console.log('tasks:', tasks);
     // const groupMap : Record<  "ONE_TIME" | "MASTER_TEMPLATE" | "GROUP", Task[]>= {};
     Array.from(tasks.values()).forEach((task) => {
@@ -226,17 +226,18 @@ export const getFocusViewProps: SelectorOf<FocusViewProps> = createSelector(
     for (const [key, value] of Object.entries(diffGroupType)) {
       finalSorted.push(...value);
     }
+    const map1: Map<string, Task<TaskMetadata>> = Map();
     oneTime = oneTime.concat(masterTemp);
     oneTime.sort((x, y) => (x.id > y.id ? 1 : -1));
     finalSorted.push(...oneTime);
     finalSorted.forEach((task) => {
-      console.log('task', task);
-      final.set(task.id, task);
+      final = map1.withMutations((map) => {
+        map.set(task.id, task);
+      });
     });
-    console.log('after sorting', finalSorted);
     console.log('final', final);
 
-    return { finalSorted: taskMetaDataList, progress };
+    return { tasks: taskMetaDataList, progress };
   }
 );
 
