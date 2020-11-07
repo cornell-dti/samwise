@@ -2,8 +2,11 @@ import fetch from 'node-fetch';
 import { JSDOM } from 'jsdom';
 import { ExamInfo } from './types';
 
+type ExamType = 'final' | 'semifinal' | 'prelim';
+
 const prelimUrl = 'https://registrar.cornell.edu/exams/fall-prelim-exam-schedule';
 const semiFinalUrl = 'https://registrar.cornell.edu/calendars-exams/semifinal-exam-schedule';
+const finalUrl = 'https://registrar.cornell.edu/exams/fall-final-exam-schedule';
 
 const currentYear = new Date().getFullYear();
 
@@ -78,7 +81,28 @@ function parseSemiFinalLine(line: string): ExamInfo {
   };
 }
 
-function getExamInfoList(rawText: string, isSemiFinal: boolean): readonly ExamInfo[] {
+function parseFinalLine(line: string): ExamInfo {
+  // Adapted for FA20 finals.
+  const segments = line.split(/\s+/);
+  const subject = segments[0];
+  const courseNumber = segments[1];
+  const sectionNumber = segments[2];
+  const dateMonth = segments[3];
+  const dateDay = segments[4];
+  const dateTime = segments[5];
+  const dateTimeString = `${dateMonth} ${dateDay} ${currentYear} ${dateTime}`;
+
+  const date = new Date(dateTimeString);
+  date.setHours(segments[6] === 'PM' ? date.getHours() + 12 : date.getHours());
+  return {
+    subject,
+    courseNumber,
+    sectionNumber,
+    time: date.getTime(),
+  };
+}
+
+function getExamInfoList(rawText: string, examType: ExamType): readonly ExamInfo[] {
   const lines = rawText.split('\n');
   const infoList: ExamInfo[] = [];
   for (let i = 0; i < lines.length; i += 1) {
@@ -89,16 +113,30 @@ function getExamInfoList(rawText: string, isSemiFinal: boolean): readonly ExamIn
       !line.startsWith('final exam') &&
       !line.startsWith('Course')
     ) {
-      const info = isSemiFinal ? parseSemiFinalLine(line) : parsePrelimLine(line);
+      let info: ExamInfo;
+      switch (examType) {
+        case 'final':
+          info = parseFinalLine(line);
+          break;
+        case 'semifinal':
+          info = parseSemiFinalLine(line);
+          break;
+        case 'prelim':
+          info = parsePrelimLine(line);
+          break;
+        default:
+          throw new Error('Invalid exam type!');
+      }
       infoList.push(info);
     }
   }
   return infoList;
 }
 
-const createJson = (url: string, isFinal: boolean): Promise<readonly ExamInfo[]> =>
-  fetchExamText(url).then((rawText) => getExamInfoList(rawText, isFinal));
+const createJson = (url: string, examType: ExamType): Promise<readonly ExamInfo[]> =>
+  fetchExamText(url).then((rawText) => getExamInfoList(rawText, examType));
 
 export const createSemiFinalJson = (): Promise<readonly ExamInfo[]> =>
-  createJson(semiFinalUrl, true);
-export const createPrelimJson = (): Promise<readonly ExamInfo[]> => createJson(prelimUrl, false);
+  createJson(semiFinalUrl, 'semifinal');
+export const createPrelimJson = (): Promise<readonly ExamInfo[]> => createJson(prelimUrl, 'prelim');
+export const createFinalJson = (): Promise<readonly ExamInfo[]> => createJson(finalUrl, 'final');
