@@ -249,6 +249,7 @@ export const getFocusViewProps: SelectorOf<FocusViewProps> = createSelector(
     //   // console.log('test 1',test);
     // });
 
+    // need to return final here but getting undefined error
     return { tasks: taskMetaDataList, progress };
   }
 );
