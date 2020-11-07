@@ -1,4 +1,4 @@
-import { useEffect, useReducer } from 'react';
+import { useReducer } from 'react';
 import { shallowArrayEqual, shallowEqual } from 'common/util/general-util';
 import { MainTask, PartialMainTask } from 'common/types/store-types';
 
@@ -73,7 +73,6 @@ export default function useTaskDiffReducer(
   active: boolean,
   onChange: () => void
 ): TaskDiffActions {
-  useEffect(() => console.log('foo'), []);
   const [state, dispatch] = useReducer(reducer, [initMainTask], initializer);
   const { mainTask, prevFullTask, diff } = state;
   const { children: childrenFilteredPrev, ...prevFullTaskNoChildren } = prevFullTask.mainTask;

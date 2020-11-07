@@ -127,6 +127,7 @@ export default function FloatingTaskEditor({
             className={styles.Editor}
             editorRef={editorRef}
             calendarPosition={calendarPosition}
+            active
           />
           <div className={styles.BackgroundBlocker} role="presentation" onClick={closePopup} />
         </>
