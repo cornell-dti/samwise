@@ -241,8 +241,7 @@ export class TaskCreator extends React.PureComponent<Props, State> {
       subTasks: [
         ...subTasks,
         {
-          id: String(subTasks.length),
-          order: 0, // some random order, will be ignored anyway
+          order: subTasks.length,
           name: newSubTaskName,
           complete: false,
           inFocus: false,
