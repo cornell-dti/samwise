@@ -10,6 +10,23 @@ type Props = {
   profilePicURL: string;
 };
 
+const sendNotification = (variant: string): void => {
+  const requestOptions = {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      senderName: 'jason',
+      recipientName: 'other jason',
+      recipientEmail: 'jasontungnyc@gmail.com',
+      variant: 'heart',
+    }),
+  };
+
+  fetch('https://us-central1-samwise-dev.cloudfunctions.net/TestHTTPRequests', requestOptions)
+    .then((response) => response.json())
+    .then((data) => console.log(data));
+};
+
 const Member = ({ memberName, profilePicURL }: Props): ReactElement => {
   return (
     <div className={styles.Member}>
@@ -22,8 +39,16 @@ const Member = ({ memberName, profilePicURL }: Props): ReactElement => {
       <div className={styles.Plus}>
         <FontAwesomeIcon icon={faPlus} />
       </div>
-      <SamwiseIcon className={styles.MemberIcon} iconName="bell-outline" />
-      <SamwiseIcon className={styles.MemberIcon} iconName="hug" />
+      <SamwiseIcon
+        className={styles.MemberIcon}
+        iconName="bell-outline"
+        onClick={() => sendNotification('bell')}
+      />
+      <SamwiseIcon
+        className={styles.MemberIcon}
+        iconName="hug"
+        onClick={() => sendNotification('hug')}
+      />
     </div>
   );
 };

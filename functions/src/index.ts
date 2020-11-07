@@ -2,6 +2,7 @@ import * as functions from 'firebase-functions';
 import getICalLink from './iCalFunctions';
 import focusTasksDueToday from './focus-today-task';
 import removeOldTasks from './remove-old-tasks';
+import sendEmail from './send-email';
 
 export const iCalFunction = functions.pubsub.schedule('0 0 * * *').onRun(getICalLink);
 
@@ -9,6 +10,4 @@ export const FocusTasksDueToday = functions.pubsub.schedule('0 0 * * *').onRun(f
 
 export const RemoveOldTasks = functions.pubsub.schedule('0 0 * * *').onRun(removeOldTasks);
 
-export const TestHTTPRequests = functions.https.onRequest((req, res) => {
-  res.send('hello');
-});
+export const sendNotificationEmail = functions.https.onRequest(sendEmail);
