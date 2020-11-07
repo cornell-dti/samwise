@@ -1,4 +1,10 @@
-import { day2String, isToday, getTodayAtZeroAM, getDateAfterXWeeks } from './datetime-util';
+import {
+  day2String,
+  isToday,
+  getTodayAtZeroAM,
+  getDateWithDateString,
+  getDateAfterXWeeks,
+} from './datetime-util';
 
 it('day2String works', () => {
   expect(day2String(0)).toBe('SUN');
@@ -20,6 +26,13 @@ it('getTodayAtZeroAM works', () => {
   expect(t.getMinutes()).toBe(0);
   expect(t.getSeconds()).toBe(0);
   expect(t.getMilliseconds()).toBe(0);
+});
+
+it('getDateWithDateString works', () => {
+  const date = getDateWithDateString(null, 'Tue Nov 03 2020');
+  expect(date.getFullYear()).toBe(2020);
+  expect(date.getMonth()).toBe(10);
+  expect(date.getDate()).toBe(3);
 });
 
 it('getDateAfterXWeeks works', () => {

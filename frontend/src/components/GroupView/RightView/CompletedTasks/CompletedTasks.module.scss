@@ -1,0 +1,52 @@
+.CompletedTasksTitle {
+  font-weight: bold;
+  color: rgb(207, 207, 207);
+  font-size: 10px;
+  margin: 0;
+  margin-bottom: 2px;
+}
+
+.CompletedTask,
+.AdditionalCompletedTask {
+  display: flex;
+  justify-content: space-between;
+  list-style-type: none;
+  width: 100%;
+  background: rgb(150, 150, 150);
+  color: white;
+  padding: 8px 12px;
+  padding-left: 4px;
+  margin-bottom: 12px;
+  height: 36px;
+}
+
+.AdditionalCompletedTask {
+  font-weight: bold;
+  padding-left: 10px;
+}
+
+.CompletedTaskName {
+  padding-left: 4px;
+}
+
+.CompletedTaskDate {
+  margin: auto 0;
+  font-style: italic;
+}
+
+.GrabberIcon {
+  cursor: pointer;
+  width: 20px;
+  height: 20px;
+  vertical-align: middle;
+}
+
+.CompletedTasksBar {
+  width: 270px;
+  margin-right: 14px;
+}
+
+.CompletedTasksContainer {
+  position: relative;
+  top: -18px;
+}

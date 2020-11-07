@@ -1,4 +1,5 @@
 import { FirestoreCommonTask } from 'common/types/firestore-types';
+import { partition } from './util';
 import database from './db';
 
 const N = 40;
@@ -7,26 +8,6 @@ const nDaysBeforeNow = (n: number): Date => {
   const date = new Date();
   date.setDate(date.getDate() - n);
   return date;
-};
-
-// Visible for testing.
-export const partition = (
-  idList: readonly string[],
-  partitionSize: number
-): readonly string[][] => {
-  const partitioned: string[][] = [];
-  let collector: string[] = [];
-  idList.forEach((id) => {
-    if (collector.length === partitionSize) {
-      partitioned.push(collector);
-      collector = [];
-    }
-    collector.push(id);
-  });
-  if (collector.length > 0) {
-    partitioned.push(collector);
-  }
-  return partitioned;
 };
 
 const removeOldTasks = async (): Promise<void> => {

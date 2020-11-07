@@ -1,4 +1,4 @@
-import React, { ReactElement, KeyboardEvent } from 'react';
+import React, { ReactElement } from 'react';
 import { faPlus } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import type { SamwiseUserProfile, Task } from 'common/types/store-types';
@@ -12,13 +12,6 @@ type Props = {
   readonly onClick: (member: SamwiseUserProfile) => void;
   readonly tasks: readonly Task[];
   readonly profilePicURL: string;
-};
-
-const pressedAddGroupTask = (e: KeyboardEvent): void => {
-  if (e.key === 'Enter' || e.key === ' ') {
-    e.stopPropagation();
-    console.log('pressed add group task');
-  }
 };
 
 const GroupTaskRow = ({
@@ -40,7 +33,6 @@ const GroupTaskRow = ({
         type="button"
         className={styles.AddTaskContainer}
         onClick={() => onClick(userProfile)}
-        onKeyPress={pressedAddGroupTask}
       >
         <div className={styles.AddTask}>
           <FontAwesomeIcon icon={faPlus} />
