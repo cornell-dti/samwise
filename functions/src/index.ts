@@ -18,12 +18,13 @@ export const sendNotificationEmail = functions.https.onCall(async (data, context
   if (!context.auth) {
     throw new functions.https.HttpsError(
       'failed-precondition',
-      'The function must be called ' + 'while authenticated.'
+      'The function must be called while authenticated.'
     );
   }
   const { name, email } = context.auth.token;
   const { recipientEmail, groupId } = body;
   const recipientName = (await db.usersCollection().doc(recipientEmail).get()).data();
+  console.log(name, recipientName);
   const group: FirestoreGroup = (await (
     await db.groupsCollection().doc(groupId)?.get()
   ).data()) as FirestoreGroup;
