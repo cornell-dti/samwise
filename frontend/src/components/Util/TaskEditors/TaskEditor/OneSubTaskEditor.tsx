@@ -1,16 +1,15 @@
 import React, { KeyboardEvent, ReactElement, SyntheticEvent, useEffect, useRef } from 'react';
-import { MainTask, SubTask } from 'common/types/store-types';
-import { subTasksEqual } from 'common/util/task-util';
+import { SubTask } from 'common/types/store-types';
 import CheckBox from '../../../UI/CheckBox';
 import SamwiseIcon from '../../../UI/SamwiseIcon';
 import styles from './index.module.scss';
 
 type Props = {
   readonly subTask: SubTask; // the subtask to edit
-  readonly allCurrentSubTasks: readonly SubTask[];
   readonly mainTaskComplete: boolean; // whether the main task is completed
   readonly needToBeFocused: boolean; // whether it needs to be focused.
-  readonly editTaskCallback: (change: Partial<MainTask>) => void;
+  readonly onEdit: (update: Partial<SubTask>, subTaskToUpdate: SubTask) => void;
+  readonly onRemove: (subTaskToRemove: SubTask) => void;
   readonly onPressEnter: (id: 'main-task' | number) => void;
   readonly memberName?: string; // only supplied if task is a group task
 };
@@ -20,27 +19,15 @@ const deleteIconClass = [styles.TaskEditorIcon, styles.TaskEditorIconLeftPad].jo
 
 function OneSubTaskEditor({
   subTask,
-  allCurrentSubTasks,
   mainTaskComplete,
   needToBeFocused,
-  editTaskCallback,
+  onEdit,
+  onRemove,
   onPressEnter,
   memberName,
 }: Props): ReactElement {
   const editThisSubTask = (update: Partial<SubTask>): void => {
-    const updatedSubTasks = allCurrentSubTasks.map((curr) => {
-      return subTasksEqual(curr, subTask) ? { ...curr, ...update } : curr;
-    });
-    editTaskCallback({
-      children: updatedSubTasks,
-    });
-  };
-
-  const removeThisSubTask = (): void => {
-    const updatedSubTasks = allCurrentSubTasks.filter((curr) => !subTasksEqual(curr, subTask));
-    editTaskCallback({
-      children: updatedSubTasks,
-    });
+    onEdit(update, subTask);
   };
 
   const onCompleteChange = (): void => {
@@ -51,7 +38,6 @@ function OneSubTaskEditor({
     const inFocus = !subTask.inFocus;
     editThisSubTask({ inFocus });
   };
-  const onRemove = (): void => removeThisSubTask();
 
   const onKeyDown = (event: KeyboardEvent<HTMLInputElement>): void => {
     if (event.key !== 'Enter') {
@@ -112,7 +98,11 @@ function OneSubTaskEditor({
           onClick={onInFocusChange}
         />
       )}
-      <SamwiseIcon iconName="x-light" onClick={onRemove} className={deleteIconClass} />
+      <SamwiseIcon
+        iconName="x-light"
+        onClick={() => onRemove(subTask)}
+        className={deleteIconClass}
+      />
     </div>
   );
 }

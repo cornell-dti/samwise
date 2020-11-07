@@ -9,6 +9,7 @@ import { MainTask, Settings, State, SubTask, Tag } from 'common/types/store-type
 import { NONE_TAG } from 'common/util/tag-util';
 import { ignore } from 'common/util/general-util';
 import { getTodayAtZeroAM, getDateWithDateString } from 'common/util/datetime-util';
+import { subTasksEqual } from 'common/util/task-util';
 import OverdueAlert from '../../../UI/OverdueAlert';
 import {
   confirmRepeatedTaskEditMaster,
@@ -99,6 +100,24 @@ function TaskEditor({
   const { canvasCalendar } = settings;
   const canvasLinked = canvasCalendar != null;
 
+  const editSubTask = (update: Partial<SubTask>, subTaskToUpdate: SubTask): void => {
+    const updatedSubTasks = mainTask.children.map((curr) => {
+      return subTasksEqual(curr, subTaskToUpdate) ? { ...curr, ...update } : curr;
+    });
+    dispatchEditMainTask({
+      children: updatedSubTasks,
+    });
+  };
+
+  const removeSubTask = (subTaskToRemove: SubTask): void => {
+    const updatedSubTasks = mainTask.children.filter(
+      (curr) => !subTasksEqual(curr, subTaskToRemove)
+    );
+    dispatchEditMainTask({
+      children: updatedSubTasks,
+    });
+  };
+
   const onSave = useCallback((): boolean => {
     if (diffIsEmpty(diff)) {
       return false;
@@ -175,7 +194,7 @@ function TaskEditor({
       inFocus: newSubTaskAutoFocused === true,
     };
     dispatchEditMainTask({
-      children: [createdNewSubtask, ...mainTask.children],
+      children: [...mainTask.children, createdNewSubtask],
     });
     setSubTaskToFocus(order);
   };
@@ -266,10 +285,10 @@ function TaskEditor({
           <OneSubTaskEditor
             key={subTask.order}
             subTask={subTask}
-            allCurrentSubTasks={mainTask.children}
             mainTaskComplete={complete}
             needToBeFocused={subTaskToFocus === subTask.order}
-            editTaskCallback={dispatchEditMainTask}
+            onEdit={editSubTask}
+            onRemove={removeSubTask}
             onPressEnter={pressEnterHandler}
             memberName={memberName}
           />
