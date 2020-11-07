@@ -8,7 +8,6 @@ import {
   RepeatingTaskMetadata,
   Course,
   Group,
-  PendingGroupInvite,
 } from 'common/types/store-types';
 import buildCoursesMap from 'common/util/courses-util';
 import { ignore } from 'common/util/general-util';
@@ -16,7 +15,6 @@ import {
   FirestoreSubTask,
   FirestoreTag,
   FirestoreTask,
-  FirestorePendingGroupInvite,
   FirestoreGroup,
 } from 'common/types/firestore-types';
 import { QuerySnapshot, DocumentSnapshot } from 'common/firebase/database';
@@ -30,7 +28,7 @@ import {
   patchTasks,
   patchBannerMessageStatus,
   patchGroups,
-  patchPendingInvite,
+  patchGroupInvites,
 } from '../store/actions';
 import coursesJson from '../assets/json/fa20-courses-with-exams-min.json';
 import { store } from '../store/store';
@@ -65,11 +63,11 @@ const listenGroupChange = (
   listener: (snapshot: QuerySnapshot) => void
 ): UnmountCallback =>
   database.groupsCollection().where('members', 'array-contains', email).onSnapshot(listener);
-const listenPendingInviteChange = (
+const listenInviteChange = (
   email: string,
   listener: (snapshot: QuerySnapshot) => void
 ): UnmountCallback =>
-  database.pendingInvitesCollection().where('invitee', '==', email).onSnapshot(listener);
+  database.groupsCollection().where('invitees', 'array-contains', email).onSnapshot(listener);
 
 const transformDate = (dateOrTimestamp: Date | Timestamp): Date =>
   dateOrTimestamp instanceof Date ? dateOrTimestamp : dateOrTimestamp.toDate();
@@ -261,11 +259,34 @@ const initializeFirebaseListeners = (onFirstFetched: () => void): (() => void) =
       if (type === 'removed') {
         deleted.push(id);
       } else {
-        const { name, members, deadline, classCode } = doc.data() as FirestoreGroup;
+        const {
+          name,
+          members,
+          invitees,
+          inviterNames,
+          deadline,
+          classCode,
+        } = doc.data() as FirestoreGroup;
         if (type === 'added') {
-          created.push({ id, name, members, deadline: deadline.toDate(), classCode });
+          created.push({
+            id,
+            name,
+            members,
+            invitees,
+            inviterNames,
+            deadline: deadline.toDate(),
+            classCode,
+          });
         } else {
-          edited.push({ id, name, members, deadline: deadline.toDate(), classCode });
+          edited.push({
+            id,
+            name,
+            members,
+            invitees,
+            inviterNames,
+            deadline: deadline.toDate(),
+            classCode,
+          });
         }
       }
     });
@@ -273,28 +294,53 @@ const initializeFirebaseListeners = (onFirstFetched: () => void): (() => void) =
     firstGroupsFetched = true;
     reportFirstFetchedIfAllFetched();
   });
-  const unmountPendingInviteListener = listenPendingInviteChange(ownerEmail, (snapshot) => {
-    const newPendingInvites: PendingGroupInvite[] = [];
-    const delPendingInvites: string[] = [];
+
+  const unmountGroupInvitesListener = listenInviteChange(ownerEmail, (snapshot) => {
+    const created: Group[] = [];
+    const edited: Group[] = [];
+    const deleted: string[] = [];
     snapshot.docChanges().forEach((change) => {
-      const { doc } = change;
+      const { doc, type } = change;
       const { id } = doc;
-      if (change.type === 'removed') {
-        delPendingInvites.push(id);
+      if (type === 'removed') {
+        deleted.push(id);
       } else {
-        const data = doc.data();
-        if (data === undefined) {
-          return;
+        const {
+          name,
+          members,
+          invitees,
+          inviterNames,
+          deadline,
+          classCode,
+        } = doc.data() as FirestoreGroup;
+        if (type === 'added') {
+          created.push({
+            id,
+            name,
+            members,
+            invitees,
+            inviterNames,
+            deadline: deadline.toDate(),
+            classCode,
+          });
+        } else {
+          edited.push({
+            id,
+            name,
+            members,
+            invitees,
+            inviterNames,
+            deadline: deadline.toDate(),
+            classCode,
+          });
         }
-        const { group, inviterName } = data as FirestorePendingGroupInvite;
-        const newInvite: PendingGroupInvite = { id, group, inviterName };
-        newPendingInvites.push(newInvite);
       }
     });
-
-    // Not gonna add this to the report for first fetch since we can let pending invites come
+    store.dispatch(patchGroupInvites(created, edited, deleted));
+    // Not adding this to the report for first fetch since we can let pending invites come
     // in after page load
-    store.dispatch(patchPendingInvite(newPendingInvites, delPendingInvites));
+    // firstGroupsFetched = true;
+    // reportFirstFetchedIfAllFetched();
   });
 
   store.dispatch(patchCourses(buildCoursesMap(coursesJson as Course[])));
@@ -309,7 +355,7 @@ const initializeFirebaseListeners = (onFirstFetched: () => void): (() => void) =
     unmountSettingsListener();
     unmountBannerStatusListener();
     unmountGroupsListener();
-    unmountPendingInviteListener();
+    unmountGroupInvitesListener();
   };
 };
 

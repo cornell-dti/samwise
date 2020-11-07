@@ -130,7 +130,4 @@ export default class Database {
   groupsCollection = (): Collection => this.db().collection('samwise-groups');
 
   usersCollection = (): Collection => this.db().collection('samwise-users');
-
-  pendingInvitesCollection = (): Collection =>
-    this.db().collection('samwise-group-pending-invites');
 }
