@@ -247,7 +247,7 @@ export const getFocusViewProps: SelectorOf<FocusViewProps> = createSelector(
     });
 
     taskMetaDataList.sort((a, b) => finalReturn.indexOf(a.id) - finalReturn.indexOf(b.id));
-
+    taskMetaDataList = finalReturn.map((object) => taskMetaDataList[object]);
     return { tasks: taskMetaDataList, progress };
   }
 );
