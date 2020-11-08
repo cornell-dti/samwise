@@ -9,7 +9,6 @@ import { TaskMainData, Settings, State, SubTask, Tag } from 'common/types/store-
 import { NONE_TAG } from 'common/util/tag-util';
 import { ignore } from 'common/util/general-util';
 import { getTodayAtZeroAM, getDateWithDateString } from 'common/util/datetime-util';
-import { subTasksEqual } from 'common/util/task-util';
 import OverdueAlert from '../../../UI/OverdueAlert';
 import {
   confirmRepeatedTaskEditMaster,

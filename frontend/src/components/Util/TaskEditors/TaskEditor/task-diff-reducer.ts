@@ -72,14 +72,14 @@ function reducer(state: State, action: Action): State {
       const { update, order, isDelete } = change;
       let children: SubTask[];
       if (isDelete) {
-        children = taskData.children.filter((curr) => curr.order === order);
+        children = taskData.children.filter((curr) => curr.order !== order);
       } else {
         children = taskData.children.map((curr) => {
           return curr.order === order ? { ...curr, ...update } : curr;
         });
       }
-      const newDiff = { ...diff, mainTaskEdits: { ...diff.mainTaskEdits, ...children } };
-      return { ...restState, taskData: { ...taskData, ...children }, diff: newDiff };
+      const newDiff = { ...diff, mainTaskEdits: { ...diff.mainTaskEdits, children } };
+      return { ...restState, taskData: { ...taskData, children }, diff: newDiff };
     }
     case 'RESET': {
       const { taskData } = action;
