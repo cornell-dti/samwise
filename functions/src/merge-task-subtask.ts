@@ -37,11 +37,20 @@ const mergeSubtaskTask = async (): Promise<void> => {
       const { children } = task;
       const subtasks: NewSubTask[] = [];
       if (children !== undefined && children.length !== 0) {
+        const subTaskOrderSet: Set<number> = new Set<number>();
         children.forEach((subtaskId) => {
           const subtask = subTaskMap.get(subtaskId);
           if (subtask !== undefined) {
             const { complete, inFocus, name, order } = subtask;
-            subtasks.push({ complete, inFocus, name, order });
+            if (subTaskOrderSet.has(order)) {
+              const uniqueOrder =
+                [...subTaskOrderSet].reduce((acc, curr) => Math.max(acc, curr), 0) + 1;
+              subTaskOrderSet.add(uniqueOrder);
+              subtasks.push({ complete, inFocus, name, order: uniqueOrder });
+            } else {
+              subTaskOrderSet.add(order);
+              subtasks.push({ complete, inFocus, name, order });
+            }
           }
         });
       }
