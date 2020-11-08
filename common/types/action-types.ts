@@ -1,13 +1,5 @@
 import { Map } from 'immutable';
-import {
-  Course,
-  Settings,
-  Task,
-  Tag,
-  BannerMessageStatus,
-  Group,
-  PendingGroupInvite,
-} from './store-types';
+import { Course, Settings, Task, Tag, BannerMessageStatus, Group } from './store-types';
 
 export type PatchTags = {
   readonly type: 'PATCH_TAGS';
@@ -44,9 +36,11 @@ export type PatchGroups = {
   readonly edited: Group[];
   readonly deleted: string[];
 };
-export type PatchPendingInvite = {
-  readonly type: 'PATCH_PENDING_GROUP_INVITE';
-  readonly created: PendingGroupInvite[];
+
+export type PatchGroupInvites = {
+  readonly type: 'PATCH_GROUP_INVITES';
+  readonly created: Group[];
+  readonly edited: Group[];
   readonly deleted: string[];
 };
 
@@ -57,4 +51,4 @@ export type Action =
   | PatchBannerMessageStatus
   | PatchCourses
   | PatchGroups
-  | PatchPendingInvite;
+  | PatchGroupInvites;

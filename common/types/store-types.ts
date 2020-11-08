@@ -109,6 +109,8 @@ export type Group = {
   readonly members: readonly string[];
   readonly deadline: Date;
   readonly classCode: string;
+  readonly invitees: readonly string[]; // emails of invitees
+  readonly inviterNames: readonly string[]; // names of people who sent the invites
 };
 
 /** The user profile of any samwise user. */
@@ -130,15 +132,6 @@ export type Course = {
 };
 
 /**
- * The type for a pending group invite
- */
-export type PendingGroupInvite = {
-  readonly id: string;
-  readonly group: string;
-  readonly inviterName: string; // Name of person who sent invite
-};
-
-/**
  * The type of the entire redux state.
  */
 export type State = {
@@ -155,5 +148,5 @@ export type State = {
   readonly bannerMessageStatus: BannerMessageStatus;
   readonly courses: Map<string, Course[]>;
   readonly groups: Map<string, Group>;
-  readonly pendingInvites: Map<string, PendingGroupInvite>;
+  readonly groupInvites: Map<string, Group>;
 };

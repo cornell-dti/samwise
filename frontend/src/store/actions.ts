@@ -6,17 +6,9 @@ import {
   PatchSettings,
   PatchBannerMessageStatus,
   PatchGroups,
-  PatchPendingInvite,
+  PatchGroupInvites,
 } from 'common/types/action-types';
-import {
-  Course,
-  Tag,
-  Settings,
-  BannerMessageStatus,
-  Group,
-  PendingGroupInvite,
-  Task,
-} from 'common/types/store-types';
+import { Course, Tag, Settings, BannerMessageStatus, Group, Task } from 'common/types/store-types';
 
 export const patchTags = (created: Tag[], edited: Tag[], deleted: string[]): PatchTags => ({
   type: 'PATCH_TAGS',
@@ -56,11 +48,13 @@ export const patchGroups = (created: Group[], edited: Group[], deleted: string[]
   deleted,
 });
 
-export const patchPendingInvite = (
-  created: PendingGroupInvite[],
+export const patchGroupInvites = (
+  created: Group[],
+  edited: Group[],
   deleted: string[]
-): PatchPendingInvite => ({
-  type: 'PATCH_PENDING_GROUP_INVITE',
+): PatchGroupInvites => ({
+  type: 'PATCH_GROUP_INVITES',
   created,
+  edited,
   deleted,
 });
