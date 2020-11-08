@@ -13,12 +13,7 @@ type OldFirestoreSubTask = {
   owner: string;
 };
 
-type NewSubTask = {
-  complete: boolean;
-  inFocus: boolean;
-  name: string;
-  order: number;
-};
+type NewSubTask = Omit<OldFirestoreSubTask, 'owner'>;
 
 const mergeSubtaskTask = async (): Promise<void> => {
   const tasksSnapshot = await database.tasksCollection().get();
