@@ -84,6 +84,12 @@ export type TaskMainData = {
  */
 export type PartialTaskMainData = Partial<TaskMainData>;
 
+export type SubTaskEditData = {
+  update?: Partial<SubTask>;
+  order: number;
+  isDelete: boolean;
+};
+
 /**
  * The type of user settings.
  */

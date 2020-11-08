@@ -1,9 +1,15 @@
 import { useReducer } from 'react';
 import { shallowArrayEqual, shallowEqual } from 'common/util/general-util';
-import { TaskMainData, PartialTaskMainData } from 'common/types/store-types';
+import {
+  TaskMainData,
+  PartialTaskMainData,
+  SubTaskEditData,
+  SubTask,
+} from 'common/types/store-types';
 
 type Action =
   | { readonly type: 'EDIT_TASK'; readonly change: PartialTaskMainData }
+  | { readonly type: 'EDIT_SUBTASK'; readonly change: SubTaskEditData }
   | { readonly type: 'RESET'; readonly taskData: TaskMainData };
 
 export type Diff = {
@@ -17,6 +23,7 @@ type State = FullTask & { readonly prevFullTask: FullTask; readonly diff: Diff }
 type TaskDiffActions = FullTask & {
   readonly diff: Diff;
   readonly dispatchEditTask: (change: PartialTaskMainData) => void;
+  readonly dispatchEditSubTask: (change: SubTaskEditData) => void;
   readonly reset: () => void;
 };
 
@@ -59,6 +66,21 @@ function reducer(state: State, action: Action): State {
       const newDiff = { ...diff, mainTaskEdits: { ...diff.mainTaskEdits, ...change } };
       return { ...restState, taskData: { ...taskData, ...change }, diff: newDiff };
     }
+    case 'EDIT_SUBTASK': {
+      const { taskData, diff, ...restState } = state;
+      const { change } = action;
+      const { update, order, isDelete } = change;
+      let children: SubTask[];
+      if (isDelete) {
+        children = taskData.children.filter((curr) => curr.order === order);
+      } else {
+        children = taskData.children.map((curr) => {
+          return curr.order === order ? { ...curr, ...update } : curr;
+        });
+      }
+      const newDiff = { ...diff, mainTaskEdits: { ...diff.mainTaskEdits, ...children } };
+      return { ...restState, taskData: { ...taskData, ...children }, diff: newDiff };
+    }
     case 'RESET': {
       const { taskData } = action;
       return initializer(taskData);
@@ -89,6 +111,10 @@ export default function useTaskDiffReducer(
     diff,
     dispatchEditTask: (change: PartialTaskMainData): void => {
       dispatch({ type: 'EDIT_TASK', change });
+      onChange();
+    },
+    dispatchEditSubTask: (change: SubTaskEditData): void => {
+      dispatch({ type: 'EDIT_SUBTASK', change });
       onChange();
     },
     reset: (): void => {

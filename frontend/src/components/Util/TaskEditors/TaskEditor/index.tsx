@@ -87,7 +87,7 @@ function TaskEditor({
   memberName,
 }: Props): ReactElement {
   const { onChange, removeTask, onSaveClicked } = actions;
-  const { taskData, diff, dispatchEditTask, reset } = useTaskDiffReducer(
+  const { taskData, diff, dispatchEditTask, dispatchEditSubTask, reset } = useTaskDiffReducer(
     initTaskData,
     active ?? false,
     onChange ?? ignore
@@ -101,20 +101,17 @@ function TaskEditor({
   const canvasLinked = canvasCalendar != null;
 
   const editSubTask = (update: Partial<SubTask>, subTaskToUpdate: SubTask): void => {
-    const updatedSubTasks = taskData.children.map((curr) => {
-      return subTasksEqual(curr, subTaskToUpdate) ? { ...curr, ...update } : curr;
-    });
-    dispatchEditTask({
-      children: updatedSubTasks,
+    dispatchEditSubTask({
+      update,
+      order: subTaskToUpdate.order,
+      isDelete: false,
     });
   };
 
   const removeSubTask = (subTaskToRemove: SubTask): void => {
-    const updatedSubTasks = taskData.children.filter(
-      (curr) => !subTasksEqual(curr, subTaskToRemove)
-    );
-    dispatchEditTask({
-      children: updatedSubTasks,
+    dispatchEditSubTask({
+      order: subTaskToRemove.order,
+      isDelete: true,
     });
   };
 
