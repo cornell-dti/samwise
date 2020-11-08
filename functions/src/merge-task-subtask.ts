@@ -9,13 +9,13 @@ const mergeSubtaskTask = async (): Promise<void> => {
   const tasksSnapshot = await database.tasksCollection().get();
   const subTasksSnapshot = await database.subTasksCollection().get();
   // Initialize map from subtask ID to FirestoreCommonTask representing its data
-  const subTaskMap: Map<string, FirestoreSubTask> = Map();
+  let subTaskMap: Map<string, FirestoreSubTask> = Map();
 
   // Populate map for constant time retrieval of subtasks by ID
   subTasksSnapshot.forEach((document) => {
     const data = document.data();
     const subTask = data as FirestoreSubTask;
-    subTaskMap.set(document.id, subTask);
+    subTaskMap = subTaskMap.set(document.id, subTask);
   });
 
   const idListToUpdate: TaskUpdateData[] = [];
