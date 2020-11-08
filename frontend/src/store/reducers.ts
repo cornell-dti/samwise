@@ -150,16 +150,16 @@ function patchTasks(state: State, { created, edited, deleted }: PatchTasks): Sta
 
     created.forEach((createdMainTask) => {
       const { children, ...mainTaskRest } = createdMainTask;
-      const mainTask: Task = { ...mainTaskRest, children };
+      const taskData: Task = { ...mainTaskRest, children };
       dirtyMainTaskIds = dirtyMainTaskIds.add(createdMainTask.id);
-      tasks.set(createdMainTask.id, mainTask);
+      tasks.set(createdMainTask.id, taskData);
     });
 
     edited.forEach((editedMainTask) => {
       const { children, ...mainTaskRest } = editedMainTask;
-      const mainTask: Task = { ...mainTaskRest, children };
+      const taskData: Task = { ...mainTaskRest, children };
       dirtyMainTaskIds = dirtyMainTaskIds.add(editedMainTask.id);
-      tasks.set(editedMainTask.id, mainTask);
+      tasks.set(editedMainTask.id, taskData);
     });
 
     deleted.forEach((id) => tasks.delete(id));

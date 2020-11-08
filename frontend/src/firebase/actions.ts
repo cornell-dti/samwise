@@ -98,13 +98,13 @@ const asyncAddTask = async (
   task: TaskWithoutIdOrderChildren,
   subTasks: readonly SubTask[],
   batch: WriteBatch
-): Promise<{ readonly firestoreTask: FirestoreTask }> => {
+): Promise<FirestoreTask> => {
   const baseTask: FirestoreCommon = await createFirestoreObject('tasks', {}, owner);
   const { metadata, ...rest } = task;
   rest.owner = baseTask.owner as readonly string[];
   const firestoreTask: FirestoreTask = { ...baseTask, ...rest, ...metadata, children: subTasks };
   batch.set(database.tasksCollection().doc(newTaskId), firestoreTask);
-  return { firestoreTask };
+  return firestoreTask;
 };
 
 export const addTask = (

@@ -1,16 +1,16 @@
 import { useReducer } from 'react';
 import { shallowArrayEqual, shallowEqual } from 'common/util/general-util';
-import { MainTask, PartialMainTask } from 'common/types/store-types';
+import { TaskMainData, PartialMainTask } from 'common/types/store-types';
 
 type Action =
   | { readonly type: 'EDIT_MAIN_TASK'; readonly change: PartialMainTask }
-  | { readonly type: 'RESET'; readonly mainTask: MainTask };
+  | { readonly type: 'RESET'; readonly taskData: TaskMainData };
 
 export type Diff = {
   readonly mainTaskEdits: PartialMainTask;
 };
 
-type FullTask = { readonly mainTask: MainTask };
+type FullTask = { readonly taskData: TaskMainData };
 
 type State = FullTask & { readonly prevFullTask: FullTask; readonly diff: Diff };
 
@@ -36,12 +36,12 @@ export function diffIsEmpty(diff: Diff): boolean {
 /**
  * Lazy initializer for the initial state of task editor.
  *
- * @param mainTask the main task for initial state.
+ * @param taskData the main task for initial state.
  * @param subTasks an array of subtask for initial state.
  * @returns the initial state.
  */
-function initializer([mainTask]: [MainTask]): State {
-  return { mainTask, prevFullTask: { mainTask }, diff: emptyDiff };
+function initializer(taskData: TaskMainData): State {
+  return { taskData, prevFullTask: { taskData }, diff: emptyDiff };
 }
 
 /**
@@ -54,14 +54,14 @@ function initializer([mainTask]: [MainTask]): State {
 function reducer(state: State, action: Action): State {
   switch (action.type) {
     case 'EDIT_MAIN_TASK': {
-      const { mainTask, diff, ...restState } = state;
+      const { taskData, diff, ...restState } = state;
       const { change } = action;
       const newDiff = { ...diff, mainTaskEdits: { ...diff.mainTaskEdits, ...change } };
-      return { ...restState, mainTask: { ...mainTask, ...change }, diff: newDiff };
+      return { ...restState, taskData: { ...taskData, ...change }, diff: newDiff };
     }
     case 'RESET': {
-      const { mainTask } = action;
-      return initializer([mainTask]);
+      const { taskData } = action;
+      return initializer(taskData);
     }
     default:
       throw new Error('Bad Type!');
@@ -69,30 +69,30 @@ function reducer(state: State, action: Action): State {
 }
 
 export default function useTaskDiffReducer(
-  initMainTask: MainTask,
+  initTaskData: TaskMainData,
   active: boolean,
   onChange: () => void
 ): TaskDiffActions {
-  const [state, dispatch] = useReducer(reducer, [initMainTask], initializer);
-  const { mainTask, prevFullTask, diff } = state;
-  const { children: childrenFilteredPrev, ...prevFullTaskNoChildren } = prevFullTask.mainTask;
-  const { children: childrenFilteredInit, ...initMainTaskNoChildren } = initMainTask;
+  const [state, dispatch] = useReducer(reducer, initTaskData, initializer);
+  const { taskData, prevFullTask, diff } = state;
+  const { children: childrenFilteredPrev, ...prevFullTaskNoChildren } = prevFullTask.taskData;
+  const { children: childrenFilteredInit, ...initMainTaskNoChildren } = initTaskData;
   if (
     !active &&
     (!shallowEqual(prevFullTaskNoChildren, initMainTaskNoChildren) ||
-      !shallowArrayEqual(prevFullTask.mainTask.children, initMainTask.children))
+      !shallowArrayEqual(prevFullTask.taskData.children, initTaskData.children))
   ) {
-    dispatch({ type: 'RESET', mainTask: initMainTask });
+    dispatch({ type: 'RESET', taskData: initTaskData });
   }
   return {
-    mainTask,
+    taskData,
     diff,
     dispatchEditMainTask: (change: PartialMainTask): void => {
       dispatch({ type: 'EDIT_MAIN_TASK', change });
       onChange();
     },
     reset: (): void => {
-      dispatch({ type: 'RESET', mainTask: initMainTask });
+      dispatch({ type: 'RESET', taskData: initTaskData });
       onChange();
     },
   };

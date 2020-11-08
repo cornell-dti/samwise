@@ -70,7 +70,7 @@ export type Task<M = TaskMetadata> = {
   readonly metadata: M;
 };
 
-export type MainTask = {
+export type TaskMainData = {
   readonly owner: readonly string[];
   readonly name: string;
   readonly tag: string;
@@ -82,7 +82,7 @@ export type MainTask = {
 /**
  * The task type without id, and with all properties as optional.
  */
-export type PartialMainTask = Partial<MainTask>;
+export type PartialMainTask = Partial<TaskMainData>;
 
 /**
  * The type of user settings.

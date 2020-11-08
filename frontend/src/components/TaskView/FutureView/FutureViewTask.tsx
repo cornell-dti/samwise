@@ -160,7 +160,7 @@ function FutureViewTask({
       <FutureViewSubTask
         key={s.order}
         subTask={s}
-        mainTask={original}
+        taskData={original}
         mainTaskCompleted={original.complete}
       />
     ));

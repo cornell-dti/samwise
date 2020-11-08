@@ -5,7 +5,7 @@
 
 import React, { ReactElement, useEffect, useState, useCallback } from 'react';
 import { connect } from 'react-redux';
-import { MainTask, Settings, State, SubTask, Tag } from 'common/types/store-types';
+import { TaskMainData, Settings, State, SubTask, Tag } from 'common/types/store-types';
 import { NONE_TAG } from 'common/util/tag-util';
 import { ignore } from 'common/util/general-util';
 import { getTodayAtZeroAM, getDateWithDateString } from 'common/util/datetime-util';
@@ -48,7 +48,7 @@ type OwnProps = DefaultProps & {
   readonly icalUID?: string;
   // the date string that specifies when the task appears (useful for repeated task)
   readonly taskAppearedDate: string | null;
-  readonly mainTask: MainTask; // The task given to the editor.
+  readonly taskData: TaskMainData; // The task given to the editor.
   readonly actions: Actions; // The actions to perform under different events
   readonly calendarPosition: CalendarPosition;
   readonly memberName?: string; // only supplied if task is a group task
@@ -72,7 +72,7 @@ function TaskEditor({
   type,
   icalUID,
   taskAppearedDate,
-  mainTask: initMainTask,
+  taskData: initTaskData,
   actions,
   displayGrabber,
   getTag,
@@ -87,13 +87,13 @@ function TaskEditor({
   memberName,
 }: Props): ReactElement {
   const { onChange, removeTask, onSaveClicked } = actions;
-  const { mainTask, diff, dispatchEditMainTask, reset } = useTaskDiffReducer(
-    initMainTask,
+  const { taskData, diff, dispatchEditMainTask, reset } = useTaskDiffReducer(
+    initTaskData,
     active ?? false,
     onChange ?? ignore
   );
 
-  const { name, tag, date, complete, inFocus } = mainTask;
+  const { name, tag, date, complete, inFocus } = taskData;
 
   const [subTaskToFocus, setSubTaskToFocus] = useState<TaskToFocus>(null);
 
@@ -101,7 +101,7 @@ function TaskEditor({
   const canvasLinked = canvasCalendar != null;
 
   const editSubTask = (update: Partial<SubTask>, subTaskToUpdate: SubTask): void => {
-    const updatedSubTasks = mainTask.children.map((curr) => {
+    const updatedSubTasks = taskData.children.map((curr) => {
       return subTasksEqual(curr, subTaskToUpdate) ? { ...curr, ...update } : curr;
     });
     dispatchEditMainTask({
@@ -110,7 +110,7 @@ function TaskEditor({
   };
 
   const removeSubTask = (subTaskToRemove: SubTask): void => {
-    const updatedSubTasks = mainTask.children.filter(
+    const updatedSubTasks = taskData.children.filter(
       (curr) => !subTasksEqual(curr, subTaskToRemove)
     );
     dispatchEditMainTask({
@@ -186,7 +186,7 @@ function TaskEditor({
 
   // called when the user types in the first char in the new subtask box. We need to shift now.
   const handleCreatedNewSubtask = (firstTypedValue: string): void => {
-    const order = mainTask.children.reduce((acc, s) => Math.max(acc, s.order), 0) + 1;
+    const order = taskData.children.reduce((acc, s) => Math.max(acc, s.order), 0) + 1;
     const createdNewSubtask: SubTask = {
       order,
       name: firstTypedValue,
@@ -194,7 +194,7 @@ function TaskEditor({
       inFocus: newSubTaskAutoFocused === true,
     };
     dispatchEditMainTask({
-      children: [...mainTask.children, createdNewSubtask],
+      children: [...taskData.children, createdNewSubtask],
     });
     setSubTaskToFocus(order);
   };
@@ -209,8 +209,8 @@ function TaskEditor({
     const order = caller === 'main-task' ? -1 : caller;
     let focused = false;
 
-    for (let i = 0; i < mainTask.children.length; i += 1) {
-      const { order: subtaskOrder } = mainTask.children[i];
+    for (let i = 0; i < taskData.children.length; i += 1) {
+      const { order: subtaskOrder } = taskData.children[i];
       if (subtaskOrder > order) {
         setSubTaskToFocus(subtaskOrder);
         focused = true;
@@ -281,7 +281,7 @@ function TaskEditor({
         />
       </div>
       <div className={styles.TaskEditorSubTasksIndentedContainer}>
-        {mainTask.children.map((subTask: SubTask) => (
+        {taskData.children.map((subTask: SubTask) => (
           <OneSubTaskEditor
             key={subTask.order}
             subTask={subTask}

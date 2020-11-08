@@ -8,21 +8,21 @@ import SamwiseIcon from '../../UI/SamwiseIcon';
 
 type Props = {
   readonly subTask: SubTask | null;
-  readonly mainTask: Task<TaskMetadata>;
+  readonly taskData: Task<TaskMetadata>;
   readonly mainTaskCompleted: boolean;
 };
 
 /**
  * The component used to render one subtask in future view day.
  */
-function FutureViewSubTask({ subTask, mainTask, mainTaskCompleted }: Props): ReactElement | null {
+function FutureViewSubTask({ subTask, taskData, mainTaskCompleted }: Props): ReactElement | null {
   if (subTask == null) {
     return null;
   }
   const onCompleteChange = (): void =>
-    editTaskWithDiff(mainTask.id, 'EDITING_ONE_TIME_TASK', {
+    editTaskWithDiff(taskData.id, 'EDITING_ONE_TIME_TASK', {
       mainTaskEdits: {
-        children: mainTask.children.map(({ complete, ...rest }) =>
+        children: taskData.children.map(({ complete, ...rest }) =>
           subTasksEqual({ complete, ...rest }, subTask)
             ? { complete: !complete, ...rest }
             : { complete, ...rest }
@@ -30,9 +30,9 @@ function FutureViewSubTask({ subTask, mainTask, mainTaskCompleted }: Props): Rea
       },
     });
   const onFocusChange = (): void =>
-    editTaskWithDiff(mainTask.id, 'EDITING_ONE_TIME_TASK', {
+    editTaskWithDiff(taskData.id, 'EDITING_ONE_TIME_TASK', {
       mainTaskEdits: {
-        children: mainTask.children.map(({ inFocus, ...rest }) =>
+        children: taskData.children.map(({ inFocus, ...rest }) =>
           subTasksEqual({ inFocus, ...rest }, subTask)
             ? { inFocus: !inFocus, ...rest }
             : { inFocus, ...rest }
@@ -40,9 +40,9 @@ function FutureViewSubTask({ subTask, mainTask, mainTaskCompleted }: Props): Rea
       },
     });
   const onRemove = (): void =>
-    editTaskWithDiff(mainTask.id, 'EDITING_ONE_TIME_TASK', {
+    editTaskWithDiff(taskData.id, 'EDITING_ONE_TIME_TASK', {
       mainTaskEdits: {
-        children: mainTask.children.filter((currSubTask) => !subTasksEqual(currSubTask, subTask)),
+        children: taskData.children.filter((currSubTask) => !subTasksEqual(currSubTask, subTask)),
       },
     });
   return (
