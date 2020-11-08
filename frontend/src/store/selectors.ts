@@ -167,87 +167,76 @@ export const getFocusViewProps: SelectorOf<FocusViewProps> = createSelector(
   [getTasks, getProgress],
   (tasks, progress) => {
     const taskMetaDataList: FocusViewTaskMetaData[] = [];
-    let oneTime: Task[] = [];
-    const masterTemp: Task[] = [];
-    const group: Task[] = [];
-    const diffGroupType: Record<string, Task[]> = {};
-    const finalSorted: Task[] = [];
-    const finalReturn: Task[] = [];
-    let final: Map<string, Task<TaskMetadata>> = Map();
 
-    Array.from(tasks.values()).forEach((task) => {
-      const filteredUncompletedTask = getFilteredNotCompletedInFocusTask(task);
-      const filteredCompletedTask = getFilteredCompletedInFocusTask(task);
-      const { id, order } = task;
-      if (filteredCompletedTask != null && filteredUncompletedTask != null) {
-        taskMetaDataList.push({ id, order, inFocusView: true, inCompleteFocusView: true });
-        taskMetaDataList.push({ id, order, inFocusView: true, inCompleteFocusView: false });
-      } else if (filteredCompletedTask != null) {
-        taskMetaDataList.push({ id, order, inFocusView: true, inCompleteFocusView: true });
-      } else if (filteredUncompletedTask != null) {
-        taskMetaDataList.push({ id, order, inFocusView: true, inCompleteFocusView: false });
-      } else {
-        taskMetaDataList.push({ id, order, inFocusView: false, inCompleteFocusView: false });
-      }
-      if (task.metadata.type === 'GROUP') {
-        group.push(task);
-      }
-
-      if (task.metadata.type === 'ONE_TIME') {
-        oneTime.push(task);
-      }
-
-      if (task.metadata.type === 'MASTER_TEMPLATE') {
-        masterTemp.push(task);
-      }
-    });
-
-    group.forEach((task) => {
-      if (task.metadata.type === 'GROUP') {
-        if (diffGroupType[task.metadata.group]) {
-          diffGroupType[task.metadata.group].push(task);
-        } else {
-          diffGroupType[task.metadata.group] = [task];
+    Array.from(tasks.values())
+      .sort((a, b) => {
+        switch (a.metadata.type) {
+          case 'GROUP': {
+            switch (b.metadata.type) {
+              case 'GROUP': {
+                const num = a.metadata.group.localeCompare(b.metadata.group);
+                switch (num) {
+                  case 0:
+                    return a.order - b.order;
+                  case 1:
+                    return 1;
+                  case -1:
+                    return -1;
+                  default:
+                    throw new Error('Impossible Case');
+                }
+              }
+              case 'ONE_TIME':
+                return -1;
+              case 'MASTER_TEMPLATE':
+                return -1;
+              default:
+                throw new Error('Impossible Case');
+            }
+          }
+          case 'ONE_TIME': {
+            switch (b.metadata.type) {
+              case 'GROUP':
+                return 1;
+              case 'ONE_TIME':
+                return a.order - b.order;
+              case 'MASTER_TEMPLATE':
+                return a.order - b.order;
+              default:
+                throw new Error('Impossible Case');
+            }
+          }
+          case 'MASTER_TEMPLATE': {
+            switch (b.metadata.type) {
+              case 'GROUP':
+                return 1;
+              case 'ONE_TIME':
+                return a.order - b.order;
+              case 'MASTER_TEMPLATE':
+                return a.order - b.order;
+              default:
+                throw new Error('Impossible Case');
+            }
+          }
+          default:
+            throw new Error('Impossible Case');
         }
-      }
-    });
-
-    Object.keys(diffGroupType).sort();
-    // eslint-disable-next-line no-restricted-syntax
-    Object.entries(diffGroupType).forEach(([, value]) => {
-      value.sort((x, y) => (x.order > y.order ? 1 : -1));
-    });
-    // for (const [key, value] of Object.entries(diffGroupType)) {
-    //   // console.log(`before ${key}: ${value}`);
-    //   value.sort((x, y) => (x.order > y.order ? 1 : -1));
-    //   // console.log(`after ${key}: ${value}`);
-    // }
-
-    // eslint-disable-next-line no-restricted-syntax
-    Object.entries(diffGroupType).forEach(([, value]) => {
-      finalSorted.push(...value);
-    });
-    // for (const [key, value] of Object.entries(diffGroupType)) {
-    //   finalSorted.push(...value);
-    // }
-
-    oneTime = oneTime.concat(masterTemp);
-    oneTime.sort((x, y) => (x.id > y.id ? 1 : -1));
-    finalSorted.push(...oneTime);
-
-    // eslint-disable-next-line no-shadow
-    final = final.withMutations((final) => {
-      finalSorted.forEach((task) => {
-        final.set(task.id, task);
+      })
+      .forEach((task) => {
+        const filteredUncompletedTask = getFilteredNotCompletedInFocusTask(task);
+        const filteredCompletedTask = getFilteredCompletedInFocusTask(task);
+        const { id, order } = task;
+        if (filteredCompletedTask != null && filteredUncompletedTask != null) {
+          taskMetaDataList.push({ id, order, inFocusView: true, inCompleteFocusView: true });
+          taskMetaDataList.push({ id, order, inFocusView: true, inCompleteFocusView: false });
+        } else if (filteredCompletedTask != null) {
+          taskMetaDataList.push({ id, order, inFocusView: true, inCompleteFocusView: true });
+        } else if (filteredUncompletedTask != null) {
+          taskMetaDataList.push({ id, order, inFocusView: true, inCompleteFocusView: false });
+        } else {
+          taskMetaDataList.push({ id, order, inFocusView: false, inCompleteFocusView: false });
+        }
       });
-    });
-
-    final.forEach((task) => {
-      finalReturn.push(task);
-    });
-
-    taskMetaDataList.sort((a, b) => finalReturn.indexOf(a.id) - finalReturn.indexOf(b.id));
-    taskMetaDataList = finalReturn.map((object) => taskMetaDataList[object]);
     return { tasks: taskMetaDataList, progress };
   }
 );
