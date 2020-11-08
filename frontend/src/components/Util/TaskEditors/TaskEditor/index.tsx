@@ -87,7 +87,7 @@ function TaskEditor({
   memberName,
 }: Props): ReactElement {
   const { onChange, removeTask, onSaveClicked } = actions;
-  const { taskData, diff, dispatchEditMainTask, reset } = useTaskDiffReducer(
+  const { taskData, diff, dispatchEditTask, reset } = useTaskDiffReducer(
     initTaskData,
     active ?? false,
     onChange ?? ignore
@@ -104,7 +104,7 @@ function TaskEditor({
     const updatedSubTasks = taskData.children.map((curr) => {
       return subTasksEqual(curr, subTaskToUpdate) ? { ...curr, ...update } : curr;
     });
-    dispatchEditMainTask({
+    dispatchEditTask({
       children: updatedSubTasks,
     });
   };
@@ -113,7 +113,7 @@ function TaskEditor({
     const updatedSubTasks = taskData.children.filter(
       (curr) => !subTasksEqual(curr, subTaskToRemove)
     );
-    dispatchEditMainTask({
+    dispatchEditTask({
       children: updatedSubTasks,
     });
   };
@@ -193,7 +193,7 @@ function TaskEditor({
       complete: false,
       inFocus: newSubTaskAutoFocused === true,
     };
-    dispatchEditMainTask({
+    dispatchEditTask({
       children: [...taskData.children, createdNewSubtask],
     });
     setSubTaskToFocus(order);
@@ -258,7 +258,7 @@ function TaskEditor({
         <EditorHeader
           tag={tag}
           date={date}
-          onChange={dispatchEditMainTask}
+          onChange={dispatchEditTask}
           getTag={getTag}
           calendarPosition={calendarPosition}
           displayGrabber={displayGrabber == null ? false : displayGrabber}
@@ -274,7 +274,7 @@ function TaskEditor({
           name={name}
           complete={complete}
           inFocus={inFocus}
-          onChange={dispatchEditMainTask}
+          onChange={dispatchEditTask}
           onRemove={removeTask}
           onPressEnter={pressEnterHandler}
           memberName={memberName}

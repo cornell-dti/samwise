@@ -82,7 +82,7 @@ export type TaskMainData = {
 /**
  * The task type without id, and with all properties as optional.
  */
-export type PartialMainTask = Partial<TaskMainData>;
+export type PartialTaskMainData = Partial<TaskMainData>;
 
 /**
  * The type of user settings.

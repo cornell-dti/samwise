@@ -1,13 +1,13 @@
 import { useReducer } from 'react';
 import { shallowArrayEqual, shallowEqual } from 'common/util/general-util';
-import { TaskMainData, PartialMainTask } from 'common/types/store-types';
+import { TaskMainData, PartialTaskMainData } from 'common/types/store-types';
 
 type Action =
-  | { readonly type: 'EDIT_MAIN_TASK'; readonly change: PartialMainTask }
+  | { readonly type: 'EDIT_TASK'; readonly change: PartialTaskMainData }
   | { readonly type: 'RESET'; readonly taskData: TaskMainData };
 
 export type Diff = {
-  readonly mainTaskEdits: PartialMainTask;
+  readonly mainTaskEdits: PartialTaskMainData;
 };
 
 type FullTask = { readonly taskData: TaskMainData };
@@ -16,7 +16,7 @@ type State = FullTask & { readonly prevFullTask: FullTask; readonly diff: Diff }
 
 type TaskDiffActions = FullTask & {
   readonly diff: Diff;
-  readonly dispatchEditMainTask: (change: PartialMainTask) => void;
+  readonly dispatchEditTask: (change: PartialTaskMainData) => void;
   readonly reset: () => void;
 };
 
@@ -53,7 +53,7 @@ function initializer(taskData: TaskMainData): State {
  */
 function reducer(state: State, action: Action): State {
   switch (action.type) {
-    case 'EDIT_MAIN_TASK': {
+    case 'EDIT_TASK': {
       const { taskData, diff, ...restState } = state;
       const { change } = action;
       const newDiff = { ...diff, mainTaskEdits: { ...diff.mainTaskEdits, ...change } };
@@ -87,8 +87,8 @@ export default function useTaskDiffReducer(
   return {
     taskData,
     diff,
-    dispatchEditMainTask: (change: PartialMainTask): void => {
-      dispatch({ type: 'EDIT_MAIN_TASK', change });
+    dispatchEditTask: (change: PartialTaskMainData): void => {
+      dispatch({ type: 'EDIT_TASK', change });
       onChange();
     },
     reset: (): void => {

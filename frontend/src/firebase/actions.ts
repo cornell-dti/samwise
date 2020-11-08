@@ -6,7 +6,7 @@ import {
   Tag,
   Task,
   BannerMessageIds,
-  PartialMainTask,
+  PartialTaskMainData,
   TaskMetadata,
   RepeatingTaskMetadata,
   OneTimeTaskMetadata,
@@ -260,7 +260,7 @@ export const removeOneRepeatedTask = (taskId: string, replaceDate: Date): void =
 export const editMainTask = (
   taskId: string,
   replaceDate: Date | null,
-  mainTaskEdits: PartialMainTask
+  mainTaskEdits: PartialTaskMainData
 ): void => {
   const diff: Diff = { mainTaskEdits };
   if (replaceDate === null) {
