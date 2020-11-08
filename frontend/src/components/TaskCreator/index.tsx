@@ -76,19 +76,14 @@ export class TaskCreator extends React.PureComponent<Props, State> {
 
   private addTask: HTMLInputElement | null | undefined;
 
-  private darkModeStyle: CSSProperties;
-
-  constructor(props: Props) {
-    super(props);
-    this.darkModeStyle = {
-      background: 'black',
-      color: 'white',
-    };
-  }
-
   private get isOpen(): boolean {
     // eslint-disable-next-line react/destructuring-assignment
     return this.state.opened || this.props.taskCreatorOpened || false;
+  }
+
+  private get darkModeStyle(): CSSProperties | undefined {
+    const { theme } = this.props;
+    return theme === 'dark' ? { background: 'black', color: 'white' } : undefined;
   }
 
   /*
@@ -284,11 +279,8 @@ export class TaskCreator extends React.PureComponent<Props, State> {
    *
    * @return the rendered other info editor.
    */
-  private renderOtherInfoEditor(): ReactElement | null {
+  private renderOtherInfoEditor(): ReactElement {
     const { view, groupMemberProfiles, assignedMember, clearAssignedMember } = this.props;
-    if (!this.isOpen) {
-      return null;
-    }
     const {
       tag,
       member,
@@ -300,7 +292,6 @@ export class TaskCreator extends React.PureComponent<Props, State> {
       datePicked,
       needToSwitchFocus,
     } = this.state;
-    const { theme } = this.props;
     const existingSubTaskEditor = (
       thisSubTask: SubTask,
       i: number,
@@ -325,7 +316,7 @@ export class TaskCreator extends React.PureComponent<Props, State> {
             value={name}
             onChange={this.editSubTask(thisSubTask)}
             onKeyDown={this.submitSubTask}
-            style={theme === 'dark' ? this.darkModeStyle : undefined}
+            style={this.darkModeStyle}
           />
         </li>
       );
@@ -343,10 +334,7 @@ export class TaskCreator extends React.PureComponent<Props, State> {
           <div className={styles.DescText}>
             <p>Add optional subtasks to break down your tasks into more manageable pieces.</p>
           </div>
-          <div
-            className={styles.NewTaskModal}
-            style={theme === 'dark' ? this.darkModeStyle : undefined}
-          >
+          <div className={styles.NewTaskModal} style={this.darkModeStyle}>
             <div className={styles.SubtasksContainer}>
               <ul className={styles.SubtasksList}>{subTasks.map(existingSubTaskEditor)}</ul>
               <SamwiseIcon iconName="edit" className={styles.EditIcon} tabIndex={-1} />
@@ -357,7 +345,7 @@ export class TaskCreator extends React.PureComponent<Props, State> {
                 value=""
                 onChange={this.addNewSubTask}
                 onKeyDown={this.newSubTaskKeyPress}
-                style={theme === 'dark' ? this.darkModeStyle : undefined}
+                style={this.darkModeStyle}
               />
             </div>
             <button type="button" className={styles.ResetButton} onClick={this.resetTask}>
@@ -396,7 +384,7 @@ export class TaskCreator extends React.PureComponent<Props, State> {
           <button
             type="submit"
             className={view === 'personal' ? styles.SubmitNewTask : styles.GroupSubmitNewTask}
-            style={theme === 'dark' ? this.darkModeStyle : undefined}
+            style={this.darkModeStyle}
           >
             <SamwiseIcon iconName="add-task" />
           </button>
@@ -407,35 +395,40 @@ export class TaskCreator extends React.PureComponent<Props, State> {
 
   public render(): ReactElement {
     const { name } = this.state;
-    const { theme, view } = this.props;
+    const { view } = this.props;
+    const formClassname = view === 'personal' ? styles.NewTaskWrap : styles.GroupNewTaskWrap;
+    if (!this.isOpen) {
+      return (
+        <div className={styles.TaskCreator} style={this.darkModeStyle}>
+          <form className={formClassname} onSubmit={this.handleSave} onFocus={this.openNewTask}>
+            <input
+              required
+              type="text"
+              value={name}
+              onChange={this.editTaskName}
+              className={styles.NewTaskComponent}
+              placeholder={PLACEHOLDER_TEXT}
+              style={this.darkModeStyle}
+            />
+          </form>
+        </div>
+      );
+    }
+
     return (
-      <div className={styles.TaskCreator} style={theme === 'dark' ? this.darkModeStyle : undefined}>
-        <div
-          onClick={this.closeNewTask}
-          role="presentation"
-          className={styles.CloseNewTask}
-          style={this.isOpen ? {} : { display: 'none' }}
-        />
-        <form
-          className={view === 'personal' ? styles.NewTaskWrap : styles.GroupNewTaskWrap}
-          onSubmit={this.handleSave}
-          onFocus={this.openNewTask}
-        >
+      <div className={styles.TaskCreator} style={this.darkModeStyle}>
+        <div onClick={this.closeNewTask} role="presentation" className={styles.CloseNewTask} />
+        <form className={formClassname} onSubmit={this.handleSave} onFocus={this.openNewTask}>
           <input
             required
             type="text"
             value={name}
             onChange={this.editTaskName}
-            className={
-              this.isOpen
-                ? `${styles.NewTaskComponent} ${styles.NewTaskComponentOpened}`
-                : styles.NewTaskComponent
-            }
-            placeholder={this.isOpen ? '' : PLACEHOLDER_TEXT}
+            className={`${styles.NewTaskComponent} ${styles.NewTaskComponentOpened}`}
             ref={(e) => {
               this.addTask = e;
             }}
-            style={theme === 'dark' ? this.darkModeStyle : undefined}
+            style={this.darkModeStyle}
           />
           {this.renderOtherInfoEditor()}
         </form>
