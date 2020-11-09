@@ -41,28 +41,30 @@ const mergeSubtaskTask = async (): Promise<void> => {
     const { id } = document;
     const data = document.data();
     if (data != null) {
-      const task = data as OldFirestoreTask;
-      const { children } = task;
-      const subtasks: NewSubTask[] = [];
-      if (children !== undefined && children.length !== 0) {
-        const subTaskOrderSet: Set<number> = new Set<number>();
-        children.forEach((subtaskId) => {
-          const subtask: NewSubTask | undefined = subTaskMap.get(subtaskId);
-          if (subtask !== undefined) {
-            const { complete, inFocus, name, order } = subtask;
-            if (subTaskOrderSet.has(order)) {
-              const uniqueOrder =
-                [...subTaskOrderSet].reduce((acc, curr) => Math.max(acc, curr), 0) + 1;
-              subTaskOrderSet.add(uniqueOrder);
-              subtasks.push({ complete, inFocus, name, order: uniqueOrder });
-            } else {
-              subTaskOrderSet.add(order);
-              subtasks.push({ complete, inFocus, name, order });
+      if (data.children.length !== 0 && typeof data.children[0] === 'string') {
+        const task = data as OldFirestoreTask;
+        const { children } = task;
+        const subtasks: NewSubTask[] = [];
+        if (children !== undefined && children.length !== 0) {
+          const subTaskOrderSet: Set<number> = new Set<number>();
+          children.forEach((subtaskId) => {
+            const subtask: NewSubTask | undefined = subTaskMap.get(subtaskId);
+            if (subtask !== undefined) {
+              const { complete, inFocus, name, order } = subtask;
+              if (subTaskOrderSet.has(order)) {
+                const uniqueOrder =
+                  [...subTaskOrderSet].reduce((acc, curr) => Math.max(acc, curr), 0) + 1;
+                subTaskOrderSet.add(uniqueOrder);
+                subtasks.push({ complete, inFocus, name, order: uniqueOrder });
+              } else {
+                subTaskOrderSet.add(order);
+                subtasks.push({ complete, inFocus, name, order });
+              }
             }
-          }
-        });
+          });
+        }
+        idListToUpdate.push({ id, subtasks });
       }
-      idListToUpdate.push({ id, subtasks });
     }
   });
   // Used to overcome to the 500 item per batch limit.
