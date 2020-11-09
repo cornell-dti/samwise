@@ -162,6 +162,7 @@ function FutureViewTask({
         subTask={s}
         taskData={original}
         mainTaskCompleted={original.complete}
+        replaceDateForFork={replaceDateForForkOpt}
       />
     ));
 

@@ -163,7 +163,7 @@ export const handleTaskDiffs = (taskId: string, { mainTaskEdits }: Diff): void =
   });
 };
 
-type EditType = 'EDITING_MASTER_TEMPLATE' | 'EDITING_ONE_TIME_TASK';
+export type EditType = 'EDITING_MASTER_TEMPLATE' | 'EDITING_ONE_TIME_TASK';
 
 export const editTaskWithDiff = (
   taskId: string,
