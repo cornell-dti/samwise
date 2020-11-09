@@ -1,5 +1,5 @@
 import React, { ReactElement } from 'react';
-import { RepeatingTaskMetadata, SubTask, Task, TaskMetadata } from 'common/types/store-types';
+import { SubTask, Task, TaskMetadata } from 'common/types/store-types';
 import { subTasksEqual } from 'common/util/task-util';
 import styles from './FutureViewTask.module.scss';
 import CheckBox from '../../UI/CheckBox';
