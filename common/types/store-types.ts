@@ -9,19 +9,17 @@ export type Tag = {
 };
 
 export type SubTask = {
-  readonly id: string;
   readonly order: number;
   readonly name: string; // Example: "SubTask 1 Name"
   readonly complete: boolean;
   readonly inFocus: boolean; // Whether the subtask is in focus
 };
 
-export type SubTaskWithoutId = Pick<SubTask, 'order' | 'name' | 'complete' | 'inFocus'>;
-export type SubTaskWithoutIdOrder = Pick<SubTask, 'name' | 'complete' | 'inFocus'>;
+export type SubTaskWithoutOrder = Pick<SubTask, 'name' | 'complete' | 'inFocus'>;
 /**
  * The subtask type without id order and with every field as optional.
  */
-export type PartialSubTask = Partial<SubTaskWithoutIdOrder>;
+export type PartialSubTask = Partial<SubTaskWithoutOrder>;
 
 // TODO: refactor ical task to a separate category
 export type OneTimeTaskMetadata = {
@@ -72,18 +70,25 @@ export type Task<M = TaskMetadata> = {
   readonly metadata: M;
 };
 
-export type MainTask = {
+export type TaskMainData = {
   readonly owner: readonly string[];
   readonly name: string;
   readonly tag: string;
   readonly date: Date | RepeatingDate;
   readonly complete: boolean;
   readonly inFocus: boolean;
+  readonly children: readonly SubTask[];
 };
 /**
- * The task type without id and subtask, and with all properties as optional.
+ * The task type without id, and with all properties as optional.
  */
-export type PartialMainTask = Partial<MainTask>;
+export type PartialTaskMainData = Partial<TaskMainData>;
+
+export type SubTaskEditData = {
+  update?: Partial<SubTask>;
+  order: number;
+  isDelete: boolean;
+};
 
 /**
  * The type of user settings.
@@ -138,12 +143,6 @@ export type Course = {
 export type State = {
   readonly tags: Map<string, Tag>;
   readonly tasks: Map<string, Task>;
-  // Mapping of subtask id to main task id.
-  // It contains all subtask ids that the main task knows but the redux store does not have yet.
-  readonly missingSubTasks: Map<string, string>;
-  // Mapping of subtask id to its object for fast access.
-  // It contains all subtasks that the redux store knows but belongs to no known main task yet.
-  readonly orphanSubTasks: Map<string, SubTask>;
   // A fast access map to quickly find all main task id within a date.
   readonly dateTaskMap: Map<string, Set<string>>;
   // A fast access map to quickly find all task ids under a certain group ID.

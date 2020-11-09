@@ -1,5 +1,5 @@
 import { firestore } from 'firebase/app';
-import { RepeatingPattern } from './store-types';
+import { RepeatingPattern, SubTask } from './store-types';
 
 export type FirestoreCommon = {
   readonly owner: string | readonly string[];
@@ -17,13 +17,7 @@ export type FirestoreCommonTask = FirestoreCommon & {
   readonly tag: string;
   readonly complete: boolean;
   readonly inFocus: boolean;
-  readonly children: readonly string[];
-};
-
-export type FirestoreSubTask = FirestoreCommon & {
-  readonly name: string;
-  readonly complete: boolean;
-  readonly inFocus: boolean;
+  readonly children: readonly SubTask[];
 };
 
 export type ForkedTaskMetaData = {
