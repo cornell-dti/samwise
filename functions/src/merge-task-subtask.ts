@@ -1,9 +1,15 @@
-import { FirestoreCommonTask, FirestoreSubTask } from 'common/types/firestore-types';
+import { FirestoreCommon } from 'common/types/firestore-types';
 import { Map } from 'immutable';
 import { partition } from './util';
 import database from './db';
 
-type TaskUpdateData = { id: string; subtasks: FirestoreSubTask[] };
+type OldFirestoreTask = FirestoreCommon & {
+  readonly name: string;
+  readonly tag: string;
+  readonly complete: boolean;
+  readonly inFocus: boolean;
+  readonly children: readonly string[];
+};
 
 type OldFirestoreSubTask = {
   complete: boolean;
@@ -14,6 +20,8 @@ type OldFirestoreSubTask = {
 };
 
 type NewSubTask = Omit<OldFirestoreSubTask, 'owner'>;
+
+type TaskUpdateData = { id: string; subtasks: NewSubTask[] };
 
 const mergeSubtaskTask = async (): Promise<void> => {
   const tasksSnapshot = await database.tasksCollection().get();
@@ -33,13 +41,13 @@ const mergeSubtaskTask = async (): Promise<void> => {
     const { id } = document;
     const data = document.data();
     if (data != null) {
-      const task = data as FirestoreCommonTask;
+      const task = data as OldFirestoreTask;
       const { children } = task;
       const subtasks: NewSubTask[] = [];
       if (children !== undefined && children.length !== 0) {
         const subTaskOrderSet: Set<number> = new Set<number>();
         children.forEach((subtaskId) => {
-          const subtask = subTaskMap.get(subtaskId);
+          const subtask: NewSubTask | undefined = subTaskMap.get(subtaskId);
           if (subtask !== undefined) {
             const { complete, inFocus, name, order } = subtask;
             if (subTaskOrderSet.has(order)) {
