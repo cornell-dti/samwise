@@ -477,12 +477,12 @@ export const addUserInfo = async (
 /**
  * Clear all the completed tasks in focus view.
  */
-export const clearFocus = (
+export const clearFocus = async (
   taskIds: string[],
   subTasksWithParentTaskId: Map<string, SubTask[]>
-): void => {
+): Promise<void> => {
   const batch = database.db().batch();
-  taskIds.forEach(async (id) => {
+  const taskUpdatePromise = taskIds.map(async (id) => {
     const doc = database.tasksCollection().doc(id);
     const snapshot = await doc.get();
     const { children } = (await snapshot.data()) as FirestoreCommonTask;
@@ -491,7 +491,7 @@ export const clearFocus = (
       children: children.map(({ inFocus, ...rest }) => ({ inFocus: false, ...rest })),
     });
   });
-  subTasksWithParentTaskId.forEach(async (childrenToBeUpdated, taskId) => {
+  const subTaskUpdatePromise = subTasksWithParentTaskId.map(async (childrenToBeUpdated, taskId) => {
     const doc = database.tasksCollection().doc(taskId);
     const snapshot = await doc.get();
     const { children } = (await snapshot.data()) as FirestoreCommonTask;
@@ -506,6 +506,8 @@ export const clearFocus = (
       ),
     });
   });
+
+  await Promise.all([Promise.all(taskUpdatePromise), Promise.all(subTaskUpdatePromise)]);
   batch.commit().then(ignore);
 };
 

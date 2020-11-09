@@ -34,7 +34,7 @@ function ClearFocus({ tasks }: Props): ReactElement | null {
   if (taskIds.length === 0) {
     return null;
   }
-  const handleClick = (): void => clearFocus(taskIds, subTasksWithParentTaskId);
+  const handleClick = (): Promise<void> => clearFocus(taskIds, subTasksWithParentTaskId);
   return <SquareTextButton text="Clear Focus" onClick={handleClick} />;
 }
 
