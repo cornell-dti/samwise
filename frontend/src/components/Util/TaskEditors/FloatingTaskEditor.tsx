@@ -92,7 +92,7 @@ export default function FloatingTaskEditor({
   const openPopup = (): void => setOpen(true);
   const closePopup = (): void => setOpen(false);
 
-  const { id: _, metadata, children, ...mainTask } = task;
+  const { id: _, metadata, children, ...taskData } = task;
   const actions = {
     onChange: (): void => {
       const editorPosDiv = editorRef.current;
@@ -122,12 +122,12 @@ export default function FloatingTaskEditor({
             type={metadata.type}
             icalUID={icalUID}
             taskAppearedDate={taskAppearedDate}
-            mainTask={{ ...mainTask, date: metadata.date }}
-            subTasks={children}
+            taskData={{ ...taskData, date: metadata.date, children }}
             actions={actions}
             className={styles.Editor}
             editorRef={editorRef}
             calendarPosition={calendarPosition}
+            active
           />
           <div className={styles.BackgroundBlocker} role="presentation" onClick={closePopup} />
         </>

@@ -11,6 +11,7 @@ import {
 } from 'common/types/store-types';
 import { NONE_TAG_ID } from 'common/util/tag-util';
 import { isToday } from 'common/util/datetime-util';
+import { subTasksEqual } from 'common/util/task-util';
 import TagPicker from './TagPicker';
 import DatePicker from './DatePicker';
 import FocusPicker from './FocusPicker';
@@ -75,14 +76,14 @@ export class TaskCreator extends React.PureComponent<Props, State> {
 
   private addTask: HTMLInputElement | null | undefined;
 
-  private darkModeStyle: CSSProperties;
+  private get isOpen(): boolean {
+    // eslint-disable-next-line react/destructuring-assignment
+    return this.state.opened || this.props.taskCreatorOpened || false;
+  }
 
-  constructor(props: Props) {
-    super(props);
-    this.darkModeStyle = {
-      background: 'black',
-      color: 'white',
-    };
+  private get darkModeStyle(): CSSProperties | undefined {
+    const { theme } = this.props;
+    return theme === 'dark' ? { background: 'black', color: 'white' } : undefined;
   }
 
   /*
@@ -91,14 +92,8 @@ export class TaskCreator extends React.PureComponent<Props, State> {
    * --------------------------------------------------------------------------------
    */
 
-  /**
-   * Open the new task editor.
-   */
   private openNewTask = (): void => this.setState({ opened: true });
 
-  /**
-   * Close (collapse) the new task editor.
-   */
   private closeNewTask = (): void => this.setState({ opened: false });
 
   /**
@@ -125,20 +120,12 @@ export class TaskCreator extends React.PureComponent<Props, State> {
    * --------------------------------------------------------------------------------
    */
 
-  /**
-   * Focus on the task name, if possible.
-   */
   private focusTaskName = (): void => {
     if (this.addTask) {
       this.addTask.focus();
     }
   };
 
-  /**
-   * Handle on potential save.
-   *
-   * @param e the event that signals a potential save action.
-   */
   private handleSave = (e?: SyntheticEvent<HTMLElement>): void => {
     if (e != null) {
       e.preventDefault();
@@ -147,10 +134,7 @@ export class TaskCreator extends React.PureComponent<Props, State> {
     if (name === '') {
       return;
     }
-    const newSubTasks = subTasks
-      .filter((subTask) => subTask.name !== '') // remove empty subtasks
-      // normalize orders: use current sequence as order;; remove useless id
-      .map(({ id, ...rest }, order) => ({ ...rest, order }));
+    const newSubTasks = subTasks.filter((subTask) => subTask.name !== ''); // remove empty subtasks
     // Put task in focus is the due date is today.
     const autoInFocus = inFocus || (date instanceof Date && isToday(date));
     const commonTask = { owner, name, tag, date, complete, inFocus: autoInFocus };
@@ -192,27 +176,12 @@ export class TaskCreator extends React.PureComponent<Props, State> {
    * --------------------------------------------------------------------------------
    */
 
-  /**
-   * Edit the task name.
-   *
-   * @param e the event that contains the new task name.
-   */
   private editTaskName = (e: SyntheticEvent<HTMLInputElement>): void =>
     this.setState({ name: e.currentTarget.value }, this.focusTaskName);
 
-  /**
-   * Edit the tag.
-   *
-   * @param {string} tag the new tag.
-   */
   private editTag = (tag: string): void =>
     this.setState({ tag, tagPickerOpened: false }, this.focusTaskName);
 
-  /**
-   * Edit the member.
-   *
-   * @param {string} member the new member.
-   */
   private editMember = (member?: SamwiseUserProfile): void =>
     this.setState({ member, tagPickerOpened: false }, this.focusTaskName);
 
@@ -249,9 +218,6 @@ export class TaskCreator extends React.PureComponent<Props, State> {
     }
   };
 
-  /**
-   * Reset the date picker
-   */
   private clearDate = (): void => {
     this.setState(
       { date: new Date(), datePickerOpened: false, datePicked: false },
@@ -259,17 +225,8 @@ export class TaskCreator extends React.PureComponent<Props, State> {
     );
   };
 
-  /**
-   * Toggle the pin status.
-   * @param {boolean} inFocus the new in-focus status.
-   */
   private togglePin = (inFocus: boolean): void => this.setState({ inFocus }, this.focusTaskName);
 
-  /**
-   * Add a new subtask.
-   *
-   * @param e the event that contains the new name for new sub-task.
-   */
   private addNewSubTask = (e: SyntheticEvent<HTMLInputElement>): void => {
     const newSubTaskName = e.currentTarget.value;
     if (newSubTaskName === '') {
@@ -279,8 +236,7 @@ export class TaskCreator extends React.PureComponent<Props, State> {
       subTasks: [
         ...subTasks,
         {
-          id: String(subTasks.length),
-          order: 0, // some random order, will be ignored anyway
+          order: subTasks.reduce((acc, s) => Math.max(acc, s.order), 0) + 1,
           name: newSubTaskName,
           complete: false,
           inFocus: false,
@@ -290,58 +246,32 @@ export class TaskCreator extends React.PureComponent<Props, State> {
     }));
   };
 
-  /**
-   * Handle a keypress event in a new subtask box.
-   * It can potentially make the form to lose focus to exit.
-   *
-   * @param e the event that contains the key pressed in the new subtask input box.
-   */
   private newSubTaskKeyPress = (e: KeyboardEvent<HTMLInputElement>): void => {
     if (e.key === 'Tab') {
       this.closeNewTask();
     }
   };
 
-  /**
-   * Edit a subtask.
-   *
-   * @param subTaskId id of the subtask to edit.
-   * @return the event handler.
-   */
-  private editSubTask = (subTaskId: string) => (e: SyntheticEvent<HTMLInputElement>) => {
+  private editSubTask = (subTask: SubTask) => (e: SyntheticEvent<HTMLInputElement>) => {
     const name = e.currentTarget.value;
     this.setState(({ subTasks }: State) => ({
-      subTasks: subTasks.map((s) => (s.id === subTaskId ? { ...s, name } : s)),
+      subTasks: subTasks.map((s) => (subTasksEqual(s, subTask) ? { ...s, name } : s)),
     }));
   };
 
-  /**
-   * Potentially submit a subtask.
-   *
-   * @param e the keyboard event.
-   */
   private submitSubTask = (e: KeyboardEvent<HTMLInputElement>): void => {
     if (e.key === 'Enter') {
       this.handleSave();
     }
   };
 
-  /**
-   * Delete a subtask.
-   *
-   * @param {string} subtaskId id of the subtask to delete.
-   * @return {Function<SyntheticEvent<HTMLInputElement>, void>} the event handler.
-   */
-  private deleteSubTask = (subtaskId: string) => (e: SyntheticEvent<HTMLButtonElement>) => {
+  private deleteSubTask = (subTask: SubTask) => (e: SyntheticEvent<HTMLButtonElement>) => {
     e.preventDefault();
     this.setState(({ subTasks }: State) => ({
-      subTasks: subTasks.filter((s) => s.id !== subtaskId),
+      subTasks: subTasks.filter((s) => !subTasksEqual(s, subTask)),
     }));
   };
 
-  /**
-   * Reset the task.
-   */
   private resetTask = (): void => this.setState({ ...initialState() }, this.focusTaskName);
 
   /**
@@ -349,18 +279,8 @@ export class TaskCreator extends React.PureComponent<Props, State> {
    *
    * @return the rendered other info editor.
    */
-  private renderOtherInfoEditor(): ReactElement | null {
-    const { opened } = this.state;
-    const {
-      view,
-      groupMemberProfiles,
-      taskCreatorOpened,
-      assignedMember,
-      clearAssignedMember,
-    } = this.props;
-    if (!opened && !taskCreatorOpened) {
-      return null;
-    }
+  private renderOtherInfoEditor(): ReactElement {
+    const { view, groupMemberProfiles, assignedMember, clearAssignedMember } = this.props;
     const {
       tag,
       member,
@@ -372,9 +292,8 @@ export class TaskCreator extends React.PureComponent<Props, State> {
       datePicked,
       needToSwitchFocus,
     } = this.state;
-    const { theme } = this.props;
     const existingSubTaskEditor = (
-      { id, name }: SubTask,
+      thisSubTask: SubTask,
       i: number,
       arr: SubTask[]
     ): ReactElement => {
@@ -384,18 +303,20 @@ export class TaskCreator extends React.PureComponent<Props, State> {
           this.setState({ needToSwitchFocus: false });
         }
       };
+
+      const { order, name } = thisSubTask;
       return (
-        <li key={id}>
-          <button type="button" tabIndex={-1} onClick={this.deleteSubTask(id)}>
+        <li key={order}>
+          <button type="button" tabIndex={-1} onClick={this.deleteSubTask(thisSubTask)}>
             <SamwiseIcon iconName="x-dark" />
           </button>
           <input
             type="text"
             ref={refHandler}
             value={name}
-            onChange={this.editSubTask(id)}
+            onChange={this.editSubTask(thisSubTask)}
             onKeyDown={this.submitSubTask}
-            style={theme === 'dark' ? this.darkModeStyle : undefined}
+            style={this.darkModeStyle}
           />
         </li>
       );
@@ -413,10 +334,7 @@ export class TaskCreator extends React.PureComponent<Props, State> {
           <div className={styles.DescText}>
             <p>Add optional subtasks to break down your tasks into more manageable pieces.</p>
           </div>
-          <div
-            className={styles.NewTaskModal}
-            style={theme === 'dark' ? this.darkModeStyle : undefined}
-          >
+          <div className={styles.NewTaskModal} style={this.darkModeStyle}>
             <div className={styles.SubtasksContainer}>
               <ul className={styles.SubtasksList}>{subTasks.map(existingSubTaskEditor)}</ul>
               <SamwiseIcon iconName="edit" className={styles.EditIcon} tabIndex={-1} />
@@ -427,7 +345,7 @@ export class TaskCreator extends React.PureComponent<Props, State> {
                 value=""
                 onChange={this.addNewSubTask}
                 onKeyDown={this.newSubTaskKeyPress}
-                style={theme === 'dark' ? this.darkModeStyle : undefined}
+                style={this.darkModeStyle}
               />
             </div>
             <button type="button" className={styles.ResetButton} onClick={this.resetTask}>
@@ -466,7 +384,7 @@ export class TaskCreator extends React.PureComponent<Props, State> {
           <button
             type="submit"
             className={view === 'personal' ? styles.SubmitNewTask : styles.GroupSubmitNewTask}
-            style={theme === 'dark' ? this.darkModeStyle : undefined}
+            style={this.darkModeStyle}
           >
             <SamwiseIcon iconName="add-task" />
           </button>
@@ -476,33 +394,41 @@ export class TaskCreator extends React.PureComponent<Props, State> {
   }
 
   public render(): ReactElement {
-    const { name, opened } = this.state;
-    const toggleDisplayStyle = opened ? {} : { display: 'none' };
-    const { theme, view } = this.props;
+    const { name } = this.state;
+    const { view } = this.props;
+    const formClassname = view === 'personal' ? styles.NewTaskWrap : styles.GroupNewTaskWrap;
+    if (!this.isOpen) {
+      return (
+        <div className={styles.TaskCreator} style={this.darkModeStyle}>
+          <form className={formClassname} onSubmit={this.handleSave} onFocus={this.openNewTask}>
+            <input
+              required
+              type="text"
+              value={name}
+              onChange={this.editTaskName}
+              className={styles.NewTaskComponent}
+              placeholder={PLACEHOLDER_TEXT}
+              style={this.darkModeStyle}
+            />
+          </form>
+        </div>
+      );
+    }
+
     return (
-      <div className={styles.TaskCreator} style={theme === 'dark' ? this.darkModeStyle : undefined}>
-        <div
-          onClick={this.closeNewTask}
-          role="presentation"
-          className={styles.CloseNewTask}
-          style={toggleDisplayStyle}
-        />
-        <form
-          className={view === 'personal' ? styles.NewTaskWrap : styles.GroupNewTaskWrap}
-          onSubmit={this.handleSave}
-          onFocus={this.openNewTask}
-        >
+      <div className={styles.TaskCreator} style={this.darkModeStyle}>
+        <div onClick={this.closeNewTask} role="presentation" className={styles.CloseNewTask} />
+        <form className={formClassname} onSubmit={this.handleSave} onFocus={this.openNewTask}>
           <input
             required
             type="text"
             value={name}
             onChange={this.editTaskName}
-            className={styles.NewTaskComponent}
-            placeholder={opened ? '' : PLACEHOLDER_TEXT}
+            className={`${styles.NewTaskComponent} ${styles.NewTaskComponentOpened}`}
             ref={(e) => {
               this.addTask = e;
             }}
-            style={theme === 'dark' ? this.darkModeStyle : undefined}
+            style={this.darkModeStyle}
           />
           {this.renderOtherInfoEditor()}
         </form>

@@ -158,10 +158,9 @@ function FutureViewTask({
   const renderSubTasks = (): ReactNode =>
     filteredSubTasks.map((s) => (
       <FutureViewSubTask
-        key={s.id}
+        key={s.order}
         subTask={s}
-        mainTaskId={original.id}
-        replaceDateForFork={replaceDateForForkOpt}
+        taskData={original}
         mainTaskCompleted={original.complete}
       />
     ));

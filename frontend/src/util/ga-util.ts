@@ -36,9 +36,5 @@ export const reportAddTaskEvent = (): void => reportEvent('add-task');
 export const reportEditTaskEvent = (): void => reportEvent('edit-task');
 export const reportDeleteTaskEvent = (): void => reportEvent('delete-task');
 
-export const reportAddSubTaskEvent = (): void => reportEvent('add-sub-task');
-export const reportEditSubTaskEvent = (): void => reportEvent('edit-sub-task');
-export const reportDeleteSubTaskEvent = (): void => reportEvent('delete-sub-task');
-
 export const reportCompleteTaskEvent = (): void => reportEvent('complete');
 export const reportFocusTaskEvent = (): void => reportEvent('focus');

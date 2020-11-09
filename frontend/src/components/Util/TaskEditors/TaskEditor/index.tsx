@@ -5,7 +5,7 @@
 
 import React, { ReactElement, useEffect, useState, useCallback } from 'react';
 import { connect } from 'react-redux';
-import { MainTask, Settings, State, SubTask, Tag } from 'common/types/store-types';
+import { TaskMainData, Settings, State, SubTask, Tag } from 'common/types/store-types';
 import { NONE_TAG } from 'common/util/tag-util';
 import { ignore } from 'common/util/general-util';
 import { getTodayAtZeroAM, getDateWithDateString } from 'common/util/datetime-util';
@@ -47,9 +47,7 @@ type OwnProps = DefaultProps & {
   readonly icalUID?: string;
   // the date string that specifies when the task appears (useful for repeated task)
   readonly taskAppearedDate: string | null;
-  readonly mainTask: MainTask; // The task given to the editor.
-  // The subtask given to the editor. It should only contain those that should be displayed.
-  readonly subTasks: readonly SubTask[];
+  readonly taskData: TaskMainData; // The task given to the editor.
   readonly actions: Actions; // The actions to perform under different events
   readonly calendarPosition: CalendarPosition;
   readonly memberName?: string; // only supplied if task is a group task
@@ -73,8 +71,7 @@ function TaskEditor({
   type,
   icalUID,
   taskAppearedDate,
-  mainTask: initMainTask,
-  subTasks: initSubTasks,
+  taskData: initTaskData,
   actions,
   displayGrabber,
   getTag,
@@ -89,23 +86,33 @@ function TaskEditor({
   memberName,
 }: Props): ReactElement {
   const { onChange, removeTask, onSaveClicked } = actions;
-  const {
-    mainTask,
-    subTasks,
-    diff,
-    dispatchEditMainTask,
-    dispatchAddSubTask,
-    dispatchEditSubTask,
-    dispatchDeleteSubTask,
-    reset,
-  } = useTaskDiffReducer(initMainTask, initSubTasks, active ?? false, onChange ?? ignore);
+  const { taskData, diff, dispatchEditTask, dispatchEditSubTask, reset } = useTaskDiffReducer(
+    initTaskData,
+    active ?? false,
+    onChange ?? ignore
+  );
 
-  const { name, tag, date, complete, inFocus } = mainTask;
+  const { name, tag, date, complete, inFocus } = taskData;
 
   const [subTaskToFocus, setSubTaskToFocus] = useState<TaskToFocus>(null);
 
   const { canvasCalendar } = settings;
   const canvasLinked = canvasCalendar != null;
+
+  const editSubTask = (update: Partial<SubTask>, subTaskToUpdate: SubTask): void => {
+    dispatchEditSubTask({
+      update,
+      order: subTaskToUpdate.order,
+      isDelete: false,
+    });
+  };
+
+  const removeSubTask = (subTaskToRemove: SubTask): void => {
+    dispatchEditSubTask({
+      order: subTaskToRemove.order,
+      isDelete: true,
+    });
+  };
 
   const onSave = useCallback((): boolean => {
     if (diffIsEmpty(diff)) {
@@ -168,19 +175,22 @@ function TaskEditor({
   };
 
   const onSaveButtonClicked = (): void => {
-    if (onSave() && type !== 'ONE_TIME') {
+    if (onSave() && type === 'MASTER_TEMPLATE') {
       onSaveClicked();
     }
   };
 
   // called when the user types in the first char in the new subtask box. We need to shift now.
   const handleCreatedNewSubtask = (firstTypedValue: string): void => {
-    const order = subTasks.reduce((acc, s) => Math.max(acc, s.order), 0) + 1;
-    dispatchAddSubTask({
+    const order = taskData.children.reduce((acc, s) => Math.max(acc, s.order), 0) + 1;
+    const createdNewSubtask: SubTask = {
       order,
       name: firstTypedValue,
       complete: false,
       inFocus: newSubTaskAutoFocused === true,
+    };
+    dispatchEditTask({
+      children: [...taskData.children, createdNewSubtask],
     });
     setSubTaskToFocus(order);
   };
@@ -195,8 +205,8 @@ function TaskEditor({
     const order = caller === 'main-task' ? -1 : caller;
     let focused = false;
 
-    for (let i = 0; i < subTasks.length; i += 1) {
-      const { order: subtaskOrder } = subTasks[i];
+    for (let i = 0; i < taskData.children.length; i += 1) {
+      const { order: subtaskOrder } = taskData.children[i];
       if (subtaskOrder > order) {
         setSubTaskToFocus(subtaskOrder);
         focused = true;
@@ -221,7 +231,7 @@ function TaskEditor({
 
   useEffect(() => {
     const intervalID = setInterval(() => {
-      if (type === 'ONE_TIME') {
+      if (type !== 'MASTER_TEMPLATE') {
         onSave();
       }
     }, 1000);
@@ -244,7 +254,7 @@ function TaskEditor({
         <EditorHeader
           tag={tag}
           date={date}
-          onChange={dispatchEditMainTask}
+          onChange={dispatchEditTask}
           getTag={getTag}
           calendarPosition={calendarPosition}
           displayGrabber={displayGrabber == null ? false : displayGrabber}
@@ -260,29 +270,26 @@ function TaskEditor({
           name={name}
           complete={complete}
           inFocus={inFocus}
-          onChange={dispatchEditMainTask}
+          onChange={dispatchEditTask}
           onRemove={removeTask}
           onPressEnter={pressEnterHandler}
           memberName={memberName}
         />
       </div>
       <div className={styles.TaskEditorSubTasksIndentedContainer}>
-        {subTasks.map((subTask: SubTask) => (
+        {taskData.children.map((subTask: SubTask) => (
           <OneSubTaskEditor
-            key={subTask.id}
+            key={subTask.order}
             subTask={subTask}
-            mainTaskId={id}
-            taskDate={date instanceof Date ? date : null}
-            dateAppeared={taskAppearedDate}
             mainTaskComplete={complete}
             needToBeFocused={subTaskToFocus === subTask.order}
-            editThisSubTask={dispatchEditSubTask}
-            removeSubTask={dispatchDeleteSubTask}
+            onEdit={editSubTask}
+            onRemove={removeSubTask}
             onPressEnter={pressEnterHandler}
             memberName={memberName}
           />
         ))}
-        <div className={styles.SubtaskHide} style={active === true ? { maxHeight: 0 } : undefined}>
+        <div className={styles.SubtaskHide} style={active === false ? { maxHeight: 0 } : undefined}>
           <NewSubTaskEditor
             onFirstType={handleCreatedNewSubtask}
             onPressEnter={onSaveButtonClicked}

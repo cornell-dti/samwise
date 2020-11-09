@@ -1,47 +1,34 @@
-import { Map, Set } from 'immutable';
 import { useReducer } from 'react';
-import { shallowEqual, shallowArrayEqual } from 'common/util/general-util';
+import { shallowArrayEqual, shallowEqual } from 'common/util/general-util';
 import {
-  MainTask,
-  PartialMainTask,
-  PartialSubTask,
+  TaskMainData,
+  PartialTaskMainData,
+  SubTaskEditData,
   SubTask,
-  SubTaskWithoutId,
 } from 'common/types/store-types';
-import { getNewSubTaskId } from '../../../../firebase/id-provider';
 
 type Action =
-  | { readonly type: 'EDIT_MAIN_TASK'; readonly change: PartialMainTask }
-  | { readonly type: 'ADD_SUBTASK'; readonly newSubTask: SubTaskWithoutId }
-  | { readonly type: 'EDIT_SUBTASK'; readonly subTaskId: string; readonly change: PartialSubTask }
-  | { readonly type: 'DELETE_SUBTASK'; readonly subtaskId: string }
-  | { readonly type: 'RESET'; readonly mainTask: MainTask; readonly subTasks: readonly SubTask[] };
+  | { readonly type: 'EDIT_TASK'; readonly change: PartialTaskMainData }
+  | { readonly type: 'EDIT_SUBTASK'; readonly change: SubTaskEditData }
+  | { readonly type: 'RESET'; readonly taskData: TaskMainData };
 
 export type Diff = {
-  readonly mainTaskEdits: PartialMainTask;
-  readonly subTaskCreations: Map<string, SubTaskWithoutId>;
-  readonly subTaskEdits: Map<string, PartialSubTask>;
-  readonly subTaskDeletions: Set<string>;
+  readonly mainTaskEdits: PartialTaskMainData;
 };
 
-type FullTask = { readonly mainTask: MainTask; readonly subTasks: readonly SubTask[] };
+type FullTask = { readonly taskData: TaskMainData };
 
 type State = FullTask & { readonly prevFullTask: FullTask; readonly diff: Diff };
 
 type TaskDiffActions = FullTask & {
   readonly diff: Diff;
-  readonly dispatchEditMainTask: (change: PartialMainTask) => void;
-  readonly dispatchAddSubTask: (newSubTask: SubTaskWithoutId) => void;
-  readonly dispatchEditSubTask: (subTaskId: string, change: PartialSubTask) => void;
-  readonly dispatchDeleteSubTask: (subtaskId: string) => void;
+  readonly dispatchEditTask: (change: PartialTaskMainData) => void;
+  readonly dispatchEditSubTask: (change: SubTaskEditData) => void;
   readonly reset: () => void;
 };
 
 const emptyDiff: Diff = {
   mainTaskEdits: {},
-  subTaskCreations: Map(),
-  subTaskEdits: Map(),
-  subTaskDeletions: Set(),
 };
 
 /**
@@ -56,12 +43,12 @@ export function diffIsEmpty(diff: Diff): boolean {
 /**
  * Lazy initializer for the initial state of task editor.
  *
- * @param mainTask the main task for initial state.
+ * @param taskData the main task for initial state.
  * @param subTasks an array of subtask for initial state.
  * @returns the initial state.
  */
-function initializer([mainTask, subTasks]: [MainTask, readonly SubTask[]]): State {
-  return { mainTask, subTasks, prevFullTask: { mainTask, subTasks }, diff: emptyDiff };
+function initializer(taskData: TaskMainData): State {
+  return { taskData, prevFullTask: { taskData }, diff: emptyDiff };
 }
 
 /**
@@ -73,58 +60,30 @@ function initializer([mainTask, subTasks]: [MainTask, readonly SubTask[]]): Stat
  */
 function reducer(state: State, action: Action): State {
   switch (action.type) {
-    case 'EDIT_MAIN_TASK': {
-      const { mainTask, diff, ...restState } = state;
+    case 'EDIT_TASK': {
+      const { taskData, diff, ...restState } = state;
       const { change } = action;
       const newDiff = { ...diff, mainTaskEdits: { ...diff.mainTaskEdits, ...change } };
-      return { ...restState, mainTask: { ...mainTask, ...change }, diff: newDiff };
-    }
-    case 'ADD_SUBTASK': {
-      const { subTasks, diff, ...restState } = state;
-      const { newSubTask } = action;
-      const id = getNewSubTaskId();
-      const newSubTasks = [...subTasks, { id, ...newSubTask }];
-      const newDiff = {
-        ...diff,
-        subTaskCreations: diff.subTaskCreations.set(id, newSubTask),
-      };
-      return { ...restState, subTasks: newSubTasks, diff: newDiff };
+      return { ...restState, taskData: { ...taskData, ...change }, diff: newDiff };
     }
     case 'EDIT_SUBTASK': {
-      const { subTasks, diff, ...restState } = state;
-      const { subTaskId, change } = action;
-      const newSubTasks = subTasks.map((s) => (s.id === subTaskId ? { ...s, ...change } : s));
-      let newDiff: Diff;
-      const createdSubTask = diff.subTaskCreations.get(subTaskId);
-      if (createdSubTask != null) {
-        newDiff = {
-          ...diff,
-          subTaskCreations: diff.subTaskCreations.set(subTaskId, { ...createdSubTask, ...change }),
-        };
+      const { taskData, diff, ...restState } = state;
+      const { change } = action;
+      const { update, order, isDelete } = change;
+      let children: SubTask[];
+      if (isDelete) {
+        children = taskData.children.filter((curr) => curr.order !== order);
       } else {
-        const subTaskEdits = diff.subTaskEdits.update(subTaskId, change, (prevChange) => ({
-          ...prevChange,
-          ...change,
-        }));
-        newDiff = { ...diff, subTaskEdits };
+        children = taskData.children.map((curr) => {
+          return curr.order === order ? { ...curr, ...update } : curr;
+        });
       }
-      return { ...restState, subTasks: newSubTasks, diff: newDiff };
-    }
-    case 'DELETE_SUBTASK': {
-      const { subTasks, diff, ...restState } = state;
-      const { subtaskId } = action;
-      const newSubTasks = subTasks.filter(({ id }) => id !== subtaskId);
-      let newDiff: Diff;
-      if (diff.subTaskCreations.has(subtaskId)) {
-        newDiff = { ...diff, subTaskCreations: diff.subTaskCreations.remove(subtaskId) };
-      } else {
-        newDiff = { ...diff, subTaskDeletions: diff.subTaskDeletions.add(subtaskId) };
-      }
-      return { ...restState, subTasks: newSubTasks, diff: newDiff };
+      const newDiff = { ...diff, mainTaskEdits: { ...diff.mainTaskEdits, children } };
+      return { ...restState, taskData: { ...taskData, children }, diff: newDiff };
     }
     case 'RESET': {
-      const { mainTask, subTasks } = action;
-      return initializer([mainTask, subTasks]);
+      const { taskData } = action;
+      return initializer(taskData);
     }
     default:
       throw new Error('Bad Type!');
@@ -132,42 +91,34 @@ function reducer(state: State, action: Action): State {
 }
 
 export default function useTaskDiffReducer(
-  initMainTask: MainTask,
-  initSubTasks: readonly SubTask[],
+  initTaskData: TaskMainData,
   active: boolean,
   onChange: () => void
 ): TaskDiffActions {
-  const [state, dispatch] = useReducer(reducer, [initMainTask, initSubTasks], initializer);
-  const { mainTask, subTasks, prevFullTask, diff } = state;
+  const [state, dispatch] = useReducer(reducer, initTaskData, initializer);
+  const { taskData, prevFullTask, diff } = state;
+  const { children: childrenFilteredPrev, ...prevFullTaskNoChildren } = prevFullTask.taskData;
+  const { children: childrenFilteredInit, ...initMainTaskNoChildren } = initTaskData;
   if (
     !active &&
-    (!shallowEqual(prevFullTask.mainTask, initMainTask) ||
-      !shallowArrayEqual(prevFullTask.subTasks, initSubTasks))
+    (!shallowEqual(prevFullTaskNoChildren, initMainTaskNoChildren) ||
+      !shallowArrayEqual(prevFullTask.taskData.children, initTaskData.children))
   ) {
-    dispatch({ type: 'RESET', mainTask: initMainTask, subTasks: initSubTasks });
+    dispatch({ type: 'RESET', taskData: initTaskData });
   }
   return {
-    mainTask,
-    subTasks,
+    taskData,
     diff,
-    dispatchEditMainTask: (change: PartialMainTask): void => {
-      dispatch({ type: 'EDIT_MAIN_TASK', change });
+    dispatchEditTask: (change: PartialTaskMainData): void => {
+      dispatch({ type: 'EDIT_TASK', change });
       onChange();
     },
-    dispatchAddSubTask: (newSubTask: SubTaskWithoutId): void => {
-      dispatch({ type: 'ADD_SUBTASK', newSubTask });
-      onChange();
-    },
-    dispatchEditSubTask: (subTaskId: string, change: PartialSubTask): void => {
-      dispatch({ type: 'EDIT_SUBTASK', subTaskId, change });
-      onChange();
-    },
-    dispatchDeleteSubTask: (subtaskId: string): void => {
-      dispatch({ type: 'DELETE_SUBTASK', subtaskId });
+    dispatchEditSubTask: (change: SubTaskEditData): void => {
+      dispatch({ type: 'EDIT_SUBTASK', change });
       onChange();
     },
     reset: (): void => {
-      dispatch({ type: 'RESET', mainTask: initMainTask, subTasks: initSubTasks });
+      dispatch({ type: 'RESET', taskData: initTaskData });
       onChange();
     },
   };
