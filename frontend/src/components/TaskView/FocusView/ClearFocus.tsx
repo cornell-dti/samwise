@@ -19,9 +19,9 @@ function ClearFocus({ tasks }: Props): ReactElement | null {
       t.children.forEach((s) => {
         if (s.inFocus && s.complete) {
           const completedSubtasks = subTasksWithParentTaskId.get(t.id);
-          if (completedSubtasks === undefined) {
+          if (subTasksWithParentTaskId.has(t.id)) {
             subTasksWithParentTaskId = subTasksWithParentTaskId.set(t.id, [s]);
-          } else {
+          } else if (completedSubtasks !== undefined) {
             subTasksWithParentTaskId = subTasksWithParentTaskId.setIn(t.id, [
               s,
               ...completedSubtasks,

@@ -20,7 +20,14 @@ const dummyTask: Task<TaskMetadata> = {
 
 it('FutureViewSubTask with null SubTask matches snapshot.', () => {
   const tree = renderer
-    .create(<FutureViewSubTask taskData={dummyTask} subTask={null} mainTaskCompleted />)
+    .create(
+      <FutureViewSubTask
+        taskData={dummyTask}
+        subTask={null}
+        mainTaskCompleted
+        replaceDateForFork={null}
+      />
+    )
     .toJSON();
   expect(tree).toMatchSnapshot();
 });
@@ -34,6 +41,7 @@ const createTest = (inFocus: boolean, complete: boolean, mainTaskCompleted: bool
           taskData={dummyTask}
           subTask={{ order: 1, name: 'foo', inFocus, complete }}
           mainTaskCompleted={mainTaskCompleted}
+          replaceDateForFork={null}
         />
       )
       .toJSON();

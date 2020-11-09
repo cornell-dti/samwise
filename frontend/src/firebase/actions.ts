@@ -63,6 +63,8 @@ export type TaskWithoutIdOrderChildren<M = TaskMetadata> = Omit<
   'id' | 'order' | 'children'
 >;
 
+export type TaskWithoutIdOrder<M = TaskMetadata> = Omit<Task<M>, 'id' | 'order'>;
+
 /*
  * --------------------------------------------------------------------------------
  * Section 1: Tags Actions
@@ -163,7 +165,7 @@ export const handleTaskDiffs = (taskId: string, { mainTaskEdits }: Diff): void =
   });
 };
 
-type EditType = 'EDITING_MASTER_TEMPLATE' | 'EDITING_ONE_TIME_TASK';
+export type EditType = 'EDITING_MASTER_TEMPLATE' | 'EDITING_ONE_TIME_TASK';
 
 export const editTaskWithDiff = (
   taskId: string,
@@ -186,8 +188,9 @@ export const forkTaskWithDiff = (
   const { tasks } = store.getState();
   const repeatingTaskMaster = tasks.get(taskId) as Task<RepeatingTaskMetadata>;
   const { id, order, children, metadata, ...originalTaskWithoutId } = repeatingTaskMaster;
-  const newMainTask: TaskWithoutIdOrderChildren = {
+  const newMainTask: TaskWithoutIdOrder = {
     ...originalTaskWithoutId,
+    children,
     ...mainTaskEdits,
     metadata: {
       type: 'ONE_TIME',
@@ -198,7 +201,7 @@ export const forkTaskWithDiff = (
   const batch = database.db().batch();
   const forkId = getNewTaskId();
   const owner = [getAppUser().email];
-  asyncAddTask(forkId, owner, newMainTask, children, batch).then(() => {
+  asyncAddTask(forkId, owner, newMainTask, newMainTask.children, batch).then(() => {
     batch.update(database.tasksCollection().doc(id), {
       forks: firestore.FieldValue.arrayUnion({ forkId, replaceDate }),
     });
