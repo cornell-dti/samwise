@@ -35,41 +35,36 @@ function FutureViewSubTask({
     }
   };
 
+  const applyUpdate = (updatedChildren: SubTask[]): void => {
+    const mainTaskEdits = {
+      children: updatedChildren,
+    };
+    if (getTaskEditType() === 'EDITING_ONE_TIME_TASK') {
+      editTaskWithDiff(taskData.id, getTaskEditType(), { mainTaskEdits });
+    } else if (replaceDateForFork != null) {
+      forkTaskWithDiff(taskData.id, replaceDateForFork, { mainTaskEdits });
+    }
+  };
+
   if (subTask == null) {
     return null;
   }
-  const onCompleteChange = (): void =>
-    editTaskWithDiff(taskData.id, getTaskEditType(), {
-      mainTaskEdits: {
-        children: taskData.children.map(({ complete, ...rest }) =>
-          subTasksEqual({ complete, ...rest }, subTask)
-            ? { complete: !complete, ...rest }
-            : { complete, ...rest }
-        ),
-      },
-    });
+  const onCompleteChange = (): void => {
+    const updatedChildren = taskData.children.map(({ complete, ...rest }) =>
+      subTasksEqual({ complete, ...rest }, subTask)
+        ? { complete: !complete, ...rest }
+        : { complete, ...rest }
+    );
+    applyUpdate(updatedChildren);
+  };
+
   const onFocusChange = (): void => {
-    if (getTaskEditType() === 'EDITING_ONE_TIME_TASK') {
-      editTaskWithDiff(taskData.id, getTaskEditType(), {
-        mainTaskEdits: {
-          children: taskData.children.map(({ inFocus, ...rest }) =>
-            subTasksEqual({ inFocus, ...rest }, subTask)
-              ? { inFocus: !inFocus, ...rest }
-              : { inFocus, ...rest }
-          ),
-        },
-      });
-    } else if (replaceDateForFork != null) {
-      forkTaskWithDiff(taskData.id, replaceDateForFork, {
-        mainTaskEdits: {
-          children: taskData.children.map(({ inFocus, ...rest }) =>
-            subTasksEqual({ inFocus, ...rest }, subTask)
-              ? { inFocus: !inFocus, ...rest }
-              : { inFocus, ...rest }
-          ),
-        },
-      });
-    }
+    const updatedChildren = taskData.children.map(({ inFocus, ...rest }) =>
+      subTasksEqual({ inFocus, ...rest }, subTask)
+        ? { inFocus: !inFocus, ...rest }
+        : { inFocus, ...rest }
+    );
+    applyUpdate(updatedChildren);
   };
   const onRemove = (): void =>
     editTaskWithDiff(taskData.id, getTaskEditType(), {
