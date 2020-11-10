@@ -14,8 +14,8 @@ type Props = {
 const sendNotification = (variant: string): void => {
   const msg = {
     data: {
-      groupId: '6es6XuBYJwZ65uFWfgOp',
-      recipientEmail: 'jt568@cornell.edu',
+      groupId: '',
+      recipientEmail: '',
     },
   };
   const sendMessage = firebase.functions().httpsCallable('sendNotificationEmail');
