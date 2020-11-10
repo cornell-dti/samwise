@@ -65,4 +65,4 @@ yarn-error.log*
 firebase-adminsdk.json
 
 # Sendgrid key
-sengrid-key.json
+sendgrid-key.json
