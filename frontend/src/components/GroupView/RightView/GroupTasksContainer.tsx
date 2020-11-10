@@ -1,5 +1,6 @@
 import React, { ReactElement, ReactNode } from 'react';
 import { Task } from 'common/types/store-types';
+import { sortTask } from 'common/util/task-util';
 import styles from './GroupTasksContainer.module.scss';
 import GroupTask from './GroupTask';
 import CompletedTasksContainer from './CompletedTasks/CompletedTasksContainer';
@@ -15,7 +16,9 @@ type IdOrder = {
 };
 
 function renderTaskList(tasks: readonly Task[], memberName: string): ReactNode {
-  return tasks.map((task) => <GroupTask key={task.id} original={task} memberName={memberName} />);
+  return [...tasks]
+    .sort(sortTask)
+    .map((task) => <GroupTask key={task.id} original={task} memberName={memberName} />);
 }
 
 function GroupTasksContainer({ tasks, memberName }: Props): ReactElement {

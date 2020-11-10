@@ -14,6 +14,7 @@ import {
   getFilteredCompletedInFocusTask,
   getFilteredNotCompletedInFocusTask,
   dateMatchRepeats,
+  sortTask,
 } from 'common/util/task-util';
 import findMessageToDisplay, { MessageWithId } from '../components/TitleBar/Banner/messages';
 
@@ -85,14 +86,13 @@ export const createGetIdOrderListByDate = (date: string): SelectorOf<IdOrderList
     [getTasks, getDateTaskMap, getRepeatedTaskSet],
     (tasks, dateTaskMap, repeatedTaskSet) => {
       const set = dateTaskMap.get(date);
-      const list: IdOrder[] = [];
+      const list: Task[] = [];
       if (set != null) {
         // date matches
         set.forEach((id) => {
           const task = tasks.get(id);
           if (task != null) {
-            const { order } = task;
-            list.push({ id, order });
+            list.push(task);
           }
         });
       }
@@ -105,11 +105,11 @@ export const createGetIdOrderListByDate = (date: string): SelectorOf<IdOrderList
         }
         const repeatedTask = task as Task<RepeatingTaskMetadata>;
         if (dateMatchRepeats(dateObj, repeatedTask.metadata)) {
-          const { order } = repeatedTask;
-          list.push({ id, order });
+          list.push(repeatedTask);
         }
       });
-      return { idOrderList: list.sort((a, b) => a.order - b.order) };
+
+      return { idOrderList: list.sort(sortTask).map(({ id, order }) => ({ id, order })) };
     }
   );
   createGetIdOrderListByDateSelectors = createGetIdOrderListByDateSelectors.set(date, selector);
@@ -165,8 +165,9 @@ export const getFocusViewProps: SelectorOf<FocusViewProps> = createSelector(
   [getTasks, getProgress],
   (tasks, progress) => {
     const taskMetaDataList: FocusViewTaskMetaData[] = [];
+
     Array.from(tasks.values())
-      .sort((a, b) => a.order - b.order)
+      .sort(sortTask)
       .forEach((task) => {
         const filteredUncompletedTask = getFilteredNotCompletedInFocusTask(task);
         const filteredCompletedTask = getFilteredCompletedInFocusTask(task);

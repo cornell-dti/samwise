@@ -165,3 +165,46 @@ export function dateMatchRepeats(
 
 export const subTasksEqual = (firstSubTask: SubTask, secondSubTask: SubTask): boolean =>
   shallowEqual(firstSubTask, secondSubTask);
+
+export const sortTask = (a: Task, b: Task): number => {
+  switch (a.metadata.type) {
+    case 'GROUP': {
+      switch (b.metadata.type) {
+        case 'GROUP': {
+          const groupIdOrder = a.metadata.group.localeCompare(b.metadata.group);
+          return groupIdOrder === 0 ? a.order - b.order : groupIdOrder;
+        }
+        case 'ONE_TIME':
+        case 'MASTER_TEMPLATE':
+          return -1;
+        default:
+          throw new Error('Impossible Case');
+      }
+    }
+    case 'ONE_TIME': {
+      switch (b.metadata.type) {
+        case 'GROUP':
+        case 'MASTER_TEMPLATE':
+          return 1;
+        case 'ONE_TIME':
+          return a.order - b.order;
+        default:
+          throw new Error('Impossible Case');
+      }
+    }
+    case 'MASTER_TEMPLATE': {
+      switch (b.metadata.type) {
+        case 'GROUP':
+          return 1;
+        case 'ONE_TIME':
+          return -1;
+        case 'MASTER_TEMPLATE':
+          return a.order - b.order;
+        default:
+          throw new Error('Impossible Case');
+      }
+    }
+    default:
+      throw new Error('Impossible Case');
+  }
+};
