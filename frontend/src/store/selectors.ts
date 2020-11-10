@@ -14,6 +14,7 @@ import {
   getFilteredCompletedInFocusTask,
   getFilteredNotCompletedInFocusTask,
   dateMatchRepeats,
+  sortTask,
 } from 'common/util/task-util';
 import findMessageToDisplay, { MessageWithId } from '../components/TitleBar/Banner/messages';
 
@@ -168,59 +169,7 @@ export const getFocusViewProps: SelectorOf<FocusViewProps> = createSelector(
     const taskMetaDataList: FocusViewTaskMetaData[] = [];
 
     Array.from(tasks.values())
-      .sort((a, b) => {
-        switch (a.metadata.type) {
-          case 'GROUP': {
-            switch (b.metadata.type) {
-              case 'GROUP': {
-                const num = a.metadata.group.localeCompare(b.metadata.group);
-                switch (num) {
-                  case 0:
-                    return a.order - b.order;
-                  case 1:
-                    return 1;
-                  case -1:
-                    return -1;
-                  default:
-                    throw new Error('Impossible Case');
-                }
-              }
-              case 'ONE_TIME':
-                return -1;
-              case 'MASTER_TEMPLATE':
-                return -1;
-              default:
-                throw new Error('Impossible Case');
-            }
-          }
-          case 'ONE_TIME': {
-            switch (b.metadata.type) {
-              case 'GROUP':
-                return 1;
-              case 'ONE_TIME':
-                return a.order - b.order;
-              case 'MASTER_TEMPLATE':
-                return a.order - b.order;
-              default:
-                throw new Error('Impossible Case');
-            }
-          }
-          case 'MASTER_TEMPLATE': {
-            switch (b.metadata.type) {
-              case 'GROUP':
-                return 1;
-              case 'ONE_TIME':
-                return a.order - b.order;
-              case 'MASTER_TEMPLATE':
-                return a.order - b.order;
-              default:
-                throw new Error('Impossible Case');
-            }
-          }
-          default:
-            throw new Error('Impossible Case');
-        }
-      })
+      .sort(sortTask)
       .forEach((task) => {
         const filteredUncompletedTask = getFilteredNotCompletedInFocusTask(task);
         const filteredCompletedTask = getFilteredCompletedInFocusTask(task);

@@ -1,11 +1,12 @@
 import React, { ReactNode, ReactElement } from 'react';
 
 import { Task } from 'common/types/store-types';
+import { sortTask } from 'common/util/task-util';
 import styles from './GroupViewMiddleBarTaskQueue.module.scss';
 import GroupTask from '../RightView/GroupTask';
 
 type Props = {
-  readonly tasks: Task[];
+  readonly tasks: readonly Task[];
 };
 
 const EmptyTaskQueue = (): React.ReactElement => (
@@ -15,11 +16,12 @@ const EmptyTaskQueue = (): React.ReactElement => (
   </div>
 );
 
-function renderTaskList(tasks: Task[]): ReactNode {
-  return tasks.map((task) => {
+function renderTaskList(tasks: readonly Task[]): ReactNode {
+  return [...tasks].sort(sortTask).map((task) => {
     return <GroupTask key={task.id} original={task} memberName="" />;
   });
 }
+
 const TaskQueue = ({ tasks }: Props): React.ReactElement => (
   <div>
     {tasks.length > 0 ? (

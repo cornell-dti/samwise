@@ -5,6 +5,7 @@ import {
   computeTaskProgress,
   TasksProgressProps,
   subTasksEqual,
+  sortTask,
 } from './task-util';
 
 // unimportant common attributes.
@@ -148,4 +149,133 @@ it('subTaskEqual works', () => {
   expect(subTask1).toEqual(subTask1Duplicate);
   expect(subTasksEqual(subTask1, subTask1Duplicate)).toBeTruthy();
   expect(subTasksEqual(subTask1, subTask1AlteredName)).toBeFalsy();
+});
+
+it('sortTask works', () => {
+  const groupTask1FromGroup1: Task = {
+    id: '1',
+    order: 1,
+    name: '',
+    tag: '',
+    owner: [],
+    inFocus: true,
+    complete: true,
+    children: [],
+    metadata: { type: 'GROUP', group: 'g1', date: new Date() },
+  };
+  const groupTask2FromGroup1: Task = {
+    id: '2',
+    order: 2,
+    name: '',
+    tag: '',
+    owner: [],
+    inFocus: true,
+    complete: true,
+    children: [],
+    metadata: { type: 'GROUP', group: 'g1', date: new Date() },
+  };
+  const groupTask1FromGroup2: Task = {
+    id: '3',
+    order: 1,
+    name: '',
+    tag: '',
+    owner: [],
+    inFocus: true,
+    complete: true,
+    children: [],
+    metadata: { type: 'GROUP', group: 'g2', date: new Date() },
+  };
+  const groupTask2FromGroup2: Task = {
+    id: '4',
+    order: 2,
+    name: '',
+    tag: '',
+    owner: [],
+    inFocus: true,
+    complete: true,
+    children: [],
+    metadata: { type: 'GROUP', group: 'g2', date: new Date() },
+  };
+  const repeatingTask1: Task = {
+    id: '5',
+    order: 1,
+    name: '',
+    tag: '',
+    owner: [],
+    inFocus: true,
+    complete: true,
+    children: [],
+    metadata: {
+      type: 'MASTER_TEMPLATE',
+      date: {
+        startDate: new Date(),
+        endDate: new Date(),
+        pattern: { type: 'BIWEEKLY', bitSet: 1 },
+      },
+      forks: [],
+    },
+  };
+  const repeatingTask2: Task = {
+    id: '6',
+    order: 2,
+    name: '',
+    tag: '',
+    owner: [],
+    inFocus: true,
+    complete: true,
+    children: [],
+    metadata: {
+      type: 'MASTER_TEMPLATE',
+      date: {
+        startDate: new Date(),
+        endDate: new Date(),
+        pattern: { type: 'BIWEEKLY', bitSet: 1 },
+      },
+      forks: [],
+    },
+  };
+  const oneTimeTask1: Task = {
+    id: '7',
+    order: 1,
+    name: '',
+    tag: '',
+    owner: [],
+    inFocus: true,
+    complete: true,
+    children: [],
+    metadata: { type: 'ONE_TIME', date: new Date() },
+  };
+  const oneTimeTask2: Task = {
+    id: '8',
+    order: 2,
+    name: '',
+    tag: '',
+    owner: [],
+    inFocus: true,
+    complete: true,
+    children: [],
+    metadata: { type: 'ONE_TIME', date: new Date() },
+  };
+
+  expect(
+    [
+      groupTask1FromGroup2,
+      oneTimeTask1,
+      repeatingTask2,
+      repeatingTask1,
+      oneTimeTask2,
+      groupTask1FromGroup1,
+      groupTask2FromGroup2,
+      groupTask2FromGroup1,
+    ].sort(sortTask)
+  ).toEqual([
+    groupTask1FromGroup1,
+    groupTask2FromGroup1,
+    groupTask1FromGroup2,
+    groupTask2FromGroup2,
+    repeatingTask1,
+    repeatingTask2,
+    oneTimeTask1,
+    oneTimeTask2,
+  ]);
 });
