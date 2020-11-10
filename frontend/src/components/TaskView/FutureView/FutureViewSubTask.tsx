@@ -66,12 +66,14 @@ function FutureViewSubTask({
     );
     applyUpdate(updatedChildren);
   };
-  const onRemove = (): void =>
-    editTaskWithDiff(taskData.id, getTaskEditType(), {
-      mainTaskEdits: {
-        children: taskData.children.filter((currSubTask) => !subTasksEqual(currSubTask, subTask)),
-      },
-    });
+
+  const onRemove = (): void => {
+    const updatedChildren = taskData.children.filter(
+      (currSubTask) => !subTasksEqual(currSubTask, subTask)
+    );
+    applyUpdate(updatedChildren);
+  };
+
   return (
     <div className={styles.SubTask}>
       <CheckBox
