@@ -248,7 +248,6 @@ const mapStateToProps = (
   state: State,
   ownProps: OwnProps
 ): { readonly compoundTask: CompoundTask | null; readonly settings: Settings } => {
-  const compoundTask = getCompoundTask(state, ownProps);
   // console.log("compoundTask", compoundTask)
   return {
     compoundTask: getCompoundTask(state, ownProps),

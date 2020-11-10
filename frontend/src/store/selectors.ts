@@ -6,7 +6,6 @@ import {
   Task,
   BannerMessageStatus,
   RepeatingTaskMetadata,
-  TaskMetadata,
 } from 'common/types/store-types';
 import { NONE_TAG } from 'common/util/tag-util';
 import {

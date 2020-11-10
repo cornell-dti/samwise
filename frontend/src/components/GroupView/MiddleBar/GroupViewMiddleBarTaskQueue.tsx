@@ -3,6 +3,7 @@ import React, { ReactNode, ReactElement } from 'react';
 import { Task } from 'common/types/store-types';
 import styles from './GroupViewMiddleBarTaskQueue.module.scss';
 import GroupTask from '../RightView/GroupTask';
+import { applyMiddleware } from 'redux';
 
 type Props = {
   readonly tasks: Task[];
@@ -16,7 +17,9 @@ const EmptyTaskQueue = (): React.ReactElement => (
 );
 
 function renderTaskList(tasks: Task[]): ReactNode {
-  tasks.sort((a, b) => (a.order > b.order ? 1 : -1));
+  [...tasks].sort((a, b) => {
+    return a.order - b.order;
+  });
 
   return tasks.map((task) => {
     return <GroupTask key={task.id} original={task} memberName="" />;

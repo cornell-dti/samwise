@@ -15,6 +15,10 @@ type IdOrder = {
 };
 
 function renderTaskList(tasks: readonly Task[], memberName: string): ReactNode {
+  tasks.sort((a, b) => {
+    return a.order - b.order;
+  });
+
   return tasks.map((task) => <GroupTask key={task.id} original={task} memberName={memberName} />);
 }
 
