@@ -1,4 +1,3 @@
-import { FirestoreCommonTask } from 'common/types/firestore-types';
 import { partition } from './util';
 import database from './db';
 
@@ -20,7 +19,7 @@ const removeOldTasks = async (): Promise<void> => {
     if (data == null) {
       return idListToDelete.push(id);
     }
-    return idListToDelete.push(id, ...(data as FirestoreCommonTask).children);
+    return idListToDelete.push(id);
   });
   // Used to overcome to the 500 item per batch limit.
   const partitioned = partition(idListToDelete, 500);

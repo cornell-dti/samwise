@@ -214,7 +214,7 @@ export default function FutureView({ config, onConfigChange }: Props): ReactElem
                 ...task.metadata,
                 date: new Date(destination.droppableId),
               },
-              children: task.children.map((child) => child.id),
+              children: task.children,
             },
           ],
           []

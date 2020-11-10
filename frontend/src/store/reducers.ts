@@ -4,13 +4,12 @@ import {
   PatchCourses,
   PatchTags,
   PatchTasks,
-  PatchSubTasks,
   PatchSettings,
   PatchBannerMessageStatus,
-  PatchPendingInvite,
   PatchGroups,
+  PatchGroupInvites,
 } from 'common/types/action-types';
-import { State, SubTask, Task } from 'common/types/store-types';
+import { State, Task } from 'common/types/store-types';
 import { error } from 'common/util/general-util';
 import { initialState } from './state';
 
@@ -146,53 +145,21 @@ function patchTasks(state: State, { created, edited, deleted }: PatchTasks): Sta
     deleted.forEach((id) => s.remove(id));
   });
 
-  const missingSubTasksMap = new Map<string, string>();
-  const orphanSubTasksToClear: string[] = [];
   const newTasks = state.tasks.withMutations((tasks) => {
-    const unfoldSubTasks = (
-      taskId: string,
-      subTaskIds: readonly string[],
-      existingSubTasks: readonly SubTask[]
-    ): readonly SubTask[] => {
-      let newIdSet = Set(subTaskIds);
-      const unfolded: SubTask[] = [];
-      existingSubTasks.forEach((subTask) => {
-        if (newIdSet.has(subTask.id)) {
-          newIdSet = newIdSet.remove(subTask.id);
-          unfolded.push(subTask);
-        }
-      });
-      // Remaining ids represent subtask that has not appeared yet.
-      newIdSet.forEach((id) => {
-        const orphanSubTask = state.orphanSubTasks.get(id);
-        if (orphanSubTask != null) {
-          orphanSubTasksToClear.push(id);
-          newIdSet = newIdSet.remove(id);
-          unfolded.push(orphanSubTask);
-          return;
-        }
-        missingSubTasksMap.set(id, taskId);
-      });
-      return unfolded;
-    };
-
     let dirtyMainTaskIds = Set<string>();
 
     created.forEach((createdMainTask) => {
       const { children, ...mainTaskRest } = createdMainTask;
-      const updatedChildren = unfoldSubTasks(createdMainTask.id, children, []);
-      const mainTask: Task = { ...mainTaskRest, children: updatedChildren };
+      const taskData: Task = { ...mainTaskRest, children };
       dirtyMainTaskIds = dirtyMainTaskIds.add(createdMainTask.id);
-      tasks.set(createdMainTask.id, mainTask);
+      tasks.set(createdMainTask.id, taskData);
     });
 
     edited.forEach((editedMainTask) => {
       const { children, ...mainTaskRest } = editedMainTask;
-      const existingSubTasks = tasks.get(mainTaskRest.id)?.children ?? [];
-      const updatedChildren = unfoldSubTasks(editedMainTask.id, children, existingSubTasks);
-      const mainTask: Task = { ...mainTaskRest, children: updatedChildren };
+      const taskData: Task = { ...mainTaskRest, children };
       dirtyMainTaskIds = dirtyMainTaskIds.add(editedMainTask.id);
-      tasks.set(editedMainTask.id, mainTask);
+      tasks.set(editedMainTask.id, taskData);
     });
 
     deleted.forEach((id) => tasks.delete(id));
@@ -202,95 +169,13 @@ function patchTasks(state: State, { created, edited, deleted }: PatchTasks): Sta
     });
   });
 
-  // Final updates
-  const updatedMissingSubTasks = state.missingSubTasks.withMutations((map) => {
-    missingSubTasksMap.forEach((mainTaskId, subTaskId) => map.set(subTaskId, mainTaskId));
-  });
-  const updatedOrphanSubTasks = state.orphanSubTasks.deleteAll(orphanSubTasksToClear);
-
   return {
     ...state,
     tasks: newTasks,
-    missingSubTasks: updatedMissingSubTasks,
-    orphanSubTasks: updatedOrphanSubTasks,
     dateTaskMap: newDateTaskMap,
     groupTaskMap: newGroupTaskMap,
     repeatedTaskSet: newRepeatedTaskSet,
     groupTaskSet: newGroupTaskSet,
-  };
-}
-
-function patchSubTasks(state: State, { created, edited, deleted }: PatchSubTasks): State {
-  const existingSubTaskToTaskMap = new Map<string, string>();
-  Array.from(state.tasks.entries()).forEach(([id, task]) => {
-    task.children.forEach((subTask) => existingSubTaskToTaskMap.set(subTask.id, id));
-  });
-
-  const missingSubTaskToClear: string[] = [];
-  const newOrphanSubTasks: SubTask[] = [];
-  const updatedTasks = state.tasks.withMutations((mutableTaskMap) => {
-    let dirtyMainTaskIds = Set<string>();
-
-    created.forEach((createdSubTask) => {
-      // By the time a subtask is created, a main task may or may not exist.
-      const mainTaskId = state.missingSubTasks.get(createdSubTask.id);
-      if (mainTaskId == null) {
-        // For those that does not exist, we must put them into orphan sub-tasks for now.
-        // The hope is that they will be stick to correct place in a later task patch.
-        newOrphanSubTasks.push(createdSubTask);
-      } else {
-        // For those that do exist, they must have some missing subtasks.
-        // We must stick them into correct places,
-        mutableTaskMap.update(mainTaskId, (mainTask) => ({
-          ...mainTask,
-          children: [...mainTask.children, createdSubTask],
-        }));
-        missingSubTaskToClear.push(createdSubTask.id);
-        dirtyMainTaskIds = dirtyMainTaskIds.add(mainTaskId);
-      }
-    });
-
-    edited.forEach((editedSubTask) => {
-      // By the time a subtask is edited, the subtask, along with its parent, must exist!
-      const mainTaskId = existingSubTaskToTaskMap.get(editedSubTask.id) ?? error('Must exist!');
-      mutableTaskMap.update(mainTaskId, (mainTask) => {
-        const children = mainTask.children.map((subTask) =>
-          subTask.id === editedSubTask.id ? editedSubTask : subTask
-        );
-        return { ...mainTask, children };
-      });
-      dirtyMainTaskIds = dirtyMainTaskIds.add(mainTaskId);
-    });
-
-    deleted.forEach((deletedSubTaskId) => {
-      const mainTaskId = existingSubTaskToTaskMap.get(deletedSubTaskId);
-      if (mainTaskId == null) {
-        // We might delete main task and subtask together, and main task is deleted before subtask.
-        return;
-      }
-      mutableTaskMap.update(mainTaskId, (mainTask) => ({
-        ...mainTask,
-        children: mainTask.children.filter((subTask) => subTask.id !== deletedSubTaskId),
-      }));
-      dirtyMainTaskIds = dirtyMainTaskIds.add(mainTaskId);
-    });
-
-    dirtyMainTaskIds.forEach((mainTaskId) => {
-      mutableTaskMap.update(mainTaskId, (task) => normalizeTaskChildrenOrder(task));
-    });
-  });
-
-  // Final batch updates for helper store tables.
-  const updatedMissingSubTasks = state.missingSubTasks.deleteAll(missingSubTaskToClear);
-  const updatedOrphanSubTasks = state.orphanSubTasks.withMutations((mutableOrphanSubTasks) => {
-    newOrphanSubTasks.forEach((subTask) => mutableOrphanSubTasks.set(subTask.id, subTask));
-  });
-
-  return {
-    ...state,
-    tasks: updatedTasks,
-    missingSubTasks: updatedMissingSubTasks,
-    orphanSubTasks: updatedOrphanSubTasks,
   };
 }
 
@@ -306,14 +191,6 @@ function patchCourses(state: State, { courses }: PatchCourses): State {
   return { ...state, courses };
 }
 
-function patchPendingInvite(state: State, { created, deleted }: PatchPendingInvite): State {
-  const newInvites = state.pendingInvites.withMutations((invites) => {
-    created.forEach((t) => invites.set(t.id, t));
-    deleted.forEach((id) => invites.delete(id));
-  });
-  return { ...state, pendingInvites: newInvites };
-}
-
 function patchGroups(state: State, { created, edited, deleted }: PatchGroups): State {
   const newGroups = state.groups.withMutations((groups) => {
     created.forEach((g) => groups.set(g.id, g));
@@ -323,24 +200,31 @@ function patchGroups(state: State, { created, edited, deleted }: PatchGroups): S
   return { ...state, groups: newGroups };
 }
 
+function patchGroupInvites(state: State, { created, edited, deleted }: PatchGroupInvites): State {
+  const newGroups = state.groupInvites.withMutations((groups) => {
+    created.forEach((g) => groups.set(g.id, g));
+    edited.forEach((g) => groups.set(g.id, g));
+    deleted.forEach((id) => groups.delete(id));
+  });
+  return { ...state, groupInvites: newGroups };
+}
+
 export default function rootReducer(state: State = initialState, action: Action): State {
   switch (action.type) {
     case 'PATCH_TAGS':
       return patchTags(state, action);
     case 'PATCH_TASKS':
       return patchTasks(state, action);
-    case 'PATCH_SUBTASKS':
-      return patchSubTasks(state, action);
     case 'PATCH_SETTINGS':
       return patchSettings(state, action);
     case 'PATCH_BANNER_MESSAGES':
       return patchBannerMessageStatus(state, action);
     case 'PATCH_COURSES':
       return patchCourses(state, action);
-    case 'PATCH_PENDING_GROUP_INVITE':
-      return patchPendingInvite(state, action);
     case 'PATCH_GROUPS':
       return patchGroups(state, action);
+    case 'PATCH_GROUP_INVITES':
+      return patchGroupInvites(state, action);
     default:
       return state;
   }

@@ -1,7 +1,7 @@
 import { readFileSync, writeFileSync } from 'fs';
 import { CourseInfo, ExamInfo, ExamType, ExamTimeType, FullInfo } from './types';
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-import { createSemiFinalJson, createPrelimJson } from './fetch-exam';
+import { createPrelimJson, createFinalJson, createSemiFinalJson } from './fetch-exam';
 
 class Course {
   public readonly examTimes: Map<number, ExamType> = new Map();
@@ -64,6 +64,7 @@ async function main(): Promise<void> {
   // TODO: re-enable them when Cornell publishes finals (no idea when it will happen)
   processExamInfoJson(map, await createSemiFinalJson(), 'semifinal');
   processExamInfoJson(map, await createPrelimJson(), 'prelim');
+  processExamInfoJson(map, await createFinalJson(), 'final');
   const result = Array.from(map.values()).map((course) => course.plainJs);
   writeFileSync('fa20-courses-with-exams-min.json', JSON.stringify(result));
 }

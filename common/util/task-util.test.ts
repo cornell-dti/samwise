@@ -1,10 +1,10 @@
-import { Set } from 'immutable';
 import { Task, SubTask } from '../types/store-types';
 import {
   getFilteredCompletedInFocusTask,
   getFilteredNotCompletedInFocusTask,
   computeTaskProgress,
   TasksProgressProps,
+  subTasksEqual,
 } from './task-util';
 
 // unimportant common attributes.
@@ -34,10 +34,10 @@ const testTaskCommon: MainTaskTestCommon = {
   },
 };
 
-const s1: SubTask = { id: 's1', order, name, complete: true, inFocus: true };
-const s2: SubTask = { id: 's2', order, name, complete: true, inFocus: false };
-const s3: SubTask = { id: 's3', order, name, complete: false, inFocus: true };
-const s4: SubTask = { id: 's4', order, name, complete: false, inFocus: false };
+const s1: SubTask = { order, name, complete: true, inFocus: true };
+const s2: SubTask = { order, name, complete: true, inFocus: false };
+const s3: SubTask = { order, name, complete: false, inFocus: true };
+const s4: SubTask = { order, name, complete: false, inFocus: false };
 const exampleTasks: Task[] = [
   { ...testTaskCommon, inFocus: true, complete: true, children: [s1, s2, s3, s4] },
   { ...testTaskCommon, inFocus: true, complete: false, children: [s1, s2, s3, s4] },
@@ -94,17 +94,17 @@ it('getFiltered(Completed|NotCompleted)InFocusTask are complementary', () => {
     if (uncompletedResult) {
       allSubTasks.push(...uncompletedResult.children);
     }
+
     // ensure disjoint union property
-    const subTaskIdSet = allSubTasks.reduce(
-      (acc: Set<string>, s: SubTask) => acc.add(s.id),
-      Set.of()
+    const subTaskSet = allSubTasks.filter((sub) =>
+      allSubTasks.reduce((acc: boolean, curr: SubTask) => subTasksEqual(sub, curr) || acc, false)
     );
-    if (subTaskIdSet.size !== allSubTasks.length) {
+    if (subTaskSet.length !== allSubTasks.length) {
       const { complete, inFocus, children } = task;
       let errorMessage = 'The subtasks in completed and uncompleted are not disjoint union.';
-      errorMessage += ` Task: { complete: ${complete}, inFocus: ${inFocus}, chilren: ${children} }.`;
-      errorMessage += ` Id Set: ${subTaskIdSet.toJS()}.`;
-      errorMessage += ` SubTasks: ${allSubTasks.map((s) => s.id)}`;
+      errorMessage += ` Task: { complete: ${complete}, inFocus: ${inFocus}, children: ${JSON.stringify(
+        children
+      )} }.`;
       throw new Error(errorMessage);
     }
     // ensure allSubTasks are all in focus.
@@ -134,4 +134,18 @@ it('computeTaskProgress works', () => {
     expect(computeTaskProgress([t])).toEqual(expectedResults[i]);
   });
   expect(computeTaskProgress(exampleTasks)).toEqual(expectedTotal);
+});
+
+it('subTaskEqual works', () => {
+  const subTask1: SubTask = {
+    order: 0,
+    name: 'foo',
+    complete: false,
+    inFocus: true,
+  };
+  const subTask1Duplicate: SubTask = { ...subTask1 };
+  const subTask1AlteredName: SubTask = { ...subTask1, name: 'baz' };
+  expect(subTask1).toEqual(subTask1Duplicate);
+  expect(subTasksEqual(subTask1, subTask1Duplicate)).toBeTruthy();
+  expect(subTasksEqual(subTask1, subTask1AlteredName)).toBeFalsy();
 });
