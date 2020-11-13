@@ -1,7 +1,7 @@
 import React, { ReactElement } from 'react';
 import { faPlus } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import firebase from 'firebase';
+import firebase from 'firebase/app';
 import SamwiseIcon from '../../UI/SamwiseIcon';
 import styles from './GroupViewMiddleBarMemberRow.module.scss';
 import ProfileImage from './ProfileImage';
