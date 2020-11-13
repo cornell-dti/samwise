@@ -9,24 +9,23 @@ import ProfileImage from './ProfileImage';
 type Props = {
   memberName: string;
   profilePicURL: string;
+  group: string;
+  email: string;
 };
 
-const sendNotification = (variant: string): void => {
+const sendNotification = (variant: string, email: string, group: string): void => {
   const msg = {
     data: {
-      groupId: '',
-      recipientEmail: '',
+      groupId: group,
+      recipientEmail: email,
+      variant,
     },
   };
   const sendMessage = firebase.functions().httpsCallable('sendNotificationEmail');
-  sendMessage(msg)
-    .then(() => {
-      console.log('lets goo');
-    })
-    .catch((e) => console.log(e));
+  sendMessage(msg);
 };
 
-const Member = ({ memberName, profilePicURL }: Props): ReactElement => {
+const Member = ({ memberName, profilePicURL, group, email }: Props): ReactElement => {
   return (
     <div className={styles.Member}>
       <ProfileImage
@@ -41,12 +40,12 @@ const Member = ({ memberName, profilePicURL }: Props): ReactElement => {
       <SamwiseIcon
         className={styles.MemberIcon}
         iconName="bell-outline"
-        onClick={() => sendNotification('bell')}
+        onClick={() => sendNotification('bell', email, group)}
       />
       <SamwiseIcon
         className={styles.MemberIcon}
         iconName="hug"
-        onClick={() => sendNotification('hug')}
+        onClick={() => sendNotification('hug', email, group)}
       />
     </div>
   );
