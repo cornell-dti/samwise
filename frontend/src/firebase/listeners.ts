@@ -1,7 +1,6 @@
 import { Set } from 'immutable';
-import { TaskWithChildrenId } from 'common/types/action-types';
 import {
-  SubTask,
+  Task,
   Tag,
   Settings,
   BannerMessageStatus,
@@ -11,19 +10,13 @@ import {
 } from 'common/types/store-types';
 import buildCoursesMap from 'common/util/courses-util';
 import { ignore } from 'common/util/general-util';
-import {
-  FirestoreSubTask,
-  FirestoreTag,
-  FirestoreTask,
-  FirestoreGroup,
-} from 'common/types/firestore-types';
+import { FirestoreTag, FirestoreTask, FirestoreGroup } from 'common/types/firestore-types';
 import { QuerySnapshot, DocumentSnapshot } from 'common/firebase/database';
 import { database } from './db';
 import { getAppUser } from './auth-util';
 import {
   patchCourses,
   patchSettings,
-  patchSubTasks,
   patchTags,
   patchTasks,
   patchBannerMessageStatus,
@@ -46,11 +39,6 @@ const listenTasksChange = (
   listener: (snapshot: QuerySnapshot) => void
 ): UnmountCallback =>
   database.tasksCollection().where('owner', 'array-contains', email).onSnapshot(listener);
-const listenSubTasksChange = (
-  email: string,
-  listener: (snapshot: QuerySnapshot) => void
-): UnmountCallback =>
-  database.subTasksCollection().where('owner', '==', email).onSnapshot(listener);
 const listenSettingsChange = (
   email: string,
   listener: (snapshot: DocumentSnapshot<Settings>) => void
@@ -79,7 +67,6 @@ const transformDate = (dateOrTimestamp: Date | Timestamp): Date =>
 const initializeFirebaseListeners = (onFirstFetched: () => void): (() => void) => {
   let firstTagsFetched = false;
   let firstTasksFetched = false;
-  let firstSubTasksFetched = false;
   let firstSettingsFetched = false;
   let firstBannerStatusFetched = false;
   let firstGroupsFetched = false;
@@ -87,7 +74,6 @@ const initializeFirebaseListeners = (onFirstFetched: () => void): (() => void) =
     if (
       firstTagsFetched &&
       firstTasksFetched &&
-      firstSubTasksFetched &&
       firstSettingsFetched &&
       firstBannerStatusFetched &&
       firstGroupsFetched
@@ -126,8 +112,8 @@ const initializeFirebaseListeners = (onFirstFetched: () => void): (() => void) =
   });
 
   const unmountTasksListener = listenTasksChange(ownerEmail, (snapshot) => {
-    const created: TaskWithChildrenId[] = [];
-    const edited: TaskWithChildrenId[] = [];
+    const created: Task[] = [];
+    const edited: Task[] = [];
     const deleted: string[] = [];
     snapshot.docChanges().forEach((change) => {
       const { doc } = change;
@@ -143,7 +129,7 @@ const initializeFirebaseListeners = (onFirstFetched: () => void): (() => void) =
         const ownerArray = owner as readonly string[];
         const children = Set(childrenArr);
         const taskCommon = { id, children: children.toArray() };
-        let task: TaskWithChildrenId;
+        let task: Task;
         if (rest.type === 'ONE_TIME') {
           const { type, date: timestamp, icalUID, ...oneTimeTaskRest } = rest;
           const date = transformDate(timestamp);
@@ -192,34 +178,6 @@ const initializeFirebaseListeners = (onFirstFetched: () => void): (() => void) =
     });
     store.dispatch(patchTasks(created, edited, deleted));
     firstTasksFetched = true;
-    reportFirstFetchedIfAllFetched();
-  });
-
-  const unmountSubTasksListener = listenSubTasksChange(ownerEmail, (snapshot) => {
-    const created: SubTask[] = [];
-    const edited: SubTask[] = [];
-    const deleted: string[] = [];
-    snapshot.docChanges().forEach((change) => {
-      const { doc } = change;
-      const { id } = doc;
-      if (change.type === 'removed') {
-        deleted.push(id);
-      } else {
-        const data = doc.data();
-        if (data === undefined) {
-          return;
-        }
-        const { owner, ...rest } = data as FirestoreSubTask;
-        const subTask: SubTask = { id, ...rest };
-        if (change.type === 'added') {
-          created.push(subTask);
-        } else {
-          edited.push(subTask);
-        }
-      }
-    });
-    store.dispatch(patchSubTasks(created, edited, deleted));
-    firstSubTasksFetched = true;
     reportFirstFetchedIfAllFetched();
   });
 
@@ -353,7 +311,6 @@ const initializeFirebaseListeners = (onFirstFetched: () => void): (() => void) =
     console.log('Unmounting Listeners... This should only happen when app dies!');
     unmountTagsListener();
     unmountTasksListener();
-    unmountSubTasksListener();
     unmountSettingsListener();
     unmountBannerStatusListener();
     unmountGroupsListener();

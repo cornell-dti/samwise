@@ -16,8 +16,3 @@ export const getNewTagId = (): string => database.tagsCollection().doc().id;
  * @returns a safe to use id for a new task.
  */
 export const getNewTaskId = (): string => database.tasksCollection().doc().id;
-
-/**
- * @returns a safe to use id for a new subtask.
- */
-export const getNewSubTaskId = (): string => database.subTasksCollection().doc().id;

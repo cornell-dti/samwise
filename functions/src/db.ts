@@ -7,7 +7,9 @@ if (process.env.TEST_MODE) {
   console.log('We are in test mode. Skip initializing firebase-admin.');
 } else if (process.env.DEV) {
   admin.initializeApp({
-    credential: JSON.parse(readFileSync('./firebase-adminsdk.json').toString()),
+    credential: admin.credential.cert(
+      JSON.parse(readFileSync('./firebase-adminsdk.json').toString())
+    ),
     databaseURL: 'https://samwise-dev.firebaseio.com',
   });
 } else {

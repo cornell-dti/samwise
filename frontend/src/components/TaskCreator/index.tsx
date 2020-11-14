@@ -11,6 +11,7 @@ import {
 } from 'common/types/store-types';
 import { NONE_TAG_ID } from 'common/util/tag-util';
 import { isToday } from 'common/util/datetime-util';
+import { subTasksEqual } from 'common/util/task-util';
 import TagPicker from './TagPicker';
 import DatePicker from './DatePicker';
 import FocusPicker from './FocusPicker';
@@ -133,10 +134,7 @@ export class TaskCreator extends React.PureComponent<Props, State> {
     if (name === '') {
       return;
     }
-    const newSubTasks = subTasks
-      .filter((subTask) => subTask.name !== '') // remove empty subtasks
-      // normalize orders: use current sequence as order;; remove useless id
-      .map(({ id, ...rest }, order) => ({ ...rest, order }));
+    const newSubTasks = subTasks.filter((subTask) => subTask.name !== ''); // remove empty subtasks
     // Put task in focus is the due date is today.
     const autoInFocus = inFocus || (date instanceof Date && isToday(date));
     const commonTask = { owner, name, tag, date, complete, inFocus: autoInFocus };
@@ -238,8 +236,7 @@ export class TaskCreator extends React.PureComponent<Props, State> {
       subTasks: [
         ...subTasks,
         {
-          id: String(subTasks.length),
-          order: 0, // some random order, will be ignored anyway
+          order: subTasks.reduce((acc, s) => Math.max(acc, s.order), 0) + 1,
           name: newSubTaskName,
           complete: false,
           inFocus: false,
@@ -255,10 +252,10 @@ export class TaskCreator extends React.PureComponent<Props, State> {
     }
   };
 
-  private editSubTask = (subTaskId: string) => (e: SyntheticEvent<HTMLInputElement>) => {
+  private editSubTask = (subTask: SubTask) => (e: SyntheticEvent<HTMLInputElement>) => {
     const name = e.currentTarget.value;
     this.setState(({ subTasks }: State) => ({
-      subTasks: subTasks.map((s) => (s.id === subTaskId ? { ...s, name } : s)),
+      subTasks: subTasks.map((s) => (subTasksEqual(s, subTask) ? { ...s, name } : s)),
     }));
   };
 
@@ -268,10 +265,10 @@ export class TaskCreator extends React.PureComponent<Props, State> {
     }
   };
 
-  private deleteSubTask = (subtaskId: string) => (e: SyntheticEvent<HTMLButtonElement>) => {
+  private deleteSubTask = (subTask: SubTask) => (e: SyntheticEvent<HTMLButtonElement>) => {
     e.preventDefault();
     this.setState(({ subTasks }: State) => ({
-      subTasks: subTasks.filter((s) => s.id !== subtaskId),
+      subTasks: subTasks.filter((s) => !subTasksEqual(s, subTask)),
     }));
   };
 
@@ -296,7 +293,7 @@ export class TaskCreator extends React.PureComponent<Props, State> {
       needToSwitchFocus,
     } = this.state;
     const existingSubTaskEditor = (
-      { id, name }: SubTask,
+      thisSubTask: SubTask,
       i: number,
       arr: SubTask[]
     ): ReactElement => {
@@ -306,16 +303,18 @@ export class TaskCreator extends React.PureComponent<Props, State> {
           this.setState({ needToSwitchFocus: false });
         }
       };
+
+      const { order, name } = thisSubTask;
       return (
-        <li key={id}>
-          <button type="button" tabIndex={-1} onClick={this.deleteSubTask(id)}>
+        <li key={order}>
+          <button type="button" tabIndex={-1} onClick={this.deleteSubTask(thisSubTask)}>
             <SamwiseIcon iconName="x-dark" />
           </button>
           <input
             type="text"
             ref={refHandler}
             value={name}
-            onChange={this.editSubTask(id)}
+            onChange={this.editSubTask(thisSubTask)}
             onKeyDown={this.submitSubTask}
             style={this.darkModeStyle}
           />
