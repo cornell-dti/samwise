@@ -26,6 +26,6 @@ jobs:
       - name: Create Dummy Files
         run: |
           echo "{}" > functions/src/firebase-adminsdk.json
-          echo "{"SENDGRID_API_KEY":""}" > functions/src/sendgrid-key.json
+          echo '{"SENDGRID_API_KEY":""}' > functions/src/sendgrid-key.json
       - name: Run TypeScript Compiler
         run: yarn workspace functions tsc
