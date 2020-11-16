@@ -54,7 +54,13 @@ const People = ({ group, groupMemberProfiles, changeView }: Props): ReactElement
       <h2>People</h2>
       <div className={styles.MemberList}>
         {groupMemberProfiles.map(({ name, email, photoURL }) => (
-          <GroupViewMiddleBarMemberRow memberName={name} key={email} profilePicURL={photoURL} />
+          <GroupViewMiddleBarMemberRow
+            group={group.id}
+            memberName={name}
+            key={email}
+            email={email}
+            profilePicURL={photoURL}
+          />
         ))}
       </div>
       <button

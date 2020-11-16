@@ -30,5 +30,7 @@ jobs:
       - name: Deploy Functions to Firebase Staging Project
         env:
           FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
+          SENDGRID_API_JSON: ${{ secrets.SENDGRID_API_JSON }}
         run: |
+          echo $SENDGRID_API_JSON > functions/src/sendgrid-key.json
           node ./deploy-functions.js $FIREBASE_TOKEN default
