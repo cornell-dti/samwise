@@ -1,10 +1,11 @@
-import { Set } from 'immutable';
 import { Task, SubTask } from '../types/store-types';
 import {
   getFilteredCompletedInFocusTask,
   getFilteredNotCompletedInFocusTask,
   computeTaskProgress,
   TasksProgressProps,
+  subTasksEqual,
+  sortTask,
 } from './task-util';
 
 // unimportant common attributes.
@@ -34,10 +35,10 @@ const testTaskCommon: MainTaskTestCommon = {
   },
 };
 
-const s1: SubTask = { id: 's1', order, name, complete: true, inFocus: true };
-const s2: SubTask = { id: 's2', order, name, complete: true, inFocus: false };
-const s3: SubTask = { id: 's3', order, name, complete: false, inFocus: true };
-const s4: SubTask = { id: 's4', order, name, complete: false, inFocus: false };
+const s1: SubTask = { order, name, complete: true, inFocus: true };
+const s2: SubTask = { order, name, complete: true, inFocus: false };
+const s3: SubTask = { order, name, complete: false, inFocus: true };
+const s4: SubTask = { order, name, complete: false, inFocus: false };
 const exampleTasks: Task[] = [
   { ...testTaskCommon, inFocus: true, complete: true, children: [s1, s2, s3, s4] },
   { ...testTaskCommon, inFocus: true, complete: false, children: [s1, s2, s3, s4] },
@@ -94,17 +95,17 @@ it('getFiltered(Completed|NotCompleted)InFocusTask are complementary', () => {
     if (uncompletedResult) {
       allSubTasks.push(...uncompletedResult.children);
     }
+
     // ensure disjoint union property
-    const subTaskIdSet = allSubTasks.reduce(
-      (acc: Set<string>, s: SubTask) => acc.add(s.id),
-      Set.of()
+    const subTaskSet = allSubTasks.filter((sub) =>
+      allSubTasks.reduce((acc: boolean, curr: SubTask) => subTasksEqual(sub, curr) || acc, false)
     );
-    if (subTaskIdSet.size !== allSubTasks.length) {
+    if (subTaskSet.length !== allSubTasks.length) {
       const { complete, inFocus, children } = task;
       let errorMessage = 'The subtasks in completed and uncompleted are not disjoint union.';
-      errorMessage += ` Task: { complete: ${complete}, inFocus: ${inFocus}, chilren: ${children} }.`;
-      errorMessage += ` Id Set: ${subTaskIdSet.toJS()}.`;
-      errorMessage += ` SubTasks: ${allSubTasks.map((s) => s.id)}`;
+      errorMessage += ` Task: { complete: ${complete}, inFocus: ${inFocus}, children: ${JSON.stringify(
+        children
+      )} }.`;
       throw new Error(errorMessage);
     }
     // ensure allSubTasks are all in focus.
@@ -134,4 +135,147 @@ it('computeTaskProgress works', () => {
     expect(computeTaskProgress([t])).toEqual(expectedResults[i]);
   });
   expect(computeTaskProgress(exampleTasks)).toEqual(expectedTotal);
+});
+
+it('subTaskEqual works', () => {
+  const subTask1: SubTask = {
+    order: 0,
+    name: 'foo',
+    complete: false,
+    inFocus: true,
+  };
+  const subTask1Duplicate: SubTask = { ...subTask1 };
+  const subTask1AlteredName: SubTask = { ...subTask1, name: 'baz' };
+  expect(subTask1).toEqual(subTask1Duplicate);
+  expect(subTasksEqual(subTask1, subTask1Duplicate)).toBeTruthy();
+  expect(subTasksEqual(subTask1, subTask1AlteredName)).toBeFalsy();
+});
+
+it('sortTask works', () => {
+  const groupTask1FromGroup1: Task = {
+    id: '1',
+    order: 1,
+    name: '',
+    tag: '',
+    owner: [],
+    inFocus: true,
+    complete: true,
+    children: [],
+    metadata: { type: 'GROUP', group: 'g1', date: new Date() },
+  };
+  const groupTask2FromGroup1: Task = {
+    id: '2',
+    order: 2,
+    name: '',
+    tag: '',
+    owner: [],
+    inFocus: true,
+    complete: true,
+    children: [],
+    metadata: { type: 'GROUP', group: 'g1', date: new Date() },
+  };
+  const groupTask1FromGroup2: Task = {
+    id: '3',
+    order: 1,
+    name: '',
+    tag: '',
+    owner: [],
+    inFocus: true,
+    complete: true,
+    children: [],
+    metadata: { type: 'GROUP', group: 'g2', date: new Date() },
+  };
+  const groupTask2FromGroup2: Task = {
+    id: '4',
+    order: 2,
+    name: '',
+    tag: '',
+    owner: [],
+    inFocus: true,
+    complete: true,
+    children: [],
+    metadata: { type: 'GROUP', group: 'g2', date: new Date() },
+  };
+  const repeatingTask1: Task = {
+    id: '5',
+    order: 1,
+    name: '',
+    tag: '',
+    owner: [],
+    inFocus: true,
+    complete: true,
+    children: [],
+    metadata: {
+      type: 'MASTER_TEMPLATE',
+      date: {
+        startDate: new Date(),
+        endDate: new Date(),
+        pattern: { type: 'BIWEEKLY', bitSet: 1 },
+      },
+      forks: [],
+    },
+  };
+  const repeatingTask2: Task = {
+    id: '6',
+    order: 2,
+    name: '',
+    tag: '',
+    owner: [],
+    inFocus: true,
+    complete: true,
+    children: [],
+    metadata: {
+      type: 'MASTER_TEMPLATE',
+      date: {
+        startDate: new Date(),
+        endDate: new Date(),
+        pattern: { type: 'BIWEEKLY', bitSet: 1 },
+      },
+      forks: [],
+    },
+  };
+  const oneTimeTask1: Task = {
+    id: '7',
+    order: 1,
+    name: '',
+    tag: '',
+    owner: [],
+    inFocus: true,
+    complete: true,
+    children: [],
+    metadata: { type: 'ONE_TIME', date: new Date() },
+  };
+  const oneTimeTask2: Task = {
+    id: '8',
+    order: 2,
+    name: '',
+    tag: '',
+    owner: [],
+    inFocus: true,
+    complete: true,
+    children: [],
+    metadata: { type: 'ONE_TIME', date: new Date() },
+  };
+
+  expect(
+    [
+      groupTask1FromGroup2,
+      oneTimeTask1,
+      repeatingTask2,
+      repeatingTask1,
+      oneTimeTask2,
+      groupTask1FromGroup1,
+      groupTask2FromGroup2,
+      groupTask2FromGroup1,
+    ].sort(sortTask)
+  ).toEqual([
+    groupTask1FromGroup1,
+    groupTask2FromGroup1,
+    groupTask1FromGroup2,
+    groupTask2FromGroup2,
+    repeatingTask1,
+    repeatingTask2,
+    oneTimeTask1,
+    oneTimeTask2,
+  ]);
 });
