@@ -26,7 +26,7 @@ const sendEmail = async (data: Data, context: functions.https.CallableContext): 
   let { variant } = data.data;
 
   // default variant
-  if (!['hug', 'bell'].includes(variant)) {
+  if (!['hug', 'reminder'].includes(variant)) {
     variant = 'hug';
   }
   const recipient: FirestoreUserData = (

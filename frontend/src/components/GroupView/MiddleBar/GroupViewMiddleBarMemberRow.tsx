@@ -40,7 +40,7 @@ const Member = ({ memberName, profilePicURL, group, email }: Props): ReactElemen
       <SamwiseIcon
         className={styles.MemberIcon}
         iconName="bell-outline"
-        onClick={() => sendNotification('bell', email, group)}
+        onClick={() => sendNotification('reminder', email, group)}
       />
       <SamwiseIcon
         className={styles.MemberIcon}
