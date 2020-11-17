@@ -1,7 +1,10 @@
+@import '../../layout-sizes.scss';
+
 .TaskCreator {
   display: flex;
   flex-direction: row;
   justify-content: center;
+  height: $task-creator-height;
 }
 
 .NewTaskComponent {
@@ -49,7 +52,7 @@
   }
   .SubmitNewTask,
   .GroupSubmitNewTask.GroupSubmitNewTask {
-    height: 50px;
+    height: $task-creator-height;
   }
   .NewTaskModal {
     width: calc(30vw + 60px);
@@ -64,17 +67,8 @@
   .SubmitNewTask .GroupSubmitNewTask {
     height: 80px;
   }
-  .TaskCreator {
-    height: auto;
-  }
   .NewTaskModal {
     width: calc(90vw + 60px);
-  }
-}
-
-@media only screen and (min-width: 800px) and (min-height: 650px) {
-  .TaskCreator {
-    height: 5vh;
   }
 }
 
