@@ -1,3 +1,5 @@
+@import '../../../../z-index.scss';
+
 /*
  * --------------------------------------------------------------------------------
  * Part 1: Parent Component
@@ -130,7 +132,7 @@ img.TaskEditorIcon:focus,
   right: 0;
   left: 8px;
   top: 4px;
-  z-index: 4;
+  z-index: $LEVEL_4_TASK_EDITOR_TAG_EDITOR;
   color: #333;
   background: white;
 }

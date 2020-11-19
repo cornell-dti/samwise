@@ -1,4 +1,5 @@
 @import '../../../colors.scss';
+@import '../../../z-index.scss';
 
 .Hero {
   position: fixed;
@@ -8,7 +9,7 @@
   height: 100%;
   overflow-y: auto;
   background: #7b7b7b;
-  z-index: 11; /* above the setting modal! */
+  z-index: $LEVEL_11_ONBOARDING_HERO_MODAL; /* above the setting modal! */
   color: white;
 }
 
