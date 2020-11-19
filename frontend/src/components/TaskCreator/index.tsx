@@ -358,7 +358,7 @@ export class TaskCreator extends React.PureComponent<Props, State> {
           onSubmit={this.handleSave}
           onFocus={this.openNewTask}
         >
-          <div className={styles.TaskCreatorRow}>
+          <div className={`${styles.TaskCreatorRow} ${styles.FirstRow}`}>
             <div className={styles.TitleText}>Add Task</div>
             {date instanceof Date && <FocusPicker pinned={inFocus} onPinChange={this.togglePin} />}
             <div className={styles.TagPickWrap}>

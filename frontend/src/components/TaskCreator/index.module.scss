@@ -20,6 +20,10 @@
   align-items: center;
   width: 100%;
   margin-bottom: 1em;
+
+  &.FirstRow {
+    width: calc(100% - 40px);
+  }
 }
 
 .NewTaskComponent {
