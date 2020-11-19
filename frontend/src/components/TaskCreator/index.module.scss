@@ -53,6 +53,7 @@
 
 .NewTaskWrap {
   position: relative;
+  bottom: 20px;
 }
 
 @media only screen and (min-width: 800px) {
@@ -155,6 +156,7 @@
   top: 50px;
   left: 0;
   right: 0;
+  bottom: unset;
   margin: 0 auto;
   background-color: white;
   padding: 1em 2em;
