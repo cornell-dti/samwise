@@ -1,3 +1,5 @@
+@import '../../../z-index.scss';
+
 .SettingsButtonContainer {
   display: inline-block;
 
@@ -38,7 +40,7 @@
   bottom: 0;
   left: 0;
   right: 0;
-  z-index: 10;
+  z-index: $LEVEL_10_SETTINGS_MODAL;
   background-color: #7b7b7b;
   color: white;
   overflow-y: auto;
