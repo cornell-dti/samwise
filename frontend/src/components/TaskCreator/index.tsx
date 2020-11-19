@@ -295,7 +295,7 @@ export class TaskCreator extends React.PureComponent<Props, State> {
           style={this.darkModeStyle}
         >
           <form
-            className={styles.NewTaskWrap}
+            className={`${styles.NewTaskWrap} ${groupMemberProfiles ? styles.GroupTaskWrap : ''}`}
             onSubmit={this.handleSave}
             onFocus={this.openNewTask}
           >

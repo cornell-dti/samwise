@@ -58,6 +58,10 @@
 .NewTaskWrap {
   position: relative;
   bottom: 20px;
+
+  &.GroupTaskWrap {
+    bottom: unset;
+  }
 }
 
 @media only screen and (min-width: 800px) {

@@ -5,7 +5,7 @@ exports[`TaskCreator matches snapshot 1`] = `
   className="TaskCreator TaskCreatorClosed"
 >
   <form
-    className="NewTaskWrap"
+    className="NewTaskWrap "
     onFocus={[Function]}
     onSubmit={[Function]}
   >
