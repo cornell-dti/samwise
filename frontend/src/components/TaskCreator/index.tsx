@@ -288,11 +288,17 @@ export class TaskCreator extends React.PureComponent<Props, State> {
       datePicked,
       needToSwitchFocus,
     } = this.state;
-    const formClassname = view === 'personal' ? styles.NewTaskWrap : styles.GroupNewTaskWrap;
     if (!this.isOpen) {
       return (
-        <div className={styles.TaskCreator} style={this.darkModeStyle}>
-          <form className={formClassname} onSubmit={this.handleSave} onFocus={this.openNewTask}>
+        <div
+          className={`${styles.TaskCreator} ${styles.TaskCreatorClosed}`}
+          style={this.darkModeStyle}
+        >
+          <form
+            className={`${styles.NewTaskWrap} ${groupMemberProfiles ? styles.GroupTaskWrap : ''}`}
+            onSubmit={this.handleSave}
+            onFocus={this.openNewTask}
+          >
             <input
               required
               type="text"
@@ -321,12 +327,18 @@ export class TaskCreator extends React.PureComponent<Props, State> {
 
       const { order, name: subtaskName } = thisSubTask;
       return (
-        <li key={order}>
-          <button type="button" tabIndex={-1} onClick={this.deleteSubTask(thisSubTask)}>
+        <li key={order} className={styles.ExistingSubTaskRow}>
+          <button
+            className={styles.DeleteSubTaskButton}
+            type="button"
+            tabIndex={-1}
+            onClick={this.deleteSubTask(thisSubTask)}
+          >
             <SamwiseIcon iconName="x-dark" />
           </button>
           <input
             type="text"
+            className={styles.ExistingSubTaskInput}
             ref={refHandler}
             value={subtaskName}
             onChange={this.editSubTask(thisSubTask)}
@@ -340,47 +352,14 @@ export class TaskCreator extends React.PureComponent<Props, State> {
     return (
       <div className={styles.TaskCreator} style={this.darkModeStyle}>
         <div onClick={this.closeNewTask} role="presentation" className={styles.CloseNewTask} />
-        <form className={formClassname} onSubmit={this.handleSave} onFocus={this.openNewTask}>
-          <input
-            required
-            type="text"
-            value={name}
-            onChange={this.editTaskName}
-            className={`${styles.NewTaskComponent} ${styles.NewTaskComponentOpened}`}
-            ref={(e) => {
-              this.addTask = e;
-            }}
-            style={this.darkModeStyle}
-          />
-          <div className={styles.TitleText}>Add Task</div>
-          <div className={styles.NewTaskActive}>
-            <div className={styles.SubtitleText}>
-              <p>
-                <b>Add Subtasks</b>
-                &nbsp;(optional)
-              </p>
-            </div>
-            <div className={styles.DescText}>
-              <p>Add optional subtasks to break down your tasks into more manageable pieces.</p>
-            </div>
-            <div className={styles.NewTaskModal} style={this.darkModeStyle}>
-              <div className={styles.SubtasksContainer}>
-                <ul className={styles.SubtasksList}>{subTasks.map(existingSubTaskEditor)}</ul>
-                <SamwiseIcon iconName="edit" className={styles.EditIcon} tabIndex={-1} />
-                <input
-                  className={styles.SubtaskInput}
-                  type="text"
-                  placeholder="Add a Subtask"
-                  value=""
-                  onChange={this.addNewSubTask}
-                  onKeyDown={this.newSubTaskKeyPress}
-                  style={this.darkModeStyle}
-                />
-              </div>
-              <button type="button" className={styles.ResetButton} onClick={this.resetTask}>
-                DISCARD TASK
-              </button>
-            </div>
+        <div className={styles.TaskCreatorOpenedPlaceHolder} />
+        <form
+          className={`${styles.NewTaskWrap} ${styles.NewTaskModal}`}
+          onSubmit={this.handleSave}
+          onFocus={this.openNewTask}
+        >
+          <div className={`${styles.TaskCreatorRow} ${styles.FirstRow}`}>
+            <div className={styles.TitleText}>Add Task</div>
             {date instanceof Date && <FocusPicker pinned={inFocus} onPinChange={this.togglePin} />}
             <div className={styles.TagPickWrap}>
               {view === 'personal' ? (
@@ -410,6 +389,19 @@ export class TaskCreator extends React.PureComponent<Props, State> {
               onClearPicker={this.clearDate}
               onPickerOpened={this.openDatePicker}
             />
+          </div>
+          <div className={styles.TaskCreatorRow}>
+            <input
+              required
+              type="text"
+              value={name}
+              onChange={this.editTaskName}
+              className={`${styles.NewTaskComponent} ${styles.NewTaskComponentOpened}`}
+              ref={(e) => {
+                this.addTask = e;
+              }}
+              style={this.darkModeStyle}
+            />
             <button
               type="submit"
               className={view === 'personal' ? styles.SubmitNewTask : styles.GroupSubmitNewTask}
@@ -418,6 +410,31 @@ export class TaskCreator extends React.PureComponent<Props, State> {
               <SamwiseIcon iconName="add-task" />
             </button>
           </div>
+          <div className={styles.SubtitleText}>
+            <b>Add Subtasks</b>
+            &nbsp;(optional)
+          </div>
+          <div className={styles.DescText}>
+            Add optional subtasks to break down your tasks into more manageable pieces.
+          </div>
+          <div style={this.darkModeStyle}>
+            <div className={styles.SubtasksContainer}>
+              <ul className={styles.SubtasksList}>{subTasks.map(existingSubTaskEditor)}</ul>
+              <SamwiseIcon iconName="edit" containerClassName={styles.EditIcon} tabIndex={-1} />
+              <input
+                className={styles.SubtaskInput}
+                type="text"
+                placeholder="Add a Subtask"
+                value=""
+                onChange={this.addNewSubTask}
+                onKeyDown={this.newSubTaskKeyPress}
+                style={this.darkModeStyle}
+              />
+            </div>
+          </div>
+          <button type="button" className={styles.ResetButton} onClick={this.resetTask}>
+            DISCARD TASK
+          </button>
         </form>
       </div>
     );

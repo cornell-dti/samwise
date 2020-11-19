@@ -4,7 +4,26 @@
   display: flex;
   flex-direction: row;
   justify-content: center;
+  &.TaskCreatorClosed {
+    height: $task-creator-height;
+  }
+}
+
+.TaskCreatorOpenedPlaceHolder {
   height: $task-creator-height;
+}
+
+/** The row with new task name input and submit button */
+.TaskCreatorRow {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  width: 100%;
+  margin-bottom: 1em;
+
+  &.FirstRow {
+    width: calc(100% - 40px);
+  }
 }
 
 .NewTaskComponent {
@@ -20,7 +39,8 @@
   font-family: 'Open Sans', sans-serif;
 
   &.NewTaskComponentOpened {
-    margin-top: 20px;
+    width: unset;
+    flex: 1 1 auto;
   }
 }
 
@@ -37,17 +57,15 @@
 
 .NewTaskWrap {
   position: relative;
-  text-align: center;
-  z-index: 5;
   bottom: 20px;
-  height: initial;
-  max-height: 44px;
-  margin-bottom: 0;
+
+  &.GroupTaskWrap {
+    bottom: unset;
+  }
 }
 
 @media only screen and (min-width: 800px) {
-  .NewTaskWrap,
-  .GroupNewTaskWrap {
+  .NewTaskWrap {
     width: 30vw;
   }
   .SubmitNewTask,
@@ -60,8 +78,7 @@
 }
 
 @media only screen and (max-width: 800px) {
-  .NewTaskWrap,
-  .GroupNewTaskWrap {
+  .NewTaskWrap {
     width: 90vw;
   }
   .SubmitNewTask .GroupSubmitNewTask {
@@ -87,53 +104,26 @@
   height: 100vh;
 }
 
-/**
- * Wrapper for all options only visible when adding task
- */
-.NewTaskActive {
-  position: absolute;
-  top: 12px;
-  height: 20px;
-  width: 100%;
-  right: 0;
-  padding-right: 40px;
-  text-align: right;
-  pointer-events: none;
-}
-
 .TitleText {
-  position: absolute;
-  top: -10px;
-  height: 20px;
-  width: 100%;
+  flex: 1 1 auto;
   text-align: left;
-  padding-bottom: 40px;
   font-weight: bold;
   font-size: 24px;
   pointer-events: none;
 }
 
 .SubtitleText {
-  position: absolute;
-  top: 56px;
-  height: 19px;
-  width: 100%;
   text-align: left;
-  padding-bottom: 40px;
   font-size: 16px;
   pointer-events: none;
 }
 
 .DescText {
-  position: absolute;
-  top: 76px;
-  height: 17px;
-  width: 100%;
   text-align: left;
-  padding-bottom: 40px;
   font-size: 14px;
   pointer-events: none;
   color: #848484;
+  margin-bottom: 0.5em;
 }
 
 .NewTaskActive * {
@@ -146,11 +136,19 @@
 }
 
 .SubmitNewTask {
-  position: absolute;
-  right: 0;
-  top: 7px;
   width: 42px;
   padding-left: 10px;
+  background: white;
+  border: none;
+  cursor: pointer;
+  margin: 0;
+  font-size: 48px;
+}
+
+.GroupSubmitNewTask {
+  width: 42px;
+  padding-left: 13px;
+  height: 50px;
   background: white;
   border: none;
   cursor: pointer;
@@ -162,31 +160,16 @@
  * Pop Open Modal
  */
 .NewTaskModal {
-  background: white;
-  position: absolute;
-  top: -40px;
-  right: -30px;
-  padding: 90px 10px 120px 10px;
-  z-index: -1;
+  position: fixed;
+  top: 50px;
+  left: 0;
+  right: 0;
+  bottom: unset;
+  margin: 0 auto;
+  background-color: white;
+  padding: 1em 2em;
+  z-index: 5;
   box-shadow: 0 8px 65px 3px #444;
-  text-align: center;
-}
-
-.NewTaskModal ul {
-  list-style-type: none;
-  margin: 0;
-  padding: 0;
-  top: 72px;
-}
-
-.NewTaskModal input[type='text'] {
-  border-top: none;
-  border-left: none;
-  border-right: none;
-  width: calc(100% - 60px);
-  padding: 10px 20px 10px 50px;
-  outline: none;
-  top: 72px;
 }
 
 .NewTaskModal input[type='text']::placeholder {
@@ -195,51 +178,43 @@
 
 .NewTaskModal .AddSubTask::before {
   content: '+';
-  position: relative;
   font-size: 20px;
 }
 
-.NewTaskModal li {
+.ExistingSubTaskRow {
   position: relative;
 }
 
-.NewTaskModal li button {
+.DeleteSubTaskButton {
   position: absolute;
   width: 20px;
   height: 20px;
-  bottom: 10px;
   border: none;
   background: none;
-  left: 40px;
+  top: 9px;
+  left: 31px;
   cursor: pointer;
 }
 
-.NewTaskModal i {
-  position: absolute;
-  font-size: 30px;
-  color: gray;
-  bottom: 8px;
+@mixin subtask-input {
+  border-top: none;
+  border-left: none;
+  border-right: none;
+  padding: 10px 20px 10px 50px;
+  outline: none;
 }
 
-.NewTaskModal li i {
-  display: block;
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  bottom: 0;
-  left: 0;
-  margin: 0;
-  padding: 0;
-  font-size: 15px;
+.ExistingSubTaskInput {
+  @include subtask-input;
+
+  width: calc(100% - 60px);
 }
 
 .ResetButton {
-  position: absolute;
   background: none;
   border: none;
   cursor: pointer;
-  bottom: 10px;
-  left: 23px;
+  margin-top: 3em;
   color: #ff1a1a;
   font-size: 14px;
   font-weight: 600;
@@ -255,21 +230,25 @@
 }
 
 .SubtaskInput {
+  @include subtask-input;
+
   font-family: 'Open Sans', sans-serif;
   font-size: 12px;
   color: black;
   background: #e3e3e3;
-  padding-left: 80px !important;
+  width: calc(100% - 40px);
+  padding-left: 80px;
 }
 
 .SubtasksList {
+  list-style-type: none;
+  padding: 0;
   font-family: 'Open Sans', sans-serif;
   font-size: 12px;
   color: black;
   box-shadow: -3px 3px 8px rgba(0, 0, 0, 0.25);
   border-radius: 5px;
-  margin-right: 20px !important;
-  margin-left: 40px !important;
+  margin: 0 10px 0 30px;
 }
 
 .TagPickWrap {
@@ -282,42 +261,17 @@
 .EditIcon {
   font-size: 1.3em;
   position: relative;
-  top: 9px;
-  left: 64px;
+  top: 4px;
+  left: 54px;
   color: grey;
 }
 
 .SubtasksContainer {
-  width: calc(90%);
-  margin-top: 84px;
+  text-align: center;
+  width: calc(100% - 42px);
 }
 
 .PlusIcon {
   font-size: 2em;
-  position: relative;
-  left: 25px;
   color: grey;
-}
-
-.GroupNewTaskWrap {
-  position: relative;
-  text-align: center;
-  z-index: 5;
-  height: initial;
-  max-height: 44px;
-  font-family: 'Open Sans', sans-serif;
-}
-
-.GroupSubmitNewTask {
-  position: absolute;
-  right: 0;
-  top: 7px;
-  width: 42px;
-  padding-left: 13px;
-  height: 50px;
-  background: white;
-  border: none;
-  cursor: pointer;
-  margin: 0;
-  font-size: 48px;
 }
