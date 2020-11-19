@@ -6,7 +6,6 @@
   position: relative;
   color: white;
   margin-left: 5px;
-  z-index: 2;
 }
 
 .Main,
@@ -125,7 +124,6 @@
   position: absolute;
   top: 20px;
   left: 0;
-  z-index: 2;
   padding: 10px;
   background: white;
   box-shadow: 1px 1px 10px 5px rgba(0, 0, 0, 0.15);
@@ -137,7 +135,6 @@
   top: 20px;
   left: initial;
   right: 0;
-  z-index: 2;
   padding: 10px;
   background: white;
   box-shadow: 1px 1px 10px 5px rgba(0, 0, 0, 0.15);
