@@ -411,13 +411,11 @@ export class TaskCreator extends React.PureComponent<Props, State> {
             </button>
           </div>
           <div className={styles.SubtitleText}>
-            <p>
-              <b>Add Subtasks</b>
-              &nbsp;(optional)
-            </p>
+            <b>Add Subtasks</b>
+            &nbsp;(optional)
           </div>
           <div className={styles.DescText}>
-            <p>Add optional subtasks to break down your tasks into more manageable pieces.</p>
+            Add optional subtasks to break down your tasks into more manageable pieces.
           </div>
           <div style={this.darkModeStyle}>
             <div className={styles.SubtasksContainer}>

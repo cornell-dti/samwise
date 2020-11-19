@@ -114,6 +114,7 @@
   font-size: 14px;
   pointer-events: none;
   color: #848484;
+  margin-bottom: 0.5em;
 }
 
 .NewTaskActive * {
@@ -159,11 +160,6 @@
   padding: 1em 2em;
   z-index: 5;
   box-shadow: 0 8px 65px 3px #444;
-}
-
-.NewTaskModal ul {
-  list-style-type: none;
-  padding: 0;
 }
 
 .NewTaskModal input[type='text']::placeholder {
@@ -235,6 +231,8 @@
 }
 
 .SubtasksList {
+  list-style-type: none;
+  padding: 0;
   font-family: 'Open Sans', sans-serif;
   font-size: 12px;
   color: black;
