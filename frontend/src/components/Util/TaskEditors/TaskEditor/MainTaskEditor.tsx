@@ -61,7 +61,7 @@ function MainTaskEditor({
 
   const isCanvasTask = typeof icalUID === 'string' ? icalUID !== '' : false;
 
-  const sendTaskReminder = () => {
+  const sendTaskReminder = (): void => {
     const msg = {
       data: {
         taskId: id,

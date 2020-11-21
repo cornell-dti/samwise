@@ -55,7 +55,7 @@ const sendEmail = async (data: Data, context: functions.https.CallableContext): 
     const task: FirestoreGroupTask = (
       await db.tasksCollection().doc(taskId)?.get()
     ).data() as FirestoreGroupTask;
-    if (task.group != groupId) {
+    if (task.group !== groupId) {
       return 'the task does not exist in this group';
     }
     msgContent = {
