@@ -1,5 +1,6 @@
 import React, { KeyboardEvent, ReactElement, SyntheticEvent } from 'react';
 import { getDateWithDateString } from 'common/util/datetime-util';
+import firebase from 'firebase/app';
 import styles from './index.module.scss';
 import CheckBox from '../../../UI/CheckBox';
 import SamwiseIcon from '../../../UI/SamwiseIcon';
@@ -19,6 +20,8 @@ type Props = NameCompleteInFocus & {
   readonly onRemove: () => void;
   readonly onPressEnter: (id: 'main-task' | number) => void;
   readonly memberName?: string; // only supplied if task is a group task
+  readonly memberEmail?: string; // only supplied if task is a group task
+  readonly groupID?: string; // only supplied if task is a group task
 };
 
 const deleteIconClass = [styles.TaskEditorIcon, styles.TaskEditorIconLeftPad].join(' ');
@@ -35,6 +38,8 @@ function MainTaskEditor({
   onRemove,
   onPressEnter,
   memberName,
+  memberEmail,
+  groupID,
 }: Props): ReactElement {
   const replaceDateForFork =
     taskDate == null ? getDateWithDateString(taskDate, dateAppeared) : null;
@@ -56,6 +61,19 @@ function MainTaskEditor({
 
   const isCanvasTask = typeof icalUID === 'string' ? icalUID !== '' : false;
 
+  const sendTaskReminder = () => {
+    const msg = {
+      data: {
+        taskId: id,
+        groupId: groupID,
+        recipientEmail: memberEmail,
+        variant: 'reminder',
+      },
+    };
+    const sendMessage = firebase.functions().httpsCallable('sendNotificationEmail');
+    sendMessage(msg);
+  };
+
   return (
     <div className={styles.TaskEditorFlexibleContainer}>
       <CheckBox className={styles.TaskEditorCheckBox} checked={complete} onChange={editComplete} />
@@ -70,7 +88,11 @@ function MainTaskEditor({
         onChange={onInputChange}
       />
       {memberName ? (
-        <SamwiseIcon iconName="bell-light" className={styles.TaskEditorIcon} onClick={() => {}} />
+        <SamwiseIcon
+          iconName="bell-light"
+          className={styles.TaskEditorIcon}
+          onClick={sendTaskReminder}
+        />
       ) : (
         <SamwiseIcon
           iconName={inFocus ? 'pin-light-filled' : 'pin-light-outline'}

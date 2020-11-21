@@ -1,6 +1,10 @@
 import * as functions from 'firebase-functions';
 import sgMail from '@sendgrid/mail';
-import { FirestoreGroup, FirestoreUserData } from 'common/types/firestore-types';
+import {
+  FirestoreGroup,
+  FirestoreUserData,
+  FirestoreGroupTask,
+} from 'common/types/firestore-types';
 import db from 'db';
 import sendgridKey from './sendgrid-key.json';
 
@@ -11,6 +15,7 @@ type Data = {
     variant: string;
     recipientEmail: string;
     groupId: string;
+    taskId: string; // only if group task
   };
 };
 
@@ -22,7 +27,7 @@ const sendEmail = async (data: Data, context: functions.https.CallableContext): 
     );
   }
   const { email } = context.auth.token;
-  const { recipientEmail, groupId } = data.data;
+  const { recipientEmail, groupId, taskId } = data.data;
   let { variant } = data.data;
 
   // default variant
@@ -41,12 +46,29 @@ const sendEmail = async (data: Data, context: functions.https.CallableContext): 
 
   const recipientName = recipient.name.split(' ')[0];
   const senderName = sender.name.split(' ')[0];
+
+  let msgContent = {
+    text: `${senderName} from ${group.name} is sending you a ${variant}!`,
+    html: `${senderName} from ${group.name} is sending you a ${variant}!`,
+  };
+  if (taskId) {
+    const task: FirestoreGroupTask = (
+      await db.tasksCollection().doc(taskId)?.get()
+    ).data() as FirestoreGroupTask;
+    if (task.group != groupId) {
+      return 'the task does not exist in this group';
+    }
+    msgContent = {
+      text: `${senderName} from ${group.name} is sending you a reminder to do ${task.name}!`,
+      html: `${senderName} from ${group.name} is sending you a reminder to do ${task.name}!`,
+    };
+  }
+
   const msg = {
     to: recipientEmail,
     from: 'jt568@cornell.edu',
     subject: `You got a ${variant}!`,
-    text: `${senderName} from ${group.name} is sending you a ${variant}!`,
-    html: `${senderName} from ${group.name} is sending you a ${variant}!`,
+    ...msgContent,
   };
 
   if (group && group.members.includes(email as string) && group.members.includes(recipientEmail)) {
