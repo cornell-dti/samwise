@@ -43,6 +43,7 @@
 
 .PlusIcon {
   font-size: 3em;
+  flex-shrink: 0;
 }
 
 .PersonalViewButton:hover,
@@ -65,9 +66,20 @@
   margin: 0;
   color: #7a7a7a;
   text-align: center;
+  flex-shrink: 0;
 }
 
 .Links {
-  position: absolute;
   bottom: 0;
+  flex-shrink: 0;
+  height: $links-height;
+}
+
+.EmptyFiller {
+  flex-grow: 1;
+}
+
+.GroupIconContainer {
+  overflow: auto;
+  max-height: calc(100% - #{$links-height});
 }
