@@ -30,37 +30,30 @@ const SideBar = ({ groups, changeView }: Props): ReactElement => {
       </button>
       <div className={styles.GroupIcons}>
         <p>My Groups</p>
-        <div>
-          <div className={styles.GroupIconContainer}>
-            {groups.map((g) => (
-              <div className={styles.GroupIconWrapper}>
-                <GroupIcon
-                  key={g.id}
-                  classCode={g.classCode}
-                  handleClick={() => handleIconClick(g.id)}
-                  selected={selected === g.id}
-                />
-              </div>
-            ))}
-            <span>
-              <button
-                type="button"
-                onMouseEnter={() => setShowDropdown(true)}
-                onMouseLeave={() => setShowDropdown(false)}
-                className={styles.AddGroup}
-              >
-                <FontAwesomeIcon className={styles.PlusIcon} icon={faPlus} />
-              </button>
-              {!showDropdown && <p>New Group</p>}
-              <AddGroupTags show={showDropdown} setShow={setShowDropdown} />
-            </span>
-          </div>
-          <div className={styles.EmptyFiller} />
-          <span className={styles.Links}>
-            <SettingsButton />
-          </span>
-        </div>
+        {groups.map((g) => (
+          <GroupIcon
+            key={g.id}
+            classCode={g.classCode}
+            handleClick={() => handleIconClick(g.id)}
+            selected={selected === g.id}
+          />
+        ))}
+        <span>
+          <button
+            type="button"
+            onMouseEnter={() => setShowDropdown(true)}
+            onMouseLeave={() => setShowDropdown(false)}
+            className={styles.AddGroup}
+          >
+            <FontAwesomeIcon className={styles.PlusIcon} icon={faPlus} />
+          </button>
+          {!showDropdown && <p>New Group</p>}
+          <AddGroupTags show={showDropdown} setShow={setShowDropdown} />
+        </span>
       </div>
+      <span className={styles.Links}>
+        <SettingsButton />
+      </span>
     </div>
   );
 };
