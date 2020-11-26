@@ -51,6 +51,8 @@ type OwnProps = DefaultProps & {
   readonly actions: Actions; // The actions to perform under different events
   readonly calendarPosition: CalendarPosition;
   readonly memberName?: string; // only supplied if task is a group task
+  readonly memberEmail?: string; // only supplied if task is a group task
+  readonly groupID?: string; // only supplied if task is a group task
 };
 type Props = OwnProps & {
   // subscribed from redux store.
@@ -84,6 +86,8 @@ function TaskEditor({
   calendarPosition,
   settings,
   memberName,
+  memberEmail,
+  groupID,
 }: Props): ReactElement {
   const { onChange, removeTask, onSaveClicked } = actions;
   const { taskData, diff, dispatchEditTask, dispatchEditSubTask, reset } = useTaskDiffReducer(
@@ -274,6 +278,8 @@ function TaskEditor({
           onRemove={removeTask}
           onPressEnter={pressEnterHandler}
           memberName={memberName}
+          memberEmail={memberEmail}
+          groupID={groupID}
         />
       </div>
       <div className={styles.TaskEditorSubTasksIndentedContainer}>
