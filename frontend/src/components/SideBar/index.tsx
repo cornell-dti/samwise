@@ -33,12 +33,14 @@ const SideBar = ({ groups, changeView }: Props): ReactElement => {
         <div>
           <div className={styles.GroupIconContainer}>
             {groups.map((g) => (
-              <GroupIcon
-                key={g.id}
-                classCode={g.classCode}
-                handleClick={() => handleIconClick(g.id)}
-                selected={selected === g.id}
-              />
+              <div className={styles.GroupIconWrapper}>
+                <GroupIcon
+                  key={g.id}
+                  classCode={g.classCode}
+                  handleClick={() => handleIconClick(g.id)}
+                  selected={selected === g.id}
+                />
+              </div>
             ))}
             <span>
               <button
@@ -53,11 +55,11 @@ const SideBar = ({ groups, changeView }: Props): ReactElement => {
               <AddGroupTags show={showDropdown} setShow={setShowDropdown} />
             </span>
           </div>
+          <div className={styles.EmptyFiller} />
+          <span className={styles.Links}>
+            <SettingsButton />
+          </span>
         </div>
-        <div className={styles.EmptyFiller} />
-        <span className={styles.Links}>
-          <SettingsButton />
-        </span>
       </div>
     </div>
   );

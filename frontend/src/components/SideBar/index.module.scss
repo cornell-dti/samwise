@@ -70,8 +70,6 @@
 }
 
 .Links {
-  bottom: 0;
-  flex-shrink: 0;
   height: $links-height;
 }
 
@@ -82,4 +80,8 @@
 .GroupIconContainer {
   overflow: auto;
   max-height: calc(100% - #{$links-height});
+}
+
+.GroupIconWrapper {
+  margin: auto;
 }
