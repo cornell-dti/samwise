@@ -12,11 +12,6 @@ type Props = {
   readonly groupID: string;
 };
 
-type IdOrder = {
-  readonly id: string;
-  readonly order: number;
-};
-
 function renderTaskList(
   tasks: readonly Task[],
   memberName: string,

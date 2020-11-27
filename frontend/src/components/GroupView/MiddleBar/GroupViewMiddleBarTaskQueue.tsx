@@ -9,7 +9,7 @@ type Props = {
   readonly tasks: readonly Task[];
 };
 
-const EmptyTaskQueue = (): React.ReactElement => (
+const EmptyTaskQueue = (): ReactElement => (
   <div className={styles.EmptyTaskQueue}>
     <p>Start adding new tasks!</p>
     <button type="button">Add task</button>
@@ -22,7 +22,7 @@ function renderTaskList(tasks: readonly Task[]): ReactNode {
   });
 }
 
-const TaskQueue = ({ tasks }: Props): React.ReactElement => (
+const TaskQueue = ({ tasks }: Props): ReactElement => (
   <div>
     {tasks.length > 0 ? (
       <div className={styles.TastQueue}>
