@@ -46,6 +46,8 @@ const SideBar = ({ groups, changeView }: Props): ReactElement => {
             />
           ))}
         </div>
+
+        <div className={styles.ExpandToFill} />
         <span>
           <button
             type="button"
@@ -58,10 +60,9 @@ const SideBar = ({ groups, changeView }: Props): ReactElement => {
           {!showDropdown && <p>New Group</p>}
           <AddGroupTags show={showDropdown} setShow={setShowDropdown} />
         </span>
-      </div>
-      <div className={styles.ExpandToFill} />
-      <div className={styles.Links}>
-        <SettingsButton />
+        <div className={styles.Links}>
+          <SettingsButton />
+        </div>
       </div>
     </div>
   );
