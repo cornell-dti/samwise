@@ -15,7 +15,7 @@
 }
 
 .PersonalViewButton,
-.GroupIcons button {
+.GroupManager button {
   height: 4rem;
   width: 4rem;
   opacity: 0.7;
@@ -34,6 +34,10 @@
   color: #bebebe;
 }
 
+.ViewSwitchButtonDiv {
+  height: $sidebar-personal-button-height;
+}
+
 .SideBar .PersonalViewButton {
   background-color: transparent;
   margin-top: 50px;
@@ -46,17 +50,18 @@
 }
 
 .PersonalViewButton:hover,
-.GroupIcons button:hover {
+.GroupManager button:hover {
   opacity: 0.5;
   cursor: pointer;
 }
 
-.GroupIcons {
+.GroupManager {
   display: flex;
   flex-direction: column;
+  height: $sidebar-group-manager-height;
 }
 
-.GroupIcons p {
+.GroupManager p {
   font-family: 'DM Sans', sans-serif;
   font-style: normal;
   font-weight: 500;
@@ -67,7 +72,15 @@
   text-align: center;
 }
 
+.ExpandToFill {
+  flex-grow: 1;
+}
+
+.GroupIcons {
+  overflow: auto;
+  max-height: calc(#{$sidebar-group-manager-height} - 20px - 50px);
+}
+
 .Links {
-  position: absolute;
-  bottom: 0;
+  height: 50px;
 }

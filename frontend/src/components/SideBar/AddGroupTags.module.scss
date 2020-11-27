@@ -1,9 +1,12 @@
+@import '../../z-index.scss';
+
 .AddGroupTags {
   background-color: white;
   width: 100px;
   position: absolute;
   left: 15px;
   border-radius: 5px;
+  z-index: $LEVEL_1_ADD_GROUP_COMPONENT;
 }
 
 .ClassItem {
