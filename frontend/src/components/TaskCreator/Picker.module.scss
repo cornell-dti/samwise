@@ -1,3 +1,5 @@
+@import '../../z-index.scss';
+
 .Main {
   display: inline-flex;
   height: 20px;
@@ -112,6 +114,7 @@
 }
 
 .NewTaskClassPick {
+  z-index: $LEVEL_6_PICKER_IN_TASK_CREATOR;
   color: black;
 }
 
@@ -126,6 +129,7 @@
   left: 0;
   padding: 10px;
   background: white;
+  z-index: $LEVEL_6_PICKER_IN_TASK_CREATOR;
   box-shadow: 1px 1px 10px 5px rgba(0, 0, 0, 0.15);
 }
 
