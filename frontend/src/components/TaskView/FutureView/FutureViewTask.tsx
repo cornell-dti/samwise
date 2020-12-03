@@ -51,7 +51,7 @@ function FutureViewTask({
   calendarPosition,
   settings,
 }: Props): ReactElement | null {
-  const isSmallScreen = useMappedWindowSize(({ width }) => width <= 768);
+  const isSmallScreen = useMappedWindowSize(({ width }) => width <= 840);
 
   if (compoundTask === null) {
     return null;

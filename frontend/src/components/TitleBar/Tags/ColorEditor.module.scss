@@ -1,3 +1,5 @@
+@import '../../../z-index.scss';
+
 @media (max-width: 500px) {
   .ColorEdit {
     width: 54px !important;
@@ -11,7 +13,6 @@
     position: absolute;
     right: 79px !important;
     top: 50px;
-    z-index: 3;
   }
 }
 
@@ -59,5 +60,5 @@
 .ColorPicker {
   position: absolute !important;
   right: 59px;
-  z-index: 3;
+  z-index: $LEVEL_3_COLOR_PICKER;
 }

@@ -1,4 +1,5 @@
 import firebase from 'firebase/app';
+import 'firebase/functions';
 
 let firebaseConfig: Record<string, string>;
 

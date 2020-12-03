@@ -24,8 +24,6 @@ const dummyTextInputModalProps: TextInputModalProps = {
   onInputSubmit: () => {},
 };
 
-type ModalProps = ChoiceModalProps<ChoiceObj> | TextInputModalProps;
-
 let currentChoiceModalSetter: (props: ChoiceModalProps<ChoiceObj>) => void = (): void => {};
 let currentTextInputModalSetter: (props: TextInputModalProps) => void = (): void => {};
 

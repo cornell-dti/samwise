@@ -8,20 +8,30 @@ import CompletedTasksContainer from './CompletedTasks/CompletedTasksContainer';
 type Props = {
   readonly tasks: readonly Task[];
   readonly memberName: string;
+  readonly memberEmail: string;
+  readonly groupID: string;
 };
 
-type IdOrder = {
-  readonly id: string;
-  readonly order: number;
-};
-
-function renderTaskList(tasks: readonly Task[], memberName: string): ReactNode {
+function renderTaskList(
+  tasks: readonly Task[],
+  memberName: string,
+  memberEmail: string,
+  groupID: string
+): ReactNode {
   return [...tasks]
     .sort(sortTask)
-    .map((task) => <GroupTask key={task.id} original={task} memberName={memberName} />);
+    .map((task) => (
+      <GroupTask
+        key={task.id}
+        original={task}
+        memberName={memberName}
+        memberEmail={memberEmail}
+        groupID={groupID}
+      />
+    ));
 }
 
-function GroupTasksContainer({ tasks, memberName }: Props): ReactElement {
+function GroupTasksContainer({ tasks, memberName, memberEmail, groupID }: Props): ReactElement {
   const completedTasks = tasks.filter((task) => task.complete);
 
   return (
@@ -30,7 +40,7 @@ function GroupTasksContainer({ tasks, memberName }: Props): ReactElement {
       style={completedTasks.length > 0 ? { padding: '12px 0 0 0' } : {}}
     >
       {completedTasks.length > 0 ? <CompletedTasksContainer tasks={completedTasks} /> : null}
-      {renderTaskList(tasks, memberName)}
+      {renderTaskList(tasks, memberName, memberEmail, groupID)}
     </div>
   );
 }

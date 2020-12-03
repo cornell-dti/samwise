@@ -1,4 +1,5 @@
 @import '../../../colors.scss';
+@import '../../../z-index.scss';
 
 /*
  * --------------------------------------------------------------------------------
@@ -55,7 +56,7 @@
 
 .NavButtonNDays {
   position: absolute;
-  z-index: 1;
+  z-index: $LEVEL_1_NAV_BUTTON_NDAYS;
   top: 250px;
 }
 

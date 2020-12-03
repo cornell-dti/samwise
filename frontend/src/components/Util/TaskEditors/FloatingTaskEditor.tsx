@@ -29,7 +29,7 @@ const updateFloatingEditorPosition = (
   let posTop: number;
   let posLeft: number | undefined;
   let posRight: number | undefined;
-  if (windowWidth <= 768) {
+  if (windowWidth <= 840) {
     posTop = (windowHeight - myHeight) / 2;
     editorPosDiv.style.left = `${windowWidth - EDITOR_WIDTH}px`;
     posLeft = (windowWidth - EDITOR_WIDTH) / 2;

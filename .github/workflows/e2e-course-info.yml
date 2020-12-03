@@ -28,7 +28,7 @@ jobs:
       - name: Produce JSON
         run: |
           cd course-info
-          TZ='America/New_York' ./run
+          TZ='America/New_York' yarn fetch
       - name: Install JQ for JSON Normalization
         run: sudo apt-get install jq
       - name: Prettify and Sort JSON

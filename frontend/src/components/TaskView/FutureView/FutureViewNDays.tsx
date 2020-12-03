@@ -3,8 +3,6 @@ import FutureViewDay from './FutureViewDay';
 import styles from './FutureViewNDays.module.scss';
 import { SimpleDate } from './future-view-types';
 
-type IdOrder = { readonly id: string; readonly order: number };
-
 type Props = {
   readonly days: readonly SimpleDate[];
   readonly doesShowCompletedTasks: boolean;

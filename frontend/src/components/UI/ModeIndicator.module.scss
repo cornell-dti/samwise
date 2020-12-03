@@ -1,7 +1,8 @@
+@import '../../z-index.scss';
+
 .Indicator {
   position: fixed;
-  // TODO: move all z-index numbers into a css constant file to avoid increasingly giant numbers like this.
-  z-index: 1000;
+  z-index: $LEVEL_TOP_MODE_INDICATOR;
   background: #f44336;
   padding: 5px;
   color: white;

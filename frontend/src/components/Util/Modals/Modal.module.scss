@@ -1,10 +1,12 @@
+@import '../../../z-index.scss';
+
 /* Shared Modal styles */
 .Modal {
   position: fixed;
   top: calc(50% - 50px);
   left: calc(50% - 150px);
   width: 300px;
-  z-index: 9;
+  z-index: $LEVEL_9_MODAL_COMPONENT;
   background-color: white;
   padding: 1em;
   border-radius: 3px;

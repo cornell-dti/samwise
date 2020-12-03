@@ -6,9 +6,11 @@ import styles from './GroupTask.module.scss';
 type Props = {
   readonly original: Task;
   readonly memberName: string;
+  readonly memberEmail: string;
+  readonly groupID: string;
 };
 
-function GroupTask({ original, memberName }: Props): ReactElement {
+function GroupTask({ original, memberName, memberEmail, groupID }: Props): ReactElement {
   return (
     <InlineTaskEditor
       className={styles.GroupTask}
@@ -16,6 +18,8 @@ function GroupTask({ original, memberName }: Props): ReactElement {
       original={original}
       filtered={original}
       memberName={memberName}
+      memberEmail={memberEmail}
+      groupID={groupID}
     />
   );
 }

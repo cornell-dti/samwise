@@ -24,7 +24,9 @@ jobs:
       - name: Deploy to Production
         env:
           FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
+          SENDGRID_API_JSON: ${{ secrets.SENDGRID_API_JSON }}
         run: |
+          echo $SENDGRID_API_JSON > functions/src/sendgrid-key.json
           ./node_modules/.bin/firebase use production
           ./node_modules/.bin/firebase deploy --token=$FIREBASE_TOKEN --non-interactive --only hosting,firestore:rules
           node ./deploy-functions.js $FIREBASE_TOKEN production

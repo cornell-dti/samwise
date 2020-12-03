@@ -19,7 +19,9 @@ jobs:
       - name: Run Prettier
         run: yarn format:check
       - name: Create Dummy Files
-        run: echo "{}" > functions/src/firebase-adminsdk.json
+        run: |
+          echo "{}" > functions/src/firebase-adminsdk.json
+          echo '{"SENDGRID_API_KEY":""}' > functions/src/sendgrid-key.json
       - name: Run Linter
         run: yarn lint
   test:
@@ -37,6 +39,8 @@ jobs:
       - name: Yarn Install
         run: yarn install
       - name: Create Dummy Files
-        run: echo "{}" > functions/src/firebase-adminsdk.json
+        run: |
+          echo "{}" > functions/src/firebase-adminsdk.json
+          echo '{"SENDGRID_API_KEY":""}' > functions/src/sendgrid-key.json
       - name: Run Tests
         run: yarn test

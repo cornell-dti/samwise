@@ -19,6 +19,7 @@
         "ExportDeclaration": { "minProperties": 10, "multiline": true, "consistent": true }
       }
     ],
+    "no-use-before-define": "off",
     "react/prop-types": "off",
     "react/jsx-props-no-spreading": "warn",
     "react/jsx-filename-extension": ["error", { "extensions": [".jsx", ".tsx"] }],

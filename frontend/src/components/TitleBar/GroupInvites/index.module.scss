@@ -1,10 +1,12 @@
+@import '../../../z-index.scss';
+
 .Banner {
   position: fixed;
   bottom: 0;
   right: 0;
   width: 50vw;
   max-width: 400px;
-  z-index: 20;
+  z-index: $LEVEL_20_BANNER;
   height: auto;
   color: white;
   list-style-type: none;

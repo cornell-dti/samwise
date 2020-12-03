@@ -73,6 +73,7 @@ const RightView = ({ group, groupMemberProfiles, tasks }: Props): ReactElement =
                 onClick={openTaskCreator}
                 tasks={filteredTasks}
                 profilePicURL={user.photoURL}
+                groupID={group.id}
               />
             );
           })}
