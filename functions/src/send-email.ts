@@ -66,7 +66,7 @@ const sendEmail = async (data: Data, context: functions.https.CallableContext): 
 
   const msg = {
     to: recipientEmail,
-    from: 'jt568@cornell.edu',
+    from: 'samwise@cornelldti.org',
     subject: `You got a ${variant}!`,
     ...msgContent,
   };
