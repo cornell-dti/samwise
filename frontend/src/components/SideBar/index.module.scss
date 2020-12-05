@@ -25,6 +25,7 @@
 }
 
 .SideBar .AddGroup {
+  margin: 6px auto;
   margin-bottom: 0;
   border: 2px dashed #bebebe;
   background-color: transparent;
@@ -74,13 +75,38 @@
 
 .ExpandToFill {
   flex-grow: 1;
+  flex-basis: $expanding-div-base-height;
+  flex-shrink: 0;
 }
 
 .GroupIcons {
-  overflow: auto;
-  max-height: calc(#{$sidebar-group-manager-height} - 20px - 50px);
+  width: $sidebar-width;
+  overflow-y: auto;
+  max-height: calc(
+    #{$sidebar-group-manager-height} - #{$expanding-div-base-height} - #{$links-height} - #{$add-button-height} -
+      20px
+  );
+  flex-grow: 0;
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.GroupIcons::-webkit-scrollbar {
+  display: none;
+}
+
+.GroupIcons > button {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 .Links {
-  height: 50px;
+  height: $links-height;
+  flex-grow: 0;
+}
+
+.AddButton {
+  height: $add-button-height;
+  flex-grow: 0;
 }
