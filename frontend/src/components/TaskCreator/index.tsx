@@ -140,7 +140,6 @@ export class TaskCreator extends React.PureComponent<Props, State> {
     if (member) {
       const newOwners = member.map((profile) => profile.email);
       owner = newOwners;
-      console.log(owner);
     }
 
     const newSubTasks = subTasks.filter((subTask) => subTask.name !== ''); // remove empty subtasks
@@ -284,7 +283,7 @@ export class TaskCreator extends React.PureComponent<Props, State> {
   private resetTask = (): void => this.setState({ ...initialState() }, this.focusTaskName);
 
   public render(): ReactElement {
-    const { view, groupMemberProfiles, assignedMember, clearAssignedMember } = this.props;
+    const { view, groupMemberProfiles, assignedMembers, clearAssignedMembers } = this.props;
     const {
       name,
       tag,
