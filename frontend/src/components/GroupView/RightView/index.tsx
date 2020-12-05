@@ -53,7 +53,7 @@ const RightView = ({ group, groupMemberProfiles, tasks }: Props): ReactElement =
         />
       </div>
 
-      <div className={styles.RightView}>
+      <div className={styles.RightViewMain}>
         <div>
           <h2>{group.name}</h2>
           <SamwiseIcon
