@@ -11,16 +11,20 @@ type Props = {
 };
 
 function GroupTask({ original, memberName, memberEmail, groupID }: Props): ReactElement {
+  const { children } = original;
+  const containerDivStyles = children.length > 2 ? styles.GroupTaskContainer : '';
   return (
-    <InlineTaskEditor
-      className={styles.GroupTask}
-      calendarPosition="bottom"
-      original={original}
-      filtered={original}
-      memberName={memberName}
-      memberEmail={memberEmail}
-      groupID={groupID}
-    />
+    <div className={containerDivStyles}>
+      <InlineTaskEditor
+        className={styles.GroupTask}
+        calendarPosition="bottom"
+        original={original}
+        filtered={original}
+        memberName={memberName}
+        memberEmail={memberEmail}
+        groupID={groupID}
+      />
+    </div>
   );
 }
 
