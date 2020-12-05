@@ -38,9 +38,9 @@ export default function GroupMemberPicker({
   const getMemberNames = (selectedMembers: readonly SamwiseUserProfile[]): string => {
     let memberNames = '';
     let i = 0;
-    while (memberNames.length < 12 && i < selectedMembers.length) {
+    while (memberNames.length < 14 && i < selectedMembers.length) {
       const firstName = selectedMembers[i].name.split(' ')[0];
-      if (memberNames.length + firstName.length < 12) {
+      if (memberNames.length + firstName.length < 14) {
         if (i !== 0) {
           memberNames += ', ';
         }
