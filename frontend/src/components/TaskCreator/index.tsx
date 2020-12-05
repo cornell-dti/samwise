@@ -407,7 +407,7 @@ export class TaskCreator extends React.PureComponent<Props, State> {
               className={view === 'personal' ? styles.SubmitNewTask : styles.GroupSubmitNewTask}
               style={this.darkModeStyle}
             >
-              <SamwiseIcon iconName="add-task" />
+              <SamwiseIcon iconName="add-task" tabIndex={-1} />
             </button>
           </div>
           <div className={styles.SubtitleText}>

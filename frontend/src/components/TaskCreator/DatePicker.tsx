@@ -138,6 +138,7 @@ export default function DatePicker(props: Props): ReactElement {
         className={`${styles.DateButton} ${styles.Label}`}
         style={style}
         type="button"
+        tabIndex={-1}
       >
         {internal}
       </button>

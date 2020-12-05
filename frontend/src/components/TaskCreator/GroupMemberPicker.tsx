@@ -60,6 +60,7 @@ export default function GroupMemberPicker({
         onKeyPress={pressedPicker}
         className={`${styles.TagButton} ${styles.Label}`}
         style={style}
+        tabIndex={-1}
       >
         {internal}
       </button>
