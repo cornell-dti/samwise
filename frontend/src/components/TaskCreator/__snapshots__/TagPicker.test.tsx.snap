@@ -13,7 +13,6 @@ exports[`TagPicker(THE_GLORIOUS_NONE_TAG, false) matches snapshot 1`] = `
         "background": "#969696",
       }
     }
-    tabIndex={-1}
     type="button"
   >
     <span
@@ -50,7 +49,6 @@ exports[`TagPicker(THE_GLORIOUS_NONE_TAG, true) matches snapshot 1`] = `
         "background": "#969696",
       }
     }
-    tabIndex={-1}
     type="button"
   >
     <span
@@ -147,7 +145,6 @@ exports[`TagPicker(bar, false) matches snapshot 1`] = `
         "background": "blue",
       }
     }
-    tabIndex={-1}
     type="button"
   >
     <span
@@ -179,7 +176,6 @@ exports[`TagPicker(bar, true) matches snapshot 1`] = `
         "background": "blue",
       }
     }
-    tabIndex={-1}
     type="button"
   >
     <span
@@ -271,7 +267,6 @@ exports[`TagPicker(baz, false) matches snapshot 1`] = `
         "background": "green",
       }
     }
-    tabIndex={-1}
     type="button"
   >
     <span
@@ -303,7 +298,6 @@ exports[`TagPicker(baz, true) matches snapshot 1`] = `
         "background": "green",
       }
     }
-    tabIndex={-1}
     type="button"
   >
     <span
@@ -395,7 +389,6 @@ exports[`TagPicker(foo, false) matches snapshot 1`] = `
         "background": "red",
       }
     }
-    tabIndex={-1}
     type="button"
   >
     <span
@@ -427,7 +420,6 @@ exports[`TagPicker(foo, true) matches snapshot 1`] = `
         "background": "red",
       }
     }
-    tabIndex={-1}
     type="button"
   >
     <span
