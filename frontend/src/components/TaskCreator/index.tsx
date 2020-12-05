@@ -24,7 +24,7 @@ type SimpleTask = Omit<Task, 'type' | 'order' | 'children' | 'metadata'>;
 
 type State = SimpleTask & {
   readonly owner: readonly string[];
-  readonly member?: SamwiseUserProfile;
+  readonly member?: readonly SamwiseUserProfile[];
   readonly date: Date | RepeatingDate;
   readonly subTasks: SubTask[];
   readonly opened: boolean;
@@ -41,10 +41,10 @@ type OwnProps = {
 type Props = OwnProps & {
   readonly view: string;
   readonly group?: string;
-  readonly groupMemberProfiles?: SamwiseUserProfile[];
+  readonly groupMemberProfiles?: readonly SamwiseUserProfile[];
   readonly taskCreatorOpened?: boolean;
-  readonly assignedMember?: SamwiseUserProfile;
-  readonly clearAssignedMember?: () => void;
+  readonly assignedMembers?: readonly SamwiseUserProfile[];
+  readonly clearAssignedMembers?: () => void;
 };
 
 /**
@@ -130,10 +130,18 @@ export class TaskCreator extends React.PureComponent<Props, State> {
     if (e != null) {
       e.preventDefault();
     }
-    const { owner, name, tag, date, complete, inFocus, subTasks } = this.state;
+    let { owner } = this.state;
+    const { member, name, tag, date, complete, inFocus, subTasks } = this.state;
+
     if (name === '') {
       return;
     }
+
+    if (member) {
+      const newOwners = member.map((profile) => profile.email);
+      owner = newOwners;
+    }
+
     const newSubTasks = subTasks.filter((subTask) => subTask.name !== ''); // remove empty subtasks
     // Put task in focus is the due date is today.
     const autoInFocus = inFocus || (date instanceof Date && isToday(date));
@@ -182,7 +190,7 @@ export class TaskCreator extends React.PureComponent<Props, State> {
   private editTag = (tag: string): void =>
     this.setState({ tag, tagPickerOpened: false }, this.focusTaskName);
 
-  private editMember = (member?: SamwiseUserProfile): void =>
+  private editMember = (member?: readonly SamwiseUserProfile[]): void =>
     this.setState({ member, tagPickerOpened: false }, this.focusTaskName);
 
   /**
@@ -275,7 +283,7 @@ export class TaskCreator extends React.PureComponent<Props, State> {
   private resetTask = (): void => this.setState({ ...initialState() }, this.focusTaskName);
 
   public render(): ReactElement {
-    const { view, groupMemberProfiles, assignedMember, clearAssignedMember } = this.props;
+    const { view, groupMemberProfiles, assignedMembers, clearAssignedMembers } = this.props;
     const {
       name,
       tag,
@@ -371,12 +379,12 @@ export class TaskCreator extends React.PureComponent<Props, State> {
                 />
               ) : (
                 <GroupMemberPicker
-                  member={assignedMember || member}
+                  member={assignedMembers || member}
                   opened={tagPickerOpened}
                   onMemberChange={this.editMember}
                   onPickerOpened={this.openTagPicker}
                   groupMemberProfiles={groupMemberProfiles || []}
-                  clearAssignedMember={clearAssignedMember}
+                  clearAssignedMembers={clearAssignedMembers}
                 />
               )}
             </div>

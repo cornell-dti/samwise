@@ -30,6 +30,7 @@ service cloud.firestore {
     }
   	match /samwise-tasks/{task} {
     	allow create: if canCreateTask()
+        || request.auth.token.email in getGroupMembers(request.resource.data.group);
     	allow read, write, delete: if canReadWriteDelete()
       	|| request.auth.token.email in getGroupMembers(resource.data.group);
     }
