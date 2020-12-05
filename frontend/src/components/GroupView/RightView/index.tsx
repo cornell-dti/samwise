@@ -10,19 +10,19 @@ import { updateGroup } from '../../../firebase/actions';
 
 type State = {
   readonly taskCreatorOpened: boolean;
-  readonly assignedMember?: SamwiseUserProfile;
+  readonly assignedMembers?: readonly SamwiseUserProfile[];
 };
 
 type Props = {
   readonly group: Group;
-  readonly groupMemberProfiles: SamwiseUserProfile[];
+  readonly groupMemberProfiles: readonly SamwiseUserProfile[];
   readonly tasks: readonly Task[];
 };
 
 const RightView = ({ group, groupMemberProfiles, tasks }: Props): ReactElement => {
-  const [{ taskCreatorOpened, assignedMember }, setState] = useState<State>({
+  const [{ taskCreatorOpened, assignedMembers }, setState] = useState<State>({
     taskCreatorOpened: false,
-    assignedMember: undefined,
+    assignedMembers: undefined,
   });
 
   const onEditGroupNameClicked = (): void => {
@@ -31,14 +31,14 @@ const RightView = ({ group, groupMemberProfiles, tasks }: Props): ReactElement =
     );
   };
 
-  const openTaskCreator = (member: SamwiseUserProfile): void =>
+  const openTaskCreator = (member: SamwiseUserProfile[]): void =>
     setState({
       taskCreatorOpened: !taskCreatorOpened,
-      assignedMember: member,
+      assignedMembers: member,
     });
 
-  const clearAssignedMember = (): void =>
-    setState({ taskCreatorOpened, assignedMember: undefined });
+  const clearAssignedMembers = (): void =>
+    setState({ taskCreatorOpened, assignedMembers: undefined });
 
   return (
     <div className={styles.RightView}>
@@ -48,8 +48,8 @@ const RightView = ({ group, groupMemberProfiles, tasks }: Props): ReactElement =
           group={group.id}
           groupMemberProfiles={groupMemberProfiles}
           taskCreatorOpened={taskCreatorOpened}
-          assignedMember={assignedMember}
-          clearAssignedMember={clearAssignedMember}
+          assignedMembers={assignedMembers}
+          clearAssignedMembers={clearAssignedMembers}
         />
       </div>
 

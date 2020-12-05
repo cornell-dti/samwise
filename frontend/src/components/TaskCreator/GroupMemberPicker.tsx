@@ -6,14 +6,14 @@ import styles from './Picker.module.scss';
 import SamwiseIcon from '../UI/SamwiseIcon';
 
 type OwnProps = {
-  readonly member?: SamwiseUserProfile;
+  readonly member?: readonly SamwiseUserProfile[]; // list of members to assign
   readonly opened: boolean;
-  readonly onMemberChange: (member: SamwiseUserProfile | undefined) => void;
+  readonly onMemberChange: (member: readonly SamwiseUserProfile[] | undefined) => void;
   readonly onPickerOpened: () => void;
 };
 type Props = OwnProps & {
-  readonly clearAssignedMember?: () => void;
-  readonly groupMemberProfiles: SamwiseUserProfile[];
+  readonly clearAssignedMembers?: () => void;
+  readonly groupMemberProfiles: readonly SamwiseUserProfile[];
 };
 
 export default function GroupMemberPicker({
@@ -21,7 +21,7 @@ export default function GroupMemberPicker({
   opened,
   onMemberChange,
   onPickerOpened,
-  clearAssignedMember,
+  clearAssignedMembers,
   groupMemberProfiles,
 }: Props): ReactElement {
   // Controllers
@@ -33,8 +33,29 @@ export default function GroupMemberPicker({
   };
   const reset = (): void => {
     onMemberChange(undefined);
-    if (clearAssignedMember) clearAssignedMember();
+    if (clearAssignedMembers) clearAssignedMembers();
   };
+  const getMemberNames = (selectedMembers: readonly SamwiseUserProfile[]): string => {
+    let memberNames = '';
+    let i = 0;
+    while (memberNames.length < 12 && i < selectedMembers.length) {
+      const firstName = selectedMembers[i].name.split(' ')[0];
+      if (memberNames.length + firstName.length < 12) {
+        if (i !== 0) {
+          memberNames += ', ';
+        }
+        memberNames += firstName;
+        i += 1;
+      } else {
+        break;
+      }
+    }
+    const remainingMemberCount = selectedMembers.length - i;
+    if (remainingMemberCount > 0) memberNames += ` +${remainingMemberCount}`;
+
+    return memberNames;
+  };
+
   // Nodes
   const displayedNode = (isDefault: boolean): ReactElement => {
     const style = { background: NONE_TAG.color };
@@ -47,7 +68,7 @@ export default function GroupMemberPicker({
       </>
     ) : (
       <>
-        <span className={styles.TagDisplay}>{member ? member.name : 'assign to'}</span>
+        <span className={styles.TagDisplay}>{member ? getMemberNames(member) : 'assign to'}</span>
         <button type="button" className={styles.ResetButton} onClick={reset}>
           &times;
         </button>

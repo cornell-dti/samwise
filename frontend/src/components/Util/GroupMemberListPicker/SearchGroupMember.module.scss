@@ -29,22 +29,54 @@ input.SearchInput {
   overflow-y: auto;
 }
 
-.MemberButton {
-  position: relative;
-  text-align: left;
-  padding: 4px 8px;
-  margin: 0;
-  border: none;
-  overflow: hidden;
-  width: 100%;
+.MemberCheckbox {
+  cursor: pointer;
   color: black;
+  text-align: left;
   background: rgba(255, 255, 255, 0.8);
   opacity: 0.8;
   transition: opacity 0.1s ease-in-out;
 }
 
-.MemberButton:hover,
-.MemberButton:active {
+.MemberCheckbox:hover {
   opacity: 1;
+}
+
+.MemberCheckbox input {
   cursor: pointer;
+  height: 15px;
+  width: 15px;
+  border: none;
+  background-color: #eee;
+}
+
+.MemberCheckbox label {
+  display: inline-block;
+  padding: 4px 0;
+  padding-left: 4px;
+  width: 100%;
+  height: 100%;
+  cursor: pointer;
+}
+
+.MemberCheckbox label + label input:checked {
+  background: rgba(255, 255, 255, 1);
+}
+
+.MemberCheckbox span {
+  display: inline-block;
+  padding-left: 4px;
+}
+
+.FormOptions {
+  display: flex;
+  justify-content: space-between;
+}
+
+.FormButton {
+  background: none;
+  border: none;
+  padding: 6px 8px;
+  cursor: pointer;
+  outline: inherit;
 }

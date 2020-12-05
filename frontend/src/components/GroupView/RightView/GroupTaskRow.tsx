@@ -9,7 +9,7 @@ import ProfileImage from '../MiddleBar/ProfileImage';
 type Props = {
   readonly memberName: string;
   readonly userProfile: SamwiseUserProfile;
-  readonly onClick: (member: SamwiseUserProfile) => void;
+  readonly onClick: (member: SamwiseUserProfile[]) => void;
   readonly tasks: readonly Task[];
   readonly profilePicURL: string;
 };
@@ -32,7 +32,7 @@ const GroupTaskRow = ({
       <button
         type="button"
         className={styles.AddTaskContainer}
-        onClick={() => onClick(userProfile)}
+        onClick={() => onClick([userProfile])}
       >
         <div className={styles.AddTask}>
           <FontAwesomeIcon icon={faPlus} />
