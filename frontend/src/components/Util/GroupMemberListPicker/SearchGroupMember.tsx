@@ -76,12 +76,12 @@ export default function SearchGroupMember({ members, onMemberChange }: Props): R
       />
       <div className={styles.MemberSearchResults}>
         {searchResults.map((user) => (
-          <li className={styles.MemberCheckbox}>
+          <li className={styles.MemberCheckbox} key={user.email}>
             <label htmlFor={user.email}>
               <input
                 type="checkbox"
                 checked={isChecked(user)}
-                onClick={() => handleCheck(user)}
+                onChange={() => handleCheck(user)}
                 id={user.email}
               />
               <span>{user.name}</span>

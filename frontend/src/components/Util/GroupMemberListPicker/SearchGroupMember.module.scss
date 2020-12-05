@@ -59,12 +59,7 @@ input.SearchInput {
   cursor: pointer;
 }
 
-.MemberCheckbox label + label input:checked {
-  background: rgba(255, 255, 255, 1);
-}
-
 .MemberCheckbox span {
-  display: inline-block;
   padding-left: 4px;
 }
 
@@ -78,5 +73,9 @@ input.SearchInput {
   border: none;
   padding: 6px 8px;
   cursor: pointer;
-  outline: inherit;
+  transition: background 0.1s ease-in-out;
+}
+
+.FormButton:hover {
+  background: rgba(255, 255, 255, 0.8);
 }
