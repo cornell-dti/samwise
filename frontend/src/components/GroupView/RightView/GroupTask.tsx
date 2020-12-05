@@ -8,11 +8,18 @@ type Props = {
   readonly memberName: string;
   readonly memberEmail: string;
   readonly groupID: string;
+  readonly isInTaskQueue?: boolean;
 };
 
-function GroupTask({ original, memberName, memberEmail, groupID }: Props): ReactElement {
+function GroupTask({
+  original,
+  memberName,
+  memberEmail,
+  groupID,
+  isInTaskQueue,
+}: Props): ReactElement {
   const { children } = original;
-  const containerDivStyles = children.length > 2 ? styles.GroupTaskContainer : '';
+  const containerDivStyles = children.length > 2 && !isInTaskQueue ? styles.GroupTaskContainer : '';
   return (
     <div className={containerDivStyles}>
       <InlineTaskEditor
