@@ -25,7 +25,7 @@ function renderTaskList(tasks: readonly Task[]): ReactNode {
 const TaskQueue = ({ tasks }: Props): ReactElement => (
   <div>
     {tasks.length > 0 ? (
-      <div className={styles.TastQueue}>
+      <div className={styles.TaskQueue}>
         <h2>Task Queue</h2>
         <div className={styles.TaskList}>{renderTaskList(tasks)}</div>
       </div>
