@@ -1,4 +1,5 @@
 @import '../../../colors.scss';
+@import '../../../z-index.scss';
 
 .NDaysView {
   position: relative;
@@ -66,7 +67,7 @@
 
 .FloatingView {
   position: absolute;
-  z-index: 6;
+  z-index: $LEVEL_6_FUTURE_VIEW_FLOATING_VIEW;
   left: 0;
   top: 0;
   right: 0;
@@ -83,7 +84,7 @@
   bottom: 0;
   left: 0;
   right: 0;
-  z-index: 5;
+  z-index: $LEVEL_5_FUTURE_VIEW_FLOATING_VIEW_BACKGROUND;
   background-color: rgba(0, 0, 0, 0.05);
 }
 

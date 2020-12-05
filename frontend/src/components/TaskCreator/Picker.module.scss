@@ -1,3 +1,5 @@
+@import '../../z-index.scss';
+
 .Main {
   display: inline-flex;
   height: 20px;
@@ -6,8 +8,6 @@
   position: relative;
   color: white;
   margin-left: 5px;
-  transform: translateY(-30px);
-  z-index: 2;
 }
 
 .Main,
@@ -114,6 +114,7 @@
 }
 
 .NewTaskClassPick {
+  z-index: $LEVEL_6_PICKER_IN_TASK_CREATOR;
   color: black;
 }
 
@@ -126,9 +127,9 @@
   position: absolute;
   top: 20px;
   left: 0;
-  z-index: 2;
   padding: 10px;
   background: white;
+  z-index: $LEVEL_6_PICKER_IN_TASK_CREATOR;
   box-shadow: 1px 1px 10px 5px rgba(0, 0, 0, 0.15);
 }
 
@@ -138,7 +139,6 @@
   top: 20px;
   left: initial;
   right: 0;
-  z-index: 2;
   padding: 10px;
   background: white;
   box-shadow: 1px 1px 10px 5px rgba(0, 0, 0, 0.15);

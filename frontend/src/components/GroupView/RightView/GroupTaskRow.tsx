@@ -12,6 +12,7 @@ type Props = {
   readonly onClick: (member: SamwiseUserProfile[]) => void;
   readonly tasks: readonly Task[];
   readonly profilePicURL: string;
+  readonly groupID: string;
 };
 
 const GroupTaskRow = ({
@@ -19,6 +20,7 @@ const GroupTaskRow = ({
   memberName,
   profilePicURL,
   userProfile,
+  groupID,
   onClick,
 }: Props): ReactElement => {
   return (
@@ -40,7 +42,12 @@ const GroupTaskRow = ({
         </div>
       </button>
 
-      <GroupTasksContainer tasks={tasks} memberName={memberName} />
+      <GroupTasksContainer
+        tasks={tasks}
+        memberName={memberName}
+        memberEmail={userProfile.email}
+        groupID={groupID}
+      />
     </div>
   );
 };
