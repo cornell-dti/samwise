@@ -31,7 +31,7 @@ const RightView = ({ group, groupMemberProfiles, tasks }: Props): ReactElement =
     );
   };
 
-  const openTaskCreator = (member: SamwiseUserProfile[]): void =>
+  const openTaskCreator = (member: readonly SamwiseUserProfile[]): void =>
     setState({
       taskCreatorOpened: !taskCreatorOpened,
       assignedMembers: member,
