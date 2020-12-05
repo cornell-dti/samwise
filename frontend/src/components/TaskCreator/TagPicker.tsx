@@ -52,7 +52,6 @@ function TagPicker({ tag, opened, onTagChange, onPickerOpened, getTag }: Props):
         onKeyPress={pressedPicker}
         className={`${styles.TagButton} ${styles.Label}`}
         style={style}
-        tabIndex={-1}
       >
         {internal}
       </button>
