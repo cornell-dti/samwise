@@ -18,6 +18,10 @@ const SideBar = ({ groups, changeView }: Props): ReactElement => {
   const [showDropdown, setShowDropdown] = useState(false);
   const [selected, setSelected] = useState('personal');
 
+  const toggleShowDropdown = (): void => {
+    setShowDropdown(!showDropdown);
+  };
+
   const handleIconClick = (groupID?: string): void => {
     setSelected(groupID ?? 'personal');
     changeView(groupID);
@@ -46,12 +50,7 @@ const SideBar = ({ groups, changeView }: Props): ReactElement => {
             />
           ))}
           <span>
-            <button
-              type="button"
-              onMouseEnter={() => setShowDropdown(true)}
-              onMouseLeave={() => setShowDropdown(false)}
-              className={styles.AddGroup}
-            >
+            <button type="button" onClick={() => toggleShowDropdown()} className={styles.AddGroup}>
               <FontAwesomeIcon className={styles.PlusIcon} icon={faPlus} />
             </button>
             {!showDropdown && <p>New Group</p>}
