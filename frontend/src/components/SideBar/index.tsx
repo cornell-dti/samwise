@@ -45,21 +45,20 @@ const SideBar = ({ groups, changeView }: Props): ReactElement => {
               selected={selected === g.id}
             />
           ))}
+          <span>
+            <button
+              type="button"
+              onMouseEnter={() => setShowDropdown(true)}
+              onMouseLeave={() => setShowDropdown(false)}
+              className={styles.AddGroup}
+            >
+              <FontAwesomeIcon className={styles.PlusIcon} icon={faPlus} />
+            </button>
+            {!showDropdown && <p>New Group</p>}
+            <AddGroupTags show={showDropdown} setShow={setShowDropdown} />
+          </span>
         </div>
-
         <div className={styles.ExpandToFill} />
-        <span>
-          <button
-            type="button"
-            onMouseEnter={() => setShowDropdown(true)}
-            onMouseLeave={() => setShowDropdown(false)}
-            className={styles.AddGroup}
-          >
-            <FontAwesomeIcon className={styles.PlusIcon} icon={faPlus} />
-          </button>
-          {!showDropdown && <p>New Group</p>}
-          <AddGroupTags show={showDropdown} setShow={setShowDropdown} />
-        </span>
         <div className={styles.Links}>
           <SettingsButton />
         </div>
