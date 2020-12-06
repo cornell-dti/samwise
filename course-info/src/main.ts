@@ -5,7 +5,7 @@ import { createFinalJson, createPrelimJson, createSemiFinalJson } from './fetch-
 import mergeCoursesAndExamJson from './merge-json';
 
 const SEMESTER = 'FA20';
-const JSON_FILENAME = `${SEMESTER.toLocaleLowerCase()}-courses-with-exams-min.json`;
+const JSON_FILENAME = 'courses-with-exams-min.json';
 
 async function main(): Promise<void> {
   const [courses, prelimExams, semifinalExams, finalExams] = await Promise.all([

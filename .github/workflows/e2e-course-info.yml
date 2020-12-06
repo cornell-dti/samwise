@@ -33,8 +33,8 @@ jobs:
         run: sudo apt-get install jq
       - name: Prettify and Sort JSON
         run: |
-          cat course-info/fa20-courses-with-exams-min.json | jq 'sort_by(.courseNumber)' > a.json
-          cat frontend/src/assets/json/fa20-courses-with-exams-min.json | jq 'sort_by(.courseNumber)' > b.json
+          cat course-info/courses-with-exams-min.json | jq 'sort_by(.courseNumber)' > a.json
+          cat frontend/src/assets/json/courses-with-exams-min.json | jq 'sort_by(.courseNumber)' > b.json
       - name: Compare JSON against current JSON
         run: diff a.json b.json
       - name: Automatically create commit if JSON is different
@@ -44,7 +44,7 @@ jobs:
           git config --global user.email "admin@cornelldti.org"
           BRANCH="dti-github-bot/update-course-json"
           rm a.json b.json
-          cp course-info/fa20-courses-with-exams-min.json frontend/src/assets/json/
+          cp course-info/courses-with-exams-min.json frontend/src/assets/json/
           git add .
           git fetch --all
           git checkout master
