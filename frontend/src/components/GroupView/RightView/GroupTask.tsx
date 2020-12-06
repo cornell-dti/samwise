@@ -19,11 +19,11 @@ function GroupTask({
   isInTaskQueue,
 }: Props): ReactElement {
   const { children } = original;
-  const containerDivStyles = children.length > 2 && !isInTaskQueue ? styles.GroupTaskContainer : '';
+  const containerDivStyles = children.length > 1 && !isInTaskQueue ? styles.GroupTaskContainer : '';
   return (
     <div className={containerDivStyles}>
       <InlineTaskEditor
-        className={styles.GroupTask}
+        className={isInTaskQueue ? styles.TaskQueueGroupTask : styles.GroupTask}
         calendarPosition="bottom"
         original={original}
         filtered={original}
