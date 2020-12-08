@@ -17,6 +17,10 @@ import {
 import { NONE_TAG } from 'common/util/tag-util';
 import { ignore } from 'common/util/general-util';
 import { getTodayAtZeroAM, getDateWithDateString } from 'common/util/datetime-util';
+import {
+  getFilteredCompletedInFocusTask,
+  getFilteredNotCompletedInFocusTask,
+} from 'common/util/task-util';
 import OverdueAlert from '../../../UI/OverdueAlert';
 import {
   confirmRepeatedTaskEditMaster,
@@ -62,6 +66,7 @@ type OwnProps = DefaultProps & {
   readonly memberEmail?: string; // only supplied if task is a group task
   readonly groupID?: string; // only supplied if task is a group task
   readonly wholeTaskData?: Task<TaskMetadata>; // only supplied if task is a focus task
+  readonly isFocusTaskAndCompleted?: boolean; // only supplied if task is in focus view
 };
 type Props = OwnProps & {
   // subscribed from redux store.
@@ -98,6 +103,7 @@ function TaskEditor({
   memberEmail,
   groupID,
   wholeTaskData,
+  isFocusTaskAndCompleted,
 }: Props): ReactElement {
   const { onChange, removeTask, onSaveClicked } = actions;
   const initTaskDate = initTaskData.date;
@@ -107,12 +113,19 @@ function TaskEditor({
     wholeTaskData ? ignore : onChange ?? ignore
   );
 
-  // only for use if the current task is a filtered completed/uncompleted task in focus view
-  const filteredTaskDiffReducerData = useTaskDiffReducer(
-    initTaskData,
-    active ?? false,
-    onChange ?? ignore
-  );
+  const getFilteredTaskData = (fullTask: Task<TaskMetadata>): Task<TaskMetadata> => {
+    let filteredTask: Task<TaskMetadata> | null = null;
+    if (wholeTaskData) {
+      const wholeTaskWithMetadata = { ...wholeTaskData, ...taskData } as Task<TaskMetadata>;
+      filteredTask = isFocusTaskAndCompleted
+        ? getFilteredCompletedInFocusTask(wholeTaskWithMetadata)
+        : getFilteredNotCompletedInFocusTask(wholeTaskWithMetadata);
+    }
+    if (filteredTask === null) {
+      return fullTask;
+    }
+    return filteredTask;
+  };
 
   const { name, tag, date, complete, inFocus } = taskData;
 
@@ -301,20 +314,21 @@ function TaskEditor({
         />
       </div>
       <div className={styles.TaskEditorSubTasksIndentedContainer}>
-        {(wholeTaskData ? filteredTaskDiffReducerData.taskData.children : taskData.children).map(
-          (subTask: SubTask) => (
-            <OneSubTaskEditor
-              key={subTask.order}
-              subTask={subTask}
-              mainTaskComplete={complete}
-              needToBeFocused={subTaskToFocus === subTask.order}
-              onEdit={editSubTask}
-              onRemove={removeSubTask}
-              onPressEnter={pressEnterHandler}
-              memberName={memberName}
-            />
-          )
-        )}
+        {(wholeTaskData !== undefined
+          ? getFilteredTaskData(wholeTaskData).children
+          : taskData.children
+        ).map((subTask: SubTask) => (
+          <OneSubTaskEditor
+            key={subTask.order}
+            subTask={subTask}
+            mainTaskComplete={complete}
+            needToBeFocused={subTaskToFocus === subTask.order}
+            onEdit={editSubTask}
+            onRemove={removeSubTask}
+            onPressEnter={pressEnterHandler}
+            memberName={memberName}
+          />
+        ))}
         <div className={styles.SubtaskHide} style={active === false ? { maxHeight: 0 } : undefined}>
           <NewSubTaskEditor
             onFirstType={handleCreatedNewSubtask}
