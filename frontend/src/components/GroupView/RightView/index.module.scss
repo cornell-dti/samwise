@@ -1,13 +1,20 @@
 @import '../groupview-sizes.scss';
 
+$top-bottom-margin: 20px;
+
+.RightView {
+  padding: $top-bottom-margin;
+  clear: both;
+}
+
 .GroupTaskCreator {
   height: $taskcreator-height;
 }
 
-.RightView {
+.RightViewMain {
   display: flex;
   flex-direction: column;
-  height: calc(100vh - #{$taskcreator-height} - #{$progressbar-height});
+  height: calc(100vh - #{$taskcreator-height} - #{$progressbar-height} - #{$top-bottom-margin} * 2);
   width: calc(100vw - #{$sidebar-width} - #{$middlebar-width});
   padding: 20px;
   clear: both;

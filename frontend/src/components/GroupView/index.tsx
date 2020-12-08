@@ -1,11 +1,5 @@
 import React, { ReactElement, useState, useEffect } from 'react';
-import type {
-  Group,
-  SamwiseUserProfile,
-  Task,
-  GroupTaskMetadata,
-  SubTask,
-} from 'common/types/store-types';
+import type { Group, SamwiseUserProfile, Task, GroupTaskMetadata } from 'common/types/store-types';
 import type { FirestoreUserData } from 'common/types/firestore-types';
 import MiddleBar from './MiddleBar';
 import RightView from './RightView';
@@ -73,7 +67,6 @@ const GroupView = ({ group, changeView }: Props): ReactElement => {
                 date: docData.date.toDate(),
                 group: docData.group,
               } as GroupTaskMetadata,
-              children: [] as readonly SubTask[],
             } as Task;
           })
         );

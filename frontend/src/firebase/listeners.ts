@@ -23,7 +23,7 @@ import {
   patchGroups,
   patchGroupInvites,
 } from '../store/actions';
-import coursesJson from '../assets/json/fa20-courses-with-exams-min.json';
+import coursesJson from '../assets/json/courses-with-exams-min.json';
 import { store } from '../store/store';
 
 // Some type alias

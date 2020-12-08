@@ -5,10 +5,22 @@
 
 import React, { ReactElement, useEffect, useState, useCallback } from 'react';
 import { connect } from 'react-redux';
-import { TaskMainData, Settings, State, SubTask, Tag } from 'common/types/store-types';
+import {
+  TaskMainData,
+  Settings,
+  State,
+  SubTask,
+  Tag,
+  TaskMetadata,
+  Task,
+} from 'common/types/store-types';
 import { NONE_TAG } from 'common/util/tag-util';
 import { ignore } from 'common/util/general-util';
 import { getTodayAtZeroAM, getDateWithDateString } from 'common/util/datetime-util';
+import {
+  getFilteredCompletedInFocusTask,
+  getFilteredNotCompletedInFocusTask,
+} from 'common/util/task-util';
 import OverdueAlert from '../../../UI/OverdueAlert';
 import {
   confirmRepeatedTaskEditMaster,
@@ -53,6 +65,8 @@ type OwnProps = DefaultProps & {
   readonly memberName?: string; // only supplied if task is a group task
   readonly memberEmail?: string; // only supplied if task is a group task
   readonly groupID?: string; // only supplied if task is a group task
+  readonly wholeTaskData?: Task<TaskMetadata>; // only supplied if task is a focus task
+  readonly isFocusTaskAndCompleted?: boolean; // only supplied if task is in focus view
 };
 type Props = OwnProps & {
   // subscribed from redux store.
@@ -88,13 +102,30 @@ function TaskEditor({
   memberName,
   memberEmail,
   groupID,
+  wholeTaskData,
+  isFocusTaskAndCompleted,
 }: Props): ReactElement {
   const { onChange, removeTask, onSaveClicked } = actions;
+  const initTaskDate = initTaskData.date;
   const { taskData, diff, dispatchEditTask, dispatchEditSubTask, reset } = useTaskDiffReducer(
-    initTaskData,
-    active ?? false,
-    onChange ?? ignore
+    wholeTaskData ? ({ ...wholeTaskData, date: initTaskDate } as TaskMainData) : initTaskData,
+    wholeTaskData ? false : active ?? false,
+    wholeTaskData ? ignore : onChange ?? ignore
   );
+
+  const getFilteredTaskData = (fullTask: Task<TaskMetadata>): Task<TaskMetadata> => {
+    let filteredTask: Task<TaskMetadata> | null = null;
+    if (wholeTaskData) {
+      const wholeTaskWithMetadata = { ...wholeTaskData, ...taskData } as Task<TaskMetadata>;
+      filteredTask = isFocusTaskAndCompleted
+        ? getFilteredCompletedInFocusTask(wholeTaskWithMetadata)
+        : getFilteredNotCompletedInFocusTask(wholeTaskWithMetadata);
+    }
+    if (filteredTask === null) {
+      return fullTask;
+    }
+    return filteredTask;
+  };
 
   const { name, tag, date, complete, inFocus } = taskData;
 
@@ -283,7 +314,10 @@ function TaskEditor({
         />
       </div>
       <div className={styles.TaskEditorSubTasksIndentedContainer}>
-        {taskData.children.map((subTask: SubTask) => (
+        {(wholeTaskData !== undefined
+          ? getFilteredTaskData(wholeTaskData).children
+          : taskData.children
+        ).map((subTask: SubTask) => (
           <OneSubTaskEditor
             key={subTask.order}
             subTask={subTask}
