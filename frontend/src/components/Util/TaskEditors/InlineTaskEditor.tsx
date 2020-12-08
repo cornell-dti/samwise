@@ -12,6 +12,8 @@ type Props = {
   readonly memberName?: string; // only supplied if the task is a group task
   readonly memberEmail?: string; // only supplied if the task is a group task
   readonly groupID?: string; // only supplied if the task is a group task
+  // True if filtering by completed.
+  readonly isFocusTaskAndCompleted?: boolean; // only supplied if the task is a focus task.
 };
 
 /**
@@ -25,6 +27,7 @@ export default function InlineTaskEditor({
   memberName,
   memberEmail,
   groupID,
+  isFocusTaskAndCompleted,
 }: Props): ReactElement {
   const [disabled, setDisabled] = useState(true);
   const { id } = original;
@@ -56,6 +59,8 @@ export default function InlineTaskEditor({
       memberName={memberName}
       memberEmail={memberEmail}
       groupID={groupID}
+      wholeTaskData={isFocusTaskAndCompleted !== undefined ? original : undefined}
+      isFocusTaskAndCompleted={isFocusTaskAndCompleted}
     />
   );
 }
