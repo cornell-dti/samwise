@@ -5,7 +5,15 @@
 
 import React, { ReactElement, useEffect, useState, useCallback } from 'react';
 import { connect } from 'react-redux';
-import { TaskMainData, Settings, State, SubTask, Tag } from 'common/types/store-types';
+import {
+  TaskMainData,
+  Settings,
+  State,
+  SubTask,
+  Tag,
+  TaskMetadata,
+  Task,
+} from 'common/types/store-types';
 import { NONE_TAG } from 'common/util/tag-util';
 import { ignore } from 'common/util/general-util';
 import { getTodayAtZeroAM, getDateWithDateString } from 'common/util/datetime-util';
@@ -53,6 +61,7 @@ type OwnProps = DefaultProps & {
   readonly memberName?: string; // only supplied if task is a group task
   readonly memberEmail?: string; // only supplied if task is a group task
   readonly groupID?: string; // only supplied if task is a group task
+  readonly wholeTaskData?: Task<TaskMetadata>; // only supplied if task is a focus task
 };
 type Props = OwnProps & {
   // subscribed from redux store.
@@ -88,9 +97,18 @@ function TaskEditor({
   memberName,
   memberEmail,
   groupID,
+  wholeTaskData,
 }: Props): ReactElement {
   const { onChange, removeTask, onSaveClicked } = actions;
+  const initTaskDate = initTaskData.date;
   const { taskData, diff, dispatchEditTask, dispatchEditSubTask, reset } = useTaskDiffReducer(
+    wholeTaskData ? ({ ...wholeTaskData, date: initTaskDate } as TaskMainData) : initTaskData,
+    wholeTaskData ? false : active ?? false,
+    wholeTaskData ? ignore : onChange ?? ignore
+  );
+
+  // only for use if the current task is a filtered completed/uncompleted task in focus view
+  const filteredTaskDiffReducerData = useTaskDiffReducer(
     initTaskData,
     active ?? false,
     onChange ?? ignore
@@ -283,18 +301,20 @@ function TaskEditor({
         />
       </div>
       <div className={styles.TaskEditorSubTasksIndentedContainer}>
-        {taskData.children.map((subTask: SubTask) => (
-          <OneSubTaskEditor
-            key={subTask.order}
-            subTask={subTask}
-            mainTaskComplete={complete}
-            needToBeFocused={subTaskToFocus === subTask.order}
-            onEdit={editSubTask}
-            onRemove={removeSubTask}
-            onPressEnter={pressEnterHandler}
-            memberName={memberName}
-          />
-        ))}
+        {(wholeTaskData ? filteredTaskDiffReducerData.taskData.children : taskData.children).map(
+          (subTask: SubTask) => (
+            <OneSubTaskEditor
+              key={subTask.order}
+              subTask={subTask}
+              mainTaskComplete={complete}
+              needToBeFocused={subTaskToFocus === subTask.order}
+              onEdit={editSubTask}
+              onRemove={removeSubTask}
+              onPressEnter={pressEnterHandler}
+              memberName={memberName}
+            />
+          )
+        )}
         <div className={styles.SubtaskHide} style={active === false ? { maxHeight: 0 } : undefined}>
           <NewSubTaskEditor
             onFirstType={handleCreatedNewSubtask}
