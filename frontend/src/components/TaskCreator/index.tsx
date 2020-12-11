@@ -43,6 +43,7 @@ type Props = OwnProps & {
   readonly group?: string;
   readonly groupMemberProfiles?: readonly SamwiseUserProfile[];
   readonly taskCreatorOpened?: boolean;
+  readonly closeTaskCreator?: (opened: boolean) => void;
   readonly assignedMembers?: readonly SamwiseUserProfile[];
   readonly clearAssignedMembers?: () => void;
 };
@@ -94,7 +95,14 @@ export class TaskCreator extends React.PureComponent<Props, State> {
 
   private openNewTask = (): void => this.setState({ opened: true });
 
-  private closeNewTask = (): void => this.setState({ opened: false });
+  private closeNewTask = (): void => {
+    this.setState({ opened: false});
+    // Call function to set the prop 'taskCreatorOpened' to be false
+    const { closeTaskCreator } = this.props;
+    if (closeTaskCreator) {
+      closeTaskCreator(false);
+    }
+  };
 
   /**
    * Open the tag picker and close the date picker.

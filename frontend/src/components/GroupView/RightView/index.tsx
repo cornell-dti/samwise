@@ -33,8 +33,13 @@ const RightView = ({ group, groupMemberProfiles, tasks }: Props): ReactElement =
 
   const openTaskCreator = (member: readonly SamwiseUserProfile[]): void =>
     setState({
-      taskCreatorOpened: !taskCreatorOpened,
+      taskCreatorOpened: true,
       assignedMembers: member,
+    });
+
+  const closeTaskCreator = (): void =>
+    setState({
+      taskCreatorOpened: false,
     });
 
   const clearAssignedMembers = (): void =>
@@ -48,6 +53,7 @@ const RightView = ({ group, groupMemberProfiles, tasks }: Props): ReactElement =
           group={group.id}
           groupMemberProfiles={groupMemberProfiles}
           taskCreatorOpened={taskCreatorOpened}
+          closeTaskCreator={closeTaskCreator}
           assignedMembers={assignedMembers}
           clearAssignedMembers={clearAssignedMembers}
         />
