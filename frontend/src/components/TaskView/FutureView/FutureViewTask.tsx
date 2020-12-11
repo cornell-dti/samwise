@@ -174,7 +174,16 @@ function FutureViewTask({
     <OverdueAlert target="future-view-task" />
   );
   // Construct the trigger for the floating task editor.
+  const isDragDisabledCondition = (): boolean => {
+    console.log(openedGlobal);
+    return openedGlobal;
+  };
+  let openedGlobal = false;
   const trigger = (opened: boolean, opener: () => void): ReactElement => {
+    openedGlobal = opened;
+    // console.log(openedGlobal)
+    // console.log(compoundTask.original.metadata.type === 'MASTER_TEMPLATE', isCanvasTask)
+    // console.log(openedGlobal && (compoundTask.original.metadata.type === 'MASTER_TEMPLATE' || true || isCanvasTask))
     const onClickHandler = getOnClickHandler(opener);
     const onSpaceHandler = (e: KeyboardEvent<HTMLDivElement>): void => {
       if (e.key === ' ') {
@@ -204,7 +213,12 @@ function FutureViewTask({
       key={taskId}
       draggableId={taskId}
       index={index}
-      isDragDisabled={compoundTask.original.metadata.type === 'MASTER_TEMPLATE' || isCanvasTask}
+      // isDragDisabled={ compoundTask.original.metadata.type === 'MASTER_TEMPLATE' || isCanvasTask}
+      isDragDisabled={
+        isDragDisabledCondition() ||
+        compoundTask.original.metadata.type === 'MASTER_TEMPLATE' ||
+        isCanvasTask
+      }
     >
       {(provided) => (
         // eslint-disable-next-line react/jsx-props-no-spreading
