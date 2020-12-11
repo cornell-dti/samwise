@@ -96,7 +96,7 @@ export class TaskCreator extends React.PureComponent<Props, State> {
   private openNewTask = (): void => this.setState({ opened: true });
 
   private closeNewTask = (): void => {
-    this.setState({ opened: false});
+    this.setState({ opened: false });
     // Call function to set the prop 'taskCreatorOpened' to be false
     const { closeTaskCreator } = this.props;
     if (closeTaskCreator) {
@@ -145,7 +145,7 @@ export class TaskCreator extends React.PureComponent<Props, State> {
       return;
     }
 
-    const {assignedMembers} = this.props;
+    const { assignedMembers } = this.props;
     const selectedMembers = member || assignedMembers;
     if (selectedMembers) {
       const newOwners = selectedMembers.map((profile) => profile.email);
