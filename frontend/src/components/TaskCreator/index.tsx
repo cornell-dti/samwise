@@ -43,6 +43,7 @@ type Props = OwnProps & {
   readonly group?: string;
   readonly groupMemberProfiles?: readonly SamwiseUserProfile[];
   readonly taskCreatorOpened?: boolean;
+  readonly closeTaskCreator?: (opened: boolean) => void;
   readonly assignedMembers?: readonly SamwiseUserProfile[];
   readonly clearAssignedMembers?: () => void;
 };
@@ -94,7 +95,14 @@ export class TaskCreator extends React.PureComponent<Props, State> {
 
   private openNewTask = (): void => this.setState({ opened: true });
 
-  private closeNewTask = (): void => this.setState({ opened: false });
+  private closeNewTask = (): void => {
+    this.setState({ opened: false });
+    // Call function to set the prop 'taskCreatorOpened' to be false
+    const { closeTaskCreator } = this.props;
+    if (closeTaskCreator) {
+      closeTaskCreator(false);
+    }
+  };
 
   /**
    * Open the tag picker and close the date picker.
@@ -137,8 +145,10 @@ export class TaskCreator extends React.PureComponent<Props, State> {
       return;
     }
 
-    if (member) {
-      const newOwners = member.map((profile) => profile.email);
+    const { assignedMembers } = this.props;
+    const selectedMembers = member || assignedMembers;
+    if (selectedMembers) {
+      const newOwners = selectedMembers.map((profile) => profile.email);
       owner = newOwners;
     }
 
@@ -379,7 +389,7 @@ export class TaskCreator extends React.PureComponent<Props, State> {
                 />
               ) : (
                 <GroupMemberPicker
-                  member={assignedMembers || member}
+                  member={member || assignedMembers}
                   opened={tagPickerOpened}
                   onMemberChange={this.editMember}
                   onPickerOpened={this.openTagPicker}
