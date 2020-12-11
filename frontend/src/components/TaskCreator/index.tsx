@@ -145,8 +145,10 @@ export class TaskCreator extends React.PureComponent<Props, State> {
       return;
     }
 
-    if (member) {
-      const newOwners = member.map((profile) => profile.email);
+    const {assignedMembers} = this.props;
+    const selectedMembers = member || assignedMembers;
+    if (selectedMembers) {
+      const newOwners = selectedMembers.map((profile) => profile.email);
       owner = newOwners;
     }
 
@@ -387,7 +389,7 @@ export class TaskCreator extends React.PureComponent<Props, State> {
                 />
               ) : (
                 <GroupMemberPicker
-                  member={assignedMembers || member}
+                  member={member || assignedMembers}
                   opened={tagPickerOpened}
                   onMemberChange={this.editMember}
                   onPickerOpened={this.openTagPicker}
