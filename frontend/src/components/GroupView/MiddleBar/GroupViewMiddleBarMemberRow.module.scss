@@ -19,6 +19,12 @@
   height: 40px;
 }
 
+.Plus,
+.MemberIcon {
+  display: inline-block;
+  vertical-align: middle;
+}
+
 .MemberIcon {
   flex: 1;
   font-size: 16px;

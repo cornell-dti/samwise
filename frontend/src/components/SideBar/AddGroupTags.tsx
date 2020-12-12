@@ -23,7 +23,7 @@ export default function AddGroupTags({ show, setShow }: AddGroupTagsProps): Reac
   });
 
   return (
-    <div>
+    <div className={styles.PositionedWrapper}>
       {show && (
         <div
           className={styles.AddGroupTags}

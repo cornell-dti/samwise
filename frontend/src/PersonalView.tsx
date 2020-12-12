@@ -2,7 +2,7 @@ import React, { ReactElement } from 'react';
 import styles from './App.module.scss';
 import AllComplete from './components/Popup/AllComplete';
 import Onboard from './components/TitleBar/Onboarding/Onboard';
-import TaskCreator from './components/TaskCreator';
+import { TaskCreatorContextProvider, TaskCreator } from './components/TaskCreator';
 import TaskView from './components/TaskView';
 import TitleBar from './components/TitleBar';
 
@@ -13,7 +13,9 @@ const PersonalView = (): ReactElement => (
   <>
     <Onboard />
     <TitleBar />
-    <TaskCreator view="personal" />
+    <TaskCreatorContextProvider>
+      <TaskCreator view="personal" />
+    </TaskCreatorContextProvider>
     <TaskView className={styles.TaskView} />
     <AllComplete />
   </>

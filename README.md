@@ -21,6 +21,7 @@ _Last updated **05/09/2020**_
   - [Since 2017](#since-2017)
   - [Since 2018](#since-2018)
   - [Since 2019](#since-2019)
+  - [Since 2020](#since-2020)
 
 ## About
 
@@ -108,6 +109,10 @@ Check our [wiki](https://github.com/cornell-dti/samwise/wiki) to see all our doc
 - **Pinxuan Huang** - Front-end Developer
 - **Peter Wu** - Front-end Developer
 - **Jason Tung** - Back-end Developer
+
+### Since 2020
+
+- **Ishika Jain** - Front-end Developer
 
 \* Former Contributor
 

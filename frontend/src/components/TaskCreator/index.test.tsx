@@ -1,13 +1,15 @@
 import React from 'react';
 import renderer from 'react-test-renderer';
 import { ProviderForTesting } from '../../store';
-import TaskCreator from '.';
+import { TaskCreatorContextProvider, TaskCreator } from '.';
 
 it('TaskCreator matches snapshot', () => {
   const tree = renderer
     .create(
       <ProviderForTesting>
-        <TaskCreator view="personal" />
+        <TaskCreatorContextProvider>
+          <TaskCreator view="personal" />
+        </TaskCreatorContextProvider>
       </ProviderForTesting>
     )
     .toJSON();

@@ -12,6 +12,7 @@ type Props = {
   readonly onRemove: (subTaskToRemove: SubTask) => void;
   readonly onPressEnter: (id: 'main-task' | number) => void;
   readonly memberName?: string; // only supplied if task is a group task
+  readonly canMarkComplete: boolean;
 };
 
 const className = [styles.TaskEditorFlexibleContainer, styles.TaskEditorSubtaskCheckBox].join(' ');
@@ -25,14 +26,17 @@ function OneSubTaskEditor({
   onRemove,
   onPressEnter,
   memberName,
+  canMarkComplete,
 }: Props): ReactElement {
   const editThisSubTask = (update: Partial<SubTask>): void => {
     onEdit(update, subTask);
   };
 
   const onCompleteChange = (): void => {
-    const complete = !subTask.complete;
-    editThisSubTask({ complete });
+    if (canMarkComplete) {
+      const complete = !subTask.complete;
+      editThisSubTask({ complete });
+    }
   };
   const onInFocusChange = (): void => {
     const inFocus = !subTask.inFocus;
@@ -71,7 +75,7 @@ function OneSubTaskEditor({
       <CheckBox
         className={styles.TaskEditorCheckBox}
         checked={mainTaskComplete || subTask.complete}
-        disabled={mainTaskComplete}
+        disabled={mainTaskComplete || !canMarkComplete}
         onChange={onCompleteChange}
       />
       <input

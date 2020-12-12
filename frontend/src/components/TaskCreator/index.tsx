@@ -1,5 +1,14 @@
-import React, { CSSProperties, KeyboardEvent, SyntheticEvent, ReactElement } from 'react';
-import { connect } from 'react-redux';
+import React, {
+  KeyboardEvent,
+  SyntheticEvent,
+  ReactElement,
+  useState,
+  useRef,
+  createContext,
+  ReactNode,
+  useContext,
+} from 'react';
+import { useSelector } from 'react-redux';
 import { randomId } from 'common/util/general-util';
 import {
   Task,
@@ -7,7 +16,6 @@ import {
   SamwiseUserProfile,
   SubTask,
   State as StoreState,
-  Theme,
 } from 'common/types/store-types';
 import { NONE_TAG_ID } from 'common/util/tag-util';
 import { isToday } from 'common/util/datetime-util';
@@ -27,64 +35,108 @@ type State = SimpleTask & {
   readonly member?: readonly SamwiseUserProfile[];
   readonly date: Date | RepeatingDate;
   readonly subTasks: SubTask[];
-  readonly opened: boolean;
   readonly tagPickerOpened: boolean;
   readonly datePickerOpened: boolean;
   readonly datePicked: boolean;
   readonly needToSwitchFocus: boolean;
 };
 
-type OwnProps = {
-  readonly theme: Theme;
-};
-
-type Props = OwnProps & {
-  readonly view: string;
-  readonly group?: string;
-  readonly groupMemberProfiles?: readonly SamwiseUserProfile[];
-  readonly taskCreatorOpened?: boolean;
-  readonly assignedMembers?: readonly SamwiseUserProfile[];
-  readonly clearAssignedMembers?: () => void;
-};
+type Props = { readonly view: 'personal' | 'group' };
 
 /**
  * The placeholder text in the main task input box.
  */
 const PLACEHOLDER_TEXT = 'What do you have to do?';
-/**
- * Generate the initial state.
- */
-const initialState = (): State => ({
-  id: randomId(),
-  owner: [''],
-  name: '',
-  tag: NONE_TAG_ID, // the id of the None tag.
-  member: undefined,
-  date: new Date(),
-  complete: false,
-  inFocus: false,
-  subTasks: [],
-  opened: false,
-  tagPickerOpened: false,
-  datePickerOpened: false,
-  datePicked: false,
-  needToSwitchFocus: false,
+
+type TaskCreatorContextMutableValues = {
+  readonly taskCreatorOpened?: boolean;
+  readonly assignedMembers?: readonly SamwiseUserProfile[];
+};
+
+type TaskCreatorContextValues = TaskCreatorContextMutableValues & {
+  readonly group?: string;
+  readonly groupClassCode?: string;
+  readonly groupMemberProfiles?: readonly SamwiseUserProfile[];
+  readonly setTaskCreatorContext: React.Dispatch<
+    React.SetStateAction<TaskCreatorContextMutableValues>
+  >;
+};
+
+const TaskCreatorContext = createContext<TaskCreatorContextValues>({
+  setTaskCreatorContext: () => {
+    throw new Error("Shouldn't be called");
+  },
 });
 
-export class TaskCreator extends React.PureComponent<Props, State> {
-  public readonly state: State = initialState();
+type TaskCreatorContextProviderProps = {
+  readonly group?: string;
+  readonly groupClassCode?: string;
+  readonly groupMemberProfiles?: readonly SamwiseUserProfile[];
+  readonly children: ReactNode;
+};
 
-  private addTask: HTMLInputElement | null | undefined;
+export const TaskCreatorContextProvider = ({
+  group,
+  groupClassCode,
+  groupMemberProfiles,
+  children,
+}: TaskCreatorContextProviderProps): ReactElement => {
+  const [state, setState] = useState<TaskCreatorContextMutableValues>({});
 
-  private get isOpen(): boolean {
-    // eslint-disable-next-line react/destructuring-assignment
-    return this.state.opened || this.props.taskCreatorOpened || false;
-  }
+  return (
+    <TaskCreatorContext.Provider
+      value={{
+        ...state,
+        group,
+        groupClassCode,
+        groupMemberProfiles,
+        setTaskCreatorContext: setState,
+      }}
+    >
+      {children}
+    </TaskCreatorContext.Provider>
+  );
+};
 
-  private get darkModeStyle(): CSSProperties | undefined {
-    const { theme } = this.props;
-    return theme === 'dark' ? { background: 'black', color: 'white' } : undefined;
-  }
+export const useTaskCreatorContextSetter = (): React.Dispatch<
+  React.SetStateAction<TaskCreatorContextMutableValues>
+> => useContext(TaskCreatorContext).setTaskCreatorContext;
+
+export const TaskCreator = ({ view }: Props): ReactElement => {
+  const {
+    group,
+    groupClassCode,
+    groupMemberProfiles,
+    taskCreatorOpened,
+    assignedMembers,
+    setTaskCreatorContext,
+  } = useContext(TaskCreatorContext);
+
+  const theme = useSelector((state: StoreState) => state.settings.theme);
+
+  const initialState = (): State => ({
+    id: randomId(),
+    owner: [''],
+    name: '',
+    tag: groupClassCode ?? NONE_TAG_ID,
+    member: undefined,
+    date: new Date(),
+    complete: false,
+    inFocus: false,
+    subTasks: [],
+    tagPickerOpened: false,
+    datePickerOpened: false,
+    datePicked: false,
+    needToSwitchFocus: false,
+  });
+
+  const [state, setState] = useState(initialState);
+  const setPartialState = (partial: Partial<State>): void =>
+    setState((prev) => ({ ...prev, ...partial }));
+
+  const addTaskRef = useRef<HTMLInputElement | null>(null);
+
+  const darkModeStyle = theme === 'dark' ? { background: 'black', color: 'white' } : undefined;
 
   /*
    * --------------------------------------------------------------------------------
@@ -92,25 +144,30 @@ export class TaskCreator extends React.PureComponent<Props, State> {
    * --------------------------------------------------------------------------------
    */
 
-  private openNewTask = (): void => this.setState({ opened: true });
+  const openNewTask = (): void =>
+    setTaskCreatorContext((prev) => ({ ...prev, taskCreatorOpened: true }));
 
-  private closeNewTask = (): void => this.setState({ opened: false });
+  const closeNewTask = (): void => {
+    setTaskCreatorContext((prev) => ({ ...prev, taskCreatorOpened: false }));
+  };
 
   /**
    * Open the tag picker and close the date picker.
    */
-  private openTagPicker = (): void =>
-    this.setState(({ tagPickerOpened }: State) => ({
-      tagPickerOpened: !tagPickerOpened,
+  const openTagPicker = (): void =>
+    setState((prev) => ({
+      ...prev,
+      tagPickerOpened: !prev.tagPickerOpened,
       datePickerOpened: false,
     }));
 
   /**
    * Open the date picker and close the tag picker.
    */
-  private openDatePicker = (): void =>
-    this.setState(({ datePickerOpened }: State) => ({
-      datePickerOpened: !datePickerOpened,
+  const openDatePicker = (): void =>
+    setState((prev) => ({
+      ...prev,
+      datePickerOpened: !prev.datePickerOpened,
       tagPickerOpened: false,
     }));
 
@@ -120,38 +177,46 @@ export class TaskCreator extends React.PureComponent<Props, State> {
    * --------------------------------------------------------------------------------
    */
 
-  private focusTaskName = (): void => {
-    if (this.addTask) {
-      this.addTask.focus();
+  const focusTaskName = (): void => {
+    const addTaskElement = addTaskRef.current;
+    if (addTaskElement) {
+      addTaskElement.focus();
     }
   };
 
-  private handleSave = (e?: SyntheticEvent<HTMLElement>): void => {
+  const handleSave = (e?: SyntheticEvent<HTMLElement>): void => {
     if (e != null) {
       e.preventDefault();
     }
-    let { owner } = this.state;
-    const { member, name, tag, date, complete, inFocus, subTasks } = this.state;
+    let { owner } = state;
+    const { member, name, tag, date, complete, inFocus, subTasks } = state;
 
     if (name === '') {
       return;
     }
 
-    if (member) {
-      const newOwners = member.map((profile) => profile.email);
+    const selectedMembers = member || assignedMembers;
+    if (selectedMembers) {
+      const newOwners = selectedMembers.map((profile) => profile.email);
       owner = newOwners;
     }
 
     const newSubTasks = subTasks.filter((subTask) => subTask.name !== ''); // remove empty subtasks
     // Put task in focus is the due date is today.
     const autoInFocus = inFocus || (date instanceof Date && isToday(date));
-    const commonTask = { owner, name, tag, date, complete, inFocus: autoInFocus };
+    const commonTask = {
+      owner,
+      name,
+      tag: groupClassCode ?? tag,
+      date,
+      complete,
+      inFocus: autoInFocus,
+    };
     let newTask: TaskWithoutIdOrderChildren;
     if (date instanceof Date) {
       date.setHours(23);
       date.setMinutes(59);
       date.setSeconds(59);
-      const { view, group } = this.props;
       if (view === 'group' && typeof group === 'string') {
         newTask = { ...commonTask, metadata: { type: 'GROUP', date, group } };
       } else {
@@ -171,10 +236,11 @@ export class TaskCreator extends React.PureComponent<Props, State> {
     // Add the task to the store.
     addTask(owner, newTask, newSubTasks);
     // Reset the state.
-    this.setState({ ...initialState() });
-    this.closeNewTask();
-    if (this.addTask) {
-      this.addTask.blur();
+    setState({ ...initialState() });
+    closeNewTask();
+    const addTaskElement = addTaskRef.current;
+    if (addTaskElement) {
+      addTaskElement.blur();
     }
   };
 
@@ -184,67 +250,68 @@ export class TaskCreator extends React.PureComponent<Props, State> {
    * --------------------------------------------------------------------------------
    */
 
-  private editTaskName = (e: SyntheticEvent<HTMLInputElement>): void =>
-    this.setState({ name: e.currentTarget.value }, this.focusTaskName);
+  const editTaskName = (e: SyntheticEvent<HTMLInputElement>): void => {
+    setPartialState({ name: e.currentTarget.value });
+    focusTaskName();
+  };
 
-  private editTag = (tag: string): void =>
-    this.setState({ tag, tagPickerOpened: false }, this.focusTaskName);
+  const editTag = (tag: string): void => {
+    setPartialState({ tag, tagPickerOpened: false });
+    focusTaskName();
+  };
 
-  private editMember = (member?: readonly SamwiseUserProfile[]): void =>
-    this.setState({ member, tagPickerOpened: false }, this.focusTaskName);
+  const editMember = (member?: readonly SamwiseUserProfile[]): void => {
+    setPartialState({ member, tagPickerOpened: false });
+    focusTaskName();
+  };
 
   /**
    * Edit the date.
    *
    * @param {Date} date the new date, or null for cancel.
    */
-  private editDate = (date: Date | RepeatingDate | null): void => {
-    const { datePicked } = this.state;
+  const editDate = (date: Date | RepeatingDate | null): void => {
+    const { datePicked } = state;
     if (datePicked && date === null) {
       // User cancelled, but date was already picked
-      this.setState({ datePickerOpened: false }, this.focusTaskName);
+      setPartialState({ datePickerOpened: false });
+      focusTaskName();
     } else if (date instanceof Date || date === null) {
       // Selecting a date, or user cancelled while date was not picked
-      this.setState(
-        {
-          date: date ?? new Date(),
-          datePickerOpened: false,
-          datePicked: Boolean(date),
-        },
-        this.focusTaskName
-      );
+      setPartialState({
+        date: date ?? new Date(),
+        datePickerOpened: false,
+        datePicked: Boolean(date),
+      });
+      focusTaskName();
     } else {
       // Repeating task
-      this.setState(
-        {
-          date,
-          datePickerOpened: false,
-          datePicked: true,
-        },
-        this.focusTaskName
-      );
+      setPartialState({ date, datePickerOpened: false, datePicked: true });
+      focusTaskName();
     }
   };
 
-  private clearDate = (): void => {
-    this.setState(
-      { date: new Date(), datePickerOpened: false, datePicked: false },
-      this.focusTaskName
-    );
+  const clearDate = (): void => {
+    setPartialState({ date: new Date(), datePickerOpened: false, datePicked: false });
+    focusTaskName();
   };
 
-  private togglePin = (inFocus: boolean): void => this.setState({ inFocus }, this.focusTaskName);
+  const togglePin = (inFocus: boolean): void => {
+    setPartialState({ inFocus });
+    focusTaskName();
+  };
 
-  private addNewSubTask = (e: SyntheticEvent<HTMLInputElement>): void => {
+  const addNewSubTask = (e: SyntheticEvent<HTMLInputElement>): void => {
     const newSubTaskName = e.currentTarget.value;
     if (newSubTaskName === '') {
       return;
     }
-    this.setState(({ subTasks }: State) => ({
+    setState((prev) => ({
+      ...prev,
       subTasks: [
-        ...subTasks,
+        ...prev.subTasks,
         {
-          order: subTasks.reduce((acc, s) => Math.max(acc, s.order), 0) + 1,
+          order: prev.subTasks.reduce((acc, s) => Math.max(acc, s.order), 0) + 1,
           name: newSubTaskName,
           complete: false,
           inFocus: false,
@@ -254,67 +321,58 @@ export class TaskCreator extends React.PureComponent<Props, State> {
     }));
   };
 
-  private newSubTaskKeyPress = (e: KeyboardEvent<HTMLInputElement>): void => {
+  const newSubTaskKeyPress = (e: KeyboardEvent<HTMLInputElement>): void => {
     if (e.key === 'Tab') {
-      this.closeNewTask();
+      closeNewTask();
     }
   };
 
-  private editSubTask = (subTask: SubTask) => (e: SyntheticEvent<HTMLInputElement>) => {
+  const editSubTask = (subTask: SubTask) => (e: SyntheticEvent<HTMLInputElement>) => {
     const name = e.currentTarget.value;
-    this.setState(({ subTasks }: State) => ({
-      subTasks: subTasks.map((s) => (subTasksEqual(s, subTask) ? { ...s, name } : s)),
+    setState((prev) => ({
+      ...prev,
+      subTasks: prev.subTasks.map((s) => (subTasksEqual(s, subTask) ? { ...s, name } : s)),
     }));
   };
 
-  private submitSubTask = (e: KeyboardEvent<HTMLInputElement>): void => {
+  const submitSubTask = (e: KeyboardEvent<HTMLInputElement>): void => {
     if (e.key === 'Enter') {
-      this.handleSave();
+      handleSave();
     }
   };
 
-  private deleteSubTask = (subTask: SubTask) => (e: SyntheticEvent<HTMLButtonElement>) => {
+  const deleteSubTask = (subTask: SubTask) => (e: SyntheticEvent<HTMLButtonElement>) => {
     e.preventDefault();
-    this.setState(({ subTasks }: State) => ({
-      subTasks: subTasks.filter((s) => !subTasksEqual(s, subTask)),
+    setState((prev) => ({
+      ...prev,
+      subTasks: prev.subTasks.filter((s) => !subTasksEqual(s, subTask)),
     }));
   };
 
-  private resetTask = (): void => this.setState({ ...initialState() }, this.focusTaskName);
+  const resetTask = (): void => {
+    setState({ ...initialState() });
+    setTaskCreatorContext((prev) => ({ ...prev, taskCreatorOpened: false }));
+    focusTaskName();
+  };
 
-  public render(): ReactElement {
-    const { view, groupMemberProfiles, assignedMembers, clearAssignedMembers } = this.props;
-    const {
-      name,
-      tag,
-      member,
-      date,
-      inFocus,
-      subTasks,
-      tagPickerOpened,
-      datePickerOpened,
-      datePicked,
-      needToSwitchFocus,
-    } = this.state;
-    if (!this.isOpen) {
+  const render = (): ReactElement => {
+    const { name, tag, member, date, inFocus, subTasks, datePicked, needToSwitchFocus } = state;
+    if (!taskCreatorOpened) {
       return (
-        <div
-          className={`${styles.TaskCreator} ${styles.TaskCreatorClosed}`}
-          style={this.darkModeStyle}
-        >
+        <div className={`${styles.TaskCreator} ${styles.TaskCreatorClosed}`} style={darkModeStyle}>
           <form
             className={`${styles.NewTaskWrap} ${groupMemberProfiles ? styles.GroupTaskWrap : ''}`}
-            onSubmit={this.handleSave}
-            onFocus={this.openNewTask}
+            onSubmit={handleSave}
+            onFocus={openNewTask}
           >
             <input
               required
               type="text"
               value={name}
-              onChange={this.editTaskName}
+              onChange={editTaskName}
               className={styles.NewTaskComponent}
               placeholder={PLACEHOLDER_TEXT}
-              style={this.darkModeStyle}
+              style={darkModeStyle}
             />
           </form>
         </div>
@@ -329,7 +387,7 @@ export class TaskCreator extends React.PureComponent<Props, State> {
       const refHandler = (inputElementRef: HTMLInputElement | null): void => {
         if (i === arr.length - 1 && needToSwitchFocus && inputElementRef != null) {
           inputElementRef.focus();
-          this.setState({ needToSwitchFocus: false });
+          setPartialState({ needToSwitchFocus: false });
         }
       };
 
@@ -340,7 +398,7 @@ export class TaskCreator extends React.PureComponent<Props, State> {
             className={styles.DeleteSubTaskButton}
             type="button"
             tabIndex={-1}
-            onClick={this.deleteSubTask(thisSubTask)}
+            onClick={deleteSubTask(thisSubTask)}
           >
             <SamwiseIcon iconName="x-dark" />
           </button>
@@ -349,53 +407,56 @@ export class TaskCreator extends React.PureComponent<Props, State> {
             className={styles.ExistingSubTaskInput}
             ref={refHandler}
             value={subtaskName}
-            onChange={this.editSubTask(thisSubTask)}
-            onKeyDown={this.submitSubTask}
-            style={this.darkModeStyle}
+            onChange={editSubTask(thisSubTask)}
+            onKeyDown={submitSubTask}
+            style={darkModeStyle}
           />
         </li>
       );
     };
 
     return (
-      <div className={styles.TaskCreator} style={this.darkModeStyle}>
-        <div onClick={this.closeNewTask} role="presentation" className={styles.CloseNewTask} />
+      <div className={styles.TaskCreator} style={darkModeStyle}>
+        <div onClick={closeNewTask} role="presentation" className={styles.CloseNewTask} />
         <div className={styles.TaskCreatorOpenedPlaceHolder} />
         <form
           className={`${styles.NewTaskWrap} ${styles.NewTaskModal}`}
-          onSubmit={this.handleSave}
-          onFocus={this.openNewTask}
+          onSubmit={handleSave}
+          onFocus={openNewTask}
         >
           <div className={`${styles.TaskCreatorRow} ${styles.FirstRow}`}>
             <div className={styles.TitleText}>Add Task</div>
-            {date instanceof Date && <FocusPicker pinned={inFocus} onPinChange={this.togglePin} />}
+            {date instanceof Date && <FocusPicker pinned={inFocus} onPinChange={togglePin} />}
             <div className={styles.TagPickWrap}>
               {view === 'personal' ? (
                 <TagPicker
                   tag={tag}
-                  opened={tagPickerOpened}
-                  onTagChange={this.editTag}
-                  onPickerOpened={this.openTagPicker}
+                  opened={state.tagPickerOpened}
+                  onTagChange={editTag}
+                  onPickerOpened={openTagPicker}
                 />
               ) : (
                 <GroupMemberPicker
-                  member={assignedMembers || member}
-                  opened={tagPickerOpened}
-                  onMemberChange={this.editMember}
-                  onPickerOpened={this.openTagPicker}
+                  member={member || assignedMembers}
+                  opened={state.tagPickerOpened}
+                  onMemberChange={editMember}
+                  onPickerOpened={openTagPicker}
                   groupMemberProfiles={groupMemberProfiles || []}
-                  clearAssignedMembers={clearAssignedMembers}
+                  clearAssignedMembers={() =>
+                    setTaskCreatorContext((prev) => ({ ...prev, assignedMembers: [] }))
+                  }
+                  resetTask={resetTask}
                 />
               )}
             </div>
             <DatePicker
               date={date}
-              opened={datePickerOpened}
+              opened={state.datePickerOpened}
               datePicked={datePicked}
               inGroupView={false}
-              onDateChange={this.editDate}
-              onClearPicker={this.clearDate}
-              onPickerOpened={this.openDatePicker}
+              onDateChange={editDate}
+              onClearPicker={clearDate}
+              onPickerOpened={openDatePicker}
             />
           </div>
           <div className={styles.TaskCreatorRow}>
@@ -403,17 +464,15 @@ export class TaskCreator extends React.PureComponent<Props, State> {
               required
               type="text"
               value={name}
-              onChange={this.editTaskName}
+              onChange={editTaskName}
               className={`${styles.NewTaskComponent} ${styles.NewTaskComponentOpened}`}
-              ref={(e) => {
-                this.addTask = e;
-              }}
-              style={this.darkModeStyle}
+              ref={addTaskRef}
+              style={darkModeStyle}
             />
             <button
               type="submit"
               className={view === 'personal' ? styles.SubmitNewTask : styles.GroupSubmitNewTask}
-              style={this.darkModeStyle}
+              style={darkModeStyle}
             >
               <SamwiseIcon iconName="add-task" />
             </button>
@@ -425,7 +484,7 @@ export class TaskCreator extends React.PureComponent<Props, State> {
           <div className={styles.DescText}>
             Add optional subtasks to break down your tasks into more manageable pieces.
           </div>
-          <div style={this.darkModeStyle}>
+          <div style={darkModeStyle}>
             <div className={styles.SubtasksContainer}>
               <ul className={styles.SubtasksList}>{subTasks.map(existingSubTaskEditor)}</ul>
               <SamwiseIcon iconName="edit" containerClassName={styles.EditIcon} tabIndex={-1} />
@@ -434,22 +493,19 @@ export class TaskCreator extends React.PureComponent<Props, State> {
                 type="text"
                 placeholder="Add a Subtask"
                 value=""
-                onChange={this.addNewSubTask}
-                onKeyDown={this.newSubTaskKeyPress}
-                style={this.darkModeStyle}
+                onChange={addNewSubTask}
+                onKeyDown={newSubTaskKeyPress}
+                style={darkModeStyle}
               />
             </div>
           </div>
-          <button type="button" className={styles.ResetButton} onClick={this.resetTask}>
+          <button type="button" className={styles.ResetButton} onClick={resetTask}>
             DISCARD TASK
           </button>
         </form>
       </div>
     );
-  }
-}
+  };
 
-const Connected = connect(({ settings: { theme } }: StoreState): OwnProps => ({ theme }))(
-  TaskCreator
-);
-export default Connected;
+  return render();
+};

@@ -1,9 +1,12 @@
+@import '../groupview-sizes.scss';
+
 .GroupTasksContainer {
   display: flex;
   flex-direction: row;
   overflow-y: hidden;
   overflow-x: auto;
   width: 100%;
+  height: $group-task-row-content-height;
 }
 
 .FlexibleRow {

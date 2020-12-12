@@ -1,7 +1,7 @@
-import React, { KeyboardEvent, ReactElement, SyntheticEvent, ReactNode } from 'react';
+import React, { KeyboardEvent, ReactElement, SyntheticEvent, ReactNode, useState } from 'react';
 import { connect } from 'react-redux';
 import { Draggable } from 'react-beautiful-dnd';
-import { Settings, State, SubTask, Task } from 'common/types/store-types';
+import { Settings, State, SubTask, Tag, Task } from 'common/types/store-types';
 import { getTodayAtZeroAM, getDateWithDateString } from 'common/util/datetime-util';
 import { NONE_TAG } from 'common/util/tag-util';
 import FloatingTaskEditor from '../../Util/TaskEditors/FloatingTaskEditor';
@@ -53,9 +53,16 @@ function FutureViewTask({
 }: Props): ReactElement | null {
   const isSmallScreen = useMappedWindowSize(({ width }) => width <= 840);
 
+  const [isEditorOpened, setOpened] = useState(false);
+
+  const toggle = (opened: boolean): void => {
+    setOpened(opened);
+  };
+
   if (compoundTask === null) {
     return null;
   }
+
   const { original, filteredSubTasks, color } = compoundTask;
 
   const { canvasCalendar } = settings;
@@ -86,10 +93,11 @@ function FutureViewTask({
   };
 
   const replaceDateForFork = getDateWithDateString(
-    original.metadata.type === 'ONE_TIME' ? original.metadata.date : null,
+    original.metadata.type !== 'MASTER_TEMPLATE' ? original.metadata.date : null,
     containerDate
   );
-  const replaceDateForForkOpt = original.metadata.type === 'ONE_TIME' ? null : replaceDateForFork;
+  const replaceDateForForkOpt =
+    original.metadata.type !== 'MASTER_TEMPLATE' ? null : replaceDateForFork;
   const TaskCheckBox = (): ReactElement => {
     const { id, complete } = original;
     const onChange = (): void => editMainTask(id, replaceDateForForkOpt, { complete: !complete });
@@ -173,9 +181,10 @@ function FutureViewTask({
   const overdueComponentOpt = date < getTodayAtZeroAM() && !complete && (
     <OverdueAlert target="future-view-task" />
   );
-  // Construct the trigger for the floating task editor.
+
   const trigger = (opened: boolean, opener: () => void): ReactElement => {
     const onClickHandler = getOnClickHandler(opener);
+
     const onSpaceHandler = (e: KeyboardEvent<HTMLDivElement>): void => {
       if (e.key === ' ') {
         onClickHandler();
@@ -204,7 +213,9 @@ function FutureViewTask({
       key={taskId}
       draggableId={taskId}
       index={index}
-      isDragDisabled={compoundTask.original.metadata.type === 'MASTER_TEMPLATE' || isCanvasTask}
+      isDragDisabled={
+        isEditorOpened || compoundTask.original.metadata.type === 'MASTER_TEMPLATE' || isCanvasTask
+      }
     >
       {(provided) => (
         // eslint-disable-next-line react/jsx-props-no-spreading
@@ -215,6 +226,8 @@ function FutureViewTask({
             initialTask={original}
             taskAppearedDate={containerDate}
             trigger={trigger}
+            toggle={toggle}
+            open={isEditorOpened}
           />
         </div>
       )}
@@ -230,7 +243,18 @@ const getCompoundTask = (
   if (original == null) {
     return null;
   }
-  const { color } = tags.get(original.tag) ?? NONE_TAG;
+  let tag: Tag | undefined;
+  if (original.metadata.type === 'GROUP') {
+    // Treat tag id as class code
+    tag = Array.from(tags.values()).find(({ classId }) => {
+      if (classId == null) return false;
+      // classId has the format `<id from roster> <subject> <number>`, we take the later two parts.
+      return classId.substring(classId.indexOf(' ') + 1) === original.tag;
+    });
+  } else {
+    tag = tags.get(original.tag);
+  }
+  const { color } = tag ?? NONE_TAG;
   if (doesShowCompletedTasks) {
     let filteredSubTasks = [...original.children];
     filteredSubTasks = filteredSubTasks.sort((a, b) => a.order - b.order);

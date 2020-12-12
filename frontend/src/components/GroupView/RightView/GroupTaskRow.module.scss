@@ -1,6 +1,9 @@
+@import '../groupview-sizes.scss';
+
 .GroupTaskRow {
   display: flex;
   direction: row;
+  flex-shrink: 0;
   margin-bottom: 1.5em;
 }
 
@@ -14,15 +17,15 @@
 }
 
 .AddTaskContainer {
-  width: 105px;
-  height: 121px;
+  width: 120px;
+  height: $group-task-row-content-height;
   border: 3px dashed rgba(255, 138, 138, 0.5);
   box-sizing: border-box;
   border-radius: 10px;
   display: flex;
   align-content: center;
   margin: auto;
-  margin-right: 26px;
+  margin-right: 8px;
   background-color: rgb(255, 255, 255);
 }
 
@@ -35,6 +38,7 @@
   flex-direction: column;
   width: 100%;
   height: 100%;
+  padding: 1em;
   justify-content: center;
   align-items: center;
 }

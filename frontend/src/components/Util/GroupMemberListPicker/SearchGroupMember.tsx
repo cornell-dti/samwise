@@ -5,6 +5,7 @@ import styles from './SearchGroupMember.module.scss';
 type Props = {
   readonly members: readonly SamwiseUserProfile[];
   readonly onMemberChange: (member: readonly SamwiseUserProfile[] | undefined) => void;
+  readonly resetTask: () => void;
 };
 
 type State = {
@@ -13,7 +14,11 @@ type State = {
   readonly selectedMembers: readonly SamwiseUserProfile[];
 };
 
-export default function SearchGroupMember({ members, onMemberChange }: Props): ReactElement | null {
+export default function SearchGroupMember({
+  members,
+  onMemberChange,
+  resetTask,
+}: Props): ReactElement | null {
   const [{ searchInput, searchResults, selectedMembers }, setState] = useState<State>({
     searchInput: '',
     searchResults: members,
@@ -54,6 +59,7 @@ export default function SearchGroupMember({ members, onMemberChange }: Props): R
   const clearSelection = () => (e: SyntheticEvent<HTMLButtonElement>) => {
     e.preventDefault();
     setState({ searchInput: '', searchResults: members, selectedMembers: [] });
+    resetTask();
   };
 
   const isChecked = (member: SamwiseUserProfile | undefined): boolean => {

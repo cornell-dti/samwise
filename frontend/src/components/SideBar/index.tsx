@@ -25,20 +25,28 @@ const SideBar = ({ groups, changeView }: Props): ReactElement => {
 
   return (
     <div className={styles.SideBar}>
-      <button type="button" onClick={() => handleIconClick()} className={styles.PersonalViewButton}>
-        <SamwiseIcon iconName="personal-view" className={styles.PersonalViewButtonIcon} />
-      </button>
-      <div className={styles.GroupIcons}>
+      <div className={styles.ViewSwitchButtonDiv}>
+        <button
+          type="button"
+          onClick={() => handleIconClick()}
+          className={styles.PersonalViewButton}
+        >
+          <SamwiseIcon iconName="personal-view" className={styles.PersonalViewButtonIcon} />
+        </button>
+      </div>
+      <div className={styles.GroupManager}>
         <p>My Groups</p>
-        {groups.map((g) => (
-          <GroupIcon
-            key={g.id}
-            classCode={g.classCode}
-            handleClick={() => handleIconClick(g.id)}
-            selected={selected === g.id}
-          />
-        ))}
-        <span>
+        <div className={styles.GroupIcons}>
+          {groups.map((g) => (
+            <GroupIcon
+              key={g.id}
+              classCode={g.classCode}
+              handleClick={() => handleIconClick(g.id)}
+              selected={selected === g.id}
+            />
+          ))}
+        </div>
+        <div className={styles.AddButton}>
           <button
             type="button"
             onMouseEnter={() => setShowDropdown(true)}
@@ -49,11 +57,12 @@ const SideBar = ({ groups, changeView }: Props): ReactElement => {
           </button>
           {!showDropdown && <p>New Group</p>}
           <AddGroupTags show={showDropdown} setShow={setShowDropdown} />
-        </span>
+        </div>
+        <div className={styles.ExpandToFill} />
+        <div className={styles.Links}>
+          <SettingsButton />
+        </div>
       </div>
-      <span className={styles.Links}>
-        <SettingsButton />
-      </span>
     </div>
   );
 };

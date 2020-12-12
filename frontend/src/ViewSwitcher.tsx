@@ -5,6 +5,7 @@ import SideBar from './components/SideBar';
 import PersonalView from './PersonalView';
 import GroupView from './components/GroupView';
 import styles from './App.module.scss';
+import { useMappedWindowSize } from './hooks/window-size-hook';
 
 /** Handles switching the view from Personal to Group */
 const ViewSwitcher = (): React.ReactElement => {
@@ -12,10 +13,11 @@ const ViewSwitcher = (): React.ReactElement => {
 
   const [selectedGroupID, setSelectedGroupID] = useState<string | undefined>();
   const selectedGroup = groups.find((oneGroup) => oneGroup.id === selectedGroupID);
+  const isSmallScreen = useMappedWindowSize(({ width }) => width <= 840);
 
   return (
-    <div className={styles.GroupScreen}>
-      <SideBar groups={groups} changeView={setSelectedGroupID} />
+    <div className={isSmallScreen ? styles.MobileScreen : styles.GroupScreen}>
+      {!isSmallScreen && <SideBar groups={groups} changeView={setSelectedGroupID} />}
       <div className={styles.GroupScreenContent}>
         {selectedGroup === undefined ? (
           <PersonalView />

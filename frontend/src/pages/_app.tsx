@@ -6,14 +6,12 @@ import Head from 'next/head';
 import '../index.scss';
 import '../firebase';
 import { initialize as initializeGA } from '../util/ga-util';
-import { registerGateKeeper } from '../util/gate-keeper';
 import { initModal } from '../components/Util/Modals';
 import { initializeWindowSizeHooksListeners } from '../hooks/window-size-hook';
 
 if (process.browser) {
   initializeGA();
   initializeWindowSizeHooksListeners();
-  registerGateKeeper();
   initModal();
 }
 

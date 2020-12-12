@@ -15,7 +15,7 @@
 }
 
 .PersonalViewButton,
-.GroupIcons button {
+.GroupManager button {
   height: 4rem;
   width: 4rem;
   opacity: 0.7;
@@ -25,6 +25,8 @@
 }
 
 .SideBar .AddGroup {
+  display: block;
+  margin: 6px auto;
   margin-bottom: 0;
   border: 2px dashed #bebebe;
   background-color: transparent;
@@ -32,6 +34,10 @@
 
 .AddGroup svg {
   color: #bebebe;
+}
+
+.ViewSwitchButtonDiv {
+  height: $sidebar-personal-button-height;
 }
 
 .SideBar .PersonalViewButton {
@@ -46,17 +52,18 @@
 }
 
 .PersonalViewButton:hover,
-.GroupIcons button:hover {
+.GroupManager button:hover {
   opacity: 0.5;
   cursor: pointer;
 }
 
-.GroupIcons {
+.GroupManager {
   display: flex;
   flex-direction: column;
+  height: $sidebar-group-manager-height;
 }
 
-.GroupIcons p {
+.GroupManager p {
   font-family: 'DM Sans', sans-serif;
   font-style: normal;
   font-weight: 500;
@@ -67,7 +74,40 @@
   text-align: center;
 }
 
+.ExpandToFill {
+  flex-grow: 1;
+  flex-basis: $expanding-div-base-height;
+  flex-shrink: 0;
+}
+
+.GroupIcons {
+  width: $sidebar-width;
+  overflow-y: auto;
+  max-height: calc(
+    #{$sidebar-group-manager-height} - #{$expanding-div-base-height} - #{$links-height} - #{$add-button-height} -
+      20px
+  );
+  flex-grow: 0;
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.GroupIcons::-webkit-scrollbar {
+  display: none;
+}
+
+.GroupIcons > button {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+}
+
 .Links {
-  position: absolute;
-  bottom: 0;
+  height: $links-height;
+  flex-grow: 0;
+}
+
+.AddButton {
+  height: $add-button-height;
+  flex-grow: 0;
 }
