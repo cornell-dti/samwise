@@ -1,10 +1,13 @@
 @import '../groupview-sizes.scss';
 
+$group-task-width: 260px;
+$group-task-margin: 14px;
+
 .GroupTask {
   font-size: 12px;
   color: white;
-  margin-left: 14px;
-  width: 260px;
+  margin-left: $group-task-margin;
+  width: $group-task-width;
   min-height: $group-task-row-content-height;
 }
 
@@ -15,8 +18,8 @@
 }
 
 .GroupTaskContainer {
-  height: 200px;
-  min-width: 250px;
+  height: $group-task-row-content-height;
+  min-width: calc(#{$group-task-width + $group-task-margin});
   overflow-x: hidden;
   padding: 0;
   overflow-y: scroll;
