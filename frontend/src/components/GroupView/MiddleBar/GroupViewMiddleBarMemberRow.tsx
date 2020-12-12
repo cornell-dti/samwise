@@ -5,6 +5,7 @@ import firebase from 'firebase/app';
 import SamwiseIcon from '../../UI/SamwiseIcon';
 import styles from './GroupViewMiddleBarMemberRow.module.scss';
 import ProfileImage from './ProfileImage';
+import { useTaskCreatorContextSetter } from '../../TaskCreator';
 
 type Props = {
   memberName: string;
@@ -26,6 +27,14 @@ const sendNotification = (variant: string, email: string, group: string): void =
 };
 
 const Member = ({ memberName, profilePicURL, group, email }: Props): ReactElement => {
+  const setTaskCreatorContext = useTaskCreatorContextSetter();
+
+  const openTaskCreator = (): void =>
+    setTaskCreatorContext({
+      taskCreatorOpened: true,
+      assignedMembers: [{ email, name: memberName, photoURL: profilePicURL }],
+    });
+
   return (
     <div className={styles.Member}>
       <ProfileImage
@@ -35,7 +44,7 @@ const Member = ({ memberName, profilePicURL, group, email }: Props): ReactElemen
       />
       <p>{memberName}</p>
       <div className={styles.Plus}>
-        <FontAwesomeIcon icon={faPlus} />
+        <FontAwesomeIcon icon={faPlus} onClick={openTaskCreator} />
       </div>
       <SamwiseIcon
         className={styles.MemberIcon}
