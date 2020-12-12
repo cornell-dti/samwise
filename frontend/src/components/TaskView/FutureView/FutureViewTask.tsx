@@ -93,10 +93,11 @@ function FutureViewTask({
   };
 
   const replaceDateForFork = getDateWithDateString(
-    original.metadata.type === 'ONE_TIME' ? original.metadata.date : null,
+    original.metadata.type !== 'MASTER_TEMPLATE' ? original.metadata.date : null,
     containerDate
   );
-  const replaceDateForForkOpt = original.metadata.type === 'ONE_TIME' ? null : replaceDateForFork;
+  const replaceDateForForkOpt =
+    original.metadata.type !== 'MASTER_TEMPLATE' ? null : replaceDateForFork;
   const TaskCheckBox = (): ReactElement => {
     const { id, complete } = original;
     const onChange = (): void => editMainTask(id, replaceDateForForkOpt, { complete: !complete });
