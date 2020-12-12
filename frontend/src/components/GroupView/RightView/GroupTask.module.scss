@@ -1,8 +1,11 @@
+@import '../groupview-sizes.scss';
+
 .GroupTask {
   font-size: 12px;
   color: white;
   margin-left: 14px;
-  min-height: 200px;
+  width: 260px;
+  min-height: $group-task-row-content-height;
 }
 
 .TaskQueueGroupTask {

@@ -17,10 +17,8 @@ function CompletedTask({ original, completedTaskCount, overflow }: Props): React
 
   const taskBar = (): ReactElement => (
     <li className={styles.CompletedTask}>
-      <span>
-        <SamwiseIcon iconName="grabber" className={styles.GrabberIcon} />
-        <span className={styles.CompletedTaskName}>{original.name}</span>
-      </span>
+      <SamwiseIcon iconName="grabber" className={styles.GrabberIcon} />
+      <span className={styles.CompletedTaskName}>{original.name}</span>
       <span className={styles.CompletedTaskDate}>{numericDate}</span>
     </li>
   );
