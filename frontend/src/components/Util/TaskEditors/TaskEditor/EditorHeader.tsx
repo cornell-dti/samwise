@@ -13,13 +13,13 @@ type TagAndDate = {
 };
 
 type Props = TagAndDate & {
+  readonly type: 'MASTER_TEMPLATE' | 'ONE_TIME' | 'GROUP';
   readonly onChange: (change: Partial<TagAndDate>) => void;
   readonly getTag: (id: string) => Tag;
   readonly displayGrabber: boolean;
   readonly calendarPosition: CalendarPosition;
   readonly icalUID?: string;
   readonly editorRef?: { current: HTMLFormElement | null };
-  readonly memberName?: string; // only supplied if task is a group task
   readonly isOverdue: boolean;
 };
 
@@ -31,6 +31,7 @@ type EditorDisplayStatus = {
 const calendarIconClass = [styles.TaskEditorIconButton, styles.TaskEditorIcon].join(' ');
 
 export default function EditorHeader({
+  type,
   tag,
   date,
   onChange,
@@ -39,7 +40,6 @@ export default function EditorHeader({
   calendarPosition,
   icalUID,
   editorRef,
-  memberName,
   isOverdue,
 }: Props): ReactElement {
   const [editorDisplayStatus, setEditorDisplayStatus] = React.useState<EditorDisplayStatus>({
@@ -143,10 +143,10 @@ export default function EditorHeader({
   return (
     <div className={headerClassName}>
       {isOverdue && <OverdueAlert target="task-card" />}
-      {displayGrabber && !memberName && (
+      {displayGrabber && type !== 'GROUP' && (
         <SamwiseIcon iconName="grabber" className={styles.TaskEditorGrabberIcon} />
       )}
-      {memberName ? null : (
+      {type === 'GROUP' ? null : (
         <>
           {tagDisplay}
           {tagEditor}
