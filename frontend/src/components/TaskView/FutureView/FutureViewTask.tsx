@@ -37,10 +37,6 @@ type Props = OwnProps & {
   readonly settings: Settings;
 };
 
-type OpenedState = {
-  readonly isEditorOpened: boolean;
-};
-
 /**
  * The component used to render one task in backlog day.
  */
