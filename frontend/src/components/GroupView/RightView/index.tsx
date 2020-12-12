@@ -1,17 +1,12 @@
-import React, { ReactElement, useState } from 'react';
+import React, { ReactElement } from 'react';
 import type { Group, SamwiseUserProfile, Task } from 'common/types/store-types';
 import SamwiseIcon from '../../UI/SamwiseIcon';
 import GroupTaskRow from './GroupTaskRow';
 import styles from './index.module.scss';
-import TaskCreator from '../../TaskCreator';
+import { TaskCreator, useTaskCreatorContextSetter } from '../../TaskCreator';
 import GroupTaskProgress from './GroupTaskProgress';
 import { promptTextInput } from '../../Util/Modals';
 import { updateGroup } from '../../../firebase/actions';
-
-type State = {
-  readonly taskCreatorOpened: boolean;
-  readonly assignedMembers?: readonly SamwiseUserProfile[];
-};
 
 type Props = {
   readonly group: Group;
@@ -20,10 +15,7 @@ type Props = {
 };
 
 const RightView = ({ group, groupMemberProfiles, tasks }: Props): ReactElement => {
-  const [{ taskCreatorOpened, assignedMembers }, setState] = useState<State>({
-    taskCreatorOpened: false,
-    assignedMembers: undefined,
-  });
+  const setTaskCreatorContext = useTaskCreatorContextSetter();
 
   const onEditGroupNameClicked = (): void => {
     promptTextInput('Edit your group name', '', 'New Group Name', 'Submit', 'text').then((name) =>
@@ -32,31 +24,15 @@ const RightView = ({ group, groupMemberProfiles, tasks }: Props): ReactElement =
   };
 
   const openTaskCreator = (member: readonly SamwiseUserProfile[]): void =>
-    setState({
+    setTaskCreatorContext({
       taskCreatorOpened: true,
       assignedMembers: member,
     });
 
-  const closeTaskCreator = (): void =>
-    setState({
-      taskCreatorOpened: false,
-    });
-
-  const clearAssignedMembers = (): void =>
-    setState({ taskCreatorOpened, assignedMembers: undefined });
-
   return (
     <div className={styles.RightView}>
       <div className={styles.GroupTaskCreator}>
-        <TaskCreator
-          view="group"
-          group={group.id}
-          groupMemberProfiles={groupMemberProfiles}
-          taskCreatorOpened={taskCreatorOpened}
-          closeTaskCreator={closeTaskCreator}
-          assignedMembers={assignedMembers}
-          clearAssignedMembers={clearAssignedMembers}
-        />
+        <TaskCreator view="group" />
       </div>
 
       <div className={styles.RightViewMain}>

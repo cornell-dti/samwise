@@ -5,6 +5,7 @@ import MiddleBar from './MiddleBar';
 import RightView from './RightView';
 import styles from './index.module.scss';
 import { database } from '../../firebase/db';
+import { TaskCreatorContextProvider } from '../TaskCreator';
 
 type Props = {
   readonly group: Group;
@@ -76,15 +77,17 @@ const GroupView = ({ group, changeView }: Props): ReactElement => {
   const groupMemberProfiles = useGroupMemberProfiles(group.members);
 
   return (
-    <div className={styles.GroupView}>
-      <MiddleBar
-        group={group}
-        groupMemberProfiles={groupMemberProfiles}
-        changeView={changeView}
-        tasks={groupTaskArray}
-      />
-      <RightView group={group} groupMemberProfiles={groupMemberProfiles} tasks={groupTaskArray} />
-    </div>
+    <TaskCreatorContextProvider group={group.id} groupMemberProfiles={groupMemberProfiles}>
+      <div className={styles.GroupView}>
+        <MiddleBar
+          group={group}
+          groupMemberProfiles={groupMemberProfiles}
+          changeView={changeView}
+          tasks={groupTaskArray}
+        />
+        <RightView group={group} groupMemberProfiles={groupMemberProfiles} tasks={groupTaskArray} />
+      </div>
+    </TaskCreatorContextProvider>
   );
 };
 

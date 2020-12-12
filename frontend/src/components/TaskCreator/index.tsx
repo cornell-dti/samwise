@@ -1,4 +1,13 @@
-import React, { KeyboardEvent, SyntheticEvent, ReactElement, useState, useRef } from 'react';
+import React, {
+  KeyboardEvent,
+  SyntheticEvent,
+  ReactElement,
+  useState,
+  useRef,
+  createContext,
+  ReactNode,
+  useContext,
+} from 'react';
 import { useSelector } from 'react-redux';
 import { randomId } from 'common/util/general-util';
 import {
@@ -26,22 +35,13 @@ type State = SimpleTask & {
   readonly member?: readonly SamwiseUserProfile[];
   readonly date: Date | RepeatingDate;
   readonly subTasks: SubTask[];
-  readonly opened: boolean;
   readonly tagPickerOpened: boolean;
   readonly datePickerOpened: boolean;
   readonly datePicked: boolean;
   readonly needToSwitchFocus: boolean;
 };
 
-type Props = {
-  readonly view: string;
-  readonly group?: string;
-  readonly groupMemberProfiles?: readonly SamwiseUserProfile[];
-  readonly taskCreatorOpened?: boolean;
-  readonly closeTaskCreator?: (opened: boolean) => void;
-  readonly assignedMembers?: readonly SamwiseUserProfile[];
-  readonly clearAssignedMembers?: () => void;
-};
+type Props = { readonly view: 'personal' | 'group' };
 
 /**
  * The placeholder text in the main task input box.
@@ -60,30 +60,72 @@ const initialState = (): State => ({
   complete: false,
   inFocus: false,
   subTasks: [],
-  opened: false,
   tagPickerOpened: false,
   datePickerOpened: false,
   datePicked: false,
   needToSwitchFocus: false,
 });
 
-const TaskCreator = ({
-  view,
+type TaskCreatorContextMutableValues = {
+  readonly taskCreatorOpened?: boolean;
+  readonly assignedMembers?: readonly SamwiseUserProfile[];
+};
+
+type TaskCreatorContextValues = TaskCreatorContextMutableValues & {
+  readonly group?: string;
+  readonly groupMemberProfiles?: readonly SamwiseUserProfile[];
+  readonly setTaskCreatorContext: React.Dispatch<
+    React.SetStateAction<TaskCreatorContextMutableValues>
+  >;
+};
+
+const TaskCreatorContext = createContext<TaskCreatorContextValues>({
+  setTaskCreatorContext: () => {
+    throw new Error("Shouldn't be called");
+  },
+});
+
+type TaskCreatorContextProviderProps = {
+  readonly group?: string;
+  readonly groupMemberProfiles?: readonly SamwiseUserProfile[];
+  readonly children: ReactNode;
+};
+
+export const TaskCreatorContextProvider = ({
   group,
   groupMemberProfiles,
-  taskCreatorOpened,
-  closeTaskCreator,
-  assignedMembers,
-  clearAssignedMembers,
-}: Props): ReactElement => {
+  children,
+}: TaskCreatorContextProviderProps): ReactElement => {
+  const [state, setState] = useState<TaskCreatorContextMutableValues>({});
+
+  return (
+    <TaskCreatorContext.Provider
+      value={{ ...state, group, groupMemberProfiles, setTaskCreatorContext: setState }}
+    >
+      {children}
+    </TaskCreatorContext.Provider>
+  );
+};
+
+export const useTaskCreatorContextSetter = (): React.Dispatch<
+  React.SetStateAction<TaskCreatorContextMutableValues>
+> => useContext(TaskCreatorContext).setTaskCreatorContext;
+
+export const TaskCreator = ({ view }: Props): ReactElement => {
   const theme = useSelector((state: StoreState) => state.settings.theme);
   const [state, setState] = useState(initialState);
   const setPartialState = (partial: Partial<State>): void =>
     setState((prev) => ({ ...prev, ...partial }));
 
-  const addTaskRef = useRef<HTMLInputElement | null>(null);
+  const {
+    group,
+    groupMemberProfiles,
+    taskCreatorOpened,
+    assignedMembers,
+    setTaskCreatorContext,
+  } = useContext(TaskCreatorContext);
 
-  const isOpen = state.opened || taskCreatorOpened || false;
+  const addTaskRef = useRef<HTMLInputElement | null>(null);
 
   const darkModeStyle = theme === 'dark' ? { background: 'black', color: 'white' } : undefined;
 
@@ -93,14 +135,11 @@ const TaskCreator = ({
    * --------------------------------------------------------------------------------
    */
 
-  const openNewTask = (): void => setPartialState({ opened: true });
+  const openNewTask = (): void =>
+    setTaskCreatorContext((prev) => ({ ...prev, taskCreatorOpened: true }));
 
   const closeNewTask = (): void => {
-    setPartialState({ opened: false });
-    // Call function to set the prop 'taskCreatorOpened' to be false
-    if (closeTaskCreator) {
-      closeTaskCreator(false);
-    }
+    setTaskCreatorContext((prev) => ({ ...prev, taskCreatorOpened: false }));
   };
 
   /**
@@ -296,12 +335,13 @@ const TaskCreator = ({
 
   const resetTask = (): void => {
     setState({ ...initialState() });
+    setTaskCreatorContext((prev) => ({ ...prev, taskCreatorOpened: false }));
     focusTaskName();
   };
 
   const render = (): ReactElement => {
     const { name, tag, member, date, inFocus, subTasks, datePicked, needToSwitchFocus } = state;
-    if (!isOpen) {
+    if (!taskCreatorOpened) {
       return (
         <div className={`${styles.TaskCreator} ${styles.TaskCreatorClosed}`} style={darkModeStyle}>
           <form
@@ -386,7 +426,9 @@ const TaskCreator = ({
                   onMemberChange={editMember}
                   onPickerOpened={openTagPicker}
                   groupMemberProfiles={groupMemberProfiles || []}
-                  clearAssignedMembers={clearAssignedMembers}
+                  clearAssignedMembers={() =>
+                    setTaskCreatorContext((prev) => ({ ...prev, assignedMembers: [] }))
+                  }
                 />
               )}
             </div>
@@ -450,5 +492,3 @@ const TaskCreator = ({
 
   return render();
 };
-
-export default TaskCreator;
