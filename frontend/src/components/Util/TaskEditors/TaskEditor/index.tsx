@@ -358,8 +358,20 @@ function TaskEditor({
   );
 }
 
-const Connected = connect(({ tags, settings }: State) => ({
-  getTag: (id: string) => tags.get(id) ?? NONE_TAG,
+const Connected = connect(({ tags, settings }: State, ownProps: OwnProps) => ({
+  getTag: (id: string) => {
+    if (ownProps.type === 'GROUP') {
+      // Treat tag id as class code
+      return (
+        Array.from(tags.values()).find(({ classId }) => {
+          if (classId == null) return false;
+          // classId has the format `<id from roster> <subject> <number>`, we take the later two parts.
+          return classId.substring(classId.indexOf(' ') + 1) === id;
+        }) ?? NONE_TAG
+      );
+    }
+    return tags.get(id) ?? NONE_TAG;
+  },
   settings,
 }))(TaskEditor);
 export default Connected;

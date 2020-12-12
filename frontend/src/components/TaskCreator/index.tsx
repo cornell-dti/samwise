@@ -47,24 +47,6 @@ type Props = { readonly view: 'personal' | 'group' };
  * The placeholder text in the main task input box.
  */
 const PLACEHOLDER_TEXT = 'What do you have to do?';
-/**
- * Generate the initial state.
- */
-const initialState = (): State => ({
-  id: randomId(),
-  owner: [''],
-  name: '',
-  tag: NONE_TAG_ID, // the id of the None tag.
-  member: undefined,
-  date: new Date(),
-  complete: false,
-  inFocus: false,
-  subTasks: [],
-  tagPickerOpened: false,
-  datePickerOpened: false,
-  datePicked: false,
-  needToSwitchFocus: false,
-});
 
 type TaskCreatorContextMutableValues = {
   readonly taskCreatorOpened?: boolean;
@@ -73,6 +55,7 @@ type TaskCreatorContextMutableValues = {
 
 type TaskCreatorContextValues = TaskCreatorContextMutableValues & {
   readonly group?: string;
+  readonly groupClassCode?: string;
   readonly groupMemberProfiles?: readonly SamwiseUserProfile[];
   readonly setTaskCreatorContext: React.Dispatch<
     React.SetStateAction<TaskCreatorContextMutableValues>
@@ -87,12 +70,14 @@ const TaskCreatorContext = createContext<TaskCreatorContextValues>({
 
 type TaskCreatorContextProviderProps = {
   readonly group?: string;
+  readonly groupClassCode?: string;
   readonly groupMemberProfiles?: readonly SamwiseUserProfile[];
   readonly children: ReactNode;
 };
 
 export const TaskCreatorContextProvider = ({
   group,
+  groupClassCode,
   groupMemberProfiles,
   children,
 }: TaskCreatorContextProviderProps): ReactElement => {
@@ -100,7 +85,13 @@ export const TaskCreatorContextProvider = ({
 
   return (
     <TaskCreatorContext.Provider
-      value={{ ...state, group, groupMemberProfiles, setTaskCreatorContext: setState }}
+      value={{
+        ...state,
+        group,
+        groupClassCode,
+        groupMemberProfiles,
+        setTaskCreatorContext: setState,
+      }}
     >
       {children}
     </TaskCreatorContext.Provider>
@@ -112,18 +103,36 @@ export const useTaskCreatorContextSetter = (): React.Dispatch<
 > => useContext(TaskCreatorContext).setTaskCreatorContext;
 
 export const TaskCreator = ({ view }: Props): ReactElement => {
-  const theme = useSelector((state: StoreState) => state.settings.theme);
-  const [state, setState] = useState(initialState);
-  const setPartialState = (partial: Partial<State>): void =>
-    setState((prev) => ({ ...prev, ...partial }));
-
   const {
     group,
+    groupClassCode,
     groupMemberProfiles,
     taskCreatorOpened,
     assignedMembers,
     setTaskCreatorContext,
   } = useContext(TaskCreatorContext);
+
+  const theme = useSelector((state: StoreState) => state.settings.theme);
+
+  const initialState = (): State => ({
+    id: randomId(),
+    owner: [''],
+    name: '',
+    tag: groupClassCode ?? NONE_TAG_ID,
+    member: undefined,
+    date: new Date(),
+    complete: false,
+    inFocus: false,
+    subTasks: [],
+    tagPickerOpened: false,
+    datePickerOpened: false,
+    datePicked: false,
+    needToSwitchFocus: false,
+  });
+
+  const [state, setState] = useState(initialState);
+  const setPartialState = (partial: Partial<State>): void =>
+    setState((prev) => ({ ...prev, ...partial }));
 
   const addTaskRef = useRef<HTMLInputElement | null>(null);
 
@@ -195,7 +204,14 @@ export const TaskCreator = ({ view }: Props): ReactElement => {
     const newSubTasks = subTasks.filter((subTask) => subTask.name !== ''); // remove empty subtasks
     // Put task in focus is the due date is today.
     const autoInFocus = inFocus || (date instanceof Date && isToday(date));
-    const commonTask = { owner, name, tag, date, complete, inFocus: autoInFocus };
+    const commonTask = {
+      owner,
+      name,
+      tag: groupClassCode ?? tag,
+      date,
+      complete,
+      inFocus: autoInFocus,
+    };
     let newTask: TaskWithoutIdOrderChildren;
     if (date instanceof Date) {
       date.setHours(23);
