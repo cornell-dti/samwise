@@ -445,7 +445,7 @@ export const TaskCreator = ({ view }: Props): ReactElement => {
                   clearAssignedMembers={() =>
                     setTaskCreatorContext((prev) => ({ ...prev, assignedMembers: [] }))
                   }
-                  resetTask = {resetTask}
+                  resetTask={resetTask}
                 />
               )}
             </div>
