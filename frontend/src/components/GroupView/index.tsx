@@ -77,7 +77,11 @@ const GroupView = ({ group, changeView }: Props): ReactElement => {
   const groupMemberProfiles = useGroupMemberProfiles(group.members);
 
   return (
-    <TaskCreatorContextProvider group={group.id} groupMemberProfiles={groupMemberProfiles}>
+    <TaskCreatorContextProvider
+      group={group.id}
+      groupClassCode={group.classCode}
+      groupMemberProfiles={groupMemberProfiles}
+    >
       <div className={styles.GroupView}>
         <MiddleBar
           group={group}
