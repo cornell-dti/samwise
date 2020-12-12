@@ -289,6 +289,7 @@ function TaskEditor({
       <div>
         <RepeatFrequencyHeader taskId={id} tag={tag} getTag={getTag} />
         <EditorHeader
+          type={type}
           tag={tag}
           date={date}
           onChange={dispatchEditTask}
@@ -297,7 +298,6 @@ function TaskEditor({
           displayGrabber={displayGrabber == null ? false : displayGrabber}
           icalUID={canvasLinked ? icalUID : undefined}
           editorRef={editorRef}
-          memberName={memberName}
           isOverdue={isOverdue}
         />
         <MainTaskEditor
