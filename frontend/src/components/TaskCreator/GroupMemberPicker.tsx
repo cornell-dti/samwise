@@ -14,6 +14,7 @@ type OwnProps = {
 type Props = OwnProps & {
   readonly clearAssignedMembers?: () => void;
   readonly groupMemberProfiles: readonly SamwiseUserProfile[];
+  readonly resetTask: () => void;
 };
 
 export default function GroupMemberPicker({
@@ -23,6 +24,7 @@ export default function GroupMemberPicker({
   onPickerOpened,
   clearAssignedMembers,
   groupMemberProfiles,
+  resetTask,
 }: Props): ReactElement {
   // Controllers
   const clickPicker = (): void => {
@@ -53,6 +55,9 @@ export default function GroupMemberPicker({
     const remainingMemberCount = selectedMembers.length - i;
     if (remainingMemberCount > 0) memberNames += ` +${remainingMemberCount}`;
 
+    if (memberNames.length === 0) {
+      memberNames = 'assign to';
+    }
     return memberNames;
   };
 
@@ -91,7 +96,11 @@ export default function GroupMemberPicker({
       {displayedNode(member === undefined)}
       {opened && (
         <div>
-          <SearchGroupMember members={groupMemberProfiles} onMemberChange={onMemberChange} />
+          <SearchGroupMember
+            members={groupMemberProfiles}
+            onMemberChange={onMemberChange}
+            resetTask={resetTask}
+          />
         </div>
       )}
     </div>
