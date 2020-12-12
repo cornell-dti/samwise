@@ -33,6 +33,7 @@ export default function CheckBox({
   return (
     <label className={allClassNames}>
       <input
+        className={disabled ? styles.Disabled : undefined}
         tabIndex={0}
         defaultChecked={checked}
         onClick={handleClick}

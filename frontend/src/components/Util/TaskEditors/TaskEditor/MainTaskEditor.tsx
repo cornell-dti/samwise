@@ -22,6 +22,7 @@ type Props = NameCompleteInFocus & {
   readonly memberName?: string; // only supplied if task is a group task
   readonly memberEmail?: string; // only supplied if task is a group task
   readonly groupID?: string; // only supplied if task is a group task
+  readonly canMarkCompleteOrFocus: boolean;
 };
 
 const deleteIconClass = [styles.TaskEditorIcon, styles.TaskEditorIconLeftPad].join(' ');
@@ -40,11 +41,20 @@ function MainTaskEditor({
   memberName,
   memberEmail,
   groupID,
+  canMarkCompleteOrFocus,
 }: Props): ReactElement {
   const replaceDateForFork =
     taskDate == null ? getDateWithDateString(taskDate, dateAppeared) : null;
-  const editComplete = (): void => editMainTask(id, replaceDateForFork, { complete: !complete });
-  const editInFocus = (): void => editMainTask(id, replaceDateForFork, { inFocus: !inFocus });
+  const editComplete = (): void => {
+    if (canMarkCompleteOrFocus) {
+      editMainTask(id, replaceDateForFork, { complete: !complete });
+    }
+  };
+  const editInFocus = (): void => {
+    if (canMarkCompleteOrFocus) {
+      editMainTask(id, replaceDateForFork, { inFocus: !inFocus });
+    }
+  };
 
   const onKeyDown = (event: KeyboardEvent<HTMLInputElement>): void => {
     if (event.key !== 'Enter') {
