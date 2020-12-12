@@ -1,7 +1,7 @@
 import React, { KeyboardEvent, ReactElement, SyntheticEvent, ReactNode, useState } from 'react';
 import { connect } from 'react-redux';
 import { Draggable } from 'react-beautiful-dnd';
-import { Settings, State, SubTask, Task } from 'common/types/store-types';
+import { Settings, State, SubTask, Tag, Task } from 'common/types/store-types';
 import { getTodayAtZeroAM, getDateWithDateString } from 'common/util/datetime-util';
 import { NONE_TAG } from 'common/util/tag-util';
 import FloatingTaskEditor from '../../Util/TaskEditors/FloatingTaskEditor';
@@ -242,7 +242,18 @@ const getCompoundTask = (
   if (original == null) {
     return null;
   }
-  const { color } = tags.get(original.tag) ?? NONE_TAG;
+  let tag: Tag | undefined;
+  if (original.metadata.type === 'GROUP') {
+    // Treat tag id as class code
+    tag = Array.from(tags.values()).find(({ classId }) => {
+      if (classId == null) return false;
+      // classId has the format `<id from roster> <subject> <number>`, we take the later two parts.
+      return classId.substring(classId.indexOf(' ') + 1) === original.tag;
+    });
+  } else {
+    tag = tags.get(original.tag);
+  }
+  const { color } = tag ?? NONE_TAG;
   if (doesShowCompletedTasks) {
     let filteredSubTasks = [...original.children];
     filteredSubTasks = filteredSubTasks.sort((a, b) => a.order - b.order);
