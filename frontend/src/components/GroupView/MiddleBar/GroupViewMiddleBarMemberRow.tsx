@@ -43,19 +43,21 @@ const Member = ({ memberName, profilePicURL, group, email }: Props): ReactElemen
         imageURL={profilePicURL}
       />
       <p>{memberName}</p>
-      <div className={styles.Plus}>
-        <FontAwesomeIcon icon={faPlus} onClick={openTaskCreator} />
+      <div>
+        <div className={styles.Plus}>
+          <FontAwesomeIcon icon={faPlus} onClick={openTaskCreator} />
+        </div>
+        <SamwiseIcon
+          className={styles.MemberIcon}
+          iconName="bell-outline"
+          onClick={() => sendNotification('reminder', email, group)}
+        />
+        <SamwiseIcon
+          className={styles.MemberIcon}
+          iconName="hug"
+          onClick={() => sendNotification('hug', email, group)}
+        />
       </div>
-      <SamwiseIcon
-        className={styles.MemberIcon}
-        iconName="bell-outline"
-        onClick={() => sendNotification('reminder', email, group)}
-      />
-      <SamwiseIcon
-        className={styles.MemberIcon}
-        iconName="hug"
-        onClick={() => sendNotification('hug', email, group)}
-      />
     </div>
   );
 };
