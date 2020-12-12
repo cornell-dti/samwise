@@ -25,15 +25,19 @@ export default function CheckBox({
   if (inverted) {
     allClassNames = `${allClassNames} ${styles.InvertedCheckBox}`;
   }
+
   const handleClick = (): void => {
     if (!disabled) {
       onChange(!checked);
     }
   };
   return (
-    <label className={allClassNames}>
+    <label
+      className={
+        disabled ? `${allClassNames} ${styles.Disabled}` : `${allClassNames} ${styles.Enabled}`
+      }
+    >
       <input
-        className={disabled ? styles.Disabled : undefined}
         tabIndex={0}
         defaultChecked={checked}
         onClick={handleClick}

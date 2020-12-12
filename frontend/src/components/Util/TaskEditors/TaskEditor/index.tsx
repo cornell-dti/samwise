@@ -107,7 +107,7 @@ function TaskEditor({
   isFocusTaskAndCompleted,
 }: Props): ReactElement {
   const { email } = getAppUser();
-  const canMarkCompleteOrFocus = memberEmail === undefined ? true : email === memberEmail;
+  const canMarkComplete = memberEmail === undefined ? true : email === memberEmail;
 
   const { onChange, removeTask, onSaveClicked } = actions;
   const initTaskDate = initTaskData.date;
@@ -315,7 +315,7 @@ function TaskEditor({
           memberName={memberName}
           memberEmail={memberEmail}
           groupID={groupID}
-          canMarkCompleteOrFocus={canMarkCompleteOrFocus}
+          canMarkComplete={canMarkComplete}
         />
       </div>
       <div className={styles.TaskEditorSubTasksIndentedContainer}>
@@ -332,7 +332,7 @@ function TaskEditor({
             onRemove={removeSubTask}
             onPressEnter={pressEnterHandler}
             memberName={memberName}
-            canMarkCompleteOrFocus={canMarkCompleteOrFocus}
+            canMarkComplete={canMarkComplete}
           />
         ))}
         <div className={styles.SubtaskHide} style={active === false ? { maxHeight: 0 } : undefined}>
