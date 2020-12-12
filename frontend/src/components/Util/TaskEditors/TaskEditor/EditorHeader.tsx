@@ -5,6 +5,7 @@ import styles from './index.module.scss';
 import TagListPicker from '../../TagListPicker/TagListPicker';
 import { CalendarPosition } from '../editors-types';
 import SamwiseIcon from '../../../UI/SamwiseIcon';
+import OverdueAlert from '../../../UI/OverdueAlert';
 
 type TagAndDate = {
   readonly tag: string;
@@ -19,6 +20,7 @@ type Props = TagAndDate & {
   readonly icalUID?: string;
   readonly editorRef?: { current: HTMLFormElement | null };
   readonly memberName?: string; // only supplied if task is a group task
+  readonly isOverdue: boolean;
 };
 
 type EditorDisplayStatus = {
@@ -38,6 +40,7 @@ export default function EditorHeader({
   icalUID,
   editorRef,
   memberName,
+  isOverdue,
 }: Props): ReactElement {
   const [editorDisplayStatus, setEditorDisplayStatus] = React.useState<EditorDisplayStatus>({
     doesShowTagEditor: false,
@@ -139,6 +142,7 @@ export default function EditorHeader({
 
   return (
     <div className={headerClassName}>
+      {isOverdue && <OverdueAlert target="task-card" />}
       {displayGrabber && !memberName && (
         <SamwiseIcon iconName="grabber" className={styles.TaskEditorGrabberIcon} />
       )}
