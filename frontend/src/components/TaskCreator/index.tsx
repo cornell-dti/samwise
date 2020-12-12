@@ -204,7 +204,14 @@ export const TaskCreator = ({ view }: Props): ReactElement => {
     const newSubTasks = subTasks.filter((subTask) => subTask.name !== ''); // remove empty subtasks
     // Put task in focus is the due date is today.
     const autoInFocus = inFocus || (date instanceof Date && isToday(date));
-    const commonTask = { owner, name, tag, date, complete, inFocus: autoInFocus };
+    const commonTask = {
+      owner,
+      name,
+      tag: groupClassCode ?? tag,
+      date,
+      complete,
+      inFocus: autoInFocus,
+    };
     let newTask: TaskWithoutIdOrderChildren;
     if (date instanceof Date) {
       date.setHours(23);
