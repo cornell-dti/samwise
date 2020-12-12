@@ -1,4 +1,4 @@
-import React, { KeyboardEvent, ReactElement, SyntheticEvent, ReactNode } from 'react';
+import React, { KeyboardEvent, ReactElement, SyntheticEvent, ReactNode, useState } from 'react';
 import { connect } from 'react-redux';
 import { Draggable } from 'react-beautiful-dnd';
 import { Settings, State, SubTask, Task } from 'common/types/store-types';
@@ -53,9 +53,16 @@ function FutureViewTask({
 }: Props): ReactElement | null {
   const isSmallScreen = useMappedWindowSize(({ width }) => width <= 840);
 
+  const [isEditorOpened, setOpened] = useState(false);
+
+  const toggle = (opened: boolean): void => {
+    setOpened(opened);
+  };
+
   if (compoundTask === null) {
     return null;
   }
+
   const { original, filteredSubTasks, color } = compoundTask;
 
   const { canvasCalendar } = settings;
@@ -173,9 +180,10 @@ function FutureViewTask({
   const overdueComponentOpt = date < getTodayAtZeroAM() && !complete && (
     <OverdueAlert target="future-view-task" />
   );
-  // Construct the trigger for the floating task editor.
+
   const trigger = (opened: boolean, opener: () => void): ReactElement => {
     const onClickHandler = getOnClickHandler(opener);
+
     const onSpaceHandler = (e: KeyboardEvent<HTMLDivElement>): void => {
       if (e.key === ' ') {
         onClickHandler();
@@ -204,7 +212,9 @@ function FutureViewTask({
       key={taskId}
       draggableId={taskId}
       index={index}
-      isDragDisabled={compoundTask.original.metadata.type === 'MASTER_TEMPLATE' || isCanvasTask}
+      isDragDisabled={
+        isEditorOpened || compoundTask.original.metadata.type === 'MASTER_TEMPLATE' || isCanvasTask
+      }
     >
       {(provided) => (
         // eslint-disable-next-line react/jsx-props-no-spreading
@@ -215,6 +225,8 @@ function FutureViewTask({
             initialTask={original}
             taskAppearedDate={containerDate}
             trigger={trigger}
+            toggle={toggle}
+            open={isEditorOpened}
           />
         </div>
       )}
