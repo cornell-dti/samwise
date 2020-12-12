@@ -35,6 +35,7 @@ import NewSubTaskEditor from './NewSubTaskEditor';
 import OneSubTaskEditor from './OneSubTaskEditor';
 import { CalendarPosition } from '../editors-types';
 import useTaskDiffReducer, { diffIsEmpty, Diff } from './task-diff-reducer';
+import { getAppUser } from '../../../../firebase/auth-util';
 
 type DefaultProps = {
   readonly displayGrabber?: boolean;
@@ -105,6 +106,9 @@ function TaskEditor({
   wholeTaskData,
   isFocusTaskAndCompleted,
 }: Props): ReactElement {
+  const { email } = getAppUser();
+  const canMarkComplete = memberEmail === undefined ? true : email === memberEmail;
+
   const { onChange, removeTask, onSaveClicked } = actions;
   const initTaskDate = initTaskData.date;
   const { taskData, diff, dispatchEditTask, dispatchEditSubTask, reset } = useTaskDiffReducer(
@@ -311,6 +315,7 @@ function TaskEditor({
           memberName={memberName}
           memberEmail={memberEmail}
           groupID={groupID}
+          canMarkComplete={canMarkComplete}
         />
       </div>
       <div className={styles.TaskEditorSubTasksIndentedContainer}>
@@ -327,6 +332,7 @@ function TaskEditor({
             onRemove={removeSubTask}
             onPressEnter={pressEnterHandler}
             memberName={memberName}
+            canMarkComplete={canMarkComplete}
           />
         ))}
         <div className={styles.SubtaskHide} style={active === false ? { maxHeight: 0 } : undefined}>
