@@ -62,6 +62,8 @@ type Props = {
   readonly trigger: (opened: boolean, opener: () => void) => ReactNode;
   // the position of the calendar
   readonly calendarPosition: CalendarPosition;
+  readonly toggle: (opened: boolean) => void;
+  readonly open: boolean;
 };
 
 /**
@@ -74,10 +76,10 @@ export default function FloatingTaskEditor({
   initialTask: task,
   taskAppearedDate,
   trigger,
+  toggle,
+  open,
 }: Props): ReactElement {
   const icalUID = task.metadata.type === 'ONE_TIME' ? task.metadata.icalUID : '';
-
-  const [open, setOpen] = React.useState<boolean>(false);
 
   const editorRef = React.useRef<HTMLFormElement>(null);
 
@@ -89,8 +91,12 @@ export default function FloatingTaskEditor({
     updateFloatingEditorPosition(editorPosDiv, size, position);
   });
 
-  const openPopup = (): void => setOpen(true);
-  const closePopup = (): void => setOpen(false);
+  const openPopup = (): void => {
+    toggle(true);
+  };
+  const closePopup = (): void => {
+    toggle(false);
+  };
 
   const { id: _, metadata, children, ...taskData } = task;
   const actions = {

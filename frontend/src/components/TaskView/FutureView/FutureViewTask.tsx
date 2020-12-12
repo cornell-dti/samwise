@@ -1,4 +1,4 @@
-import React, { KeyboardEvent, ReactElement, SyntheticEvent, ReactNode } from 'react';
+import React, { KeyboardEvent, ReactElement, SyntheticEvent, ReactNode, useState } from 'react';
 import { connect } from 'react-redux';
 import { Draggable } from 'react-beautiful-dnd';
 import { Settings, State, SubTask, Task } from 'common/types/store-types';
@@ -37,6 +37,10 @@ type Props = OwnProps & {
   readonly settings: Settings;
 };
 
+type MyState = {
+  readonly openedGlobal: boolean;
+};
+
 /**
  * The component used to render one task in backlog day.
  */
@@ -53,9 +57,20 @@ function FutureViewTask({
 }: Props): ReactElement | null {
   const isSmallScreen = useMappedWindowSize(({ width }) => width <= 840);
 
+  const [{ openedGlobal }, setOpened] = useState<MyState>({
+    openedGlobal: false,
+  });
+
+  const toggle = (opened: boolean): void => {
+    setOpened({
+      openedGlobal: opened,
+    });
+  };
+
   if (compoundTask === null) {
     return null;
   }
+
   const { original, filteredSubTasks, color } = compoundTask;
 
   const { canvasCalendar } = settings;
@@ -174,17 +189,19 @@ function FutureViewTask({
     <OverdueAlert target="future-view-task" />
   );
   // Construct the trigger for the floating task editor.
-  const isDragDisabledCondition = (): boolean => {
-    console.log(openedGlobal);
-    return openedGlobal;
-  };
-  let openedGlobal = false;
+  // const isDragDisabledCondition = (): boolean => {
+  //   console.log(openedGlobal);
+  //   return openedGlobal;
+  // };
+
   const trigger = (opened: boolean, opener: () => void): ReactElement => {
-    openedGlobal = opened;
+    // openedGlobal = opened;
     // console.log(openedGlobal)
     // console.log(compoundTask.original.metadata.type === 'MASTER_TEMPLATE', isCanvasTask)
     // console.log(openedGlobal && (compoundTask.original.metadata.type === 'MASTER_TEMPLATE' || true || isCanvasTask))
     const onClickHandler = getOnClickHandler(opener);
+    // toggle()
+    // const onClickHandlertwo = getOnClickHandler(toggle);
     const onSpaceHandler = (e: KeyboardEvent<HTMLDivElement>): void => {
       if (e.key === ' ') {
         onClickHandler();
@@ -214,11 +231,7 @@ function FutureViewTask({
       draggableId={taskId}
       index={index}
       // isDragDisabled={ compoundTask.original.metadata.type === 'MASTER_TEMPLATE' || isCanvasTask}
-      isDragDisabled={
-        isDragDisabledCondition() ||
-        compoundTask.original.metadata.type === 'MASTER_TEMPLATE' ||
-        isCanvasTask
-      }
+      isDragDisabled={openedGlobal}
     >
       {(provided) => (
         // eslint-disable-next-line react/jsx-props-no-spreading
@@ -229,6 +242,8 @@ function FutureViewTask({
             initialTask={original}
             taskAppearedDate={containerDate}
             trigger={trigger}
+            toggle={toggle}
+            open={openedGlobal}
           />
         </div>
       )}
