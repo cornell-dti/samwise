@@ -21,7 +21,6 @@ import {
   getFilteredCompletedInFocusTask,
   getFilteredNotCompletedInFocusTask,
 } from 'common/util/task-util';
-import OverdueAlert from '../../../UI/OverdueAlert';
 import {
   confirmRepeatedTaskEditMaster,
   promptRepeatedTaskEditChoice,
@@ -287,7 +286,6 @@ function TaskEditor({
       onBlur={onMouseLeave}
       ref={editorRef}
     >
-      {isOverdue && <OverdueAlert target="task-card" />}
       <div>
         <RepeatFrequencyHeader taskId={id} tag={tag} getTag={getTag} />
         <EditorHeader
@@ -300,6 +298,7 @@ function TaskEditor({
           icalUID={canvasLinked ? icalUID : undefined}
           editorRef={editorRef}
           memberName={memberName}
+          isOverdue={isOverdue}
         />
         <MainTaskEditor
           id={id}
