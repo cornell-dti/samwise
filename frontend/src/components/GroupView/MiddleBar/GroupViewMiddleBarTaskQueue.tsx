@@ -4,17 +4,28 @@ import { Task } from 'common/types/store-types';
 import { sortTask } from 'common/util/task-util';
 import styles from './GroupViewMiddleBarTaskQueue.module.scss';
 import GroupTask from '../RightView/GroupTask';
+import { useTaskCreatorContextSetter } from '../../TaskCreator';
 
 type Props = {
   readonly tasks: readonly Task[];
 };
 
-const EmptyTaskQueue = (): ReactElement => (
-  <div className={styles.EmptyTaskQueue}>
-    <p>Start adding new tasks!</p>
-    <button type="button">Add task</button>
-  </div>
-);
+const EmptyTaskQueue = (): ReactElement => {
+  const setTaskCreatorContext = useTaskCreatorContextSetter();
+
+  const openTaskCreator = (): void =>
+    setTaskCreatorContext({
+      taskCreatorOpened: true,
+    });
+  return (
+    <div className={styles.EmptyTaskQueue}>
+      <p>Start adding new tasks!</p>
+      <button onClick={openTaskCreator} type="button">
+        Add task
+      </button>
+    </div>
+  );
+};
 
 function renderTaskList(tasks: readonly Task[]): ReactNode {
   return [...tasks]
