@@ -5,6 +5,7 @@ import { sortTask } from 'common/util/task-util';
 import styles from './GroupViewMiddleBarTaskQueue.module.scss';
 import GroupTask from '../RightView/GroupTask';
 import { useTaskCreatorContextSetter } from '../../TaskCreator';
+import { getAppUser } from '../../../firebase/auth-util';
 
 type Props = {
   readonly tasks: readonly Task[];
@@ -28,15 +29,16 @@ const EmptyTaskQueue = (): ReactElement => {
 };
 
 function renderTaskList(tasks: readonly Task[]): ReactNode {
+  const { displayName, email } = getAppUser();
   return [...tasks]
     .sort(sortTask)
     .map((task) => (
       <GroupTask
         key={task.id}
         original={task}
-        memberName=""
+        memberName={displayName}
         groupID=""
-        memberEmail=""
+        memberEmail={email}
         isInTaskQueue
       />
     ));
