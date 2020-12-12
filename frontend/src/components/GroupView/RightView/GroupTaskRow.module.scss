@@ -3,6 +3,7 @@
 .GroupTaskRow {
   display: flex;
   direction: row;
+  flex-shrink: 0;
   margin-bottom: 1.5em;
 }
 
