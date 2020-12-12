@@ -62,7 +62,9 @@ type Props = {
   readonly trigger: (opened: boolean, opener: () => void) => ReactNode;
   // the position of the calendar
   readonly calendarPosition: CalendarPosition;
+  // the toggle function to change the state of the editor
   readonly toggle: (opened: boolean) => void;
+  // the state of the editor
   readonly open: boolean;
 };
 

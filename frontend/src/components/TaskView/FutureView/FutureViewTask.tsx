@@ -37,8 +37,8 @@ type Props = OwnProps & {
   readonly settings: Settings;
 };
 
-type MyState = {
-  readonly openedGlobal: boolean;
+type OpenedState = {
+  readonly isEditorOpened: boolean;
 };
 
 /**
@@ -57,14 +57,10 @@ function FutureViewTask({
 }: Props): ReactElement | null {
   const isSmallScreen = useMappedWindowSize(({ width }) => width <= 840);
 
-  const [{ openedGlobal }, setOpened] = useState<MyState>({
-    openedGlobal: false,
-  });
+  const [isEditorOpened, setOpened] = useState(false);
 
   const toggle = (opened: boolean): void => {
-    setOpened({
-      openedGlobal: opened,
-    });
+    setOpened(opened);
   };
 
   if (compoundTask === null) {
@@ -188,20 +184,10 @@ function FutureViewTask({
   const overdueComponentOpt = date < getTodayAtZeroAM() && !complete && (
     <OverdueAlert target="future-view-task" />
   );
-  // Construct the trigger for the floating task editor.
-  // const isDragDisabledCondition = (): boolean => {
-  //   console.log(openedGlobal);
-  //   return openedGlobal;
-  // };
 
   const trigger = (opened: boolean, opener: () => void): ReactElement => {
-    // openedGlobal = opened;
-    // console.log(openedGlobal)
-    // console.log(compoundTask.original.metadata.type === 'MASTER_TEMPLATE', isCanvasTask)
-    // console.log(openedGlobal && (compoundTask.original.metadata.type === 'MASTER_TEMPLATE' || true || isCanvasTask))
     const onClickHandler = getOnClickHandler(opener);
-    // toggle()
-    // const onClickHandlertwo = getOnClickHandler(toggle);
+
     const onSpaceHandler = (e: KeyboardEvent<HTMLDivElement>): void => {
       if (e.key === ' ') {
         onClickHandler();
@@ -230,8 +216,9 @@ function FutureViewTask({
       key={taskId}
       draggableId={taskId}
       index={index}
-      // isDragDisabled={ compoundTask.original.metadata.type === 'MASTER_TEMPLATE' || isCanvasTask}
-      isDragDisabled={openedGlobal}
+      isDragDisabled={
+        isEditorOpened || compoundTask.original.metadata.type === 'MASTER_TEMPLATE' || isCanvasTask
+      }
     >
       {(provided) => (
         // eslint-disable-next-line react/jsx-props-no-spreading
@@ -243,7 +230,7 @@ function FutureViewTask({
             taskAppearedDate={containerDate}
             trigger={trigger}
             toggle={toggle}
-            open={openedGlobal}
+            open={isEditorOpened}
           />
         </div>
       )}
