@@ -284,10 +284,18 @@ export default function DatePicker(props: Props): ReactElement {
                   calendarType="US"
                 />
                 <p className={styles.RepeatSpecialEndDate}>
-                  <button type="button" onClick={() => testSetEndSem(LAST_DAY_OF_CLASS)}>
+                  <button
+                    className={styles.RepeatSpecialEndDateButton}
+                    type="button"
+                    onClick={() => testSetEndSem(LAST_DAY_OF_CLASS)}
+                  >
                     Last Day of Class ({LAST_DAY_OF_CLASS.toLocaleDateString()})
                   </button>
-                  <button type="button" onClick={() => testSetEndSem(LAST_DAY_OF_EXAMS)}>
+                  <button
+                    className={styles.RepeatSpecialEndDateButton}
+                    type="button"
+                    onClick={() => testSetEndSem(LAST_DAY_OF_EXAMS)}
+                  >
                     Last Day of Finals ({LAST_DAY_OF_EXAMS.toLocaleDateString()})
                   </button>
                 </p>
