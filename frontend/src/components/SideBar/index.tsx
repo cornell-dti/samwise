@@ -35,7 +35,7 @@ const SideBar = ({ groups, changeView }: Props): ReactElement => {
         </button>
       </div>
       <div className={styles.GroupManager}>
-        <p>My Groups</p>
+        <p className={styles.GroupManagerText}>My Groups</p>
         <div className={styles.GroupIcons}>
           {groups.map((g) => (
             <GroupIcon
@@ -55,7 +55,7 @@ const SideBar = ({ groups, changeView }: Props): ReactElement => {
           >
             <FontAwesomeIcon className={styles.PlusIcon} icon={faPlus} />
           </button>
-          {!showDropdown && <p>New Group</p>}
+          {!showDropdown && <p className={styles.GroupManagerText}>New Group</p>}
           <AddGroupTags show={showDropdown} setShow={setShowDropdown} />
         </div>
         <div className={styles.ExpandToFill} />
