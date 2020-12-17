@@ -60,7 +60,7 @@ const SideBar = ({ groups, changeView }: Props): ReactElement => {
         </div>
         <div className={styles.ExpandToFill} />
         <div className={styles.Links}>
-          <SettingsButton />
+          <SettingsButton buttonClassname={styles.SettingsButton} />
         </div>
       </div>
     </div>
