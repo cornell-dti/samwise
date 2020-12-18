@@ -10,8 +10,6 @@ import { NONE_TAG_ID, NONE_TAG } from 'common/util/tag-util';
 export const initialState: State = {
   tags: Map({ [NONE_TAG_ID]: NONE_TAG }),
   tasks: Map(),
-  missingSubTasks: Map(),
-  orphanSubTasks: Map(),
   dateTaskMap: Map(),
   groupTaskMap: Map(),
   repeatedTaskSet: Set(),
@@ -19,8 +17,8 @@ export const initialState: State = {
   settings: { canvasCalendar: null, completedOnboarding: true, theme: 'light' },
   bannerMessageStatus: {},
   courses: Map(),
-  pendingInvites: Map(),
   groups: Map(),
+  groupInvites: Map(),
 };
 
 /**
@@ -44,7 +42,7 @@ export const initialStateForTesting: State = {
       tag: 'foo',
       complete: true,
       inFocus: false,
-      children: [{ id: 'foo', order: 1, name: 'Foo', complete: true, inFocus: false }],
+      children: [{ order: 1, name: 'Foo', complete: true, inFocus: false }],
       metadata: {
         type: 'ONE_TIME',
         date: new Date('2030-01-01'),
@@ -58,7 +56,7 @@ export const initialStateForTesting: State = {
       tag: 'bar',
       complete: false,
       inFocus: true,
-      children: [{ id: 'bar', order: 2, name: 'Bar', complete: false, inFocus: true }],
+      children: [{ order: 2, name: 'Bar', complete: false, inFocus: true }],
       metadata: {
         type: 'ONE_TIME',
         date: new Date('2030-01-01'),
@@ -72,7 +70,7 @@ export const initialStateForTesting: State = {
       tag: 'baz',
       complete: true,
       inFocus: true,
-      children: [{ id: 'baz', order: 3, name: 'Baz', complete: true, inFocus: true }],
+      children: [{ order: 3, name: 'Baz', complete: true, inFocus: true }],
       metadata: {
         type: 'ONE_TIME',
         date: new Date('2030-01-01'),
@@ -89,8 +87,6 @@ export const initialStateForTesting: State = {
     groupId2: Set(['bar', 'baz']),
     groupId3: Set(),
   }),
-  missingSubTasks: Map(),
-  orphanSubTasks: Map(),
   repeatedTaskSet: Set(),
   groupTaskSet: Set(),
   settings: { canvasCalendar: null, completedOnboarding: true, theme: 'light' },
@@ -109,6 +105,6 @@ export const initialStateForTesting: State = {
       },
     ],
   }),
-  pendingInvites: Map(),
   groups: Map(),
+  groupInvites: Map(),
 };

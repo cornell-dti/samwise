@@ -1,5 +1,7 @@
+@import '../groupview-sizes.scss';
+
 .People {
-  min-height: 40%;
+  height: $peoplelist-height;
   margin: 0.5em 0;
 }
 
@@ -11,6 +13,8 @@
 
 .People h2 {
   font-weight: bold;
+  height: $sidebar-header-height;
+  margin: $sidebar-header-margin 0;
 }
 
 .AddMember {
@@ -43,9 +47,10 @@
 .LeaveGroup {
   color: #ff7a7a;
   position: absolute;
-  bottom: 10px;
   border: none;
   background-color: transparent;
+  height: $leavegroup-height;
+  bottom: 0;
 }
 
 .LeaveGroup p {
@@ -54,6 +59,9 @@
 }
 
 .MemberList {
-  max-height: 60%;
+  max-height: calc(
+    #{$peoplelist-height} - #{$sidebar-header-height} - #{$sidebar-header-margin} * 2 - #{$addmember-height} -
+      #{$leavegroup-height} - 2.5em
+  );
   overflow-y: auto;
 }

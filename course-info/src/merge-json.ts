@@ -1,7 +1,4 @@
-import { readFileSync, writeFileSync } from 'fs';
 import { CourseInfo, ExamInfo, ExamType, ExamTimeType, FullInfo } from './types';
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-import { createSemiFinalJson, createPrelimJson } from './fetch-exam';
 
 class Course {
   public readonly examTimes: Map<number, ExamType> = new Map();
@@ -33,14 +30,13 @@ class Course {
   }
 }
 
-function processCourseInfoJson(map: Map<string, Course>, json: CourseInfo[]): void {
+function processCourseInfoJson(map: Map<string, Course>, json: readonly CourseInfo[]): void {
   json.forEach(({ courseId, subject, courseNumber, title }) => {
     const course = new Course(courseId, subject, courseNumber, title);
     map.set(course.identifier, course);
   });
 }
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 function processExamInfoJson(
   map: Map<string, Course>,
   json: readonly ExamInfo[],
@@ -58,14 +54,16 @@ function processExamInfoJson(
   });
 }
 
-async function main(): Promise<void> {
+export default function mergeCoursesAndExamJson(
+  courses: readonly CourseInfo[],
+  prelimExams: readonly ExamInfo[],
+  semifinalExams: readonly ExamInfo[],
+  finalExams: readonly ExamInfo[]
+): readonly FullInfo[] {
   const map = new Map<string, Course>();
-  processCourseInfoJson(map, JSON.parse(readFileSync('fa20-courses.json', 'utf8')));
-  // TODO: re-enable them when Cornell publishes finals (no idea when it will happen)
-  processExamInfoJson(map, await createSemiFinalJson(), 'semifinal');
-  processExamInfoJson(map, await createPrelimJson(), 'prelim');
-  const result = Array.from(map.values()).map((course) => course.plainJs);
-  writeFileSync('fa20-courses-with-exams-min.json', JSON.stringify(result));
+  processCourseInfoJson(map, courses);
+  processExamInfoJson(map, prelimExams, 'prelim');
+  processExamInfoJson(map, semifinalExams, 'semifinal');
+  processExamInfoJson(map, finalExams, 'final');
+  return Array.from(map.values()).map((course) => course.plainJs);
 }
-
-main();

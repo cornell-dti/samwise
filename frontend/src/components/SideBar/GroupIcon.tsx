@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import { State, Tag } from 'common/types/store-types';
 import { NONE_TAG } from 'common/util/tag-util';
 import { Views } from './types';
+import sidebarStyles from './index.module.scss';
 import styles from './GroupIcon.module.scss';
 import { getOrderedTags } from '../../store/selectors';
 
@@ -29,7 +30,9 @@ const GroupIcon = ({ classCode, handleClick, selected, tags }: Props): ReactElem
     <button
       type="button"
       onClick={() => handleClick('group', classCode)}
-      className={styles.GroupIcon + (selected ? ` ${styles.Active}` : '')}
+      className={`${sidebarStyles.GroupLetterIcon} ${styles.GroupIcon}${
+        selected ? ` ${styles.Active}` : ''
+      }`}
       style={{ background: color }}
     >
       {classCode.charAt(0)}

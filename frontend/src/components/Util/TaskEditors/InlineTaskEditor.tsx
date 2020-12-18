@@ -10,6 +10,10 @@ type Props = {
   readonly calendarPosition: CalendarPosition;
   readonly className?: string; // additional class names applied to the editor.
   readonly memberName?: string; // only supplied if the task is a group task
+  readonly memberEmail?: string; // only supplied if the task is a group task
+  readonly groupID?: string; // only supplied if the task is a group task
+  // True if filtering by completed.
+  readonly isFocusTaskAndCompleted?: boolean; // only supplied if the task is a focus task.
 };
 
 /**
@@ -21,10 +25,13 @@ export default function InlineTaskEditor({
   className,
   calendarPosition,
   memberName,
+  memberEmail,
+  groupID,
+  isFocusTaskAndCompleted,
 }: Props): ReactElement {
   const [disabled, setDisabled] = useState(true);
   const { id } = original;
-  const { id: _, metadata, children, ...mainTask } = filtered;
+  const { id: _, metadata, children, ...taskData } = filtered;
   const icalUID = original.metadata.type === 'ONE_TIME' ? original.metadata.icalUID : '';
   const taskAppearedDate = metadata.date instanceof Date ? metadata.date.toDateString() : null;
   // To un-mount the editor when finished editing.
@@ -41,16 +48,19 @@ export default function InlineTaskEditor({
       icalUID={icalUID}
       taskAppearedDate={taskAppearedDate}
       className={className}
-      mainTask={{ ...mainTask, date: metadata.date }}
-      subTasks={children}
+      taskData={{ ...taskData, date: metadata.date, children }}
       actions={actions}
       displayGrabber
       calendarPosition={calendarPosition}
       newSubTaskAutoFocused={!original.inFocus}
-      active={disabled}
+      active={!disabled}
       onFocus={onFocus}
       onBlur={onBlur}
       memberName={memberName}
+      memberEmail={memberEmail}
+      groupID={groupID}
+      wholeTaskData={isFocusTaskAndCompleted !== undefined ? original : undefined}
+      isFocusTaskAndCompleted={isFocusTaskAndCompleted}
     />
   );
 }

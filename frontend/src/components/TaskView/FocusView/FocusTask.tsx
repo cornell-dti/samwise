@@ -34,6 +34,7 @@ function FocusTask({ id, order, filterCompleted, original, filtered }: Props): R
             calendarPosition="bottom"
             original={original}
             filtered={filtered}
+            isFocusTaskAndCompleted={filterCompleted}
           />
         </div>
       )}

@@ -1,5 +1,6 @@
 import React, { KeyboardEvent, ReactElement, SyntheticEvent } from 'react';
 import { getDateWithDateString } from 'common/util/datetime-util';
+import firebase from 'firebase/app';
 import styles from './index.module.scss';
 import CheckBox from '../../../UI/CheckBox';
 import SamwiseIcon from '../../../UI/SamwiseIcon';
@@ -19,6 +20,9 @@ type Props = NameCompleteInFocus & {
   readonly onRemove: () => void;
   readonly onPressEnter: (id: 'main-task' | number) => void;
   readonly memberName?: string; // only supplied if task is a group task
+  readonly memberEmail?: string; // only supplied if task is a group task
+  readonly groupID?: string; // only supplied if task is a group task
+  readonly canMarkComplete: boolean;
 };
 
 const deleteIconClass = [styles.TaskEditorIcon, styles.TaskEditorIconLeftPad].join(' ');
@@ -35,10 +39,17 @@ function MainTaskEditor({
   onRemove,
   onPressEnter,
   memberName,
+  memberEmail,
+  groupID,
+  canMarkComplete,
 }: Props): ReactElement {
   const replaceDateForFork =
     taskDate == null ? getDateWithDateString(taskDate, dateAppeared) : null;
-  const editComplete = (): void => editMainTask(id, replaceDateForFork, { complete: !complete });
+  const editComplete = (): void => {
+    if (canMarkComplete) {
+      editMainTask(id, replaceDateForFork, { complete: !complete });
+    }
+  };
   const editInFocus = (): void => editMainTask(id, replaceDateForFork, { inFocus: !inFocus });
 
   const onKeyDown = (event: KeyboardEvent<HTMLInputElement>): void => {
@@ -56,9 +67,27 @@ function MainTaskEditor({
 
   const isCanvasTask = typeof icalUID === 'string' ? icalUID !== '' : false;
 
+  const sendTaskReminder = (): void => {
+    const msg = {
+      data: {
+        taskId: id,
+        groupId: groupID,
+        recipientEmail: memberEmail,
+        variant: 'reminder',
+      },
+    };
+    const sendMessage = firebase.functions().httpsCallable('sendNotificationEmail');
+    sendMessage(msg);
+  };
+
   return (
     <div className={styles.TaskEditorFlexibleContainer}>
-      <CheckBox className={styles.TaskEditorCheckBox} checked={complete} onChange={editComplete} />
+      <CheckBox
+        className={styles.TaskEditorCheckBox}
+        checked={complete}
+        onChange={editComplete}
+        disabled={!canMarkComplete}
+      />
       <input
         type="text"
         disabled={isCanvasTask}
@@ -70,7 +99,11 @@ function MainTaskEditor({
         onChange={onInputChange}
       />
       {memberName ? (
-        <SamwiseIcon iconName="bell-light" className={styles.TaskEditorIcon} onClick={() => {}} />
+        <SamwiseIcon
+          iconName="bell-light"
+          className={styles.TaskEditorIcon}
+          onClick={sendTaskReminder}
+        />
       ) : (
         <SamwiseIcon
           iconName={inFocus ? 'pin-light-filled' : 'pin-light-outline'}

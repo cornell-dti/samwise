@@ -1,0 +1,19 @@
+$middlebar-width: 280px;
+$taskcreator-height: 50px;
+$progressbar-height: 80px;
+
+$sidebar-width: 80px;
+$sidebar-header-height: 24px;
+$sidebar-header-margin: 14px;
+$sidebar-personal-button-height: 152px;
+$sidebar-group-manager-height: calc(100vh - #{$sidebar-personal-button-height});
+$add-button-height: 80px;
+$expanding-div-base-height: 72px;
+$links-height: 72px;
+
+$taskqueue-height: 60vh;
+$peoplelist-height: 40vh;
+$addmember-height: 40px;
+$leavegroup-height: 32px;
+
+$group-task-row-content-height: 160px;

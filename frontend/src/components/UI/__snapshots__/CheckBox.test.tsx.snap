@@ -2,7 +2,7 @@
 
 exports[`CheckBox matches snapshot. 1`] = `
 <label
-  className="CheckBox"
+  className="CheckBox Enabled"
 >
   <input
     defaultChecked={true}

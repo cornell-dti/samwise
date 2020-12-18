@@ -6,17 +6,32 @@ import styles from './GroupTask.module.scss';
 type Props = {
   readonly original: Task;
   readonly memberName: string;
+  readonly memberEmail: string;
+  readonly groupID: string;
+  readonly isInTaskQueue?: boolean;
 };
 
-function GroupTask({ original, memberName }: Props): ReactElement {
+function GroupTask({
+  original,
+  memberName,
+  memberEmail,
+  groupID,
+  isInTaskQueue,
+}: Props): ReactElement {
+  const { children } = original;
+  const containerDivStyles = children.length > 1 && !isInTaskQueue ? styles.GroupTaskContainer : '';
   return (
-    <InlineTaskEditor
-      className={styles.GroupTask}
-      calendarPosition="bottom"
-      original={original}
-      filtered={original}
-      memberName={memberName}
-    />
+    <div className={containerDivStyles}>
+      <InlineTaskEditor
+        className={isInTaskQueue ? styles.TaskQueueGroupTask : styles.GroupTask}
+        calendarPosition="bottom"
+        original={original}
+        filtered={original}
+        memberName={memberName}
+        memberEmail={memberEmail}
+        groupID={groupID}
+      />
+    </div>
   );
 }
 

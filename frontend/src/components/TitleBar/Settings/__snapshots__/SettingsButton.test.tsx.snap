@@ -5,7 +5,7 @@ exports[`SettingsButton matches snapshot. 1`] = `
   className="SettingsButtonContainer"
 >
   <button
-    className="SettingsButton"
+    className=" SettingsButton"
     onClick={[Function]}
     type="submit"
   >

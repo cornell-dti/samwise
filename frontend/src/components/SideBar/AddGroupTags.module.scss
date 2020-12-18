@@ -1,20 +1,30 @@
+@import '../../z-index.scss';
+
+.PositionedWrapper {
+  position: relative;
+}
+
 .AddGroupTags {
+  position: absolute;
+  top: 0;
+  left: 15px;
   background-color: white;
   width: 100px;
-  position: absolute;
-  left: 15px;
   border-radius: 5px;
+  z-index: $LEVEL_1_ADD_GROUP_COMPONENT;
 }
 
 .ClassItem {
+  height: 34px;
+  width: 100%;
+  opacity: 0.7;
+  border-radius: 0;
+  border: 0;
   background: none;
-  border-radius: 0 !important;
   display: flex;
   font-size: 100%;
-  height: 34px !important;
-  margin: 0 !important;
+  margin: 0;
   padding-left: 10px;
-  width: 100% !important;
 }
 
 .ClassItem:first-of-type {

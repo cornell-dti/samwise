@@ -1,11 +1,21 @@
-.GroupTaskCreator {
-  height: 20vh;
-}
+@import '../groupview-sizes.scss';
+
+$top-bottom-margin: 20px;
 
 .RightView {
+  padding: $top-bottom-margin;
+  clear: both;
+}
+
+.GroupTaskCreator {
+  height: $taskcreator-height;
+}
+
+.RightViewMain {
   display: flex;
   flex-direction: column;
-  height: 480px;
+  height: calc(100vh - #{$taskcreator-height} - #{$progressbar-height} - #{$top-bottom-margin} * 2);
+  width: calc(100vw - #{$sidebar-width} - #{$middlebar-width});
   padding: 20px;
   clear: both;
 }
@@ -28,4 +38,8 @@
   font-family: 'DM Sans', sans-serif;
   font-weight: bold;
   margin-right: 0.5em;
+}
+
+.GroupTaskProgress {
+  height: $progressbar-height;
 }

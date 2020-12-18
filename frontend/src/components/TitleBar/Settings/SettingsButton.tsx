@@ -3,7 +3,9 @@ import SettingsPage from './SettingsPage';
 import styles from './SettingsButton.module.scss';
 import SamwiseIcon from '../../UI/SamwiseIcon';
 
-export default function SettingsButton(): ReactElement {
+type Props = { readonly buttonClassname?: string };
+
+export default function SettingsButton({ buttonClassname }: Props): ReactElement {
   const [showSettings, setShowSettings] = React.useState(false);
 
   const displayModal = (): void => setShowSettings(true);
@@ -11,7 +13,11 @@ export default function SettingsButton(): ReactElement {
 
   return (
     <div className={styles.SettingsButtonContainer}>
-      <button type="submit" onClick={displayModal} className={styles.SettingsButton}>
+      <button
+        type="submit"
+        onClick={displayModal}
+        className={`${buttonClassname ?? ''} ${styles.SettingsButton}`}
+      >
         <p style={{ transform: 'scale(2)translateY(-5px)' }} title="Settings Button">
           <SamwiseIcon iconName="settings" />
         </p>

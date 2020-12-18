@@ -1,29 +1,21 @@
-import React, { ReactElement, useState } from 'react';
+import React, { ReactElement } from 'react';
 import type { Group, SamwiseUserProfile, Task } from 'common/types/store-types';
 import SamwiseIcon from '../../UI/SamwiseIcon';
 import GroupTaskRow from './GroupTaskRow';
 import styles from './index.module.scss';
-import TaskCreator from '../../TaskCreator';
+import { TaskCreator, useTaskCreatorContextSetter } from '../../TaskCreator';
 import GroupTaskProgress from './GroupTaskProgress';
 import { promptTextInput } from '../../Util/Modals';
 import { updateGroup } from '../../../firebase/actions';
 
-type State = {
-  readonly taskCreatorOpened: boolean;
-  readonly assignedMember?: SamwiseUserProfile;
-};
-
 type Props = {
   readonly group: Group;
-  readonly groupMemberProfiles: SamwiseUserProfile[];
+  readonly groupMemberProfiles: readonly SamwiseUserProfile[];
   readonly tasks: readonly Task[];
 };
 
 const RightView = ({ group, groupMemberProfiles, tasks }: Props): ReactElement => {
-  const [{ taskCreatorOpened, assignedMember }, setState] = useState<State>({
-    taskCreatorOpened: false,
-    assignedMember: undefined,
-  });
+  const setTaskCreatorContext = useTaskCreatorContextSetter();
 
   const onEditGroupNameClicked = (): void => {
     promptTextInput('Edit your group name', '', 'New Group Name', 'Submit', 'text').then((name) =>
@@ -31,29 +23,19 @@ const RightView = ({ group, groupMemberProfiles, tasks }: Props): ReactElement =
     );
   };
 
-  const openTaskCreator = (member: SamwiseUserProfile): void =>
-    setState({
-      taskCreatorOpened: !taskCreatorOpened,
-      assignedMember: member,
+  const openTaskCreator = (member: readonly SamwiseUserProfile[]): void =>
+    setTaskCreatorContext({
+      taskCreatorOpened: true,
+      assignedMembers: member,
     });
-
-  const clearAssignedMember = (): void =>
-    setState({ taskCreatorOpened, assignedMember: undefined });
 
   return (
     <div className={styles.RightView}>
       <div className={styles.GroupTaskCreator}>
-        <TaskCreator
-          view="group"
-          group={group.id}
-          groupMemberProfiles={groupMemberProfiles}
-          taskCreatorOpened={taskCreatorOpened}
-          assignedMember={assignedMember}
-          clearAssignedMember={clearAssignedMember}
-        />
+        <TaskCreator view="group" />
       </div>
 
-      <div className={styles.RightView}>
+      <div className={styles.RightViewMain}>
         <div>
           <h2>{group.name}</h2>
           <SamwiseIcon
@@ -73,6 +55,7 @@ const RightView = ({ group, groupMemberProfiles, tasks }: Props): ReactElement =
                 onClick={openTaskCreator}
                 tasks={filteredTasks}
                 profilePicURL={user.photoURL}
+                groupID={group.id}
               />
             );
           })}

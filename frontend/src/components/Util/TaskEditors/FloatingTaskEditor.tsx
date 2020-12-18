@@ -29,7 +29,7 @@ const updateFloatingEditorPosition = (
   let posTop: number;
   let posLeft: number | undefined;
   let posRight: number | undefined;
-  if (windowWidth <= 768) {
+  if (windowWidth <= 840) {
     posTop = (windowHeight - myHeight) / 2;
     editorPosDiv.style.left = `${windowWidth - EDITOR_WIDTH}px`;
     posLeft = (windowWidth - EDITOR_WIDTH) / 2;
@@ -62,6 +62,10 @@ type Props = {
   readonly trigger: (opened: boolean, opener: () => void) => ReactNode;
   // the position of the calendar
   readonly calendarPosition: CalendarPosition;
+  // the toggle function to change the state of the editor
+  readonly toggle: (opened: boolean) => void;
+  // the state of the editor
+  readonly open: boolean;
 };
 
 /**
@@ -74,10 +78,10 @@ export default function FloatingTaskEditor({
   initialTask: task,
   taskAppearedDate,
   trigger,
+  toggle,
+  open,
 }: Props): ReactElement {
   const icalUID = task.metadata.type === 'ONE_TIME' ? task.metadata.icalUID : '';
-
-  const [open, setOpen] = React.useState<boolean>(false);
 
   const editorRef = React.useRef<HTMLFormElement>(null);
 
@@ -89,10 +93,14 @@ export default function FloatingTaskEditor({
     updateFloatingEditorPosition(editorPosDiv, size, position);
   });
 
-  const openPopup = (): void => setOpen(true);
-  const closePopup = (): void => setOpen(false);
+  const openPopup = (): void => {
+    toggle(true);
+  };
+  const closePopup = (): void => {
+    toggle(false);
+  };
 
-  const { id: _, metadata, children, ...mainTask } = task;
+  const { id: _, metadata, children, ...taskData } = task;
   const actions = {
     onChange: (): void => {
       const editorPosDiv = editorRef.current;
@@ -122,8 +130,7 @@ export default function FloatingTaskEditor({
             type={metadata.type}
             icalUID={icalUID}
             taskAppearedDate={taskAppearedDate}
-            mainTask={{ ...mainTask, date: metadata.date }}
-            subTasks={children}
+            taskData={{ ...taskData, date: metadata.date, children }}
             actions={actions}
             className={styles.Editor}
             editorRef={editorRef}
