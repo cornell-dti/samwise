@@ -1,6 +1,7 @@
 import React, { ReactElement } from 'react';
 import { Tag } from 'common/types/store-types';
 import { store } from '../../store/store';
+import sideBarStyles from './index.module.scss';
 import styles from './AddGroupTags.module.scss';
 import { createGroup } from '../../firebase/actions';
 
@@ -43,7 +44,7 @@ export default function AddGroupTags({ show, setShow }: AddGroupTagsProps): Reac
                     <div className={styles.Color} style={{ backgroundColor: color }}>
                       {' '}
                     </div>
-                    <p>{classCode}</p>
+                    <p className={sideBarStyles.GroupManagerText}>{classCode}</p>
                   </button>
                 )}
               </div>

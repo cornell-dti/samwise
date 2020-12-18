@@ -15,7 +15,9 @@
 }
 
 .PersonalViewButton,
-.GroupManager button {
+.GroupManager .GroupLetterIcon,
+.GroupManager .AddGroup,
+.SettingsButton {
   height: 4rem;
   width: 4rem;
   opacity: 0.7;
@@ -63,7 +65,7 @@
   height: $sidebar-group-manager-height;
 }
 
-.GroupManager p {
+.GroupManager .GroupManagerText {
   font-family: 'DM Sans', sans-serif;
   font-style: normal;
   font-weight: 500;
@@ -94,12 +96,6 @@
 
 .GroupIcons::-webkit-scrollbar {
   display: none;
-}
-
-.GroupIcons > button {
-  display: block;
-  margin-left: auto;
-  margin-right: auto;
 }
 
 .Links {
