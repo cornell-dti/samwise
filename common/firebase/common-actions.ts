@@ -1,4 +1,4 @@
-import { FirestoreCommon, FirestoreTag } from '../types/firestore-types';
+import { FirestoreTag } from '../types/firestore-types';
 import { Tag } from '../types/store-types';
 import Database from './database';
 import OrderManager from './order-manager';
@@ -14,14 +14,10 @@ export default class Actions {
     this.orderManager = new OrderManager(database, getUserEmail);
   }
 
-  private createFirestoreObject = async <T>(
-    orderFor: 'tags' | 'tasks',
+  private createFirestoreTag = async <T>(
     source: T
-  ): Promise<T & FirestoreCommon> => {
-    const order = await this.orderManager.allocateNewOrder(orderFor);
-    if (orderFor === 'tasks') {
-      return { ...source, owner: [this.getUserEmail()], order };
-    }
+  ): Promise<T & { owner: string; order: number }> => {
+    const order = await this.orderManager.allocateNewOrder('tags');
     return { ...source, owner: this.getUserEmail(), order };
   };
 
@@ -32,7 +28,7 @@ export default class Actions {
    */
 
   addTag = async (tag: WithoutIdOrder<Tag>): Promise<void> => {
-    const firebaseTag: FirestoreTag = await this.createFirestoreObject('tags', tag);
+    const firebaseTag: FirestoreTag = await this.createFirestoreTag(tag);
     await this.database.tagsCollection().add(firebaseTag);
   };
 

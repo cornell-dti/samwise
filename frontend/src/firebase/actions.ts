@@ -14,7 +14,6 @@ import {
 } from 'common/types/store-types';
 import { error, ignore } from 'common/util/general-util';
 import {
-  FirestoreCommon,
   FirestoreTask,
   FirestoreGroup,
   FirestoreUserData,
@@ -42,12 +41,11 @@ import { Diff } from '../components/Util/TaskEditors/TaskEditor/task-diff-reduce
 
 const actions = new Actions(() => getAppUser().email, database);
 
-async function createFirestoreObject<T>(
-  orderFor: 'tags' | 'tasks',
+async function createFirestoreTask<T>(
   source: T,
-  owner: readonly string[] | string
-): Promise<T & FirestoreCommon> {
-  const order = await actions.orderManager.allocateNewOrder(orderFor);
+  owner: readonly string[]
+): Promise<T & { owner: readonly string[]; order: number }> {
+  const order = await actions.orderManager.allocateNewOrder('tasks');
   return { ...source, owner, order };
 }
 
@@ -101,7 +99,7 @@ const asyncAddTask = async (
   subTasks: readonly SubTask[],
   batch: WriteBatch
 ): Promise<FirestoreTask> => {
-  const baseTask: FirestoreCommon = await createFirestoreObject('tasks', {}, owner);
+  const baseTask = await createFirestoreTask({}, owner);
   const { metadata, ...rest } = task;
   rest.owner = baseTask.owner as readonly string[];
   const firestoreTask: FirestoreTask = { ...baseTask, ...rest, ...metadata, children: subTasks };
@@ -411,8 +409,12 @@ export const leaveGroup = async (groupID: string): Promise<void> => {
   }
 };
 
-export const updateGroup = async ({ id, ...groupInformation }: Group): Promise<void> => {
-  await database.groupsCollection().doc(id).update(groupInformation);
+export const updateGroup = async ({ id, deadline, ...groupInformation }: Group): Promise<void> => {
+  const deadlineDate = firestore.Timestamp.fromDate(deadline);
+  await database
+    .groupsCollection()
+    .doc(id)
+    .update({ ...groupInformation, deadline: deadlineDate });
 };
 
 /**

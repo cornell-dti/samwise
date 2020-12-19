@@ -2,17 +2,18 @@ import { firestore } from 'firebase/app';
 import { RepeatingPattern, SubTask } from './store-types';
 
 export type FirestoreCommon = {
-  readonly owner: string | readonly string[];
   readonly order: number;
 };
 
 export type FirestoreTag = FirestoreCommon & {
+  readonly owner: string;
   readonly name: string;
   readonly color: string;
   readonly classId: string | null;
 };
 
 export type FirestoreCommonTask = FirestoreCommon & {
+  readonly owner: readonly string[];
   readonly name: string;
   readonly tag: string;
   readonly complete: boolean;
@@ -64,5 +65,4 @@ export type FirestoreUserData = {
 };
 
 // all these tasks stay in 'samwise-tasks'
-// FirestoreLegacyTask should eventually be converted to FirestoreOneTimeTask.
 export type FirestoreTask = FirestoreMasterTask | FirestoreOneTimeTask | FirestoreGroupTask;

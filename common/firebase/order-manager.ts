@@ -1,10 +1,10 @@
 import Database from './database';
 
-type Manager = {
+export type FirestoreOrderManager = {
   readonly tagsMaxOrder: number;
   readonly tasksMaxOrder: number;
 };
-type PartialManager = Partial<Manager>;
+type PartialManager = Partial<FirestoreOrderManager>;
 
 export default class OrderManager {
   // eslint-disable-next-line no-useless-constructor
@@ -23,7 +23,7 @@ export default class OrderManager {
     return this.database.db().runTransaction(async (transaction) => {
       const docInTransaction = await transaction.get(ref);
       if (!docInTransaction.exists) {
-        const newManager: Manager = { tagsMaxOrder: count, tasksMaxOrder: count };
+        const newManager: FirestoreOrderManager = { tagsMaxOrder: count, tasksMaxOrder: count };
         transaction.set(ref, newManager);
         return 0;
       }
