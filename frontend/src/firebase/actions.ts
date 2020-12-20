@@ -18,6 +18,7 @@ import {
   FirestoreGroup,
   FirestoreUserData,
   FirestoreCommonTask,
+  ForkedTaskMetaData,
 } from 'common/types/firestore-types';
 import { WriteBatch } from 'common/firebase/database';
 import Actions from 'common/firebase/common-actions';
@@ -254,7 +255,10 @@ export const removeOneRepeatedTask = (taskId: string, replaceDate: Date): void =
     .tasksCollection()
     .doc(taskId)
     .update({
-      forks: firestore.FieldValue.arrayUnion({ forkId: null, replaceDate }),
+      forks: (firestore.FieldValue.arrayUnion({
+        forkId: null,
+        replaceDate: firestore.Timestamp.fromDate(replaceDate),
+      }) as unknown) as readonly ForkedTaskMetaData[],
     });
 };
 
