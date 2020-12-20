@@ -45,11 +45,9 @@ export default class Actions {
       .get()
       .then((s) => {
         const batch = this.database.db().batch();
-        s.docs
-          .filter((doc) => doc.data().type === 'TASK')
-          .forEach((doc) => {
-            batch.update(this.database.tasksCollection().doc(doc.id), { tag: NONE_TAG_ID });
-          });
+        s.docs.forEach((doc) => {
+          batch.update(this.database.tasksCollection().doc(doc.id), { tag: NONE_TAG_ID });
+        });
         batch.delete(this.database.tagsCollection().doc(id));
         batch.commit().then(ignore);
       });

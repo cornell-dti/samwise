@@ -1,8 +1,13 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
 import { firestore } from 'firebase';
-import { FirestoreGroup, FirestoreTag, FirestoreUserData } from '../types/firestore-types';
-import { BannerMessageStatus, Settings } from '../types/store-types';
+import {
+  FirestoreGroup,
+  FirestoreTag,
+  FirestoreTask,
+  FirestoreUserData,
+} from '../types/firestore-types';
+import { BannerMessageStatus, Settings, SubTask } from '../types/store-types';
 import { FirestoreOrderManager } from './order-manager';
 
 type DocumentData = { [field: string]: any };
@@ -113,8 +118,6 @@ export interface CommonFirestore {
   batch(): WriteBatch;
 }
 
-type Collection = CollectionReference;
-
 const firestoreOrderManagerDataConverter: FirestoreDataConverter<FirestoreOrderManager> = {
   toFirestore(modelObject: Partial<FirestoreOrderManager>) {
     return modelObject;
@@ -187,6 +190,144 @@ const firestoreTagDataConverter: FirestoreDataConverter<FirestoreTag> = {
       throw new Error();
     }
     return { order, owner, name, color, classId };
+  },
+};
+
+const firestoreTaskDataConverter: FirestoreDataConverter<FirestoreTask> = {
+  toFirestore(modelObject: Partial<FirestoreTask>) {
+    return modelObject;
+  },
+
+  fromFirestore(snapshot): FirestoreTask {
+    const {
+      order,
+      owner,
+      name,
+      tag,
+      complete,
+      inFocus,
+      children,
+      type,
+      ...rest
+    } = snapshot.data() as Record<string, unknown>;
+    if (
+      typeof order !== 'number' ||
+      !Array.isArray(owner) ||
+      typeof name !== 'string' ||
+      typeof tag !== 'string' ||
+      typeof complete !== 'boolean' ||
+      typeof inFocus !== 'boolean' ||
+      !Array.isArray(children)
+    ) {
+      throw new Error();
+    }
+    const ownerStringArray = owner.map((email) => {
+      if (typeof email !== 'string') throw new Error();
+      return email;
+    });
+    const childrenArray = children.map(
+      (subtaskData): SubTask => {
+        if (typeof subtaskData !== 'object') throw new Error();
+        const {
+          order: subtaskOrder,
+          name: subtaskName,
+          complete: subtaskComplete,
+          inFocus: subtaskInFocus,
+        } = subtaskData;
+        if (
+          typeof subtaskOrder !== 'number' ||
+          typeof subtaskName !== 'string' ||
+          typeof subtaskComplete !== 'boolean' ||
+          typeof subtaskInFocus !== 'boolean'
+        ) {
+          throw new Error();
+        }
+        return {
+          order: subtaskOrder,
+          name: subtaskName,
+          complete: subtaskComplete,
+          inFocus: subtaskInFocus,
+        };
+      }
+    );
+    if (type === 'ONE_TIME') {
+      const { date, icalUID } = rest;
+      if (
+        date instanceof firestore.Timestamp &&
+        (icalUID === undefined || typeof icalUID === 'string')
+      ) {
+        return {
+          type,
+          order,
+          owner: ownerStringArray,
+          name,
+          tag,
+          complete,
+          inFocus,
+          children: childrenArray,
+          date,
+          icalUID,
+        };
+      }
+    } else if (type === 'GROUP') {
+      const { date, group } = rest;
+      if (date instanceof firestore.Timestamp && typeof group === 'string') {
+        return {
+          type,
+          order,
+          owner: ownerStringArray,
+          name,
+          tag,
+          complete,
+          inFocus,
+          children: childrenArray,
+          date,
+          group,
+        };
+      }
+    } else if (type === 'MASTER_TEMPLATE') {
+      const { date, forks } = rest;
+      if (typeof date !== 'object' || !Array.isArray(forks)) throw new Error();
+      const { startDate, endDate, pattern } = date as Record<string, unknown>;
+      if (
+        !(startDate instanceof firestore.Timestamp) ||
+        (!(endDate instanceof firestore.Timestamp) && typeof endDate !== 'number') ||
+        typeof pattern !== 'object'
+      ) {
+        throw new Error();
+      }
+      const { type: repeatingPatternType, bitSet } = pattern as Record<string, unknown>;
+      if (
+        (repeatingPatternType !== 'WEEKLY' &&
+          repeatingPatternType !== 'BIWEEKLY' &&
+          repeatingPatternType !== 'MONTHLY') ||
+        typeof bitSet !== 'number'
+      ) {
+        throw new Error();
+      }
+      const forksArray = forks.map(({ forkId, replaceDate }) => {
+        if (
+          (forkId === null || typeof forkId === 'string') &&
+          replaceDate instanceof firestore.Timestamp
+        ) {
+          return { forkId, replaceDate };
+        }
+        throw new Error();
+      });
+      return {
+        type,
+        order,
+        owner: ownerStringArray,
+        name,
+        tag,
+        complete,
+        inFocus,
+        children: childrenArray,
+        date: { startDate, endDate, pattern: { type: repeatingPatternType, bitSet } },
+        forks: forksArray,
+      };
+    }
+    throw new Error();
   },
 };
 
@@ -269,7 +410,8 @@ export default class Database {
   tagsCollection = (): CollectionReference<FirestoreTag> =>
     this.db().collection('samwise-tags').withConverter(firestoreTagDataConverter);
 
-  tasksCollection = (): Collection => this.db().collection('samwise-tasks');
+  tasksCollection = (): CollectionReference<FirestoreTask> =>
+    this.db().collection('samwise-tasks').withConverter(firestoreTaskDataConverter);
 
   groupsCollection = (): CollectionReference<FirestoreGroup> =>
     this.db().collection('samwise-groups').withConverter(firestoreGroupDataConverter);
