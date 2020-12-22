@@ -1,6 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
-import { firestore } from 'firebase';
 import {
   FirestoreGroup,
   FirestoreTag,
@@ -252,10 +251,7 @@ const firestoreTaskDataConverter: FirestoreDataConverter<FirestoreTask> = {
     );
     if (type === 'ONE_TIME') {
       const { date, icalUID } = rest;
-      if (
-        date instanceof firestore.Timestamp &&
-        (icalUID === undefined || typeof icalUID === 'string')
-      ) {
+      if (icalUID === undefined || typeof icalUID === 'string') {
         return {
           type,
           order,
@@ -265,13 +261,13 @@ const firestoreTaskDataConverter: FirestoreDataConverter<FirestoreTask> = {
           complete,
           inFocus,
           children: childrenArray,
-          date,
+          date: date as any,
           icalUID,
         };
       }
     } else if (type === 'GROUP') {
       const { date, group } = rest;
-      if (date instanceof firestore.Timestamp && typeof group === 'string') {
+      if (typeof group === 'string') {
         return {
           type,
           order,
@@ -281,7 +277,7 @@ const firestoreTaskDataConverter: FirestoreDataConverter<FirestoreTask> = {
           complete,
           inFocus,
           children: childrenArray,
-          date,
+          date: date as any,
           group,
         };
       }
@@ -289,13 +285,6 @@ const firestoreTaskDataConverter: FirestoreDataConverter<FirestoreTask> = {
       const { date, forks } = rest;
       if (typeof date !== 'object' || !Array.isArray(forks)) throw new Error();
       const { startDate, endDate, pattern } = date as Record<string, unknown>;
-      if (
-        !(startDate instanceof firestore.Timestamp) ||
-        (!(endDate instanceof firestore.Timestamp) && typeof endDate !== 'number') ||
-        typeof pattern !== 'object'
-      ) {
-        throw new Error();
-      }
       const { type: repeatingPatternType, bitSet } = pattern as Record<string, unknown>;
       if (
         (repeatingPatternType !== 'WEEKLY' &&
@@ -306,11 +295,8 @@ const firestoreTaskDataConverter: FirestoreDataConverter<FirestoreTask> = {
         throw new Error();
       }
       const forksArray = forks.map(({ forkId, replaceDate }) => {
-        if (
-          (forkId === null || typeof forkId === 'string') &&
-          replaceDate instanceof firestore.Timestamp
-        ) {
-          return { forkId, replaceDate };
+        if (forkId === null || typeof forkId === 'string') {
+          return { forkId, replaceDate: replaceDate as any };
         }
         throw new Error();
       });
@@ -323,7 +309,11 @@ const firestoreTaskDataConverter: FirestoreDataConverter<FirestoreTask> = {
         complete,
         inFocus,
         children: childrenArray,
-        date: { startDate, endDate, pattern: { type: repeatingPatternType, bitSet } },
+        date: {
+          startDate: startDate as any,
+          endDate: endDate as any,
+          pattern: { type: repeatingPatternType, bitSet },
+        },
         forks: forksArray,
       };
     }
@@ -348,7 +338,6 @@ const firestoreGroupDataConverter: FirestoreDataConverter<FirestoreGroup> = {
     if (
       typeof name !== 'string' ||
       !Array.isArray(members) ||
-      !(deadline instanceof firestore.Timestamp) ||
       typeof classCode !== 'string' ||
       !Array.isArray(invitees) ||
       !Array.isArray(inviterNames)
@@ -370,7 +359,7 @@ const firestoreGroupDataConverter: FirestoreDataConverter<FirestoreGroup> = {
     return {
       name,
       members: membersStringArray,
-      deadline,
+      deadline: deadline as any,
       classCode,
       invitees: inviteesStringArray,
       inviterNames: inviterNamesStringArray,
