@@ -1,4 +1,3 @@
-import { firestore } from 'firebase/app';
 import { Map } from 'immutable';
 import {
   Course,
@@ -12,12 +11,7 @@ import {
   Group,
 } from 'common/types/store-types';
 import { error, ignore } from 'common/util/general-util';
-import {
-  FirestoreTask,
-  FirestoreGroup,
-  FirestoreUserData,
-  FirestoreCommonTask,
-} from 'common/types/firestore-types';
+import { FirestoreTask, FirestoreCommonTask } from 'common/types/firestore-types';
 import Actions from 'common/firebase/common-actions';
 import { subTasksEqual } from 'common/util/task-util';
 import {
@@ -36,7 +30,11 @@ import { store } from '../store/store';
 import { patchTags, patchTasks } from '../store/actions';
 import { Diff } from '../components/Util/TaskEditors/TaskEditor/task-diff-reducer';
 
-const actions = new Actions(() => getAppUser().email, database);
+const actions = new Actions(
+  () => getAppUser().email,
+  () => getAppUser().displayName,
+  database
+);
 
 const mergeWithOwner = <T>(obj: T): T & { readonly owner: string } => ({
   owner: getAppUser().email,
@@ -143,200 +141,32 @@ export const editMainTask = (
  * --------------------------------------------------------------------------------
  */
 
-/**
- * Reject a group invite.
- * @param groupID  Document ID of the group's Firestore document.
- */
-export const rejectInvite = async (groupID: string): Promise<void> => {
-  const { groupInvites } = store.getState();
-  const invitees = groupInvites.get(groupID)?.invitees;
-  if (!invitees) return;
-  const inviterNames = groupInvites.get(groupID)?.inviterNames;
-  if (!inviterNames) return;
+export const rejectInvite = async (groupID: string): Promise<void> =>
+  actions.rejectInvite(store.getState(), groupID);
 
-  // get index of inviterName to remove
-  let currIndex = 0;
-  let targetIndex = 0;
-  const { email } = getAppUser();
-  invitees.forEach((invitee) => {
-    if (invitee === email) {
-      targetIndex = currIndex;
-    }
-    currIndex += 1;
-  });
-  // get new list of inviterNames
-  currIndex = 0;
-  const newInviterNames: string[] = [];
-  inviterNames.forEach((item) => {
-    if (currIndex !== targetIndex) {
-      newInviterNames.push(item);
-    }
-    currIndex += 1;
-  });
-  // get new list of invitees
-  const newInvitees: string[] = invitees.filter((invitee) => invitee !== email);
-  // update both invitees and inviterNames lists
-  const groupDoc = await database.groupsCollection().doc(groupID);
-  await groupDoc.update({ invitees: newInvitees, inviterNames: newInviterNames });
-};
+export const getInviterName = (groupID: string): string =>
+  actions.getInviterName(store.getState(), groupID);
 
-/**
- * Get the inviter's name.
- * @param groupID  Document ID of the group's Firestore document.
- * @returns a string of the name of the person who sent the group invitation.
- */
-export const getInviterName = (groupID: string): string => {
-  const { email } = getAppUser(); // email of the invited person
-  const { groupInvites } = store.getState();
-  const invitees = groupInvites.get(groupID)?.invitees;
-  const inviterNames = groupInvites.get(groupID)?.inviterNames;
-  if (!invitees || !inviterNames) return 'Unknown user';
-  let currIndex = 0;
-  let targetIndex = 0;
-  invitees.forEach((invitee) => {
-    if (invitee === email) {
-      targetIndex = currIndex;
-    }
-    currIndex += 1;
-  });
-  return inviterNames[targetIndex];
-};
+export const joinGroup = async (groupID: string): Promise<void> =>
+  actions.joinGroup(store.getState(), groupID);
 
-/**
- * Join a group.
- * @param groupID  Document ID of the group's Firestore document.
- */
-export const joinGroup = async (groupID: string): Promise<void> => {
-  const groupDoc = database.groupsCollection().doc(groupID);
-  const { email } = getAppUser();
-  // Get current list of invitees (if any)
-  const invitees = await groupDoc
-    .get()
-    .then((snapshot) => (snapshot.data() as FirestoreGroup)?.invitees);
-  // Check if user is not in invitees list
-  if (invitees === undefined || !invitees.includes(email)) {
-    throw new Error('Invalid invitation');
-  }
-  const members = await groupDoc
-    .get()
-    .then((snapshot) => (snapshot.data() as FirestoreGroup)?.members);
-  // Check if user is already in the group
-  if (members === undefined || members.includes(email)) {
-    throw new Error('Invalid group members');
-  }
-  // Add user to group
-  await groupDoc.update({ members: [...members, email] });
+export const createGroup = (name: string, deadline: Date, classCode: string): void =>
+  actions.createGroup(name, deadline, classCode);
 
-  // TODO remove this whole function after we get a Cloud Function working;
-  // the following line is a hack
-  rejectInvite(groupID);
-};
+export const leaveGroup = async (groupID: string): Promise<void> =>
+  actions.leaveGroup(store.getState(), groupID);
 
-/**
- * Create a group.
- * @param name The name of the group
- * @param deadline Deadline for the group project
- * @param classCode Class code for the class associated with the group
- */
-export const createGroup = (name: string, deadline: Date, classCode: string): void => {
-  const { email } = getAppUser();
-  // creator is the only member at first
-  const newGroup: FirestoreGroup = {
-    name,
-    deadline: firestore.Timestamp.fromDate(deadline),
-    classCode,
-    members: [email],
-    invitees: [],
-    inviterNames: [],
-  };
-  database.groupsCollection().doc().set(newGroup);
-};
+export const updateGroup = async (group: Group): Promise<void> => actions.updateGroup(group);
 
-/**
- * Leave a group.
- * @param groupID Document ID of the group's Firestore document. The user calling this function must
- *                be a member of this group.
- */
-export const leaveGroup = async (groupID: string): Promise<void> => {
-  const { groups } = store.getState();
-  const members = groups.get(groupID)?.members;
-  if (members === undefined) {
-    return;
-  }
-  const { email } = getAppUser();
-  const newMembers: string[] = members.filter((m) => m !== email);
-  const groupDoc = await database.groupsCollection().doc(groupID);
-  if (newMembers.length === 0) {
-    await groupDoc.delete();
-  } else {
-    await groupDoc.update({ members: newMembers });
-  }
-};
-
-export const updateGroup = async ({ id, deadline, ...groupInformation }: Group): Promise<void> => {
-  const deadlineDate = firestore.Timestamp.fromDate(deadline);
-  await database
-    .groupsCollection()
-    .doc(id)
-    .update({ ...groupInformation, deadline: deadlineDate });
-};
-
-/**
- * Send an invitation to a user to join a group.
- * @param groupID Document ID of the group's Firestore document. The user calling this function must
- *                be a member of this group.
- * @param inviteeEmail The full Cornell email of the user receiving the invitation (all lowercase)
- */
-export const sendInvite = async (groupID: string, inviteeEmail: string): Promise<void> => {
-  const groupDoc = await database.groupsCollection().doc(groupID);
-  // get current list of invites and inviterNames (if any)
-  const invitees = await groupDoc
-    .get()
-    .then((snapshot) => (snapshot.data() as FirestoreGroup)?.invitees);
-
-  const inviterNames = await groupDoc
-    .get()
-    .then((snapshot) => (snapshot.data() as FirestoreGroup)?.inviterNames);
-  const inviterName = getAppUser().displayName;
-
-  // Add invitee to invitees if they have not already been invited
-  if (invitees === undefined) {
-    await groupDoc.update({
-      invitees: [inviteeEmail],
-      inviterNames: [inviterName],
-    });
-  } else if (!invitees.includes(inviteeEmail)) {
-    await groupDoc.update({
-      invitees: [...invitees, inviteeEmail],
-      inviterNames: [...inviterNames, inviterName],
-    });
-  }
-};
+export const sendInvite = async (groupID: string, inviteeEmail: string): Promise<void> =>
+  actions.sendInvite(groupID, inviteeEmail);
 
 export const addUserInfo = async (
   email: string,
   fullName: string,
   photoURL: string | null
-): Promise<void> => {
-  database.db().runTransaction(async (transaction) => {
-    const userDoc = await database.usersCollection().doc(email);
-    const snapshot = await transaction.get(userDoc);
+): Promise<void> => actions.addUserInfo(email, fullName, photoURL);
 
-    if (snapshot.exists) {
-      const userInfoPartial: Partial<FirestoreUserData> = {
-        name: fullName,
-        photoURL: photoURL || 'Default Photo',
-      };
-      transaction.update(userDoc, userInfoPartial);
-    } else {
-      const userInfo: FirestoreUserData = {
-        name: fullName,
-        photoURL: photoURL || 'Default Photo',
-      };
-      transaction.set(userDoc, userInfo);
-    }
-  });
-};
 /*
  * --------------------------------------------------------------------------------
  * Section 4: Other Compound Actions
