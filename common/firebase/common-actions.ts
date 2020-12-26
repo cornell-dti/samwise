@@ -1,11 +1,16 @@
+import { Map } from 'immutable';
 import {
+  FirestoreCommonTask,
   FirestoreGroup,
   FirestoreTag,
   FirestoreTask,
   FirestoreUserData,
 } from '../types/firestore-types';
 import {
+  BannerMessageIds,
+  Course,
   Group,
+  OneTimeTaskMetadata,
   PartialTaskMainData,
   RepeatingTaskMetadata,
   State,
@@ -18,6 +23,9 @@ import Database, { WriteBatch } from './database';
 import OrderManager from './order-manager';
 import { error, ignore } from '../util/general-util';
 import { NONE_TAG_ID } from '../util/tag-util';
+import { subTasksEqual } from '../util/task-util';
+import { Action } from '../types/action-types';
+import { patchTags, patchTasks } from '../store/actions';
 
 type WithoutIdOrder<Props> = Pick<Props, Exclude<keyof Props, 'id' | 'order'>>;
 type WithoutId<Props> = Pick<Props, Exclude<keyof Props, 'id'>>;
@@ -57,6 +65,11 @@ export default class Actions {
     const order = await this.orderManager.allocateNewOrder('tasks');
     return { ...source, owner, order };
   };
+
+  private mergeWithOwner = <T>(obj: T): T & { readonly owner: string } => ({
+    owner: this.getUserEmail(),
+    ...obj,
+  });
 
   /*
    * --------------------------------------------------------------------------------
@@ -437,6 +450,241 @@ export default class Actions {
         };
         transaction.set(userDoc, userInfo);
       }
+    });
+  };
+
+  /*
+   * --------------------------------------------------------------------------------
+   * Section 4: Other Compound Actions
+   * --------------------------------------------------------------------------------
+   */
+
+  /** Clear all the completed tasks in focus view. */
+  clearFocus = async (
+    taskIds: readonly string[],
+    subTasksWithParentTaskId: Map<string, SubTask[]>
+  ): Promise<void> => {
+    const batch = this.database.db().batch();
+    const taskUpdatePromise = taskIds.map(async (id) => {
+      const doc = this.database.tasksCollection().doc(id);
+      const snapshot = await doc.get();
+      const { children } = snapshot.data() as FirestoreCommonTask;
+      batch.update(doc, { inFocus: false });
+      batch.set(doc, {
+        children: children.map(({ inFocus, ...rest }) => ({ inFocus: false, ...rest })),
+      });
+    });
+    const subTaskUpdatePromise = subTasksWithParentTaskId.map(
+      async (childrenToBeUpdated, taskId) => {
+        const doc = this.database.tasksCollection().doc(taskId);
+        const snapshot = await doc.get();
+        const { children } = snapshot.data() as FirestoreCommonTask;
+
+        batch.set(doc, {
+          children: children.map(({ inFocus, ...rest }) =>
+            childrenToBeUpdated.some((s) =>
+              subTasksEqual(s, { inFocus, ...rest })
+                ? { inFocus: false, ...rest }
+                : { inFocus, ...rest }
+            )
+          ),
+        });
+      }
+    );
+
+    await Promise.all([Promise.all(taskUpdatePromise), Promise.all(subTaskUpdatePromise)]);
+    batch.commit().then(ignore);
+  };
+
+  /**
+   * Declare a task is complete in focus view by dragging it to completed section.
+   *
+   * @param completedTaskIdOrder the id and order of the completed task.
+   * @param completedList the id order list of completed tasks.
+   * @param uncompletedList the id order list of not completed tasks.
+   * @returns a patch store action.
+   */
+  completeTaskInFocus = <T extends { readonly id: string; readonly order: number }>(
+    { tasks }: State,
+    completedTaskIdOrder: T
+  ): Action => {
+    const task = tasks.get(completedTaskIdOrder.id) ?? error('bad');
+    const batch = this.database.db().batch();
+    const doc = this.database.tasksCollection().doc(task.id);
+    if (task.inFocus) {
+      batch.update(doc, { complete: true });
+    }
+    batch.set(doc, {
+      children: task.children.map(({ inFocus, complete, ...rest }) =>
+        inFocus ? { inFocus, complete: true, rest } : { inFocus, complete, rest }
+      ),
+    });
+    batch.commit().then(ignore);
+
+    return patchTasks(
+      [],
+      [
+        {
+          ...task,
+          complete: true,
+          children: task.children.map((subTask) => ({ ...subTask, complete: true })),
+        },
+      ],
+      []
+    );
+  };
+
+  /**
+   * Reorder a list of items by swapping items with order sourceOrder and destinationOrder
+   *
+   * @param orderFor whether the reorder is for tags or tasks.
+   * @param reorderMap the map that maps the id of changed order items to new order ids.
+   * @return a patch store action.
+   */
+  applyReorder = (
+    { tags, tasks }: State,
+    orderFor: 'tags' | 'tasks',
+    reorderMap: Map<string, number>
+  ): Action => {
+    let patchAction: Action;
+    if (orderFor === 'tags') {
+      const editedTags: Tag[] = [];
+      Array.from(reorderMap.entries()).forEach(([id, order]) => {
+        const existingTag = tags.get(id);
+        if (existingTag !== undefined) {
+          editedTags.push({ ...existingTag, order });
+        }
+      });
+      patchAction = patchTags([], editedTags, []);
+    } else {
+      const editedTasks: Task[] = [];
+      Array.from(reorderMap.entries()).forEach(([id, order]) => {
+        const existingTask = tasks.get(id);
+        if (existingTask !== undefined) {
+          editedTasks.push({
+            ...existingTask,
+            order,
+            children: existingTask.children,
+          });
+        }
+      });
+      patchAction = patchTasks([], editedTasks, []);
+    }
+    const collection =
+      orderFor === 'tags'
+        ? (id: string) => this.database.tagsCollection().doc(id)
+        : (id: string) => this.database.tasksCollection().doc(id);
+    const batch = this.database.db().batch();
+    reorderMap.forEach((order, id) => {
+      batch.update(collection(id), { order });
+    });
+    batch.commit().then(ignore);
+    return patchAction;
+  };
+
+  completeOnboarding = (completedOnboarding: boolean): void => {
+    this.database
+      .settingsCollection()
+      .doc(this.getUserEmail())
+      .update({ completedOnboarding })
+      .then(ignore);
+  };
+
+  setCanvasCalendar = (canvasCalendar: string | null | undefined): void => {
+    this.database
+      .settingsCollection()
+      .doc(this.getUserEmail())
+      .update({ canvasCalendar })
+      .then(ignore);
+  };
+
+  readBannerMessage = (bannerMessageId: BannerMessageIds, isRead: boolean): void => {
+    const docRef = this.database.bannerMessageStatusCollection().doc(this.getUserEmail());
+    this.database.db().runTransaction(async (transaction) => {
+      const doc = await transaction.get(docRef);
+      if (doc.exists) {
+        transaction.update(docRef, { [bannerMessageId]: isRead });
+      } else {
+        transaction.set(docRef, { [bannerMessageId]: isRead });
+      }
+    });
+  };
+
+  importCourseExams = ({ tags, tasks, courses }: State): void => {
+    const newTasks: TaskWithoutIdOrderChildren<OneTimeTaskMetadata>[] = [];
+    tags.forEach((tag: Tag) => {
+      if (tag.classId === null) {
+        return;
+      }
+      const allCoursesWithId = courses.get(tag.classId);
+      if (allCoursesWithId == null) {
+        return; // not an error because it may be courses in previous semesters.
+      }
+      allCoursesWithId.forEach((course: Course) => {
+        course.examTimes.forEach(({ type, time }) => {
+          let courseType: string;
+          switch (type) {
+            case 'final':
+              courseType = 'Final';
+              break;
+            case 'prelim':
+              courseType = 'Prelim';
+              break;
+            case 'semifinal':
+              courseType = 'Semifinal';
+              break;
+            default:
+              throw new Error('Undefined course exam type');
+          }
+          const examName = `${course.subject} ${course.courseNumber} ${courseType}`;
+          const t = new Date(time);
+          const filter = (task: Task): boolean => {
+            if (task.metadata.type === 'MASTER_TEMPLATE') {
+              return false;
+            }
+            const {
+              name,
+              metadata: { date },
+            } = task;
+            return (
+              task.tag === tag.id &&
+              name === examName &&
+              date.getFullYear() === t.getFullYear() &&
+              date.getMonth() === t.getMonth() &&
+              date.getDate() === t.getDate() &&
+              date.getHours() === t.getHours()
+            );
+          };
+          if (!Array.from(tasks.values()).some(filter)) {
+            const newTask: TaskWithoutIdOrderChildren<OneTimeTaskMetadata> = {
+              owner: [this.getUserEmail()],
+              name: examName,
+              tag: tag.id,
+              complete: false,
+              inFocus: false,
+              metadata: {
+                type: 'ONE_TIME',
+                date: t,
+              },
+            };
+            newTasks.push(newTask);
+          }
+        });
+      });
+    });
+    this.orderManager.allocateNewOrder('tasks', newTasks.length).then((startOrder: number) => {
+      const newOrderedTasks = newTasks.map((t, i) => ({ ...t, order: i + startOrder }));
+      const batch = this.database.db().batch();
+      newOrderedTasks.forEach(({ metadata, ...rest }) => {
+        const transformedTask: FirestoreTask = this.mergeWithOwner({
+          ...rest,
+          ...metadata,
+          children: [],
+        });
+        batch.set(this.database.tasksCollection().doc(), transformedTask);
+      });
+      // eslint-disable-next-line no-alert
+      batch.commit().then(() => alert('Exams Added Successfully!'));
     });
   };
 }

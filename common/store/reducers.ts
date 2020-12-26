@@ -8,9 +8,9 @@ import {
   PatchBannerMessageStatus,
   PatchGroups,
   PatchGroupInvites,
-} from 'common/types/action-types';
-import { State, Task } from 'common/types/store-types';
-import { error } from 'common/util/general-util';
+} from '../types/action-types';
+import { State, Task } from '../types/store-types';
+import { error } from '../util/general-util';
 import { initialState } from './state';
 
 function patchTags(state: State, { created, edited, deleted }: PatchTags): State {
