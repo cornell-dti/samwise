@@ -234,7 +234,7 @@ const initializeFirebaseListeners = (onFirstFetched: () => void): (() => void) =
             members,
             invitees,
             inviterNames,
-            deadline: deadline.toDate(),
+            deadline: deadline instanceof Date ? deadline : deadline.toDate(),
             classCode,
           });
         } else {
@@ -244,7 +244,7 @@ const initializeFirebaseListeners = (onFirstFetched: () => void): (() => void) =
             members,
             invitees,
             inviterNames,
-            deadline: deadline.toDate(),
+            deadline: deadline instanceof Date ? deadline : deadline.toDate(),
             classCode,
           });
         }
@@ -280,7 +280,7 @@ const initializeFirebaseListeners = (onFirstFetched: () => void): (() => void) =
             members,
             invitees,
             inviterNames,
-            deadline: deadline.toDate(),
+            deadline: deadline instanceof Date ? deadline : deadline.toDate(),
             classCode,
           });
         } else {
@@ -290,7 +290,7 @@ const initializeFirebaseListeners = (onFirstFetched: () => void): (() => void) =
             members,
             invitees,
             inviterNames,
-            deadline: deadline.toDate(),
+            deadline: deadline instanceof Date ? deadline : deadline.toDate(),
             classCode,
           });
         }

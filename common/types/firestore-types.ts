@@ -53,7 +53,7 @@ export type FirestoreGroupTask = FirestoreCommonTask & {
 export type FirestoreGroup = {
   readonly name: string;
   readonly members: readonly string[];
-  readonly deadline: firestore.Timestamp;
+  readonly deadline: Date | firestore.Timestamp;
   readonly classCode: string;
   readonly invitees: readonly string[]; // emails of invitees
   readonly inviterNames: readonly string[]; // names of people who sent the invites
