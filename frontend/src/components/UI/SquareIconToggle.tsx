@@ -1,4 +1,5 @@
 import React, { ReactElement } from 'react';
+import clsx from 'clsx';
 import { FontAwesomeIcon as Icon } from '@fortawesome/react-fontawesome';
 import { IconLookup } from '@fortawesome/fontawesome-svg-core';
 import styles from './SquareButtons.module.scss';
@@ -20,12 +21,9 @@ type Props = {
  */
 export default function SquareIconToggle({ active, iconNames, onToggle }: Props): ReactElement {
   const [activeIconName, inactiveIconName] = iconNames;
-  const className = active
-    ? `${styles.SquareButton} ${styles.SquareButtonIconButton}`
-    : `${styles.SquareButton} ${styles.SquareButtonIconButton} ${styles.active}`;
   return (
     <button
-      className={className}
+      className={clsx(styles.SquareButton, styles.SquareButtonIconButton, !active && styles.active)}
       title="Hide/unhide completed tasks"
       type="button"
       onClick={onToggle}

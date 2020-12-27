@@ -1,5 +1,6 @@
 import React, { ReactElement, KeyboardEvent } from 'react';
 import { connect } from 'react-redux';
+import clsx from 'clsx';
 import { NONE_TAG, NONE_TAG_ID } from 'common/util/tag-util';
 import { State, Tag } from 'common/types/store-types';
 import TagListPicker from '../Util/TagListPicker/TagListPicker';
@@ -50,7 +51,7 @@ function TagPicker({ tag, opened, onTagChange, onPickerOpened, getTag }: Props):
         type="button"
         onClick={clickPicker}
         onKeyPress={pressedPicker}
-        className={`${styles.TagButton} ${styles.Label}`}
+        className={clsx(styles.TagButton, styles.Label)}
         style={style}
       >
         {internal}

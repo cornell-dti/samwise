@@ -1,4 +1,5 @@
 import React, { ReactElement } from 'react';
+import clsx from 'clsx';
 import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
 import { date2YearMonth } from 'common/util/datetime-util';
 import { useTodayLastSecondTime } from '../../../hooks/time-hook';
@@ -97,7 +98,7 @@ function NavControl(props: NavControlProps): ReactElement {
           <SamwiseIcon
             iconName="arrow-down-dark"
             title="Go back"
-            className={`${styles.NavButtonPrev} ${styles.NavButtonNDays}`}
+            className={clsx(styles.NavButtonPrev, styles.NavButtonNDays)}
             style={prevStyle}
             onClick={prevHandler}
           />
@@ -105,7 +106,7 @@ function NavControl(props: NavControlProps): ReactElement {
         <SamwiseIcon
           iconName="arrow-down-dark"
           title="Go forward"
-          className={`${styles.NavButtonNext} ${styles.NavButtonNDays}`}
+          className={clsx(styles.NavButtonNext, styles.NavButtonNDays)}
           style={nextStyle}
           onClick={nextHandler}
         />
@@ -204,15 +205,14 @@ function DisplayOptionControl({ nDays, displayOption, offset, onChange }: Props)
     type: FutureViewContainerType,
     text: string
   ): ReactElement => {
-    const className =
-      containerType === type
-        ? `${styles.ContainerTypeSwitcherButton} ${styles.ContainerTypeSwitcherActiveButton}`
-        : styles.ContainerTypeSwitcherButton;
     return (
       <button
         type="button"
         title={`Change to ${text} view`}
-        className={className}
+        className={clsx(
+          styles.ContainerTypeSwitcherButton,
+          containerType === type && styles.ContainerTypeSwitcherActiveButton
+        )}
         onClick={() => switchContainerType(type)}
       >
         <span className={styles.ContainerTypeSwitcherButtonText}>{text}</span>
