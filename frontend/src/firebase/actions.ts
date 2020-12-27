@@ -7,8 +7,9 @@ import {
   PartialTaskMainData,
   TaskMetadata,
   Group,
+  RepeatingTaskMetadata,
 } from 'common/types/store-types';
-import { ignore } from 'common/util/general-util';
+import { error, ignore } from 'common/util/general-util';
 import Actions from 'common/firebase/common-actions';
 import {
   reportAddTagEvent,
@@ -78,7 +79,9 @@ export const addTask = (
 };
 
 export const removeAllForks = (taskId: string): void => {
-  actions.removeAllForks(store.getState(), taskId).then(ignore);
+  actions
+    .removeAllForks(store.getState().tasks.get(taskId) as Task<RepeatingTaskMetadata>)
+    .then(ignore);
 };
 
 export const handleTaskDiffs = (taskId: string, { mainTaskEdits }: Diff): void => {
@@ -105,11 +108,19 @@ export const handleTaskDiffs = (taskId: string, { mainTaskEdits }: Diff): void =
 export type EditType = 'EDITING_MASTER_TEMPLATE' | 'EDITING_ONE_TIME_TASK';
 
 export const editTaskWithDiff = (taskId: string, editType: EditType, diff: Diff): void => {
-  actions.editTaskWithDiff(store.getState(), taskId, editType, diff);
+  actions.editTaskWithDiff(
+    store.getState().tasks.get(taskId) ?? error(`Task with ${taskId} is not found!`),
+    editType,
+    diff
+  );
 };
 
 export const forkTaskWithDiff = (taskId: string, replaceDate: Date, diff: Diff): void =>
-  actions.forkTaskWithDiff(store.getState(), taskId, replaceDate, diff);
+  actions.forkTaskWithDiff(
+    store.getState().tasks.get(taskId) as Task<RepeatingTaskMetadata>,
+    replaceDate,
+    diff
+  );
 
 export const removeTask = (task: Task): void => {
   actions.removeTask(store.getState(), task).then(() => reportDeleteTaskEvent());
@@ -123,7 +134,12 @@ export const editMainTask = (
   taskId: string,
   replaceDate: Date | null,
   mainTaskEdits: PartialTaskMainData
-): void => actions.editMainTask(store.getState(), taskId, replaceDate, mainTaskEdits);
+): void =>
+  actions.editMainTask(
+    store.getState().tasks.get(taskId) ?? error(`Task with ${taskId} is not found!`),
+    replaceDate,
+    mainTaskEdits
+  );
 
 /*
  * --------------------------------------------------------------------------------
