@@ -186,7 +186,7 @@ export const clearFocus = async (
     const snapshot = await doc.get();
     const { children } = (await snapshot.data()) as FirestoreCommonTask;
     batch.update(doc, { inFocus: false });
-    batch.set(doc, {
+    batch.update(doc, {
       children: children.map(({ inFocus, ...rest }) => ({ inFocus: false, ...rest })),
     });
   });
@@ -195,7 +195,7 @@ export const clearFocus = async (
     const snapshot = await doc.get();
     const { children } = (await snapshot.data()) as FirestoreCommonTask;
 
-    batch.set(doc, {
+    batch.update(doc, {
       children: children.map(({ inFocus, ...rest }) =>
         childrenToBeUpdated.some((s) =>
           subTasksEqual(s, { inFocus, ...rest })
