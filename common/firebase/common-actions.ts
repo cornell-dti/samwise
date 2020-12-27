@@ -469,8 +469,8 @@ export default class Actions {
       const doc = this.database.tasksCollection().doc(id);
       const snapshot = await doc.get();
       const { children } = snapshot.data() as FirestoreCommonTask;
-      batch.update(doc, { inFocus: false });
-      batch.set(doc, {
+      batch.update(doc, {
+        inFocus: false,
         children: children.map(({ inFocus, ...rest }) => ({ inFocus: false, ...rest })),
       });
     });
@@ -480,7 +480,7 @@ export default class Actions {
         const snapshot = await doc.get();
         const { children } = snapshot.data() as FirestoreCommonTask;
 
-        batch.set(doc, {
+        batch.update(doc, {
           children: children.map(({ inFocus, ...rest }) =>
             childrenToBeUpdated.some((s) =>
               subTasksEqual(s, { inFocus, ...rest })
