@@ -12,8 +12,6 @@ import buildCoursesMap from 'common/util/courses-util';
 import { ignore } from 'common/util/general-util';
 import { FirestoreTag, FirestoreTask, FirestoreGroup } from 'common/types/firestore-types';
 import { QuerySnapshot, DocumentSnapshot } from 'common/firebase/database';
-import { database } from './db';
-import { getAppUser } from './auth-util';
 import {
   patchCourses,
   patchSettings,
@@ -22,7 +20,9 @@ import {
   patchBannerMessageStatus,
   patchGroups,
   patchGroupInvites,
-} from '../store/actions';
+} from 'common/store/actions';
+import { database } from './db';
+import { getAppUser } from './auth-util';
 import coursesJson from '../assets/json/courses-with-exams-min.json';
 import { store } from '../store/store';
 
