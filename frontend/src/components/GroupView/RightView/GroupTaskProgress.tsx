@@ -1,5 +1,6 @@
 import { Task } from 'common/types/store-types';
 import React, { ReactElement } from 'react';
+import clsx from 'clsx';
 import styles from './GroupTaskProgress.module.scss';
 import { GroupDeadline, PeakingBear } from '../../../assets/assets-constants';
 
@@ -15,9 +16,10 @@ type ProgressBubbleProps = {
 
 const ProgressBubble = ({ completed, value }: ProgressBubbleProps): ReactElement => (
   <div
-    className={`${styles.ProgressBubble} ${
+    className={clsx(
+      styles.ProgressBubble,
       completed ? styles.CompleteBubble : styles.IncompleteBubble
-    }`}
+    )}
   >
     {value ? `+${value}` : ''}
   </div>
@@ -116,9 +118,9 @@ const GroupTaskProgress = ({ tasks, deadline }: Props): ReactElement => {
       )}
       <div className={styles.Deadline}>
         <img src={GroupDeadline} className={styles.DeadlineIcon} alt="Group deadline" />
-        <p className={`${styles.GrayBoldText} ${styles.DeadlineDate}`}>{`${
-          months[deadline.getMonth()]
-        } ${deadline.getDate()}`}</p>
+        <p className={clsx(styles.GrayBoldText, styles.DeadlineDate)}>
+          {`${months[deadline.getMonth()]} ${deadline.getDate()}`}
+        </p>
       </div>
     </div>
   );

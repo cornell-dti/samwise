@@ -9,6 +9,7 @@ import React, {
   useContext,
 } from 'react';
 import { useSelector } from 'react-redux';
+import clsx from 'clsx';
 import { randomId } from 'common/util/general-util';
 import {
   Task,
@@ -359,9 +360,9 @@ export const TaskCreator = ({ view }: Props): ReactElement => {
     const { name, tag, member, date, inFocus, subTasks, datePicked, needToSwitchFocus } = state;
     if (!taskCreatorOpened) {
       return (
-        <div className={`${styles.TaskCreator} ${styles.TaskCreatorClosed}`} style={darkModeStyle}>
+        <div className={clsx(styles.TaskCreator, styles.TaskCreatorClosed)} style={darkModeStyle}>
           <form
-            className={`${styles.NewTaskWrap} ${groupMemberProfiles ? styles.GroupTaskWrap : ''}`}
+            className={clsx(styles.NewTaskWrap, groupMemberProfiles && styles.GroupTaskWrap)}
             onSubmit={handleSave}
             onFocus={openNewTask}
           >
@@ -420,11 +421,11 @@ export const TaskCreator = ({ view }: Props): ReactElement => {
         <div onClick={closeNewTask} role="presentation" className={styles.CloseNewTask} />
         <div className={styles.TaskCreatorOpenedPlaceHolder} />
         <form
-          className={`${styles.NewTaskWrap} ${styles.NewTaskModal}`}
+          className={clsx(styles.NewTaskWrap, styles.NewTaskModal)}
           onSubmit={handleSave}
           onFocus={openNewTask}
         >
-          <div className={`${styles.TaskCreatorRow} ${styles.FirstRow}`}>
+          <div className={clsx(styles.TaskCreatorRow, styles.FirstRow)}>
             <div className={styles.TitleText}>Add Task</div>
             {date instanceof Date && <FocusPicker pinned={inFocus} onPinChange={togglePin} />}
             <div className={styles.TagPickWrap}>
@@ -465,7 +466,7 @@ export const TaskCreator = ({ view }: Props): ReactElement => {
               type="text"
               value={name}
               onChange={editTaskName}
-              className={`${styles.NewTaskComponent} ${styles.NewTaskComponentOpened}`}
+              className={clsx(styles.NewTaskComponent, styles.NewTaskComponentOpened)}
               ref={addTaskRef}
               style={darkModeStyle}
             />

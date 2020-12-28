@@ -1,6 +1,7 @@
 /* eslint-disable jsx-a11y/label-has-associated-control,jsx-a11y/label-has-for */
 
 import React, { ReactElement } from 'react';
+import clsx from 'clsx';
 import styles from './CheckBox.module.scss';
 
 type Props = {
@@ -21,11 +22,6 @@ export default function CheckBox({
   inverted = false,
   className = undefined,
 }: Props): ReactElement {
-  let allClassNames = className === undefined ? styles.CheckBox : `${className} ${styles.CheckBox}`;
-  if (inverted) {
-    allClassNames = `${allClassNames} ${styles.InvertedCheckBox}`;
-  }
-
   const handleClick = (): void => {
     if (!disabled) {
       onChange(!checked);
@@ -33,9 +29,12 @@ export default function CheckBox({
   };
   return (
     <label
-      className={
-        disabled ? `${allClassNames} ${styles.Disabled}` : `${allClassNames} ${styles.Enabled}`
-      }
+      className={clsx(
+        className,
+        styles.CheckBox,
+        inverted && styles.InvertedCheckBox,
+        disabled ? styles.Disabled : styles.Enabled
+      )}
     >
       <input
         tabIndex={0}

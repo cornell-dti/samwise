@@ -1,4 +1,5 @@
 import React, { ReactElement } from 'react';
+import clsx from 'clsx';
 import styles from './CompletedSeparator.module.scss';
 import SamwiseIcon from '../../UI/SamwiseIcon';
 
@@ -7,9 +8,6 @@ type Props = {
   readonly doesShowCompletedTasks: boolean;
   readonly onDoesShowCompletedTasksChange: () => void;
 };
-
-const getIconClassName = (notInverted: boolean): string =>
-  notInverted ? styles.Icon : `${styles.Icon} ${styles.Inverted}`;
 
 const CompletedSeparator = ({
   count,
@@ -20,7 +18,7 @@ const CompletedSeparator = ({
     <span className={styles.Text}>{`Completed: (${count})`}</span>
     <SamwiseIcon
       iconName="dropdown"
-      className={getIconClassName(doesShowCompletedTasks)}
+      className={clsx(styles.Icon, !doesShowCompletedTasks && styles.Inverted)}
       onClick={onDoesShowCompletedTasksChange}
     />
     <div className={styles.Line} />

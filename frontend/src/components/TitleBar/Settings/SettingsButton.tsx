@@ -1,4 +1,5 @@
 import React, { ReactElement } from 'react';
+import clsx from 'clsx';
 import SettingsPage from './SettingsPage';
 import styles from './SettingsButton.module.scss';
 import SamwiseIcon from '../../UI/SamwiseIcon';
@@ -16,7 +17,7 @@ export default function SettingsButton({ buttonClassname }: Props): ReactElement
       <button
         type="submit"
         onClick={displayModal}
-        className={`${buttonClassname ?? ''} ${styles.SettingsButton}`}
+        className={clsx(buttonClassname, styles.SettingsButton)}
       >
         <p style={{ transform: 'scale(2)translateY(-5px)' }} title="Settings Button">
           <SamwiseIcon iconName="settings" />

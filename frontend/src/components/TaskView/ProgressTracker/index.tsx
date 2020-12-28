@@ -1,13 +1,11 @@
 import React, { ReactElement } from 'react';
 import { connect } from 'react-redux';
+import clsx from 'clsx';
 import { TasksProgressProps } from 'common/util/task-util';
 import Bear from './Bear';
 import ProgressIndicator from './ProgressIndicator';
 import styles from './index.module.scss';
 import { getProgress } from '../../../store/selectors';
-
-const mobileViewStyle = `${styles.ProgressTracker} ${styles.MobileView}`;
-const desktopViewStyle = `${styles.ProgressTracker} ${styles.DesktopView}`;
 
 type Props = TasksProgressProps & { readonly inMobileView: boolean };
 
@@ -20,9 +18,13 @@ export function ProgressTracker({
   allTasksCount,
   inMobileView,
 }: Props): ReactElement {
-  const containerClass = inMobileView ? mobileViewStyle : desktopViewStyle;
   return (
-    <div className={containerClass}>
+    <div
+      className={clsx(
+        styles.ProgressTracker,
+        inMobileView ? styles.MobileView : styles.DesktopView
+      )}
+    >
       <Bear
         completedTasksCount={completedTasksCount}
         allTasksCount={allTasksCount}

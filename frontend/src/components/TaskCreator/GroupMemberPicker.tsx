@@ -1,4 +1,5 @@
 import React, { ReactElement, KeyboardEvent } from 'react';
+import clsx from 'clsx';
 import { NONE_TAG } from 'common/util/tag-util';
 import { SamwiseUserProfile } from 'common/types/store-types';
 import SearchGroupMember from '../Util/GroupMemberListPicker/SearchGroupMember';
@@ -84,7 +85,7 @@ export default function GroupMemberPicker({
         type="button"
         onClick={clickPicker}
         onKeyPress={pressedPicker}
-        className={`${styles.TagButton} ${styles.Label}`}
+        className={clsx(styles.TagButton, styles.Label)}
         style={style}
       >
         {internal}
