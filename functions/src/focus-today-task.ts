@@ -25,12 +25,12 @@ const focusOneTimeTasksThatAreDueToday = async (): Promise<void> => {
 const focusRepeatingTasksThatAreDueToday = async (): Promise<void> => {
   const todayAtZero = new Date();
   todayAtZero.setHours(0, 0, 0, 0);
-  const querySnapsot = await database
+  const querySnapshot = await database
     .tasksCollection()
     .where('type', '==', 'MASTER_TEMPLATE')
     .get();
   await Promise.all(
-    querySnapsot.docs.map(async (snapshot) => {
+    querySnapshot.docs.map(async (snapshot) => {
       const {
         date: { startDate, endDate, pattern },
         forks,
