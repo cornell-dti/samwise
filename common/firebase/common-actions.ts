@@ -168,7 +168,7 @@ export default class Actions {
     repeatingTask: Task<RepeatingTaskMetadata>,
     replaceDate: Date,
     { mainTaskEdits }: Diff
-  ): void => {
+  ): Promise<void> => {
     const { id, order, children, metadata, ...originalTaskWithoutId } = repeatingTask;
     const newMainTask: TaskWithoutIdOrder = {
       ...originalTaskWithoutId,
@@ -182,12 +182,17 @@ export default class Actions {
 
     const batch = this.database.db().batch();
     const forkId = this.database.tasksCollection().doc().id;
-    const owner = [this.getUserEmail()];
-    this.asyncAddTask(forkId, owner, newMainTask, newMainTask.children, batch).then(() => {
+    return this.asyncAddTask(
+      forkId,
+      originalTaskWithoutId.owner,
+      newMainTask,
+      newMainTask.children,
+      batch
+    ).then(() => {
       batch.update(this.database.tasksCollection().doc(id), {
         forks: [...metadata.forks, { forkId, replaceDate }],
       });
-      batch.commit();
+      return batch.commit();
     });
   };
 
