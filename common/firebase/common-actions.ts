@@ -136,10 +136,7 @@ export default class Actions {
     await batch.commit();
   };
 
-  removeAllForks = async (storeState: State, taskId: string): Promise<void> => {
-    const { tasks } = storeState;
-    const task = tasks.get(taskId) ?? error('bad!');
-    const repeatingTask = task as Task<RepeatingTaskMetadata>;
+  removeAllForks = async (repeatingTask: Task<RepeatingTaskMetadata>): Promise<void> => {
     const forkIds = repeatingTask.metadata.forks.map((fork) => fork.forkId);
     const batch = this.database.db().batch();
     forkIds.forEach((id) => {
@@ -148,7 +145,7 @@ export default class Actions {
       }
     });
     // clear the forked array
-    batch.update(this.database.tasksCollection().doc(taskId), { forks: [] });
+    batch.update(this.database.tasksCollection().doc(repeatingTask.id), { forks: [] });
     await batch.commit();
   };
 
@@ -158,29 +155,21 @@ export default class Actions {
     await batch.commit();
   };
 
-  editTaskWithDiff = (
-    storeState: State,
-    taskId: string,
-    editType: EditType,
-    { mainTaskEdits }: Diff
-  ): void => {
+  editTaskWithDiff = (task: Task, editType: EditType, { mainTaskEdits }: Diff): void => {
     (async () => {
       if (editType === 'EDITING_MASTER_TEMPLATE') {
-        await this.removeAllForks(storeState, taskId);
+        await this.removeAllForks(task as Task<RepeatingTaskMetadata>);
       }
-      this.handleTaskDiffs(taskId, { mainTaskEdits });
+      this.handleTaskDiffs(task.id, { mainTaskEdits });
     })();
   };
 
   forkTaskWithDiff = (
-    storeState: State,
-    taskId: string,
+    repeatingTask: Task<RepeatingTaskMetadata>,
     replaceDate: Date,
     { mainTaskEdits }: Diff
   ): void => {
-    const { tasks } = storeState;
-    const repeatingTaskMaster = tasks.get(taskId) as Task<RepeatingTaskMetadata>;
-    const { id, order, children, metadata, ...originalTaskWithoutId } = repeatingTaskMaster;
+    const { id, order, children, metadata, ...originalTaskWithoutId } = repeatingTask;
     const newMainTask: TaskWithoutIdOrder = {
       ...originalTaskWithoutId,
       children,
@@ -196,7 +185,7 @@ export default class Actions {
     const owner = [this.getUserEmail()];
     this.asyncAddTask(forkId, owner, newMainTask, newMainTask.children, batch).then(() => {
       batch.update(this.database.tasksCollection().doc(id), {
-        forks: [...repeatingTaskMaster.metadata.forks, { forkId, replaceDate }],
+        forks: [...metadata.forks, { forkId, replaceDate }],
       });
       batch.commit();
     });
@@ -251,18 +240,17 @@ export default class Actions {
   };
 
   editMainTask = (
-    storeState: State,
-    taskId: string,
+    task: Task,
     replaceDate: Date | null,
     mainTaskEdits: PartialTaskMainData
   ): void => {
     const diff: Diff = { mainTaskEdits };
     if (replaceDate === null) {
-      this.editTaskWithDiff(storeState, taskId, 'EDITING_ONE_TIME_TASK', diff);
+      this.handleTaskDiffs(task.id, diff);
     } else {
       const dateEdit = mainTaskEdits.date != null ? mainTaskEdits.date : replaceDate;
       const newDiff = { ...diff, mainTaskEdits: { ...diff.mainTaskEdits, date: dateEdit } };
-      this.forkTaskWithDiff(storeState, taskId, replaceDate, newDiff);
+      this.forkTaskWithDiff(task as Task<RepeatingTaskMetadata>, replaceDate, newDiff);
     }
   };
 
