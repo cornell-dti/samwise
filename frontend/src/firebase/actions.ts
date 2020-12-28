@@ -115,12 +115,13 @@ export const editTaskWithDiff = (taskId: string, editType: EditType, diff: Diff)
   );
 };
 
-export const forkTaskWithDiff = (taskId: string, replaceDate: Date, diff: Diff): void =>
+export const forkTaskWithDiff = (taskId: string, replaceDate: Date, diff: Diff): void => {
   actions.forkTaskWithDiff(
     store.getState().tasks.get(taskId) as Task<RepeatingTaskMetadata>,
     replaceDate,
     diff
   );
+};
 
 export const removeTask = (task: Task): void => {
   actions.removeTask(store.getState(), task).then(() => reportDeleteTaskEvent());
