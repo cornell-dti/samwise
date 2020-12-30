@@ -18,9 +18,14 @@ $top-bottom-margin: 20px;
   width: calc(100vw - #{$sidebar-width} - #{$middlebar-width});
   padding: 20px;
   clear: both;
+
+  .TitleRow {
+    position: relative;
+  }
 }
 
-.EditGroupNameIcon:hover {
+.EditGroupNameIcon:hover,
+.EditGroupDeadlineIcon:hover {
   cursor: pointer;
   opacity: 0.8;
 }
@@ -31,13 +36,28 @@ $top-bottom-margin: 20px;
   overflow-y: auto;
 }
 
-.RightView h2 {
+.Title {
   display: inline-block;
   color: #808080;
   font-size: 26px;
   font-family: 'DM Sans', sans-serif;
   font-weight: bold;
   margin-right: 0.5em;
+}
+
+.DeadlineText {
+  color: #808080;
+  font-family: 'DM Sans', sans-serif;
+  font-weight: bold;
+  font-size: 20px;
+  margin: 0 0.5em;
+}
+
+.DeadlineCalendarPicker {
+  position: absolute;
+  width: 300px;
+  top: 50px;
+  left: 150px;
 }
 
 .GroupTaskProgress {
