@@ -7,7 +7,7 @@
     "fetch": "../node_modules/.bin/ts-node src/main.ts"
   },
   "dependencies": {
-    "jsdom": "^15.1.1",
-    "node-fetch": "^2.6.0"
+    "jsdom": "^16.4.0",
+    "node-fetch": "^2.6.1"
   }
 }

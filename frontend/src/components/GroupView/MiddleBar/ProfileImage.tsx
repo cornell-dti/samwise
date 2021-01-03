@@ -8,8 +8,8 @@ type Props = {
   readonly className?: string;
 };
 
-const ProfileImage = ({ memberName, imageURL, className }: Props): ReactElement => {
-  return <img className={clsx(styles.ProfileCircle, className)} src={imageURL} alt={memberName} />;
-};
+const ProfileImage = ({ memberName, imageURL, className }: Props): ReactElement => (
+  <img className={clsx(styles.ProfileCircle, className)} src={imageURL} alt={memberName} />
+);
 
 export default ProfileImage;
