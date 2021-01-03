@@ -204,21 +204,20 @@ function DisplayOptionControl({ nDays, displayOption, offset, onChange }: Props)
   const renderContainerTypeSwitcherButton = (
     type: FutureViewContainerType,
     text: string
-  ): ReactElement => {
-    return (
-      <button
-        type="button"
-        title={`Change to ${text} view`}
-        className={clsx(
-          styles.ContainerTypeSwitcherButton,
-          containerType === type && styles.ContainerTypeSwitcherActiveButton
-        )}
-        onClick={() => switchContainerType(type)}
-      >
-        <span className={styles.ContainerTypeSwitcherButtonText}>{text}</span>
-      </button>
-    );
-  };
+  ): ReactElement => (
+    <button
+      type="button"
+      title={`Change to ${text} view`}
+      className={clsx(
+        styles.ContainerTypeSwitcherButton,
+        containerType === type && styles.ContainerTypeSwitcherActiveButton
+      )}
+      onClick={() => switchContainerType(type)}
+    >
+      <span className={styles.ContainerTypeSwitcherButtonText}>{text}</span>
+    </button>
+  );
+
   return (
     <>
       <SquareIconToggle
