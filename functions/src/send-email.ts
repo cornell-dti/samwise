@@ -74,9 +74,7 @@ const sendEmail = async (data: Data, context: functions.https.CallableContext): 
   if (group && group.members.includes(email as string) && group.members.includes(recipientEmail)) {
     return sgMail
       .send(msg)
-      .then(() => {
-        return 'sent';
-      })
+      .then(() => 'sent')
       .catch((error) => {
         // eslint-disable-next-line no-console
         console.error(error);

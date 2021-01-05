@@ -3,6 +3,7 @@ import { DragDropContext, DropResult } from 'react-beautiful-dnd';
 import { computeReorderMap } from 'common/util/order-util';
 import { dateMatchRepeats } from 'common/util/task-util';
 import { Task, RepeatingTaskMetadata, OneTimeTaskMetadata } from 'common/types/store-types';
+import { patchTasks } from 'common/store/actions';
 import { useTodayLastSecondTime } from '../../../hooks/time-hook';
 import FutureViewControl from './FutureViewControl';
 import FutureViewNDays from './FutureViewNDays';
@@ -12,7 +13,6 @@ import { FutureViewContainerType, FutureViewDisplayOption, SimpleDate } from './
 import { useMappedWindowSize } from '../../../hooks/window-size-hook';
 import { editMainTask, applyReorder } from '../../../firebase/actions';
 import { store } from '../../../store/store';
-import { patchTasks } from '../../../store/actions';
 
 export type FutureViewConfig = {
   readonly displayOption: FutureViewDisplayOption;

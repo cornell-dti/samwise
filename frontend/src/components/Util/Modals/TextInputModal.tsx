@@ -1,5 +1,6 @@
 import React, { ReactElement, useState } from 'react';
 import Modal from 'react-modal';
+import clsx from 'clsx';
 import modalStyles from './Modal.module.scss';
 import textInputModalStyles from './TextInputModal.module.scss';
 
@@ -57,7 +58,7 @@ const TextInputModal = ({
   return (
     <Modal
       isOpen={open}
-      className={`${modalStyles.Modal} ${textInputModalStyles.TextInputModal}`}
+      className={clsx(modalStyles.Modal, textInputModalStyles.TextInputModal)}
       contentLabel="Choice Dialog"
     >
       <div className={textInputModalStyles.Title}>{title}</div>

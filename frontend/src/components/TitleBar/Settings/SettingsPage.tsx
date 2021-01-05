@@ -1,6 +1,7 @@
 import React, { ReactElement, ReactNode } from 'react';
 import { Map } from 'immutable';
 import { connect } from 'react-redux';
+import clsx from 'clsx';
 import { Tag, State } from 'common/types/store-types';
 import TagItem from '../Tags/TagItem';
 import ClassTagAdder from '../Tags/ClassTagAdder';
@@ -29,7 +30,7 @@ export const ClassAdder = (): ReactElement => (
 export const ExamImporter = (): ReactElement => (
   <div className={styles.SettingsSection}>
     <p className={styles.SettingsSectionTitle}>Auto Import Exams</p>
-    <div className={`${styles.SettingsButton} ${styles.SettingsSectionContent}`}>
+    <div className={clsx(styles.SettingsButton, styles.SettingsSectionContent)}>
       Click the following button to reimport the prelims and finals from your classes into your
       planner. We will only import those that appears on Cornell prelim/final schedule webpage.
       <br />

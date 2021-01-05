@@ -1,6 +1,13 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
-import { Settings } from '../types/store-types';
+import {
+  FirestoreGroup,
+  FirestoreTag,
+  FirestoreTask,
+  FirestoreUserData,
+} from '../types/firestore-types';
+import { BannerMessageStatus, Settings, SubTask } from '../types/store-types';
+import { FirestoreOrderManager } from './order-manager';
 
 type DocumentData = { [field: string]: any };
 type UpdateData = { [fieldPath: string]: any };
@@ -110,7 +117,19 @@ export interface CommonFirestore {
   batch(): WriteBatch;
 }
 
-type Collection = CollectionReference;
+const firestoreOrderManagerDataConverter: FirestoreDataConverter<FirestoreOrderManager> = {
+  toFirestore(modelObject: Partial<FirestoreOrderManager>) {
+    return modelObject;
+  },
+
+  fromFirestore(snapshot) {
+    const { tagsMaxOrder, tasksMaxOrder } = snapshot.data() as Record<string, unknown>;
+    if (typeof tagsMaxOrder !== 'number' || typeof tasksMaxOrder !== 'number') {
+      throw new Error();
+    }
+    return { tagsMaxOrder, tasksMaxOrder };
+  },
+};
 
 const firestoreSettingsDataConverter: FirestoreDataConverter<Settings> = {
   toFirestore(modelObject: Partial<Settings>) {
@@ -135,22 +154,257 @@ const firestoreSettingsDataConverter: FirestoreDataConverter<Settings> = {
   },
 };
 
+const firestoreBannerMessageStatusDataConverter: FirestoreDataConverter<BannerMessageStatus> = {
+  toFirestore(modelObject: Partial<BannerMessageStatus>) {
+    return modelObject;
+  },
+
+  fromFirestore(snapshot) {
+    const status = snapshot.data() as Record<string, unknown>;
+    return Object.fromEntries(
+      Object.entries(status).map(([id, read]) => {
+        if (typeof read === 'boolean' || typeof read === 'undefined') {
+          return [id, read];
+        }
+        throw new Error();
+      })
+    );
+  },
+};
+
+const firestoreTagDataConverter: FirestoreDataConverter<FirestoreTag> = {
+  toFirestore(modelObject: Partial<FirestoreTag>) {
+    return modelObject;
+  },
+
+  fromFirestore(snapshot) {
+    const { order, owner, name, color, classId } = snapshot.data() as Record<string, unknown>;
+    if (
+      typeof order !== 'number' ||
+      typeof owner !== 'string' ||
+      typeof name !== 'string' ||
+      typeof color !== 'string' ||
+      (typeof classId !== 'string' && classId !== null)
+    ) {
+      throw new Error();
+    }
+    return { order, owner, name, color, classId };
+  },
+};
+
+const firestoreTaskDataConverter: FirestoreDataConverter<FirestoreTask> = {
+  toFirestore(modelObject: Partial<FirestoreTask>) {
+    return modelObject;
+  },
+
+  fromFirestore(snapshot): FirestoreTask {
+    const {
+      order,
+      owner,
+      name,
+      tag,
+      complete,
+      inFocus,
+      children,
+      type,
+      ...rest
+    } = snapshot.data() as Record<string, unknown>;
+    if (
+      typeof order !== 'number' ||
+      !Array.isArray(owner) ||
+      typeof name !== 'string' ||
+      typeof tag !== 'string' ||
+      typeof complete !== 'boolean' ||
+      typeof inFocus !== 'boolean' ||
+      !Array.isArray(children)
+    ) {
+      throw new Error();
+    }
+    const ownerStringArray = owner.map((email) => {
+      if (typeof email !== 'string') throw new Error();
+      return email;
+    });
+    const childrenArray = children.map(
+      (subtaskData): SubTask => {
+        if (typeof subtaskData !== 'object') throw new Error();
+        const {
+          order: subtaskOrder,
+          name: subtaskName,
+          complete: subtaskComplete,
+          inFocus: subtaskInFocus,
+        } = subtaskData;
+        if (
+          typeof subtaskOrder !== 'number' ||
+          typeof subtaskName !== 'string' ||
+          typeof subtaskComplete !== 'boolean' ||
+          typeof subtaskInFocus !== 'boolean'
+        ) {
+          throw new Error();
+        }
+        return {
+          order: subtaskOrder,
+          name: subtaskName,
+          complete: subtaskComplete,
+          inFocus: subtaskInFocus,
+        };
+      }
+    );
+    if (type === 'ONE_TIME') {
+      const { date, icalUID } = rest;
+      if (icalUID === undefined || typeof icalUID === 'string') {
+        return {
+          type,
+          order,
+          owner: ownerStringArray,
+          name,
+          tag,
+          complete,
+          inFocus,
+          children: childrenArray,
+          date: date as any,
+          icalUID,
+        };
+      }
+    } else if (type === 'GROUP') {
+      const { date, group } = rest;
+      if (typeof group === 'string') {
+        return {
+          type,
+          order,
+          owner: ownerStringArray,
+          name,
+          tag,
+          complete,
+          inFocus,
+          children: childrenArray,
+          date: date as any,
+          group,
+        };
+      }
+    } else if (type === 'MASTER_TEMPLATE') {
+      const { date, forks } = rest;
+      if (typeof date !== 'object' || !Array.isArray(forks)) throw new Error();
+      const { startDate, endDate, pattern } = date as Record<string, unknown>;
+      const { type: repeatingPatternType, bitSet } = pattern as Record<string, unknown>;
+      if (
+        (repeatingPatternType !== 'WEEKLY' &&
+          repeatingPatternType !== 'BIWEEKLY' &&
+          repeatingPatternType !== 'MONTHLY') ||
+        typeof bitSet !== 'number'
+      ) {
+        throw new Error();
+      }
+      const forksArray = forks.map(({ forkId, replaceDate }) => {
+        if (forkId === null || typeof forkId === 'string') {
+          return { forkId, replaceDate: replaceDate as any };
+        }
+        throw new Error();
+      });
+      return {
+        type,
+        order,
+        owner: ownerStringArray,
+        name,
+        tag,
+        complete,
+        inFocus,
+        children: childrenArray,
+        date: {
+          startDate: startDate as any,
+          endDate: endDate as any,
+          pattern: { type: repeatingPatternType, bitSet },
+        },
+        forks: forksArray,
+      };
+    }
+    throw new Error();
+  },
+};
+
+const firestoreGroupDataConverter: FirestoreDataConverter<FirestoreGroup> = {
+  toFirestore(modelObject: Partial<FirestoreGroup>) {
+    return modelObject;
+  },
+
+  fromFirestore(snapshot) {
+    const {
+      name,
+      members,
+      deadline,
+      classCode,
+      invitees,
+      inviterNames,
+    } = snapshot.data() as Record<string, unknown>;
+    if (
+      typeof name !== 'string' ||
+      !Array.isArray(members) ||
+      typeof classCode !== 'string' ||
+      !Array.isArray(invitees) ||
+      !Array.isArray(inviterNames)
+    ) {
+      throw new Error();
+    }
+    const membersStringArray = members.map((member) => {
+      if (typeof member !== 'string') throw new Error();
+      return member;
+    });
+    const inviteesStringArray = invitees.map((invitee) => {
+      if (typeof invitee !== 'string') throw new Error();
+      return invitee;
+    });
+    const inviterNamesStringArray = inviterNames.map((inviterName) => {
+      if (typeof inviterName !== 'string') throw new Error();
+      return inviterName;
+    });
+    return {
+      name,
+      members: membersStringArray,
+      deadline: deadline as any,
+      classCode,
+      invitees: inviteesStringArray,
+      inviterNames: inviterNamesStringArray,
+    };
+  },
+};
+
+const firestoreUserDataConverter: FirestoreDataConverter<FirestoreUserData> = {
+  toFirestore(modelObject: Partial<FirestoreUserData>) {
+    return modelObject;
+  },
+
+  fromFirestore(snapshot) {
+    const { name, photoURL } = snapshot.data() as Record<string, unknown>;
+    if (typeof name !== 'string' || typeof photoURL !== 'string') {
+      throw new Error();
+    }
+    return { name, photoURL };
+  },
+};
+
 export default class Database {
   // eslint-disable-next-line no-useless-constructor
   constructor(public readonly db: () => CommonFirestore) {}
 
-  orderManagerCollection = (): Collection => this.db().collection('samwise-order-manager');
+  orderManagerCollection = (): CollectionReference<FirestoreOrderManager> =>
+    this.db().collection('samwise-order-manager').withConverter(firestoreOrderManagerDataConverter);
 
   settingsCollection = (): CollectionReference<Settings> =>
     this.db().collection('samwise-settings').withConverter(firestoreSettingsDataConverter);
 
-  bannerMessageStatusCollection = (): Collection => this.db().collection('samwise-banner-message');
+  bannerMessageStatusCollection = (): CollectionReference<BannerMessageStatus> =>
+    this.db()
+      .collection('samwise-banner-message')
+      .withConverter(firestoreBannerMessageStatusDataConverter);
 
-  tagsCollection = (): Collection => this.db().collection('samwise-tags');
+  tagsCollection = (): CollectionReference<FirestoreTag> =>
+    this.db().collection('samwise-tags').withConverter(firestoreTagDataConverter);
 
-  tasksCollection = (): Collection => this.db().collection('samwise-tasks');
+  tasksCollection = (): CollectionReference<FirestoreTask> =>
+    this.db().collection('samwise-tasks').withConverter(firestoreTaskDataConverter);
 
-  groupsCollection = (): Collection => this.db().collection('samwise-groups');
+  groupsCollection = (): CollectionReference<FirestoreGroup> =>
+    this.db().collection('samwise-groups').withConverter(firestoreGroupDataConverter);
 
-  usersCollection = (): Collection => this.db().collection('samwise-users');
+  usersCollection = (): CollectionReference<FirestoreUserData> =>
+    this.db().collection('samwise-users').withConverter(firestoreUserDataConverter);
 }

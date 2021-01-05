@@ -1,4 +1,5 @@
 import React, { ReactElement } from 'react';
+import clsx from 'clsx';
 import { connect } from 'react-redux';
 import Confetti from 'react-dom-confetti';
 import { TasksProgressProps } from 'common/util/task-util';
@@ -51,10 +52,8 @@ export function AllComplete({ completedTasksCount, allTasksCount }: Props): Reac
     colors: ['#a864fd', '#29cdff', '#78ff44', '#ff718d', '#fdff6a'],
   };
 
-  const showClass = shouldShow ? styles.Main : `${styles.Main} ${styles.Hidden}`;
-
   return (
-    <div className={showClass}>
+    <div className={clsx(styles.Main, !shouldShow && styles.Hidden)}>
       <span className={styles.ConfWrap}>
         <Confetti active={shouldShow} config={confettiConfig} />
       </span>

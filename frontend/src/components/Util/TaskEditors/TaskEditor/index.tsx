@@ -5,6 +5,7 @@
 
 import React, { ReactElement, useEffect, useState, useCallback } from 'react';
 import { connect } from 'react-redux';
+import clsx from 'clsx';
 import {
   TaskMainData,
   Settings,
@@ -264,8 +265,6 @@ function TaskEditor({
   const formStyle = isOverdue
     ? { backgroundColor, border: '5px solid #D0021B' }
     : { backgroundColor };
-  const actualClassName =
-    className == null ? styles.TaskEditor : `${styles.TaskEditor} ${className}`;
 
   useEffect(() => {
     const intervalID = setInterval(() => {
@@ -278,7 +277,7 @@ function TaskEditor({
 
   return (
     <form
-      className={actualClassName}
+      className={clsx(styles.TaskEditor, className)}
       style={formStyle}
       onMouseEnter={onFocus}
       onMouseLeave={onMouseLeave}

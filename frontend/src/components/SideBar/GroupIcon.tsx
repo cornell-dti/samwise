@@ -1,4 +1,5 @@
 import React, { ReactElement } from 'react';
+import clsx from 'clsx';
 import { connect } from 'react-redux';
 import { State, Tag } from 'common/types/store-types';
 import { NONE_TAG } from 'common/util/tag-util';
@@ -30,9 +31,7 @@ const GroupIcon = ({ classCode, handleClick, selected, tags }: Props): ReactElem
     <button
       type="button"
       onClick={() => handleClick('group', classCode)}
-      className={`${sidebarStyles.GroupLetterIcon} ${styles.GroupIcon}${
-        selected ? ` ${styles.Active}` : ''
-      }`}
+      className={clsx(sidebarStyles.GroupLetterIcon, styles.GroupIcon, selected && styles.Active)}
       style={{ background: color }}
     >
       {classCode.charAt(0)}

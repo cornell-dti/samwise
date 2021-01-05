@@ -60,12 +60,13 @@ const GroupView = ({ group, changeView }: Props): ReactElement => {
         setGroupTaskArray(
           snapshot.docs.map((docSnapshot) => {
             const docData = docSnapshot.data();
+            if (docData.type !== 'GROUP') throw new Error();
             return {
               ...docData,
               id: docSnapshot.id,
               metadata: {
                 type: 'GROUP',
-                date: docData.date.toDate(),
+                date: docData.date instanceof Date ? docData.date : docData.date.toDate(),
                 group: docData.group,
               } as GroupTaskMetadata,
             } as Task;

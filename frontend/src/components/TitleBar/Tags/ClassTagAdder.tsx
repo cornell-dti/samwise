@@ -1,4 +1,5 @@
 import React, { ReactElement } from 'react';
+import clsx from 'clsx';
 import { Map } from 'immutable';
 import { connect } from 'react-redux';
 import Fuse from 'fuse.js';
@@ -83,7 +84,7 @@ function ClassTagAdder({ fuse }: Props): ReactElement | null {
   };
   return (
     <div
-      className={`${styles.TagColorConfigItemAdder} ${styles.SearchClasses}`}
+      className={clsx(styles.TagColorConfigItemAdder, styles.SearchClasses)}
       title="Search for a class"
     >
       <SearchBox

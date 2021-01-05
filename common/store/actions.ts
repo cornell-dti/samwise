@@ -7,8 +7,8 @@ import {
   PatchBannerMessageStatus,
   PatchGroups,
   PatchGroupInvites,
-} from 'common/types/action-types';
-import { Course, Tag, Settings, BannerMessageStatus, Group, Task } from 'common/types/store-types';
+} from '../types/action-types';
+import { Course, Tag, Settings, BannerMessageStatus, Group, Task } from '../types/store-types';
 
 export const patchTags = (created: Tag[], edited: Tag[], deleted: string[]): PatchTags => ({
   type: 'PATCH_TAGS',

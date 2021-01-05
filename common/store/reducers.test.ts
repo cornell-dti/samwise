@@ -1,4 +1,4 @@
-import { SubTask } from 'common/types/store-types';
+import { SubTask } from '../types/store-types';
 import rootReducer from './reducers';
 import { initialStateForTesting } from './state';
 

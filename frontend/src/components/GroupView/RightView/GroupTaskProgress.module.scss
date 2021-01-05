@@ -63,6 +63,7 @@
 
 .ProgressBubble {
   /* doing it this way to make transitions easier later */
+  transition: all 2s ease;
   background-image: linear-gradient(to right, #f4f4f4 50%, #81ebcb 50%);
   background-position: 0;
   background-size: 200%;
@@ -72,6 +73,8 @@
   flex: 1 1 100%;
   margin: auto 0;
   margin-right: 10px;
+  text-align: center;
+  vertical-align: auto;
 }
 
 .ProgressDiv {
@@ -84,9 +87,9 @@
 }
 
 .CompleteBubble {
-  background-position: 100%;
+  background-position: right bottom;
 }
 
 .IncompleteBubble {
-  background-position: 0%;
+  background-position: left bottom;
 }

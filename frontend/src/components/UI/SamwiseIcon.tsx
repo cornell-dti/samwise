@@ -3,6 +3,7 @@
  */
 
 import React, { ReactElement, CSSProperties } from 'react';
+import clsx from 'clsx';
 import { IconName } from './samwise-icon-types';
 import styles from './SamwiseIcon.module.scss';
 import {
@@ -225,11 +226,7 @@ const SamwiseIcon = ({
     >
       <img
         src={svg}
-        className={
-          className != null
-            ? `${styles.SamwiseIconDefaultStyle} ${className}`
-            : styles.SamwiseIconDefaultStyle
-        }
+        className={clsx(styles.SamwiseIconDefaultStyle, className)}
         tabIndex={tabIndex}
         style={style}
         alt={altText}

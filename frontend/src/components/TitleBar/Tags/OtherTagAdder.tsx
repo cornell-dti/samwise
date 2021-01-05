@@ -1,4 +1,5 @@
 import React, { KeyboardEvent, SyntheticEvent, ReactElement } from 'react';
+import clsx from 'clsx';
 import styles from './TagItem.module.scss';
 import ColorEditor from './ColorEditor';
 import { addTag } from '../../../firebase/actions';
@@ -37,7 +38,7 @@ export default class OtherTagAdder extends React.PureComponent<unknown, State> {
       <li className={styles.ColorConfigItem}>
         <input
           type="text"
-          className={`${styles.TagName} ${styles.AddTagName}`}
+          className={clsx(styles.TagName, styles.AddTagName)}
           placeholder="New Tag"
           value={name}
           onChange={this.editName}

@@ -1,4 +1,5 @@
 import React, { ReactElement } from 'react';
+import clsx from 'clsx';
 import Calendar from 'react-calendar';
 import { Tag, RepeatingDate } from 'common/types/store-types';
 import styles from './index.module.scss';
@@ -70,7 +71,6 @@ export default function EditorHeader({
   };
 
   const { doesShowTagEditor, doesShowDateEditor } = editorDisplayStatus;
-  const headerClassName = `${styles.TaskEditorFlexibleContainer} ${styles.TaskEditorHeader}`;
   const tagDisplay = (
     <button type="button" className={styles.TaskEditorTag} onClick={toggleTagEditor}>
       {getTag(tag).name}
@@ -127,11 +127,11 @@ export default function EditorHeader({
     >
       <Calendar
         value={date}
-        className={`${
+        className={
           calendarPosition === 'top'
             ? styles.TaskEditorCalendarTop
             : styles.TaskEditorCalendarBottom
-        } `}
+        }
         minDate={new Date()}
         onChange={editTaskDate}
         calendarType="US"
@@ -141,7 +141,7 @@ export default function EditorHeader({
   const isCanvasTask = typeof icalUID === 'string' ? icalUID !== '' : false;
 
   return (
-    <div className={headerClassName}>
+    <div className={clsx(styles.TaskEditorFlexibleContainer, styles.TaskEditorHeader)}>
       {isOverdue && <OverdueAlert target="task-card" />}
       {displayGrabber && type !== 'GROUP' && (
         <SamwiseIcon iconName="grabber" className={styles.TaskEditorGrabberIcon} />

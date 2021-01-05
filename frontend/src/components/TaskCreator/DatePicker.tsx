@@ -1,4 +1,5 @@
 import React, { ReactElement, SyntheticEvent, ChangeEvent, KeyboardEvent } from 'react';
+import clsx from 'clsx';
 import Calendar from 'react-calendar';
 import { date2String, getDateAfterXWeeks } from 'common/util/datetime-util';
 import { NONE_TAG } from 'common/util/tag-util';
@@ -135,7 +136,7 @@ export default function DatePicker(props: Props): ReactElement {
       <button
         onClick={clickPicker}
         onKeyPress={pressedPicker}
-        className={`${styles.DateButton} ${styles.Label}`}
+        className={clsx(styles.DateButton, styles.Label)}
         style={style}
         type="button"
       >

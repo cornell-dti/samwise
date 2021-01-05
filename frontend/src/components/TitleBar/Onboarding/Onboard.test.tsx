@@ -1,7 +1,7 @@
 import React from 'react';
 import renderer from 'react-test-renderer';
+import { initialStateForTesting } from 'common/store/state';
 import { ProviderForTesting } from '../../../store';
-import { initialStateForTesting } from '../../../store/state';
 import { Onboard } from './Onboard';
 
 it('TitleBar matches snapshot', () => {

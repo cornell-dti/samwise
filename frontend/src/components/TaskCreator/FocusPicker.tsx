@@ -1,4 +1,5 @@
 import React, { ReactElement, SyntheticEvent, KeyboardEvent } from 'react';
+import clsx from 'clsx';
 import styles from './Picker.module.scss';
 import SamwiseIcon from '../UI/SamwiseIcon';
 
@@ -25,12 +26,9 @@ export default function FocusPicker({ pinned, onPinChange }: Props): ReactElemen
         type="button"
         onClick={clickPicker}
         onKeyPress={pressedPicker}
-        className={`${styles.TestBorder} ${styles.Label}`}
+        className={clsx(styles.TestBorder, styles.Label)}
       >
-        <SamwiseIcon
-          iconName={pinIconName}
-          className={`${styles.CenterIcon} ${styles.ImageSize}`}
-        />
+        <SamwiseIcon iconName={pinIconName} className={clsx(styles.CenterIcon, styles.ImageSize)} />
       </button>
     </div>
   );

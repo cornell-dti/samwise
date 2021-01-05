@@ -22,34 +22,32 @@ const GroupTaskRow = ({
   userProfile,
   groupID,
   onClick,
-}: Props): ReactElement => {
-  return (
-    <div className={styles.GroupTaskRow}>
-      <ProfileImage
-        className={styles.ProfilePicGroupView}
-        memberName={memberName}
-        imageURL={profilePicURL}
-      />
+}: Props): ReactElement => (
+  <div className={styles.GroupTaskRow}>
+    <ProfileImage
+      className={styles.ProfilePicGroupView}
+      memberName={memberName}
+      imageURL={profilePicURL}
+    />
 
-      <button
-        type="button"
-        className={styles.AddTaskContainer}
-        onClick={() => onClick([userProfile])}
-      >
-        <div className={styles.AddTask}>
-          <FontAwesomeIcon icon={faPlus} />
-          <h3>Assign new task</h3>
-        </div>
-      </button>
+    <button
+      type="button"
+      className={styles.AddTaskContainer}
+      onClick={() => onClick([userProfile])}
+    >
+      <div className={styles.AddTask}>
+        <FontAwesomeIcon icon={faPlus} />
+        <h3>Assign new task</h3>
+      </div>
+    </button>
 
-      <GroupTasksContainer
-        tasks={tasks}
-        memberName={memberName}
-        memberEmail={userProfile.email}
-        groupID={groupID}
-      />
-    </div>
-  );
-};
+    <GroupTasksContainer
+      tasks={tasks}
+      memberName={memberName}
+      memberEmail={userProfile.email}
+      groupID={groupID}
+    />
+  </div>
+);
 
 export default GroupTaskRow;

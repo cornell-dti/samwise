@@ -1,4 +1,5 @@
 import React, { ReactElement } from 'react';
+import clsx from 'clsx';
 import styles from './ProfileImage.module.scss';
 
 type Props = {
@@ -7,14 +8,8 @@ type Props = {
   readonly className?: string;
 };
 
-const ProfileImage = ({ memberName, imageURL, className }: Props): ReactElement => {
-  return (
-    <img
-      className={className != null ? `${styles.ProfileCircle} ${className}` : styles.ProfileCircle}
-      src={imageURL}
-      alt={memberName}
-    />
-  );
-};
+const ProfileImage = ({ memberName, imageURL, className }: Props): ReactElement => (
+  <img className={clsx(styles.ProfileCircle, className)} src={imageURL} alt={memberName} />
+);
 
 export default ProfileImage;

@@ -1,5 +1,6 @@
 import React, { ReactElement } from 'react';
 import { connect } from 'react-redux';
+import clsx from 'clsx';
 import { getTodayAtZeroAM } from 'common/util/datetime-util';
 import { State, Theme } from 'common/types/store-types';
 import { SimpleDate } from './future-view-types';
@@ -54,15 +55,9 @@ export function FutureViewDay(props: Props & { readonly theme: Theme }): ReactEl
           color: 'white',
         };
   })();
-  let wrapperCssClass: string;
-  if (inNDaysView) {
-    wrapperCssClass = isToday ? `${styles.NDaysView} ${styles.Today}` : styles.NDaysView;
-  } else {
-    wrapperCssClass = isToday ? `${styles.OtherViews} ${styles.Today}` : styles.OtherViews;
-  }
   return (
     <div
-      className={wrapperCssClass}
+      className={clsx(inNDaysView ? styles.NDaysView : styles.OtherViews, isToday && styles.Today)}
       ref={componentDivRef}
       style={{ ...darkModeStyles, overflowY: 'scroll' }}
     >
