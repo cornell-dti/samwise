@@ -56,14 +56,12 @@ function processExamInfoJson(
 
 export default function mergeCoursesAndExamJson(
   courses: readonly CourseInfo[],
-  prelimExams: readonly ExamInfo[],
-  semifinalExams: readonly ExamInfo[],
-  finalExams: readonly ExamInfo[]
+  prelimExams: readonly ExamInfo[]
+  // finalExams: readonly ExamInfo[]
 ): readonly FullInfo[] {
   const map = new Map<string, Course>();
   processCourseInfoJson(map, courses);
   processExamInfoJson(map, prelimExams, 'prelim');
-  processExamInfoJson(map, semifinalExams, 'semifinal');
-  processExamInfoJson(map, finalExams, 'final');
+  // processExamInfoJson(map, finalExams, 'final');
   return Array.from(map.values()).map((course) => course.plainJs);
 }
