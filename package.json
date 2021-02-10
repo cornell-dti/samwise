@@ -13,6 +13,7 @@
   },
   "workspaces": [
     "common",
+    "course-info",
     "frontend",
     "functions"
   ],
