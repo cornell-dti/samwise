@@ -4,10 +4,13 @@
   "main": "index.js",
   "license": "MIT",
   "scripts": {
+    "tsc": "tsc --noEmit",
     "fetch": "../node_modules/.bin/ts-node src/main.ts"
   },
   "dependencies": {
+    "@types/jsdom": "^16.2.6",
     "jsdom": "^16.4.0",
-    "node-fetch": "^2.6.1"
+    "node-fetch": "^2.6.1",
+    "typescript": "^4.1.5"
   }
 }
