@@ -13,10 +13,10 @@
   },
   "main": "dist/index.js",
   "dependencies": {
-    "@sendgrid/mail": "^7.4.0",
+    "@sendgrid/mail": "^7.4.2",
     "common": "0.1.0",
-    "firebase-admin": "^9.4.2",
-    "firebase-functions": "^3.13.0",
+    "firebase-admin": "^9.5.0",
+    "firebase-functions": "^3.13.1",
     "ical": "^0.8.0",
     "immutable": "^4.0.0-rc.12",
     "json-bigint": "^1.0.0",
@@ -24,8 +24,8 @@
   },
   "devDependencies": {
     "@types/ical": "^0.6.2",
-    "@types/node-fetch": "^2.5.7",
-    "@vercel/ncc": "^0.26.1",
+    "@types/node-fetch": "^2.5.8",
+    "@vercel/ncc": "^0.27.0",
     "firebase-functions-test": "^0.2.3"
   }
 }
