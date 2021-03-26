@@ -8,6 +8,7 @@
     "fetch": "../node_modules/.bin/ts-node src/main.ts"
   },
   "dependencies": {
+    "@octokit/rest": "^18.5.0",
     "@types/jsdom": "^16.2.6",
     "jsdom": "^16.4.0",
     "node-fetch": "^2.6.1",

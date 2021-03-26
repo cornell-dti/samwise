@@ -42,7 +42,7 @@ async function getCoursesInSemesterAndSubject(
 
 export default async function getAllCoursesInSemester(
   semester: string,
-  coolingTimeMs = 50
+  coolingTimeMs = 40
 ): Promise<readonly CourseInfo[]> {
   const courses: CourseInfo[] = [];
   const subjects = await getSubjects(semester);

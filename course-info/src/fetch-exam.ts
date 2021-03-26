@@ -39,18 +39,11 @@ function parsePrelimLine(line: string): ExamInfo {
 }
 
 function parseFinalLine(line: string): ExamInfo {
-  // TODO: Finals not published for SP21, update this when they're out
-  const segments = line.split(/\s+/);
-  const subject = segments[0];
-  const courseNumber = segments[1];
-  const sectionNumber = segments[2];
-  const dateMonth = segments[3];
-  const dateDay = segments[4];
-  const dateTime = segments[5];
-  const dateTimeString = `${dateMonth} ${dateDay} ${currentYear} ${dateTime}`;
+  const [subject, courseNumber, sectionNumber, dateWithYear, dateTime, AM_PM] = line.split(/\s+/);
+  const dateTimeString = `${dateWithYear} ${dateTime}`;
 
   const date = new Date(dateTimeString);
-  date.setHours(segments[6] === 'PM' ? date.getHours() + 12 : date.getHours());
+  date.setHours(AM_PM === 'PM' ? date.getHours() + 12 : date.getHours());
   return {
     subject,
     courseNumber,
@@ -68,7 +61,8 @@ function getExamInfoList(rawText: string, examType: ExamType): readonly ExamInfo
       line !== '' &&
       !line.startsWith('<b>class') &&
       !line.startsWith('final exam') &&
-      !line.startsWith('course')
+      !line.startsWith('course') &&
+      !line.startsWith('Class')
     ) {
       let info: ExamInfo;
       switch (examType) {
