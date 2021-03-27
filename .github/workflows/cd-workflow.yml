@@ -20,17 +20,13 @@ jobs:
       - name: Yarn Install
         run: yarn install
       - name: Build frontend
-        run: yarn workspace frontend build:stage
-      - name: Deploy Frontend to Firebase Staging Project
-        env:
-          FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
-        run: |
-          ./node_modules/.bin/firebase use default
-          ./node_modules/.bin/firebase deploy --token=$FIREBASE_TOKEN --non-interactive --only hosting,firestore:rules
-      - name: Deploy Functions to Firebase Staging Project
+        run: yarn workspace frontend build
+      - name: Deploy to Production
         env:
           FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
           SENDGRID_API_JSON: ${{ secrets.SENDGRID_API_JSON }}
         run: |
           echo $SENDGRID_API_JSON > functions/src/sendgrid-key.json
-          node ./deploy-functions.js $FIREBASE_TOKEN default
+          ./node_modules/.bin/firebase use production
+          ./node_modules/.bin/firebase deploy --token=$FIREBASE_TOKEN --non-interactive --only hosting,firestore:rules
+          node ./deploy-functions.js $FIREBASE_TOKEN production
