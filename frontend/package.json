@@ -19,7 +19,7 @@
     "firebase": "^7.21.0",
     "fuse.js": "^6.4.6",
     "immutable": "^4.0.0-rc.12",
-    "next": "^10.0.6",
+    "next": "^12.1.0",
     "next-transpile-modules": "^6.3.0",
     "react": "^17.0.1",
     "react-beautiful-dnd": "^13.0.0",
